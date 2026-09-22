@@ -14,17 +14,27 @@ Naudojimas:
     export RENTMAN_API_TOKEN="tavo_tokenas"
     python scripts/rentman_project_summary.py 1121
 
-PASTABA: šis scenarijus parašytas be galimybės tiesiogiai išbandyti prieš
-gyvą Rentman API (tinklo apribojimai šioje aplinkoje), todėl:
-  - equipment planning duomenims bando kelis galimus endpoint'us paeiliui;
-  - schedule (montazas/renginys/demontazas) laukus bando atspėti iš
-    standartinių Rentman projekto datų laukų (usageperiod_*, planperiod_*,
-    equipment_period_*) -- jei atspėjimas neteisingas, paleisk su --debug,
-    kad pamatytum VISUS projekto JSON laukus, ir pasakyk man, kurie iš jų
-    iš tikrųjų atitinka montažą/renginį/demontažą, aš iškart pataisysiu.
-  - jei paleidus su --debug equipment sąrašas lieka tuščias, atsiųsk man
-    stderr išvestį (kokius endpoint'us bandė ir ką jie grąžino) -- pagal
-    tai surasiu teisingą endpoint'ą.
+Duomenų šaltiniai (patikrinta prieš gyvą API 2026-09):
+  - GET /projects/{id}                                    -> pavadinimas, renginio (usage) laikas
+  - GET /projectequipmentgroup?project=/projects/{id}      -> visos projekto įrangos kategorijos/grupės,
+                                                               kiekviena su savo planperiod_start/end
+  - GET /projectequipment?equipment_group=/projectequipmentgroup/{gid}
+                                                            -> konkrečios grupės įrangos eilutės (qty, name)
+
+Schedule logika:
+  - "renginys"  = projekto usageperiod_start (faktinis renginio laikas)
+  - "montazas"  = mažiausia planperiod_start reikšmė tarp VISŲ projekto equipment groups
+                  (t.y. anksčiausias laikas, kada bet kuri įranga pradedama ruošti/montuoti)
+  - "demontazas"= didžiausia planperiod_end reikšmė tarp VISŲ projekto equipment groups
+                  (vėliausias laikas, kada bet kuri įranga demontuojama/grąžinama)
+  Ši logika patikrinta su projektu 1121: dauguma equipment groups turėjo platesnį
+  langą (pvz. 08:00 dieną prieš iki 08:00 dieną po), o keletas -- tiksliai tokį patį
+  langą kaip usageperiod_start/end (tik renginio metu reikalingi daiktai).
+
+Jei projektas dar neturi jokios pridėtos įrangos (equipment groups be daiktų --
+tai normalu naujiems/šablonų projektams Rentman'e), "equipment" bus tuščias
+masyvas [] ir schedule.montazas/demontazas gali likti tušti (jei nėra nė vienos
+grupės su nustatytu planperiod).
 """
 
 import argparse
@@ -37,20 +47,7 @@ import requests
 
 BASE_URL = "https://api.rentman.net"
 
-# Kandidatai projekto įrangos sąrašo (equipment planning) endpoint'ui.
-# {id} bus pakeistas projekto ID.
-EQUIPMENT_ENDPOINT_CANDIDATES = [
-    "/projects/{id}/equipment",
-    "/projects/{id}/planning",
-    "/projects/{id}/equipmentplanning",
-    "/equipment_periods?project=/projects/{id}",
-    "/projectequipment?project=/projects/{id}",
-    "/planning?project=/projects/{id}",
-]
-
 NAME_FIELD_CANDIDATES = ("displayname", "name")
-QTY_FIELD_CANDIDATES = ("quantity", "amount", "qty", "planned_quantity", "planned_amount")
-EQUIPMENT_REF_FIELD_CANDIDATES = ("equipment", "equipment_id", "item")
 
 
 def get_session(token):
@@ -59,81 +56,27 @@ def get_session(token):
     return s
 
 
-def api_get(session, path, params=None, debug=False):
-    url = urljoin(BASE_URL, path.split("?")[0])
-    if "?" in path and not params:
-        # leidžiam patogiai perduoti query per patį path (kandidatų sąraše)
-        from urllib.parse import parse_qsl
-
-        params = dict(parse_qsl(path.split("?", 1)[1]))
-    resp = session.get(url, params=params)
-    if debug:
-        print(f"GET {resp.url} -> {resp.status_code}", file=sys.stderr)
-    return resp
-
-
-def unwrap(payload):
-    if isinstance(payload, dict) and "data" in payload:
-        return payload["data"]
-    return payload
-
-
-def extract_id_from_ref(value):
-    if value in (None, "", 0):
-        return None
-    if isinstance(value, (int, float)):
-        return str(int(value))
-    if isinstance(value, str):
-        return value.strip().rstrip("/").rsplit("/", 1)[-1]
-    return str(value)
-
-
-def fetch_project(session, project_id, debug):
-    resp = api_get(session, f"/projects/{project_id}", debug=debug)
-    if resp.status_code != 200:
-        sys.exit(
-            f"Nepavyko gauti projekto {project_id}: {resp.status_code}\n{resp.text[:1000]}"
-        )
-    data = unwrap(resp.json())
-    if isinstance(data, list):
-        data = data[0] if data else {}
-    return data
-
-
-def fetch_equipment_lines(session, project_id, debug):
-    for template in EQUIPMENT_ENDPOINT_CANDIDATES:
-        path = template.format(id=project_id)
-        resp = api_get(session, path, debug=debug)
-        if resp.status_code == 404:
-            continue
+def api_get_all(session, path, params, debug=False):
+    """Puslapiuoja per limit/offset, grąžina visus 'data' įrašus."""
+    results = []
+    limit = 300
+    offset = 0
+    url = urljoin(BASE_URL, path)
+    while True:
+        p = dict(params or {})
+        p.update({"limit": limit, "offset": offset})
+        resp = session.get(url, params=p)
+        if debug:
+            print(f"GET {resp.url} -> {resp.status_code}", file=sys.stderr)
         if resp.status_code != 200:
-            if debug:
-                print(f"  -> praleidžiu ({resp.status_code}): {resp.text[:300]}", file=sys.stderr)
-            continue
-        data = unwrap(resp.json())
-        if isinstance(data, list) and data:
-            if debug:
-                print(f"  -> RADAU {len(data)} įrašų per {path}", file=sys.stderr)
-                print(f"  -> pavyzdys: {json.dumps(data[0], ensure_ascii=False)[:500]}", file=sys.stderr)
-            return data, path
-    return [], None
-
-
-def resolve_equipment_names(session, refs, debug):
-    """refs: set of equipment id (string). Grąžina {id: name}."""
-    result = {}
-    for eid in refs:
-        resp = api_get(session, f"/equipment/{eid}", debug=debug)
-        if resp.status_code != 200:
-            continue
-        item = unwrap(resp.json())
-        if isinstance(item, list):
-            item = item[0] if item else {}
-        for key in NAME_FIELD_CANDIDATES:
-            if item.get(key):
-                result[eid] = item[key]
-                break
-    return result
+            sys.exit(f"Klaida kviečiant {path}: {resp.status_code}\n{resp.text[:1000]}")
+        payload = resp.json()
+        batch = payload.get("data", []) if isinstance(payload, dict) else payload
+        results.extend(batch)
+        if len(batch) < limit or not payload.get("next_page_url"):
+            break
+        offset += limit
+    return results
 
 
 def get_field(item, keys):
@@ -143,12 +86,16 @@ def get_field(item, keys):
     return None
 
 
+def to_space_format(dt_str):
+    if not dt_str:
+        return ""
+    return dt_str[:16].replace("T", " ")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Ištraukia Rentman projekto suvestinę.")
     parser.add_argument("project_id", help="Rentman projekto ID (pvz. 1121)")
-    parser.add_argument(
-        "--token", default=os.environ.get("RENTMAN_API_TOKEN"), help="API tokenas."
-    )
+    parser.add_argument("--token", default=os.environ.get("RENTMAN_API_TOKEN"), help="API tokenas.")
     parser.add_argument("--debug", action="store_true", help="Spausdinti diagnostiką į stderr.")
     parser.add_argument("--out", help="Failas rezultatui (numatyta: stdout).")
     args = parser.parse_args()
@@ -158,61 +105,50 @@ def main():
 
     session = get_session(args.token)
 
-    project = fetch_project(session, args.project_id, args.debug)
+    # 1) Projektas
+    resp = session.get(urljoin(BASE_URL, f"/projects/{args.project_id}"))
     if args.debug:
-        print(f"PROJECT RAW: {json.dumps(project, ensure_ascii=False, default=str)}", file=sys.stderr)
+        print(f"GET {resp.url} -> {resp.status_code}", file=sys.stderr)
+    if resp.status_code != 200:
+        sys.exit(f"Nepavyko gauti projekto {args.project_id}: {resp.status_code}\n{resp.text[:1000]}")
+    project = resp.json()
+    if isinstance(project, dict) and "data" in project:
+        project = project["data"]
 
     name = get_field(project, ("name", "displayname")) or ""
-
     usage_start = project.get("usageperiod_start") or ""
-    usage_end = project.get("usageperiod_end") or ""
-    equip_start = project.get("equipment_period_from") or project.get("equipment_period_start") or ""
-    equip_end = project.get("equipment_period_to") or project.get("equipment_period_end") or ""
-    plan_start = project.get("planperiod_start") or ""
-    plan_end = project.get("planperiod_end") or ""
+    event_date = usage_start[:10] if usage_start else ""
 
-    def date_only(dt_str):
-        return dt_str[:10] if dt_str else ""
+    # 2) Visos projekto equipment groups (kategorijos)
+    groups = api_get_all(
+        session, "/projectequipmentgroup", {"project": f"/projects/{args.project_id}"}, args.debug
+    )
+    if args.debug:
+        print(f"Rasta {len(groups)} equipment groups.", file=sys.stderr)
 
-    def to_space_format(dt_str):
-        # Rentman grąžina ISO 8601, pvz. 2026-05-03T10:00:00+02:00
-        if not dt_str:
-            return ""
-        return dt_str[:16].replace("T", " ")
-
-    event_date = date_only(usage_start)
+    plan_starts = [g["planperiod_start"] for g in groups if g.get("planperiod_start")]
+    plan_ends = [g["planperiod_end"] for g in groups if g.get("planperiod_end")]
 
     schedule = {
-        "montazas": to_space_format(equip_start or plan_start),
+        "montazas": to_space_format(min(plan_starts)) if plan_starts else "",
         "renginys": to_space_format(usage_start),
-        "demontazas": to_space_format(equip_end or plan_end),
+        "demontazas": to_space_format(max(plan_ends)) if plan_ends else "",
     }
 
-    equipment_lines, used_endpoint = fetch_equipment_lines(session, args.project_id, args.debug)
-    if args.debug and not used_endpoint:
-        print(
-            "WARNING: nė vienas equipment endpoint kandidatas negrąžino duomenų. "
-            "Reikės rasti teisingą endpoint pavadinimą.",
-            file=sys.stderr,
-        )
-
+    # 3) Kiekvienos grupės equipment eilutės
     equipment_out = []
-    refs_to_resolve = set()
-    parsed_lines = []
-    for line in equipment_lines:
-        qty = get_field(line, QTY_FIELD_CANDIDATES)
-        eq_ref = get_field(line, EQUIPMENT_REF_FIELD_CANDIDATES)
-        inline_name = get_field(line, NAME_FIELD_CANDIDATES)
-        eq_id = extract_id_from_ref(eq_ref) if eq_ref else None
-        if eq_id and not inline_name:
-            refs_to_resolve.add(eq_id)
-        parsed_lines.append((qty, eq_id, inline_name))
+    for g in groups:
+        gid = g["id"]
+        lines = api_get_all(
+            session, "/projectequipment", {"equipment_group": f"/projectequipmentgroup/{gid}"}, args.debug
+        )
+        for line in lines:
+            qty = line.get("quantity")
+            name_val = get_field(line, NAME_FIELD_CANDIDATES) or ""
+            equipment_out.append({"qty": qty if qty is not None else "", "name": name_val})
 
-    resolved_names = resolve_equipment_names(session, refs_to_resolve, args.debug) if refs_to_resolve else {}
-
-    for qty, eq_id, inline_name in parsed_lines:
-        name_val = inline_name or (resolved_names.get(eq_id) if eq_id else None) or ""
-        equipment_out.append({"qty": qty if qty is not None else "", "name": name_val})
+    if args.debug:
+        print(f"Iš viso equipment eilučių: {len(equipment_out)}", file=sys.stderr)
 
     result = {
         "name": name,
