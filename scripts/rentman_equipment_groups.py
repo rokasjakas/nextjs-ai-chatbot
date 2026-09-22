@@ -83,8 +83,10 @@ def fetch_all(session, path, extra_params):
 
         if resp.status_code in (401, 403):
             sys.exit(
-                f"Autentifikacijos klaida ({resp.status_code}) kviečiant {path}. "
-                "Patikrink, ar API tokenas teisingas ir turi teises skaityti equipment groups."
+                f"Autentifikacijos/leidimų klaida ({resp.status_code}) kviečiant {path}.\n"
+                f"Serverio atsakymas: {resp.text[:1000]}\n\n"
+                "Patikrink Rentman administravime (Settings -> API management / tokens), "
+                "ar šis tokenas turi įjungtą prieigą prie 'equipmentgroups' / 'Equipment' resurso."
             )
 
         resp.raise_for_status()
