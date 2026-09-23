@@ -71,6 +71,23 @@ async function rentmanGetAll(
   return items;
 }
 
+// Equipment groups only provide group names, so a failure here should not
+// fail the whole request. Rentman names this collection in the singular.
+async function getEquipmentGroups(
+  projectId: string,
+  token: string,
+): Promise<RentmanRecord[]> {
+  try {
+    return await rentmanGetAll(
+      `/projects/${projectId}/projectequipmentgroup`,
+      token,
+    );
+  } catch (err) {
+    console.warn(`Could not load equipment groups: ${err}`);
+    return [];
+  }
+}
+
 // Rentman references look like "/equipment/42"; extract the numeric id.
 function refId(ref: unknown): number | null {
   if (typeof ref !== "string") return null;
@@ -116,7 +133,7 @@ Deno.serve(async (req) => {
         rentmanGet<{ data: RentmanRecord }>(`/projects/${projectId}`, token),
         rentmanGetAll(`/projects/${projectId}/projectfunctions`, token),
         rentmanGetAll(`/projects/${projectId}/projectequipment`, token),
-        rentmanGetAll(`/projects/${projectId}/projectequipmentgroups`, token),
+        getEquipmentGroups(projectId, token),
       ]);
 
     const groupNames = new Map(
