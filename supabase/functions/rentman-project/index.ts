@@ -2,10 +2,15 @@
 //
 // GET  /functions/v1/rentman-project?id=123
 // POST /functions/v1/rentman-project  { "id": 123 }
+//   Returns the Rentman project's name, dates, schedule (project functions)
+//   and equipment list.
 //
-// Returns the Rentman project's name, dates, schedule (project functions)
-// and equipment list. The Rentman API token is read from the
-// RENTMAN_API_TOKEN secret and never leaves the server.
+// GET  /functions/v1/rentman-project?date=2026-09-16
+// GET  /functions/v1/rentman-project?from=2026-09-01&to=2026-09-30
+//   Returns the projects whose plan period overlaps the given day(s).
+//
+// The Rentman API token is read from the RENTMAN_API_TOKEN secret and never
+// leaves the server.
 
 const RENTMAN_BASE_URL = "https://api.rentman.net";
 const PAGE_LIMIT = 300;
@@ -95,18 +100,68 @@ function refId(ref: unknown): number | null {
   return Number.isFinite(id) ? id : null;
 }
 
-async function getProjectId(req: Request): Promise<string | null> {
+type Params = { id?: string; from?: string; to?: string };
+
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+async function getParams(req: Request): Promise<Params> {
   const url = new URL(req.url);
-  let id = url.searchParams.get("id");
-  if (!id && req.method === "POST") {
+  const raw: Record<string, unknown> = Object.fromEntries(url.searchParams);
+  if (req.method === "POST") {
     try {
-      const body = await req.json();
-      id = body?.id != null ? String(body.id) : null;
+      Object.assign(raw, await req.json());
     } catch {
-      id = null;
+      // No or invalid JSON body; query parameters only.
     }
   }
-  return id && /^\d+$/.test(id) ? id : null;
+  const str = (v: unknown) => (v != null && v !== "" ? String(v) : undefined);
+  const date = str(raw.date);
+  return {
+    id: str(raw.id),
+    from: str(raw.from) ?? date,
+    to: str(raw.to) ?? date,
+  };
+}
+
+// Projects whose plan period overlaps [from, to] (inclusive, YYYY-MM-DD).
+async function listProjects(
+  from: string,
+  to: string,
+  token: string,
+): Promise<Response> {
+  const filter =
+    `/projects?planperiod_start[lte]=${to}T23:59:59` +
+    `&planperiod_end[gte]=${from}T00:00:00`;
+  let projects: RentmanRecord[];
+  try {
+    projects = await rentmanGetAll(filter, token);
+  } catch (err) {
+    if (!(err instanceof RentmanError && err.status === 400)) throw err;
+    console.warn(`Filtered project query rejected, filtering locally: ${err}`);
+    projects = await rentmanGetAll("/projects", token);
+  }
+
+  // Rentman returns local times with an offset, so the first 10 characters
+  // are the local date. Filter again in case the API ignored the filter.
+  const day = (v: unknown) => (typeof v === "string" ? v.slice(0, 10) : "");
+  const result = projects
+    .filter(
+      (p) => day(p.planperiod_start) <= to && day(p.planperiod_end) >= from,
+    )
+    .map((p) => ({
+      id: p.id,
+      number: p.number ?? null,
+      name: p.displayname ?? p.name,
+      planperiod_start: p.planperiod_start ?? null,
+      planperiod_end: p.planperiod_end ?? null,
+    }))
+    .sort((a, b) =>
+      String(a.planperiod_start ?? "").localeCompare(
+        String(b.planperiod_start ?? ""),
+      ),
+    );
+
+  return json({ from, to, projects: result });
 }
 
 Deno.serve(async (req) => {
@@ -122,9 +177,24 @@ Deno.serve(async (req) => {
     return json({ error: "RENTMAN_API_TOKEN is not configured" }, 500);
   }
 
-  const projectId = await getProjectId(req);
+  const { id: projectId, from, to } = await getParams(req);
+  const usage =
+    "Provide a numeric project id (?id=123) or a date (?date=2026-09-16, " +
+    "or ?from=2026-09-01&to=2026-09-30)";
+
   if (!projectId) {
-    return json({ error: "Provide a numeric project id (?id=123)" }, 400);
+    if (!from || !to || !DATE_RE.test(from) || !DATE_RE.test(to)) {
+      return json({ error: usage }, 400);
+    }
+    try {
+      return await listProjects(from, to, token);
+    } catch (err) {
+      console.error(err instanceof Error ? err.message : err);
+      return json({ error: "Rentman API request failed" }, 502);
+    }
+  }
+  if (!/^\d+$/.test(projectId)) {
+    return json({ error: usage }, 400);
   }
 
   try {
