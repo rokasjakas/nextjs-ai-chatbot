@@ -105,7 +105,7 @@ function layout(title: string, body: string): string {
     <h2 style="margin:0 0 12px;">${escapeHtml(title)}</h2>
     ${body}
     ${site ? `<p><a href="${escapeHtml(site)}">${escapeHtml(site)}</a></p>` : ""}
-    <p style="color:#777;font-size:12px;">Event Solutions · Krovinių planuotojas</p>
+    <p style="color:#777;font-size:12px;">EventSolutions App</p>
   </div>`;
 }
 
@@ -133,7 +133,7 @@ async function registered(email: string): Promise<void> {
     layout(
       "Registracija gauta",
       `<p>Sveiki, ${escapeHtml(name)}.</p>
-       <p>Jūsų prašymas prisijungti prie Event Solutions krovinių planuotojo perduotas administratoriui.
+       <p>Jūsų prašymas prisijungti prie EventSolutions App perduotas administratoriui.
        Kai administratorius suteiks prieigą, gausite dar vieną laišką ir galėsite prisijungti.</p>`,
     ),
   );
@@ -178,7 +178,7 @@ async function approved(userId: string): Promise<boolean> {
     layout(
       "Prieiga suteikta",
       `<p>Sveiki, ${escapeHtml(p.full_name || p.email)}.</p>
-       <p>Administratorius suteikė jums prieigą prie Event Solutions krovinių planuotojo.
+       <p>Administratorius suteikė jums prieigą prie EventSolutions App.
        Prieigos lygis: <b>${label}</b>.</p>
        <p>Galite prisijungti savo el. paštu ir slaptažodžiu.</p>`,
     ),

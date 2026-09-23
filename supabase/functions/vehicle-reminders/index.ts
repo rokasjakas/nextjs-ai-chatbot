@@ -245,7 +245,7 @@ function buildEmail(v: Vehicle, docs: DocStatus[]) {
   const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;">
     <p>Automobilis <b>${escapeHtml(car)}</b>:</p>
     <table style="border-collapse:collapse;">${rows}</table>
-    <p style="color:#777;font-size:12px;margin-top:18px;">Priminimas iš Event Solutions krovinių planuotojo.
+    <p style="color:#777;font-size:12px;margin-top:18px;">Priminimas iš EventSolutions App.
     Kai dokumentą atnaujinsi, įrašyk naują datą skiltyje „Automobiliai“ — priminimai sustos.</p>
   </div>`;
   return { subject, html };
