@@ -7,3 +7,8 @@ verify_jwt = true
 [functions.rentman-sync]
 # Require a valid Supabase JWT (anon or user key) in the Authorization header.
 verify_jwt = true
+
+[functions.vehicle-reminders]
+# Called by pg_cron (x-cron-secret header) and by signed-in team members
+# (their Supabase session token); both are checked inside the function.
+verify_jwt = false
