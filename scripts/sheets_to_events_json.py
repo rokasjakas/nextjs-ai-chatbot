@@ -1,8 +1,9 @@
 """Converts the team's Google Sheets calendar (xlsx) into the website's
-Renginiai / Paėmimai JSON import file."""
+Renginiai / Paėmimai JSON import file.
 
 Usage: python3 scripts/sheets_to_events_json.py calendar.xlsx renginiai-importas.json
 Then open Renginiai → „⬆ Importuoti“ on the website and choose the JSON file.
+"""
 import datetime, json, re, sys, warnings, collections
 import openpyxl
 
