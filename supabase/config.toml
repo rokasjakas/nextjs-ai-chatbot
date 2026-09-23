@@ -12,3 +12,8 @@ verify_jwt = true
 # Called by pg_cron (x-cron-secret header) and by signed-in team members
 # (their Supabase session token); both are checked inside the function.
 verify_jwt = false
+
+[functions.user-access]
+# Called right after sign-up (no session yet) and by administrators; the
+# function checks both cases itself.
+verify_jwt = false

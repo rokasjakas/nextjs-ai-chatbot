@@ -23,13 +23,8 @@ alter table public.events  enable row level security;
 alter table public.rentals enable row level security;
 
 drop policy if exists "team manages events" on public.events;
-create policy "team manages events" on public.events
-  for all to authenticated
-  using ((auth.jwt() ->> 'email') ilike '%@eventsolutions.lt')
-  with check ((auth.jwt() ->> 'email') ilike '%@eventsolutions.lt');
 
 drop policy if exists "team manages rentals" on public.rentals;
-create policy "team manages rentals" on public.rentals
-  for all to authenticated
-  using ((auth.jwt() ->> 'email') ilike '%@eventsolutions.lt')
-  with check ((auth.jwt() ->> 'email') ilike '%@eventsolutions.lt');
+
+-- Prieigos taisyklės (kas gali skaityti / rašyti) nustatomos user_roles.sql
+-- pagal vartotojo lygį. Senoji taisyklė „tik @eventsolutions.lt“ pašalinta.

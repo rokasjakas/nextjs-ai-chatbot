@@ -13,7 +13,6 @@ create table if not exists public.app_state (
 alter table public.app_state enable row level security;
 
 drop policy if exists "team manages app state" on public.app_state;
-create policy "team manages app state" on public.app_state
-  for all to authenticated
-  using ((auth.jwt() ->> 'email') ilike '%@eventsolutions.lt')
-  with check ((auth.jwt() ->> 'email') ilike '%@eventsolutions.lt');
+
+-- Prieigos taisyklės (kas gali skaityti / rašyti) nustatomos user_roles.sql
+-- pagal vartotojo lygį. Senoji taisyklė „tik @eventsolutions.lt“ pašalinta.

@@ -12,13 +12,13 @@
 //
 // POST {"mode":"send","vehicleId":"..."}  Authorization: Bearer <user token>
 //   "Send now" from the website: emails the vehicle's document status right
-//   away. Only signed-in @eventsolutions.lt users may call it.
+//   away. Only signed-in users whose access level can see „Transportas“
+//   (public.profiles / public.role_permissions) may call it.
 //
 // Secrets: RESEND_API_KEY (required), CRON_SECRET (for the hourly run),
 // REMINDER_FROM (optional sender, e.g. "Event Solutions <auto@eventsolutions.lt>").
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
 
-const ALLOWED_EMAIL_DOMAIN = "@eventsolutions.lt";
 const DEFAULT_FROM = "Event Solutions <onboarding@resend.dev>";
 const TIME_ZONE = "Europe/Vilnius";
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -193,8 +193,17 @@ async function signedInTeamMember(req: Request): Promise<string | null> {
   });
   if (!res.ok) return null;
   const user = await res.json();
-  const email = String(user?.email ?? "").toLowerCase();
-  return email.endsWith(ALLOWED_EMAIL_DOMAIN) ? email : null;
+  if (!user?.id) return null;
+  const profiles = (await (await db(
+    `profiles?select=role&id=eq.${encodeURIComponent(user.id)}`,
+  )).json()) as { role: string }[];
+  const role = profiles[0]?.role;
+  if (!role) return null;
+  if (role === "admin") return String(user.email ?? "");
+  const perms = (await (await db(
+    `role_permissions?select=can_view,can_edit&section=eq.fleet&role=eq.${encodeURIComponent(role)}`,
+  )).json()) as { can_view: boolean; can_edit: boolean }[];
+  return perms[0]?.can_view || perms[0]?.can_edit ? String(user.email ?? "") : null;
 }
 
 // --- Email ---------------------------------------------------------------
@@ -316,7 +325,7 @@ Deno.serve(async (req) => {
   try {
     if (body?.mode === "send") {
       if (!(await signedInTeamMember(req))) {
-        return json({ error: "Reikia prisijungti @eventsolutions.lt paskyra." }, 401);
+        return json({ error: "Neturi prieigos prie „Transportas“ skilties." }, 403);
       }
       const vehicleId = String(body.vehicleId ?? "");
       if (!vehicleId) return json({ error: "vehicleId is required" }, 400);

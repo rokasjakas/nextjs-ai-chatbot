@@ -23,7 +23,6 @@ create table if not exists public.vehicle_reminders (
 alter table public.vehicle_reminders enable row level security;
 
 drop policy if exists "team manages vehicle reminders" on public.vehicle_reminders;
-create policy "team manages vehicle reminders" on public.vehicle_reminders
-  for all to authenticated
-  using ((auth.jwt() ->> 'email') ilike '%@eventsolutions.lt')
-  with check ((auth.jwt() ->> 'email') ilike '%@eventsolutions.lt');
+
+-- Prieigos taisyklės (kas gali skaityti / rašyti) nustatomos user_roles.sql
+-- pagal vartotojo lygį. Senoji taisyklė „tik @eventsolutions.lt“ pašalinta.
