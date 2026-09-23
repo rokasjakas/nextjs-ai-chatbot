@@ -8,8 +8,9 @@
 -- role_permissions ir keičiama svetainės „Admin“ skiltyje. Šios taisyklės
 -- galioja pačioje duomenų bazėje, todėl jų neapeisi pro naršyklę.
 --
--- PRIEŠ PALEIDŽIANT: žemiau (1 žingsnis) įrašyk savo el. paštą — ta paskyra
--- taps pirmuoju administratoriumi. Tada Supabase → SQL Editor → Run.
+-- Paleisk visą failą be pakeitimų: Supabase → SQL Editor → Run.
+-- Po paleidimo atskira užklausa paskirk save administratoriumi:
+--   update public.profiles set role = 'admin' where lower(email) = lower('tavo@el.pastas');
 -- Saugu paleisti pakartotinai.
 -- ============================================================
 
@@ -178,21 +179,14 @@ drop trigger if exists profiles_delete_guard on public.profiles;
 create trigger profiles_delete_guard before delete on public.profiles
   for each row execute function public.profiles_delete_guard();
 
--- ---------- 1 ŽINGSNIS: pirmasis administratorius ----------
--- Pakeisk el. paštą į savo (tą, kuriuo jungiesi prie svetainės).
+-- ---------- pirmasis administratorius ----------
+-- Šio failo keisti nereikia. Paleidus jį, atskiroje užklausoje paleisk:
+--   update public.profiles set role = 'admin' where lower(email) = lower('tavo@el.pastas');
+-- (žr. žemiau „Po paleidimo“). Jei administratorius jau yra — nieko daryti nereikia.
 do $$
-declare admin_email text := 'IRASYK-SAVO@EL.PASTAS';
 begin
-  if admin_email = 'IRASYK-SAVO@EL.PASTAS' then
-    if not exists (select 1 from public.profiles where role = 'admin') then
-      raise exception 'Įrašyk savo el. paštą eilutėje admin_email := ''...'' ir paleisk dar kartą.';
-    end if;
-  else
-    update public.profiles set role = 'admin', approved_at = coalesce(approved_at, now())
-    where lower(email) = lower(admin_email);
-    if not found then
-      raise exception 'Paskyra % nerasta. Pirma prisiregistruok svetainėje šiuo el. paštu.', admin_email;
-    end if;
+  if not exists (select 1 from public.profiles where role = 'admin') then
+    raise notice 'Administratoriaus dar nėra: paleisk update ... set role = ''admin'' su savo el. paštu.';
   end if;
 end $$;
 
