@@ -3,7 +3,8 @@
 // POST /functions/v1/rentman-sync
 //   {"mode":"list","from":"YYYY-MM-DD","to":"YYYY-MM-DD"}
 //     -> {"projects":[{"rentmanId":"1114","name":"...","date":"YYYY-MM-DD"}]}
-//     Projects whose event date (usage period start) falls within [from, to].
+//     Projects whose event date falls within [from, to]. The event date is
+//     taken from the project name ("(09.15) ...") or else the usage start.
 //
 //   {"mode":"detail","rentmanId":"1114"}
 //     -> {"name":"...","eventDate":"YYYY-MM-DD",
@@ -89,9 +90,51 @@ function str(v: unknown): string | null {
 const datePart = (v: string | null) => (v ? v.slice(0, 10) : null);
 const timePart = (v: string) => v.slice(11, 16);
 
-// Event date = usage period start; fall back to plan period start.
+// Usage period start; fall back to plan period start.
 function eventStart(p: RentmanRecord): string | null {
   return str(p.usageperiod_start) ?? str(p.planperiod_start);
+}
+
+// Project names start with the event date, e.g. "(09.15) Seb Arena" or
+// "(09-04/05/06) Knygų aikštė", while the usage period often starts on the
+// set-up day before. A name date further than this from the usage start is
+// treated as a typo.
+const NAME_DATE_MAX_DAYS = 7;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function dateFromName(name: unknown, near: string): string | null {
+  if (typeof name !== "string") return null;
+  const m = name.match(/\((\d{1,2})[.-](\d{1,2})/);
+  if (!m) return null;
+  const month = Number(m[1]);
+  const day = Number(m[2]);
+  const nearMs = Date.parse(`${near}T00:00:00Z`);
+  const year = Number(near.slice(0, 4));
+
+  let best: { iso: string; diff: number } | null = null;
+  // The name has no year: pick the one closest to the usage start, so a
+  // "(01.02)" project set up in late December lands in the next year.
+  for (const y of [year - 1, year, year + 1]) {
+    const d = new Date(Date.UTC(y, month - 1, day));
+    if (d.getUTCMonth() !== month - 1 || d.getUTCDate() !== day) continue;
+    const diff = Math.abs(d.getTime() - nearMs);
+    if (!best || diff < best.diff) {
+      best = { iso: d.toISOString().slice(0, 10), diff };
+    }
+  }
+  return best && best.diff <= NAME_DATE_MAX_DAYS * DAY_MS ? best.iso : null;
+}
+
+// Event date: the date in the project name, else the usage period start.
+function eventDate(p: RentmanRecord): string | null {
+  const start = datePart(eventStart(p));
+  if (!start) return null;
+  return dateFromName(p.displayname ?? p.name, start) ?? start;
+}
+
+function shiftDate(date: string, days: number): string {
+  const ms = Date.parse(`${date}T00:00:00Z`) + days * DAY_MS;
+  return new Date(ms).toISOString().slice(0, 10);
 }
 
 function formatRange(start: string | null, end: string | null): string {
@@ -158,9 +201,13 @@ function buildSchedule(
 }
 
 async function listProjects(from: string, to: string, token: string) {
+  // The event date can differ from the usage start by up to
+  // NAME_DATE_MAX_DAYS, so query a wider window and filter locally.
+  const queryFrom = shiftDate(from, -NAME_DATE_MAX_DAYS);
+  const queryTo = shiftDate(to, NAME_DATE_MAX_DAYS);
   const filtered =
-    `/projects?usageperiod_start[gte]=${from}T00:00:00` +
-    `&usageperiod_start[lte]=${to}T23:59:59`;
+    `/projects?usageperiod_start[gte]=${queryFrom}T00:00:00` +
+    `&usageperiod_start[lte]=${queryTo}T23:59:59`;
   let projects: RentmanRecord[];
   try {
     projects = await rentmanGetAll(filtered, token);
@@ -170,17 +217,21 @@ async function listProjects(from: string, to: string, token: string) {
     projects = await rentmanGetAll("/projects", token);
   }
 
-  // Filter again locally: the API filter is on usageperiod_start only, and
-  // projects without a usage period fall back to the plan period.
   return projects
     .map((p) => ({
       rentmanId: String(p.id),
       name: String(p.displayname ?? p.name ?? ""),
-      date: datePart(eventStart(p)),
+      date: eventDate(p),
       sortKey: eventStart(p) ?? "",
     }))
-    .filter((p) => p.date !== null && p.date >= from && p.date <= to)
-    .sort((a, b) => a.sortKey.localeCompare(b.sortKey))
+    .filter(
+      (p): p is typeof p & { date: string } =>
+        p.date !== null && p.date >= from && p.date <= to,
+    )
+    .sort(
+      (a, b) =>
+        a.date.localeCompare(b.date) || a.sortKey.localeCompare(b.sortKey),
+    )
     .map(({ sortKey: _sortKey, ...p }) => p);
 }
 
@@ -193,7 +244,7 @@ async function projectDetail(rentmanId: string, token: string) {
 
   return {
     name: String(project.displayname ?? project.name ?? ""),
-    eventDate: datePart(eventStart(project)),
+    eventDate: eventDate(project),
     schedule: buildSchedule(project, functions),
     equipment: equipment.map((e) => ({
       qty: Number(e.quantity ?? e.quantity_total ?? 0),
