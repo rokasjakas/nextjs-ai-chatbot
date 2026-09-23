@@ -11,6 +11,7 @@ create table if not exists public.vehicle_reminders (
   inspection_until date,
   road_tax_until   date,
   lead_days        int  not null default 14,
+  lead_days_by_doc jsonb not null default '{}'::jsonb,
   frequency_days   int  not null default 7,
   emails           text[] not null default '{}',
   -- {"insurance": {"date": "2026-09-23", "until": "2026-10-01"}, ...}

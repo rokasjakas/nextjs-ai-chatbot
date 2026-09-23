@@ -7,7 +7,7 @@
 // POST {"mode":"cron"}                 header x-cron-secret: <CRON_SECRET>
 //   Hourly run: for every vehicle whose reminder_hours include the current hour
 //   (Lithuanian time), sends one email listing the documents that are due
-//   (expiry within lead_days, or expired). Within a day it sends once per chosen
+//   (expiry within that document's lead days, or expired). Within a day it sends once per chosen
 //   hour; it starts again every frequency_days days. Recorded in last_sent.
 //
 // POST {"mode":"send","vehicleId":"..."}  Authorization: Bearer <user token>
@@ -46,6 +46,9 @@ type Vehicle = {
   inspection_until: string | null;
   road_tax_until: string | null;
   lead_days: number;
+  // per document, e.g. {"insurance": 30, "inspection": 14, "road_tax": 7};
+  // a missing document falls back to lead_days
+  lead_days_by_doc: Partial<Record<DocKey, number>> | null;
   frequency_days: number;
   emails: string[];
   reminder_hours: number[] | null;
@@ -112,8 +115,13 @@ function docStatuses(v: Vehicle, today: string): DocStatus[] {
   });
 }
 
+function leadDays(v: Vehicle, key: DocKey): number {
+  const n = v.lead_days_by_doc?.[key];
+  return typeof n === "number" && n >= 0 ? n : v.lead_days;
+}
+
 function isDue(v: Vehicle, doc: DocStatus, today: string, hour: number): boolean {
-  if (!doc.until || doc.days === null || doc.days > v.lead_days) return false;
+  if (!doc.until || doc.days === null || doc.days > leadDays(v, doc.key)) return false;
   if (!reminderHours(v).includes(hour)) return false;
   const last = v.last_sent?.[doc.key];
   // A new expiry date (document renewed) starts the reminders over.
@@ -218,7 +226,7 @@ function buildEmail(v: Vehicle, docs: DocStatus[]) {
         ? "#777"
         : d.days < 0
         ? "#c0392b"
-        : d.days <= v.lead_days
+        : d.days <= leadDays(v, d.key)
         ? "#d68910"
         : "#1e8449";
       return `<tr><td style="padding:6px 12px 6px 0;">${escapeHtml(d.label)}</td>` +
