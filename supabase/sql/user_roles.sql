@@ -164,6 +164,14 @@ begin
      and not exists (select 1 from public.profiles where role = 'admin' and id <> old.id) then
     raise exception 'Negalima pašalinti paskutinio administratoriaus.';
   end if;
+  -- auth.uid() is null: Supabase SQL Editor or server functions (service role)
+  if auth.uid() is not null and not public.is_admin() then
+    if new.id is distinct from old.id or new.role is distinct from old.role
+       or new.email is distinct from old.email or new.approved_at is distinct from old.approved_at
+       or new.approved_by is distinct from old.approved_by or new.notified_at is distinct from old.notified_at then
+      raise exception 'Šių profilio laukų keisti negalima.';
+    end if;
+  end if;
   if new.role <> old.role and old.role = 'pending' and new.role not in ('pending','blocked') then
     new.approved_at := now();
     new.approved_by := coalesce(auth.jwt() ->> 'email', new.approved_by);
