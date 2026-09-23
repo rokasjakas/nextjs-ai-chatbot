@@ -125,13 +125,22 @@ $$;
 grant execute on function public.my_role(), public.is_admin(), public.can_view(text),
   public.can_edit(text), public.is_approved(), public.app_state_can_edit(text) to authenticated;
 
+-- ---------- registruotis gali bet kas (senas „tik @eventsolutions.lt“ trigeris šalinamas) ----------
+drop trigger if exists enforce_email_domain_trigger on auth.users;
+drop function if exists public.enforce_email_domain() cascade;
+
 -- ---------- naujas vartotojas → profilis „laukia patvirtinimo“ ----------
 create or replace function public.handle_new_user() returns trigger
   language plpgsql security definer set search_path = public as $$
 begin
-  insert into public.profiles (id, email, full_name)
-  values (new.id, new.email, nullif(trim(new.raw_user_meta_data ->> 'full_name'), ''))
-  on conflict (id) do update set email = coalesce(public.profiles.email, excluded.email);
+  -- jei profilio sukurti nepavyktų, registracija vis tiek neturi lūžti
+  begin
+    insert into public.profiles (id, email, full_name)
+    values (new.id, coalesce(new.email, ''), nullif(trim(new.raw_user_meta_data ->> 'full_name'), ''))
+    on conflict (id) do update set email = coalesce(nullif(public.profiles.email, ''), excluded.email);
+  exception when others then
+    raise warning 'handle_new_user: %', sqlerrm;
+  end;
   return new;
 end $$;
 
