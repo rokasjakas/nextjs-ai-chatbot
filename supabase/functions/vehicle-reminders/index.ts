@@ -5,15 +5,16 @@
 // public.vehicle_reminders table (see supabase/sql/vehicle_reminders.sql).
 //
 // POST {"mode":"cron"}                 header x-cron-secret: <CRON_SECRET>
-//   Daily run: for every vehicle, sends one email listing the documents that
-//   are due (expiry within lead_days, or expired), at most once every
-//   frequency_days per document, and records it in last_sent.
+//   Hourly run: for every vehicle whose reminder_hours include the current hour
+//   (Lithuanian time), sends one email listing the documents that are due
+//   (expiry within lead_days, or expired). Within a day it sends once per chosen
+//   hour; it starts again every frequency_days days. Recorded in last_sent.
 //
 // POST {"mode":"send","vehicleId":"..."}  Authorization: Bearer <user token>
 //   "Send now" from the website: emails the vehicle's document status right
 //   away. Only signed-in @eventsolutions.lt users may call it.
 //
-// Secrets: RESEND_API_KEY (required), CRON_SECRET (for the daily run),
+// Secrets: RESEND_API_KEY (required), CRON_SECRET (for the hourly run),
 // REMINDER_FROM (optional sender, e.g. "Event Solutions <auto@eventsolutions.lt>").
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
 
@@ -47,8 +48,12 @@ type Vehicle = {
   lead_days: number;
   frequency_days: number;
   emails: string[];
-  last_sent: Partial<Record<DocKey, { date: string; until: string }>>;
+  reminder_hours: number[] | null;
+  last_sent: Partial<Record<DocKey, SentMark>>;
 };
+
+// date/hours: the day reminders were sent and the hours already used that day.
+type SentMark = { date: string; until: string; hours?: number[] };
 
 type DocStatus = {
   key: DocKey;
@@ -80,6 +85,20 @@ function todayInVilnius(): string {
   );
 }
 
+function hourInVilnius(): number {
+  const h = new Intl.DateTimeFormat("en-GB", {
+    timeZone: TIME_ZONE,
+    hour: "2-digit",
+    hourCycle: "h23",
+  }).format(new Date());
+  return Number(h) % 24;
+}
+
+function reminderHours(v: Vehicle): number[] {
+  const hours = (v.reminder_hours ?? []).filter((h) => h >= 0 && h <= 23);
+  return hours.length ? hours : [9];
+}
+
 function daysBetween(from: string, to: string): number {
   return Math.round(
     (Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY_MS,
@@ -93,12 +112,25 @@ function docStatuses(v: Vehicle, today: string): DocStatus[] {
   });
 }
 
-function isDue(v: Vehicle, doc: DocStatus, today: string): boolean {
+function isDue(v: Vehicle, doc: DocStatus, today: string, hour: number): boolean {
   if (!doc.until || doc.days === null || doc.days > v.lead_days) return false;
+  if (!reminderHours(v).includes(hour)) return false;
   const last = v.last_sent?.[doc.key];
   // A new expiry date (document renewed) starts the reminders over.
   if (!last || last.until !== doc.until) return true;
+  // Same day: once for every chosen hour.
+  if (last.date === today) return !(last.hours ?? []).includes(hour);
   return daysBetween(last.date, today) >= Math.max(1, v.frequency_days);
+}
+
+function markSent(v: Vehicle, doc: DocStatus, today: string, hour: number): SentMark {
+  const last = v.last_sent?.[doc.key];
+  const sameDay = last && last.date === today && last.until === doc.until;
+  return {
+    date: today,
+    until: doc.until as string,
+    hours: [...(sameDay ? last.hours ?? [] : []), hour],
+  };
 }
 
 function validEmails(emails: string[] | null): string[] {
@@ -223,20 +255,21 @@ async function sendEmail(to: string[], subject: string, html: string): Promise<v
 
 // --- Modes ---------------------------------------------------------------
 
-async function runDaily() {
+async function runScheduled() {
   const today = todayInVilnius();
+  const hour = hourInVilnius();
   const vehicles = await loadVehicles();
   const results: unknown[] = [];
   for (const v of vehicles) {
     const to = validEmails(v.emails);
     const statuses = docStatuses(v, today);
-    const due = statuses.filter((d) => isDue(v, d, today));
+    const due = statuses.filter((d) => isDue(v, d, today, hour));
     if (!due.length || !to.length) continue;
     try {
       const { subject, html } = buildEmail(v, due);
       await sendEmail(to, subject, html);
       v.last_sent = { ...(v.last_sent ?? {}) };
-      for (const d of due) v.last_sent[d.key] = { date: today, until: d.until as string };
+      for (const d of due) v.last_sent[d.key] = markSent(v, d, today, hour);
       await saveLastSent(v);
       results.push({ vehicle: v.name, to, docs: due.map((d) => d.key) });
     } catch (err) {
@@ -244,7 +277,7 @@ async function runDaily() {
       results.push({ vehicle: v.name, error: String(err) });
     }
   }
-  return { date: today, checked: vehicles.length, sent: results };
+  return { date: today, hour, checked: vehicles.length, sent: results };
 }
 
 async function sendNow(vehicleId: string) {
@@ -286,7 +319,7 @@ Deno.serve(async (req) => {
     if (!secret || req.headers.get("x-cron-secret") !== secret) {
       return json({ error: "Unauthorized" }, 401);
     }
-    return json(await runDaily());
+    return json(await runScheduled());
   } catch (err) {
     console.error(err);
     const message = err instanceof Error ? err.message : String(err);

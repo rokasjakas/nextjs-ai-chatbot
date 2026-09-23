@@ -14,6 +14,7 @@ create table if not exists public.vehicle_reminders (
   frequency_days   int  not null default 7,
   emails           text[] not null default '{}',
   -- {"insurance": {"date": "2026-09-23", "until": "2026-10-01"}, ...}
+  reminder_hours   int[] not null default '{9}',
   last_sent        jsonb not null default '{}'::jsonb,
   updated_at       timestamptz not null default now()
 );
