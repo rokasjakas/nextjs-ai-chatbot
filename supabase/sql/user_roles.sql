@@ -25,6 +25,20 @@ create table if not exists public.profiles (
   approved_by text,
   notified_at timestamptz
 );
+-- Lentelė jau galėjo būti sukurta anksčiau (kitais stulpeliais): trūkstami
+-- stulpeliai pridedami, esami duomenys lieka.
+alter table public.profiles add column if not exists email       text;
+alter table public.profiles add column if not exists full_name   text;
+alter table public.profiles add column if not exists role        text not null default 'pending';
+alter table public.profiles add column if not exists created_at  timestamptz not null default now();
+alter table public.profiles add column if not exists approved_at timestamptz;
+alter table public.profiles add column if not exists approved_by text;
+alter table public.profiles add column if not exists notified_at timestamptz;
+update public.profiles set role = 'pending'
+  where role is null or role not in ('pending','admin','office','tech','freelance','runner','blocked');
+alter table public.profiles drop constraint if exists profiles_role_check;
+alter table public.profiles add constraint profiles_role_check
+  check (role in ('pending','admin','office','tech','freelance','runner','blocked'));
 create index if not exists profiles_role_idx on public.profiles (role);
 
 -- ---------- teisės pagal lygį ----------
@@ -116,7 +130,7 @@ create or replace function public.handle_new_user() returns trigger
 begin
   insert into public.profiles (id, email, full_name)
   values (new.id, new.email, nullif(trim(new.raw_user_meta_data ->> 'full_name'), ''))
-  on conflict (id) do nothing;
+  on conflict (id) do update set email = coalesce(public.profiles.email, excluded.email);
   return new;
 end $$;
 
@@ -129,6 +143,8 @@ insert into public.profiles (id, email, full_name)
 select u.id, u.email, nullif(trim(u.raw_user_meta_data ->> 'full_name'), '')
 from auth.users u
 on conflict (id) do nothing;
+update public.profiles p set email = u.email
+from auth.users u where u.id = p.id and (p.email is null or p.email = '');
 
 -- paskutinio administratoriaus pašalinti negalima; kas ir kada patvirtino
 create or replace function public.profiles_guard() returns trigger
@@ -183,6 +199,18 @@ end $$;
 -- ---------- taisyklės (RLS) ----------
 alter table public.profiles         enable row level security;
 alter table public.role_permissions enable row level security;
+
+-- ankstesnės profilių taisyklės pašalinamos (pvz. „vartotojas gali keisti savo
+-- profilį“ leistų pačiam pasikeisti lygį)
+do $$
+declare r record;
+begin
+  for r in select schemaname, tablename, policyname from pg_policies
+           where schemaname = 'public' and tablename in ('profiles','role_permissions')
+  loop
+    execute format('drop policy %I on %I.%I', r.policyname, r.schemaname, r.tablename);
+  end loop;
+end $$;
 
 drop policy if exists "own profile or admin" on public.profiles;
 create policy "own profile or admin" on public.profiles
