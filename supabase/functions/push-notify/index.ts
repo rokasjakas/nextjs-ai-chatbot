@@ -49,6 +49,8 @@ type Prefs = {
   group?: boolean;
   reactions?: boolean;
   meetings?: boolean;
+  mentions?: boolean;
+  threads?: boolean;
   muted?: string[];
   quiet?: { on?: boolean; from?: string; to?: string };
 };
@@ -103,7 +105,7 @@ export function inQuietHours(q: Prefs["quiet"], now = new Date()): boolean {
   const cur = hm === "24:00" ? "00:00" : hm;
   return q.from <= q.to ? cur >= q.from && cur < q.to : cur >= q.from || cur < q.to;
 }
-export function wants(p: Prefs | null, kind: "general" | "direct" | "group" | "reactions" | "meetings", convId: string): boolean {
+export function wants(p: Prefs | null, kind: "general" | "direct" | "group" | "reactions" | "meetings" | "threads", convId: string): boolean {
   const pr = p ?? {};
   if (pr.enabled === false) return false;
   if (pr[kind] === false) return false;
@@ -176,30 +178,57 @@ function preview(m: { body: string; attachments: unknown[] }): string {
   return att.length ? "📷 Nuotrauka" : "";
 }
 
+type Msg = { id: string; conversation_id: string; sender_id: string; body: string; attachments: unknown[]; deleted_at: string | null; parent_id?: string | null; also_channel?: boolean };
+const MENTION_RE = /<@([0-9a-f-]{36})>/g;
+export function mentionIds(body: string): string[] {
+  return [...new Set([...String(body || "").matchAll(MENTION_RE)].map((x) => x[1]))];
+}
+// <@id> -> @Vardas for the notification text
+function withNames(body: string, byId: Map<string, Profile>): string {
+  return String(body || "").replace(MENTION_RE, (_, id) => "@" + name(byId.get(id)));
+}
 async function onMessage(uid: string, messageId: string) {
-  const [m] = await db<{ id: string; conversation_id: string; sender_id: string; body: string; attachments: unknown[]; deleted_at: string | null }[]>(
-    `messages?select=*&id=eq.${encodeURIComponent(messageId)}`,
-  );
+  const [m] = await db<Msg[]>(`messages?select=*&id=eq.${encodeURIComponent(messageId)}`);
   if (!m || m.sender_id !== uid || m.deleted_at) return { sent: 0, skipped: "not your message" };
-  const [c] = await db<{ id: string; kind: "general" | "direct" | "group"; title: string | null }[]>(
-    `conversations?select=id,kind,title&id=eq.${m.conversation_id}`,
+  const [c] = await db<{ id: string; kind: "general" | "direct" | "group" | "channel"; title: string | null; is_private?: boolean }[]>(
+    `conversations?select=*&id=eq.${m.conversation_id}`,
   );
   if (!c) return { sent: 0 };
   const users = await chatUsers();
   const byId = new Map(users.map((u) => [u.id, u]));
-  let recipients: Profile[];
-  if (c.kind === "general") recipients = users;
-  else {
-    const members = await db<{ user_id: string }[]>(`conversation_members?select=user_id&conversation_id=eq.${c.id}`);
-    recipients = members.map((x) => byId.get(x.user_id)).filter(Boolean) as Profile[];
-  }
+  const open = c.kind === "general" || (c.kind === "channel" && c.is_private === false);
+  const members = c.kind === "general" ? users.map((u) => u.id)
+    : (await db<{ user_id: string }[]>(`conversation_members?select=user_id&conversation_id=eq.${c.id}`)).map((x) => x.user_id);
+  const canSee = (id: string) => byId.has(id) && (open || members.includes(id));
+  const thread = !!m.parent_id && !m.also_channel;
+  let recipients: string[];
+  if (thread) {
+    // a reply in a thread: the thread's author and everyone who replied
+    const rows = await db<{ sender_id: string }[]>(
+      `messages?select=sender_id&or=(id.eq.${m.parent_id},parent_id.eq.${m.parent_id})`,
+    );
+    recipients = [...new Set(rows.map((r) => r.sender_id))];
+  } else recipients = c.kind === "general" ? users.map((u) => u.id) : members;
+  const mentioned = mentionIds(m.body).filter((id) => id !== uid && canSee(id));
+  const pref = thread ? "threads" : c.kind === "channel" ? "group" : c.kind;
+  const to = recipients.filter((id) => id !== uid && canSee(id) && !mentioned.includes(id) && wants(byId.get(id)!.notify_prefs, pref as never, c.id));
   const sender = byId.get(uid);
-  const to = recipients.filter((r) => r.id !== uid && wants(r.notify_prefs, c.kind, c.id)).map((r) => r.id);
-  const text = preview(m);
-  const payload: Payload = c.kind === "direct"
-    ? { title: name(sender), body: text, tag: c.id, url: `./?chat=${c.id}` }
-    : { title: c.kind === "general" ? "Bendras chatas" : (c.title || "Grupė"), body: `${name(sender)}: ${text}`, tag: c.id, url: `./?chat=${c.id}` };
-  return await sendTo(to, payload);
+  const text = preview({ ...m, body: withNames(m.body, byId) });
+  const where = c.kind === "direct" ? "" : c.kind === "general" ? "Bendras chatas" : "#" + (c.title || "kanalas");
+  const url = `./?chat=${c.id}${m.parent_id ? "&thread=" + m.parent_id : ""}`;
+  const payload: Payload = c.kind === "direct" && !thread
+    ? { title: name(sender), body: text, tag: c.id, url }
+    : { title: thread ? `Gija · ${where || name(sender)}` : where, body: `${name(sender)}: ${text}`, tag: thread ? "t-" + m.parent_id : c.id, url };
+  const a = await sendTo(to, payload);
+  // @mentions reach the person even in a muted chat
+  const mto = mentioned.filter((id) => wantsMention(byId.get(id)!.notify_prefs));
+  const b = await sendTo(mto, { title: `${name(sender)} paminėjo tave${where ? " · " + where : ""}`, body: text, tag: "m-" + m.id, url });
+  return { sent: a.sent + b.sent, gone: a.gone + b.gone, mentioned: mto.length };
+}
+export function wantsMention(p: Prefs | null): boolean {
+  const pr = p ?? {};
+  if (pr.enabled === false || pr.mentions === false) return false;
+  return !inQuietHours(pr.quiet);
 }
 
 async function onReaction(uid: string, messageId: string, emoji: string) {
@@ -217,7 +246,7 @@ async function onReaction(uid: string, messageId: string, emoji: string) {
   const who = users.find((u) => u.id === uid);
   return await sendTo([author.id], {
     title: `${name(who)} sureagavo ${emoji}`,
-    body: preview(m) || "į tavo žinutę",
+    body: preview({ ...m, body: withNames(m.body, new Map(users.map((u) => [u.id, u]))) }) || "į tavo žinutę",
     tag: `rx-${messageId}`,
     url: `./?chat=${m.conversation_id}`,
   });
