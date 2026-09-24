@@ -136,16 +136,34 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 5;
+const PUSH_FN_VERSION = 6;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
 // runtime's own ECDSA produced signatures Google and Mozilla rejected
 // ("invalid JWT" / "InvalidSignature") and that did not even verify there.
+// the private key as `web-push generate-vapid-keys` prints it (base64url, 32
+// bytes); also accepted: quoted, standard base64, a JWK, or a PEM / PKCS#8 file
+export function parsePrivateKey(raw: string): Uint8Array {
+  let t = String(raw ?? "").trim().replace(/^["']+|["']+$/g, "").trim();
+  if (t.startsWith("{")) { try { t = String(JSON.parse(t).d ?? ""); } catch { /* not JSON */ } }
+  let bytes: Uint8Array;
+  try {
+    bytes = b64uToBytes(t.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""));
+  } catch {
+    throw new Error("VAPID_PRIVATE_KEY netinkamas: ne base64 tekstas (" + t.length + " simb.)");
+  }
+  if (bytes.length === 33 && bytes[0] === 0) bytes = bytes.slice(1);
+  if (bytes.length > 33) {                               // PKCS#8 / SEC1 DER: 04 20 <32 bytes>
+    for (let i = 0; i + 34 <= bytes.length; i++) if (bytes[i] === 0x04 && bytes[i + 1] === 0x20) { bytes = bytes.slice(i + 2, i + 34); break; }
+  }
+  if (bytes.length !== 32) throw new Error("VAPID_PRIVATE_KEY netinkamas: " + bytes.length + " baitų (turi būti 32) — tikriausiai įrašytas ne tas raktas");
+  return bytes;
+}
 function vapidKeyPair() {
   if (vapidD) return;
-  const d = b64uToBytes(env("VAPID_PRIVATE_KEY").trim());
-  if (d.length !== 32) throw new Error("VAPID_PRIVATE_KEY: expected 32 bytes, got " + d.length);
+  const d = parsePrivateKey(env("VAPID_PRIVATE_KEY"));
+  p256.getPublicKey(d, false);                         // throws if it is not a P-256 key
   vapidD = d;
   vapidPublic = bytesToB64u(p256.getPublicKey(d, false));
   if (vapidPublic !== env("VAPID_PUBLIC_KEY").trim()) console.warn("VAPID_PUBLIC_KEY does not belong to VAPID_PRIVATE_KEY — using the public key worked out from the private key");
@@ -534,12 +552,14 @@ Deno.serve(async (req) => {
       const r = await sendTo([uid], { title: "EventSolutions App", body: "Pranešimai veikia 🎉", tag: "test", url: "./" });
       // what the server sees (for the "Išbandyti" diagnosis in the app)
       const all = await db<{ user_id: string }[]>("push_subscriptions?select=user_id").catch(() => null);
-      await publicKey();
-      return json({ ...r, uid, total: all ? all.length : -1, fn: PUSH_FN_VERSION, keyMatch: vapidPublic === env("VAPID_PUBLIC_KEY").trim(), subject: Deno.env.get("VAPID_SUBJECT") || "(numatytas)" });
+      let keyErr = "";
+      try { await publicKey(); } catch (e) { keyErr = (e as Error).message; }
+      return json({ ...r, uid, total: all ? all.length : -1, fn: PUSH_FN_VERSION, keyMatch: !keyErr && vapidPublic === env("VAPID_PUBLIC_KEY").trim(), keyErr, subject: Deno.env.get("VAPID_SUBJECT") || "(numatytas)" });
     }
     return json({ error: "Unknown kind" }, 400);
   } catch (err) {
     console.error(err instanceof Error ? err.message : err);
-    return json({ error: "Nepavyko išsiųsti pranešimų." }, 500);
+    // the reason goes back to the app (the "Išbandyti" diagnosis shows it)
+    return json({ error: "Nepavyko išsiųsti pranešimų: " + (err instanceof Error ? err.message : String(err)).slice(0, 200), fn: PUSH_FN_VERSION }, 500);
   }
 });
