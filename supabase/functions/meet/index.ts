@@ -28,8 +28,9 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
-const SCOPE = "https://www.googleapis.com/auth/meetings.space.created openid email";
-export const VERSION = 1;
+const MEET_SCOPE = "https://www.googleapis.com/auth/meetings.space.created";
+const SCOPE = MEET_SCOPE + " openid email";
+export const VERSION = 2;
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -201,6 +202,10 @@ async function onCallback(url: URL): Promise<Response> {
       grant_type: "authorization_code", code: url.searchParams.get("code") || "", redirect_uri: selfUrl(),
       client_id: env("GOOGLE_CLIENT_ID"), client_secret: env("GOOGLE_CLIENT_SECRET"),
     }));
+    // Google lets people untick single permissions; without this one no meeting can be created
+    if (!String(j.scope ?? "").split(/\s+/).includes(MEET_SCOPE)) {
+      return back(false, "Nepažymėtas leidimas kurti Google Meet susitikimus. Prijunk dar kartą ir Google lange uždėk varnelę prie Google Meet (arba „Select all“).");
+    }
     if (!j.refresh_token) return back(false, "Google negrąžino ilgalaikio rakto. Atjunk programą Google paskyroje (myaccount.google.com → Saugumas → Trečiųjų šalių programos) ir bandyk vėl.");
     const email = emailFromIdToken(j.id_token);
     const at = new Date().toISOString();
@@ -256,6 +261,9 @@ export async function handle(req: Request): Promise<Response> {
         return json({ url: await createSpace(token) });
       } catch (e) {
         const err = e as Error & { code?: string };
+        if (err.status === 403 && /scope/i.test(err.message)) {
+          return json({ error: "Prijungta Google paskyra neturi leidimo kurti Google Meet susitikimų — administratorius turi ją prijungti iš naujo ir pažymėti Google Meet leidimą.", code: "not_connected" });
+        }
         if (err.code === "invalid_grant") {
           cached = null;
           return json({ error: "Google paskyros prieiga nebegalioja — administratorius turi ją prijungti iš naujo.", code: "not_connected" });
