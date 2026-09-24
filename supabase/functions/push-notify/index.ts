@@ -128,11 +128,37 @@ function bytesToB64u(b: Uint8Array): string {
   return btoa(String.fromCharCode(...b)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 let appServer: webpush.ApplicationServer | null = null;
+// The public key is worked out from the private key, so the pair always
+// matches: a VAPID_PUBLIC_KEY that belongs to another key pair made every
+// push fail with 403 (Google rejects the signature). Devices subscribed with
+// the wrong key renew themselves in the app.
+let vapidPublic = "";
+async function vapidKeyPair(): Promise<{ x: string; y: string; d: string }> {
+  const d = env("VAPID_PRIVATE_KEY").trim();
+  try {
+    const raw = b64uToBytes(d);
+    if (raw.length !== 32) throw new Error("private key length " + raw.length);
+    const der = new Uint8Array([0x30, 0x41, 0x02, 0x01, 0x00, 0x30, 0x13, 0x06, 0x07, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02, 0x01, 0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03, 0x01, 0x07, 0x04, 0x27, 0x30, 0x25, 0x02, 0x01, 0x01, 0x04, 0x20, ...raw]);
+    const key = await crypto.subtle.importKey("pkcs8", der, { name: "ECDSA", namedCurve: "P-256" }, true, ["sign"]);
+    const jwk = await crypto.subtle.exportKey("jwk", key);
+    if (!jwk.x || !jwk.y) throw new Error("no public part");
+    vapidPublic = bytesToB64u(new Uint8Array([4, ...b64uToBytes(jwk.x), ...b64uToBytes(jwk.y)]));
+    if (vapidPublic !== env("VAPID_PUBLIC_KEY").trim()) console.warn("VAPID_PUBLIC_KEY does not belong to VAPID_PRIVATE_KEY — using the public key worked out from the private key");
+    return { x: jwk.x, y: jwk.y, d };
+  } catch (e) {
+    console.error("VAPID private key:", (e as Error).message, "— using VAPID_PUBLIC_KEY as given");
+    const pub = b64uToBytes(env("VAPID_PUBLIC_KEY").trim());
+    vapidPublic = env("VAPID_PUBLIC_KEY").trim();
+    return { x: bytesToB64u(pub.slice(1, 33)), y: bytesToB64u(pub.slice(33, 65)), d };
+  }
+}
+async function publicKey(): Promise<string> {
+  if (!vapidPublic) await vapidKeyPair();
+  return vapidPublic;
+}
 async function server(): Promise<webpush.ApplicationServer> {
   if (appServer) return appServer;
-  const pub = b64uToBytes(env("VAPID_PUBLIC_KEY"));
-  const x = bytesToB64u(pub.slice(1, 33)), y = bytesToB64u(pub.slice(33, 65));
-  const d = env("VAPID_PRIVATE_KEY").trim();
+  const { x, y, d } = await vapidKeyPair();
   const vapidKeys = await webpush.importVapidKeys({
     publicKey: { kty: "EC", crv: "P-256", x, y, ext: true },
     privateKey: { kty: "EC", crv: "P-256", x, y, d, ext: true },
@@ -449,7 +475,7 @@ async function onMeeting(uid: string, id: string, mode: string) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
-    if (req.method === "GET") return json({ publicKey: env("VAPID_PUBLIC_KEY") });
+    if (req.method === "GET") return json({ publicKey: await publicKey() });
     if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
     const uid = await caller(req);
     if (!uid) return json({ error: "Reikia prisijungti." }, 401);
@@ -476,7 +502,7 @@ Deno.serve(async (req) => {
       const r = await sendTo([uid], { title: "EventSolutions App", body: "Pranešimai veikia 🎉", tag: "test", url: "./" });
       // what the server sees (for the "Išbandyti" diagnosis in the app)
       const all = await db<{ user_id: string }[]>("push_subscriptions?select=user_id").catch(() => null);
-      return json({ ...r, uid, total: all ? all.length : -1 });
+      return json({ ...r, uid, total: all ? all.length : -1, key: (await publicKey()).slice(0, 12) });
     }
     return json({ error: "Unknown kind" }, 400);
   } catch (err) {
