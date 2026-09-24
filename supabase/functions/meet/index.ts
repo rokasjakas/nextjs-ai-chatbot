@@ -260,7 +260,7 @@ export async function handle(req: Request): Promise<Response> {
         if (!token) return json({ error: "Google Meet neprijungtas.", code: "not_connected" });
         return json({ url: await createSpace(token) });
       } catch (e) {
-        const err = e as Error & { code?: string };
+        const err = e as Error & { code?: string; status?: number };
         if (err.status === 403 && /scope/i.test(err.message)) {
           return json({ error: "Prijungta Google paskyra neturi leidimo kurti Google Meet susitikimų — administratorius turi ją prijungti iš naujo ir pažymėti Google Meet leidimą.", code: "not_connected" });
         }
