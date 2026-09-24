@@ -42,7 +42,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 7;
+const VERSION = 8;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -126,17 +126,35 @@ export async function unseal(sealed: string): Promise<string> {
 // ---------- IMAP / SMTP ----------
 type Account = { email: string; password: string };
 const insecure = () => Deno.env.get("MAIL_TLS_INSECURE") === "1"; // tests only
+// the last lines of the talk with the mail server, printed to the function
+// log when a letter does not open (passwords are never logged by imapflow;
+// login lines are dropped anyway)
+type Trail = string[];
+function trailLogger(trail: Trail) {
+  const t0 = Date.now();
+  const add = (o: { src?: string; msg?: string }) => {
+    const m = String(o?.msg ?? "");
+    if (!m || o?.src === "c" || /LOGIN|AUTHENTICATE/i.test(m)) return;   // "c" = the login continuation
+    trail.push(`+${Date.now() - t0}ms ${o.src ?? "-"} ${m.slice(0, 160)}`);
+    if (trail.length > 14) trail.shift();
+  };
+  return { debug: add, info: add, warn: add, error: add, trace: () => {} };
+}
+const trails = new WeakMap<ImapFlow, Trail>();
 function imapClient(a: Account) {
-  return new ImapFlow({
+  const trail: Trail = [];
+  const c = new ImapFlow({
     host: env("MAIL_IMAP_HOST", "koala.serveriai.lt"),
     port: Number(env("MAIL_IMAP_PORT", "993")),
     secure: true,
     auth: { user: a.email, pass: a.password },
-    logger: false,
     tls: { rejectUnauthorized: !insecure() },
     connectionTimeout: 15000,
     greetingTimeout: 10000,
+    logger: trailLogger(trail),
   });
+  trails.set(c, trail);
+  return c;
 }
 // The connection to the mail server is kept open for a minute after use:
 // while the function stays warm, the next letter opens without logging in
@@ -168,7 +186,7 @@ async function connectNew(a: Account): Promise<ImapFlow> {
 }
 class OpTimeout extends Error {}
 // "the mail server did not answer in time" — the step that hung is shown too
-type Trace = { s: string };
+type Trace = { s: string; c?: ImapFlow; info?: string };
 function slow(step: string): UserError {
   const e = new UserError(`Pašto serveris per ilgai neatsako (${step}). Pabandyk dar kartą.`);
   (e as UserError & { transient?: boolean }).transient = true;
@@ -409,28 +427,31 @@ async function read(a: Account, folder: string, uid: number, peek = false) {
       return await withImap(a, (c) => readOn(c, folder, uid, peek, true, tr), false, READ_FAST_MS, tr);
     } catch (e) {
       if (!isTransient(e)) throw e;
-      console.error(`read ${folder}/${uid} quick way failed at "${tr.s}": ${(e as Error).message}`);
+      console.error(`read ${folder}/${uid} quick way failed at "${tr.s}": ${(e as Error).message} | ${tr.info ?? ""}\n${(tr.c && trails.get(tr.c) || []).join("\n")}`);
       how = "plain";
       return await withImap(a, (c) => readOn(c, folder, uid, peek, false, tr), false, 25_000, tr, true);
     }
   } catch (e) {
     how += " FAILED at " + tr.s;
+    console.error(`read ${folder}/${uid} plain way failed | ${tr.info ?? ""}\n${(tr.c && trails.get(tr.c) || []).join("\n")}`);
     throw e;
   } finally {
-    console.log(`read ${folder}/${uid}${peek ? " peek" : ""} ${how} ${Date.now() - t0} ms`);
+    console.log(`read ${folder}/${uid}${peek ? " peek" : ""} ${how} ${Date.now() - t0} ms | ${tr.info ?? ""}`);
   }
 }
 const READ_FAST_MS = Number(Deno.env.get("MAIL_READ_FAST_MS") || 10_000);
 async function readOn(c: ImapFlow, folder: string, uid: number, peek: boolean, fast: boolean, tr: Trace) {
   {
+    tr.c = c;
     tr.s = "aplankas";
     const path = await folderPath(c, folder);
     const lock = await c.getMailboxLock(path);
     try {
       tr.s = "antraštė";
-      const msg = await c.fetchOne(String(uid), { uid: true, envelope: true, flags: true, bodyStructure: true, internalDate: true, headers: ["references"] }, { uid: true });
+      const msg = await c.fetchOne(String(uid), { uid: true, envelope: true, flags: true, bodyStructure: true, internalDate: true, size: true, headers: ["references"] }, { uid: true });
       if (!msg || !msg.envelope) throw new UserError("Laiškas nerastas (gal jau ištrintas).");
       const all = leaves(msg.bodyStructure as Node);
+      tr.info = `size ${msg.size} parts ${all.map((l) => `${l.part}:${l.type}:${l.size}:${l.encoding}`).join(" ").slice(0, 300)}`;
       const isBody = (l: Leaf) => l.disposition !== "attachment" && !l.filename;
       const htmlPart = all.find((l) => l.type === "text/html" && isBody(l));
       const textPart = all.find((l) => l.type === "text/plain" && isBody(l));
