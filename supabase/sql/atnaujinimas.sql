@@ -737,7 +737,7 @@ grant execute on function public.chat_files(int) to authenticated;
 
 -- >>>>>>>>>> calls.sql
 -- ============================================================
--- Vaizdo skambučiai (Google Meet) chate:
+-- Vaizdo skambučiai chate (Google Meet arba Daily.co):
 --  * calls           — skambutis pokalbyje (kas skambina, Meet nuoroda)
 --  * call_responses  — kiekvieno nario atsakymas: priėmė / atmetė
 --  * google_meet_auth — prijungtos Google paskyros raktas (užšifruotas);
@@ -750,10 +750,20 @@ create table if not exists public.calls (
   id              uuid primary key default gen_random_uuid(),
   conversation_id uuid not null references public.conversations(id) on delete cascade,
   created_by      uuid not null default auth.uid() references auth.users(id) on delete cascade,
-  meet_url        text not null check (meet_url ~ '^https://meet\.google\.com/[a-z0-9-]+$'),
+  meet_url        text not null,
   created_at      timestamptz not null default now(),
   ended_at        timestamptz
 );
+-- vaizdo skambučio paslauga: Google Meet (atskiras langas) arba Daily.co (chate)
+alter table public.calls add column if not exists provider text not null default 'meet';
+alter table public.calls add column if not exists room text;
+alter table public.calls drop constraint if exists calls_meet_url_check;
+alter table public.calls drop constraint if exists calls_url_check;
+alter table public.calls add constraint calls_url_check check (
+  (provider = 'meet' and meet_url ~ '^https://meet\.google\.com/[a-z0-9-]+$')
+  or (provider = 'daily' and meet_url ~ '^https://[a-z0-9-]+\.daily\.co/[A-Za-z0-9_-]+$'));
+alter table public.calls drop constraint if exists calls_provider_check;
+alter table public.calls add constraint calls_provider_check check (provider in ('meet','daily'));
 create index if not exists calls_conv_idx on public.calls (conversation_id, created_at desc);
 
 alter table public.calls enable row level security;
@@ -763,12 +773,16 @@ create policy "see calls" on public.calls
 drop policy if exists "start call" on public.calls;
 create policy "start call" on public.calls
   for insert to authenticated with check (
-    created_by = auth.uid() and public.is_conv_member(conversation_id)
+    -- Daily kambarius kuria tik serverio funkcija „meet“ (ji tikrina narystę)
+    created_by = auth.uid() and provider = 'meet' and public.is_conv_member(conversation_id)
     and (exists (select 1 from public.conversations c where c.id = conversation_id and c.kind = 'general')
          or exists (select 1 from public.conversation_members m where m.conversation_id = calls.conversation_id and m.user_id = auth.uid())));
 drop policy if exists "end own call" on public.calls;
 create policy "end own call" on public.calls
   for update to authenticated using (created_by = auth.uid()) with check (created_by = auth.uid());
+-- skambučio kūrėjas gali tik jį užbaigti (nuorodos ar kambario pakeisti negalima)
+revoke update on public.calls from authenticated;
+grant update (ended_at) on public.calls to authenticated;
 
 create table if not exists public.call_responses (
   call_id    uuid not null references public.calls(id) on delete cascade,

@@ -1,7 +1,18 @@
 // Supabase Edge Function: meet
 //
-// Creates Google Meet meetings for video calls in the chat, using one Google
-// account that an administrator connects once (Admin → Vaizdo skambučiai).
+// Video calls in the chat. Two providers:
+//  * Daily.co (when DAILY_API_KEY is set): the call runs INSIDE the app, in
+//    the chat channel. This function creates a private room for the
+//    conversation and hands out join tokens only to its members.
+//  * Google Meet (otherwise): a meeting created with one Google account that
+//    an administrator connects once (Admin → Vaizdo skambučiai); it opens in
+//    its own window.
+//
+// POST {"action":"config"}            (chat users) -> { provider: "daily" | "meet" }
+// POST {"action":"create","conversation_id"}  Daily: creates the room and the
+//      call row -> { provider:"daily", call }; Meet: -> { url } (see below)
+// POST {"action":"join","call_id"}    -> Daily: { provider, url, token }
+//                                        Meet:  { provider, url }
 //
 // POST {"action":"status"}            (admin)  -> { configured, connected, email }
 // POST {"action":"connect","origin"}  (admin)  -> { url } Google consent page
@@ -17,7 +28,7 @@
 //   supabase functions deploy meet --no-verify-jwt
 // Every POST checks the caller's token itself.
 //
-// Secrets: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET (Google Cloud → OAuth client,
+// Secrets: DAILY_API_KEY (Daily.co → Developers → API keys), GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET (Google Cloud → OAuth client,
 // type "Web application", redirect URI = this function's URL),
 // MEET_SECRET (optional; falls back to MAIL_SECRET) for encrypting the token.
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
@@ -30,7 +41,8 @@ const corsHeaders = {
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 const MEET_SCOPE = "https://www.googleapis.com/auth/meetings.space.created";
 const SCOPE = MEET_SCOPE + " openid email";
-export const VERSION = 2;
+export const VERSION = 3;
+const DAILY_HOURS = 4;   // a Daily room lives this long after the call starts
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -57,7 +69,7 @@ async function db<T = unknown>(path: string, init: RequestInit = {}): Promise<T>
   return (text ? JSON.parse(text) : null) as T;
 }
 
-type Who = { id: string; role: string; canChat: boolean };
+type Who = { id: string; role: string; canChat: boolean; name: string };
 async function caller(req: Request): Promise<Who | null> {
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
   if (!token) return null;
@@ -67,8 +79,11 @@ async function caller(req: Request): Promise<Who | null> {
   if (!res.ok) return null;
   const u = await res.json();
   if (!u?.id) return null;
-  const [p] = await db<{ role: string }[]>(`profiles?select=role&id=eq.${u.id}`);
+  const [p] = await db<{ role: string; first_name: string | null; last_name: string | null; nickname: string | null; email: string | null }[]>(
+    `profiles?select=role,first_name,last_name,nickname,email&id=eq.${u.id}`,
+  );
   const role = p?.role ?? "pending";
+  const name = [p?.first_name, p?.last_name].filter(Boolean).join(" ") || p?.nickname || (p?.email ?? "").split("@")[0] || "Narys";
   let canChat = role === "admin";
   if (!canChat && APPROVED.includes(role)) {
     const perms = await db<{ can_view: boolean; can_edit: boolean }[]>(
@@ -76,7 +91,7 @@ async function caller(req: Request): Promise<Who | null> {
     );
     canChat = !perms.length || perms.some((x) => x.can_view || x.can_edit);
   }
-  return { id: u.id, role, canChat };
+  return { id: u.id, role, canChat, name };
 }
 
 // ---------- encryption (AES-GCM) and signed state ----------
@@ -184,6 +199,57 @@ export async function createSpace(token: string): Promise<string> {
   return uri;
 }
 
+
+// ---------- Daily.co ----------
+const dailyOn = () => !!Deno.env.get("DAILY_API_KEY");
+async function daily(path: string, body: unknown): Promise<Record<string, unknown>> {
+  const res = await fetch(`https://api.daily.co/v1/${path}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${env("DAILY_API_KEY")}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`Daily ${res.status}: ${j.info || j.error || "klaida"}`);
+  return j;
+}
+// may this person take part in calls of that conversation? (#bendras: everyone who uses the chat)
+async function inConversation(uid: string, conversationId: string): Promise<boolean> {
+  const [c] = await db<{ kind: string }[]>(`conversations?select=kind&id=eq.${encodeURIComponent(conversationId)}`);
+  if (!c) return false;
+  if (c.kind === "general") return true;
+  const m = await db<unknown[]>(`conversation_members?select=user_id&conversation_id=eq.${encodeURIComponent(conversationId)}&user_id=eq.${uid}`);
+  return m.length > 0;
+}
+type Call = { id: string; conversation_id: string; created_by: string; meet_url: string; provider: string; room: string | null; created_at: string; ended_at: string | null };
+async function dailyCreate(who: Who, conversationId: string) {
+  if (!await inConversation(who.id, conversationId)) return json({ error: "Tu nesi šio pokalbio narys." }, 403);
+  const exp = Math.floor(Date.now() / 1000) + DAILY_HOURS * 3600;
+  const room = await daily("rooms", {
+    name: "es-" + crypto.randomUUID().replace(/-/g, "").slice(0, 16),
+    privacy: "private",
+    properties: { exp, eject_at_room_exp: true, enable_prejoin_ui: false, enable_screenshare: true, enable_chat: false, enable_knocking: false },
+  });
+  const [call] = await db<Call[]>("calls", {
+    method: "POST", headers: { Prefer: "return=representation" },
+    body: JSON.stringify({ conversation_id: conversationId, created_by: who.id, provider: "daily", meet_url: room.url, room: room.name }),
+  });
+  await db("call_responses", { method: "POST", body: JSON.stringify({ call_id: call.id, user_id: who.id, status: "accepted" }) });
+  return json({ provider: "daily", call });
+}
+async function join(who: Who, callId: string) {
+  const [call] = await db<Call[]>(`calls?select=*&id=eq.${encodeURIComponent(callId)}`);
+  if (!call) return json({ error: "Skambutis nerastas." }, 404);
+  if (!await inConversation(who.id, call.conversation_id)) return json({ error: "Tu nesi šio pokalbio narys." }, 403);
+  if (call.ended_at) return json({ error: "Skambutis jau baigtas.", code: "ended" });
+  if (call.provider !== "daily") return json({ provider: "meet", url: call.meet_url });
+  if (Date.now() - new Date(call.created_at).getTime() > DAILY_HOURS * 3600e3) return json({ error: "Skambutis jau baigtas.", code: "ended" });
+  const t = await daily("meeting-tokens", { properties: {
+    room_name: call.room, user_name: who.name.slice(0, 60), user_id: who.id, is_owner: call.created_by === who.id,
+    exp: Math.floor(new Date(call.created_at).getTime() / 1000) + DAILY_HOURS * 3600,
+  } });
+  return json({ provider: "daily", url: call.meet_url, token: t.token });
+}
+
 // ---------- handlers ----------
 async function onCallback(url: URL): Promise<Response> {
   const st = await readState(url.searchParams.get("state") || "");
@@ -234,10 +300,15 @@ export async function handle(req: Request): Promise<Response> {
     const body = await req.json().catch(() => ({}));
     const configured = !!(Deno.env.get("GOOGLE_CLIENT_ID") && Deno.env.get("GOOGLE_CLIENT_SECRET"));
     const admin = who.role === "admin";
+    if (body.action === "config") return json({ provider: dailyOn() ? "daily" : "meet", version: VERSION });
+    if (body.action === "join") {
+      if (!who.canChat) return json({ error: "Nėra prieigos prie chato." }, 403);
+      return await join(who, String(body.call_id ?? ""));
+    }
     if (body.action === "status") {
       if (!admin) return json({ error: "Tik administratoriui." }, 403);
       const [row] = await db<{ email: string; connected_at: string }[]>("google_meet_auth?select=email,connected_at&id=eq.1");
-      return json({ version: VERSION, configured, connected: !!row, email: row?.email ?? "", connected_at: row?.connected_at ?? null, redirect_uri: selfUrl() });
+      return json({ version: VERSION, daily: dailyOn(), configured, connected: !!row, email: row?.email ?? "", connected_at: row?.connected_at ?? null, redirect_uri: selfUrl() });
     }
     if (body.action === "connect") {
       if (!admin) return json({ error: "Tik administratoriui." }, 403);
@@ -254,6 +325,9 @@ export async function handle(req: Request): Promise<Response> {
     }
     if (body.action === "create") {
       if (!who.canChat) return json({ error: "Nėra prieigos prie chato." }, 403);
+      if (dailyOn() && body.conversation_id) {
+        try { return await dailyCreate(who, String(body.conversation_id)); } catch (e) { return json({ error: (e as Error).message }); }
+      }
       if (!configured) return json({ error: "Google Meet neprijungtas.", code: "not_connected" });
       try {
         const token = await accessToken();

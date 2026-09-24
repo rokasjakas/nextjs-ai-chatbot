@@ -59,7 +59,7 @@ type Prefs = {
   quiet?: { on?: boolean; from?: string; to?: string };
 };
 type Sub = { endpoint: string; user_id: string; p256dh: string; auth: string };
-type Payload = { title: string; body: string; tag: string; url: string; kind?: string; call_id?: string; meet?: string };
+type Payload = { title: string; body: string; tag: string; url: string; kind?: string; call_id?: string; meet?: string; provider?: string };
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -242,7 +242,7 @@ export function wantsCall(p: Prefs | null): boolean {
   return !inQuietHours(pr.quiet);
 }
 async function onCall(uid: string, callId: string) {
-  const [call] = await db<{ id: string; conversation_id: string; created_by: string; meet_url: string; created_at: string; ended_at: string | null }[]>(
+  const [call] = await db<{ id: string; conversation_id: string; created_by: string; meet_url: string; provider?: string; created_at: string; ended_at: string | null }[]>(
     `calls?select=*&id=eq.${encodeURIComponent(callId)}`,
   );
   if (!call || call.created_by !== uid || call.ended_at) return { sent: 0, skipped: "not your call" };
@@ -257,8 +257,10 @@ async function onCall(uid: string, callId: string) {
   const where = c.kind === "direct" ? "" : c.kind === "general" ? "#bendras" : (c.kind === "group" && !c.title) ? "grupėje" : "#" + (c.title || "kanalas");
   const r = await sendTo(to, {
     title: `📹 ${name(byId.get(uid))} skambina`,
-    body: (where ? where + " · " : "") + "Vaizdo skambutis (Google Meet). Priimti ar atmesti?",
-    tag: "call-" + call.id, url: `./?call=${call.id}`, kind: "call", call_id: call.id, meet: call.meet_url,
+    body: (where ? where + " · " : "") + (call.provider === "daily" ? "Vaizdo skambutis. Priimti ar atmesti?" : "Vaizdo skambutis (Google Meet). Priimti ar atmesti?"),
+    tag: "call-" + call.id, url: `./?call=${call.id}`, kind: "call", call_id: call.id,
+    // Google Meet opens straight away; a Daily call opens inside the app
+    provider: call.provider === "daily" ? "daily" : "meet", meet: call.provider === "daily" ? undefined : call.meet_url,
   }, 90);
   return { ...r, members: to.length };
 }
