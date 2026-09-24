@@ -11,7 +11,8 @@
 //   disconnect
 //   list      {folder:"inbox"|"sent", page}
 //   read      {folder, uid}              -> full message (marks it read)
-//   attachment{folder, uid, index}       -> { filename, contentType, base64 }
+//   attachment{folder, uid, index}       -> { filename, contentType, base64 } (index = body part, e.g. "2")
+//   search    {q, from, to, subject, since, before, unseen, attachments, folder:"inbox"|"sent"|"all"}
 //   send      {to, cc, subject, text, quoted, inReplyTo, references, attachments:[{filename,contentType,base64}]}
 //   seen      {folder, uid, seen}
 //   delete    {folder, uid}              -> moves to Trash
@@ -28,7 +29,6 @@
 import { ImapFlow } from "npm:imapflow@1.0.171";
 import nodemailer from "npm:nodemailer@6.9.16";
 import MailComposer from "npm:nodemailer@6.9.16/lib/mail-composer/index.js";
-import { simpleParser } from "npm:mailparser@3.7.2";
 import { Buffer } from "node:buffer";
 import { LOGO_PNG_BASE64 } from "./logo.ts";
 
@@ -39,7 +39,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 3;
+const VERSION = 4;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -157,12 +157,6 @@ async function folderPath(c: ImapFlow, folder: string): Promise<string> {
 type Addr = { name?: string; address?: string };
 const addr = (l?: Addr[]) => (l ?? []).map((x) => ({ name: x.name || "", address: x.address || "" }));
 
-function hasAttachments(node: { disposition?: string; childNodes?: unknown[]; type?: string } | undefined): boolean {
-  if (!node) return false;
-  if (node.disposition === "attachment") return true;
-  return ((node.childNodes ?? []) as typeof node[]).some(hasAttachments);
-}
-
 async function list(a: Account, folder: string, page: number) {
   return await withImap(a, async (c) => {
     const path = await folderPath(c, folder);
@@ -174,14 +168,14 @@ async function list(a: Account, folder: string, page: number) {
       if (end >= 1) {
         for await (const m of c.fetch(`${start}:${end}`, { uid: true, envelope: true, flags: true, bodyStructure: true, internalDate: true, size: true })) {
           items.push({
-            uid: m.uid,
+            uid: m.uid, folder,
             date: (m.envelope?.date ?? m.internalDate)?.toISOString?.() ?? null,
             subject: m.envelope?.subject || "",
             from: addr(m.envelope?.from),
             to: addr(m.envelope?.to),
             seen: m.flags?.has("\\Seen") ?? false,
             answered: m.flags?.has("\\Answered") ?? false,
-            attachments: hasAttachments(m.bodyStructure as never),
+            attachments: hasAttachments(m.bodyStructure as Node),
             size: m.size,
           });
         }
@@ -195,39 +189,83 @@ async function list(a: Account, folder: string, page: number) {
   });
 }
 
-async function fetchParsed(c: ImapFlow, uid: number) {
-  const msg = await c.fetchOne(String(uid), { source: true, flags: true }, { uid: true });
-  if (!msg || !msg.source) throw new UserError("Laiškas nerastas (gal jau ištrintas).");
-  return { msg, parsed: await simpleParser(msg.source) };
-}
-const addrText = (a: unknown) => {
-  const v = (a as { value?: Addr[] } | undefined)?.value ?? [];
-  return addr(v);
+// ---------- reading a message: only the parts that are needed ----------
+// (the whole message with attachments can be many MB — parsing it all would
+// run out of the function's CPU time, so we walk the structure instead)
+type Node = {
+  part?: string; type: string; parameters?: Record<string, string>; disposition?: string;
+  dispositionParameters?: Record<string, string>; size?: number; id?: string; childNodes?: Node[];
 };
+type Leaf = { part: string; type: string; size: number; filename: string; disposition: string; cid: string };
+export function leaves(root: Node | undefined): Leaf[] {
+  const out: Leaf[] = [];
+  const walk = (n: Node | undefined) => {
+    if (!n) return;
+    if (n.childNodes && n.childNodes.length) { n.childNodes.forEach(walk); return; }
+    if (n.type?.startsWith("multipart/")) return;
+    out.push({
+      part: n.part || "1", type: (n.type || "text/plain").toLowerCase(), size: n.size || 0,
+      filename: n.dispositionParameters?.filename || n.parameters?.name || "",
+      disposition: (n.disposition || "").toLowerCase(), cid: (n.id || "").replace(/^<|>$/g, ""),
+    });
+  };
+  walk(root);
+  return out;
+}
+const MAX_TEXT = 1_500_000, MAX_INLINE = 400_000, MAX_INLINE_TOTAL = 2_000_000;
+async function partBuffer(c: ImapFlow, uid: number, part: string, maxBytes: number): Promise<Buffer> {
+  const { content } = await c.download(String(uid), part, { uid: true, maxBytes });
+  const chunks: Buffer[] = [];
+  for await (const ch of content) chunks.push(Buffer.from(ch));
+  return Buffer.concat(chunks);
+}
+function hasAttachments(node: Node | undefined): boolean {
+  // pictures embedded in the text (e.g. the signature logo) are not attachments
+  return leaves(node).some((l) => l.disposition === "attachment" || (!!l.filename && !l.type.startsWith("text/") && !(l.cid && l.type.startsWith("image/"))));
+}
 
 async function read(a: Account, folder: string, uid: number) {
   return await withImap(a, async (c) => {
     const path = await folderPath(c, folder);
     const lock = await c.getMailboxLock(path);
     try {
-      const { msg, parsed } = await fetchParsed(c, uid);
+      const msg = await c.fetchOne(String(uid), { uid: true, envelope: true, flags: true, bodyStructure: true, internalDate: true, headers: ["references"] }, { uid: true });
+      if (!msg || !msg.envelope) throw new UserError("Laiškas nerastas (gal jau ištrintas).");
+      const all = leaves(msg.bodyStructure as Node);
+      const isBody = (l: Leaf) => l.disposition !== "attachment" && !l.filename;
+      const htmlPart = all.find((l) => l.type === "text/html" && isBody(l));
+      const textPart = all.find((l) => l.type === "text/plain" && isBody(l));
+      let html = "", text = "";
+      if (htmlPart) html = (await partBuffer(c, uid, htmlPart.part, MAX_TEXT)).toString("utf8");
+      if (textPart && (!htmlPart || textPart.size < 200_000)) text = (await partBuffer(c, uid, textPart.part, MAX_TEXT)).toString("utf8");
+      // pictures inside the text (cid:) — small ones are shown right away
+      const used = new Set<string>();
+      if (html) {
+        let budget = MAX_INLINE_TOTAL;
+        for (const l of all) {
+          if (!l.cid || !l.type.startsWith("image/") || !html.includes("cid:" + l.cid)) continue;
+          used.add(l.part);
+          if (l.size > MAX_INLINE || l.size > budget) continue;
+          budget -= l.size;
+          const b64 = (await partBuffer(c, uid, l.part, MAX_INLINE * 2)).toString("base64");
+          html = html.split("cid:" + l.cid).join(`data:${l.type};base64,${b64}`);
+        }
+      }
       if (!msg.flags?.has("\\Seen")) await c.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true });
-      const refs = parsed.references ? ([] as string[]).concat(parsed.references) : [];
+      const refHeader = msg.headers ? msg.headers.toString().replace(/\r?\n\s+/g, " ") : "";
+      const references = (refHeader.match(/<[^>\s]+>/g) || []).slice(-20);
+      const env = msg.envelope;
       return {
-        uid,
-        messageId: parsed.messageId || "",
-        references: refs,
-        date: parsed.date?.toISOString() ?? null,
-        subject: parsed.subject || "",
-        from: addrText(parsed.from),
-        to: addrText(parsed.to),
-        cc: addrText(parsed.cc),
-        replyTo: addrText(parsed.replyTo),
-        text: parsed.text || "",
-        html: typeof parsed.html === "string" ? parsed.html : "",
-        attachments: parsed.attachments
-          .map((x, index) => ({ index, filename: x.filename || "priedas", contentType: x.contentType, size: x.size, inline: x.related || x.contentDisposition === "inline" }))
-          .filter((x) => !x.inline || !x.contentType.startsWith("image/")),
+        uid, folder,
+        messageId: env.messageId || "",
+        references,
+        date: (env.date ?? msg.internalDate)?.toISOString?.() ?? null,
+        subject: env.subject || "",
+        from: addr(env.from), to: addr(env.to), cc: addr(env.cc), replyTo: addr(env.replyTo),
+        text, html,
+        attachments: all
+          .filter((l) => l !== htmlPart && l !== textPart && !used.has(l.part) && (l.disposition === "attachment" || l.filename || !l.type.startsWith("text/")))
+          .map((l) => ({ index: l.part, filename: l.filename || "priedas." + (l.type.split("/")[1] || "bin"), contentType: l.type, size: Math.round(l.size * (l.type.startsWith("text/") ? 1 : 0.74)) })),
       };
     } finally {
       lock.release();
@@ -235,17 +273,76 @@ async function read(a: Account, folder: string, uid: number) {
   });
 }
 
-async function attachment(a: Account, folder: string, uid: number, index: number) {
+async function attachment(a: Account, folder: string, uid: number, part: string) {
+  if (!/^[0-9]+(\.[0-9]+)*$/.test(part)) throw new UserError("Priedas nerastas.");
   return await withImap(a, async (c) => {
     const lock = await c.getMailboxLock(await folderPath(c, folder));
     try {
-      const { parsed } = await fetchParsed(c, uid);
-      const x = parsed.attachments[index];
-      if (!x) throw new UserError("Priedas nerastas.");
-      return { filename: x.filename || "priedas", contentType: x.contentType, base64: Buffer.from(x.content).toString("base64") };
+      const msg = await c.fetchOne(String(uid), { uid: true, bodyStructure: true }, { uid: true });
+      const l = leaves(msg?.bodyStructure as Node).find((x) => x.part === part);
+      if (!l) throw new UserError("Priedas nerastas.");
+      if (l.size > 30 * 1024 * 1024) throw new UserError("Priedas per didelis atsisiųsti per programėlę — atidaryk Roundcube.");
+      const buf = await partBuffer(c, uid, part, 40 * 1024 * 1024);
+      return { filename: l.filename || "priedas", contentType: l.type, base64: buf.toString("base64") };
     } finally {
       lock.release();
     }
+  });
+}
+
+// ---------- search ----------
+type SearchBody = { q?: string; from?: string; to?: string; subject?: string; since?: string; before?: string; unseen?: boolean; attachments?: boolean; folder?: string };
+async function search(a: Account, b: SearchBody) {
+  const crit: Record<string, unknown> = {};
+  const q = String(b.q ?? "").trim().slice(0, 200);
+  if (q) crit.or = [{ from: q }, { to: q }, { subject: q }, { body: q }];
+  if (b.from) crit.from = String(b.from).trim().slice(0, 200);
+  if (b.to) crit.to = String(b.to).trim().slice(0, 200);
+  if (b.subject) crit.subject = String(b.subject).trim().slice(0, 200);
+  const d = (s?: string) => (s && /^\d{4}-\d{2}-\d{2}$/.test(s) ? new Date(s + "T00:00:00Z") : null);
+  const since = d(b.since), before = d(b.before);
+  // by the letter's own date (Date header), the "before" day included; the
+  // server's search is only a wide first pass, the exact check is below
+  if (since) crit.sentSince = new Date(since.getTime() - 24 * 3600e3);
+  if (before) crit.sentBefore = new Date(before.getTime() + 2 * 24 * 3600e3);
+  const dayOf = (iso: string) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date(iso));
+  const inRange = (iso: unknown) => {
+    if (!since && !before) return true;
+    if (!iso) return false;
+    const day = dayOf(String(iso));
+    return (!b.since || day >= b.since) && (!b.before || day <= b.before);
+  };
+  if (b.unseen) crit.seen = false;
+  if (!Object.keys(crit).length) crit.all = true;
+  const folders = b.folder === "inbox" || b.folder === "sent" ? [b.folder] : ["inbox", "sent"];
+  return await withImap(a, async (c) => {
+    const items: Record<string, unknown>[] = [];
+    let total = 0;
+    for (const f of folders) {
+      const lock = await c.getMailboxLock(await folderPath(c, f));
+      try {
+        const uids = ((await c.search(crit, { uid: true })) || []) as number[];
+        total += uids.length;
+        const last = uids.sort((x, y) => x - y).slice(-60);
+        if (!last.length) continue;
+        for await (const m of c.fetch(last.join(","), { uid: true, envelope: true, flags: true, bodyStructure: true, internalDate: true, size: true }, { uid: true })) {
+          const att = hasAttachments(m.bodyStructure as Node);
+          if (b.attachments && !att) continue;
+          if (!inRange((m.envelope?.date ?? m.internalDate)?.toISOString?.())) continue;
+          items.push({
+            uid: m.uid, folder: f,
+            date: (m.envelope?.date ?? m.internalDate)?.toISOString?.() ?? null,
+            subject: m.envelope?.subject || "", from: addr(m.envelope?.from), to: addr(m.envelope?.to),
+            seen: m.flags?.has("\\Seen") ?? false, answered: m.flags?.has("\\Answered") ?? false,
+            attachments: att, size: m.size,
+          });
+        }
+      } finally {
+        lock.release();
+      }
+    }
+    items.sort((x, y) => String(y.date).localeCompare(String(x.date)));
+    return { items: items.slice(0, 100), total, more: total > items.length };
   });
 }
 
@@ -615,13 +712,15 @@ async function handle(me: Me, body: Record<string, unknown>) {
       return await read(a, folder, uid);
     case "attachment":
       needUid();
-      return await attachment(a, folder, uid, Number(body.index) || 0);
+      return await attachment(a, folder, uid, String(body.index ?? ""));
     case "seen":
       needUid();
       return await flag(a, folder, uid, body.seen !== false);
     case "delete":
       needUid();
       return await remove(a, folder, uid);
+    case "search":
+      return { connected: true, ...(await search(a, body as SearchBody)) };
     case "send":
       return await send(me, a, body as SendBody);
   }
