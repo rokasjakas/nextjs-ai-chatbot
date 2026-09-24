@@ -16,7 +16,7 @@
 //   move      {folder, uid, to}          -> moves to another folder
 //   attachment{folder, uid, index}       -> { filename, contentType, base64 } (index = body part, e.g. "2")
 //   search    {q, from, to, subject, since, before, unseen, attachments, folder:"inbox"|"sent"|"all"}
-//   send      {to, cc, subject, text, quoted, inReplyTo, references, attachments:[{filename,contentType,base64}]}
+//   send      {to, cc, subject, text, html?, sig?, quoted, inReplyTo, references, attachments:[{filename,contentType,base64}]}
 //   seen      {folder, uid, seen}
 //   delete    {folder, uid}              -> moves to Trash
 //   settings / settings_save {settings:{sig, auto:{on,from,to,subject,text}}}
@@ -42,7 +42,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 8;
+const VERSION = 9;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -699,31 +699,41 @@ export function textToHtml(text: string): string {
   flush();
   return out.join("<br>").replace(/<br>(<blockquote)/g, "$1").replace(/(<\/blockquote>)<br>/g, "$1");
 }
-export function composeBody(text: string, quoted: string, p: Person | null) {
+export function composeBody(text: string, quoted: string, p: Person | null, html = "") {
   const wrap = (h: string) => `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#000;">${h}</div>`;
   return {
     text: text + (p ? "\n\n" + sigText(p) : "") + (quoted ? "\n\n" + quoted : ""),
-    html: wrap(textToHtml(text) + (p ? sigHtml(p) : "") + (quoted ? "<br><br>" + textToHtml(quoted) : "")),
+    html: wrap((html ? cleanHtml(html) : textToHtml(text)) + (p ? sigHtml(p) : "") + (quoted ? "<br><br>" + textToHtml(quoted) : "")),
   };
+}
+// a letter built in the app (the event letter): formatted HTML. Scripts,
+// frames, forms and event handlers are removed — only formatting stays.
+export function cleanHtml(h: string): string {
+  return String(h).slice(0, 400_000)
+    .replace(/<(script|style|iframe|object|embed|form|button|textarea|select)\b[\s\S]*?<\/\1\s*>/gi, "")
+    .replace(/<\/?(script|style|iframe|object|embed|form|input|button|textarea|select|meta|link|base)\b[^>]*>/gi, "")
+    .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/(href|src)\s*=\s*("|')\s*(javascript|vbscript|data):[^"']*\2/gi, '$1="#"');
 }
 
 type SendBody = {
-  to?: string; cc?: string; subject?: string; text?: string; quoted?: string;
+  to?: string; cc?: string; subject?: string; text?: string; quoted?: string; html?: string; sig?: boolean;
   inReplyTo?: string; references?: string[]; replyUid?: number; replyFolder?: string;
   attachments?: { filename: string; contentType?: string; base64: string }[];
 };
 async function send(me: Me, a: Account, b: SendBody) {
   const to = parseRecipients(b.to), cc = parseRecipients(b.cc);
   if (!to.length) throw new UserError("Įrašyk gavėją.");
-  if (to.length + cc.length > 50) throw new UserError("Per daug gavėjų (iki 50).");
+  if (to.length + cc.length > 100) throw new UserError("Per daug gavėjų (iki 100).");
   const atts = (b.attachments ?? []).slice(0, 10).map((x) => ({
     filename: String(x.filename || "priedas").slice(0, 200),
     contentType: x.contentType || "application/octet-stream",
     content: Buffer.from(String(x.base64 || ""), "base64"),
   }));
   if (atts.reduce((n, x) => n + x.content.length, 0) > MAX_SEND_BYTES) throw new UserError("Priedai per dideli (iki 15 MB).");
-  const withSig = (await settingsOf(me.id)).sig !== false;
-  const body = composeBody(String(b.text ?? ""), String(b.quoted ?? ""), withSig ? me.person : null);
+  // the event letter always carries the sender's signature (b.sig)
+  const withSig = b.sig === true || (await settingsOf(me.id)).sig !== false;
+  const body = composeBody(String(b.text ?? ""), String(b.quoted ?? ""), withSig ? me.person : null, typeof b.html === "string" ? b.html : "");
   const mail = {
     from: me.name ? { name: me.name, address: a.email } : a.email,
     to, cc: cc.length ? cc : undefined,
