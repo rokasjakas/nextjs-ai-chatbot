@@ -27,6 +27,11 @@
 // vehicle reminders); APP_URL (optional, default https://app.eventsolutions.lt).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
 
+import { p256 } from "npm:@noble/curves@1.4.0/p256";
+import { sha256 } from "npm:@noble/hashes@1.4.0/sha256";
+import { hkdf } from "npm:@noble/hashes@1.4.0/hkdf";
+import { gcm } from "npm:@noble/ciphers@0.5.3/aes";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -131,62 +136,27 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 4;
-async function vapidKeyPair(): Promise<{ x: string; y: string; d: string }> {
-  const d = env("VAPID_PRIVATE_KEY").trim();
-  try {
-    const raw = b64uToBytes(d);
-    if (raw.length !== 32) throw new Error("private key length " + raw.length);
-    const der = new Uint8Array([0x30, 0x41, 0x02, 0x01, 0x00, 0x30, 0x13, 0x06, 0x07, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02, 0x01, 0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03, 0x01, 0x07, 0x04, 0x27, 0x30, 0x25, 0x02, 0x01, 0x01, 0x04, 0x20, ...raw]);
-    const key = await crypto.subtle.importKey("pkcs8", der, { name: "ECDSA", namedCurve: "P-256" }, true, ["sign"]);
-    const jwk = await crypto.subtle.exportKey("jwk", key);
-    if (!jwk.x || !jwk.y) throw new Error("no public part");
-    vapidPublic = bytesToB64u(new Uint8Array([4, ...b64uToBytes(jwk.x), ...b64uToBytes(jwk.y)]));
-    if (vapidPublic !== env("VAPID_PUBLIC_KEY").trim()) console.warn("VAPID_PUBLIC_KEY does not belong to VAPID_PRIVATE_KEY — using the public key worked out from the private key");
-    return { x: jwk.x, y: jwk.y, d };
-  } catch (e) {
-    console.error("VAPID private key:", (e as Error).message, "— using VAPID_PUBLIC_KEY as given");
-    const pub = b64uToBytes(env("VAPID_PUBLIC_KEY").trim());
-    vapidPublic = env("VAPID_PUBLIC_KEY").trim();
-    return { x: bytesToB64u(pub.slice(1, 33)), y: bytesToB64u(pub.slice(33, 65)), d };
-  }
+const PUSH_FN_VERSION = 5;
+let vapidD: Uint8Array | null = null;
+// The public key is worked out from the private key, so the pair always
+// matches. Signing and encryption use @noble (plain JavaScript): the Supabase
+// runtime's own ECDSA produced signatures Google and Mozilla rejected
+// ("invalid JWT" / "InvalidSignature") and that did not even verify there.
+function vapidKeyPair() {
+  if (vapidD) return;
+  const d = b64uToBytes(env("VAPID_PRIVATE_KEY").trim());
+  if (d.length !== 32) throw new Error("VAPID_PRIVATE_KEY: expected 32 bytes, got " + d.length);
+  vapidD = d;
+  vapidPublic = bytesToB64u(p256.getPublicKey(d, false));
+  if (vapidPublic !== env("VAPID_PUBLIC_KEY").trim()) console.warn("VAPID_PUBLIC_KEY does not belong to VAPID_PRIVATE_KEY — using the public key worked out from the private key");
 }
 async function publicKey(): Promise<string> {
-  if (!vapidPublic) await vapidKeyPair();
+  vapidKeyPair();
   return vapidPublic;
 }
-// ---------- Web Push (RFC 8291 encryption + RFC 8292 VAPID), done here ----------
-// The library signed the VAPID token in a form Google and Mozilla rejected on
-// the Supabase runtime ("invalid JWT" / "InvalidSignature"), so the message is
-// encrypted and signed here, and the signature is checked before it is sent.
-const B = (u: Uint8Array) => u as unknown as BufferSource;   // typed-array typing only
-let signKey: CryptoKey | null = null;
-let verifyKey: CryptoKey | null = null;
-async function vapidKeys() {
-  if (signKey && verifyKey) return;
-  const { x, y, d } = await vapidKeyPair();
-  signKey = await crypto.subtle.importKey("jwk", { kty: "EC", crv: "P-256", x, y, d, ext: true }, { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
-  verifyKey = await crypto.subtle.importKey("jwk", { kty: "EC", crv: "P-256", x, y, ext: true }, { name: "ECDSA", namedCurve: "P-256" }, false, ["verify"]);
-}
-// ECDSA signatures must be r||s (64 bytes) in a JWT; some runtimes give DER
-export function derToRaw(sig: Uint8Array): Uint8Array {
-  if (sig.length === 64) return sig;
-  if (sig[0] !== 0x30) throw new Error("unknown signature format (" + sig.length + " bytes)");
-  let i = 2;
-  const part = () => {
-    if (sig[i++] !== 0x02) throw new Error("bad DER signature");
-    let len = sig[i++];
-    let v = sig.slice(i, i + len); i += len;
-    while (v.length > 32 && v[0] === 0) v = v.slice(1);
-    const out = new Uint8Array(32); out.set(v, 32 - v.length);
-    return out;
-  };
-  const r = part(), s2 = part();
-  return new Uint8Array([...r, ...s2]);
-}
 const vapidTokens = new Map<string, { t: string; exp: number }>();
-async function vapidHeader(endpoint: string): Promise<string> {
-  await vapidKeys();
+function vapidHeader(endpoint: string): string {
+  vapidKeyPair();
   const aud = new URL(endpoint).origin, now = Math.floor(Date.now() / 1000);
   const hit = vapidTokens.get(aud);
   if (hit && hit.exp - now > 3600) return `vapid t=${hit.t}, k=${vapidPublic}`;
@@ -194,45 +164,40 @@ async function vapidHeader(endpoint: string): Promise<string> {
   const b64json = (o: unknown) => bytesToB64u(enc.encode(JSON.stringify(o)));
   const exp = now + 12 * 3600;
   const data = b64json({ typ: "JWT", alg: "ES256" }) + "." + b64json({ aud, exp, sub: Deno.env.get("VAPID_SUBJECT") || "mailto:info@eventsolutions.lt" });
-  const sig = derToRaw(new Uint8Array(await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, signKey!, B(enc.encode(data)))));
-  if (!(await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, verifyKey!, B(sig), B(enc.encode(data))))) throw new Error("VAPID signature does not verify");
+  const hash = sha256(enc.encode(data));
+  const sig = p256.sign(hash, vapidD!).toCompactRawBytes();
+  if (!p256.verify(sig, hash, b64uToBytes(vapidPublic))) throw new Error("VAPID signature does not verify");
   const t = data + "." + bytesToB64u(sig);
   vapidTokens.set(aud, { t, exp });
   return `vapid t=${t}, k=${vapidPublic}`;
 }
-async function hkdf(salt: Uint8Array, ikm: Uint8Array, info: Uint8Array, len: number): Promise<Uint8Array> {
-  const key = await crypto.subtle.importKey("raw", B(ikm), "HKDF", false, ["deriveBits"]);
-  return new Uint8Array(await crypto.subtle.deriveBits({ name: "HKDF", hash: "SHA-256", salt: B(salt), info: B(info) }, key, len * 8));
-}
-// aes128gcm body for one device
-export async function encryptPush(p256dh: string, authSecret: string, text: string): Promise<Uint8Array> {
+// aes128gcm body for one device (RFC 8291)
+export function encryptPush(p256dh: string, authSecret: string, text: string): Uint8Array {
   const enc = new TextEncoder();
   const uaPub = b64uToBytes(p256dh), auth = b64uToBytes(authSecret);
-  const as = await crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveBits"]);
-  const asPub = new Uint8Array(await crypto.subtle.exportKey("raw", as.publicKey));
-  const ua = await crypto.subtle.importKey("raw", B(uaPub), { name: "ECDH", namedCurve: "P-256" }, false, []);
-  const shared = new Uint8Array(await crypto.subtle.deriveBits({ name: "ECDH", public: ua }, as.privateKey, 256));
-  const ikm = await hkdf(auth, shared, new Uint8Array([...enc.encode("WebPush: info\0"), ...uaPub, ...asPub]), 32);
+  const eph = p256.utils.randomPrivateKey();
+  const asPub = p256.getPublicKey(eph, false);
+  const shared = p256.getSharedSecret(eph, uaPub).slice(1, 33);
+  const ikm = hkdf(sha256, shared, auth, new Uint8Array([...enc.encode("WebPush: info\0"), ...uaPub, ...asPub]), 32);
   const salt = crypto.getRandomValues(new Uint8Array(16));
-  const cek = await hkdf(salt, ikm, enc.encode("Content-Encoding: aes128gcm\0"), 16);
-  const nonce = await hkdf(salt, ikm, enc.encode("Content-Encoding: nonce\0"), 12);
-  const key = await crypto.subtle.importKey("raw", B(cek), "AES-GCM", false, ["encrypt"]);
-  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv: B(nonce) }, key, B(new Uint8Array([...enc.encode(text), 2]))));
+  const cek = hkdf(sha256, ikm, salt, enc.encode("Content-Encoding: aes128gcm\0"), 16);
+  const nonce = hkdf(sha256, ikm, salt, enc.encode("Content-Encoding: nonce\0"), 12);
+  const ct = gcm(cek, nonce).encrypt(new Uint8Array([...enc.encode(text), 2]));
   const head = new Uint8Array(21 + asPub.length);
   head.set(salt, 0); new DataView(head.buffer).setUint32(16, 4096); head[20] = asPub.length; head.set(asPub, 21);
   return new Uint8Array([...head, ...ct]);
 }
 class PushError extends Error { constructor(public status: number, public body: string) { super("push " + status); } }
 async function pushOne(s: Sub, payload: Payload, ttl: number) {
-  const body = await encryptPush(s.p256dh, s.auth, JSON.stringify(payload));
+  const body = encryptPush(s.p256dh, s.auth, JSON.stringify(payload));
   const topic = payload.tag.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32);
   const res = await fetch(s.endpoint, {
     method: "POST",
     headers: {
-      Authorization: await vapidHeader(s.endpoint), TTL: String(ttl), "Content-Encoding": "aes128gcm",
+      Authorization: vapidHeader(s.endpoint), TTL: String(ttl), "Content-Encoding": "aes128gcm",
       "Content-Type": "application/octet-stream", Urgency: ttl < 600 ? "high" : "normal", ...(topic ? { Topic: topic } : {}),
     },
-    body: B(body),
+    body: body as unknown as BodyInit,
   });
   if (!res.ok) throw new PushError(res.status, (await res.text().catch(() => "")).replace(/\s+/g, " ").trim().slice(0, 200));
   await res.body?.cancel().catch(() => {});
