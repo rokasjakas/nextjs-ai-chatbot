@@ -162,7 +162,10 @@ async function chatUsers(): Promise<Profile[]> {
 function preview(m: { body: string; attachments: unknown[] }): string {
   const t = (m.body || "").trim();
   if (t) return t.length > 140 ? t.slice(0, 137) + "…" : t;
-  return (m.attachments ?? []).length ? "📷 Nuotrauka" : "";
+  const att = (m.attachments ?? []) as { type?: string; name?: string }[];
+  const file = att.find((a) => a.type === "file");
+  if (file) return "📎 " + (file.name || "Failas");
+  return att.length ? "📷 Nuotrauka" : "";
 }
 
 async function onMessage(uid: string, messageId: string) {
