@@ -10,9 +10,16 @@
 //      not in quiet hours gets one.
 // POST {"kind":"reaction","message_id","emoji"}  -> the message's author
 // POST {"kind":"test"}                   -> the caller's own devices
+// POST {"kind":"meeting","meeting_id","mode":"new"|"update"|"cancel"}
+//      Calendar invitation from its creator: invited members get a push
+//      notification, invited e-mail addresses get an e-mail with an .ics
+//      file. "new" reaches only people not invited before, "update" and
+//      "cancel" reach everyone; "cancel" also deletes the meeting.
 //
 // Secrets: VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY (from `npx web-push
 // generate-vapid-keys`), VAPID_SUBJECT (optional, mailto: address).
+// E-mail invitations use RESEND_API_KEY and REMINDER_FROM (same as the
+// vehicle reminders); APP_URL (optional, default https://app.eventsolutions.lt).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
 
 import * as webpush from "jsr:@negrel/webpush@0.3.0";
@@ -41,6 +48,7 @@ type Prefs = {
   direct?: boolean;
   group?: boolean;
   reactions?: boolean;
+  meetings?: boolean;
   muted?: string[];
   quiet?: { on?: boolean; from?: string; to?: string };
 };
@@ -95,7 +103,7 @@ export function inQuietHours(q: Prefs["quiet"], now = new Date()): boolean {
   const cur = hm === "24:00" ? "00:00" : hm;
   return q.from <= q.to ? cur >= q.from && cur < q.to : cur >= q.from || cur < q.to;
 }
-export function wants(p: Prefs | null, kind: "general" | "direct" | "group" | "reactions", convId: string): boolean {
+export function wants(p: Prefs | null, kind: "general" | "direct" | "group" | "reactions" | "meetings", convId: string): boolean {
   const pr = p ?? {};
   if (pr.enabled === false) return false;
   if (pr[kind] === false) return false;
@@ -215,6 +223,158 @@ async function onReaction(uid: string, messageId: string, emoji: string) {
   });
 }
 
+
+// ---------- calendar invitations ----------
+type Meeting = {
+  id: string; title: string; meet_date: string; start_time: string | null; end_time: string | null;
+  location: string; description: string; attendees: string[]; emails: string[];
+  notified: { users?: string[]; emails?: string[]; seq?: number } | null; created_by: string;
+};
+const LT_MONTHS = ["sausio", "vasario", "kovo", "balandžio", "gegužės", "birželio", "liepos", "rugpjūčio", "rugsėjo", "spalio", "lapkričio", "gruodžio"];
+const LT_DAYS = ["sekmadienis", "pirmadienis", "antradienis", "trečiadienis", "ketvirtadienis", "penktadienis", "šeštadienis"];
+const hm = (t: string | null) => (t ? t.slice(0, 5) : "");
+export function meetingWhen(m: Pick<Meeting, "meet_date" | "start_time" | "end_time">): string {
+  const [y, mo, d] = m.meet_date.split("-").map(Number);
+  const wd = LT_DAYS[new Date(Date.UTC(y, mo - 1, d)).getUTCDay()];
+  const date = `${y} m. ${LT_MONTHS[mo - 1]} ${d} d., ${wd}`;
+  const time = m.start_time ? `${hm(m.start_time)}${m.end_time ? "–" + hm(m.end_time) : ""}` : "visą dieną";
+  return `${date} · ${time}`;
+}
+// Vilnius wall clock -> UTC
+export function vilniusToUtc(date: string, time: string): Date {
+  const [y, mo, d] = date.split("-").map(Number), [h, mi] = time.split(":").map(Number);
+  const guess = Date.UTC(y, mo - 1, d, h, mi);
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false })
+    .formatToParts(new Date(guess)).reduce((o, p) => ({ ...o, [p.type]: p.value }), {} as Record<string, string>);
+  const asVilnius = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour % 24, +parts.minute);
+  return new Date(guess - (asVilnius - guess));
+}
+const icsDate = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+const icsText = (t: string) => t.replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+function icsFold(line: string): string {
+  const out: string[] = [];
+  let cur = "";
+  for (const ch of line) {
+    if (new TextEncoder().encode(cur + ch).length > 73) { out.push(cur); cur = " " + ch; } else cur += ch;
+  }
+  out.push(cur);
+  return out.join("\r\n");
+}
+export function meetingIcs(m: Meeting, organizer: { name: string; email: string }, cancel: boolean, seq: number): string {
+  let start: string, end: string;
+  if (m.start_time) {
+    const s = vilniusToUtc(m.meet_date, hm(m.start_time));
+    const e = m.end_time && m.end_time > m.start_time ? vilniusToUtc(m.meet_date, hm(m.end_time)) : new Date(s.getTime() + 3600e3);
+    start = "DTSTART:" + icsDate(s); end = "DTEND:" + icsDate(e);
+  } else {
+    const [y, mo, d] = m.meet_date.split("-").map(Number);
+    const next = new Date(Date.UTC(y, mo - 1, d + 1)).toISOString().slice(0, 10).replace(/-/g, "");
+    start = "DTSTART;VALUE=DATE:" + m.meet_date.replace(/-/g, ""); end = "DTEND;VALUE=DATE:" + next;
+  }
+  return [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Event Solutions//EventSolutions App//LT", "CALSCALE:GREGORIAN",
+    "METHOD:" + (cancel ? "CANCEL" : "PUBLISH"),
+    "BEGIN:VEVENT", `UID:${m.id}@eventsolutions.lt`, "SEQUENCE:" + seq, "DTSTAMP:" + icsDate(new Date()), start, end,
+    "SUMMARY:" + icsText(m.title), m.location ? "LOCATION:" + icsText(m.location) : "",
+    m.description ? "DESCRIPTION:" + icsText(m.description) : "",
+    organizer.email ? `ORGANIZER;CN=${icsText(organizer.name || organizer.email)}:mailto:${organizer.email}` : "",
+    "STATUS:" + (cancel ? "CANCELLED" : "CONFIRMED"), "END:VEVENT", "END:VCALENDAR", "",
+  ].filter((l, i, a) => l !== "" || i === a.length - 1).map(icsFold).join("\r\n");
+}
+const escHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+export function meetingEmailHtml(m: Meeting, organizer: string, people: string[], mode: string): string {
+  const head = mode === "cancel" ? "Susitikimas atšauktas" : mode === "update" ? "Susitikimas pakeistas" : "Kvietimas";
+  const row = (k: string, v: string) => v ? `<tr><td style="padding:4px 14px 4px 0;color:#666;vertical-align:top;white-space:nowrap;">${k}</td><td style="padding:4px 0;">${v}</td></tr>` : "";
+  return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;max-width:560px;">
+<div style="font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:${mode === "cancel" ? "#c62828" : "#e04e6c"};font-weight:bold;">${head}</div>
+<h2 style="margin:6px 0 14px;font-size:22px;${mode === "cancel" ? "text-decoration:line-through;" : ""}">${escHtml(m.title)}</h2>
+<table cellpadding="0" cellspacing="0" style="font-size:14px;border-collapse:collapse;">
+${row("Kada", escHtml(meetingWhen(m)))}
+${row("Kur", escHtml(m.location || ""))}
+${row("Organizatorius", escHtml(organizer))}
+${row("Dalyviai", escHtml(people.join(", ")))}
+</table>
+${m.description ? `<div style="margin-top:14px;padding:12px 14px;background:#f5f5f7;border-radius:8px;white-space:pre-wrap;">${escHtml(m.description)}</div>` : ""}
+<p style="margin-top:18px;font-size:12px;color:#888;">${mode === "cancel" ? "" : "Pridėk į savo kalendorių — atidaryk prisegtą failą „kvietimas.ics“. "}Išsiųsta per EventSolutions App.</p>
+</div>`;
+}
+function b64(bytes: Uint8Array): string {
+  let s = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+async function resendMail(to: string, subject: string, html: string, replyTo: string, ics: string) {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${env("RESEND_API_KEY")}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: Deno.env.get("REMINDER_FROM") || Deno.env.get("ACCESS_FROM") || "Event Solutions <onboarding@resend.dev>",
+      to: [to], subject, html, reply_to: replyTo || undefined,
+      attachments: [{ filename: "kvietimas.ics", content: b64(new TextEncoder().encode(ics)), content_type: "text/calendar; charset=utf-8" }],
+    }),
+  });
+  if (!res.ok) throw new Error(`Resend ${res.status}: ${(await res.text()).slice(0, 200)}`);
+}
+
+async function onMeeting(uid: string, id: string, mode: string) {
+  const [m] = await db<Meeting[]>(`meetings?select=*&id=eq.${encodeURIComponent(id)}`);
+  if (!m || m.created_by !== uid) return { sent: 0, skipped: "not your meeting" };
+  const profiles = await db<Profile[]>(`profiles?select=id,role,first_name,last_name,full_name,nickname,email,notify_prefs&role=in.(${APPROVED.join(",")})`);
+  const byId = new Map(profiles.map((p) => [p.id, p]));
+  const me = byId.get(uid);
+  const organizer = name(me);
+  const notified = m.notified ?? {};
+  const all = mode !== "new";
+  const users = (m.attendees ?? []).filter((u) => u !== uid && byId.has(u) && (all || !(notified.users ?? []).includes(u)));
+  const emails = (m.emails ?? []).map((e) => e.trim().toLowerCase()).filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))
+    .filter((e) => all || !(notified.emails ?? []).includes(e));
+  const when = meetingWhen(m);
+  // app notification for members
+  const verb = mode === "cancel" ? "atšaukė" : mode === "update" ? "pakeitė" : "pakvietė";
+  const push = await sendTo(
+    users.filter((u) => wants(byId.get(u)!.notify_prefs, "meetings", "meeting")),
+    {
+      title: (mode === "cancel" ? "❌ " : "📅 ") + m.title,
+      body: `${when}${m.location ? " · " + m.location : ""}\n${organizer} ${verb}`,
+      tag: "meet-" + m.id,
+      url: mode === "cancel" ? "./" : `./?meeting=${m.id}`,
+    },
+  );
+  // e-mail for the others
+  const seq = (notified.seq ?? 0) + (all ? 1 : 0);
+  const people = [organizer, ...(m.attendees ?? []).filter((u) => u !== uid).map((u) => name(byId.get(u))), ...(m.emails ?? [])];
+  let mailed = 0;
+  const failed: string[] = [];
+  if (emails.length) {
+    const html = meetingEmailHtml(m, organizer, people, mode);
+    const ics = meetingIcs(m, { name: organizer, email: me?.email ?? "" }, mode === "cancel", seq);
+    const subject = (mode === "cancel" ? "Atšaukta: " : mode === "update" ? "Pakeista: " : "Kvietimas: ") + m.title + " · " + when;
+    for (const e of emails) {
+      try {
+        await resendMail(e, subject, html, me?.email ?? "", ics);
+        mailed++;
+      } catch (err) {
+        console.error("invite mail", e, (err as Error).message);
+        failed.push(e);
+      }
+    }
+  }
+  if (mode === "cancel") {
+    await db(`meetings?id=eq.${m.id}`, { method: "DELETE" });
+  } else {
+    const okEmails = emails.filter((e) => !failed.includes(e));
+    await db(`meetings?id=eq.${m.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ notified: {
+        users: [...new Set([...(notified.users ?? []), ...users])],
+        emails: [...new Set([...(notified.emails ?? []), ...okEmails])],
+        seq,
+      } }),
+    });
+  }
+  return { members: users.length, pushed: push.sent, mailed, failed };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
@@ -225,6 +385,10 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
     if (body.kind === "reaction") return json(await onReaction(uid, String(body.message_id ?? ""), String(body.emoji ?? "").slice(0, 16)));
+    if (body.kind === "meeting") {
+      const mode = ["new", "update", "cancel"].includes(body.mode) ? body.mode : "new";
+      return json(await onMeeting(uid, String(body.meeting_id ?? ""), mode));
+    }
     if (body.kind === "test") {
       return json(await sendTo([uid], { title: "EventSolutions App", body: "Pranešimai veikia 🎉", tag: "test", url: "./" }));
     }
