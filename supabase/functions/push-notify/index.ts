@@ -13,6 +13,8 @@
 //      member of the conversation gets a ringing notification with
 //      "Priimti" / "Atmesti" (muted chats ring too; quiet hours do not).
 // POST {"kind":"test"}                   -> the caller's own devices
+// POST {"kind":"dial","phone","name"}    -> the caller's own devices: "call this
+//      person" — tapping it on the phone starts the call (Žmonės → Bookingas)
 // POST {"kind":"meeting","meeting_id","mode":"new"|"update"|"cancel"}
 //      Calendar invitation from its creator: invited members get a push
 //      notification, invited e-mail addresses get an e-mail with an .ics
@@ -58,7 +60,7 @@ type Prefs = {
   muted?: string[];
   quiet?: { on?: boolean; from?: string; to?: string };
 };
-type Sub = { endpoint: string; user_id: string; p256dh: string; auth: string };
+type Sub = { endpoint: string; user_id: string; p256dh: string; auth: string; user_agent?: string | null };
 type Payload = { title: string; body: string; tag: string; url: string; kind?: string; call_id?: string; meet?: string; provider?: string };
 
 function json(body: unknown, status = 200): Response {
@@ -142,9 +144,11 @@ async function server(): Promise<webpush.ApplicationServer> {
   return appServer;
 }
 
-async function sendTo(userIds: string[], payload: Payload, ttl = 86400): Promise<{ sent: number; gone: number }> {
+export const isPhoneUa = (ua?: string | null) => !ua || /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+async function sendTo(userIds: string[], payload: Payload, ttl = 86400, phonesOnly = false): Promise<{ sent: number; gone: number }> {
   if (!userIds.length) return { sent: 0, gone: 0 };
-  const subs = await db<Sub[]>(`push_subscriptions?select=*&user_id=in.${inList(userIds)}`);
+  let subs = await db<Sub[]>(`push_subscriptions?select=*&user_id=in.${inList(userIds)}`);
+  if (phonesOnly) subs = subs.filter((s) => isPhoneUa(s.user_agent));
   const as = await server();
   let sent = 0, gone = 0;
   await Promise.all(subs.map(async (s) => {
@@ -452,6 +456,15 @@ Deno.serve(async (req) => {
     if (body.kind === "meeting") {
       const mode = ["new", "update", "cancel"].includes(body.mode) ? body.mode : "new";
       return json(await onMeeting(uid, String(body.meeting_id ?? ""), mode));
+    }
+    if (body.kind === "dial") {
+      const phone = String(body.phone ?? "").trim();
+      if (!/^\+?[\d\s()-]{5,24}$/.test(phone)) return json({ error: "Neteisingas numeris." }, 400);
+      const who = String(body.name ?? "").replace(/[\r\n]+/g, " ").trim().slice(0, 80);
+      return json(await sendTo([uid], {
+        title: "📞 Skambinti: " + (who || phone), body: phone + " — paspausk ir telefonas skambins", tag: "dial",
+        url: `./?dial=${encodeURIComponent(phone)}&who=${encodeURIComponent(who)}`, kind: "dial",
+      }, 120, true));
     }
     if (body.kind === "test") {
       return json(await sendTo([uid], { title: "EventSolutions App", body: "Pranešimai veikia 🎉", tag: "test", url: "./" }));
