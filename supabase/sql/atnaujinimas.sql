@@ -1,7 +1,7 @@
 -- ============================================================
 -- EventSolutions App — VISI naujausi duomenų bazės pakeitimai viename faile
 -- (chato teisės, pranešimai, el. paštas, failai chate, kalendorius,
--- narių trynimas, pasiūlymai, projektai, chatas kaip Slack).
+-- narių trynimas, pasiūlymai, projektai, chatas kaip Slack, vaizdo skambučiai).
 -- Supabase → SQL Editor → įklijuok VISĄ → Run. Saugu paleisti kelis kartus.
 -- ============================================================
 
@@ -733,3 +733,83 @@ create function public.chat_files(p_limit int default 300) returns table (
    limit greatest(1, least(coalesce(p_limit, 300), 1000))
 $$;
 grant execute on function public.chat_files(int) to authenticated;
+
+
+-- >>>>>>>>>> calls.sql
+-- ============================================================
+-- Vaizdo skambučiai (Google Meet) chate:
+--  * calls           — skambutis pokalbyje (kas skambina, Meet nuoroda)
+--  * call_responses  — kiekvieno nario atsakymas: priėmė / atmetė
+--  * google_meet_auth — prijungtos Google paskyros raktas (užšifruotas);
+--    jį mato tik serverio funkcija „meet“, programėlė — ne.
+-- Paleisti PO chat_slack.sql. Supabase → SQL Editor → Run.
+-- Saugu paleisti pakartotinai.
+-- ============================================================
+
+create table if not exists public.calls (
+  id              uuid primary key default gen_random_uuid(),
+  conversation_id uuid not null references public.conversations(id) on delete cascade,
+  created_by      uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  meet_url        text not null check (meet_url ~ '^https://meet\.google\.com/[a-z0-9-]+$'),
+  created_at      timestamptz not null default now(),
+  ended_at        timestamptz
+);
+create index if not exists calls_conv_idx on public.calls (conversation_id, created_at desc);
+
+alter table public.calls enable row level security;
+drop policy if exists "see calls" on public.calls;
+create policy "see calls" on public.calls
+  for select to authenticated using (public.is_conv_member(conversation_id));
+drop policy if exists "start call" on public.calls;
+create policy "start call" on public.calls
+  for insert to authenticated with check (
+    created_by = auth.uid() and public.is_conv_member(conversation_id)
+    and (exists (select 1 from public.conversations c where c.id = conversation_id and c.kind = 'general')
+         or exists (select 1 from public.conversation_members m where m.conversation_id = calls.conversation_id and m.user_id = auth.uid())));
+drop policy if exists "end own call" on public.calls;
+create policy "end own call" on public.calls
+  for update to authenticated using (created_by = auth.uid()) with check (created_by = auth.uid());
+
+create table if not exists public.call_responses (
+  call_id    uuid not null references public.calls(id) on delete cascade,
+  user_id    uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  status     text not null check (status in ('accepted','declined')),
+  created_at timestamptz not null default now(),
+  primary key (call_id, user_id)
+);
+alter table public.call_responses enable row level security;
+drop policy if exists "see call answers" on public.call_responses;
+create policy "see call answers" on public.call_responses
+  for select to authenticated using (
+    exists (select 1 from public.calls c where c.id = call_id and public.is_conv_member(c.conversation_id)));
+drop policy if exists "answer call" on public.call_responses;
+create policy "answer call" on public.call_responses
+  for insert to authenticated with check (
+    user_id = auth.uid()
+    and exists (select 1 from public.calls c where c.id = call_id and public.is_conv_member(c.conversation_id)));
+drop policy if exists "change answer" on public.call_responses;
+create policy "change answer" on public.call_responses
+  for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+-- Google paskyra: RLS įjungta be taisyklių — pasiekia tik serverio funkcija
+create table if not exists public.google_meet_auth (
+  id            int primary key default 1 check (id = 1),
+  refresh_token text not null,
+  email         text not null default '',
+  connected_by  uuid references auth.users(id) on delete set null,
+  connected_at  timestamptz not null default now()
+);
+alter table public.google_meet_auth enable row level security;
+
+-- skambučiai ir atsakymai ateina realiu laiku
+do $$
+begin
+  if exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'calls') then
+      execute 'alter publication supabase_realtime add table public.calls';
+    end if;
+    if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'call_responses') then
+      execute 'alter publication supabase_realtime add table public.call_responses';
+    end if;
+  end if;
+end $$;

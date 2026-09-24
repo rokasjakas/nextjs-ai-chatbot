@@ -9,6 +9,9 @@
 //      conversation who has notifications on for that kind of chat and is
 //      not in quiet hours gets one.
 // POST {"kind":"reaction","message_id","emoji"}  -> the message's author
+// POST {"kind":"call","call_id"}        Video call from its starter: every other
+//      member of the conversation gets a ringing notification with
+//      "Priimti" / "Atmesti" (muted chats ring too; quiet hours do not).
 // POST {"kind":"test"}                   -> the caller's own devices
 // POST {"kind":"meeting","meeting_id","mode":"new"|"update"|"cancel"}
 //      Calendar invitation from its creator: invited members get a push
@@ -51,11 +54,12 @@ type Prefs = {
   meetings?: boolean;
   mentions?: boolean;
   threads?: boolean;
+  calls?: boolean;
   muted?: string[];
   quiet?: { on?: boolean; from?: string; to?: string };
 };
 type Sub = { endpoint: string; user_id: string; p256dh: string; auth: string };
-type Payload = { title: string; body: string; tag: string; url: string };
+type Payload = { title: string; body: string; tag: string; url: string; kind?: string; call_id?: string; meet?: string };
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -138,7 +142,7 @@ async function server(): Promise<webpush.ApplicationServer> {
   return appServer;
 }
 
-async function sendTo(userIds: string[], payload: Payload): Promise<{ sent: number; gone: number }> {
+async function sendTo(userIds: string[], payload: Payload, ttl = 86400): Promise<{ sent: number; gone: number }> {
   if (!userIds.length) return { sent: 0, gone: 0 };
   const subs = await db<Sub[]>(`push_subscriptions?select=*&user_id=in.${inList(userIds)}`);
   const as = await server();
@@ -146,7 +150,7 @@ async function sendTo(userIds: string[], payload: Payload): Promise<{ sent: numb
   await Promise.all(subs.map(async (s) => {
     try {
       await as.subscribe({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } })
-        .pushTextMessage(JSON.stringify(payload), { ttl: 86400, topic: payload.tag.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32) || undefined });
+        .pushTextMessage(JSON.stringify(payload), { ttl, urgency: ttl < 600 ? webpush.Urgency.High : webpush.Urgency.Normal, topic: payload.tag.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32) || undefined });
       sent++;
     } catch (e) {
       const status = (e as { response?: Response }).response?.status;
@@ -196,10 +200,11 @@ async function onMessage(uid: string, messageId: string) {
   if (!c) return { sent: 0 };
   const users = await chatUsers();
   const byId = new Map(users.map((u) => [u.id, u]));
-  const open = c.kind === "general" || (c.kind === "channel" && c.is_private === false);
   const members = c.kind === "general" ? users.map((u) => u.id)
     : (await db<{ user_id: string }[]>(`conversation_members?select=user_id&conversation_id=eq.${c.id}`)).map((x) => x.user_id);
-  const canSee = (id: string) => byId.has(id) && (open || members.includes(id));
+  // only members of the conversation are told (#bendras: everyone; a channel,
+  // also a public one, or a group: the people in it)
+  const canSee = (id: string) => byId.has(id) && members.includes(id);
   const thread = !!m.parent_id && !m.also_channel;
   let recipients: string[];
   if (thread) {
@@ -229,6 +234,33 @@ export function wantsMention(p: Prefs | null): boolean {
   const pr = p ?? {};
   if (pr.enabled === false || pr.mentions === false) return false;
   return !inQuietHours(pr.quiet);
+}
+
+export function wantsCall(p: Prefs | null): boolean {
+  const pr = p ?? {};
+  if (pr.enabled === false || pr.calls === false) return false;
+  return !inQuietHours(pr.quiet);
+}
+async function onCall(uid: string, callId: string) {
+  const [call] = await db<{ id: string; conversation_id: string; created_by: string; meet_url: string; created_at: string; ended_at: string | null }[]>(
+    `calls?select=*&id=eq.${encodeURIComponent(callId)}`,
+  );
+  if (!call || call.created_by !== uid || call.ended_at) return { sent: 0, skipped: "not your call" };
+  if (Date.now() - new Date(call.created_at).getTime() > 5 * 60e3) return { sent: 0, skipped: "too old" };
+  const [c] = await db<{ id: string; kind: string; title: string | null }[]>(`conversations?select=id,kind,title&id=eq.${call.conversation_id}`);
+  if (!c) return { sent: 0 };
+  const users = await chatUsers();
+  const byId = new Map(users.map((u) => [u.id, u]));
+  const members = c.kind === "general" ? users.map((u) => u.id)
+    : (await db<{ user_id: string }[]>(`conversation_members?select=user_id&conversation_id=eq.${c.id}`)).map((x) => x.user_id);
+  const to = members.filter((id) => id !== uid && byId.has(id) && wantsCall(byId.get(id)!.notify_prefs));
+  const where = c.kind === "direct" ? "" : c.kind === "general" ? "#bendras" : (c.kind === "group" && !c.title) ? "grupėje" : "#" + (c.title || "kanalas");
+  const r = await sendTo(to, {
+    title: `📹 ${name(byId.get(uid))} skambina`,
+    body: (where ? where + " · " : "") + "Vaizdo skambutis (Google Meet). Priimti ar atmesti?",
+    tag: "call-" + call.id, url: `./?call=${call.id}`, kind: "call", call_id: call.id, meet: call.meet_url,
+  }, 90);
+  return { ...r, members: to.length };
 }
 
 async function onReaction(uid: string, messageId: string, emoji: string) {
@@ -413,6 +445,7 @@ Deno.serve(async (req) => {
     if (!uid) return json({ error: "Reikia prisijungti." }, 401);
     const body = await req.json().catch(() => ({}));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
+    if (body.kind === "call") return json(await onCall(uid, String(body.call_id ?? "")));
     if (body.kind === "reaction") return json(await onReaction(uid, String(body.message_id ?? ""), String(body.emoji ?? "").slice(0, 16)));
     if (body.kind === "meeting") {
       const mode = ["new", "update", "cancel"].includes(body.mode) ? body.mode : "new";
