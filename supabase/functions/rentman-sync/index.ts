@@ -6,6 +6,11 @@
 //     Projects whose event date falls within [from, to]. The event date is
 //     taken from the project name ("(09.15) ...") or else the usage start.
 //
+//   {"mode":"usage","from":"YYYY-MM-DD","to":"YYYY-MM-DD"}
+//     -> {"projects":[{"rentmanId","name","from","to","equipment":[{"qty","name","equipmentId"}]}]}
+//     Projects whose plan period (loading → return) overlaps [from, to], with
+//     their equipment, so the app can count what Rentman holds on each day.
+//
 //   {"mode":"detail","rentmanId":"1114"}
 //     -> {"name":"...","eventDate":"YYYY-MM-DD",
 //         "schedule":{"montazas":"...","renginys":"...","demontazas":"..."},
@@ -235,6 +240,44 @@ async function listProjects(from: string, to: string, token: string) {
     .map(({ sortKey: _sortKey, ...p }) => p);
 }
 
+// equipment held by projects in a period (plan period = loading to return)
+async function usage(from: string, to: string, token: string) {
+  const filtered = `/projects?planperiod_start[lte]=${to}T23:59:59&planperiod_end[gte]=${from}T00:00:00`;
+  let projects: RentmanRecord[];
+  try {
+    projects = await rentmanGetAll(filtered, token);
+  } catch (err) {
+    if (!(err instanceof RentmanError && err.status === 400)) throw err;
+    projects = await rentmanGetAll("/projects", token);
+  }
+  const hit = projects.filter((p) => {
+    const a = datePart(str(p.planperiod_start) ?? eventStart(p)), b = datePart(str(p.planperiod_end)) ?? a;
+    return a !== null && b !== null && a <= to && b >= from;
+  }).slice(0, 80);
+  const out: unknown[] = [];
+  // a few at a time: Rentman limits the request rate
+  for (let i = 0; i < hit.length; i += 5) {
+    const part = await Promise.all(hit.slice(i, i + 5).map(async (p) => {
+      const eq = await rentmanGetAll(`/projects/${p.id}/projectequipment`, token).catch(() => [] as RentmanRecord[]);
+      const a = datePart(str(p.planperiod_start) ?? eventStart(p))!;
+      return {
+        rentmanId: String(p.id),
+        name: String(p.displayname ?? p.name ?? ""),
+        from: a,
+        to: datePart(str(p.planperiod_end)) ?? a,
+        date: eventDate(p),
+        equipment: eq.map((e) => ({
+          qty: Number(e.quantity ?? e.quantity_total ?? 0),
+          name: String(e.name ?? ""),
+          equipmentId: (() => { const r = e.equipment; if (typeof r === "number") return String(r); if (typeof r === "string") { const m = r.match(/(\d+)\s*$/); return m ? m[1] : null; } return null; })(),
+        })).filter((e) => e.qty > 0),
+      };
+    }));
+    out.push(...part);
+  }
+  return out;
+}
+
 async function projectDetail(rentmanId: string, token: string) {
   const [{ data: project }, functions, equipment] = await Promise.all([
     rentmanGet<{ data: RentmanRecord }>(`/projects/${rentmanId}`, token),
@@ -249,6 +292,7 @@ async function projectDetail(rentmanId: string, token: string) {
     equipment: equipment.map((e) => ({
       qty: Number(e.quantity ?? e.quantity_total ?? 0),
       name: String(e.name ?? ""),
+      equipmentId: (() => { const r = e.equipment; if (typeof r === "number") return String(r); if (typeof r === "string") { const m = r.match(/(\d+)\s*$/); return m ? m[1] : null; } return null; })(),
     })),
   };
 }
@@ -287,6 +331,15 @@ Deno.serve(async (req) => {
       return json({ projects: await listProjects(from, to, token) });
     }
 
+    if (body?.mode === "usage") {
+      const { from, to } = body;
+      if (typeof from !== "string" || typeof to !== "string" || !DATE_RE.test(from) || !DATE_RE.test(to)) {
+        return json({ error: "usage requires from and to as YYYY-MM-DD" }, 400);
+      }
+      if (Date.parse(to) - Date.parse(from) > 93 * DAY_MS) return json({ error: "usage: at most 3 months" }, 400);
+      return json({ projects: await usage(from, to, token) });
+    }
+
     if (body?.mode === "detail") {
       const rentmanId = String(body.rentmanId ?? "");
       if (!/^\d+$/.test(rentmanId)) {
@@ -295,7 +348,7 @@ Deno.serve(async (req) => {
       return json(await projectDetail(rentmanId, token));
     }
 
-    return json({ error: 'mode must be "list" or "detail"' }, 400);
+    return json({ error: 'mode must be "list", "usage" or "detail"' }, 400);
   } catch (err) {
     if (err instanceof RentmanError) {
       console.error(err.message);
