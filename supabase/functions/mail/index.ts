@@ -42,7 +42,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 5;
+const VERSION = 6;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -141,7 +141,7 @@ function imapClient(a: Account) {
 // The connection to the mail server is kept open for a minute after use:
 // while the function stays warm, the next letter opens without logging in
 // again (that was most of the waiting).
-type Pooled = { c: ImapFlow; ready: Promise<void>; timer?: ReturnType<typeof setTimeout>; used: number; boxes?: { at: number; list: Box[] } };
+type Pooled = { c: ImapFlow; ready: Promise<void>; timer?: ReturnType<typeof setTimeout>; used: number; busy?: boolean; boxes?: { at: number; list: Box[] } };
 type Box = { path: string; name: string; delimiter: string; specialUse?: string; flags?: Set<string>; status?: { messages?: number; unseen?: number } };
 const pool = new Map<string, Pooled>();
 const IDLE_MS = 60_000;
@@ -155,50 +155,83 @@ function drop(k: string, p: Pooled) {
   clearTimeout(p.timer);
   try { p.c.close(); } catch { /* already closed */ }
 }
-async function pooled(a: Account): Promise<Pooled> {
-  const k = poolKey(a);
-  let p = pool.get(k);
-  if (p) {
-    try { await p.ready; } catch { drop(k, p); p = undefined; }
-  }
-  if (p && p.c.usable) {
-    clearTimeout(p.timer);
-    // a connection that sat idle may have been cut by the server: a quick check
-    if (Date.now() - p.used > 20_000) {
-      const ok = await Promise.race([p.c.noop().then(() => true, () => false), new Promise<boolean>((r) => setTimeout(() => r(false), 4000))]);
-      if (ok) return p;
-      drop(k, p);
-    } else return p;
-  } else if (p) drop(k, p);
+async function connectNew(a: Account): Promise<ImapFlow> {
   const c = imapClient(a);
   c.on("error", () => {});
-  const np: Pooled = { c, ready: c.connect(), used: Date.now() };
-  pool.set(k, np);
-  c.on("close", () => { if (pool.get(k) === np) pool.delete(k); });
   try {
-    await np.ready;
+    await withTimeout(c.connect(), 15_000, "connect");
   } catch (e) {
-    drop(k, np);
-    throw connectError(e);
+    try { c.close(); } catch { /* ignore */ }
+    throw e instanceof OpTimeout ? new UserError("Pašto serveris neatsako. Pabandyk dar kartą.") : connectError(e);
   }
-  return np;
+  return c;
 }
-async function withImap<T>(a: Account, fn: (c: ImapFlow) => Promise<T>): Promise<T> {
-  const k = poolKey(a), p = await pooled(a);
-  try {
-    return await fn(p.c);
-  } catch (e) {
-    if (!(e instanceof UserError)) drop(k, p);     // a broken connection is not reused
-    throw e;
-  } finally {
-    p.used = Date.now();
+class OpTimeout extends Error {}
+function withTimeout<T>(p: Promise<T>, ms: number, what: string): Promise<T> {
+  let t: ReturnType<typeof setTimeout>;
+  return Promise.race([p, new Promise<T>((_, rej) => { t = setTimeout(() => rej(new OpTimeout(what + " timeout")), ms); })]).finally(() => clearTimeout(t));
+}
+// the kept connection is used only when it is free and answers a quick NOOP;
+// otherwise this request gets its own connection (one stuck command must not
+// hold up everything else)
+async function pooled(a: Account): Promise<{ c: ImapFlow; p?: Pooled }> {
+  const k = poolKey(a);
+  const p = pool.get(k);
+  if (p && !p.busy && p.c.usable) {
+    p.busy = true;
     clearTimeout(p.timer);
-    p.timer = setTimeout(() => {
-      if (pool.get(k) !== p) return;
-      pool.delete(k);
-      p.c.logout().catch(() => p.c.close());
-    }, IDLE_MS);
-    try { Deno.unrefTimer(p.timer as unknown as number); } catch { /* older runtime */ }
+    if (Date.now() - p.used < 5_000) return { c: p.c, p };
+    const ok = await withTimeout(p.c.noop().then(() => true, () => false), 3000, "noop").catch(() => false);
+    if (ok) return { c: p.c, p };
+    drop(k, p);
+  } else if (p && !p.c.usable) drop(k, p);
+  const c = await connectNew(a);
+  if (!pool.has(k)) {
+    const np: Pooled = { c, ready: Promise.resolve(), used: Date.now(), busy: true };
+    pool.set(k, np);
+    c.on("close", () => { if (pool.get(k) === np) pool.delete(k); });
+    return { c, p: np };
+  }
+  return { c };                                     // a one-off connection, closed after use
+}
+const OP_MS = Number(Deno.env.get("MAIL_OP_MS") || 15_000);
+async function withImap<T>(a: Account, fn: (c: ImapFlow) => Promise<T>, retry = true, ms = OP_MS): Promise<T> {
+  const k = poolKey(a);
+  const once = async () => {
+    const { c, p } = await pooled(a);
+    try {
+      return await withTimeout(fn(c), ms, "imap");
+    } catch (e) {
+      if (!(e instanceof UserError)) { if (p) drop(k, p); else try { c.close(); } catch { /* ignore */ } }   // a broken connection is not reused
+      throw e;
+    } finally {
+      if (p && pool.get(k) === p) {
+        p.busy = false;
+        p.used = Date.now();
+        clearTimeout(p.timer);
+        p.timer = setTimeout(() => {
+          if (pool.get(k) !== p || p.busy) return;
+          pool.delete(k);
+          p.c.logout().catch(() => p.c.close());
+        }, IDLE_MS);
+        try { Deno.unrefTimer(p.timer as unknown as number); } catch { /* older runtime */ }
+      } else if (!p) c.logout().catch(() => c.close());
+    }
+  };
+  try {
+    return await once();
+  } catch (e) {
+    if (e instanceof UserError || !retry) {
+      if (e instanceof OpTimeout) throw new UserError("Pašto serveris per ilgai neatsako. Pabandyk dar kartą.");
+      throw e;
+    }
+    console.error("imap retry after:", (e as Error).message);
+    try {
+      return await once();
+    } catch (e2) {
+      if (e2 instanceof UserError) throw e2;
+      throw new UserError("Pašto serveris neatsako. Pabandyk dar kartą.");
+    }
   }
 }
 // every folder of the mailbox (kept for a minute per connection)
@@ -353,6 +386,10 @@ export function decodeText(buf: Buffer, charset: string): string {
   try { return new TextDecoder(cs).decode(buf); } catch { return new TextDecoder("utf-8").decode(buf); }
 }
 async function read(a: Account, folder: string, uid: number, peek = false) {
+  const t0 = Date.now();
+  try { return await readOnce(a, folder, uid, peek); } finally { console.log(`read ${folder}/${uid}${peek ? " peek" : ""} ${Date.now() - t0} ms`); }
+}
+async function readOnce(a: Account, folder: string, uid: number, peek: boolean) {
   return await withImap(a, async (c) => {
     const path = await folderPath(c, folder);
     const lock = await c.getMailboxLock(path);
@@ -369,10 +406,8 @@ async function read(a: Account, folder: string, uid: number, peek = false) {
       const inline = htmlPart ? all.filter((l) => { if (!l.cid || !l.type.startsWith("image/") || l.size > MAX_INLINE || l.size > budget) return false; budget -= l.size; return true; }) : [];
       // everything that fits comes in ONE request to the mail server; the "read" mark goes at the same time
       const small = [...texts.filter((l) => l.size <= MAX_TEXT), ...inline];
-      const [got] = await Promise.all([
-        small.length ? c.fetchOne(String(uid), { uid: true, bodyParts: small.map((l) => l.part) }, { uid: true }) : Promise.resolve(null),
-        !peek && !msg.flags?.has("\\Seen") ? c.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true }).catch(() => false) : Promise.resolve(true),
-      ]);
+      const got = small.length ? await c.fetchOne(String(uid), { uid: true, bodyParts: small.map((l) => l.part) }, { uid: true }) : null;
+      if (!peek && !msg.flags?.has("\\Seen")) await c.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true }).catch(() => false);
       const parts = (got && (got as { bodyParts?: Map<string, Buffer> }).bodyParts) || new Map<string, Buffer>();
       const partOf = async (l: Leaf): Promise<Buffer> => {
         const raw = parts.get(l.part) ?? parts.get(l.part.toLowerCase());
@@ -428,7 +463,7 @@ async function attachment(a: Account, folder: string, uid: number, part: string)
     } finally {
       lock.release();
     }
-  });
+  }, true, 100_000);
 }
 
 // ---------- search ----------
@@ -484,7 +519,7 @@ async function search(a: Account, b: SearchBody) {
     }
     items.sort((x, y) => String(y.date).localeCompare(String(x.date)));
     return { items: items.slice(0, 100), total, more: total > items.length };
-  });
+  }, true, 40_000);
 }
 
 async function flag(a: Account, folder: string, uid: number, seen: boolean) {
@@ -497,7 +532,7 @@ async function flag(a: Account, folder: string, uid: number, seen: boolean) {
     } finally {
       lock.release();
     }
-  });
+  }, false);
 }
 
 async function star(a: Account, folder: string, uid: number, on: boolean) {
@@ -510,7 +545,7 @@ async function star(a: Account, folder: string, uid: number, on: boolean) {
     } finally {
       lock.release();
     }
-  });
+  }, false);
 }
 async function move(a: Account, folder: string, uid: number, to: string) {
   return await withImap(a, async (c) => {
@@ -523,7 +558,7 @@ async function move(a: Account, folder: string, uid: number, to: string) {
     } finally {
       lock.release();
     }
-  });
+  }, false);
 }
 async function remove(a: Account, folder: string, uid: number) {
   return await withImap(a, async (c) => {
@@ -536,7 +571,7 @@ async function remove(a: Account, folder: string, uid: number) {
     } finally {
       lock.release();
     }
-  });
+  }, false);
 }
 
 const emailRe = /^[^\s@<>,;"]+@[^\s@<>,;"]+\.[^\s@<>,;"]+$/;
@@ -662,7 +697,7 @@ async function send(me: Me, a: Account, b: SendBody) {
         lock.release();
       }
     }
-  }).catch((e) => console.error("after send", e?.message));
+  }, false).catch((e) => console.error("after send", e?.message));
   return { ok: true, accepted: server.accepted, server: server.response.slice(0, 200) };
 }
 
