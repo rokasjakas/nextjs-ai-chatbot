@@ -133,6 +133,7 @@ let appServer: webpush.ApplicationServer | null = null;
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
+const PUSH_FN_VERSION = 3;
 async function vapidKeyPair(): Promise<{ x: string; y: string; d: string }> {
   const d = env("VAPID_PRIVATE_KEY").trim();
   try {
@@ -185,12 +186,19 @@ async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except =
       sent++;
     } catch (e) {
       const status = (e as { response?: Response }).response?.status;
-      if (status === 404 || status === 410) {
+      // Google / Apple say why (e.g. the key does not match the subscription)
+      const why = await (e as { response?: Response }).response?.text().catch(() => "") ?? "";
+      const note = (String(status ?? (e as Error)?.message ?? e) + (why ? " " + why.replace(/\s+/g, " ").trim() : "")).slice(0, 220);
+      // 404/410: the device is gone. 403: it was subscribed with another
+      // server key and can never be reached — the app registers it again
+      // (with the right key) the next time it is opened.
+      if (status === 404 || status === 410 || status === 403) {
         gone++;
+        if (status === 403) failed.push(note);
         await db(`push_subscriptions?endpoint=eq.${encodeURIComponent(s.endpoint)}`, { method: "DELETE" });
       } else {
-        console.error("push failed", status ?? e);
-        failed.push(String(status ?? (e as Error)?.message ?? e).slice(0, 120));
+        console.error("push failed", note);
+        failed.push(note);
       }
     }
   }));
@@ -502,7 +510,8 @@ Deno.serve(async (req) => {
       const r = await sendTo([uid], { title: "EventSolutions App", body: "Pranešimai veikia 🎉", tag: "test", url: "./" });
       // what the server sees (for the "Išbandyti" diagnosis in the app)
       const all = await db<{ user_id: string }[]>("push_subscriptions?select=user_id").catch(() => null);
-      return json({ ...r, uid, total: all ? all.length : -1, key: (await publicKey()).slice(0, 12) });
+      await publicKey();
+      return json({ ...r, uid, total: all ? all.length : -1, fn: PUSH_FN_VERSION, keyMatch: vapidPublic === env("VAPID_PUBLIC_KEY").trim(), subject: Deno.env.get("VAPID_SUBJECT") || "(numatytas)" });
     }
     return json({ error: "Unknown kind" }, 400);
   } catch (err) {
