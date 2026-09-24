@@ -38,12 +38,15 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 const APPROVED = ["admin", "office", "tech", "freelance", "runner"];
+// the app shows a warning when the deployed function is older than it expects
+const VERSION = 3;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
 class UserError extends Error {}
 
 function json(body: unknown, status = 200): Response {
+  if (body && typeof body === "object" && !Array.isArray(body)) body = { v: VERSION, ...(body as Record<string, unknown>) };
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json; charset=utf-8" },
@@ -289,7 +292,10 @@ async function smtpSend(a: Account, rcpt: string[], raw: Buffer) {
     tls: { rejectUnauthorized: !insecure() },
     connectionTimeout: 15000,
   });
-  await tx.sendMail({ envelope: { from: a.email, to: rcpt }, raw });
+  const info = await tx.sendMail({ envelope: { from: a.email, to: rcpt }, raw });
+  const rejected = (info.rejected ?? []).map(String);
+  if (rejected.length) throw Object.assign(new Error("Serveris atmetė gavėjus: " + rejected.join(", ")), { response: info.response });
+  return { response: String(info.response ?? ""), accepted: (info.accepted ?? []).map(String) };
 }
 
 // ---------- signature (built from the profile) ----------
@@ -372,8 +378,10 @@ async function send(me: Me, a: Account, b: SendBody) {
     attachments: withSig ? [...atts, logoAttachment()] : atts,
   };
   const raw: Buffer = await new MailComposer(mail).compile().build();
+  let server: { response: string; accepted: string[] };
   try {
-    await smtpSend(a, [...to, ...cc], raw);
+    server = await smtpSend(a, [...to, ...cc], raw);
+    console.log("sent", a.email, "->", server.accepted.join(","), server.response);
   } catch (e) {
     console.error("smtp", (e as Error).message);
     throw new UserError("Laiško išsiųsti nepavyko: " + ((e as { response?: string }).response || (e as Error).message).slice(0, 200));
@@ -391,7 +399,7 @@ async function send(me: Me, a: Account, b: SendBody) {
       }
     }
   }).catch((e) => console.error("after send", e?.message));
-  return { ok: true };
+  return { ok: true, accepted: server.accepted, server: server.response.slice(0, 200) };
 }
 
 // ---------- account storage ----------
