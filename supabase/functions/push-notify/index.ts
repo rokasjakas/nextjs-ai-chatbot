@@ -136,7 +136,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 6;
+const PUSH_FN_VERSION = 7;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -157,6 +157,9 @@ export function parsePrivateKey(raw: string): Uint8Array {
   if (bytes.length > 33) {                               // PKCS#8 / SEC1 DER: 04 20 <32 bytes>
     for (let i = 0; i + 34 <= bytes.length; i++) if (bytes[i] === 0x04 && bytes[i + 1] === 0x20) { bytes = bytes.slice(i + 2, i + 34); break; }
   }
+  // a key whose first byte(s) were 0 is sometimes written without them
+  // (31 bytes): it is the same key, put the zeros back
+  if (bytes.length >= 28 && bytes.length < 32) { const full = new Uint8Array(32); full.set(bytes, 32 - bytes.length); bytes = full; }
   if (bytes.length !== 32) throw new Error("VAPID_PRIVATE_KEY netinkamas: " + bytes.length + " baitų (turi būti 32) — tikriausiai įrašytas ne tas raktas");
   return bytes;
 }
