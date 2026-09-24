@@ -473,7 +473,10 @@ Deno.serve(async (req) => {
       }, 120, String(body.except ?? "")));
     }
     if (body.kind === "test") {
-      return json(await sendTo([uid], { title: "EventSolutions App", body: "Pranešimai veikia 🎉", tag: "test", url: "./" }));
+      const r = await sendTo([uid], { title: "EventSolutions App", body: "Pranešimai veikia 🎉", tag: "test", url: "./" });
+      // what the server sees (for the "Išbandyti" diagnosis in the app)
+      const all = await db<{ user_id: string }[]>("push_subscriptions?select=user_id").catch(() => null);
+      return json({ ...r, uid, total: all ? all.length : -1 });
     }
     return json({ error: "Unknown kind" }, 400);
   } catch (err) {
