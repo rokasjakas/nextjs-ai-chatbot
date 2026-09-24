@@ -136,7 +136,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 7;
+const PUSH_FN_VERSION = 8;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -525,14 +525,133 @@ async function onMeeting(uid: string, id: string, mode: string) {
   return { members: users.length, pushed: push.sent, mailed, failed };
 }
 
+
+// ---------- tasks (public.tasks): new / done notices and reminders ----------
+export type Remind = { before?: number[]; at?: string[]; push?: boolean; email?: boolean; overdue?: boolean };
+export type Task = {
+  id: string; title: string; note: string; due_at: string | null; created_by: string; assignees: string[];
+  lead: string | null; remind: Remind | null; done: Record<string, string> | null; sent: Record<string, string> | null;
+};
+export type Moment = { key: string; at: number; kind: "before" | "at" | "overdue"; n: number };
+
+// who has to do it: the chosen members, or the author for an own task
+export function taskPeople(t: Task): string[] { return t.assignees?.length ? t.assignees : [t.created_by]; }
+export function taskOpen(t: Task): string[] { const d = t.done ?? {}; return taskPeople(t).filter((u) => !d[u]); }
+export function taskMoments(t: Task): Moment[] {
+  const r = t.remind ?? {}, out: Moment[] = [];
+  const due = t.due_at ? Date.parse(t.due_at) : NaN;
+  if (!isNaN(due)) {
+    for (const m of r.before ?? []) if (Number.isFinite(m) && m >= 0) out.push({ key: "b" + m, at: due - m * 60000, kind: "before", n: m });
+    if (r.overdue) for (let d = 1; d <= 14; d++) out.push({ key: "o" + d, at: due + d * 86400000, kind: "overdue", n: d });
+  }
+  for (const iso of r.at ?? []) { const a = Date.parse(iso); if (!isNaN(a)) out.push({ key: "a" + iso, at: a, kind: "at", n: 0 }); }
+  return out;
+}
+// reminders whose time came within the last hour and were not sent yet
+export function dueMoments(t: Task, now: number, windowMs = 3600000): Moment[] {
+  const sent = t.sent ?? {};
+  return taskMoments(t).filter((m) => m.at <= now && m.at > now - windowMs && !sent[m.key]);
+}
+function whenLt(iso: string | null): string {
+  if (!iso) return "";
+  return new Intl.DateTimeFormat("lt-LT", { timeZone: TZ, month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+}
+function before(min: number): string {
+  if (min >= 1440 && min % 1440 === 0) return `${min / 1440} d.`;
+  if (min >= 60 && min % 60 === 0) return `${min / 60} val.`;
+  return `${min} min.`;
+}
+export function reminderText(t: Task, m: Moment): { title: string; body: string } {
+  const due = t.due_at ? whenLt(t.due_at) : "";
+  const body = m.kind === "overdue" ? `Vėluoja ${m.n} d. · terminas buvo ${due}`
+    : m.kind === "before" ? (m.n === 0 ? `Terminas dabar (${due})` : `Terminas po ${before(m.n)} · ${due}`)
+    : due ? `Priminimas · terminas ${due}` : "Priminimas";
+  return { title: "⏰ " + t.title.slice(0, 120), body };
+}
+function esc(s: string): string {
+  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+}
+async function mailTo(to: string[], subject: string, html: string): Promise<string> {
+  const key = Deno.env.get("RESEND_API_KEY");
+  if (!key || !to.length) return key ? "" : "RESEND_API_KEY nenustatytas";
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from: Deno.env.get("REMINDER_FROM") || "Event Solutions <onboarding@resend.dev>", to, subject, html }),
+  });
+  return res.ok ? "" : `Resend ${res.status}: ${(await res.text()).slice(0, 200)}`;
+}
+async function taskReminders() {
+  const now = Date.now();
+  const since = new Date(now - 15 * 86400000).toISOString();
+  const tasks = await db<Task[]>(`tasks?select=*&or=(due_at.is.null,due_at.gte.${since})`);
+  const out: unknown[] = [];
+  for (const t of tasks) {
+    const moments = dueMoments(t, now);
+    if (!moments.length) continue;
+    const open = taskOpen(t);
+    const sent = { ...(t.sent ?? {}) };
+    for (const m of moments) sent[m.key] = new Date(now).toISOString();
+    if (open.length) {
+      const m = moments[moments.length - 1];                  // one notice even if several came due together
+      const who = new Set(open);
+      if (t.lead && (m.kind === "overdue" || (m.kind === "before" && m.n === 0))) who.add(t.lead);   // the one responsible hears it too
+      const ids = [...who];
+      const { title, body } = reminderText(t, m);
+      const r = t.remind ?? {};
+      let pushed = 0, mailErr = "";
+      if (r.push !== false) pushed = (await sendTo(ids, { title, body, tag: "task-" + t.id, url: `./?task=${t.id}`, kind: "task" }, 3600)).sent;
+      if (r.email) {
+        const ps = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=in.${inList(ids)}`);
+        const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
+          <p><b>${esc(t.title)}</b></p><p>${esc(body)}</p>${t.note ? `<p style="white-space:pre-wrap;color:#555;">${esc(t.note)}</p>` : ""}
+          <p style="color:#777;font-size:12px;margin-top:18px;">EventSolutions App · užduoties priminimas. Kai atliksi – pažymėk užduotį programėlėje.</p></div>`;
+        mailErr = await mailTo(ps.map((p) => p.email).filter(Boolean), "Priminimas: " + t.title.slice(0, 120), html);
+      }
+      out.push({ task: t.id, key: m.key, to: ids.length, pushed, ...(mailErr ? { mailErr } : {}) });
+    }
+    await db(`tasks?id=eq.${t.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ sent }) });
+  }
+  return { fn: PUSH_FN_VERSION, checked: tasks.length, sent: out };
+}
+async function onTask(uid: string, taskId: string, ev: string) {
+  const [t] = await db<Task[]>(`tasks?select=*&id=eq.${encodeURIComponent(taskId)}`);
+  if (!t) return { error: "Užduotis nerasta" };
+  const involved = t.created_by === uid || (t.assignees ?? []).includes(uid) || t.lead === uid;
+  if (!involved) return { error: "Ši užduotis ne tau" };
+  const users = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
+  const me = name(users[0]);
+  let ids: string[], title: string, body: string;
+  if (ev === "new") {
+    if (t.created_by !== uid) return { error: "Tik užduoties autorius" };
+    ids = [...new Set([...(t.assignees ?? []), ...(t.lead ? [t.lead] : [])])].filter((u) => u !== uid);
+    title = "📋 Nauja užduotis: " + t.title.slice(0, 100);
+    body = `${me} paskyrė${t.due_at ? " · iki " + whenLt(t.due_at) : ""}${t.lead === ids[0] && ids.length === 1 ? " (tu atsakingas)" : ""}`;
+  } else {
+    ids = [...new Set([t.created_by, ...(t.lead ? [t.lead] : [])])].filter((u) => u !== uid);
+    const left = taskOpen(t).length;
+    title = (ev === "done" ? "✓ " : "↺ ") + t.title.slice(0, 100);
+    body = ev === "done" ? `${me} atliko${left ? ` · liko ${left}` : " · visi atliko"}` : `${me} atšaukė „atlikta“`;
+  }
+  if (!ids.length) return { sent: 0 };
+  return await sendTo(ids, { title, body, tag: "task-" + t.id, url: `./?task=${t.id}`, kind: "task" });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
     if (req.method === "GET") return json({ publicKey: await publicKey() });
     if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
+    const body = await req.json().catch(() => ({}));
+    // every 5 minutes from pg_cron: task reminders
+    if (body?.mode === "cron") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      return json(await taskReminders());
+    }
     const uid = await caller(req);
     if (!uid) return json({ error: "Reikia prisijungti." }, 401);
-    const body = await req.json().catch(() => ({}));
+    if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
     if (body.kind === "call") return json(await onCall(uid, String(body.call_id ?? "")));
     if (body.kind === "reaction") return json(await onReaction(uid, String(body.message_id ?? ""), String(body.emoji ?? "").slice(0, 16)));
