@@ -8,7 +8,7 @@
 
 alter table public.role_permissions drop constraint if exists role_permissions_section_check;
 alter table public.role_permissions add constraint role_permissions_section_check
-  check (section in ('events','rentals','projects','load','inventory','rules','fleet','stats','venues','chat','mail'));
+  check (section in ('events','rentals','projects','load','inventory','rules','fleet','stats','venues','chat','mail','offers','jobs'));
 
 -- pradžioje chatu naudojasi visi lygiai (Admin skiltyje galima išjungti)
 insert into public.role_permissions (role, section, can_view, can_edit) values
@@ -21,7 +21,7 @@ create or replace function public.user_can_chat(uid uuid) returns boolean
   language sql stable security definer set search_path = public as $$
   select coalesce((
     select case when p.role = 'admin' then true
-                when p.role in ('office','tech','freelance','runner') then
+                when p.role in ('pm','office','tech','freelance','runner') then
                   coalesce((select rp.can_view or rp.can_edit from public.role_permissions rp
                             where rp.role = p.role and rp.section = 'chat'), false)
                 else false end

@@ -29,7 +29,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
-const APPROVED = ["admin", "office", "tech", "freelance", "runner"];
+const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 const TZ = "Europe/Vilnius";
 
 type Profile = {

@@ -37,7 +37,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-const APPROVED = ["admin", "office", "tech", "freelance", "runner"];
+const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
 const VERSION = 4;
 const PAGE = 25;

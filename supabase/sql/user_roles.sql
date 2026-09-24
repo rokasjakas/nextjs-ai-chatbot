@@ -20,7 +20,7 @@ create table if not exists public.profiles (
   email       text not null,
   full_name   text,
   role        text not null default 'pending'
-              check (role in ('pending','admin','office','tech','freelance','runner','blocked')),
+              check (role in ('pending','admin','pm','office','tech','freelance','runner','blocked')),
   created_at  timestamptz not null default now(),
   approved_at timestamptz,
   approved_by text,
@@ -36,16 +36,16 @@ alter table public.profiles add column if not exists approved_at timestamptz;
 alter table public.profiles add column if not exists approved_by text;
 alter table public.profiles add column if not exists notified_at timestamptz;
 update public.profiles set role = 'pending'
-  where role is null or role not in ('pending','admin','office','tech','freelance','runner','blocked');
+  where role is null or role not in ('pending','admin','pm','office','tech','freelance','runner','blocked');
 alter table public.profiles drop constraint if exists profiles_role_check;
 alter table public.profiles add constraint profiles_role_check
-  check (role in ('pending','admin','office','tech','freelance','runner','blocked'));
+  check (role in ('pending','admin','pm','office','tech','freelance','runner','blocked'));
 create index if not exists profiles_role_idx on public.profiles (role);
 
 -- ---------- teisės pagal lygį ----------
 create table if not exists public.role_permissions (
-  role     text not null check (role in ('office','tech','freelance','runner')),
-  section  text not null check (section in ('events','rentals','projects','load','inventory','rules','fleet','stats','venues','chat','mail')),
+  role     text not null check (role in ('pm','office','tech','freelance','runner')),
+  section  text not null check (section in ('events','rentals','projects','load','inventory','rules','fleet','stats','venues','chat','mail','offers','jobs')),
   can_view boolean not null default false,
   can_edit boolean not null default false,
   primary key (role, section)
@@ -104,7 +104,7 @@ $$;
 
 create or replace function public.is_approved() returns boolean
   language sql stable security definer set search_path = public as $$
-  select coalesce(public.my_role() in ('admin','office','tech','freelance','runner'), false)
+  select coalesce(public.my_role() in ('admin','pm','office','tech','freelance','runner'), false)
 $$;
 
 -- kuri svetainės skiltis valdo kurį bendrų duomenų raktą (public.app_state)

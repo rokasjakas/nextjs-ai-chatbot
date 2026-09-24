@@ -21,6 +21,7 @@
 const DEFAULT_FROM = "Event Solutions <onboarding@resend.dev>";
 const ROLE_LABEL: Record<string, string> = {
   admin: "Admin",
+  pm: "Projektų vadovas",
   office: "Office",
   tech: "Tech",
   freelance: "Freelance",

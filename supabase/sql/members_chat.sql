@@ -45,7 +45,7 @@ drop policy if exists "team sees members" on public.profiles;
 create policy "team sees members" on public.profiles
   for select to authenticated using (
     id = auth.uid() or public.is_admin()
-    or (public.is_approved() and role in ('admin','office','tech','freelance','runner'))
+    or (public.is_approved() and role in ('admin','pm','office','tech','freelance','runner'))
   );
 drop policy if exists "own profile update" on public.profiles;
 create policy "own profile update" on public.profiles
@@ -149,7 +149,7 @@ declare cid uuid;
 begin
   if not public.is_approved() then raise exception 'Nėra prieigos.'; end if;
   if other = auth.uid() then raise exception 'Negalima rašyti sau.'; end if;
-  if not exists (select 1 from public.profiles where id = other and role in ('admin','office','tech','freelance','runner')) then
+  if not exists (select 1 from public.profiles where id = other and role in ('admin','pm','office','tech','freelance','runner')) then
     raise exception 'Narys nerastas.';
   end if;
   select c.id into cid from public.conversations c
@@ -173,7 +173,7 @@ begin
   insert into public.conversations (kind, title, created_by) values ('group', nullif(trim(title), ''), auth.uid()) returning id into cid;
   insert into public.conversation_members (conversation_id, user_id)
   select cid, p.id from public.profiles p
-   where (p.id = auth.uid() or p.id = any(member_ids)) and p.role in ('admin','office','tech','freelance','runner')
+   where (p.id = auth.uid() or p.id = any(member_ids)) and p.role in ('admin','pm','office','tech','freelance','runner')
   on conflict do nothing;
   return cid;
 end $$;
@@ -187,7 +187,7 @@ begin
   end if;
   insert into public.conversation_members (conversation_id, user_id)
   select cid, p.id from public.profiles p
-   where p.id = any(member_ids) and p.role in ('admin','office','tech','freelance','runner')
+   where p.id = any(member_ids) and p.role in ('admin','pm','office','tech','freelance','runner')
   on conflict do nothing;
 end $$;
 
