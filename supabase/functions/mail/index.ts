@@ -42,7 +42,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 6;
+const VERSION = 7;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -159,14 +159,22 @@ async function connectNew(a: Account): Promise<ImapFlow> {
   const c = imapClient(a);
   c.on("error", () => {});
   try {
-    await withTimeout(c.connect(), 15_000, "connect");
+    await withTimeout(c.connect(), 12_000, "connect");
   } catch (e) {
     try { c.close(); } catch { /* ignore */ }
-    throw e instanceof OpTimeout ? new UserError("Pašto serveris neatsako. Pabandyk dar kartą.") : connectError(e);
+    throw e instanceof OpTimeout ? slow("prisijungimas") : connectError(e);
   }
   return c;
 }
 class OpTimeout extends Error {}
+// "the mail server did not answer in time" — the step that hung is shown too
+type Trace = { s: string };
+function slow(step: string): UserError {
+  const e = new UserError(`Pašto serveris per ilgai neatsako (${step}). Pabandyk dar kartą.`);
+  (e as UserError & { transient?: boolean }).transient = true;
+  return e;
+}
+const isTransient = (e: unknown) => !(e instanceof UserError) || !!(e as { transient?: boolean }).transient;
 function withTimeout<T>(p: Promise<T>, ms: number, what: string): Promise<T> {
   let t: ReturnType<typeof setTimeout>;
   return Promise.race([p, new Promise<T>((_, rej) => { t = setTimeout(() => rej(new OpTimeout(what + " timeout")), ms); })]).finally(() => clearTimeout(t));
@@ -174,17 +182,20 @@ function withTimeout<T>(p: Promise<T>, ms: number, what: string): Promise<T> {
 // the kept connection is used only when it is free and answers a quick NOOP;
 // otherwise this request gets its own connection (one stuck command must not
 // hold up everything else)
-async function pooled(a: Account): Promise<{ c: ImapFlow; p?: Pooled }> {
+async function pooled(a: Account, tr: Trace, fresh = false): Promise<{ c: ImapFlow; p?: Pooled }> {
   const k = poolKey(a);
-  const p = pool.get(k);
+  const p = fresh ? undefined : pool.get(k);
+  if (fresh) { tr.s = "prisijungimas"; return { c: await connectNew(a) }; }
   if (p && !p.busy && p.c.usable) {
     p.busy = true;
     clearTimeout(p.timer);
     if (Date.now() - p.used < 5_000) return { c: p.c, p };
+    tr.s = "ryšio patikra";
     const ok = await withTimeout(p.c.noop().then(() => true, () => false), 3000, "noop").catch(() => false);
     if (ok) return { c: p.c, p };
     drop(k, p);
   } else if (p && !p.c.usable) drop(k, p);
+  tr.s = "prisijungimas";
   const c = await connectNew(a);
   if (!pool.has(k)) {
     const np: Pooled = { c, ready: Promise.resolve(), used: Date.now(), busy: true };
@@ -195,10 +206,11 @@ async function pooled(a: Account): Promise<{ c: ImapFlow; p?: Pooled }> {
   return { c };                                     // a one-off connection, closed after use
 }
 const OP_MS = Number(Deno.env.get("MAIL_OP_MS") || 15_000);
-async function withImap<T>(a: Account, fn: (c: ImapFlow) => Promise<T>, retry = true, ms = OP_MS): Promise<T> {
+async function withImap<T>(a: Account, fn: (c: ImapFlow) => Promise<T>, retry = true, ms = OP_MS, tr: Trace = { s: "" }, fresh = false): Promise<T> {
   const k = poolKey(a);
   const once = async () => {
-    const { c, p } = await pooled(a);
+    const { c, p } = await pooled(a, tr, fresh);
+    tr.s = "komanda";
     try {
       return await withTimeout(fn(c), ms, "imap");
     } catch (e) {
@@ -222,15 +234,16 @@ async function withImap<T>(a: Account, fn: (c: ImapFlow) => Promise<T>, retry = 
     return await once();
   } catch (e) {
     if (e instanceof UserError || !retry) {
-      if (e instanceof OpTimeout) throw new UserError("Pašto serveris per ilgai neatsako. Pabandyk dar kartą.");
+      if (e instanceof OpTimeout) throw slow(tr.s);
       throw e;
     }
-    console.error("imap retry after:", (e as Error).message);
+    console.error("imap retry after:", (e as Error).message, "at", tr.s);
     try {
       return await once();
     } catch (e2) {
       if (e2 instanceof UserError) throw e2;
-      throw new UserError("Pašto serveris neatsako. Pabandyk dar kartą.");
+      console.error("imap failed again:", (e2 as Error).message, "at", tr.s);
+      throw slow(tr.s);
     }
   }
 }
@@ -385,15 +398,36 @@ export function decodeText(buf: Buffer, charset: string): string {
   const cs = (charset || "utf-8").replace(/^utf8$/, "utf-8").replace(/^(x-)?(windows|cp)-?(\d+)$/, "windows-$3");
   try { return new TextDecoder(cs).decode(buf); } catch { return new TextDecoder("utf-8").decode(buf); }
 }
+// First the quick way (kept connection, all parts in one request). If that
+// does not answer in time, once more on a fresh connection, part by part —
+// the way that always worked with this mail server, only slower.
 async function read(a: Account, folder: string, uid: number, peek = false) {
-  const t0 = Date.now();
-  try { return await readOnce(a, folder, uid, peek); } finally { console.log(`read ${folder}/${uid}${peek ? " peek" : ""} ${Date.now() - t0} ms`); }
+  const t0 = Date.now(), tr: Trace = { s: "" };
+  let how = "fast";
+  try {
+    try {
+      return await withImap(a, (c) => readOn(c, folder, uid, peek, true, tr), false, READ_FAST_MS, tr);
+    } catch (e) {
+      if (!isTransient(e)) throw e;
+      console.error(`read ${folder}/${uid} quick way failed at "${tr.s}": ${(e as Error).message}`);
+      how = "plain";
+      return await withImap(a, (c) => readOn(c, folder, uid, peek, false, tr), false, 25_000, tr, true);
+    }
+  } catch (e) {
+    how += " FAILED at " + tr.s;
+    throw e;
+  } finally {
+    console.log(`read ${folder}/${uid}${peek ? " peek" : ""} ${how} ${Date.now() - t0} ms`);
+  }
 }
-async function readOnce(a: Account, folder: string, uid: number, peek: boolean) {
-  return await withImap(a, async (c) => {
+const READ_FAST_MS = Number(Deno.env.get("MAIL_READ_FAST_MS") || 10_000);
+async function readOn(c: ImapFlow, folder: string, uid: number, peek: boolean, fast: boolean, tr: Trace) {
+  {
+    tr.s = "aplankas";
     const path = await folderPath(c, folder);
     const lock = await c.getMailboxLock(path);
     try {
+      tr.s = "antraštė";
       const msg = await c.fetchOne(String(uid), { uid: true, envelope: true, flags: true, bodyStructure: true, internalDate: true, headers: ["references"] }, { uid: true });
       if (!msg || !msg.envelope) throw new UserError("Laiškas nerastas (gal jau ištrintas).");
       const all = leaves(msg.bodyStructure as Node);
@@ -406,13 +440,16 @@ async function readOnce(a: Account, folder: string, uid: number, peek: boolean) 
       const inline = htmlPart ? all.filter((l) => { if (!l.cid || !l.type.startsWith("image/") || l.size > MAX_INLINE || l.size > budget) return false; budget -= l.size; return true; }) : [];
       // everything that fits comes in ONE request to the mail server; the "read" mark goes at the same time
       const small = [...texts.filter((l) => l.size <= MAX_TEXT), ...inline];
-      const got = small.length ? await c.fetchOne(String(uid), { uid: true, bodyParts: small.map((l) => l.part) }, { uid: true }) : null;
+      tr.s = "tekstas";
+      const got = fast && small.length ? await c.fetchOne(String(uid), { uid: true, bodyParts: small.map((l) => l.part) }, { uid: true }) : null;
+      tr.s = "žyma";
       if (!peek && !msg.flags?.has("\\Seen")) await c.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true }).catch(() => false);
       const parts = (got && (got as { bodyParts?: Map<string, Buffer> }).bodyParts) || new Map<string, Buffer>();
       const partOf = async (l: Leaf): Promise<Buffer> => {
         const raw = parts.get(l.part) ?? parts.get(l.part.toLowerCase());
         if (raw) return decodeTransfer(Buffer.from(raw), l.encoding);
-        return await partBuffer(c, uid, l.part, MAX_TEXT);        // big ones (already decoded)
+        tr.s = "dalis " + l.part;
+        return await partBuffer(c, uid, l.part, MAX_TEXT);        // big ones / the plain way (already decoded)
       };
       let html = "", text = "";
       if (htmlPart) html = decodeText(await partOf(htmlPart), htmlPart.charset);
@@ -446,7 +483,7 @@ async function readOnce(a: Account, folder: string, uid: number, peek: boolean) 
     } finally {
       lock.release();
     }
-  });
+  }
 }
 
 async function attachment(a: Account, folder: string, uid: number, part: string) {
