@@ -19,7 +19,7 @@
 import { sha256 } from "npm:@noble/hashes@1.4.0/sha256";
 import { hmac } from "npm:@noble/hashes@1.4.0/hmac";
 
-const VERSION = 1;
+const VERSION = 2;
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -165,6 +165,25 @@ async function handle(c: Caller, b: Record<string, unknown>) {
       const names = [...xml.matchAll(/<Key>([^<]+)<\/Key>/g)].map((m) => m[1].replace(/&amp;/g, "&").slice((bucket + "/" + prefix + "/").length));
       return { names };
     }
+  }
+  if (b.action === "check") {
+    // the server tries R2 itself (no browser, no CORS): shows whether the
+    // keys and the bucket are right
+    const key = "_check/" + c.uid + ".txt";
+    const out: string[] = [];
+    const put = await fetch(r2Url("PUT", key, 60, {}, { "content-type": "text/plain" }), { method: "PUT", headers: { "Content-Type": "text/plain" }, body: "ok" }).catch((e) => ({ ok: false, status: 0, text: () => Promise.resolve(String(e)) } as unknown as Response));
+    out.push("įrašymas: " + (put.ok ? "OK" : put.status + " " + (await put.text()).replace(/\s+/g, " ").slice(0, 160)));
+    if (put.ok) {
+      const get = await fetch(r2Url("GET", key, 60));
+      out.push("skaitymas: " + (get.ok ? "OK" : get.status));
+      await get.body?.cancel().catch(() => {});
+      const cors = await fetch(r2Url("GET", key, 60), { method: "OPTIONS", headers: { Origin: String(b.origin || "https://app.eventsolutions.lt"), "Access-Control-Request-Method": "PUT", "Access-Control-Request-Headers": "content-type" } });
+      out.push("CORS " + String(b.origin || "") + ": " + (cors.headers.get("access-control-allow-origin") ? "OK" : "NĖRA (" + cors.status + ")"));
+      await cors.body?.cancel().catch(() => {});
+      await fetch(r2Url("DELETE", key, 60), { method: "DELETE" }).then((r) => r.body?.cancel()).catch(() => {});
+    }
+    out.push("bucket: " + env("R2_BUCKET") + " · account: " + env("R2_ACCOUNT_ID").slice(0, 6) + "…");
+    return { check: out };
   }
   throw new UserError("Nežinomas veiksmas.");
 }
