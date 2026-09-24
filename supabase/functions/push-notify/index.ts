@@ -144,11 +144,11 @@ async function server(): Promise<webpush.ApplicationServer> {
   return appServer;
 }
 
-export const isPhoneUa = (ua?: string | null) => !ua || /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
-async function sendTo(userIds: string[], payload: Payload, ttl = 86400, phonesOnly = false): Promise<{ sent: number; gone: number }> {
+async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except = ""): Promise<{ sent: number; gone: number; devices?: number }> {
   if (!userIds.length) return { sent: 0, gone: 0 };
   let subs = await db<Sub[]>(`push_subscriptions?select=*&user_id=in.${inList(userIds)}`);
-  if (phonesOnly) subs = subs.filter((s) => isPhoneUa(s.user_agent));
+  const devices = subs.length;
+  if (except) subs = subs.filter((s) => s.endpoint !== except);
   const as = await server();
   let sent = 0, gone = 0;
   await Promise.all(subs.map(async (s) => {
@@ -164,7 +164,7 @@ async function sendTo(userIds: string[], payload: Payload, ttl = 86400, phonesOn
       } else console.error("push failed", status ?? e);
     }
   }));
-  return { sent, gone };
+  return { sent, gone, devices };
 }
 
 async function chatUsers(): Promise<Profile[]> {
@@ -464,7 +464,9 @@ Deno.serve(async (req) => {
       return json(await sendTo([uid], {
         title: "📞 Skambinti: " + (who || phone), body: phone + " — paspausk ir telefonas skambins", tag: "dial",
         url: `./?dial=${encodeURIComponent(phone)}&who=${encodeURIComponent(who)}`, kind: "dial",
-      }, 120, true));
+      // every other device of the caller (the one that asked is left out) —
+      // not guessed from the browser name, which phones sometimes hide
+      }, 120, String(body.except ?? "")));
     }
     if (body.kind === "test") {
       return json(await sendTo([uid], { title: "EventSolutions App", body: "Pranešimai veikia 🎉", tag: "test", url: "./" }));
