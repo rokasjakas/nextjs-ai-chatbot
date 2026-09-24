@@ -144,13 +144,14 @@ async function server(): Promise<webpush.ApplicationServer> {
   return appServer;
 }
 
-async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except = ""): Promise<{ sent: number; gone: number; devices?: number }> {
+async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except = ""): Promise<{ sent: number; gone: number; devices?: number; failed?: string[] }> {
   if (!userIds.length) return { sent: 0, gone: 0 };
   let subs = await db<Sub[]>(`push_subscriptions?select=*&user_id=in.${inList(userIds)}`);
   const devices = subs.length;
   if (except) subs = subs.filter((s) => s.endpoint !== except);
   const as = await server();
   let sent = 0, gone = 0;
+  const failed: string[] = [];
   await Promise.all(subs.map(async (s) => {
     try {
       await as.subscribe({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } })
@@ -161,10 +162,13 @@ async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except =
       if (status === 404 || status === 410) {
         gone++;
         await db(`push_subscriptions?endpoint=eq.${encodeURIComponent(s.endpoint)}`, { method: "DELETE" });
-      } else console.error("push failed", status ?? e);
+      } else {
+        console.error("push failed", status ?? e);
+        failed.push(String(status ?? (e as Error)?.message ?? e).slice(0, 120));
+      }
     }
   }));
-  return { sent, gone, devices };
+  return { sent, gone, devices, ...(failed.length ? { failed } : {}) };
 }
 
 async function chatUsers(): Promise<Profile[]> {
