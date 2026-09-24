@@ -8,7 +8,7 @@
 
 alter table public.role_permissions drop constraint if exists role_permissions_section_check;
 alter table public.role_permissions add constraint role_permissions_section_check
-  check (section in ('events','rentals','projects','load','inventory','rules','fleet','stats','venues','chat','mail','offers','jobs'));
+  check (section in ('events','rentals','projects','load','inventory','rules','fleet','stats','venues','chat','mail','offers','jobs','handovers'));
 
 -- pradžioje chatu naudojasi visi lygiai (Admin skiltyje galima išjungti)
 insert into public.role_permissions (role, section, can_view, can_edit) values

@@ -45,7 +45,7 @@ create index if not exists profiles_role_idx on public.profiles (role);
 -- ---------- teisės pagal lygį ----------
 create table if not exists public.role_permissions (
   role     text not null check (role in ('pm','office','tech','freelance','runner')),
-  section  text not null check (section in ('events','rentals','projects','load','inventory','rules','fleet','stats','venues','chat','mail','offers','jobs')),
+  section  text not null check (section in ('events','rentals','projects','load','inventory','rules','fleet','stats','venues','chat','mail','offers','jobs','handovers')),
   can_view boolean not null default false,
   can_edit boolean not null default false,
   primary key (role, section)
