@@ -42,7 +42,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 9;
+const VERSION = 10;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -92,11 +92,14 @@ async function callerFresh(token: string): Promise<Me | null> {
   const res = await fetch(`${env("SUPABASE_URL")}/auth/v1/user`, {
     headers: { apikey: env("SUPABASE_SERVICE_ROLE_KEY"), Authorization: `Bearer ${token}` },
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    console.error(`Sign-in token refused: auth ${res.status} ${(await res.text()).slice(0, 200)}`);
+    return null;
+  }
   const u = await res.json();
   if (!u?.id) return null;
   const [p] = await db<(Person & { role: string })[]>(`profiles?select=*&id=eq.${u.id}`);
-  if (!p || !APPROVED.includes(p.role)) return null;
+  if (!p || !APPROVED.includes(p.role)) throw new UserError("Tavo paskyra dar nepatvirtinta arba užblokuota.");
   if (p.role !== "admin") {
     // Admin → „Ką gali kiekvienas lygis“ → El. paštas
     const [perm] = await db<{ can_view: boolean; can_edit: boolean }[]>(
@@ -1021,7 +1024,7 @@ Deno.serve(async (req) => {
       return json(await runAutoReplies());
     }
     const me = await caller(req);
-    if (!me) return json({ error: "Reikia prisijungti." }, 401);
+    if (!me) return json({ error: "Programėlės sesija pasibaigė — perkrauk puslapį arba atsijunk ir prisijunk iš naujo." }, 401);
     const body = await req.json().catch(() => ({}));
     return json(await handle(me, body));
   } catch (err) {
