@@ -1564,3 +1564,17 @@ create or replace function public.app_state_can_edit(k text) returns boolean
     else public.is_admin()
   end
 $$;
+
+-- Krovimas / Pasiruošimas iš vakaro → projektas: kiek pakrauta, paruošta ir koks tikras kiekis
+alter table public.rp_projects add column if not exists load_state jsonb not null default '{}'::jsonb;
+-- krauti ir ruošti gali ir tie, kas redaguoja Krovimą (ne tik projektus): tik šis stulpelis
+create or replace function public.rp_set_load_state(pid text, st jsonb) returns void
+  language plpgsql security definer set search_path = public as $$
+begin
+  if not (public.can_edit('load') or public.can_edit('newproj') or public.can_edit('projects')) then
+    raise exception 'Nėra teisės';
+  end if;
+  update public.rp_projects set load_state = coalesce(st, '{}'::jsonb) where id = pid;
+end $$;
+revoke all on function public.rp_set_load_state(text, jsonb) from public;
+grant execute on function public.rp_set_load_state(text, jsonb) to authenticated;
