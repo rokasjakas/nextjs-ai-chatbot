@@ -136,7 +136,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 8;
+const PUSH_FN_VERSION = 9;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -637,6 +637,30 @@ async function onTask(uid: string, taskId: string, ev: string) {
   return await sendTo(ids, { title, body, tag: "task-" + t.id, url: `./?task=${t.id}`, kind: "task" });
 }
 
+// Klaidos / pasiūlymai: a new one goes to the admins, an answer to its author
+type Feedback = { id: string; created_by: string; kind: string; text: string; status: string; admin_note: string | null };
+const FB_STATUS: Record<string, string> = {
+  fixed: "✅ Klaida ištaisyta", accepted: "✅ Pasiūlymas priimtas ir pridėtas", rejected: "✖ Pasiūlymas atmestas", progress: "🔧 Jau taisoma",
+};
+async function onFeedback(uid: string, id: string, ev: string) {
+  const [f] = await db<Feedback[]>(`feedback?select=id,created_by,kind,text,status,admin_note&id=eq.${encodeURIComponent(id)}`);
+  if (!f) return { error: "Įrašas nerastas" };
+  const users = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&role=eq.admin`);
+  const short = f.text.replace(/\s+/g, " ").slice(0, 120);
+  if (ev === "new") {
+    if (f.created_by !== uid) return { error: "Tik autorius" };
+    const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
+    const ids = users.map((u) => u.id).filter((u) => u !== uid);
+    return await sendTo(ids, { title: (f.kind === "bug" ? "🐞 Nauja klaida: " : "💡 Naujas pasiūlymas: ") + short, body: name(me), tag: "fb-" + f.id, url: `./?feedback=${f.id}`, kind: "feedback" });
+  }
+  if (!users.some((u) => u.id === uid)) return { error: "Tik administratorius" };
+  if (!FB_STATUS[f.status] || f.created_by === uid) return { sent: 0 };
+  return await sendTo([f.created_by], {
+    title: FB_STATUS[f.status], body: (f.admin_note ? f.admin_note.slice(0, 140) + " · " : "") + "„" + short + "“",
+    tag: "fb-" + f.id, url: `./?feedback=${f.id}`, kind: "feedback",
+  });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
@@ -652,6 +676,7 @@ Deno.serve(async (req) => {
     const uid = await caller(req);
     if (!uid) return json({ error: "Reikia prisijungti." }, 401);
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
+    if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
     if (body.kind === "call") return json(await onCall(uid, String(body.call_id ?? "")));
     if (body.kind === "reaction") return json(await onReaction(uid, String(body.message_id ?? ""), String(body.emoji ?? "").slice(0, 16)));
