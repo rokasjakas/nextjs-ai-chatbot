@@ -20,9 +20,11 @@
 //   seen      {folder, uid, seen}
 //   delete    {folder, uid}              -> moves to Trash
 //   settings / settings_save {settings:{sig, auto:{on,from,to,subject,text}}}
+//   sync      {folder}                   -> brings public.mail_index up to date (the app reads the list from there)
 //   (the signature is built from the profile: name, job title, phone)
 // POST with header x-cron-secret: <CRON_SECRET> (every 10 min from pg_cron)
 //   sends the automatic replies ("out of office") for everyone who has it on
+//   body {"action":"sync_all"} (every minute): refreshes everyone's letter list
 //
 // Secrets: MAIL_SECRET (any long random text), optional MAIL_IMAP_HOST
 // (default koala.serveriai.lt), MAIL_IMAP_PORT (993), MAIL_SMTP_HOST
@@ -42,7 +44,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 10;
+const VERSION = 11;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -362,6 +364,146 @@ async function list(a: Account, folder: string, page: number) {
       lock.release();
     }
   });
+}
+
+// ---------- the letter list kept in the database (public.mail_index, sql/mail_index.sql) ----------
+// The app reads the list straight from the database (instant, sorted by
+// date); this keeps it in step with the mail server: new letters are added,
+// gone ones removed, read / star flags updated. It runs every minute from
+// pg_cron for everyone and when someone opens a folder.
+// First run: the last ~60 days and the newest letters by number come first,
+// the older ones follow in the next runs (SYNC_BATCH per run).
+const SYNC_BATCH = 500, SYNC_MS = 25_000;
+type SyncState = { uidvalidity: string | null; modseq: string | null; synced_at?: string };
+type IdxRow = { user_id: string; folder: string; uid: number; date: string | null; subject: string; from_addr: unknown; to_addr: unknown; seen: boolean; answered: boolean; flagged: boolean; attachments: boolean; size: number | null; updated_at: string };
+const enc = encodeURIComponent;
+async function dbAllUids(user: string, folder: string): Promise<number[]> {
+  const out: number[] = [];
+  for (let off = 0; ; off += 1000) {
+    const part = await db<{ uid: number }[]>(`mail_index?select=uid&user_id=eq.${user}&folder=eq.${enc(folder)}&order=uid.asc&limit=1000&offset=${off}`);
+    part.forEach((r) => out.push(Number(r.uid)));
+    if (part.length < 1000) break;
+  }
+  return out;
+}
+async function idxUpsert(rows: Partial<IdxRow>[]) {
+  for (let i = 0; i < rows.length; i += 300) {
+    await db("mail_index?on_conflict=user_id,folder,uid", {
+      method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(rows.slice(i, i + 300)),
+    });
+  }
+}
+async function idxDelete(user: string, folder: string, uids: number[]) {
+  for (let i = 0; i < uids.length; i += 300) {
+    await db(`mail_index?user_id=eq.${user}&folder=eq.${enc(folder)}&uid=in.(${uids.slice(i, i + 300).join(",")})`, { method: "DELETE", headers: { Prefer: "return=minimal" } });
+  }
+}
+// the app's own changes (read, star, move, delete) show at once, without waiting for the next sync
+async function idxPatch(user: string, folder: string, uid: number, patch: Partial<IdxRow>) {
+  try { await db(`mail_index?user_id=eq.${user}&folder=eq.${enc(folder)}&uid=eq.${uid}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ ...patch, updated_at: new Date().toISOString() }) }); }
+  catch (e) { console.error("mail_index patch", (e as Error).message); }
+}
+async function idxGone(user: string, folder: string, uid: number) {
+  try { await idxDelete(user, folder, [uid]); } catch (e) { console.error("mail_index delete", (e as Error).message); }
+}
+function idxRow(user: string, folder: string, m: { uid: number; envelope?: { date?: Date; subject?: string; from?: Addr[]; to?: Addr[] }; internalDate?: Date | string; flags?: Set<string>; bodyStructure?: unknown; size?: number }): Partial<IdxRow> {
+  const d = m.envelope?.date ?? (m.internalDate ? new Date(m.internalDate as string) : null);
+  return {
+    user_id: user, folder, uid: m.uid,
+    date: d && !isNaN(+d) ? new Date(d).toISOString() : null,
+    subject: (m.envelope?.subject || "").slice(0, 998),
+    from_addr: addr(m.envelope?.from), to_addr: addr(m.envelope?.to),
+    seen: m.flags?.has("\\Seen") ?? false, answered: m.flags?.has("\\Answered") ?? false, flagged: m.flags?.has("\\Flagged") ?? false,
+    attachments: hasAttachments(m.bodyStructure as Node), size: m.size ?? null, updated_at: new Date().toISOString(),
+  };
+}
+async function syncFolder(user: string, a: Account, folder: string) {
+  const t0 = Date.now();
+  const [st] = await db<SyncState[]>(`mail_sync?select=uidvalidity,modseq,synced_at&user_id=eq.${user}&folder=eq.${enc(folder)}`);
+  return await withImap(a, async (c) => {
+    const path = await folderPath(c, folder);
+    const lock = await c.getMailboxLock(path);
+    try {
+      const mb = c.mailbox as unknown as { exists?: number; uidValidity?: bigint; highestModseq?: bigint };
+      const validity = mb.uidValidity != null ? String(mb.uidValidity) : null;
+      let known: number[] = [];
+      if (st && st.uidvalidity && validity && st.uidvalidity !== validity) {
+        await db(`mail_index?user_id=eq.${user}&folder=eq.${enc(folder)}`, { method: "DELETE", headers: { Prefer: "return=minimal" } });   // the folder was re-created: start over
+      } else known = await dbAllUids(user, folder);
+      // a kept connection may still hold the folder's old state: ask the server for the current one
+      const present: number[] = ((await c.search({ all: true }, { uid: true })) || []) as number[];
+      const now = await c.status(path, { highestModseq: true }).catch(() => null) as { highestModseq?: bigint } | null;
+      const modseq = now?.highestModseq ?? mb.highestModseq;
+      const pset = new Set(present), kset = new Set(known);
+      const removed = known.filter((u) => !pset.has(u));
+      if (removed.length) await idxDelete(user, folder, removed);
+      // what to add now: recent letters first, then the newest by number, then older ones in later runs
+      const fresh = present.filter((u) => !kset.has(u));
+      let take: number[] = [];
+      if (fresh.length) {
+        const since = new Date(Date.now() - 60 * 86400_000);
+        const recent = new Set(((await c.search({ since }, { uid: true })) || []) as number[]);
+        const byNew = fresh.slice().sort((x, y) => y - x);
+        take = byNew.filter((u) => recent.has(u)).slice(0, SYNC_BATCH);
+        for (const u of byNew) { if (take.length >= SYNC_BATCH) break; if (!recent.has(u)) take.push(u); }
+      }
+      let added = 0;
+      for (let i = 0; i < take.length && Date.now() - t0 < SYNC_MS; i += 150) {
+        const rows: Partial<IdxRow>[] = [];
+        for await (const m of c.fetch(take.slice(i, i + 150).join(","), { uid: true, envelope: true, flags: true, bodyStructure: true, internalDate: true, size: true }, { uid: true })) {
+          rows.push(idxRow(user, folder, m as never));
+        }
+        await idxUpsert(rows); added += rows.length;
+      }
+      // read / answered / star changes of the letters already listed
+      let changed = 0;
+      const stillKnown = known.filter((u) => pset.has(u));
+      if (stillKnown.length && Date.now() - t0 < SYNC_MS) {
+        const flagRows = new Map<number, Partial<IdxRow>>();
+        const push = (m: { uid: number; flags?: Set<string> }) => { if (kset.has(m.uid)) flagRows.set(m.uid, { user_id: user, folder, uid: m.uid, seen: m.flags?.has("\\Seen") ?? false, answered: m.flags?.has("\\Answered") ?? false, flagged: m.flags?.has("\\Flagged") ?? false }); };
+        const tracked = modseq != null && st?.modseq && validity === st.uidvalidity;
+        // the server tells what changed since the last run (CONDSTORE) …
+        if (tracked && String(modseq) !== st!.modseq) {
+          for await (const m of c.fetch("1:*", { uid: true, flags: true }, { uid: true, changedSince: BigInt(st!.modseq!) })) push(m as never);
+        }
+        // … and the newest letters are always checked as well (400 without change tracking)
+        const last = stillKnown.slice(tracked ? -150 : -400);
+        for await (const m of c.fetch(last.join(","), { uid: true, flags: true }, { uid: true })) push(m as never);
+        // only the rows that really differ are written
+        const cur = await db<{ uid: number; seen: boolean; answered: boolean; flagged: boolean }[]>(
+          `mail_index?select=uid,seen,answered,flagged&user_id=eq.${user}&folder=eq.${enc(folder)}&uid=in.(${[...flagRows.keys()].slice(0, 900).join(",") || 0})&limit=1000`);
+        const was = new Map(cur.map((r) => [Number(r.uid), r]));
+        const diff = [...flagRows.values()].filter((r) => { const w = was.get(r.uid!); return !w || w.seen !== r.seen || w.answered !== r.answered || w.flagged !== r.flagged; });
+        if (diff.length) { await idxUpsert(diff); changed = diff.length; }
+      }
+      const unseen = ((await c.search({ seen: false }, { uid: true })) || []).length;
+      const remaining = fresh.length - added;
+      await db("mail_sync?on_conflict=user_id,folder", {
+        method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+        body: JSON.stringify({ user_id: user, folder, uidvalidity: validity, modseq: modseq != null ? String(modseq) : null, total: present.length, unseen, remaining, synced_at: new Date().toISOString() }),
+      });
+      return { total: present.length, unseen, added, removed: removed.length, changed, remaining, ms: Date.now() - t0 };
+    } finally {
+      lock.release();
+    }
+  }, true, 45_000);
+}
+// pg_cron, every minute: Inbox for everyone (Sent every 5 min), one after another
+async function runSyncAll() {
+  const rows = await db<{ user_id: string; email: string; secret: string }[]>("mail_accounts?select=user_id,email,secret");
+  const t0 = Date.now(), done: Record<string, unknown> = {};
+  const sent = new Date().getMinutes() % 5 === 0;
+  for (const r of rows) {
+    if (Date.now() - t0 > 100_000) break;
+    try {
+      const a = { email: r.email, password: await unseal(r.secret) };
+      done[r.email] = await syncFolder(r.user_id, a, "inbox");
+      if (sent) await syncFolder(r.user_id, a, "sent").catch(() => null);
+    } catch (e) {
+      done[r.email] = { error: (e as Error).message };
+    }
+  }
+  return { synced: Object.keys(done).length, ms: Date.now() - t0 };
 }
 
 // ---------- reading a message: only the parts that are needed ----------
@@ -986,26 +1128,45 @@ async function handle(me: Me, body: Record<string, unknown>) {
       const st = await settingsOf(me.id);
       return { connected: true, email: a.email, autoOn: autoActive(st.auto), sig: st.sig !== false, ...(await list(a, folder, Math.max(0, Number(body.page) || 0))) };
     }
-    case "read":
+    case "sync": {
+      const st = await settingsOf(me.id);
+      return { connected: true, email: a.email, autoOn: autoActive(st.auto), sig: st.sig !== false, ...(await syncFolder(me.id, a, folder)) };
+    }
+    case "read": {
       needUid();
-      return await read(a, folder, uid, body.peek === true);
+      const r = await read(a, folder, uid, body.peek === true);
+      if (body.peek !== true) idxPatch(me.id, folder, uid, { seen: true });
+      return r;
+    }
     case "folders":
       return { connected: true, folders: await folders(a) };
-    case "flag":
+    case "flag": {
       needUid();
-      return await star(a, folder, uid, body.flagged !== false);
-    case "move":
+      const r = await star(a, folder, uid, body.flagged !== false);
+      await idxPatch(me.id, folder, uid, { flagged: body.flagged !== false });
+      return r;
+    }
+    case "move": {
       needUid();
-      return await move(a, folder, uid, String(body.to ?? ""));
+      const r = await move(a, folder, uid, String(body.to ?? ""));
+      await idxGone(me.id, folder, uid);
+      return r;
+    }
     case "attachment":
       needUid();
       return await attachment(a, folder, uid, String(body.index ?? ""));
-    case "seen":
+    case "seen": {
       needUid();
-      return await flag(a, folder, uid, body.seen !== false);
-    case "delete":
+      const r = await flag(a, folder, uid, body.seen !== false);
+      await idxPatch(me.id, folder, uid, { seen: body.seen !== false });
+      return r;
+    }
+    case "delete": {
       needUid();
-      return await remove(a, folder, uid);
+      const r = await remove(a, folder, uid);
+      await idxGone(me.id, folder, uid);
+      return r;
+    }
     case "search":
       return { connected: true, ...(await search(a, body as SearchBody)) };
     case "send":
@@ -1021,6 +1182,8 @@ Deno.serve(async (req) => {
     if (req.headers.get("x-cron-secret")) {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      const cb = await req.clone().json().catch(() => ({}));
+      if ((cb as { action?: string }).action === "sync_all") return json(await runSyncAll());
       return json(await runAutoReplies());
     }
     const me = await caller(req);
