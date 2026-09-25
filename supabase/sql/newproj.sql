@@ -47,3 +47,21 @@ drop policy if exists "edit clients" on public.clients;
 create policy "edit clients" on public.clients
   for all to authenticated using (public.can_edit('offers') or public.can_edit('newproj'))
   with check (public.can_edit('offers') or public.can_edit('newproj'));
+
+-- Sandėlis → Rinkiniai (app_state raktas 'bundles') keičia tas, kas redaguoja sandėlį
+create or replace function public.app_state_can_edit(k text) returns boolean
+  language sql stable security definer set search_path = public as $$
+  select case k
+    when 'itemOverrides' then public.can_edit('inventory')
+    when 'customItems'   then public.can_edit('inventory')
+    when 'bundles'       then public.can_edit('inventory')
+    when 'rules'         then public.can_edit('rules')
+    when 'vehicles'      then public.can_edit('fleet')
+    when 'sessions'      then public.can_edit('load')
+    when 'settings'      then public.can_edit('load')
+    when 'eventOptions'  then public.can_edit('events') or public.can_edit('rentals')
+    when 'offerSettings' then public.can_edit('offers')
+    when 'offerPrices'   then public.can_edit('offers')
+    else public.is_admin()
+  end
+$$;
