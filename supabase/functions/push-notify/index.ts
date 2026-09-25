@@ -136,7 +136,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 9;
+const PUSH_FN_VERSION = 10;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -637,6 +637,48 @@ async function onTask(uid: string, taskId: string, ev: string) {
   return await sendTo(ids, { title, body, tag: "task-" + t.id, url: `./?task=${t.id}`, kind: "task" });
 }
 
+// Sąskaitos: a new one goes to Admin+, the decision to its uploader, a reply
+// from the e-mail to Admin+; „Priminti vėliau“ comes back at the chosen time
+type Invoice = { id: string; created_by: string; kind: string; supplier: string | null; number: string | null; amount: number | null; status: string; decision_note: string | null; remind_at: string | null; reminded_at: string | null; responses: { who?: string; kind: string; text?: string }[] };
+const INV_KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos" };
+const INV_STATUS: Record<string, string> = { approved: "✅ Sąskaita patvirtinta", rejected: "✖ Sąskaita netvirtinta", later: "⏰ Sąskaita atidėta vėlesniam laikui", sent: "📤 Sąskaita patvirtinta ir išsiųsta", paid: "💶 Sąskaita apmokėta", queued: "🗂 Sąskaita suvesta apmokėjimui" };
+async function plusIds(): Promise<string[]> {
+  return (await db<{ id: string }[]>(`profiles?select=id&role=eq.admin&level=in.(plus,super)`)).map((p) => p.id);
+}
+const invTitle = (v: Invoice) => [INV_KIND[v.kind] || "", v.supplier || "", v.number ? "nr. " + v.number : "", v.amount != null ? Number(v.amount).toFixed(2).replace(".", ",") + " €" : ""].filter(Boolean).join(" · ");
+async function onInvoice(uid: string, id: string, ev: string) {
+  const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
+  if (!v) return { error: "Sąskaita nerasta" };
+  const plus = await plusIds();
+  if (ev === "new") {
+    if (v.created_by !== uid) return { error: "Tik įkėlęs asmuo" };
+    const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
+    return await sendTo(plus.filter((u) => u !== uid), { title: "🧾 Nauja sąskaita: " + invTitle(v), body: "Įkėlė " + name(me), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+  }
+  if (!plus.includes(uid)) return { error: "Tik Admin+" };
+  if (v.created_by === uid || !INV_STATUS[v.status]) return { sent: 0 };
+  return await sendTo([v.created_by], { title: INV_STATUS[v.status], body: invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+}
+// a reply given in the e-mail (called by invoice-respond with the cron secret)
+async function onInvoiceReply(id: string) {
+  const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
+  if (!v) return { error: "Sąskaita nerasta" };
+  const r = (v.responses || [])[v.responses.length - 1]; if (!r) return { sent: 0 };
+  const what = r.kind === "paid" ? "💶 Apmokėta" : r.kind === "queued" ? "🗂 Suvesta apmokėjimui" : "💬 Atsakymas";
+  return await sendTo(await plusIds(), { title: what + ": " + invTitle(v), body: (r.who ? r.who + ": " : "") + (r.text || ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+}
+async function invoiceReminders() {
+  const now = new Date().toISOString();
+  const due = await db<Invoice[]>(`invoices?select=*&status=eq.later&remind_at=lte.${encodeURIComponent(now)}&reminded_at=is.null`);
+  if (!due.length) return { invoices: 0 };
+  const plus = await plusIds();
+  for (const v of due) {
+    await sendTo(plus, { title: "⏰ Priminimas: sąskaita", body: invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+    await db(`invoices?id=eq.${v.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ reminded_at: now }) });
+  }
+  return { invoices: due.length };
+}
+
 // Klaidos / pasiūlymai: a new one goes to the admins, an answer to its author
 type Feedback = { id: string; created_by: string; kind: string; text: string; status: string; admin_note: string | null };
 const FB_STATUS: Record<string, string> = {
@@ -671,11 +713,20 @@ Deno.serve(async (req) => {
     if (body?.mode === "cron") {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
-      return json(await taskReminders());
+      const tr = await taskReminders();
+      let ir: unknown = null;
+      try { ir = await invoiceReminders(); } catch (e) { ir = { error: String(e) }; }   // before invoices.sql the table is missing
+      return json({ ...tr, inv: ir });
+    }
+    if (body?.mode === "invoice-reply") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      return json(await onInvoiceReply(String(body.invoice_id ?? "")));
     }
     const uid = await caller(req);
     if (!uid) return json({ error: "Reikia prisijungti." }, 401);
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
+    if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : "decided"));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
     if (body.kind === "call") return json(await onCall(uid, String(body.call_id ?? "")));

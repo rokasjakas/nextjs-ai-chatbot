@@ -19,7 +19,7 @@
 import { sha256 } from "npm:@noble/hashes@1.4.0/sha256";
 import { hmac } from "npm:@noble/hashes@1.4.0/hmac";
 
-const VERSION = 2;
+const VERSION = 3;
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -69,7 +69,7 @@ function r2Url(method: string, key: string, expires: number, query: Record<strin
 }
 
 // ---------- who may do what (the same rules as the Supabase buckets) ----------
-const BUCKETS = ["chat-files", "equipment-photos", "avatars", "venue-photos", "job-files"];
+const BUCKETS = ["chat-files", "equipment-photos", "avatars", "venue-photos", "job-files", "invoice-files"];
 type Op = "read" | "write" | "delete";
 type Caller = { uid: string; token: string; apikey: string };
 async function rpc(c: Caller, fn: string, args: Record<string, unknown> = {}): Promise<boolean> {
@@ -104,6 +104,12 @@ async function allowed(c: Caller, bucket: string, path: string, op: Op, cache: M
     case "equipment-photos": ok = await rpc(c, "equipment_photo_access", { obj_name: path, edit: op !== "read" }); break;
     case "venue-photos": ok = await rpc(c, op === "read" ? "can_view" : "can_edit", { sec: "venues" }); break;
     case "job-files": ok = op === "read" ? await rpc(c, "can_view", { sec: "jobs" }) : (await rpc(c, "can_edit", { sec: "offers" })) || (await rpc(c, "can_edit", { sec: "jobs" })); break;
+    // <uploader>/<invoice>/<file>: the uploader and Admin+ read; the uploader adds; Admin+ also removes
+    case "invoice-files":
+      if (!UUID.test(first)) break;
+      if (op === "write") ok = first === c.uid && await rpc(c, "can_edit", { sec: "invoices" });
+      else ok = first === c.uid || await rpc(c, "is_plus");
+      break;
   }
   cache.set(key, ok);
   return ok;
