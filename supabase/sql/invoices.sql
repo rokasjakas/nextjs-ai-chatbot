@@ -92,7 +92,7 @@ create table if not exists public.invoices (
   id            uuid primary key default gen_random_uuid(),
   created_at    timestamptz not null default now(),
   created_by    uuid not null default auth.uid() references auth.users(id) on delete cascade,
-  kind          text not null check (kind in ('freelance','service','rent')),
+  kind          text not null check (kind in ('freelance','service','rent','purchase')),
   supplier      text,
   number        text,
   amount        numeric(12,2),
@@ -170,3 +170,7 @@ begin
   end if;
   return old;
 end $$;
+
+-- rūšis „Pirkinių“ (lentelei, sukurtai anksčiau)
+alter table public.invoices drop constraint if exists invoices_kind_check;
+alter table public.invoices add constraint invoices_kind_check check (kind in ('freelance','service','rent','purchase'));

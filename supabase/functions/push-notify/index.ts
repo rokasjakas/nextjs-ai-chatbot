@@ -640,7 +640,7 @@ async function onTask(uid: string, taskId: string, ev: string) {
 // Sąskaitos: a new one goes to Admin+, the decision to its uploader, a reply
 // from the e-mail to Admin+; „Priminti vėliau“ comes back at the chosen time
 type Invoice = { id: string; created_by: string; kind: string; supplier: string | null; number: string | null; amount: number | null; status: string; decision_note: string | null; remind_at: string | null; reminded_at: string | null; responses: { who?: string; kind: string; text?: string }[] };
-const INV_KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos" };
+const INV_KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos", purchase: "Pirkinių" };
 const INV_STATUS: Record<string, string> = { approved: "✅ Sąskaita patvirtinta", rejected: "✖ Sąskaita netvirtinta", later: "⏰ Sąskaita atidėta vėlesniam laikui", sent: "📤 Sąskaita patvirtinta ir išsiųsta", paid: "💶 Sąskaita apmokėta", queued: "🗂 Sąskaita suvesta apmokėjimui" };
 async function plusIds(): Promise<string[]> {
   return (await db<{ id: string }[]>(`profiles?select=id&role=eq.admin&level=in.(plus,super)`)).map((p) => p.id);

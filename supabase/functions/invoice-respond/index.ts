@@ -21,7 +21,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-const KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos" };
+const KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos", purchase: "Pirkinių" };
 const ANSWER: Record<string, string> = { paid: "Sąskaita apmokėta", queued: "Sąskaita suvesta apmokėjimui", reply: "Atsakymas" };
 
 type Sent = { at: string; by?: string; by_email?: string; to: string[]; comment?: string; token: string };
