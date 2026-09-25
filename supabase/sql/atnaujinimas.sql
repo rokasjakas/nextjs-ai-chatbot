@@ -1699,3 +1699,7 @@ drop policy if exists "add stk_log" on public.stk_log;
 create policy "add stk_log" on public.stk_log
   for insert to authenticated with check (public.can_edit('inventory'));
 grant select, insert on public.stk_log to authenticated;
+
+-- Inventorizacija v105: atskiri vienetai po modelio eilute
+alter table public.stk_items add column if not exists parent_id text;
+create index if not exists stk_items_parent on public.stk_items (parent_id);
