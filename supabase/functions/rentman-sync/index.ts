@@ -297,9 +297,44 @@ async function projectDetail(rentmanId: string, token: string) {
   };
 }
 
+// --- who may call: a signed-in, approved team member who may see projects /
+// events / warehouse. The public anon key alone is not enough (it is in the page).
+const ALLOWED_SECTIONS = ["projects", "newproj", "events", "rentals", "load", "inventory"];
+async function rpcAsUser(fn: string, args: Record<string, unknown>, token: string): Promise<unknown> {
+  const url = Deno.env.get("SUPABASE_URL") ?? "";
+  const anon = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+  const res = await fetch(`${url}/rest/v1/rpc/${fn}`, {
+    method: "POST",
+    headers: { apikey: anon, Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify(args),
+  });
+  if (!res.ok) return null;
+  return await res.json();
+}
+async function teamMemberAllowed(req: Request): Promise<boolean> {
+  const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+  if (!token || token === (Deno.env.get("SUPABASE_ANON_KEY") ?? "")) return false;
+  const url = Deno.env.get("SUPABASE_URL") ?? "";
+  const who = await fetch(`${url}/auth/v1/user`, {
+    headers: { apikey: Deno.env.get("SUPABASE_ANON_KEY") ?? "", Authorization: `Bearer ${token}` },
+  });
+  if (!who.ok) return false;
+  const user = await who.json();
+  if (!user?.id) return false;
+  if ((await rpcAsUser("is_approved", {}, token)) !== true) return false;
+  if ((await rpcAsUser("is_admin", {}, token)) === true) return true;
+  for (const sec of ALLOWED_SECTIONS) {
+    if ((await rpcAsUser("can_view", { sec }, token)) === true) return true;
+  }
+  return false;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
+  }
+  if (!(await teamMemberAllowed(req))) {
+    return json({ error: "Prisijunk kaip patvirtintas komandos narys." }, 401);
   }
   if (req.method !== "POST") {
     return json({ error: "Method not allowed, use POST" }, 405);
