@@ -2607,7 +2607,7 @@ grant execute on function public.calendar_events(date, date) to authenticated;
 
 -- ===== contact_rates.sql =====
 -- ============================================================
--- Žmonės (Bookingas / Archyvas): valandinis ir štafkė
+-- Žmonės (Bookingas / Archyvas): valandinis ir stafkė
 --  * atskira lentelė, kad įkainių nematytų visi, kas mato „Žmones“
 --    (kontaktų lentelę skaito visi su „Žmonių“ teise)
 --  * mato ir keičia tik office, projektų vadovai (pm) ir admin
