@@ -16,7 +16,7 @@ const { spawn } = require('child_process');
 
 // the version of this program; EventSolutions-Setup.json / EventSolutions-Mac-<arch>.json
 // in Supabase Storage (bucket "desktop") say which is the newest
-const DESK_VERSION = 5;
+const DESK_VERSION = 6;
 const MAC = process.platform === 'darwin';
 // what this computer downloads when it updates itself
 const PKG = MAC ? { manifest: `EventSolutions-Mac-${process.arch}.json`, file: `EventSolutions-Mac-${process.arch}.zip` }
@@ -303,6 +303,18 @@ async function installMac(zip) {
   child.on('error', () => {});
   child.unref();
 }
+// what earlier updates left in TEMP (the installer has finished by now)
+function cleanTemp() {
+  try {
+    const tmp = app.getPath('temp');
+    for (const f of fs.readdirSync(tmp)) {
+      if (/^\d+-EventSolutions-(Setup\.exe|Mac-(arm64|x64)\.zip)$|^EventSolutions-Setup-\d+\.exe$|^es-update-\d+$/.test(f)) {
+        // the installer that has just started this app may still be running: then next time
+        try { fs.rmSync(path.join(tmp, f), { recursive: true, force: true }); } catch {}
+      }
+    }
+  } catch {}
+}
 async function update(progress) {
   if (updating) return { ok: false, error: 'busy' };
   updating = true;
@@ -371,6 +383,7 @@ if (!app.requestSingleInstanceLock()) {
       desktopCapturer.getSources({ types: ['screen'] }).then((src) => cb(src[0] ? { video: src[0] } : {})).catch(() => cb({}));
     });
     if (app.isPackaged && settings.autoStart === undefined) setAutoStart(true);
+    cleanTemp();
     buildTray();
     createWindow(false);
   });

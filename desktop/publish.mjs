@@ -46,3 +46,19 @@ for (let i = 0; i < exe.length; i += PART) {
 const manifest = { version, size: exe.length, sha256: crypto.createHash('sha256').update(exe).digest('hex'), parts };
 await put(NAME + '.json', Buffer.from(JSON.stringify(manifest)), 'application/json');
 console.log('published', manifest);
+
+// parts left over from an older, bigger version (e.g. .part5 when there are 4 now)
+const listed = await fetch(`${URL_}/storage/v1/object/list/${BUCKET}`, {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${KEY}`, apikey: KEY, 'Content-Type': 'application/json' },
+  body: JSON.stringify({ prefix: '', search: FILE + '.part', limit: 1000 }),
+}).then((r) => (r.ok ? r.json() : [])).catch(() => []);
+const stale = (Array.isArray(listed) ? listed : []).map((o) => o.name).filter((n) => n && n.startsWith(FILE + '.part') && !parts.includes(n));
+if (stale.length) {
+  const res = await fetch(`${URL_}/storage/v1/object/${BUCKET}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${KEY}`, apikey: KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prefixes: stale }),
+  });
+  console.log(res.ok ? 'removed old parts' : 'could not remove old parts (' + res.status + ')', stale);
+}
