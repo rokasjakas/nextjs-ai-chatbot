@@ -32,6 +32,9 @@
 // generate-vapid-keys`), VAPID_SUBJECT (optional, mailto: address).
 // E-mail invitations use RESEND_API_KEY and REMINDER_FROM (same as the
 // vehicle reminders); APP_URL (optional, default https://app.eventsolutions.lt).
+// iPhone app (TestFlight, ios_devices.sql): APNS_KEY_ID, APNS_TEAM_ID, APNS_KEY_P8
+// (Apple Developer → Keys → Apple Push Notifications service, the .p8 text),
+// APNS_BUNDLE_ID (optional, default lt.eventsolutions.app).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
 
 import { p256 } from "npm:@noble/curves@1.4.0/p256";
@@ -259,7 +262,74 @@ async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except =
     }
   }));
   const desktop = payload.kind === "dial" ? 0 : await toDesktop(userIds, payload);
-  return { sent, gone, devices, ...(desktop ? { desktop } : {}), ...(failed.length ? { failed } : {}) };
+  const ios = await toIos(userIds, payload, ttl);
+  return { sent, gone, devices, ...(desktop ? { desktop } : {}), ...(ios ? { ios } : {}), ...(failed.length ? { failed } : {}) };
+}
+
+// ---------- iPhone app: Apple Push Notification service (APNs) ----------
+const apnsOn = () => !!(Deno.env.get("APNS_KEY_ID") && Deno.env.get("APNS_TEAM_ID") && Deno.env.get("APNS_KEY_P8"));
+let apnsJwt: { token: string; at: number } | null = null;
+// Apple wants a token signed with the .p8 key (ES256), renewed at most every 20–60 min
+async function apnsToken(): Promise<string> {
+  if (apnsJwt && Date.now() - apnsJwt.at < 40 * 60e3) return apnsJwt.token;
+  const pem = env("APNS_KEY_P8").replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
+  const key = await crypto.subtle.importKey("pkcs8", b64ToBytes(pem), { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
+  const part = (o: unknown) => bytesToB64u(new TextEncoder().encode(JSON.stringify(o)));
+  const now = Math.floor(Date.now() / 1000);
+  const head = part({ alg: "ES256", kid: env("APNS_KEY_ID") }) + "." + part({ iss: env("APNS_TEAM_ID"), iat: now });
+  const sig = new Uint8Array(await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, key, new TextEncoder().encode(head)));
+  apnsJwt = { token: head + "." + bytesToB64u(sig), at: Date.now() };
+  return apnsJwt.token;
+}
+function b64ToBytes(s: string): Uint8Array {
+  return Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+}
+export function apnsBody(payload: Payload) {
+  const call = payload.kind === "call";
+  return {
+    aps: {
+      alert: { title: payload.title, body: payload.body },
+      sound: "default",
+      "thread-id": payload.tag.slice(0, 64),
+      // a call or "call this person" comes through even in Focus mode
+      "interruption-level": call || payload.kind === "dial" ? "time-sensitive" : "active",
+    },
+    url: payload.url,
+    kind: payload.kind ?? "",
+  };
+}
+async function toIos(userIds: string[], payload: Payload, ttl: number): Promise<number> {
+  if (!apnsOn() || !userIds.length) return 0;
+  try {
+    const devs = await db<{ token: string }[]>(`ios_devices?select=token&user_id=in.${inList(userIds)}`);
+    if (!devs.length) return 0;
+    const jwt = await apnsToken();
+    const host = Deno.env.get("APNS_HOST") || "api.push.apple.com";
+    const body = JSON.stringify(apnsBody(payload));
+    let sent = 0;
+    await Promise.all(devs.map(async (d) => {
+      const res = await fetch(`https://${host}/3/device/${d.token}`, {
+        method: "POST",
+        headers: {
+          authorization: `bearer ${jwt}`, "apns-topic": Deno.env.get("APNS_BUNDLE_ID") || "lt.eventsolutions.app",
+          "apns-push-type": "alert", "apns-priority": payload.kind === "reaction" ? "5" : "10",
+          "apns-expiration": String(Math.floor(Date.now() / 1000) + ttl), "apns-collapse-id": payload.tag.slice(0, 64),
+        },
+        body,
+      }).catch((e) => { console.error("apns", (e as Error).message); return null; });
+      if (!res) return;
+      if (res.ok) { sent++; await res.body?.cancel().catch(() => {}); return; }
+      const why = await res.text().catch(() => "");
+      // the app was removed or the token is from another build
+      if (res.status === 410 || /BadDeviceToken|Unregistered|DeviceTokenNotForTopic/.test(why)) {
+        await db(`ios_devices?token=eq.${d.token}`, { method: "DELETE" }).catch(() => {});
+      } else console.error("apns", res.status, why.slice(0, 200));
+    }));
+    return sent;
+  } catch (e) {
+    console.error("ios push", (e as Error)?.message || String(e));
+    return 0;
+  }
 }
 
 // The Windows app (desktop/) has no Web Push: it listens to desktop_inbox

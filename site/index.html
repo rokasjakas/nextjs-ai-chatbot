@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-m51caf8lKmIJy9yuCEnynTrn5pW6mO3jY2sw1mwOVYc=' https://cdn.jsdelivr.net; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-yISS0uUQi8kMION28ZSRKuibCVsAEtIumXPQqJpIN74=' https://cdn.jsdelivr.net; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -11565,11 +11565,29 @@ function deskOpen(url){
   let u; try{ u = new URL(url || './', location.href); }catch(e){ return; }
   if(u.origin!==location.origin) return;
   const sp = u.searchParams, chat = sp.get('chat'), meeting = sp.get('meeting'), call = sp.get('call');
+  if(sp.get('dial')) swMsg({ type:'dial', phone:sp.get('dial'), who:sp.get('who') || '' });
   if(chat) swMsg({ type:'open-chat', chat, thread:sp.get('thread') });
   if(meeting) swMsg({ type:'open-meeting', id:meeting });
   if(call) swMsg({ type:'open-call', call });
   if(['task','gear','event','invoice','feedback','leave','admin'].some(k=>sp.get(k))) swMsg({ type:'open-url', url:u.href });
 }
+/* ---------- iPhone programa (ios/, TestFlight) ----------
+   Programa įdeda window.esIOS { token, push, post() }. Įrenginio raktą (Apple
+   pranešimams) čia užregistruojame serveryje (ios_register); push-notify siunčia
+   per Apple. Paspaudus pranešimą programa kviečia window.esOpenUrl(url). */
+const IOSAPP = window.esIOS && window.esIOS.platform==='ios' ? window.esIOS : null;
+const IOS_TESTFLIGHT = '';        // TestFlight viešoji nuoroda (https://testflight.apple.com/join/…), kai bus
+window.esOpenUrl = url=>deskOpen(url);
+const IOSN = { done:'', off:(()=>{ try{ return localStorage.getItem('iosPushOff')==='1'; }catch(e){ return false; } })() };
+function iosSetOff(v){ IOSN.off = v; try{ localStorage.setItem('iosPushOff', v ? '1' : ''); }catch(e){} }
+async function iosRegister(){
+  if(!IOSAPP || !IOSAPP.token || !teamMe() || IOSN.off) return;
+  const key = IOSAPP.token+'|'+teamMe(); if(IOSN.done===key) return;
+  try{ const { error } = await getSb().rpc('ios_register', { p_token:IOSAPP.token }); IOSN.err = error ? error.message : ''; if(!error) IOSN.done = key; }catch(e){ IOSN.err = e.message; }
+  if(document.getElementById('pfNotify')) renderNotifySettings();
+}
+if(IOSAPP) window.addEventListener('es-ios-token', ()=>{ iosRegister(); if(document.getElementById('pfNotify')) renderNotifySettings(); });
+function iosBadge(n){ if(IOSAPP) try{ IOSAPP.post({ type:'badge', n:Math.max(0, n|0) }); }catch(e){} }
 // app downloads (.apk / .exe): if the file is not on the server, Netlify answers
 // with index.html and the "program" saved is the web page (Windows: "corrupted").
 // Check first, then let the click through.
@@ -13017,7 +13035,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v142';
+const APP_VER = 'v143';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18477,6 +18495,7 @@ async function teamStart(){
   admWatch(); admFromUrl();   // new members waiting for access
   appUpdateCheck();           // an older Android app on this phone (or Windows app)
   deskStart();                // Windows app: notifications from desktop_inbox
+  iosRegister();              // iPhone app: this phone gets Apple notifications
   document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible'){ teamActivity(); teamTrack(); if(canView('chat')) teamLoadConvs(); mailPoll(true); } else teamTouchLastSeen(); });
   setInterval(()=>{ teamRefreshDots(); }, 30000);
   setInterval(teamTouchLastSeen, 5*60000);
@@ -18518,6 +18537,7 @@ function teamHeaderRefresh(){
   if(!box) return;
   if(ACCESS.fallback){ box.innerHTML = ''; return; }
   const me = ACCESS.profile;
+  iosBadge(TEAM.unread || 0);
   box.innerHTML = (canView('chat') ? `<button class="tm-head-chat" id="thChat" title="Chatas">💬${TEAM.unread ? `<b class="tm-badge">${TEAM.unread>99?'99+':TEAM.unread}</b>` : ''}</button>` : '')+`
     <button class="tm-head-me" id="thMe" title="Mano profilis">${teamAvatar(me, 30)}</button>`;
   const thc = document.getElementById('thChat'); if(thc) thc.onclick = ()=>setTab('chat');
@@ -21572,13 +21592,14 @@ async function notifyCall(body){
   }catch(e){ window.NOTIFY_LAST = { status:0, error:e.message }; return null; }
 }
 function notifySupport(){
-  if(DESK) return 'yes';
+  if(DESK || IOSAPP) return 'yes';
   if(!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return PWA_IOS && !pwaStandalone() ? 'ios-install' : 'no';
   if(location.protocol!=='https:' && location.hostname!=='localhost') return 'no';
   return 'yes';
 }
 async function notifyDeviceState(){
   if(DESK) return deskNotifyOn() ? 'on' : 'off';
+  if(IOSAPP) return IOSAPP.push && IOSAPP.token && !IOSN.off ? 'on' : 'off';
   if(notifySupport()!=='yes') return 'off';
   if(Notification.permission==='denied') return 'blocked';
   try{ const reg = await navigator.serviceWorker.getRegistration(); const sub = reg && await reg.pushManager.getSubscription(); return sub && Notification.permission==='granted' ? 'on' : 'off'; }catch(e){ return 'off'; }
@@ -21586,6 +21607,8 @@ async function notifyDeviceState(){
 function b64uToU8(s){ const b = atob(s.replace(/-/g,'+').replace(/_/g,'/') + '==='.slice((s.length+3)%4)); return Uint8Array.from(b, c=>c.charCodeAt(0)); }
 async function notifyEnableDevice(){
   if(DESK){ try{ localStorage.setItem('deskNotify', 'on'); }catch(e){} await deskStart(); return true; }
+  // iPhone: the app asks (or opens its settings if it was refused); the token comes by 'es-ios-token'
+  if(IOSAPP){ iosSetOff(false); IOSN.done = ''; IOSAPP.post({ type:'askPush' }); await iosRegister(); return !!IOSAPP.token; }
   const perm = await Notification.requestPermission();
   if(perm!=='granted'){ toast('Pranešimai neleisti. Leisk juos naršyklės nustatymuose.'); return false; }
   const res = await fetch(NOTIFY_FN(), { headers:{ apikey:SUPABASE_KEY } }).catch(()=>null);
@@ -21605,6 +21628,15 @@ async function notifyEnableDevice(){
 // refused it (an old or broken subscription)
 async function notifyTest(btn){
   if(btn) btn.disabled = true;
+  if(IOSAPP) try{
+    await iosRegister();
+    const r = await notifyCall({ kind:'test' });
+    toast(r && r.ios ? 'Išsiųsta — pranešimas ateis per kelias sekundes (užverk programą, kad pamatytum).'
+      : !IOSAPP.token ? 'iPhone dar neleido pranešimų: spausk „Įjungti“ ir leisk.'
+      : IOSN.err ? 'Serveris dar neparuoštas: paleisk ios_devices.sql ('+IOSN.err+').'
+      : r ? 'Serveris dar nesiunčia į iPhone programą: reikia Apple pranešimų rakto (APNS_…) ir naujos push-notify.' : 'Pranešimų funkcija nepasiekiama.');
+    return;
+  } finally { if(btn) btn.disabled = false; }
   if(DESK) try{
     await deskStart();
     const r = await notifyCall({ kind:'test' });
@@ -21652,6 +21684,7 @@ async function notifyDiag(r){
   if(box){ let d = box.querySelector('.nt-diag'); if(!d){ d = document.createElement('pre'); d.className = 'nt-diag'; box.appendChild(d); } d.textContent = out.join('\n'); }
 }
 async function notifyDisableDevice(){
+  if(IOSAPP){ iosSetOff(true); IOSN.done = ''; try{ if(IOSAPP.token) await getSb().rpc('ios_unregister', { p_token:IOSAPP.token }); }catch(e){} return; }
   if(DESK){ try{ localStorage.setItem('deskNotify', 'off'); }catch(e){} deskStop(); return; }
   try{
     const reg = await navigator.serviceWorker.getRegistration();
@@ -25614,7 +25647,7 @@ function lvBadge(){
 /* ---------- Profilis: the app for the phone ---------- */
 function renderAppSection(){
   const box = document.getElementById('pfApp'); if(!box) return;
-  const ua = navigator.userAgent, android = /android/i.test(ua), ios = PWA_IOS, inApp = pwaStandalone() || !!DESK;
+  const ua = navigator.userAgent, android = /android/i.test(ua), ios = PWA_IOS, inApp = pwaStandalone() || !!DESK || !!IOSAPP;
   const deskMac = !!DESK && DESK.platform==='darwin';
   const mac = deskMac || (!DESK && !ios && /Mac/i.test(navigator.platform || ua)), win = (!!DESK && !deskMac) || (!DESK && /Windows/i.test(ua));
   const chip = mac && !DESK ? macChip() : '';
@@ -25628,8 +25661,11 @@ function renderAppSection(){
       </div>
       <div class="pf-app ${ios ? 'here' : ''}">
         <b>iPhone / iPad</b>
-        <small>Safari → Bendrinti → „Pridėti prie pradžios ekrano“. Atidaryk iš ikonos ir įjunk pranešimus (iOS 16.4+).</small>
-        <button type="button" class="btn ${ios ? 'primary' : ''}" id="pfIos">${slIcon('mobile')} Kaip įdiegti iPhone</button>
+        ${IOSAPP ? `<span class="pf-app-ok">${slIcon('checkbadge')} Naudoji iPhone programą (v${esc(String(IOSAPP.version||1))})</span>`
+          : IOS_TESTFLIGHT ? `<small>Tikra programa per Apple <b>TestFlight</b>: pranešimai su garsu, skambučiai, atsinaujina pati.</small>
+             <a class="btn ${ios ? 'primary' : ''}" href="${esc(IOS_TESTFLIGHT)}" target="_blank" rel="noopener">${slIcon('download')} Įdiegti iPhone (TestFlight)</a>`
+          : `<small>Safari → Bendrinti → „Pridėti prie pradžios ekrano“. Atidaryk iš ikonos ir įjunk pranešimus (iOS 16.4+).</small>
+             <button type="button" class="btn ${ios ? 'primary' : ''}" id="pfIos">${slIcon('mobile')} Kaip įdiegti iPhone</button>`}
       </div>
     </div>
     <h3 class="lv-sub" style="margin-top:14px;">Kompiuteriui (Windows / Mac)</h3>
