@@ -1,15 +1,21 @@
 'use strict';
 // Event Solutions for Windows: app.eventsolutions.lt in its own window.
 //  * closing the window only hides it: the app keeps running next to the clock
-//    (tray) and shows Windows notifications (chat, tasks, events …)
+//    (tray) and shows notifications with sound (chat, tasks, events …)
 //  * starts together with Windows, hidden (can be switched off in the tray menu)
 //  * links to other sites open in the normal browser
+//  * updates itself: "Atnaujinti" in the app downloads and installs the new version
 // Notifications: Web Push does not work inside Electron, so push-notify also
 // writes each notification to public.desktop_inbox; the page listens to it
 // (Realtime) and hands it over here through preload.js (window.esDesktop).
-const { app, BrowserWindow, Tray, Menu, Notification, shell, ipcMain, nativeImage, session, screen, desktopCapturer } = require('electron');
+const { app, BrowserWindow, Tray, Menu, shell, ipcMain, nativeImage, session, screen, desktopCapturer, net } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
+const { spawn } = require('child_process');
+
+// the version of this program; the site's EventSolutions-Setup.json says which is the newest
+const DESK_VERSION = 3;
 
 // ES_URL: another address for testing (only when run with `npm start`, never in the installed app)
 const HOME = (!app.isPackaged && process.env.ES_URL) || 'https://app.eventsolutions.lt/';
@@ -21,7 +27,6 @@ const TRAY_ICON = path.join(__dirname, 'icons', 'tray.png');
 const MEDIA_OK = [/^https:\/\/([a-z0-9-]+\.)*daily\.co$/];
 
 let win = null, tray = null, quitting = false;
-const notes = new Set();                       // keeps notifications alive until clicked or closed
 const startHidden = process.argv.includes('--hidden');
 const settingsFile = () => path.join(app.getPath('userData'), 'desktop.json');
 let settings = {};
@@ -101,7 +106,7 @@ function createWindow(show) {
     title: 'Event Solutions', icon: ICON, autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, spellcheck: true,
-      additionalArguments: ['--es-origin=' + ORIGIN],
+      additionalArguments: ['--es-origin=' + ORIGIN, '--es-ver=' + DESK_VERSION],
     },
   });
   win.removeMenu();
@@ -149,48 +154,123 @@ function buildTray() {
   tray.on('click', showWin);
 }
 
-const xml = (s) => String(s).replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]);
 function soundOn() { return settings.sound !== false; }
-// Windows toast with its own sound: messages, tasks … get the "message" sound,
-// a video call rings until answered. The icon must be a real file (not inside app.asar).
-function toastXml(title, body, call) {
-  const icon = ICON.replace(/app\.asar([\\/])/, 'app.asar.unpacked$1');
-  const audio = !soundOn() ? '<audio silent="true"/>'
-    : call ? '<audio src="ms-winsoundevent:Notification.Looping.Call" loop="true"/>'
-    : '<audio src="ms-winsoundevent:Notification.IM"/>';
-  return `<toast activationType="foreground" launch="es"${call ? ' scenario="incomingCall"' : ''}>`
-    + '<visual><binding template="ToastGeneric">'
-    + `<text>${xml(title)}</text>${body ? `<text>${xml(body)}</text>` : ''}`
-    + (fs.existsSync(icon) ? `<image placement="appLogoOverride" src="${xml(icon)}"/>` : '')
-    + '</binding></visual>'
-    + (call ? '<actions><action content="Atsiliepti" arguments="es" activationType="foreground"/><action content="Atmesti" arguments="dismiss" activationType="system"/></actions>' : '')
-    + `${audio}</toast>`;
+
+/* ---------- notifications: our own popups ----------
+   Windows' own toasts are silently dropped for an unsigned app in many setups,
+   so the app shows its own small window in the bottom-right corner (above other
+   windows, without taking the focus) with its own sound. Up to 4 are stacked;
+   a message closes after 10 s, a video call rings until clicked or closed. */
+const POP_W = 380, POP_H = 104, POP_GAP = 10, POP_MAX = 4;
+const pops = [];                                // { win, url, call }
+function popLayout() {
+  const a = screen.getPrimaryDisplay().workArea;
+  pops.forEach((p, i) => {
+    if (p.win.isDestroyed()) return;
+    p.win.setBounds({ x: a.x + a.width - POP_W - 14, y: a.y + a.height - (POP_H + POP_GAP) * (i + 1) - 4, width: POP_W, height: POP_H });
+  });
+}
+function popClose(p) {
+  const i = pops.indexOf(p);
+  if (i >= 0) pops.splice(i, 1);
+  clearTimeout(p.timer);
+  if (!p.win.isDestroyed()) p.win.destroy();
+  popLayout();
 }
 function notify(n, url) {
   const call = n.kind === 'call';
-  const title = String(n.title || 'Event Solutions').slice(0, 120), body = String(n.body || '').slice(0, 300);
-  const opts = { title, body, icon: ICON, silent: !soundOn(), timeoutType: call ? 'never' : 'default', urgency: call ? 'critical' : 'normal' };
-  if (process.platform === 'win32') opts.toastXml = toastXml(title, body, call);
-  const note = new Notification(opts);
-  notes.add(note);
-  const drop = () => notes.delete(note);
-  note.on('click', () => {
-    drop();
-    showWin();
-    if (url && win) win.webContents.send('es:open', url);
+  while (pops.length >= POP_MAX) popClose(pops[pops.length - 1]);
+  const w = new BrowserWindow({
+    width: POP_W, height: POP_H, show: false, frame: false, resizable: false, movable: false, minimizable: false, maximizable: false,
+    fullscreenable: false, skipTaskbar: true, alwaysOnTop: true, focusable: false, backgroundColor: '#1b1b1d', title: 'Event Solutions',
+    webPreferences: { preload: path.join(__dirname, 'popup-preload.js'), contextIsolation: true, sandbox: true, autoplayPolicy: 'no-user-gesture-required' },
   });
-  note.on('close', drop);
-  note.on('failed', drop);
-  note.show();
+  w.setAlwaysOnTop(true, 'screen-saver');
+  w.removeMenu();
+  const p = { win: w, url: url || '', call };
+  pops.unshift(p);
+  popLayout();
+  w.loadFile(path.join(__dirname, 'popup.html'), { query: {
+    t: String(n.title || 'Event Solutions').slice(0, 120), b: String(n.body || '').slice(0, 300),
+    call: call ? '1' : '', sound: soundOn() ? '1' : '',
+  } });
+  w.once('ready-to-show', () => { if (!w.isDestroyed()) w.showInactive(); });
+  w.on('closed', () => popClose(p));
+  p.timer = setTimeout(() => popClose(p), call ? 60000 : 10000);
+  if (win && !win.isDestroyed() && !win.isFocused()) win.flashFrame(true);
 }
+ipcMain.on('es:pop', (e, what) => {
+  const p = pops.find((x) => !x.win.isDestroyed() && x.win.webContents === e.sender);
+  if (!p) return;
+  if (what === 'open') {
+    showWin();
+    if (p.url && win) win.webContents.send('es:open', p.url);
+  } else if (what === 'hover') {
+    clearTimeout(p.timer);                        // stays while the mouse is over it
+  } else if (what === 'leave') {
+    clearTimeout(p.timer);
+    p.timer = setTimeout(() => popClose(p), p.call ? 60000 : 5000);
+    return;
+  }
+  if (what !== 'hover') popClose(p);
+});
 
 ipcMain.on('es:notify', (e, n) => {
   if (!win || e.sender !== win.webContents || !sameOrigin(e.senderFrame ? e.senderFrame.url : '')) return;
   if (!n || typeof n !== 'object') return;
   // shown always, also with the window open (the page skips a chat you are reading)
-  const url = typeof n.url === 'string' ? n.url.slice(0, 500) : './';
-  notify(n, url);
-  if (!win.isFocused()) win.flashFrame(true);
+  notify(n, typeof n.url === 'string' ? n.url.slice(0, 500) : './');
+});
+
+/* ---------- updates ----------
+   The site has EventSolutions-Setup.json (version, size, sha256, parts) and the
+   installer in parts of 24 MB (Cloudflare Pages: max 25 MB per file). "Atnaujinti"
+   in the app: the parts are downloaded here, checked, joined into a file in TEMP
+   and the installer runs silently (/S); it closes this app and starts the new one. */
+let updating = false;
+async function update(progress) {
+  if (updating) return { ok: false, error: 'busy' };
+  updating = true;
+  try {
+    const at = (f) => new URL(f, HOME).href;
+    const html = (r) => /text\/html/i.test(r.headers.get('content-type') || '');
+    const mr = await net.fetch(at('EventSolutions-Setup.json'), { cache: 'no-store' });
+    if (!mr.ok || html(mr)) throw new Error('missing');
+    const m = await mr.json();
+    if (!m || !Array.isArray(m.parts) || !m.parts.length || !(m.size > 0) || !/^[0-9a-f]{64}$/.test(m.sha256 || '')) throw new Error('missing');
+    const file = path.join(app.getPath('temp'), `EventSolutions-Setup-${Number(m.version) || 0}.exe`);
+    const fh = await fs.promises.open(file, 'w');
+    const hash = crypto.createHash('sha256');
+    let got = 0, last = 0;
+    try {
+      for (const part of m.parts) {
+        if (!/^EventSolutions-Setup\.exe\.part\d+$/.test(part)) throw new Error('missing');
+        const r = await net.fetch(at(part), { cache: 'no-store' });
+        if (!r.ok || html(r)) throw new Error('missing');
+        for await (const chunk of r.body) {
+          const buf = Buffer.from(chunk);
+          hash.update(buf);
+          await fh.write(buf);
+          got += buf.length;
+          if (Date.now() - last > 150) { last = Date.now(); progress(got, m.size); }
+        }
+      }
+    } finally { await fh.close(); }
+    progress(got, m.size);
+    if (got !== m.size || hash.digest('hex') !== m.sha256) { fs.rmSync(file, { force: true }); throw new Error('broken'); }
+    const child = spawn(file, ['/S'], { detached: true, stdio: 'ignore' });
+    child.on('error', () => {});
+    child.unref();
+    setTimeout(() => { quitting = true; app.quit(); }, 400);
+    return { ok: true };
+  } catch (err) {
+    updating = false;
+    return { ok: false, error: err && err.message || String(err) };
+  }
+}
+ipcMain.handle('es:update', (e) => {
+  if (!win || e.sender !== win.webContents) return { ok: false, error: 'denied' };
+  return update((got, size) => { if (win && !win.isDestroyed()) win.webContents.send('es:update-progress', { got, size }); });
 });
 
 if (!app.requestSingleInstanceLock()) {
