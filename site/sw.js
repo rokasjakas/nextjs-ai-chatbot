@@ -2,7 +2,7 @@
 // The page itself is always fetched from the network first, so a new version
 // is picked up on the next start; the saved copy is only used offline.
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v149';
+const CACHE = 'es-app-v150';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png'];
 
 self.addEventListener('install', e=>{

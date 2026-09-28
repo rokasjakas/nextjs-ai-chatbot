@@ -14,6 +14,9 @@
 // POST {"action":"join","call_id"}    -> Daily: { provider, url, token }
 //                                        Meet:  { provider, url }
 //
+// POST {"action":"left","call_id","session_id"}  (anyone, no login: guests too) someone left the call;
+//      when nobody else is in it any more the call is ended for everybody, and an online
+//      meeting's summary goes out (notes, files, chat)
 // POST {"action":"status"}            (admin)  -> { configured, connected, email }
 // POST {"action":"connect","origin"}  (admin)  -> { url } Google consent page
 // GET  ?code=…&state=…                (Google redirects here after consent)
@@ -41,7 +44,7 @@ const corsHeaders = {
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 const MEET_SCOPE = "https://www.googleapis.com/auth/meetings.space.created";
 const SCOPE = MEET_SCOPE + " openid email";
-export const VERSION = 4;
+export const VERSION = 5;
 const DAILY_HOURS = 4;   // a Daily room lives this long after the call starts
 
 function json(body: unknown, status = 200): Response {
@@ -275,6 +278,42 @@ async function join(who: Who, callId: string) {
   return json({ provider: "daily", url: call.meet_url, token: t.token, media: mediaOf(call.media) });
 }
 
+// someone left: is anybody else still in the room? Nobody -> the call is over
+// (asked again after a moment: two people leaving together each still see the other)
+async function presence(room: string): Promise<{ id: string; userId: string }[]> {
+  const j = await dailyGet(`rooms/${encodeURIComponent(room)}/presence`);
+  return ((j.data ?? []) as { id: string; userId: string }[]);
+}
+export async function callLeft(callId: string, sessionId: string, wait = (ms: number) => new Promise((r) => setTimeout(r, ms))) {
+  if (!/^[0-9a-f-]{36}$/i.test(callId)) return { ended: false };
+  const [call] = await db<Call[]>(`calls?select=*&id=eq.${callId}`);
+  if (!call || call.ended_at || call.provider !== "daily" || !call.room || !dailyOn()) return { ended: false };
+  for (let i = 0; i < 3; i++) {
+    const others = (await presence(call.room)).filter((p) => p.id !== sessionId);
+    if (!others.length) break;
+    if (i === 2) return { ended: false, present: others.length };
+    await wait(4000);
+  }
+  const now = new Date().toISOString();
+  const [ended] = await db<Call[]>(`calls?id=eq.${callId}&ended_at=is.null`, { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ ended_at: now }) });
+  if (!ended) return { ended: false };
+  // an online meeting with guests: a call of a few minutes at least sends out the summary
+  let summary = false;
+  if (Date.now() - Date.parse(call.created_at) > 3 * 60e3) {
+    const [m] = await db<{ id: string }[]>(`meetings?select=id&conversation_id=eq.${call.conversation_id}&online=is.true&summary_sent_at=is.null`);
+    if (m && Deno.env.get("CRON_SECRET")) {
+      const r = await fetch(`${env("SUPABASE_URL")}/functions/v1/push-notify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-cron-secret": env("CRON_SECRET"), Authorization: `Bearer ${env("SUPABASE_SERVICE_ROLE_KEY")}` },
+        body: JSON.stringify({ mode: "meeting-summary", meeting_id: m.id }),
+      }).catch(() => null);
+      summary = !!r?.ok;
+      await r?.body?.cancel().catch(() => {});
+    }
+  }
+  return { ended: true, summary };
+}
+
 // ---------- handlers ----------
 async function onCallback(url: URL): Promise<Response> {
   const st = await readState(url.searchParams.get("state") || "");
@@ -320,9 +359,10 @@ export async function handle(req: Request): Promise<Response> {
       return json({ ok: true, version: VERSION });
     }
     if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
+    const body = await req.json().catch(() => ({}));
+    if (body.action === "left") return json(await callLeft(String(body.call_id ?? ""), String(body.session_id ?? "")));
     const who = await caller(req);
     if (!who || !APPROVED.includes(who.role)) return json({ error: "Reikia prisijungti." }, 401);
-    const body = await req.json().catch(() => ({}));
     const configured = !!(Deno.env.get("GOOGLE_CLIENT_ID") && Deno.env.get("GOOGLE_CLIENT_SECRET"));
     const admin = who.role === "admin";
     if (body.action === "config") return json({ provider: dailyOn() ? "daily" : "meet", version: VERSION });

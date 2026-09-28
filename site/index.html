@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-NUjq/525WYTs8ELa9QrWBUV8qQz+/r91KKwgr+2z+do=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-/BPz3roIU9WkzKKGKe3GhvL+E6HviO4E2bye6BZ1zB8=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -500,6 +500,41 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .auth-switch{width:100%;text-transform:uppercase;font-weight:700;letter-spacing:.6px;border:1px solid var(--accent) !important;color:var(--accent) !important;background:transparent !important;}
 .auth-switch:hover{background:color-mix(in srgb, var(--accent) 12%, transparent) !important;}
 .guest-shell{width:100%;max-width:900px;}
+
+/* ---------- meetings with guests: the guest's page (?svecias=) and the calendar ---------- */
+#guestView.gmt-view{align-items:flex-start;}
+.gm{max-width:1080px;margin:0 auto;}
+.gmt-top{display:flex;align-items:center;gap:10px;margin:4px 0 14px;} .gmt-top .brand-cube{width:30px;height:30px;} .gmt-top b{font-family:var(--font-head);font-weight:500;font-size:22px;letter-spacing:.6px;line-height:1;}
+.gmt-top-s{margin-left:auto;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);font-weight:700;}
+.gmt-kick{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:800;}
+.gmt-title{font-family:var(--font-head);font-weight:500;font-size:40px;line-height:.95;text-transform:uppercase;margin:6px 0 14px;overflow-wrap:anywhere;}
+.gmt-kv{margin-bottom:10px;}
+.gmt-desc{white-space:pre-wrap;background:var(--panel-2);border-left:3px solid var(--accent);padding:10px 12px;margin:4px 0 12px;font-size:14px;}
+.gmt-people{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px;} .gmt-person{font-size:12.5px;padding:4px 9px;border:1px solid var(--border);background:var(--panel-2);border-radius:999px;} .gmt-person.me{border-color:var(--accent);}
+.gmt-rsvp{border-top:1px solid var(--border);padding-top:14px;} .gmt-ans{font-size:15px;margin-bottom:10px;} .gmt-ans.yes b{color:#2E8C77;} .gmt-ans.no b{color:var(--danger);}
+.gmt-btns,.gmt-cal{display:flex;flex-wrap:wrap;gap:8px;} .gmt-cal{margin-top:10px;}
+.gmt-name{display:flex;gap:8px;margin-bottom:10px;} .gmt-name input{flex:1;min-width:0;}
+.gmt-room{margin-top:14px;} .gmt-room-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;} .gmt-room-h b{font-size:16px;}
+.gmt-call-b{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;} .gmt-live{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;}
+.call-box.gmt-inline{position:relative;z-index:1;width:100%;height:min(62vh,560px);margin-bottom:12px;box-shadow:none;}
+.call-box.gmt-inline.full{position:fixed;z-index:4500;height:auto;margin:0;}
+.gmt-cols{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;}
+.gmt-chat{display:flex;flex-direction:column;border:1px solid var(--border);background:var(--panel);min-height:420px;position:relative;} .gmt-chat.drop{outline:2px dashed var(--accent);outline-offset:-4px;}
+.gmt-msgs{flex:1;overflow-y:auto;max-height:56vh;min-height:300px;padding:8px 4px;} .gmt-empty{padding:30px 14px;text-align:center;}
+.gmt-msg .sk-hover{display:none;} .gmt-av span{color:#fff;} .gmt-av{background:#2A6FDB;} .gmt-av.guest{background:var(--accent);}
+.gmt-msg .sk-meta{flex-wrap:wrap;} .sk-guest{white-space:nowrap;font-size:10px;letter-spacing:.8px;text-transform:uppercase;font-weight:800;color:var(--accent);border:1px solid currentColor;padding:0 5px;margin-left:6px;border-radius:3px;vertical-align:1px;} .sk-guest.es{color:#2A6FDB;}
+.gmt-callnote{font-size:13px;color:var(--text-dim);font-style:italic;}
+.gmt-comp{display:flex;align-items:flex-end;gap:8px;padding:8px;border-top:1px solid var(--border);} .gmt-comp textarea{flex:1;min-width:0;resize:none;max-height:160px;}
+.gmt-att{cursor:pointer;font-size:20px;padding:6px 4px;line-height:1;}
+.gmt-ups{padding:0 8px;} .gmt-up{position:relative;display:flex;gap:8px;font-size:12px;padding:5px 8px;margin-top:6px;background:var(--panel-2);overflow:hidden;} .gmt-up span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;position:relative;} .gmt-up small{position:relative;} .gmt-up i{position:absolute;left:0;top:0;bottom:0;background:color-mix(in srgb, var(--accent) 22%, transparent);}
+.gmt-notes{display:flex;flex-direction:column;border:1px solid var(--border);background:var(--panel);} .gmt-notes-h{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--border);} .gmt-notes-h small{margin-left:auto;color:var(--text-dim);font-size:11.5px;}
+.gmt-notes textarea{flex:1;min-height:260px;border:0;resize:vertical;background:transparent;padding:10px;font:inherit;font-size:14px;}
+.gmt-foot{text-align:center;font-size:11.5px;color:var(--text-dim);margin:16px 0 8px;}
+@media (max-width: 760px){ .gmt-top b{font-size:19px;} .gmt-cols{grid-template-columns:1fr;} .gmt-title{font-size:32px;} .gmt-msgs{max-height:60vh;} .call-box.gmt-inline{height:min(70vh,520px);} .gmt-call-b{margin-left:0;} }
+.mt-online{align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);background:var(--panel-2);margin:4px 0 8px;} .mt-online span{display:flex;flex-direction:column;gap:3px;} .mt-online small{color:var(--text-dim);font-size:12px;line-height:1.35;}
+.cal-mg{margin:8px 0 4px;padding:8px 10px;background:var(--panel-2);border:1px solid var(--border);} .cal-mg-h{font-size:11px;letter-spacing:.8px;text-transform:uppercase;font-weight:800;color:var(--text-dim);margin-bottom:4px;}
+.cal-mg-r{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;} .cal-mg-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .cal-mg-n small,.cal-mg-s{color:var(--text-dim);font-size:11.5px;} .cal-mg-r .btn{padding:2px 8px;}
+.cal-mt-notes{margin-top:8px;} .cal-mt-notes textarea{width:100%;}
 
 /* ============================================================
    Brand theme after eventsolutions.lt — flat square blocks, uppercase
@@ -8202,6 +8237,12 @@ function initAuthAndRouting(){
     renderInvoiceReply(invResp, params.get('a')||'');
     return;
   }
+  const guestKey = params.get('svecias');
+  if(guestKey){
+    document.getElementById('guestView').classList.remove('hidden');
+    renderMeetingGuest(guestKey, params.get('ats')||'');
+    return;
+  }
   const shareToken = params.get('share');
   if(shareToken){
     document.getElementById('guestView').classList.remove('hidden');
@@ -11341,6 +11382,302 @@ function invListDraw(){
   box.innerHTML = rows.map(v=>invRowHtml(v, isPlus())).join('') || `<div class="empty-state">${mine.length ? 'Nieko nerasta.' : 'Sąskaitų dar nėra.'}</div>`;
   box.querySelectorAll('[data-inv]').forEach(b=>b.onclick = ()=>{ const v = INV.list.find(x=>x.id===b.dataset.inv); isPlus() ? invDecide(v) : invView(v); });
 }
+/* ---------- susitikimo svečio puslapis (?svecias=<raktas>) ----------
+   Žmogus iš išorės atidaro asmeninę nuorodą iš kvietimo laiško: atsako
+   „Dalyvausiu / Nedalyvausiu“, prisideda susitikimą į savo kalendorių, o
+   online susitikime – rašo pokalbyje, kelia failus, pildo bendrus užrašus
+   ir jungiasi į vaizdo skambutį (tas pats skambučio ekranas kaip programoje).
+   Viskas per funkciją „guest“: raktas atveria tik šį vieną susitikimą. */
+const GMT = { token:'', info:null, msgs:[], last:'', poll:null, infoPoll:null, notesDirty:false, busy:false, ups:[] };
+const GUEST_FN = ()=>SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/guest';
+async function gmtCall(body){
+  let r;
+  try{ r = await fetch(GUEST_FN(), { method:'POST', headers:{ 'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY }, body:JSON.stringify(Object.assign({ token:GMT.token }, body)) }); }
+  catch(e){ throw new Error('Nėra ryšio su serveriu.'); }
+  const j = await r.json().catch(()=>({}));
+  if(r.status===404 && !j.error) throw new Error('Susitikimų puslapis dar neįjungtas (funkcija „guest“).');
+  if(!r.ok || j.error) throw new Error(j.error || 'Nepavyko ('+r.status+')');
+  return j;
+}
+// Vilnius wall time -> the moment (for the calendar links)
+function gmtUtc(date, time){
+  const [y, mo, d] = date.split('-').map(Number), [h, mi] = (time||'00:00').split(':').map(Number);
+  const guess = Date.UTC(y, mo-1, d, h, mi);
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone:'Europe/Vilnius', hourCycle:'h23', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }).formatToParts(new Date(guess)).map(p=>[p.type, p.value]));
+  const shown = Date.UTC(+parts.year, +parts.month-1, +parts.day, +parts.hour, +parts.minute);
+  return new Date(guess - (shown - guess));
+}
+function gmtSpan(m){
+  const ymd = m.meet_date.replace(/-/g, '');
+  if(!m.start_time){ const n = new Date(Date.UTC(...m.meet_date.split('-').map((x, i)=>i===1 ? x-1 : +x)) + 86400000).toISOString().slice(0,10).replace(/-/g, ''); return { allDay:true, a:ymd, b:n }; }
+  const a = gmtUtc(m.meet_date, m.start_time), b = m.end_time ? gmtUtc(m.meet_date, m.end_time) : new Date(a.getTime() + 3600000);
+  const z = d=>d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  return { allDay:false, a:z(a), b:z(b) };
+}
+function gmtGoogleUrl(m){
+  const s = gmtSpan(m), q = new URLSearchParams({ action:'TEMPLATE', text:m.title, dates:s.a+'/'+s.b, details:(m.description ? m.description+'\n\n' : '')+'Susitikimo puslapis: '+location.href.split('&')[0], location:m.location || (m.online ? 'Online (Event Solutions)' : '') });
+  return 'https://calendar.google.com/calendar/render?'+q.toString();
+}
+function gmtIcs(m){
+  const s = gmtSpan(m), t = x=>String(x||'').replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Event Solutions//EventSolutions App//LT','METHOD:PUBLISH','BEGIN:VEVENT',
+    'UID:'+m.uid+'@eventsolutions.lt','DTSTAMP:'+stamp,
+    s.allDay ? 'DTSTART;VALUE=DATE:'+s.a : 'DTSTART:'+s.a, s.allDay ? 'DTEND;VALUE=DATE:'+s.b : 'DTEND:'+s.b,
+    'SUMMARY:'+t(m.title), 'LOCATION:'+t(m.location || (m.online ? 'Online (Event Solutions)' : '')),
+    'DESCRIPTION:'+t((m.description ? m.description+'\n\n' : '')+'Susitikimo puslapis: '+location.href.split('&')[0]),
+    'URL:'+location.href.split('&')[0], 'END:VEVENT','END:VCALENDAR',''].join('\r\n');
+}
+function gmtWhen(m){
+  const d = new Date(m.meet_date+'T12:00:00');
+  const day = d.toLocaleDateString('lt-LT', { weekday:'long', month:'long', day:'numeric' });
+  return day+(m.start_time ? ', '+m.start_time.slice(0,5)+(m.end_time ? '–'+m.end_time.slice(0,5) : '') : ' (visą dieną)');
+}
+async function renderMeetingGuest(token, ats){
+  GMT.token = token;
+  const el = document.getElementById('guestView');
+  el.classList.add('gmt-view');
+  el.innerHTML = `<div class="guest-shell gm"><div class="card empty-state">Kraunama…</div></div>`;
+  // the link from the e-mail's button answers at once
+  if(ats==='taip' || ats==='ne'){
+    try{ await gmtCall({ action:'rsvp', answer:ats==='taip' ? 'yes' : 'no' }); GMT.justAnswered = ats; }catch(e){}
+    try{ history.replaceState(null, '', location.pathname+'?svecias='+encodeURIComponent(token)); }catch(e){}
+  }
+  try{ GMT.info = await gmtCall({ action:'info' }); }
+  catch(e){ el.innerHTML = `<div class="guest-shell gm"><div class="gmt-top"><div class="brand-cube" role="img" aria-label="Event Solutions"></div><b>EVENT SOLUTIONS</b></div><div class="card"><h2 class="section-title">Susitikimas</h2><div class="mail-err">${esc(e.message)}</div></div></div>`; return; }
+  document.title = GMT.info.meeting.title+' · Event Solutions';
+  gmtDraw();
+  if(GMT.info.meeting.online){
+    gmtLoadMsgs();
+    GMT.poll = setInterval(()=>{ if(document.visibilityState==='visible') gmtLoadMsgs(); }, 3000);
+  }
+  GMT.infoPoll = setInterval(gmtRefresh, 15000);
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible'){ gmtRefresh(); if(GMT.info.meeting.online) gmtLoadMsgs(); } });
+}
+function gmtDraw(){
+  const el = document.getElementById('guestView'), I = GMT.info, m = I.meeting, g = I.guest;
+  const st = { yes:'✅', no:'❌', pending:'⏳', member:'' };
+  el.innerHTML = `<div class="guest-shell gm">
+    <div class="gmt-top"><div class="brand-cube" role="img" aria-label="Event Solutions"></div><b>EVENT SOLUTIONS</b><span class="gmt-top-s">${m.online ? 'Online susitikimas' : 'Susitikimas'}</span></div>
+    <div class="card gmt-hero">
+      <div class="gmt-kick">Kvietimas</div>
+      <h2 class="gmt-title">${esc(m.title)}</h2>
+      <div class="inv-kv gmt-kv">
+        <div><span>Kada</span><b>${esc(gmtWhen(m))}</b></div>
+        ${m.location ? `<div><span>Kur</span><b>${esc(m.location)}</b></div>` : m.online ? `<div><span>Kur</span><b>Online – šiame puslapyje</b></div>` : ''}
+        <div><span>Organizatorius</span><b>${esc(m.organizer)}</b></div>
+      </div>
+      ${m.description ? `<div class="gmt-desc">${esc(m.description)}</div>` : ''}
+      <div class="gmt-people">${m.people.map(p=>`<span class="gmt-person ${p.me ? 'me' : ''}" title="${esc(p.status==='member' ? 'Event Solutions' : p.status==='yes' ? 'Dalyvaus' : p.status==='no' ? 'Nedalyvaus' : 'Dar neatsakė')}">${st[p.status]||''} ${esc(p.me ? g.name+' (tu)' : p.name)}</span>`).join('')}</div>
+      <div class="gmt-rsvp" id="gmRsvp"></div>
+    </div>
+    ${m.online ? `<div class="card gmt-room">
+      <div class="gmt-room-h"><div><div class="gmt-kick">Susitikimo kambarys</div><b>Pokalbis, failai ir vaizdo skambutis</b></div><div class="gmt-call-b" id="gmCallB"></div></div>
+      <div id="gmCallSlot"></div>
+      <div class="gmt-cols">
+        <div class="gmt-chat">
+          <div class="gmt-msgs" id="gmMsgs"><div class="muted gmt-empty">Kraunama…</div></div>
+          <div class="gmt-ups" id="gmUps"></div>
+          <div class="gmt-comp">
+            <label class="gmt-att" title="Pridėti failą"><input type="file" id="gmFile" multiple hidden>📎</label>
+            <textarea id="gmText" rows="1" placeholder="Rašyk žinutę…" maxlength="4000"></textarea>
+            <button class="btn primary" id="gmtSend">Siųsti</button>
+          </div>
+        </div>
+        <div class="gmt-notes"><div class="gmt-notes-h"><b>📝 Bendri užrašai</b><small id="gmNotesSt"></small></div>
+          <textarea id="gmNotes" placeholder="Darbotvarkė, sprendimai, kas ką daro… Mato visi dalyviai; po skambučio išsiunčiami su santrauka.">${esc(m.notes)}</textarea></div>
+      </div>
+    </div>` : ''}
+    <div class="gmt-foot">Event Solutions · asmeninė nuoroda – nesiųsk jos kitiems</div>
+  </div>`;
+  gmtDrawRsvp(); gmtDrawCall();
+  if(!m.online) return;
+  const txt = document.getElementById('gmText');
+  const grow = ()=>{ txt.style.height = 'auto'; txt.style.height = Math.min(160, txt.scrollHeight)+'px'; };
+  txt.addEventListener('input', grow);
+  txt.addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey && !EV_TOUCH){ e.preventDefault(); gmtSend(); } });
+  document.getElementById('gmtSend').onclick = gmtSend;
+  document.getElementById('gmFile').onchange = e=>{ const f = [...e.target.files]; e.target.value = ''; gmtUpload(f); };
+  const chat = document.querySelector('.gmt-chat');
+  chat.addEventListener('dragover', e=>{ e.preventDefault(); chat.classList.add('drop'); });
+  chat.addEventListener('dragleave', ()=>chat.classList.remove('drop'));
+  chat.addEventListener('drop', e=>{ e.preventDefault(); chat.classList.remove('drop'); gmtUpload([...(e.dataTransfer.files||[])]); });
+  txt.addEventListener('paste', e=>{ const f = [...(e.clipboardData && e.clipboardData.files || [])]; if(f.length){ e.preventDefault(); gmtUpload(f); } });
+  const notes = document.getElementById('gmNotes'); let nt = null;
+  notes.addEventListener('input', ()=>{ GMT.notesDirty = true; document.getElementById('gmNotesSt').textContent = 'Rašoma…'; clearTimeout(nt); nt = setTimeout(gmtSaveNotes, 1200); });
+  notes.addEventListener('blur', ()=>{ if(GMT.notesDirty){ clearTimeout(nt); gmtSaveNotes(); } });
+  document.getElementById('gmMsgs').addEventListener('click', e=>{ const b = e.target.closest('[data-gf]'); if(b) gmtOpenFile(b.dataset.gf, b.dataset.gn); });
+  gmtDrawMsgs();
+}
+async function gmtSaveNotes(){
+  const t = document.getElementById('gmNotes'), s = document.getElementById('gmNotesSt'); if(!t) return;
+  const v = t.value;
+  try{ await gmtCall({ action:'notes', notes:v }); GMT.info.meeting.notes = v; if(t.value===v) GMT.notesDirty = false; if(s) s.textContent = 'Išsaugota'; }
+  catch(e){ if(s) s.textContent = 'Neišsaugota: '+e.message; }
+}
+function gmtDrawRsvp(){
+  const box = document.getElementById('gmRsvp'); if(!box) return;
+  const I = GMT.info, g = I.guest, m = I.meeting;
+  const cal = `<div class="gmt-cal"><a class="btn small" href="${esc(gmtGoogleUrl(m))}" target="_blank" rel="noopener">📅 Pridėti į Google kalendorių</a><button class="btn small" id="gmtIcs">⬇ Outlook / Apple (.ics)</button></div>`;
+  const nameRow = !g.named ? `<div class="gmt-name"><input type="text" id="gmName" maxlength="60" placeholder="Tavo vardas ir pavardė (kad kiti matytų)" value=""><button class="btn small" id="gmNameSave">Išsaugoti</button></div>` : '';
+  const head = g.status==='yes' ? `<div class="gmt-ans yes">✅ Atsakei: <b>dalyvausi</b>${GMT.justAnswered==='taip' ? ' – ačiū! Organizatorius jau žino.' : ''}</div>`
+    : g.status==='no' ? `<div class="gmt-ans no">❌ Atsakei: <b>nedalyvausi</b>${GMT.justAnswered==='ne' ? ' – organizatorius jau žino.' : ''}</div>`
+    : `<div class="gmt-ans">Ar dalyvausi?</div>`;
+  box.innerHTML = head + nameRow + `<div class="gmt-btns">
+      <button class="btn ${g.status==='yes' ? 'primary' : ''}" data-ans="yes">✅ Dalyvausiu</button>
+      <button class="btn ${g.status==='no' ? 'danger' : ''}" data-ans="no">❌ Nedalyvausiu</button></div>`
+    + (g.status!=='no' ? cal : '');
+  box.querySelectorAll('[data-ans]').forEach(b=>b.onclick = async ()=>{
+    const n = document.getElementById('gmName');
+    b.disabled = true;
+    try{ const r = await gmtCall({ action:'rsvp', answer:b.dataset.ans, name:n ? n.value : '' }); g.status = r.status; if(n && n.value.trim()){ g.name = n.value.trim(); g.named = true; } GMT.justAnswered = r.status==='yes' ? 'taip' : 'ne'; gmtRefresh(); }
+    catch(e){ toast(e.message); }
+    gmtDrawRsvp();
+  });
+  const ns = document.getElementById('gmNameSave'); if(ns) ns.onclick = ()=>gmtSetName(document.getElementById('gmName').value);
+  const ics = document.getElementById('gmtIcs'); if(ics) ics.onclick = ()=>{
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([gmtIcs(m)], { type:'text/calendar;charset=utf-8' }));
+    a.download = 'susitikimas.ics'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+  };
+}
+async function gmtSetName(v){
+  v = String(v||'').trim(); if(!v){ toast('Įrašyk vardą.'); return false; }
+  try{ const r = await gmtCall({ action:'name', name:v }); GMT.info.guest.name = r.name; GMT.info.guest.named = true; gmtDrawRsvp(); gmtRefresh(); return true; }
+  catch(e){ toast(e.message); return false; }
+}
+// before writing or joining: how should the others see you?
+async function gmtNeedName(){
+  if(GMT.info.guest.named) return true;
+  const v = await uiPrompt('Kaip tave matys kiti dalyviai? Įrašyk vardą ir pavardę.', '');
+  return v ? await gmtSetName(v) : false;
+}
+async function gmtRefresh(){
+  try{
+    const I = await gmtCall({ action:'info' }), was = GMT.info;
+    GMT.info = I;
+    const p = document.querySelector('.gmt-people');
+    if(p && JSON.stringify(I.meeting.people)!==JSON.stringify(was.meeting.people)){ const st = { yes:'✅', no:'❌', pending:'⏳', member:'' }; p.innerHTML = I.meeting.people.map(x=>`<span class="gmt-person ${x.me ? 'me' : ''}">${st[x.status]||''} ${esc(x.me ? I.guest.name+' (tu)' : x.name)}</span>`).join(''); }
+    const t = document.getElementById('gmNotes');
+    if(t && document.activeElement!==t && !GMT.notesDirty && t.value!==I.meeting.notes) t.value = I.meeting.notes;
+    // the call was ended (by the organizer) while you were still in it
+    if(TEAM.live && TEAM.live.guest && (!I.call || I.call.id!==TEAM.live.id)){ chatLeaveCall(true); toast('📹 Skambutis baigtas.'); }
+    gmtDrawCall();
+  }catch(e){}
+}
+async function gmtLoadMsgs(){
+  if(GMT.loading) return; GMT.loading = true;
+  try{
+    const r = await gmtCall({ action:'messages', since:GMT.last || undefined });
+    const add = (r.messages||[]).filter(x=>!GMT.msgs.some(y=>y.id===x.id));
+    if(add.length || !GMT.loaded){ GMT.msgs = GMT.msgs.concat(add); GMT.loaded = true; if(GMT.msgs.length) GMT.last = GMT.msgs[GMT.msgs.length-1].created_at; gmtDrawMsgs(); }
+    if(add.some(x=>CHAT_CALL_RE.test(String(x.body).trim()))) gmtRefresh();
+  }catch(e){}
+  GMT.loading = false;
+}
+function gmtInit(n){ return String(n||'?').split(/\s+/).map(x=>x[0]||'').join('').slice(0,2).toUpperCase(); }
+function gmtDrawMsgs(){
+  const box = document.getElementById('gmMsgs'); if(!box) return;
+  const near = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+  let last = '', lastT = 0, day = '';
+  box.innerHTML = GMT.msgs.map(x=>{
+    const d = new Date(x.created_at), dk = d.toDateString();
+    const dayH = dk!==day ? `<div class="sk-day"><span>${esc(chatDayLabel(d))}</span></div>` : '';
+    if(dk!==day){ day = dk; last = ''; }
+    const cont = x.from===last && d - lastT < 5*60000; last = x.from; lastT = d;
+    const call = CHAT_CALL_RE.test(String(x.body).trim());
+    const body = call ? `<div class="gmt-callnote">${String(x.body).trim().startsWith('🎧') ? '🎧 Garso' : '📹 Vaizdo'} skambutis pradėtas</div>`
+      : (x.body ? `<div class="sk-text">${chatFormat(x.body)}</div>` : '')
+        + (x.attachments||[]).map(a=>`<button class="chat-file sk-file" data-gf="${esc(a.path)}" data-gn="${esc(a.name)}" title="Atsisiųsti"><span class="chat-file-ic">${chatFileIcon(a.name, a.mime)}</span><span class="chat-file-t"><b>${esc(a.name)}</b><small>${esc(chatSize(a.size))} · atsisiųsti</small></span></button>`).join('');
+    return dayH + `<div class="sk-msg gmt-msg ${cont ? 'cont' : ''} ${x.mine ? 'mine' : ''}">
+      <div class="sk-av">${cont ? '' : `<span class="tm-av gmt-av ${x.guest ? 'guest' : ''}" style="width:36px;height:36px;font-size:14px;"><span>${esc(gmtInit(x.who))}</span></span>`}</div>
+      <div class="sk-body">${cont ? '' : `<div class="sk-meta"><b class="sk-name">${esc(x.mine ? x.who+' (tu)' : x.who)}</b>${x.guest ? '<span class="sk-guest">svečias</span>' : '<span class="sk-guest es">Event Solutions</span>'}<span class="sk-time">${esc(chatHM(x.created_at))}</span></div>`}${body}</div></div>`;
+  }).join('') || '<div class="muted gmt-empty">Žinučių dar nėra. Parašyk pirmas – organizatorius gaus pranešimą.</div>';
+  if(near || !GMT.drawn) box.scrollTop = box.scrollHeight;
+  GMT.drawn = true;
+}
+async function gmtSend(){
+  const t = document.getElementById('gmText'), body = t.value.trim();
+  if(!body || GMT.busy) return;
+  if(!(await gmtNeedName())) return;
+  GMT.busy = true; document.getElementById('gmtSend').disabled = true;
+  try{ await gmtCall({ action:'send', body }); t.value = ''; t.style.height = 'auto'; await gmtLoadMsgs(); }
+  catch(e){ toast(e.message); }
+  GMT.busy = false; document.getElementById('gmtSend').disabled = false; t.focus();
+}
+function gmtDrawUps(){
+  const b = document.getElementById('gmUps'); if(!b) return;
+  b.innerHTML = GMT.ups.map(u=>`<div class="gmt-up"><span>${esc(u.name)}</span><i style="width:${u.size ? Math.round(100*u.loaded/u.size) : 0}%"></i><small>${u.size ? Math.round(100*u.loaded/u.size) : 0}%</small></div>`).join('');
+}
+async function gmtUpload(files){
+  if(!files.length || !(await gmtNeedName())) return;
+  for(const f of files){
+    if(f.size > 200*1024*1024){ toast(`„${f.name}“ per didelis (daugiausia 200 MB).`); continue; }
+    if(!f.size){ toast(`„${f.name}“ tuščias.`); continue; }
+    const u = { name:f.name, size:f.size, loaded:0 }; GMT.ups.push(u); gmtDrawUps();
+    try{
+      const put = await gmtCall({ action:'put', name:f.name, type:f.type || 'application/octet-stream', size:f.size });
+      await new Promise((res, rej)=>{
+        const x = new XMLHttpRequest(); x.open('PUT', put.url); x.setRequestHeader('Content-Type', put.type);
+        x.upload.onprogress = e=>{ u.loaded = e.loaded; gmtDrawUps(); };
+        x.onload = ()=>x.status>=200 && x.status<300 ? res() : rej(new Error('serveris atsakė '+x.status));
+        x.onerror = ()=>rej(new Error('ryšio klaida')); x.send(f);
+      });
+      await gmtCall({ action:'send', body:'', attachments:[{ path:put.path, name:String(f.name).slice(0,200), size:f.size, mime:f.type||'' }] });
+      await gmtLoadMsgs();
+    }catch(e){ toast(`„${f.name}“ neišsiųstas: ${e.message}`); }
+    GMT.ups.splice(GMT.ups.indexOf(u), 1); gmtDrawUps();
+  }
+}
+async function gmtOpenFile(path, name){
+  try{ const r = await gmtCall({ action:'url', path, download:name||'' }); const a = document.createElement('a'); a.href = r.url; a.rel = 'noopener'; a.download = name||''; document.body.appendChild(a); a.click(); a.remove(); }
+  catch(e){ toast('Nepavyko atsisiųsti: '+e.message); }
+}
+function gmtDrawCall(){
+  const b = document.getElementById('gmCallB'); if(!b) return;
+  const c = GMT.info.call, inCall = TEAM.live && TEAM.live.guest;
+  b.innerHTML = inCall ? '<span class="gmt-live"><span class="call-live-dot"></span> Tu skambutyje</span>'
+    : c ? `<span class="gmt-live"><span class="call-live-dot"></span> Vyksta ${c.media==='audio' ? 'garso' : 'vaizdo'} skambutis</span><button class="btn primary" data-gcall="join">Prisijungti</button>`
+    : `<button class="btn primary" data-gcall="video">📹 Vaizdo skambutis</button><button class="btn" data-gcall="audio">🎧 Garso</button>`;
+  b.querySelectorAll('[data-gcall]').forEach(x=>x.onclick = ()=>gmtJoin(x.dataset.gcall==='audio' ? 'audio' : 'video'));
+}
+async function gmtJoin(media){
+  if(TEAM.live || GMT.joining) return;
+  if(!(await gmtNeedName())) return;
+  GMT.joining = true;
+  let r;
+  try{ toast('📹 Jungiamasi…'); r = await gmtCall({ action:'call', media }); }
+  catch(e){ toast(e.message); GMT.joining = false; return; }
+  const slot = document.getElementById('gmCallSlot');
+  const box = document.createElement('div'); box.id = 'callBox'; box.className = 'call-box gmt-inline';
+  box.innerHTML = `<div class="call-box-h"><span class="call-live-dot"></span><span class="call-box-t"><b></b><small id="callBoxInfo">Jungiamasi…</small></span>
+    <button class="call-box-b" data-cb="pop" title="Atskiras langas – visada virš kitų langų">⧉</button>
+    <button class="call-box-b" data-cb="full" title="Per visą ekraną">⤢</button>
+    <button class="call-box-b leave" data-cb="leave" title="Išeiti iš skambučio">${SK_ICON.phone}</button></div>
+    <div class="call-box-v" id="callBoxV"></div>`;
+  slot.appendChild(box);
+  box.querySelector('.call-box-t b').textContent = GMT.info.meeting.title;
+  box.querySelector('[data-cb="full"]').onclick = ()=>box.classList.toggle('full');
+  box.querySelector('[data-cb="pop"]').onclick = ()=>callPopOut();
+  box.querySelector('[data-cb="leave"]').onclick = ()=>chatLeaveCall();
+  TEAM.live = { id:r.call_id, call:{ id:r.call_id, conversation_id:'' }, box, frame:null, guest:true, onLeave:()=>{ gmtDrawCall(); setTimeout(gmtRefresh, 1500); } };
+  callAutoPip(true);
+  gmtDrawCall();
+  const v = box.querySelector('#callBoxV');
+  try{
+    await loadScriptOnce(DAILY_JS, ()=>!!window.Daily);
+    const f = window.Daily.createCallObject({ subscribeToTracksAutomatically:true, dailyConfig:{ avoidEval:true } });
+    TEAM.live.frame = f;
+    dcMount(v, f, r.media==='audio');
+    f.on('left-meeting', ()=>{ if(TEAM.live && TEAM.live.frame===f) chatLeaveCall(true); });
+    f.on('participant-counts-updated', e=>{ const n = e && e.participantCounts ? e.participantCounts.present : 0; const i = document.getElementById('callBoxInfo'); if(i) i.textContent = n ? ltPlural(n,'dalyvis','dalyviai','dalyvių') : ''; });
+    f.on('error', e=>toast('Skambutis: '+((e && e.errorMsg) || 'klaida')));
+    f.on('camera-error', e=>toast('Kamera / mikrofonas: '+((e && e.errorMsg && (e.errorMsg.errorMsg || e.errorMsg)) || 'neleista')));
+    await f.join({ url:r.url, token:r.token, startVideoOff:r.media==='audio' });
+    box.scrollIntoView({ block:'nearest', behavior:'smooth' });
+  }catch(e){
+    if(TEAM.live && TEAM.live.box===box) v.innerHTML = `<iframe src="${esc(r.url)}?t=${encodeURIComponent(r.token)}" allow="camera; microphone; fullscreen; display-capture; autoplay; speaker-selection" style="width:100%;height:100%;border:0;"></iframe>`;
+  } finally { GMT.joining = false; }
+}
 // the page the e-mail's buttons open (no sign-in)
 async function renderInvoiceReply(token, a){
   const el = document.getElementById('guestView');
@@ -12837,6 +13174,9 @@ function calMeetingHtml(m, full){
     ${m.description ? `<div class="cal-mt-desc">${esc(m.description)}</div>` : ''}
     <div class="cal-mt-row">👤 Organizatorius: ${esc(org)}</div>
     ${who.length ? `<div class="cal-mt-row">👥 ${esc(who.join(', '))}</div>` : ''}
+    ${m.online ? `<div class="cal-mt-row">💻 Online susitikimas${full && m.conversation_id ? ` <button class="btn small primary" data-mchat="${esc(m.conversation_id)}">💬 Pokalbis ir skambutis</button>` : ''}</div>` : ''}
+    ${full && (m.emails||[]).length ? `<div class="cal-mg" data-mg="${esc(m.id)}"><small class="muted">Kraunami atsakymai…</small></div>` : ''}
+    ${full && m.online ? `<label class="field cal-mt-notes">📝 Bendri užrašai <small class="muted">— mato ir svečiai; išsiunčiami su santrauka</small><textarea rows="4" data-mnotes="${esc(m.id)}" placeholder="Darbotvarkė, sprendimai, kas ką daro…">${esc(m.notes||'')}</textarea></label>` : ''}
     ${full && m.created_by===me ? `<div class="row cal-mt-act"><button class="btn small" data-edit="${esc(m.id)}">✎ Redaguoti</button><button class="btn small danger" data-cancel="${esc(m.id)}">🗑 Atšaukti</button></div>` : ''}
   </div>`;
 }
@@ -12878,7 +13218,38 @@ function calDayModal(iso, focusId){
   const cdt = document.getElementById('cdTodo'); if(cdt){ if(TK.ok && !tkCanCreate()) cdt.classList.add('hidden'); cdt.onclick = ()=>TK.ok ? tkForm(null, 'self', iso) : todoForm(null, iso); }
   document.querySelectorAll('#modalRoot [data-edit]').forEach(b=>b.onclick = ()=>calMeetingForm(meetings.find(m=>m.id===b.dataset.edit)));
   document.querySelectorAll('#modalRoot [data-cancel]').forEach(b=>b.onclick = ()=>calCancel(meetings.find(m=>m.id===b.dataset.cancel)));
+  document.querySelectorAll('#modalRoot [data-mchat]').forEach(b=>b.onclick = ()=>{ closeModal(); TEAM.open = b.dataset.mchat; TEAM.thread = null; if(currentTab==='chat' && typeof chatOpen==='function') chatOpen(b.dataset.mchat); else setTab('chat'); });
+  document.querySelectorAll('#modalRoot [data-mnotes]').forEach(t=>t.addEventListener('change', async ()=>{
+    const { error } = await getSb().rpc('meeting_set_notes', { p_id:t.dataset.mnotes, p_notes:t.value });
+    if(error) toast('Užrašų išsaugoti nepavyko: '+error.message);
+    else { toast('📝 Užrašai išsaugoti.'); const x = meetings.find(m=>m.id===t.dataset.mnotes); if(x) x.notes = t.value; }
+  }));
+  calGuestsLoad(meetings.filter(m=>(m.emails||[]).length));
   if(focusId){ const el = document.querySelector(`#modalRoot [data-mt="${CSS.escape(focusId)}"]`); if(el){ el.classList.add('focus'); el.scrollIntoView({block:'nearest'}); } }
+}
+// the answers of the people invited by e-mail (the organizer also copies their links)
+const CAL_GST = { ch:null };
+async function calGuestsLoad(list){
+  if(!list.length) return;
+  const { data, error } = await getSb().from('meeting_guests').select('*').in('meeting_id', list.map(m=>m.id)).order('created_at');
+  if(error){ document.querySelectorAll('#modalRoot [data-mg]').forEach(el=>el.remove()); return; }
+  const me = teamMe(), ic = { yes:'✅', no:'❌', pending:'⏳' }, tx = { yes:'dalyvaus', no:'nedalyvaus', pending:'dar neatsakė' };
+  list.forEach(m=>{
+    const el = document.querySelector(`#modalRoot [data-mg="${CSS.escape(m.id)}"]`); if(!el) return;
+    const rows = (data||[]).filter(g=>g.meeting_id===m.id);
+    el.innerHTML = `<div class="cal-mg-h">Svečių atsakymai</div>` + (rows.map(g=>`<div class="cal-mg-r st-${esc(g.status)}"><span>${ic[g.status]||'⏳'}</span><span class="cal-mg-n"><b>${esc(g.name || g.email)}</b>${g.name ? ` <small>${esc(g.email)}</small>` : ''}</span><small class="cal-mg-s">${esc(tx[g.status]||'')}${g.last_seen_at ? ' · atidarė '+esc(chatTime(g.last_seen_at)) : ''}</small>${m.created_by===me ? `<button class="btn small" data-mglink="${esc(g.token)}" title="Nukopijuoti asmeninę svečio nuorodą (atsakyti, pokalbis, skambutis)">Nuoroda</button>` : ''}</div>`).join('') || '<small class="muted">Kvietimai dar neišsiųsti.</small>');
+    el.querySelectorAll('[data-mglink]').forEach(b=>b.onclick = async ()=>{
+      const url = location.origin+location.pathname+'?svecias='+b.dataset.mglink;
+      try{ await navigator.clipboard.writeText(url); toast('🔗 Svečio nuoroda nukopijuota.'); }catch(e){ await uiPrompt('Svečio nuoroda:', url); }
+    });
+  });
+  // answers come in live while the meeting is open
+  if(!CAL_GST.ch){
+    try{ CAL_GST.ch = getSb().channel('meeting-guests-live').on('postgres_changes', { event:'*', schema:'public', table:'meeting_guests' }, p=>{
+      const id = (p.new && p.new.meeting_id) || (p.old && p.old.meeting_id), el = id && document.querySelector(`#modalRoot [data-mg="${CSS.escape(id)}"]`);
+      if(el){ const m = CAL.meetings.concat(CAL.upcoming).find(x=>x.id===id); if(m) calGuestsLoad([m]); }
+    }).subscribe(); }catch(e){}
+  }
 }
 const CAL_EMAIL_RE = /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/;
 function calMeetingForm(m, iso){
@@ -12899,7 +13270,8 @@ function calMeetingForm(m, iso){
       <div class="mt-members">${members.map(x=>`<label class="chat-pick" data-s="${esc(normalizeText(teamName(x)+' '+(x.nickname||'')))}"><input type="checkbox" value="${esc(x.id)}" ${(m.attendees||[]).includes(x.id)?'checked':''}>${teamAvatar(x, 28, true)}<span><b>${esc(teamName(x))}</b>${x.job_title?` <small>${esc(x.job_title)}</small>`:''}</span></label>`).join('') || '<div class="section-sub">Kitų narių nėra.</div>'}</div>
     </div>
     <label class="field">El. paštai (ne nariams) <input type="text" id="mtEmails" value="${esc((m.emails||[]).join(', '))}" placeholder="vardas@imone.lt, kitas@imone.lt" autocomplete="off"></label>
-    <div class="section-sub" style="margin:-4px 0 8px;">Jiems išsiųsime laišką su visa informacija ir kalendoriaus failu (.ics).</div>
+    <div class="section-sub" style="margin:-4px 0 8px;">Kiekvienas gaus laišką su informacija, mygtukais „Dalyvausiu / Nedalyvausiu“ ir kalendoriaus failu (.ics); matysi, kas ką atsakė.</div>
+    <label class="checkbox-row mt-online"><input type="checkbox" id="mtOnline" ${m.online ? 'checked' : ''}><span><b>💻 Online susitikimas</b><small>Pokalbis su dalyviais: žinutės, failai, bendri užrašai ir vaizdo skambutis. Svečiai jungiasi per asmeninę nuorodą laiške, be registracijos. Visiems išėjus iš skambučio, dalyviams išsiunčiama santrauka.</small></span></label>
     ${editing ? '<label class="checkbox-row"><input type="checkbox" id="mtNotifyAll"> Pranešti visiems dalyviams apie pakeitimus</label>' : ''}
     <div class="row" style="justify-content:flex-end;gap:8px;margin-top:10px;"><button class="btn" id="mtX">Atšaukti</button><button class="btn primary" id="mtSave">${editing ? '💾 Išsaugoti' : '📨 Išsaugoti ir siųsti pakvietimus'}</button></div>`);
   document.getElementById('modalRoot').classList.add('cal-modal');
@@ -12924,12 +13296,14 @@ function calMeetingForm(m, iso){
     const bad = emails.find(e=>!CAL_EMAIL_RE.test(e)); if(bad){ toast('Netinkamas el. paštas: '+bad); return; }
     const row = { title, meet_date:date, start_time:from||null, end_time:to||null, location:v('mtLoc'), description:v('mtDesc'),
       attendees:Array.from(document.querySelectorAll('.mt-members input:checked')).map(i=>i.value), emails, updated_at:new Date().toISOString() };
+    const online = document.getElementById('mtOnline').checked;
+    if(online || m.online) row.online = online;
     const btn = document.getElementById('mtSave'); btn.disabled = true; btn.textContent = 'Siunčiama…';
     const sb = getSb();
     const res = editing ? await sb.from('meetings').update(row).eq('id', m.id).select().single() : await sb.from('meetings').insert(row).select().single();
-    if(res.error){ toast('Nepavyko: '+res.error.message); btn.disabled = false; btn.textContent = editing ? '💾 Išsaugoti' : '📨 Išsaugoti ir siųsti pakvietimus'; return; }
+    if(res.error){ toast(/online/.test(res.error.message) ? 'Online susitikimams reikia atnaujinti duomenų bazę (guest_meetings.sql).' : 'Nepavyko: '+res.error.message); btn.disabled = false; btn.textContent = editing ? '💾 Išsaugoti' : '📨 Išsaugoti ir siųsti pakvietimus'; return; }
     const mode = editing && document.getElementById('mtNotifyAll').checked ? 'update' : 'new';
-    const r = (row.attendees.length || emails.length) ? await notifyCall({ kind:'meeting', meeting_id:res.data.id, mode }) : { members:0, mailed:0 };
+    const r = (row.attendees.length || emails.length || online) ? await notifyCall({ kind:'meeting', meeting_id:res.data.id, mode }) : { members:0, mailed:0 };
     closeModal();
     if(!r) toast('Įvykis išsaugotas, bet pakvietimų išsiųsti nepavyko (ar įdiegta push-notify funkcija?).');
     else {
@@ -13134,7 +13508,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v149';
+const APP_VER = 'v150';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -22571,7 +22945,9 @@ function chatStatAdd(r){
 }
 function chatMsgHtml(m, o){
   o = o || {};
-  const d = new Date(m.created_at), who = teamMember(m.sender_id), mine = m.sender_id===teamMe();
+  // a meeting guest's message (kept with the organizer as sender): the guest's own name
+  const g = m.guest_id ? { id:'g-'+m.guest_id, first_name:m.guest_name || 'Svečias' } : null;
+  const d = new Date(m.created_at), who = g || teamMember(m.sender_id), mine = !g && m.sender_id===teamMe();
   const att = (m.attachments||[]).filter(a=>a.type!=='file'), files = (m.attachments||[]).filter(a=>a.type==='file');
   const st = !o.inThread && TEAM.tstats[m.id];
   const saved = TEAM.saved && TEAM.saved.has(m.id);
@@ -22586,7 +22962,7 @@ function chatMsgHtml(m, o){
   return `<div class="sk-msg ${o.cont?'cont':''} ${mine?'mine':''}" data-mid="${esc(m.id)}">
     <div class="sk-av">${o.cont ? `<span class="sk-ctime">${esc(chatHM(m.created_at))}</span>` : teamAvatar(who || {id:m.sender_id}, 36)}</div>
     <div class="sk-body">
-      ${o.cont ? '' : `<div class="sk-meta"><b class="sk-name">${esc(teamName(who))}</b><span class="sk-time" title="${esc(d.toLocaleString('lt-LT'))}">${esc(chatHM(m.created_at))}</span></div>`}
+      ${o.cont ? '' : `<div class="sk-meta"><b class="sk-name">${esc(teamName(who))}</b>${g ? '<span class="sk-guest">svečias</span>' : ''}<span class="sk-time" title="${esc(d.toLocaleString('lt-LT'))}">${esc(chatHM(m.created_at))}</span></div>`}
       ${parentNote}
       <div data-bubble="${esc(m.id)}">${body}</div>
       <div class="chat-reacts sk-reacts" data-rx="${esc(m.id)}">${chatReactsHtml(m.id)}</div>
@@ -22605,8 +22981,9 @@ function chatListHtml(list, o){
   list.forEach(m=>{
     const d = new Date(m.created_at), day = d.toDateString();
     if(day!==lastDay && !(o && o.noDays)){ html += `<div class="sk-day"><span>${esc(chatDayLabel(d))}</span></div>`; lastDay = day; lastSender = null; }
-    const cont = m.sender_id===lastSender && (d - lastTime) < 5*60000 && !(m.parent_id && m.also_channel && !(o && o.inThread));
-    lastSender = m.sender_id; lastTime = d;
+    const from = m.guest_id ? 'g-'+m.guest_id : m.sender_id;
+    const cont = from===lastSender && (d - lastTime) < 5*60000 && !(m.parent_id && m.also_channel && !(o && o.inThread));
+    lastSender = from; lastTime = d;
     html += chatMsgHtml(m, Object.assign({ cont }, o||{}));
   });
   return html;
@@ -23803,9 +24180,19 @@ function chatCallPlace(){
     if(box.style.cssText) box.style.cssText = '';
   }
 }
+// tell the server someone left: when nobody else is in the call any more, it is ended for
+// everybody (an online meeting then sends its summary). A plain request (no login, no
+// preflight) that still goes out when the page is being closed.
+function callLeftPing(callId, sessionId){
+  try{ fetch(MEET_FN(), { method:'POST', keepalive:true, headers:{ 'Content-Type':'text/plain' }, body:JSON.stringify({ action:'left', call_id:callId, session_id:sessionId||'' }) }).catch(()=>{}); }catch(e){}
+}
+function callSessionId(L){ try{ const p = L && L.frame && L.frame.participants && L.frame.participants().local; return p ? p.session_id || '' : ''; }catch(e){ return ''; } }
+window.addEventListener('pagehide', ()=>{ const L = TEAM.live; if(L && L.frame) callLeftPing(L.id, callSessionId(L)); });
 function chatLeaveCall(quiet){
   const L = TEAM.live; if(!L) return;
   TEAM.live = null;
+  if(L.frame) callLeftPing(L.id, callSessionId(L));
+  if(L.onLeave) setTimeout(()=>{ try{ L.onLeave(); }catch(e){} }, 0);
   callAutoPip(false);
   if(L.popWin) try{ L.popWin.close(); }catch(e){}
   clearInterval(L.timer);

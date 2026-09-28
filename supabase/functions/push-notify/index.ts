@@ -41,6 +41,7 @@ import { p256 } from "npm:@noble/curves@1.4.0/p256";
 import { sha256 } from "npm:@noble/hashes@1.4.0/sha256";
 import { hkdf } from "npm:@noble/hashes@1.4.0/hkdf";
 import { gcm } from "npm:@noble/ciphers@0.5.3/aes";
+import { hmac } from "npm:@noble/hashes@1.4.0/hmac";
 
 
 const corsHeaders = {
@@ -150,7 +151,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 10;
+const PUSH_FN_VERSION = 11;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -493,7 +494,10 @@ type Meeting = {
   id: string; title: string; meet_date: string; start_time: string | null; end_time: string | null;
   location: string; description: string; attendees: string[]; emails: string[];
   notified: { users?: string[]; emails?: string[]; seq?: number } | null; created_by: string;
+  online?: boolean; conversation_id?: string | null; notes?: string; summary_sent_at?: string | null;
 };
+type Guest = { id: string; meeting_id: string; email: string; name: string | null; token: string; status: string };
+const APP = () => (Deno.env.get("APP_URL") || "https://app.eventsolutions.lt").replace(/\/$/, "");
 const LT_MONTHS = ["sausio", "vasario", "kovo", "balandžio", "gegužės", "birželio", "liepos", "rugpjūčio", "rugsėjo", "spalio", "lapkričio", "gruodžio"];
 const LT_DAYS = ["sekmadienis", "pirmadienis", "antradienis", "trečiadienis", "ketvirtadienis", "penktadienis", "šeštadienis"];
 const hm = (t: string | null) => (t ? t.slice(0, 5) : "");
@@ -546,7 +550,18 @@ export function meetingIcs(m: Meeting, organizer: { name: string; email: string 
   ].filter((l, i, a) => l !== "" || i === a.length - 1).map(icsFold).join("\r\n");
 }
 const escHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-export function meetingEmailHtml(m: Meeting, organizer: string, people: string[], mode: string): string {
+// the guest's own buttons: answer, and (online meeting) the meeting page with chat, files and the call
+export function guestLinksHtml(token: string, online: boolean): string {
+  const u = (q: string) => `${APP()}/?svecias=${encodeURIComponent(token)}${q}`;
+  const btn = (href: string, text: string, bg: string, fg = "#fff") =>
+    `<a href="${escHtml(href)}" style="display:inline-block;margin:0 8px 8px 0;padding:11px 18px;border-radius:10px;background:${bg};color:${fg};font-weight:bold;text-decoration:none;font-size:14px;">${text}</a>`;
+  return `<div style="margin-top:18px;">${btn(u("&ats=taip"), "✅ Dalyvausiu", "#2E8C77")}${btn(u("&ats=ne"), "❌ Nedalyvausiu", "#f1f1f3", "#111")}</div>`
+    + (online ? `<div style="margin-top:6px;padding:14px;border-radius:10px;background:#111;color:#fff;">
+<div style="font-weight:bold;margin-bottom:4px;">💬 Susitikimo puslapis</div>
+<div style="font-size:13px;color:#ccc;margin-bottom:10px;">Pokalbis su organizatoriais, failų įkėlimas ir vaizdo skambutis – be jokios registracijos.</div>
+${btn(u(""), "Atidaryti susitikimą", "#E5486C")}</div>` : `<div style="font-size:12px;color:#888;">Arba <a href="${escHtml(u(""))}" style="color:#E5486C;">atidaryk susitikimo puslapį</a>.</div>`);
+}
+export function meetingEmailHtml(m: Meeting, organizer: string, people: string[], mode: string, guestToken = ""): string {
   const head = mode === "cancel" ? "Susitikimas atšauktas" : mode === "update" ? "Susitikimas pakeistas" : "Kvietimas";
   const row = (k: string, v: string) => v ? `<tr><td style="padding:4px 14px 4px 0;color:#666;vertical-align:top;white-space:nowrap;">${k}</td><td style="padding:4px 0;">${v}</td></tr>` : "";
   return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;max-width:560px;">
@@ -559,6 +574,7 @@ ${row("Organizatorius", escHtml(organizer))}
 ${row("Dalyviai", escHtml(people.join(", ")))}
 </table>
 ${m.description ? `<div style="margin-top:14px;padding:12px 14px;background:#f5f5f7;border-radius:8px;white-space:pre-wrap;">${escHtml(m.description)}</div>` : ""}
+${mode !== "cancel" && guestToken ? guestLinksHtml(guestToken, !!m.online) : ""}
 <p style="margin-top:18px;font-size:12px;color:#888;">${mode === "cancel" ? "" : "Pridėk į savo kalendorių — atidaryk prisegtą failą „kvietimas.ics“. "}Išsiųsta per EventSolutions App.</p>
 </div>`;
 }
@@ -609,12 +625,15 @@ async function onMeeting(uid: string, id: string, mode: string) {
   const people = [organizer, ...(m.attendees ?? []).filter((u) => u !== uid).map((u) => name(byId.get(u))), ...(m.emails ?? [])];
   let mailed = 0;
   const failed: string[] = [];
+  // every invited e-mail gets its own link (answer, meeting page); an online meeting also gets its chat
+  const tokens = mode === "cancel" ? new Map<string, string>() : await meetingGuests(m).catch((e) => { console.error("guests", (e as Error).message); return new Map<string, string>(); });
+  if (m.online && mode !== "cancel") await meetingRoom(m).catch((e) => console.error("meeting room", (e as Error).message));
   if (emails.length) {
-    const html = meetingEmailHtml(m, organizer, people, mode);
     const ics = meetingIcs(m, { name: organizer, email: me?.email ?? "" }, mode === "cancel", seq);
     const subject = (mode === "cancel" ? "Atšaukta: " : mode === "update" ? "Pakeista: " : "Kvietimas: ") + m.title + " · " + when;
     for (const e of emails) {
       try {
+        const html = meetingEmailHtml(m, organizer, people, mode, tokens.get(e) || "");
         await resendMail(e, subject, html, me?.email ?? "", ics);
         mailed++;
       } catch (err) {
@@ -639,6 +658,156 @@ async function onMeeting(uid: string, id: string, mode: string) {
   return { members: users.length, pushed: push.sent, mailed, failed };
 }
 
+
+// ---------- meetings with people from outside (guest_meetings.sql) ----------
+const validEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+// a row (and a secret link) for every invited e-mail -> e-mail: token
+async function meetingGuests(m: Meeting): Promise<Map<string, string>> {
+  const emails = [...new Set((m.emails ?? []).map((e) => e.trim().toLowerCase()).filter(validEmail))];
+  if (emails.length) {
+    await db("meeting_guests?on_conflict=meeting_id,email", {
+      method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=minimal" },
+      body: JSON.stringify(emails.map((email) => ({ meeting_id: m.id, email }))),
+    });
+  }
+  // someone taken off the list: their link stops working
+  await db(`meeting_guests?meeting_id=eq.${m.id}` + (emails.length ? `&email=not.in.${inList(emails)}` : ""), { method: "DELETE" });
+  const rows = await db<Guest[]>(`meeting_guests?select=email,token&meeting_id=eq.${m.id}`);
+  return new Map(rows.map((r) => [r.email, r.token]));
+}
+// the meeting's chat: a group "🤝 <title>" of the organizer and the invited members
+async function meetingRoom(m: Meeting): Promise<string> {
+  const title = ("🤝 " + m.title).slice(0, 80);
+  let cid = m.conversation_id || "";
+  if (!cid) {
+    const [c] = await db<{ id: string }[]>("conversations", {
+      method: "POST", headers: { Prefer: "return=representation" },
+      body: JSON.stringify({ kind: "group", title, created_by: m.created_by }),
+    });
+    cid = c.id;
+    await db(`meetings?id=eq.${m.id}`, { method: "PATCH", body: JSON.stringify({ conversation_id: cid }) });
+  } else {
+    await db(`conversations?id=eq.${cid}`, { method: "PATCH", body: JSON.stringify({ title }) });
+  }
+  const have = new Set((await db<{ user_id: string }[]>(`conversation_members?select=user_id&conversation_id=eq.${cid}`)).map((x) => x.user_id));
+  const add = [...new Set([m.created_by, ...(m.attendees ?? [])])].filter((u) => !have.has(u));
+  if (add.length) await db("conversation_members", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(add.map((user_id) => ({ conversation_id: cid, user_id }))) });
+  return cid;
+}
+// a guest answered: the organizer is told
+async function onGuestRsvp(guestId: string) {
+  const [g] = await db<Guest[]>(`meeting_guests?select=*&id=eq.${encodeURIComponent(guestId)}`);
+  if (!g || !["yes", "no"].includes(g.status)) return { sent: 0 };
+  const [m] = await db<Meeting[]>(`meetings?select=*&id=eq.${g.meeting_id}`);
+  if (!m) return { sent: 0 };
+  const who = g.name || g.email;
+  return await sendTo([m.created_by], {
+    title: (g.status === "yes" ? "✅ " + who + " dalyvaus" : "❌ " + who + " nedalyvaus"),
+    body: m.title + " · " + meetingWhen(m), tag: "rsvp-" + g.id, url: `./?meeting=${m.id}`, kind: "meeting",
+  });
+}
+// a guest wrote in the meeting's chat: its members are told
+async function onGuestMessage(messageId: string) {
+  const [msg] = await db<(Msg & { guest_name: string | null; guest_id: string | null })[]>(`messages?select=*&id=eq.${encodeURIComponent(messageId)}`);
+  if (!msg || !msg.guest_id) return { sent: 0 };
+  const [c] = await db<{ id: string; title: string | null }[]>(`conversations?select=id,title&id=eq.${msg.conversation_id}`);
+  const members = (await db<{ user_id: string }[]>(`conversation_members?select=user_id&conversation_id=eq.${msg.conversation_id}`)).map((x) => x.user_id);
+  const users = await chatUsers();
+  const byId = new Map(users.map((u) => [u.id, u]));
+  const to = members.filter((u) => byId.has(u) && wants(byId.get(u)!.notify_prefs, "group", msg.conversation_id));
+  return await sendTo(to, {
+    title: `💬 ${msg.guest_name || "Svečias"} (svečias) · ${c?.title || "susitikimas"}`,
+    body: preview(msg), tag: "m-" + msg.conversation_id, url: `./?chat=${msg.conversation_id}`, kind: "message",
+  });
+}
+// a guest opened the meeting's call: its members are told (the organizer too)
+async function onGuestCall(callId: string, guestId: string) {
+  const [call] = await db<{ id: string; conversation_id: string; media?: string; ended_at: string | null }[]>(`calls?select=id,conversation_id,media,ended_at&id=eq.${encodeURIComponent(callId)}`);
+  const [g] = await db<Guest[]>(`meeting_guests?select=*&id=eq.${encodeURIComponent(guestId)}`);
+  if (!call || call.ended_at || !g) return { sent: 0 };
+  const [c] = await db<{ id: string; title: string | null }[]>(`conversations?select=id,title&id=eq.${call.conversation_id}`);
+  const members = (await db<{ user_id: string }[]>(`conversation_members?select=user_id&conversation_id=eq.${call.conversation_id}`)).map((x) => x.user_id);
+  const users = await chatUsers();
+  const byId = new Map(users.map((u) => [u.id, u]));
+  const to = members.filter((u) => byId.has(u) && wantsCall(byId.get(u)!.notify_prefs));
+  const audio = call.media === "audio";
+  return await sendTo(to, {
+    title: `${audio ? "🎧" : "📹"} ${g.name || g.email} (svečias) laukia skambutyje`,
+    body: `${c?.title || "Susitikimas"} · užeik į pokalbį ir spausk „Prisijungti“.`,
+    tag: "callinfo-" + call.id, url: `./?chat=${call.conversation_id}`, kind: "callinfo",
+  }, 3600);
+}
+// ---- files in the summary: a link that works for 7 days (Cloudflare R2, or Supabase Storage for older ones)
+const r2On = () => !!(Deno.env.get("R2_ACCOUNT_ID") && Deno.env.get("R2_ACCESS_KEY_ID") && Deno.env.get("R2_SECRET_ACCESS_KEY") && Deno.env.get("R2_BUCKET"));
+const hexOf = (b: Uint8Array) => Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+const rfc3986 = (s: string) => encodeURIComponent(s).replace(/[!'()*]/g, (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase());
+function r2Presign(method: string, key: string, expires: number, query: Record<string, string> = {}): string {
+  const host = `${env("R2_ACCOUNT_ID")}.r2.cloudflarestorage.com`, enc = new TextEncoder();
+  const full = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, ""), day = full.slice(0, 8);
+  const scope = `${day}/auto/s3/aws4_request`;
+  const uri = "/" + rfc3986(env("R2_BUCKET")) + "/" + key.split("/").map(rfc3986).join("/");
+  const q: Record<string, string> = { "X-Amz-Algorithm": "AWS4-HMAC-SHA256", "X-Amz-Credential": `${env("R2_ACCESS_KEY_ID")}/${scope}`, "X-Amz-Date": full, "X-Amz-Expires": String(expires), "X-Amz-SignedHeaders": "host", ...query };
+  const qs = Object.keys(q).sort().map((k) => rfc3986(k) + "=" + rfc3986(q[k])).join("&");
+  const canonical = [method, uri, qs, "host:" + host + "\n", "host", "UNSIGNED-PAYLOAD"].join("\n");
+  const sts = ["AWS4-HMAC-SHA256", full, scope, hexOf(sha256(enc.encode(canonical)))].join("\n");
+  let k = hmac(sha256, enc.encode("AWS4" + env("R2_SECRET_ACCESS_KEY")), enc.encode(day));
+  for (const part of ["auto", "s3", "aws4_request"]) k = hmac(sha256, k, enc.encode(part));
+  return `https://${host}${uri}?${qs}&X-Amz-Signature=${hexOf(hmac(sha256, k, enc.encode(sts)))}`;
+}
+async function fileLink(path: string, name: string): Promise<string> {
+  const week = 7 * 86400;
+  if (r2On()) {
+    const head = await fetch(r2Presign("HEAD", "chat-files/" + path, 60), { method: "HEAD" }).catch(() => null);
+    if (head && head.ok) return r2Presign("GET", "chat-files/" + path, week, { "response-content-disposition": `attachment; filename*=UTF-8''${rfc3986(name)}` });
+  }
+  const key = env("SUPABASE_SERVICE_ROLE_KEY");
+  const res = await fetch(`${env("SUPABASE_URL")}/storage/v1/object/sign/chat-files/${path.split("/").map(encodeURIComponent).join("/")}`, {
+    method: "POST", headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ expiresIn: week }),
+  }).catch(() => null);
+  const j = res && res.ok ? await res.json().catch(() => null) : null;
+  return j?.signedURL ? `${env("SUPABASE_URL")}/storage/v1${j.signedURL}&download=${encodeURIComponent(name)}` : "";
+}
+export function meetingSummaryHtml(m: Meeting, organizer: string, people: string[], notes: string, files: { name: string; url: string; by: string }[], chat: { who: string; at: string; text: string }[]): string {
+  const sec = (t: string, body: string) => `<h3 style="margin:22px 0 8px;font-size:15px;">${t}</h3>${body}`;
+  return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;max-width:620px;">
+<div style="font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#e04e6c;font-weight:bold;">Susitikimo santrauka</div>
+<h2 style="margin:6px 0 10px;font-size:22px;">${escHtml(m.title)}</h2>
+<div style="color:#555;">${escHtml(meetingWhen(m))}${m.location ? " · " + escHtml(m.location) : ""} · organizatorius ${escHtml(organizer)}</div>
+<div style="color:#555;margin-top:4px;">Dalyviai: ${escHtml(people.join(", "))}</div>
+${sec("📝 Užrašai", notes.trim() ? `<div style="padding:12px 14px;background:#f5f5f7;border-radius:8px;white-space:pre-wrap;">${escHtml(notes)}</div>` : `<div style="color:#888;">Užrašų nebuvo.</div>`)}
+${files.length ? sec("📎 Failai", files.map((f) => `<div style="margin:4px 0;">${f.url ? `<a href="${escHtml(f.url)}" style="color:#E5486C;">${escHtml(f.name)}</a>` : escHtml(f.name)} <span style="color:#888;">· ${escHtml(f.by)}</span></div>`).join("") + `<div style="font-size:12px;color:#888;margin-top:6px;">Nuorodos galioja 7 dienas.</div>`) : ""}
+${chat.length ? sec("💬 Pokalbis", chat.map((c) => `<div style="margin:6px 0;"><b>${escHtml(c.who)}</b> <span style="color:#888;font-size:12px;">${escHtml(c.at)}</span><div style="white-space:pre-wrap;">${escHtml(c.text)}</div></div>`).join("")) : ""}
+<p style="margin-top:22px;font-size:12px;color:#888;">Išsiųsta per EventSolutions App.</p></div>`;
+}
+// the call is over (everybody left): notes, files and the chat to everybody invited, once
+async function onMeetingSummary(meetingId: string) {
+  const claimed = await db<Meeting[]>(`meetings?id=eq.${encodeURIComponent(meetingId)}&summary_sent_at=is.null`, {
+    method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ summary_sent_at: new Date().toISOString() }),
+  });
+  const m = claimed[0];
+  if (!m) return { sent: 0, skipped: "already sent" };
+  const profiles = await db<Profile[]>(`profiles?select=id,role,first_name,last_name,full_name,nickname,email,notify_prefs&role=in.(${APPROVED.join(",")})`);
+  const byId = new Map(profiles.map((p) => [p.id, p]));
+  const organizer = name(byId.get(m.created_by));
+  const guests = await db<Guest[]>(`meeting_guests?select=*&meeting_id=eq.${m.id}`);
+  const gName = (g: Guest) => g.name || g.email;
+  const people = [organizer, ...(m.attendees ?? []).filter((u) => u !== m.created_by).map((u) => name(byId.get(u))), ...guests.map(gName)];
+  type M = { body: string; attachments: { type?: string; path?: string; name?: string }[]; created_at: string; sender_id: string; guest_name: string | null; deleted_at: string | null };
+  const msgs = m.conversation_id ? await db<M[]>(`messages?select=body,attachments,created_at,sender_id,guest_name,deleted_at&conversation_id=eq.${m.conversation_id}&deleted_at=is.null&order=created_at.asc&limit=400`) : [];
+  const who = (x: M) => x.guest_name ? x.guest_name + " (svečias)" : name(byId.get(x.sender_id));
+  const at = (iso: string) => new Intl.DateTimeFormat("lt-LT", { timeZone: TZ, hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+  const files: { name: string; url: string; by: string }[] = [];
+  for (const x of msgs) for (const a of x.attachments ?? []) if (a.path) files.push({ name: a.name || a.path.split("/").pop() || "failas", url: await fileLink(a.path, a.name || "failas").catch(() => ""), by: who(x) });
+  const chat = msgs.filter((x) => (x.body || "").trim() && !/skambutis: https:/.test(x.body)).map((x) => ({ who: who(x), at: at(x.created_at), text: withNames(x.body, byId) }));
+  const html = meetingSummaryHtml(m, organizer, people, m.notes || "", files, chat);
+  const to = [...new Set([
+    ...[m.created_by, ...(m.attendees ?? [])].map((u) => byId.get(u)?.email || "").filter(validEmail),
+    ...guests.map((g) => g.email).filter(validEmail),
+  ].map((e) => e.toLowerCase()))];
+  let mailed = 0;
+  for (const e of to) if (!(await mailTo([e], "Santrauka: " + m.title, html))) mailed++;
+  return { mailed, to: to.length, files: files.length };
+}
 
 // ---------- tasks (public.tasks): new / done notices and reminders ----------
 export type Remind = { before?: number[]; at?: string[]; push?: boolean; email?: boolean; overdue?: boolean };
@@ -982,6 +1151,15 @@ Deno.serve(async (req) => {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       return json(await onNewUser(String(body.user_id ?? "")));
+    }
+    // meetings with guests (called by the "guest" function with the cron secret)
+    if (["guest-rsvp", "guest-message", "guest-call", "meeting-summary"].includes(body?.mode)) {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      if (body.mode === "guest-rsvp") return json(await onGuestRsvp(String(body.guest_id ?? "")));
+      if (body.mode === "guest-message") return json(await onGuestMessage(String(body.message_id ?? "")));
+      if (body.mode === "guest-call") return json(await onGuestCall(String(body.call_id ?? ""), String(body.guest_id ?? "")));
+      return json(await onMeetingSummary(String(body.meeting_id ?? "")));
     }
         if (body?.mode === "invoice-reply") {
       const secret = Deno.env.get("CRON_SECRET");
