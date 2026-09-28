@@ -713,10 +713,10 @@ async function onGear(uid: string, id: string, ev: string) {
   people.delete(uid);
   const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
   const what = `${g.item_name}${g.qty > 1 ? " × " + g.qty : ""}`;
-  const title = ev === "fixed" ? "✅ Sutaisyta: " + what
-    : ev === "found" ? "✅ Rasta: " + what
-    : g.kind === "lost" ? "❓ Dingo: " + what
-    : (g.state === "broken" ? "🔧 Sugadinta: " : "⚠ Pažeista: ") + what;
+  const title = ev === "fixed" ? "Sutaisyta: " + what
+    : ev === "found" ? "Rasta: " + what
+    : g.kind === "lost" ? "Dingo: " + what
+    : (g.state === "broken" ? "Sugadinta: " : "Pažeista: ") + what;
   const body = (g.kind === "lost" && g.place && ev === "new" ? "Galimai: " + g.place + " · " : "") + name(me);
   return await sendTo([...people], { title, body, tag: "gear-" + g.id, url: `./?gear=${g.id}`, kind: "gear" });
 }
