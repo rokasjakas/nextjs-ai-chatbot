@@ -9,6 +9,7 @@ if (location.origin === ORIGIN) {
   contextBridge.exposeInMainWorld('esDesktop', {
     version: Number(argOf('es-ver')) || 3,        // DESK_VERSION in main.js
     platform: process.platform,
+    arch: process.arch,
     notify: (n) => ipcRenderer.send('es:notify', n),
     onOpen: (cb) => ipcRenderer.on('es:open', (_e, url) => { try { cb(String(url)); } catch {} }),
     // download the newest installer, install it silently and restart

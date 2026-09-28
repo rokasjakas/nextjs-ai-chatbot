@@ -1,6 +1,6 @@
-# Windows app (desktop/): builds EventSolutions-Setup.exe and uploads it to
-# Supabase Storage when DESK_VERSION in desktop/main.js is raised. Installed
-# apps then offer "Atnaujinti" by themselves.
+# Windows and Mac apps (desktop/): builds them and uploads them to Supabase
+# Storage when DESK_VERSION in desktop/main.js is raised. Installed apps then
+# offer "Atnaujinti" by themselves.
 # Repository secret needed: SUPABASE_SERVICE_ROLE_KEY (Settings → Secrets and variables → Actions).
 name: Windows programa
 
@@ -16,8 +16,11 @@ on:
         type: boolean
         default: false
 
+env:
+  SUPABASE_URL: https://yakmikxkcudwloxruhvx.supabase.co
+
 jobs:
-  build:
+  windows:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     defaults:
@@ -34,7 +37,31 @@ jobs:
         run: ./build.sh
       - name: Upload to Supabase Storage
         env:
-          SUPABASE_URL: https://yakmikxkcudwloxruhvx.supabase.co
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           FORCE: ${{ inputs.force && '1' || '' }}
         run: node publish.mjs
+
+  mac:
+    runs-on: macos-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: Build Mac apps (Apple M… and Intel)
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --mac zip --arm64 --x64 && ls -la dist
+      - name: Upload to Supabase Storage
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          FORCE: ${{ inputs.force && '1' || '' }}
+        run: |
+          node publish.mjs dist/EventSolutions-Mac-arm64.zip EventSolutions-Mac-arm64
+          node publish.mjs dist/EventSolutions-Mac-x64.zip EventSolutions-Mac-x64

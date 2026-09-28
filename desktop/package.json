@@ -1,14 +1,15 @@
 {
   "name": "eventsolutions-desktop",
   "productName": "Event Solutions",
-  "version": "1.3.0",
-  "description": "Event Solutions programa Windows kompiuteriui",
+  "version": "1.4.0",
+  "description": "Event Solutions programa Windows ir Mac kompiuteriams",
   "author": "Event Solutions",
   "main": "main.js",
   "private": true,
   "scripts": {
     "start": "electron .",
-    "dist": "./build.sh"
+    "dist": "./build.sh",
+    "dist:mac": "electron-builder --mac zip --arm64 --x64"
   },
   "devDependencies": {
     "electron": "44.4.5",
@@ -48,6 +49,28 @@
     "electronLanguages": [
       "lt",
       "en-US"
-    ]
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "icon": "res/icon-mac.png",
+      "category": "public.app-category.business",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "artifactName": "EventSolutions-Mac-${arch}.${ext}",
+      "extendInfo": {
+        "NSCameraUsageDescription": "Kamera reikalinga vaizdo skambučiams chate.",
+        "NSMicrophoneUsageDescription": "Mikrofonas reikalingas skambučiams chate.",
+        "LSUIElement": false
+      }
+    }
   }
 }

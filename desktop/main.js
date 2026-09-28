@@ -1,21 +1,26 @@
 'use strict';
-// Event Solutions for Windows: app.eventsolutions.lt in its own window.
+// Event Solutions for Windows and Mac: app.eventsolutions.lt in its own window.
 //  * closing the window only hides it: the app keeps running next to the clock
-//    (tray) and shows notifications with sound (chat, tasks, events …)
-//  * starts together with Windows, hidden (can be switched off in the tray menu)
+//    (Windows tray / Mac menu bar) and shows notifications with sound
+//  * starts together with the computer, hidden (can be switched off in the tray menu)
 //  * links to other sites open in the normal browser
 //  * updates itself: "Atnaujinti" in the app downloads and installs the new version
 // Notifications: Web Push does not work inside Electron, so push-notify also
 // writes each notification to public.desktop_inbox; the page listens to it
 // (Realtime) and hands it over here through preload.js (window.esDesktop).
-const { app, BrowserWindow, Tray, Menu, shell, ipcMain, nativeImage, session, screen, desktopCapturer, net } = require('electron');
+const { app, BrowserWindow, Tray, Menu, shell, ipcMain, nativeImage, session, screen, desktopCapturer, net, systemPreferences } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const { spawn } = require('child_process');
 
-// the version of this program; the site's EventSolutions-Setup.json says which is the newest
-const DESK_VERSION = 4;
+// the version of this program; EventSolutions-Setup.json / EventSolutions-Mac-<arch>.json
+// in Supabase Storage (bucket "desktop") say which is the newest
+const DESK_VERSION = 5;
+const MAC = process.platform === 'darwin';
+// what this computer downloads when it updates itself
+const PKG = MAC ? { manifest: `EventSolutions-Mac-${process.arch}.json`, file: `EventSolutions-Mac-${process.arch}.zip` }
+  : { manifest: 'EventSolutions-Setup.json', file: 'EventSolutions-Setup.exe' };
 
 // ES_URL: another address for testing (only when run with `npm start`, never in the installed app)
 const HOME = (!app.isPackaged && process.env.ES_URL) || 'https://app.eventsolutions.lt/';
@@ -27,7 +32,7 @@ const TRAY_ICON = path.join(__dirname, 'icons', 'tray.png');
 const MEDIA_OK = [/^https:\/\/([a-z0-9-]+\.)*daily\.co$/];
 
 let win = null, tray = null, quitting = false;
-const startHidden = process.argv.includes('--hidden');
+let startHidden = process.argv.includes('--hidden');
 const settingsFile = () => path.join(app.getPath('userData'), 'desktop.json');
 let settings = {};
 function readSettings() { try { settings = JSON.parse(fs.readFileSync(settingsFile(), 'utf8')) || {}; } catch { settings = {}; } }
@@ -133,20 +138,22 @@ function createWindow(show) {
   win.loadURL(HOME);
 }
 
-function autoStartOn() { return app.getLoginItemSettings({ args: ['--hidden'] }).openAtLogin; }
+function autoStartOn() { return app.getLoginItemSettings(MAC ? {} : { args: ['--hidden'] }).openAtLogin; }
 function setAutoStart(on) {
-  app.setLoginItemSettings({ openAtLogin: !!on, args: ['--hidden'] });
+  app.setLoginItemSettings(MAC ? { openAtLogin: !!on, openAsHidden: true } : { openAtLogin: !!on, args: ['--hidden'] });
   settings.autoStart = !!on;
   writeSettings();
 }
 
 function buildTray() {
-  tray = new Tray(nativeImage.createFromPath(TRAY_ICON));
+  let img = nativeImage.createFromPath(TRAY_ICON);
+  if (MAC) img = img.resize({ width: 18, height: 18 });   // the Mac menu bar is small
+  tray = new Tray(img);
   tray.setToolTip('Event Solutions');
   const menu = () => Menu.buildFromTemplate([
     { label: 'Atidaryti Event Solutions', click: showWin },
     { type: 'separator' },
-    { label: 'Paleisti kartu su Windows', type: 'checkbox', checked: autoStartOn(), click: (m) => { setAutoStart(m.checked); tray.setContextMenu(menu()); } },
+    { label: MAC ? 'Paleisti kartu su kompiuteriu' : 'Paleisti kartu su Windows', type: 'checkbox', checked: autoStartOn(), click: (m) => { setAutoStart(m.checked); tray.setContextMenu(menu()); } },
     { label: 'Pranešimų garsas', type: 'checkbox', checked: soundOn(), click: (m) => { settings.sound = m.checked; writeSettings(); tray.setContextMenu(menu()); } },
     { label: 'Išbandyti pranešimą', click: () => notify({ title: 'Event Solutions', body: soundOn() ? 'Pranešimai veikia – turėjai išgirsti garsą.' : 'Pranešimai veikia (garsas išjungtas).' }, '') },
     { label: 'Perkrauti', click: () => { showWin(); win.webContents.reloadIgnoringCache(); } },
@@ -170,7 +177,8 @@ function popLayout() {
   const a = screen.getPrimaryDisplay().workArea;
   pops.forEach((p, i) => {
     if (p.win.isDestroyed()) return;
-    p.win.setBounds({ x: a.x + a.width - POP_W - 14, y: a.y + a.height - (POP_H + POP_GAP) * (i + 1) - 4, width: POP_W, height: POP_H });
+    const y = MAC ? a.y + 8 + (POP_H + POP_GAP) * i : a.y + a.height - (POP_H + POP_GAP) * (i + 1) - 4;
+    p.win.setBounds({ x: a.x + a.width - POP_W - 14, y, width: POP_W, height: POP_H });
   });
 }
 function popClose(p) {
@@ -200,7 +208,7 @@ function notify(n, url) {
   w.once('ready-to-show', () => { if (!w.isDestroyed()) w.showInactive(); });
   w.on('closed', () => popClose(p));
   p.timer = setTimeout(() => popClose(p), call ? 60000 : 10000);
-  if (win && !win.isDestroyed() && !win.isFocused()) win.flashFrame(true);
+  if (win && !win.isDestroyed() && !win.isFocused()) { if (MAC) { if (call && app.dock) app.dock.bounce('critical'); } else win.flashFrame(true); }
 }
 ipcMain.on('es:pop', (e, what) => {
   const p = pops.find((x) => !x.win.isDestroyed() && x.win.webContents === e.sender);
@@ -226,44 +234,86 @@ ipcMain.on('es:notify', (e, n) => {
 });
 
 /* ---------- updates ----------
-   The site has EventSolutions-Setup.json (version, size, sha256, parts) and the
-   installer in parts of 24 MB (Cloudflare Pages: max 25 MB per file). "Atnaujinti"
-   in the app: the parts are downloaded here, checked, joined into a file in TEMP
-   and the installer runs silently (/S); it closes this app and starts the new one. */
+   Supabase Storage (bucket "desktop", reached through the site's _redirects) has
+   the manifest (version, size, sha256, parts) and the program in parts of 24 MB.
+   "Atnaujinti" in the app: the parts are downloaded here, checked and joined into
+   a file in TEMP. Windows: the installer runs silently (/S), closes this app and
+   starts the new one. Mac: the new .app is unpacked and put in place of this one
+   by a small script once this app has quit, then opened. */
 let updating = false;
+const partRe = new RegExp('^' + PKG.file.replace(/\./g, '\\.') + '\\.part\\d+$');
+async function download(progress) {
+  const at = (f) => new URL(f, HOME).href;
+  const html = (r) => /text\/html/i.test(r.headers.get('content-type') || '');
+  const mr = await net.fetch(at(PKG.manifest), { cache: 'no-store' });
+  if (!mr.ok || html(mr)) throw new Error('missing');
+  const m = await mr.json();
+  if (!m || !Array.isArray(m.parts) || !m.parts.length || !(m.size > 0) || !/^[0-9a-f]{64}$/.test(m.sha256 || '')) throw new Error('missing');
+  const file = path.join(app.getPath('temp'), `${Number(m.version) || 0}-${PKG.file}`);
+  const fh = await fs.promises.open(file, 'w');
+  const hash = crypto.createHash('sha256');
+  let got = 0, last = 0;
+  try {
+    for (const part of m.parts) {
+      if (!partRe.test(part)) throw new Error('missing');
+      const r = await net.fetch(at(part), { cache: 'no-store' });
+      if (!r.ok || html(r)) throw new Error('missing');
+      for await (const chunk of r.body) {
+        const buf = Buffer.from(chunk);
+        hash.update(buf);
+        await fh.write(buf);
+        got += buf.length;
+        if (Date.now() - last > 150) { last = Date.now(); progress(got, m.size); }
+      }
+    }
+  } finally { await fh.close(); }
+  progress(got, m.size);
+  if (got !== m.size || hash.digest('hex') !== m.sha256) { fs.rmSync(file, { force: true }); throw new Error('broken'); }
+  return file;
+}
+function run(cmd, args) {
+  return new Promise((res, rej) => {
+    const c = spawn(cmd, args, { stdio: 'ignore' });
+    c.on('error', rej);
+    c.on('exit', (code) => (code === 0 ? res() : rej(new Error(cmd + ' ' + code))));
+  });
+}
+async function installMac(zip) {
+  // /Applications/Event Solutions.app/Contents/MacOS/Event Solutions -> the .app
+  const appDir = path.resolve(process.execPath, '..', '..', '..');
+  if (!/\.app$/.test(appDir)) throw new Error('Programa paleista ne iš .app');
+  // started straight from Downloads (macOS runs such a copy from a read-only place)
+  if (/AppTranslocation/.test(appDir)) throw new Error('translocated');
+  const dir = path.join(app.getPath('temp'), 'es-update-' + Date.now());
+  fs.mkdirSync(dir, { recursive: true });
+  await run('/usr/bin/ditto', ['-x', '-k', zip, dir]);
+  const fresh = fs.readdirSync(dir).find((f) => f.endsWith('.app'));
+  if (!fresh) throw new Error('broken');
+  const q = (s) => "'" + String(s).replace(/'/g, "'\\''") + "'";
+  const script = path.join(dir, 'install.sh');
+  fs.writeFileSync(script, [
+    '#!/bin/sh',
+    `while kill -0 ${process.pid} 2>/dev/null; do sleep 0.3; done`,
+    `rm -rf ${q(appDir)} && /usr/bin/ditto ${q(path.join(dir, fresh))} ${q(appDir)}`,
+    `/usr/bin/xattr -dr com.apple.quarantine ${q(appDir)} 2>/dev/null`,
+    `/usr/bin/open ${q(appDir)}`,
+    `rm -rf ${q(dir)} ${q(zip)}`,
+  ].join('\n'), { mode: 0o755 });
+  const child = spawn('/bin/sh', [script], { detached: true, stdio: 'ignore' });
+  child.on('error', () => {});
+  child.unref();
+}
 async function update(progress) {
   if (updating) return { ok: false, error: 'busy' };
   updating = true;
   try {
-    const at = (f) => new URL(f, HOME).href;
-    const html = (r) => /text\/html/i.test(r.headers.get('content-type') || '');
-    const mr = await net.fetch(at('EventSolutions-Setup.json'), { cache: 'no-store' });
-    if (!mr.ok || html(mr)) throw new Error('missing');
-    const m = await mr.json();
-    if (!m || !Array.isArray(m.parts) || !m.parts.length || !(m.size > 0) || !/^[0-9a-f]{64}$/.test(m.sha256 || '')) throw new Error('missing');
-    const file = path.join(app.getPath('temp'), `EventSolutions-Setup-${Number(m.version) || 0}.exe`);
-    const fh = await fs.promises.open(file, 'w');
-    const hash = crypto.createHash('sha256');
-    let got = 0, last = 0;
-    try {
-      for (const part of m.parts) {
-        if (!/^EventSolutions-Setup\.exe\.part\d+$/.test(part)) throw new Error('missing');
-        const r = await net.fetch(at(part), { cache: 'no-store' });
-        if (!r.ok || html(r)) throw new Error('missing');
-        for await (const chunk of r.body) {
-          const buf = Buffer.from(chunk);
-          hash.update(buf);
-          await fh.write(buf);
-          got += buf.length;
-          if (Date.now() - last > 150) { last = Date.now(); progress(got, m.size); }
-        }
-      }
-    } finally { await fh.close(); }
-    progress(got, m.size);
-    if (got !== m.size || hash.digest('hex') !== m.sha256) { fs.rmSync(file, { force: true }); throw new Error('broken'); }
-    const child = spawn(file, ['/S'], { detached: true, stdio: 'ignore' });
-    child.on('error', () => {});
-    child.unref();
+    const file = await download(progress);
+    if (MAC) await installMac(file);
+    else {
+      const child = spawn(file, ['/S'], { detached: true, stdio: 'ignore' });
+      child.on('error', () => {});
+      child.unref();
+    }
     setTimeout(() => { quitting = true; app.quit(); }, 400);
     return { ok: true };
   } catch (err) {
@@ -279,21 +329,41 @@ ipcMain.handle('es:update', (e) => {
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
-  app.setAppUserModelId(APP_ID);
+  if (!MAC) app.setAppUserModelId(APP_ID);
   // look like the ordinary Chrome to the sites (video calls check the browser)
   app.userAgentFallback = app.userAgentFallback.replace(/ Electron\/\S+/, '').replace(/ eventsolutions-desktop\/\S+/i, '');
 
   app.on('second-instance', showWin);
+  app.on('activate', showWin);                    // Mac: a click on the Dock icon
   app.on('before-quit', () => { quitting = true; saveBounds(); });
   app.on('window-all-closed', () => {});          // keeps running in the tray
 
   app.whenReady().then(() => {
     readSettings();
+    if (MAC) {
+      // started at login: only the menu bar icon
+      try { if (app.getLoginItemSettings().wasOpenedAsHidden) startHidden = true; } catch {}
+      // the Mac menu: without it copy / paste (⌘C, ⌘V) and ⌘Q do not work
+      Menu.setApplicationMenu(Menu.buildFromTemplate([
+        { role: 'appMenu', label: 'Event Solutions' },
+        { role: 'editMenu', label: 'Taisyti' },
+        { label: 'Rodinys', submenu: [{ role: 'reload', label: 'Perkrauti' }, { role: 'togglefullscreen', label: 'Visas ekranas' }, { type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }] },
+        { role: 'windowMenu', label: 'Langas' },
+      ]));
+    }
     const s = session.defaultSession;
     s.setPermissionRequestHandler((wc, permission, cb, details) => {
       const o = originOf(details.requestingUrl || wc.getURL());
       if (permission === 'openExternal') return cb(true);
-      if (['media', 'display-capture'].includes(permission)) return cb(o === ORIGIN || MEDIA_OK.some((r) => r.test(o)));
+      if (['media', 'display-capture'].includes(permission)) {
+        const ok = o === ORIGIN || MEDIA_OK.some((r) => r.test(o));
+        // Mac asks the person once for the camera and microphone
+        if (ok && MAC && permission === 'media' && systemPreferences.askForMediaAccess) {
+          const kinds = (details.mediaTypes || []).map((t) => (t === 'video' ? 'camera' : 'microphone'));
+          return Promise.all(kinds.map((k) => systemPreferences.askForMediaAccess(k))).then((r) => cb(r.every(Boolean)), () => cb(false));
+        }
+        return cb(ok);
+      }
       cb(o === ORIGIN && ['notifications', 'clipboard-read', 'clipboard-sanitized-write', 'fullscreen', 'pointerLock'].includes(permission));
     });
     // screen sharing in a video call: the whole main screen

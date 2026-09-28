@@ -1,6 +1,8 @@
-// Uploads dist/EventSolutions-Setup.exe to Supabase Storage (bucket "desktop"):
-// parts of 24 MB (Supabase free plan: max 50 MB per file) and
-// EventSolutions-Setup.json { version, size, sha256, parts }. The app and the
+// Uploads a built program to Supabase Storage (bucket "desktop"):
+// parts of 24 MB (Supabase free plan: max 50 MB per file) and a manifest
+// <name>.json { version, size, sha256, parts }.
+//   node publish.mjs                                  -> dist/EventSolutions-Setup.exe (Windows)
+//   node publish.mjs dist/EventSolutions-Mac-arm64.zip EventSolutions-Mac-arm64   (Mac) The app and the
 // site's download button read them from there (site/_redirects).
 // Only a newer DESK_VERSION (main.js) is uploaded; the parts go first, the list last.
 // Env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY. Run by .github/workflows/desktop.yml.
@@ -14,10 +16,13 @@ const BUCKET = 'desktop', PART = 24 * 1024 * 1024;
 const version = Number((fs.readFileSync(new URL('./main.js', import.meta.url), 'utf8').match(/const DESK_VERSION = (\d+);/) || [])[1]);
 if (!version) { console.error('DESK_VERSION not found in main.js'); process.exit(1); }
 
+const SRC = process.argv[2] || 'dist/EventSolutions-Setup.exe';
+const NAME = process.argv[3] || 'EventSolutions-Setup';
+const FILE = SRC.split('/').pop();                 // parts: <file>.part1, .part2 …
 const pub = (name) => `${URL_}/storage/v1/object/public/${BUCKET}/${name}`;
-const current = await fetch(pub('EventSolutions-Setup.json') + '?t=' + Date.now()).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+const current = await fetch(pub(NAME + '.json') + '?t=' + Date.now()).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 if (current && Number(current.version) >= version && !process.env.FORCE) {
-  console.log(`Storage already has version ${current.version} (this build: ${version}) – nothing uploaded. Raise DESK_VERSION in main.js to publish.`);
+  console.log(`${NAME}: storage already has version ${current.version} (this build: ${version}) – nothing uploaded. Raise DESK_VERSION in main.js to publish.`);
   process.exit(0);
 }
 
@@ -31,13 +36,13 @@ async function put(name, body, type) {
   console.log('uploaded', name, body.length);
 }
 
-const exe = fs.readFileSync(new URL('./dist/EventSolutions-Setup.exe', import.meta.url));
+const exe = fs.readFileSync(new URL('./' + SRC, import.meta.url));
 const parts = [];
 for (let i = 0; i < exe.length; i += PART) {
-  const name = `EventSolutions-Setup.exe.part${parts.length + 1}`;
+  const name = `${FILE}.part${parts.length + 1}`;
   await put(name, exe.subarray(i, i + PART), 'application/octet-stream');
   parts.push(name);
 }
 const manifest = { version, size: exe.length, sha256: crypto.createHash('sha256').update(exe).digest('hex'), parts };
-await put('EventSolutions-Setup.json', Buffer.from(JSON.stringify(manifest)), 'application/json');
+await put(NAME + '.json', Buffer.from(JSON.stringify(manifest)), 'application/json');
 console.log('published', manifest);
