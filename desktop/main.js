@@ -16,7 +16,7 @@ const { spawn } = require('child_process');
 
 // the version of this program; EventSolutions-Setup.json / EventSolutions-Mac-<arch>.json
 // in Supabase Storage (bucket "desktop") say which is the newest
-const DESK_VERSION = 6;
+const DESK_VERSION = 7;
 const MAC = process.platform === 'darwin';
 // what this computer downloads when it updates itself
 const PKG = MAC ? { manifest: `EventSolutions-Mac-${process.arch}.json`, file: `EventSolutions-Mac-${process.arch}.zip` }
@@ -70,7 +70,14 @@ function saveBounds() {
 
 function guard(wc) {
   wc.on('will-navigate', (e, url) => { if (!sameOrigin(url)) { e.preventDefault(); openOutside(url); } });
-  wc.setWindowOpenHandler(({ url, features }) => {
+  wc.setWindowOpenHandler(({ url, features, frameName }) => {
+    // the call in its own small window, always above the other windows
+    if (frameName === 'es-call' && (!url || url === 'about:blank')) {
+      return { action: 'allow', overrideBrowserWindowOptions: {
+        width: 480, height: 380, minWidth: 240, minHeight: 180, alwaysOnTop: true, autoHideMenuBar: true,
+        title: 'Skambutis', icon: ICON, backgroundColor: '#0e0e10', fullscreenable: false,
+      } };
+    }
     // print previews and reports (about:blank) and pages of the app itself
     if (!url || url === 'about:blank' || sameOrigin(url)) {
       return { action: 'allow', overrideBrowserWindowOptions: { autoHideMenuBar: true, icon: ICON, width: 1000, height: 800 } };
@@ -82,8 +89,12 @@ function guard(wc) {
     openOutside(url);
     return { action: 'deny' };
   });
-  wc.on('did-create-window', (child) => {
+  wc.on('did-create-window', (child, details) => {
     child.setMenuBarVisibility(false);
+    if (details && details.frameName === 'es-call') {
+      child.setAlwaysOnTop(true, 'floating');
+      if (MAC) child.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    }
     child.webContents.setWindowOpenHandler(({ url }) => { openOutside(url); return { action: 'deny' }; });
   });
 }
