@@ -6,6 +6,8 @@
 --    'open', sugadintas / dingęs daiktas lieka išimtas iš sandėlio kaip buvo).
 --  * Patvirtinti ar atmesti gali tik Admin+ narys ir ne tas, kuris prašė
 --    (tikrina serveris); kol laukiama patvirtinimo, statuso pakeisti negalima.
+--  * Nurašyti be patvirtinimo negalima: status 'written_off' nustatomas tik
+--    patvirtinus prašymą.
 --  * wo_approver – kas patvirtino / atmetė.
 -- Paleisti po gear.sql ir invoices.sql (public.is_plus()).
 -- Supabase → SQL Editor → Run. Saugu paleisti pakartotinai.
@@ -44,6 +46,7 @@ begin
   if tg_op = 'INSERT' then
     new.wo_status := null; new.wo_approver := null; new.wo_requested_by := null; new.wo_requested_name := null;
     new.wo_requested_at := null; new.wo_note := null; new.wo_decided_at := null; new.wo_decision_note := null;
+    if new.status = 'written_off' then raise exception 'Nurašyti galima tik su Admin+ patvirtinimu.'; end if;
     return new;
   end if;
   new.wo_status := old.wo_status; new.wo_approver := old.wo_approver; new.wo_requested_by := old.wo_requested_by;
@@ -51,6 +54,9 @@ begin
   new.wo_decided_at := old.wo_decided_at; new.wo_decision_note := old.wo_decision_note;
   if old.wo_status = 'pending' and new.status is distinct from old.status then
     raise exception 'Laukiama nurašymo patvirtinimo – statuso keisti negalima, kol prašymas neišspręstas.';
+  end if;
+  if new.status = 'written_off' and old.status is distinct from 'written_off' then
+    raise exception 'Nurašyti galima tik su Admin+ patvirtinimu.';
   end if;
   return new;
 end $$;
