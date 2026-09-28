@@ -15,6 +15,8 @@
 // POST {"kind":"test"}                   -> the caller's own devices
 // POST {"kind":"event","event_id","users":[…]}  people just written into an
 //      event's crew: each one who really is in it now is told (Renginiai)
+// POST {"kind":"leave","leave_id","event":"new"|"decided"|"cancelled"}  Prašymai:
+//      new / cancelled -> office + Admin+, decided -> the one who asked
 // Topics can be switched off in Profilis → Pranešimai (tasks, events, gear …).
 // POST {"kind":"dial","phone","name"}    -> the caller's own devices: "call this
 //      person" — tapping it on the phone starts the call (Žmonės → Bookingas)
@@ -67,6 +69,7 @@ type Prefs = {
   tasks?: boolean;
   events?: boolean;
   gear?: boolean;
+  leave?: boolean;
   muted?: string[];
   quiet?: { on?: boolean; from?: string; to?: string };
 };
@@ -121,7 +124,7 @@ export function inQuietHours(q: Prefs["quiet"], now = new Date()): boolean {
   const cur = hm === "24:00" ? "00:00" : hm;
   return q.from <= q.to ? cur >= q.from && cur < q.to : cur >= q.from || cur < q.to;
 }
-export function wants(p: Prefs | null, kind: "general" | "direct" | "group" | "reactions" | "meetings" | "threads" | "tasks" | "events" | "gear" | "other", convId: string): boolean {
+export function wants(p: Prefs | null, kind: "general" | "direct" | "group" | "reactions" | "meetings" | "threads" | "tasks" | "events" | "gear" | "leave" | "other", convId: string): boolean {
   const pr = p ?? {};
   if (pr.enabled === false) return false;
   if (kind !== "other" && pr[kind] === false) return false;
@@ -621,7 +624,7 @@ async function taskReminders() {
   return { fn: PUSH_FN_VERSION, checked: tasks.length, sent: out };
 }
 // the people who want notifications about a topic (Profilis → Pranešimai)
-async function wantIds(ids: string[], kind: "tasks" | "events" | "gear" | "other"): Promise<string[]> {
+async function wantIds(ids: string[], kind: "tasks" | "events" | "gear" | "leave" | "other"): Promise<string[]> {
   if (!ids.length) return [];
   const ps = await db<Profile[]>(`profiles?select=id,notify_prefs&id=in.${inList(ids)}`);
   return ps.filter((p) => wants(p.notify_prefs, kind, kind)).map((p) => p.id);
@@ -759,6 +762,36 @@ async function onGear(uid: string, id: string, ev: string) {
   return await sendTo(await wantIds([...people], "gear"), { title, body, tag: "gear-" + g.id, url: `./?gear=${g.id}`, kind: "gear" });
 }
 
+// Prašymai (laisvos dienos / atostogos): a new or cancelled one goes to the
+// office members and Admin+, the decision back to the one who asked
+type Leave = { id: string; user_id: string; user_name: string | null; kind: string; days: string[] | null; date_from: string; date_to: string; reason: string; status: string; decision_note: string | null; decided_by: string | null; decided_by_name: string | null };
+async function onLeave(uid: string, id: string, ev: string) {
+  const [r] = await db<Leave[]>(`leave_requests?select=*&id=eq.${encodeURIComponent(id)}`);
+  if (!r) return { error: "Prašymas nerastas" };
+  const day = (s: string) => String(s).slice(5, 10).replace("-", ".");
+  const when = r.kind === "dayoff" && (r.days || []).length ? (r.days || []).map(day).join(", ") : day(r.date_from) + (r.date_to !== r.date_from ? "–" + day(r.date_to) : "");
+  const what = r.kind === "dayoff" ? "Laisvos dienos" : "Atostogos";
+  const url = `./?leave=${r.id}`;
+  if (ev === "new" || ev === "cancelled") {
+    if (r.user_id !== uid) return { error: "Tik prašymą pateikęs narys" };
+    if (ev === "new" && r.status !== "pending") return { sent: 0 };
+    if (ev === "cancelled" && r.status !== "cancelled") return { sent: 0 };
+    const staff = (await db<{ id: string }[]>(`profiles?select=id&or=(role.eq.office,and(role.eq.admin,level.in.(plus,super)))`)).map((p) => p.id).filter((x) => x !== uid);
+    const to = await wantIds(staff, "leave");
+    return await sendTo(to, {
+      title: (ev === "new" ? "Naujas prašymas: " : "Atšauktas prašymas: ") + what.toLowerCase() + " · " + (r.user_name || ""),
+      body: when + (ev === "new" && r.reason ? " · " + r.reason.slice(0, 120) : ""), tag: "leave-" + r.id, url, kind: "leave",
+    });
+  }
+  // decided
+  if (r.decided_by !== uid || !["approved", "rejected"].includes(r.status)) return { error: "Tik sprendimą priėmęs narys" };
+  const to = await wantIds([r.user_id], "leave");
+  return await sendTo(to, {
+    title: `${what} ${r.status === "approved" ? "patvirtintos" : "nepatvirtintos"}: ${when}`,
+    body: (r.decided_by_name || "") + (r.decision_note ? " · " + r.decision_note.slice(0, 120) : ""), tag: "leave-" + r.id, url, kind: "leave",
+  });
+}
+
 // Renginiai: a member written into an event's crew (or as its manager) is told.
 // The app sends the people it added; the server checks the caller may edit
 // events and that each of them really is in that event now (by name).
@@ -835,6 +868,7 @@ Deno.serve(async (req) => {
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : "decided"));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
+    if (body.kind === "leave") return json(await onLeave(uid, String(body.leave_id ?? ""), ["new", "decided", "cancelled"].includes(body.event) ? body.event : "new"));
     if (body.kind === "event") return json(await onEvent(uid, String(body.event_id ?? ""), Array.isArray(body.users) ? body.users : []));
     if (body.kind === "gear") return json(await onGear(uid, String(body.gear_id ?? ""), ["new", "fixed", "found", "wo_request", "wo_approved", "wo_rejected"].includes(body.event) ? body.event : "new"));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
