@@ -1,0 +1,40 @@
+# Windows app (desktop/): builds EventSolutions-Setup.exe and uploads it to
+# Supabase Storage when DESK_VERSION in desktop/main.js is raised. Installed
+# apps then offer "Atnaujinti" by themselves.
+# Repository secret needed: SUPABASE_SERVICE_ROLE_KEY (Settings → Secrets and variables → Actions).
+name: Windows programa
+
+on:
+  push:
+    paths:
+      - 'desktop/**'
+      - '.github/workflows/desktop.yml'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Įkelti net jei versija nepakeista'
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: Build EventSolutions-Setup.exe
+        run: ./build.sh
+      - name: Upload to Supabase Storage
+        env:
+          SUPABASE_URL: https://yakmikxkcudwloxruhvx.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          FORCE: ${{ inputs.force && '1' || '' }}
+        run: node publish.mjs
