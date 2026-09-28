@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-d/ELAl0PU60tfKnH60ZElHY5T7nRdrNy6DL8JwMWeJI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-fgU9Th7vG52Ze0VMj6VjeRuOibYkAm8/6yuCMRYkmvs=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -2067,6 +2067,28 @@ main.chat-full .sk{border:0;border-top:1px solid var(--border);border-radius:0;m
 .call-box-b.end{color:#F08A93;}
 .call-box.docked [data-cb="back"]{display:none;}
 .call-popped{display:flex;align-items:center;justify-content:center;gap:10px;height:100%;color:#bbb;font-size:13px;flex-wrap:wrap;}
+.ui-ask{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.55);animation:fadeIn .12s ease-out;}
+.ui-ask.out{opacity:0;transition:opacity .12s;}
+.ui-ask-card{width:min(420px,100%);background:var(--panel,#1b1b1f);color:var(--text,#eee);border:1px solid var(--line,#333);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.5);padding:18px 18px 14px;}
+.ui-ask-msg{font-size:14.5px;line-height:1.45;white-space:pre-wrap;word-break:break-word;}
+.ui-ask-in{width:100%;margin-top:12px;box-sizing:border-box;}
+.ui-ask-b{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
+.ui-ask-b .btn.danger{background:#E5484D;border-color:#E5484D;color:#fff;}
+.dc-bl{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.dc-bl span{font-size:11px;color:#bbb;white-space:nowrap;}
+.call-box.mini .dc-bl span{display:none;}
+.sp{width:min(760px,100%);max-height:88vh;display:flex;flex-direction:column;}
+.sp-h{font-size:16px;margin-bottom:10px;}
+.sp-tabs{margin-bottom:10px;}
+.sp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;overflow:auto;min-height:0;}
+.sp-grid[hidden]{display:none;}
+.sp-item{display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:10px;border:2px solid var(--line,#333);background:transparent;color:inherit;cursor:pointer;text-align:left;}
+.sp-item:hover,.sp-item:focus{border-color:var(--accent,#F35E7D);outline:none;}
+.sp-th{display:block;aspect-ratio:16/10;background:#000;border-radius:6px;overflow:hidden;}
+.sp-th img{width:100%;height:100%;object-fit:contain;display:block;}
+.sp-n{display:flex;align-items:center;gap:6px;font-size:12.5px;min-width:0;}
+.sp-n span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-ic{width:16px;height:16px;flex:none;}
 .dc{position:relative;display:flex;flex-direction:column;height:100%;background:#0e0e10;font-family:inherit;}
 .dc-grid{flex:1;min-height:0;display:grid;gap:8px;padding:8px;overflow:auto;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));grid-auto-rows:minmax(120px,1fr);align-content:center;}
 .dc-grid[data-n="1"]{grid-template-columns:1fr;}
@@ -6697,12 +6719,12 @@ function sortRenderList(){
   wrap.querySelectorAll('[data-prow]').forEach(c=>ldSwipe(c, ()=>tog(c.dataset.prow), ()=>ldQtyModal(R(c.dataset.prow), 'sort')));
 }
 // „Krovimas baigtas“: the whole project turns green
-function ldToggleDone(){
+async function ldToggleDone(){
   const proj = activeProject(); if(!proj) return;
-  if(proj.loadDone){ if(!confirm('Atšaukti „Krovimas baigtas“?')) return; proj.loadDone = null; }
+  if(proj.loadDone){ if(!(await uiConfirm('Atšaukti „Krovimas baigtas“?'))) return; proj.loadDone = null; }
   else {
     const left = lastPackResult ? lastPackResult.bins.reduce((a, b)=>a + b.placed.filter(x=>!curChecklist()[binPlacedId(b, x)]).length, 0) : 0;
-    if(left && !confirm(`Dar ${left} vnt. nepažymėta kaip pakrauta. Vis tiek baigti krovimą?`)) return;
+    if(left && !(await uiConfirm(`Dar ${left} vnt. nepažymėta kaip pakrauta. Vis tiek baigti krovimą?`))) return;
     proj.loadDone = { at:new Date().toISOString(), by:(typeof npMe==='function' ? npMe() : '') };
   }
   saveState(); ldChanged(); renderLoadTab();
@@ -9446,14 +9468,14 @@ function npTplManager(){
   document.getElementById('modalRoot').classList.add('np-modal');
   document.getElementById('npX').onclick = ()=>closeModal();
   document.querySelectorAll('[data-tpldel]').forEach(b=>b.onclick = async ()=>{
-    const p = saved.find(x=>x.id===b.dataset.tpldel); if(!p || !confirm('Ištrinti šabloną „'+(p.name||'')+'“?')) return;
+    const p = saved.find(x=>x.id===b.dataset.tpldel); if(!p || !(await uiConfirm('Ištrinti šabloną „'+(p.name||'')+'“?'))) return;
     const { error } = await getSb().from('rp_projects').delete().eq('id', p.id);
     if(error){ toast('Nepavyko: '+error.message); return; }
     NP.list = NP.list.filter(x=>x.id!==p.id); npTplManager(); npRender();
   });
   document.querySelectorAll('[data-tplren]').forEach(b=>b.onclick = async ()=>{
     const p = saved.find(x=>x.id===b.dataset.tplren); if(!p) return;
-    const n = prompt('Šablono pavadinimas', p.name||''); if(!n || !n.trim()) return;
+    const n = (await uiPrompt('Šablono pavadinimas', p.name||'')); if(!n || !n.trim()) return;
     p.name = p.data.name = n.trim();
     const { error } = await getSb().from('rp_projects').update({ name:p.name, data:p.data, updated_at:new Date().toISOString(), updated_by:npMe() }).eq('id', p.id);
     if(error){ toast('Nepavyko: '+error.message); return; }
@@ -9462,7 +9484,7 @@ function npTplManager(){
 }
 async function npSaveAsTemplate(){
   const p = NP.cur; if(!p) return;
-  const n = prompt('Šablono pavadinimas', npBaseName(p.data.name)+' šablonas'); if(!n || !n.trim()) return;
+  const n = (await uiPrompt('Šablono pavadinimas', npBaseName(p.data.name)+' šablonas')); if(!n || !n.trim()) return;
   const d = JSON.parse(JSON.stringify(p.data));
   d.name = npBaseName(n.trim()); d.base = (npProjSpan(d) ? npIso(npProjSpan(d)[0]) : calISO(new Date())).slice(0,10);
   d.log = []; d.client = {}; d.number = ''; d.extRef = ''; d.subs.forEach(s=>{ s.status = 'draft'; delete s.bookedAt; }); d.groups.forEach(g=>g.items.forEach(r=>{ delete r.at; }));
@@ -9474,7 +9496,7 @@ async function npSaveAsTemplate(){
 async function npDuplicate(){
   const p = NP.cur; if(!p) return;
   const sp = npProjSpan(p.data);
-  const start = prompt('Kopijos pirma diena (MMMM-MM-DD)', sp ? npIso(sp[0]).slice(0,10) : calISO(new Date()));
+  const start = (await uiPrompt('Kopijos pirma diena (MMMM-MM-DD)', sp ? npIso(sp[0]).slice(0,10) : calISO(new Date())));
   if(!start || !/^\d{4}-\d{2}-\d{2}$/.test(start.trim())) return;
   const src = JSON.parse(JSON.stringify(p.data)); src.base = sp ? npIso(sp[0]).slice(0,10) : start.trim();
   const d = npFromTemplate(src, start.trim(), true);
@@ -9485,7 +9507,7 @@ async function npDuplicate(){
   await npSave(); npRender(); toast('✓ Nukopijuota');
 }
 async function npDelete(){
-  const p = NP.cur; if(!p || !confirm('Ištrinti projektą „'+(p.data.name||'')+'“?'+(p.data.loadProjectId ? ' Kartu bus ištrintas ir jo įrašas skiltyje „Projektai“ (krovimas).' : '')+' Atkurti nebus galima.')) return;
+  const p = NP.cur; if(!p || !(await uiConfirm('Ištrinti projektą „'+(p.data.name||'')+'“?'+(p.data.loadProjectId ? ' Kartu bus ištrintas ir jo įrašas skiltyje „Projektai“ (krovimas).' : '')+' Atkurti nebus galima.'))) return;
   clearTimeout(NP.saveT);
   const { error } = await getSb().from('rp_projects').delete().eq('id', p.id);
   if(error){ toast('Nepavyko: '+error.message); return; }
@@ -9634,13 +9656,13 @@ function npGeneral(body){
   body.querySelectorAll('[data-subname]').forEach(inp=>inp.oninput = ()=>{ d.subs.find(x=>x.id===inp.dataset.subname).name = inp.value; npTouch(false); });
   body.querySelectorAll('[data-subcol]').forEach(inp=>inp.onchange = ()=>{ d.subs.find(x=>x.id===inp.dataset.subcol).color = inp.value; npTouch(true); });
   body.querySelectorAll('[data-subgear]').forEach(b=>b.onclick = ()=>{ NP.sub = b.dataset.subgear; NP.grp = null; NP.tab = 'gear'; npRender(); });
-  body.querySelectorAll('[data-subdel]').forEach(b=>b.onclick = ()=>{
+  body.querySelectorAll('[data-subdel]').forEach(b=>b.onclick = async ()=>{
     const s = d.subs.find(x=>x.id===b.dataset.subdel), n = d.groups.filter(g=>g.sub===s.id).reduce((a,g)=>a+g.items.length,0);
-    if(!confirm(`Ištrinti subprojektą „${s.name}“${n ? ` ir jo ${n} įrangos eil.` : ''}?`)) return;
+    if(!(await uiConfirm(`Ištrinti subprojektą „${s.name}“${n ? ` ir jo ${n} įrangos eil.` : ''}?`))) return;
     d.subs = d.subs.filter(x=>x!==s); d.groups = d.groups.filter(g=>g.sub!==s.id); d.times = d.times.filter(t=>t.sub!==s.id); d.costs = d.costs.filter(c=>c.sub!==s.id);
     npLog('Ištrintas subprojektas „'+s.name+'“'); npTouch(true);
   });
-  const add = document.getElementById('npSubAdd'); if(add) add.onclick = ()=>{ const n = prompt('Subprojekto pavadinimas'); if(n && n.trim()) npAddSub(n.trim()); };
+  const add = document.getElementById('npSubAdd'); if(add) add.onclick = async ()=>{ const n = (await uiPrompt('Subprojekto pavadinimas')); if(n && n.trim()) npAddSub(n.trim()); };
   body.querySelectorAll('[data-subquick]').forEach(b=>b.onclick = ()=>npAddSub(b.dataset.subquick));
 }
 function npAddSub(name){
@@ -9790,9 +9812,9 @@ function npGear(body){
   if(lockWho){ const c = body.querySelector('.np-subchips'); if(c) c.insertAdjacentHTML('afterend', `<div class="card np-lockbar">${slIcon('lock')} <span><b>${npE(s.name)}</b> dabar pildo <b>${npE(lockWho.name)}</b> – matai tik skaitymui. Kitas grafas gali pildyti.</span></div>`); body.classList.add('np-ro'); }
   else body.classList.remove('np-ro');
   const gst = document.getElementById('npGSt'); if(gst) gst.onchange = ()=>{ const was = npSetSubStatus(d, s, gst.value); npLog(`${s.name}: ${npSt(was)[1]} → ${npSt(s.status)[1]}`); npTouch(true); };
-  const bk = document.getElementById('npBook'); if(bk) bk.onclick = ()=>{
+  const bk = document.getElementById('npBook'); if(bk) bk.onclick = async ()=>{
     const sh = npShortages(d, idx).filter(x=>x.g.sub===s.id);
-    if(sh.length && !confirm(`Trūksta ${sh.length} daikt. Vis tiek rezervuoti?`)) return;
+    if(sh.length && !(await uiConfirm(`Trūksta ${sh.length} daikt. Vis tiek rezervuoti?`))) return;
     const was = npSetSubStatus(d, s, 'confirmed'); npLog(`${s.name}: ${npSt(was)[1]} → Patvirtinta (įranga rezervuota)`); npTouch(true); toast('✓ '+s.name+': įranga rezervuota');
   };
   const q = document.getElementById('npWhQ');
@@ -10058,7 +10080,7 @@ function npGroups(idx){
   box.querySelectorAll('.np-grp').forEach(c=>c.addEventListener('click', e=>{ if(NP.grp!==c.dataset.gid && !e.target.closest('button,input,select')){ NP.grp = c.dataset.gid; npRender(); } }));
   box.querySelectorAll('[data-gname]').forEach(el=>el.oninput = ()=>{ G(el.dataset.gname).name = el.value; soft(); });
   box.querySelectorAll('[data-gtime]').forEach(el=>el.onchange = ()=>{ G(el.dataset.gtime).time = el.value; npTouch(true); });
-  box.querySelectorAll('[data-gdel]').forEach(b=>b.onclick = ()=>{ const g = G(b.dataset.gdel); if(g.items.length && !confirm(`Ištrinti grupę „${g.name}“ su ${g.items.length} eil.?`)) return; d.groups = d.groups.filter(x=>x!==g); npLog('Ištrinta grupė „'+g.name+'“'); npTouch(true); });
+  box.querySelectorAll('[data-gdel]').forEach(b=>b.onclick = async ()=>{ const g = G(b.dataset.gdel); if(g.items.length && !(await uiConfirm(`Ištrinti grupę „${g.name}“ su ${g.items.length} eil.?`))) return; d.groups = d.groups.filter(x=>x!==g); npLog('Ištrinta grupė „'+g.name+'“'); npTouch(true); });
   const mv = (id, dir)=>{ const same = d.groups.filter(g=>g.sub===s.id), i = same.findIndex(g=>g.id===id), j = i+dir; if(j<0 || j>=same.length) return;
     const a = d.groups.indexOf(same[i]), b = d.groups.indexOf(same[j]); [d.groups[a], d.groups[b]] = [d.groups[b], d.groups[a]]; npTouch(true); };
   box.querySelectorAll('[data-gup]').forEach(b=>b.onclick = ()=>mv(b.dataset.gup, -1));
@@ -10082,7 +10104,7 @@ function npGroups(idx){
     npLog(`${g.name}: išimta ${it ? it.name : (r.name||'daiktas')}`); soft(); const i2 = npBusyIndex(); npGroups(i2); npTree(i2); npCounts(); });
   box.querySelectorAll('[data-icustom]').forEach(b=>b.onclick = ()=>{ const g = G(b.dataset.icustom); const r = { id:npId('npi'), item:'', name:'', qty:1, remark:'' }; g.items.push(r); NP.grp = g.id; soft(); const i2 = npBusyIndex(); npGroups(i2); npTree(i2);
     const inp = document.querySelector(`[data-iname="${CSS.escape(r.id)}"]`); if(inp) inp.focus(); });
-  const ga = document.getElementById('npGAdd'); if(ga) ga.onclick = ()=>{ const n = prompt('Grupės pavadinimas', 'Nauja grupė'); if(!n || !n.trim()) return; const g = { id:npId('npg'), sub:s.id, name:n.trim(), time:'', items:[] }; d.groups.push(g); NP.grp = g.id; npLog(`${s.name}: nauja grupė „${g.name}“`); npTouch(true); };
+  const ga = document.getElementById('npGAdd'); if(ga) ga.onclick = async ()=>{ const n = (await uiPrompt('Grupės pavadinimas', 'Nauja grupė')); if(!n || !n.trim()) return; const g = { id:npId('npg'), sub:s.id, name:n.trim(), time:'', items:[] }; d.groups.push(g); NP.grp = g.id; npLog(`${s.name}: nauja grupė „${g.name}“`); npTouch(true); };
 }
 
 function npCounts(){
@@ -10239,7 +10261,7 @@ function invBundleEdit(b){
     if(i>=0) all[i] = x; else all.push(x);
     STATE.bundles = all; saveState(); toast('✓ Rinkinys išsaugotas'); invBundlesModal();
   };
-  const del = document.getElementById('ibeDel'); if(del) del.onclick = ()=>{ if(!confirm('Ištrinti rinkinį „'+x.name+'“?')) return; STATE.bundles = invBundles().filter(y=>y.id!==x.id); saveState(); invBundlesModal(); };
+  const del = document.getElementById('ibeDel'); if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti rinkinį „'+x.name+'“?'))) return; STATE.bundles = invBundles().filter(y=>y.id!==x.id); saveState(); invBundlesModal(); };
   if(isNew) setTimeout(()=>document.getElementById('ibeName').focus(), 50);
 }
 
@@ -10330,7 +10352,7 @@ function npShortModal(g, r){
   document.getElementById('modalRoot').classList.add('np-sh-modal');
   document.getElementById('nsX').onclick = document.getElementById('nsOk').onclick = ()=>closeModal();
   document.querySelectorAll('[data-nsopen]').forEach(el=>el.onclick = async ()=>{
-    if(NP.dirty && !confirm('Atidaryti kitą projektą? Šio projekto pakeitimai bus išsaugoti.')) return;
+    if(NP.dirty && !(await uiConfirm('Atidaryti kitą projektą? Šio projekto pakeitimai bus išsaugoti.'))) return;
     closeModal(); NP.tab = 'gear'; await npOpen(el.dataset.nsopen);
   });
 }
@@ -10659,9 +10681,9 @@ function npSubrentModal(qty, prefill, editId){
   document.querySelectorAll('[name="srKind"]').forEach(r=>r.onchange = show);
   document.querySelectorAll('.np-sr input').forEach(i=>i.addEventListener('input', show));
   $('srX').onclick = $('srNo').onclick = ()=>closeModal();
-  $('srOk').onclick = ()=>{
+  $('srOk').onclick = async ()=>{
     const v = val(), q = cur ? 0 : Math.max(1, Math.round(offerNum($('srQty').value))||1);
-    if(!v.supplier && !cur && !confirm('Nuomotojas neįrašytas. Pridėti vis tiek? Projekte daiktas bus raudonas, kol neįrašysi, iš kur jis.')) return;
+    if(!v.supplier && !cur && !(await uiConfirm('Nuomotojas neįrašytas. Pridėti vis tiek? Projekte daiktas bus raudonas, kol neįrašysi, iš kur jis.'))) return;
     if(v.sKind!=='truss' && !v.name){ toast('Įrašyk daikto pavadinimą.'); $('srName').focus(); return; }
     if(v.sKind!=='item' && !v.meters){ toast('Įrašyk metražą.'); $('srM').focus(); return; }
     if(v.sKind==='truss' && !v.model){ toast('Įrašyk santvaros modelį.'); $('srModel').focus(); return; }
@@ -11045,7 +11067,7 @@ function invView(v){
   document.getElementById('ivX').onclick = document.getElementById('ivOk').onclick = closeModal;
   invFilesBind(v);
   const del = document.getElementById('ivDel');
-  if(del) del.onclick = async ()=>{ if(!confirm('Ištrinti šią sąskaitą?')) return; const { error } = await getSb().from('invoices').delete().eq('id', v.id); if(error){ toast('Nepavyko: '+error.message); return; } INV.list = INV.list.filter(x=>x.id!==v.id); closeModal(); invListDraw(); invBadge(); toast('Ištrinta.'); };
+  if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti šią sąskaitą?'))) return; const { error } = await getSb().from('invoices').delete().eq('id', v.id); if(error){ toast('Nepavyko: '+error.message); return; } INV.list = INV.list.filter(x=>x.id!==v.id); closeModal(); invListDraw(); invBadge(); toast('Ištrinta.'); };
 }
 // Admin+: Tvirtinu / Netvirtinu / Priminti vėliau
 function invDecide(v, fromBrowse){
@@ -11086,7 +11108,7 @@ function invDecide(v, fromBrowse){
     return true;
   };
   document.getElementById('idYes').onclick = async ()=>{ if(await decide('approved', { remind_at:null })){ toast('✅ Patvirtinta – įkėlęs asmuo gaus pranešimą.'); invSendModal(v, fromBrowse); } };
-  document.getElementById('idNo').onclick = async ()=>{ if(!document.getElementById('idNote').value.trim() && !confirm('Netvirtinti be komentaro? Įkėlęs asmuo nežinos priežasties.')) return; if(await decide('rejected', { remind_at:null })){ toast('✖ Netvirtinta – įkėlęs asmuo gaus pranešimą.'); back(); } };
+  document.getElementById('idNo').onclick = async ()=>{ if(!document.getElementById('idNote').value.trim() && !(await uiConfirm('Netvirtinti be komentaro? Įkėlęs asmuo nežinos priežasties.'))) return; if(await decide('rejected', { remind_at:null })){ toast('✖ Netvirtinta – įkėlęs asmuo gaus pranešimą.'); back(); } };
   document.getElementById('idLater').onclick = ()=>document.getElementById('idLaterBox').classList.toggle('hidden');
   document.getElementById('idLaterOk').onclick = async ()=>{
     const w = document.getElementById('idWhen').value, d = new Date(w);
@@ -11094,7 +11116,7 @@ function invDecide(v, fromBrowse){
     if(await decide('later', { remind_at:d.toISOString(), reminded_at:null })){ toast('⏰ Priminsiu '+fbWhen(d.toISOString())); back(); }
   };
   const sd = document.getElementById('idSend'); if(sd) sd.onclick = ()=>invSendModal(v, fromBrowse);
-  document.getElementById('idDel').onclick = async ()=>{ if(!confirm('Ištrinti šią sąskaitą visam laikui?')) return; const { error } = await getSb().from('invoices').delete().eq('id', v.id); if(error){ toast('Nepavyko: '+error.message); return; }
+  document.getElementById('idDel').onclick = async ()=>{ if(!(await uiConfirm('Ištrinti šią sąskaitą visam laikui?'))) return; const { error } = await getSb().from('invoices').delete().eq('id', v.id); if(error){ toast('Nepavyko: '+error.message); return; }
     try{ await stFrom('invoice-files').remove((v.files||[]).map(f=>f.path)); }catch(e){}
     INV.list = INV.list.filter(x=>x.id!==v.id); invBadge(); invCard(); if(currentTab==='invoices') invListDraw(); toast('Ištrinta.'); back(); };
 }
@@ -11422,7 +11444,7 @@ function renderAdminUsers(){
     const del = row.querySelector('[data-del]');
     if(del) del.onclick = async ()=>{
       const who = u.full_name || u.email;
-      if(!confirm(`Ištrinti ${who} (${u.email}) visam laikui?\n\nBus ištrinta: paskyra, profilis, jo žinutės chate, užduotys ir jo sukurti susitikimai. Atšaukti nebus galima.\n\nJei nori tik uždrausti prisijungti — geriau pasirink „Užblokuotas“.`)) return;
+      if(!(await uiConfirm(`Ištrinti ${who} (${u.email}) visam laikui?\n\nBus ištrinta: paskyra, profilis, jo žinutės chate, užduotys ir jo sukurti susitikimai. Atšaukti nebus galima.\n\nJei nori tik uždrausti prisijungti — geriau pasirink „Užblokuotas“.`))) return;
       del.disabled = true;
       const { error } = await getSb().rpc('admin_delete_user', { uid:u.id });
       del.disabled = false;
@@ -11441,8 +11463,8 @@ function renderAdminUsers(){
       const pick = sel.value, role = pick==='plus' ? 'admin' : pick, level = pick==='plus' ? 'plus' : null;
       if(role===u.role && level===(u.level||null)){ toast('Niekas nepakeista.'); return; }
       if(role==='pending'){ toast('Pasirink lygį.'); return; }
-      if(u.id===me && role!=='admin' && !confirm('Tu pakeisi savo paties lygį ir nebeturėsi prieigos prie Admin. Tęsti?')) return;
-      if(role==='blocked' && !confirm('Užblokuoti '+(u.full_name||u.email)+'? Jis nebegalės prisijungti.')) return;
+      if(u.id===me && role!=='admin' && !(await uiConfirm('Tu pakeisi savo paties lygį ir nebeturėsi prieigos prie Admin. Tęsti?'))) return;
+      if(role==='blocked' && !(await uiConfirm('Užblokuoti '+(u.full_name||u.email)+'? Jis nebegalės prisijungti.'))) return;
       btn.disabled = true;
       const wasPending = u.role==='pending';
       const upd = (level || u.level) ? { role, level } : { role };
@@ -12013,6 +12035,34 @@ function writeDrafts(d){ try{ localStorage.setItem(DRAFTS_KEY, JSON.stringify(d)
 function modalDraftKey(root){ const h = root.querySelector('h3'); return h ? h.textContent.trim() : ''; }
 function draftFields(root){ return Array.from(root.querySelectorAll('input[id],select[id],textarea[id]')).filter(el=>DRAFT_FIELD.test(el.id) && el.type!=='file'); }
 
+/* ---------- patvirtinimo ir įvedimo langai programos stiliumi ----------
+   Vietoj naršyklės / Windows confirm() ir prompt(): await uiConfirm('…') -> true/false,
+   await uiPrompt('…', 'numatyta') -> tekstas arba null. Rodomi virš visko (ir virš
+   atidaryto lango). Enter – patvirtinti, Esc – atšaukti. */
+function uiAsk(msg, opt){
+  opt = opt || {};
+  return new Promise(res=>{
+    const doc = opt.doc || document;
+    const danger = opt.danger!=null ? opt.danger : /^(Ištrinti|Pašalinti|Baigti|Atšaukti|Išeiti|Atjungti|Nurašyti|Išvalyti)/i.test(String(msg).trim());
+    const el = doc.createElement('div'); el.className = 'ui-ask'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+    el.innerHTML = `<div class="ui-ask-card">
+      <div class="ui-ask-msg"></div>
+      ${opt.input ? '<input type="text" class="ui-ask-in" autocomplete="off">' : ''}
+      <div class="ui-ask-b"><button type="button" class="btn" data-a="no">${esc(opt.no || 'Atšaukti')}</button><button type="button" class="btn ${danger ? 'danger' : 'primary'}" data-a="yes">${esc(opt.yes || (danger ? (String(msg).trim().split(/\s/)[0].replace(/[^A-Za-zĄČĘĖĮŠŲŪŽąčęėįšųūž]/g,'') || 'Taip') : 'Gerai'))}</button></div></div>`;
+    el.querySelector('.ui-ask-msg').textContent = String(msg);
+    const inp = el.querySelector('.ui-ask-in'); if(inp) inp.value = opt.value==null ? '' : String(opt.value);
+    const done = v=>{ doc.removeEventListener('keydown', key, true); el.classList.add('out'); setTimeout(()=>el.remove(), 120); res(v); };
+    const key = e=>{ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done(opt.input ? null : false); } else if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); e.stopPropagation(); done(opt.input ? inp.value : true); } };
+    el.addEventListener('click', e=>{ const b = e.target.closest('[data-a]'); if(b) done(b.dataset.a==='yes' ? (opt.input ? inp.value : true) : (opt.input ? null : false)); else if(e.target===el) done(opt.input ? null : false); });
+    doc.addEventListener('keydown', key, true);
+    doc.body.appendChild(el);
+    setTimeout(()=>{ (inp || el.querySelector('[data-a="yes"]')).focus(); if(inp) inp.select(); }, 30);
+  });
+}
+// the call's own window (when it is popped out) shows the question there
+function uiDoc(){ const L = typeof TEAM!=='undefined' && TEAM.live; return L && L.popWin && !L.popWin.closed && L.popWin.document.hasFocus() ? L.popWin.document : document; }
+function uiConfirm(msg, opt){ return uiAsk(msg, Object.assign({ doc:uiDoc() }, opt)); }
+function uiPrompt(msg, value, opt){ return uiAsk(msg, Object.assign({ doc:uiDoc(), input:true, value, danger:false }, opt)); }
 function openModal(innerHtml){
   const was = !!document.getElementById('modalBackdrop');
   closeModal(true);
@@ -12890,7 +12940,7 @@ function calMeetingForm(m, iso){
 async function calCancel(m){
   if(!m) return;
   const many = (m.attendees||[]).length + (m.emails||[]).length;
-  if(!confirm(`Atšaukti „${m.title}“?${many ? ' Dalyviams bus pranešta.' : ''}`)) return;
+  if(!(await uiConfirm(`Atšaukti „${m.title}“?${many ? ' Dalyviams bus pranešta.' : ''}`))) return;
   const r = await notifyCall({ kind:'meeting', meeting_id:m.id, mode:'cancel' });
   if(!r || r.skipped){ const { error } = await getSb().from('meetings').delete().eq('id', m.id); if(error){ toast('Nepavyko: '+error.message); return; } }
   closeModal(); toast('Įvykis atšauktas.'); calLoad();
@@ -13079,7 +13129,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v146';
+const APP_VER = 'v147';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -13297,7 +13347,7 @@ function fbAdminOpen(){
       fbBadge(); fbCardRender(); fbAdminList(); return;
     }
     if(del){
-      if(!confirm('Ištrinti šį įrašą visam laikui?')) return;
+      if(!(await uiConfirm('Ištrinti šį įrašą visam laikui?'))) return;
       const r = await getSb().from('feedback').delete().eq('id', id);
       if(r.error){ toast('Nepavyko: '+r.error.message); return; }
       FB.list = FB.list.filter(x=>x.id!==id); fbBadge(); fbCardRender(); fbAdminList(); return;
@@ -13432,7 +13482,7 @@ function tkOpenTask(id){
   const d = document.getElementById('tkDo'); if(d) d.onclick = ()=>{ closeModal(); tkSetDone(t.id, !tkMineDone(t)); };
   const e = document.getElementById('tkEdit'); if(e) e.onclick = ()=>tkForm(t, tkKind(t)==='byme' ? 'assign' : 'self');
   const x = document.getElementById('tkDel'); if(x) x.onclick = async ()=>{
-    if(!confirm('Ištrinti užduotį „'+t.title+'“'+(tkKind(t)==='byme'?' visiems':'')+'?')) return;
+    if(!(await uiConfirm('Ištrinti užduotį „'+t.title+'“'+(tkKind(t)==='byme'?' visiems':'')+'?'))) return;
     const { error } = await getSb().from('tasks').delete().eq('id', t.id);
     if(error){ toast('Nepavyko: '+error.message); return; }
     TK.list = TK.list.filter(y=>y.id!==t.id); tkToCal(); closeModal(); tkRender(); calRender(); toast('Užduotis ištrinta.');
@@ -13480,17 +13530,17 @@ function tkForm(t, mode, iso){
   const noDue = ()=>document.getElementById('tkNoDue').classList.toggle('hidden', !!document.getElementById('tkDate').value);
   drawAt(); drawLead(); drawGrp(); noDue();
   document.getElementById('tkDate').onchange = noDue;
-  root.addEventListener('click', e=>{
+  root.addEventListener('click', async e=>{
     const b = e.target.closest('[data-bf]'); if(b){ b.classList.toggle('active'); return; }
     const ax = e.target.closest('[data-atx]'); if(ax){ ats.splice(+ax.dataset.atx, 1); drawAt(); return; }
-    const gx = e.target.closest('[data-grpx]'); if(gx){ e.stopPropagation(); if(confirm('Ištrinti grupę „'+gx.dataset.grpx+'“?')){ delete tkGroups()[gx.dataset.grpx]; saveState(); drawGrp(); } return; }
+    const gx = e.target.closest('[data-grpx]'); if(gx){ e.stopPropagation(); if((await uiConfirm('Ištrinti grupę „'+gx.dataset.grpx+'“?'))){ delete tkGroups()[gx.dataset.grpx]; saveState(); drawGrp(); } return; }
     const g = e.target.closest('[data-grp]'); if(g){ const ids = tkGroups()[g.dataset.grp]||[]; const all = ids.every(u=>sel.has(u)); ids.forEach(u=>all ? sel.delete(u) : sel.add(u)); root.querySelectorAll('[data-mem]').forEach(c=>c.classList.toggle('active', sel.has(c.dataset.mem))); drawLead(); return; }
     const m = e.target.closest('[data-mem]'); if(m){ const u = m.dataset.mem; if(sel.has(u)) sel.delete(u); else sel.add(u); m.classList.toggle('active', sel.has(u)); drawLead(); return; }
   });
   document.getElementById('tkAtIn').onchange = e=>{ const v = e.target.value; if(!v) return; const d = new Date(v); if(isNaN(d)) return; ats.push(d.toISOString()); ats.sort(); e.target.value = ''; drawAt(); };
-  const gsv = document.getElementById('tkGrpSave'); if(gsv) gsv.onclick = ()=>{
+  const gsv = document.getElementById('tkGrpSave'); if(gsv) gsv.onclick = async ()=>{
     if(!sel.size){ toast('Pirma pažymėk narius.'); return; }
-    const n = (prompt('Grupės pavadinimas (pvz. „Sandėlio komanda“):')||'').trim(); if(!n) return;
+    const n = ((await uiPrompt('Grupės pavadinimas (pvz. „Sandėlio komanda“):'))||'').trim(); if(!n) return;
     tkGroups()[n] = [...sel]; saveState(); drawGrp(); toast('Grupė „'+n+'“ išsaugota.');
   };
   const ld = document.getElementById('tkLead'); if(ld) ld.onchange = ()=>{ lead = ld.value; };
@@ -15533,10 +15583,10 @@ function ppContactModal(c){
     else if(b.dataset.rm!==undefined){ delete c.levels[c.groups[i]]; c.groups.splice(i,1); }
     drawSk();
   });
-  gbox.addEventListener('click', e=>{
+  gbox.addEventListener('click', async e=>{
     if(ro) return;
     if(e.target.closest('#pc_gadd')){
-      const name = (prompt('Naujos grupės pavadinimas (pvz. „Scena“):')||'').trim(); if(!name) return;
+      const name = ((await uiPrompt('Naujos grupės pavadinimas (pvz. „Scena“):'))||'').trim(); if(!name) return;
       if(!ppGroups().includes(name)){ ppGroups().push(name); saveState(); }
       if(!c.groups.includes(name)) c.groups.push(name); drawSk(); return;
     }
@@ -15549,7 +15599,7 @@ function ppContactModal(c){
     c.license = c.license.includes(k) ? c.license.filter(x=>x!==k) : PP_LICENSE.filter(x=>x===k || c.license.includes(x)); b.classList.toggle('active'); });
   document.getElementById('pc_cancel').onclick = closeModal;
   const del = document.getElementById('pc_del');
-  if(del) del.onclick = async ()=>{ if(!confirm('Ištrinti kontaktą „'+ppName(c)+'“? Bus ištrinta ir jo skambučių istorija.')) return; if(await ppDeleteContact(c.id)){ closeModal(); ppRenderBody(); toast('Kontaktas ištrintas.'); } };
+  if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti kontaktą „'+ppName(c)+'“? Bus ištrinta ir jo skambučių istorija.'))) return; if(await ppDeleteContact(c.id)){ closeModal(); ppRenderBody(); toast('Kontaktas ištrintas.'); } };
   const save = document.getElementById('pc_save');
   if(save) save.onclick = async ()=>{
     const v = id=>document.getElementById(id).value.trim();
@@ -15559,7 +15609,7 @@ function ppContactModal(c){
     if(!c.first && !c.last){ toast('Įrašyk vardą.'); document.getElementById('pc_first').focus(); return; }
     if(c.email && !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(c.email)){ toast('Neteisingas el. pašto adresas.'); document.getElementById('pc_email').focus(); return; }
     const dup = PP.contacts.find(x=>x.id!==c.id && ((c.phone && ppTel(x.phone) && ppTel(x.phone)===ppTel(c.phone)) || normalizeText(ppName(x))===normalizeText(ppName(c))));
-    if(dup && !confirm(`Panašus kontaktas jau yra: ${ppName(dup)}${dup.phone?' ('+dup.phone+')':''}. Vis tiek išsaugoti?`)) return;
+    if(dup && !(await uiConfirm(`Panašus kontaktas jau yra: ${ppName(dup)}${dup.phone?' ('+dup.phone+')':''}. Vis tiek išsaugoti?`))) return;
     const rates = ppRatesRead(); if(rates===false) return;
     save.disabled = true;
     if(await ppSaveContact(c)){ if(rates) await ppRatesSave(c.id, rates.hourly, rates.daily); closeModal(); ppRenderBody(); toast(isNew ? '✓ Kontaktas pridėtas.' : '✓ Išsaugota.'); }
@@ -15601,7 +15651,7 @@ async function ppImport(){
   EV.events.forEach(ev=>(ev.crew||[]).forEach(g=>(g.entries||[]).forEach(e=>{ if(!e.person) return; const p = String(e.pos||'').toUpperCase(); const gr = /^ELEK/.test(p) ? 'Elektra' : /^A/.test(p) ? 'Garsas' : /^L/.test(p) ? 'Šviesa' : /^V/.test(p) ? 'Video' : ''; if(gr) (hint[normalizeText(e.person)] = hint[normalizeText(e.person)] || new Set()).add(gr); })));
   cand.forEach(c=>{ const h = hint[normalizeText(ppName(c))]; if(h) c.groups = [...h].filter(g=>ppGroups().includes(g)); });
   if(!cand.length){ toast('Naujų žmonių importuoti nėra — visi jau archyve.'); return; }
-  if(!confirm(`Bus pridėta ${cand.length} kontaktų (iš renginių žmonių sąrašo ir narių). Grupės nustatomos pagal pozicijas renginiuose (A, L, V, Elektr.). Tęsti?`)) return;
+  if(!(await uiConfirm(`Bus pridėta ${cand.length} kontaktų (iš renginių žmonių sąrašo ir narių). Grupės nustatomos pagal pozicijas renginiuose (A, L, V, Elektr.). Tęsti?`))) return;
   const sb = getSb();
   const { error } = await sb.from('contacts').upsert(cand.map(c=>({ id:c.id, data:c, updated_at:c.createdAt })), { onConflict:'id' });
   if(error){ toast('Nepavyko: '+error.message); return; }
@@ -15935,7 +15985,7 @@ function ppRemModal(c, editId){
     if(b.dataset.re){ ppRemModal(c, id); return; }
     if(b.dataset.rs){ b.disabled = true; b.textContent = 'Siunčiama…';
       try{ const r = await ppRemSendNow(id); toast('✓ Priminimas išsiųstas: '+r.to); ppRemModal(c); }catch(err){ toast('Nepavyko išsiųsti: '+err.message); b.disabled = false; b.textContent = 'Siųsti dabar'; } return; }
-    if(b.dataset.rd && !confirm('Ištrinti šį priminimą?')) return;
+    if(b.dataset.rd && !(await uiConfirm('Ištrinti šį priminimą?'))) return;
     const sb = getSb();
     const res = b.dataset.ro ? await sb.from('booking_reminders').update({ active:false }).eq('id', id).select().single() : await sb.from('booking_reminders').delete().eq('id', id);
     if(res.error){ toast('Nepavyko: '+res.error.message); return; }
@@ -15997,7 +16047,7 @@ async function ppXlsImport(file){
     } else added.push(Object.assign({ id:uid('ct'), createdAt:new Date().toISOString() }, v));
   }
   if(!added.length && !updated.length){ toast('Faile naujų ar pasikeitusių kontaktų nerasta.'); return; }
-  if(!confirm(`Excel: ${added.length} nauji kontaktai${updated.length?`, ${updated.length} esamų bus papildyti (tušti laukai, grupės, lygiai)`:''}. Tęsti?`)) return;
+  if(!(await uiConfirm(`Excel: ${added.length} nauji kontaktai${updated.length?`, ${updated.length} esamų bus papildyti (tušti laukai, grupės, lygiai)`:''}. Tęsti?`))) return;
   const now = new Date().toISOString(), who = await evCurrentEmail();
   const all = [...added, ...updated].map(c=>{ c.updatedAt = now; ppGroups(); c.groups.forEach(g=>{ if(!ppGroups().includes(g)) ppGroups().push(g); }); return c; });
   const { error } = await getSb().from('contacts').upsert(all.map(c=>({ id:c.id, data:c, updated_at:now, updated_by:who })), { onConflict:'id' });
@@ -16064,7 +16114,7 @@ function ppCallModal(c){
     document.querySelector('.pp-warn').insertAdjacentHTML('beforeend', '<div><b>Kažkas skambina jam dabar.</b></div>');
   }
   document.getElementById('pcCopy').onclick = async ()=>{
-    try{ await navigator.clipboard.writeText(c.phone); toast('Numeris nukopijuotas: '+c.phone); }catch(e){ prompt('Nukopijuok numerį:', c.phone); }
+    try{ await navigator.clipboard.writeText(c.phone); toast('Numeris nukopijuotas: '+c.phone); }catch(e){ (await uiPrompt('Nukopijuok numerį:', c.phone)); }
     step2('Numeris nukopijuotas.');
   };
   document.querySelectorAll('#pcDialHere').forEach(a=>a.addEventListener('click', ()=>step2('Skambinama…')));
@@ -16907,9 +16957,9 @@ function openEventRowModal(ev){
   $('rm_date').addEventListener('change', e=>{ if(!e.target.value) return; ev.date = e.target.value; EV.month = evMonthKey(ev.date); changed(); });
   if($('rm_end')) $('rm_end').addEventListener('change', e=>{ ev.dateEnd = e.target.value; changed(); });
   if($('rm_proj')) $('rm_proj').addEventListener('change', e=>{ ev.projectId = e.target.value || null; changed(); openEventRowModal(ev); });
-  document.querySelectorAll('#modalRoot [data-delg]').forEach(b=>b.onclick = ()=>{
+  document.querySelectorAll('#modalRoot [data-delg]').forEach(b=>b.onclick = async ()=>{
     const g = ev.crew[+b.dataset.delg];
-    if(g.entries.length && !confirm('Ištrinti lentelę „'+g.title+'“ su '+g.entries.length+' eilutėmis?')) return;
+    if(g.entries.length && !(await uiConfirm('Ištrinti lentelę „'+g.title+'“ su '+g.entries.length+' eilutėmis?'))) return;
     ev.crew.splice(+b.dataset.delg, 1); changed(); openEventRowModal(ev);
   });
   if($('rm_addg')){
@@ -16926,8 +16976,8 @@ function openEventRowModal(ev){
     (copy.crew||[]).forEach(g=>{ g.id = uid('g'); g.entries.forEach(x=>{ x.status = ''; }); });
     EV.events.push(copy); evSave(copy); evUndoPush(copy.id, null); closeModal(); renderEventList(); toast('Nukopijuota.');
   };
-  $('rm_del').onclick = ()=>{
-    if(!confirm('Ištrinti „'+(ev.name||ev.title||'renginį')+'“?')) return;
+  $('rm_del').onclick = async ()=>{
+    if(!(await uiConfirm('Ištrinti „'+(ev.name||ev.title||'renginį')+'“?'))) return;
     evUndoPush(ev.id, JSON.stringify(ev));
     EV.events = EV.events.filter(x=>x.id!==ev.id); evDeleteRow('events', ev.id); closeModal(); renderEventList(); toast('Ištrinta. Ctrl+Z / ⌘Z — atšaukti.');
     clearTimeout(evChatTimers[ev.id]);
@@ -17470,7 +17520,7 @@ function bindRentalEvents(){
       rentalRerender(r);   // summary line and call / remind buttons follow
     }
   });
-  const onAct = e=>{
+  const onAct = async e=>{
     const b = e.target.closest('[data-act]');
     if(!b) return;
     const r = find(b);
@@ -17503,7 +17553,7 @@ function bindRentalEvents(){
       return;
     }
     if(act==='del'){
-      if(!confirm('Ištrinti šį paėmimą?')) return;
+      if(!(await uiConfirm('Ištrinti šį paėmimą?'))) return;
       EV.rentals = EV.rentals.filter(x=>x.id!==r.id); evDeleteRow('rentals', r.id); renderRentalList();
     }
   };
@@ -17587,7 +17637,7 @@ async function eqUpload(kind, rec, side, files){
 }
 async function eqRemove(kind, rec, side, i){
   const p = eqPhotos(rec), x = p[side][i]; if(!x) return;
-  if(!confirm('Pašalinti šią nuotrauką?')) return;
+  if(!(await uiConfirm('Pašalinti šią nuotrauką?'))) return;
   p[side].splice(i, 1);
   EQ_KINDS[kind].save(rec);
   eqRerender(kind, rec);
@@ -17843,7 +17893,7 @@ function hvBind(){
   const find = el=>{ const c = el.closest('.hv-card'); return c ? HV.list.find(r=>r.id===c.dataset.hv) : null; };
   list.addEventListener('input', e=>{ const t = e.target, r = find(t); if(!r || !t.dataset.hk) return; r[t.dataset.hk] = t.value; hvSave(r); });
   list.addEventListener('change', e=>{ const t = e.target, r = find(t); if(!r || !t.dataset.hk) return; r[t.dataset.hk] = t.value; if(t.dataset.hk==='person') evRememberPerson(t.value); hvSave(r); if(['client','items','issueDate','returnDate','person'].includes(t.dataset.hk)){ const m = t.closest('.hv-card').querySelector('.rt-meta'); if(m) EQ_AFTER.handovers(r); } });
-  const act = e=>{
+  const act = async e=>{
     const p = e.target.closest('[data-hvpdf]'); if(p){ const r = find(p); if(r) hvPdf(r, p.dataset.hvpdf==='share' ? 'share' : 'download'); return; }
     const b = e.target.closest('[data-hva]'); if(!b) return;
     const r = find(b); if(!r) return;
@@ -17863,7 +17913,7 @@ function hvBind(){
       return;
     }
     if(a==='del'){
-      if(!confirm('Ištrinti šį išdavimą kartu su nuotraukomis?')) return;
+      if(!(await uiConfirm('Ištrinti šį išdavimą kartu su nuotraukomis?'))) return;
       HV.list = HV.list.filter(x=>x.id!==r.id);
       clearTimeout(HV.timers[r.id]); delete HV.timers[r.id];
       hvUnlink(r);
@@ -18412,7 +18462,7 @@ function openVenueEdit(v, isNew){
   };
   const del = document.getElementById('ve_del');
   if(del) del.onclick = async ()=>{
-    if(!confirm('Ištrinti erdvę „'+(v.name||'')+'“ ir visas jos nuotraukas?')) return;
+    if(!(await uiConfirm('Ištrinti erdvę „'+(v.name||'')+'“ ir visas jos nuotraukas?'))) return;
     if(await venDelete(v)){ closeModal(); renderVenueList(); toast('Ištrinta.'); }
   };
   setTimeout(()=>{ const f = root.querySelector('[data-k="name"]'); if(f && isNew) f.focus(); }, 50);
@@ -18816,7 +18866,7 @@ async function renderMailCard(reload){
     { html:'🌐 Atidaryti Roundcube', fn:()=>window.open('https://roundcube.serveriai.lt/', '_blank', 'noopener') },
     { sep:true },
     { html:'🔌 Atjungti paštą', cls:'danger', fn:async ()=>{
-        if(!confirm('Atjungti paštą nuo programėlės? Laiškai serveryje liks.')) return;
+        if(!(await uiConfirm('Atjungti paštą nuo programėlės? Laiškai serveryje liks.'))) return;
         try{ await mailCall({ action:'disconnect' }); MAIL.data = null; renderMailCard(); toast('Paštas atjungtas.'); }catch(e){ toast(e.message); }
     } },
   ]);
@@ -18934,7 +18984,7 @@ async function mailOpen(uid, row, fromFolder){
     try{ await mailCall({ action:'seen', folder, uid, seen:false }); close(); renderMailCard(); }catch(e){ toast(e.message); }
   };
   document.getElementById('mvDel').onclick = async ()=>{
-    if(!confirm('Perkelti laišką į šiukšlinę?')) return;
+    if(!(await uiConfirm('Perkelti laišką į šiukšlinę?'))) return;
     try{ await mailCall({ action:'delete', folder, uid }); close(); toast('Laiškas ištrintas.'); renderMailCard(); }catch(e){ toast(e.message); }
   };
   root.querySelectorAll('[data-att]').forEach(b=>b.onclick = async ()=>{
@@ -19148,7 +19198,7 @@ function mlRenderBar(){
     { html:'🌐 Atidaryti Roundcube', fn:()=>window.open('https://roundcube.serveriai.lt/', '_blank', 'noopener') },
     { sep:true },
     { html:'🔌 Atjungti paštą', cls:'danger', fn:async ()=>{
-        if(!confirm('Atjungti paštą nuo programėlės? Laiškai serveryje liks.')) return;
+        if(!(await uiConfirm('Atjungti paštą nuo programėlės? Laiškai serveryje liks.'))) return;
         try{ await mailCall({ action:'disconnect' }); MAIL.data = null; MAIL.folders = null; MAIL.open = null; MAIL.cache.clear(); renderMailTab(); toast('Paštas atjungtas.'); }catch(e){ toast(e.message); }
     } },
   ]);
@@ -19455,7 +19505,7 @@ function mlRemoveFromList(m){
 }
 async function mlDelete(m){
   const inTrash = m.folder==='trash';
-  if(inTrash && !confirm('Ištrinti laišką visam laikui?')) return;
+  if(inTrash && !(await uiConfirm('Ištrinti laišką visam laikui?'))) return;
   try{ await mailCall({ action:'delete', folder:m.folder, uid:m.uid }); toast(inTrash ? 'Laiškas ištrintas visam laikui.' : 'Laiškas perkeltas į šiukšlinę.'); mlRemoveFromList(m); mlLoadFolders(); }
   catch(e){ toast(e.message); }
 }
@@ -19866,7 +19916,7 @@ function clForm(c, back, prefill){
   };
   const del = document.getElementById('clDel');
   if(del) del.onclick = async ()=>{
-    if(!confirm('Ištrinti klientą „'+(c.name||'')+'“?')) return;
+    if(!(await uiConfirm('Ištrinti klientą „'+(c.name||'')+'“?'))) return;
     const { error } = await getSb().from('clients').delete().eq('id', c.id);
     if(error){ toast('Nepavyko: '+error.message); return; }
     CL.list = CL.list.filter(y=>y.id!==c.id); toast('Ištrinta.'); back ? back() : closeModal();
@@ -20349,7 +20399,7 @@ function ofVersionsModal(row, mode){
     const o = e.target.closest('[data-openv]'); if(o){ const n = +o.dataset.openv; offerOpen(row.id, n || 0, false); return; }
     const f = e.target.closest('[data-finalv]'); if(f){ closeModal(); ofFinalFromVersion(+f.dataset.finalv); return; }
     const r = e.target.closest('[data-renv]'); if(r){
-      const v = ofVersions(d).find(x=>x.n===+r.dataset.renv); const nm = (prompt('Versijos pavadinimas:', v.name)||'').trim(); if(!nm) return;
+      const v = ofVersions(d).find(x=>x.n===+r.dataset.renv); const nm = ((await uiPrompt('Versijos pavadinimas:', v.name))||'').trim(); if(!nm) return;
       v.name = nm.slice(0,60);
       const { error } = await getSb().from('offers').update({ data:d }).eq('id', row.id);
       if(error){ toast('Nepavyko: '+error.message); return; }
@@ -20562,7 +20612,7 @@ function offerEditorBind(){
     { html:'📄 Peržiūrėti PDF be kainų', fn:()=>offerMakePdf('noprice') },
     { html:'⧉ Kopijuoti kaip naują pasiūlymą', fn:()=>{ OFFER.cur = { id:null, status:'draft', job_id:null, data:JSON.parse(JSON.stringify(d)) }; ['versions','finalVersion','sentLog','clientEmail'].forEach(k=>delete OFFER.cur.data[k]); OFFER.cur.data.createdByName = offerMeName(); OFFER.cur.data.footerLeft = offerLeftFor(OFFER.cur.data.footerLeft); OFFER.cur.data.project = (d.project||'')+' (kopija)'; OFFER.dirty = true; offerEditorRender(); toast('Sukurta kopija — neužmiršk išsaugoti.'); } },
     ...(o.id ? [{ sep:true }, { html:'🗑 Ištrinti pasiūlymą', cls:'danger', fn:async ()=>{
-        if(!confirm('Ištrinti šį pasiūlymą? Projektas (jei sukurtas) liks.')) return;
+        if(!(await uiConfirm('Ištrinti šį pasiūlymą? Projektas (jei sukurtas) liks.'))) return;
         const { error } = await getSb().from('offers').delete().eq('id', o.id);
         if(error){ toast('Nepavyko: '+error.message); return; }
         OFFER.cur = null; OFFER.dirty = false; await offersLoad(); renderOffersTab(); toast('Pasiūlymas ištrintas.');
@@ -20595,7 +20645,7 @@ function offerEditorBind(){
     const rows = document.querySelectorAll(`#odEdit .od-sec[data-sec="${b.dataset.addrow}"] [data-f="name"]`); if(rows.length) rows[rows.length-1].focus();
   });
   root.querySelectorAll('[data-addstock]').forEach(b=>b.onclick = ()=>offerPickItems(+b.dataset.addstock));
-  root.querySelectorAll('[data-sdel]').forEach(b=>b.onclick = ()=>{ const si = +b.dataset.sdel; if(d.sections[si].rows.length && !confirm('Ištrinti skiltį „'+d.sections[si].title+'“ su visomis eilutėmis?')) return; d.sections.splice(si,1); offerTouch(true); });
+  root.querySelectorAll('[data-sdel]').forEach(b=>b.onclick = async ()=>{ const si = +b.dataset.sdel; if(d.sections[si].rows.length && !(await uiConfirm('Ištrinti skiltį „'+d.sections[si].title+'“ su visomis eilutėmis?'))) return; d.sections.splice(si,1); offerTouch(true); });
   root.querySelectorAll('[data-sup]').forEach(b=>b.onclick = ()=>{ const si = +b.dataset.sup; if(si>0){ d.sections.splice(si-1,0,d.sections.splice(si,1)[0]); offerTouch(true); } });
   root.querySelectorAll('[data-sdown]').forEach(b=>b.onclick = ()=>{ const si = +b.dataset.sdown; if(si<d.sections.length-1){ d.sections.splice(si+1,0,d.sections.splice(si,1)[0]); offerTouch(true); } });
   root.querySelectorAll('[data-color]').forEach(b=>b.onclick = ()=>{ const si = +b.dataset.color;
@@ -20800,7 +20850,7 @@ async function offerSave(status, opt){
   const o = OFFER.cur, d = o.data;
   offerEnsureTitle(d);
   const finalNow = status==='final' && !opt.nojob;
-  if(finalNow && !opt.noAsk && !confirm(`Išsaugoti galutinį pasiūlymą?\n\nSkiltyje „Pasiūlymų PDF“ ${o.job_id ? 'bus atnaujintas' : 'bus sukurtas'} įrašas „${d.project}“ su PDF be kainų.`)) return false;
+  if(finalNow && !opt.noAsk && !(await uiConfirm(`Išsaugoti galutinį pasiūlymą?\n\nSkiltyje „Pasiūlymų PDF“ ${o.job_id ? 'bus atnaujintas' : 'bus sukurtas'} įrašas „${d.project}“ su PDF be kainų.`))) return false;
   OFFER.saving = true;
   const btn = document.getElementById(finalNow ? 'oeFinal' : opt.version ? 'oeVer' : 'oeBack'); if(btn){ btn.disabled = true; btn.dataset.t = btn.textContent; btn.textContent = finalNow ? 'Kuriamas projektas…' : 'Saugoma…'; }
   try{
@@ -20830,7 +20880,7 @@ async function offerSave(status, opt){
 // „Išsaugoti versiją“: the chosen version becomes the final offer
 async function ofFinalFromVersion(n){
   const o = OFFER.cur, d = o.data, doc = ofVerDoc(d, n); if(!doc) return;
-  if(!confirm(`Išsaugoti ${(ofVersions(d).find(x=>x.n===n)||{}).name||'V'+n} kaip galutinį pasiūlymą?\n\nSkiltyje „Pasiūlymų PDF“ ${o.job_id ? 'bus atnaujintas' : 'bus sukurtas'} įrašas su PDF be kainų.`)) return;
+  if(!(await uiConfirm(`Išsaugoti ${(ofVersions(d).find(x=>x.n===n)||{}).name||'V'+n} kaip galutinį pasiūlymą?\n\nSkiltyje „Pasiūlymų PDF“ ${o.job_id ? 'bus atnaujintas' : 'bus sukurtas'} įrašas su PDF be kainų.`))) return;
   o.data = Object.assign(doc, { versions:d.versions, finalVersion:n }); o.ver = n;
   OFFER.dirty = true;
   await offerSave('final', { noAsk:true });
@@ -21012,7 +21062,7 @@ function renderJobsTab(){
   main.querySelectorAll('[data-offer]').forEach(b=>b.onclick = ()=>offerOpen(b.dataset.offer));
   main.querySelectorAll('[data-jdel]').forEach(b=>b.onclick = async ()=>{
     const j = JOBS.list.find(x=>x.id===b.dataset.jdel);
-    if(!confirm('Ištrinti projektą „'+j.title+'“? Pasiūlymas liks.')) return;
+    if(!(await uiConfirm('Ištrinti projektą „'+j.title+'“? Pasiūlymas liks.'))) return;
     if(j.pdf_path) await stFrom('job-files').remove([j.pdf_path]);
     const { error } = await getSb().from('jobs').delete().eq('id', j.id);
     if(error){ toast('Nepavyko: '+error.message); return; }
@@ -21850,13 +21900,13 @@ function chatConvMenu(anchor, c){
   evPopMenu(anchor, items);
 }
 async function chatLeaveGroup(c){
-  if(!confirm('Išeiti iš grupės „'+chatTitle(c)+'“? Jos žinučių nebematysi.')) return;
+  if(!(await uiConfirm('Išeiti iš grupės „'+chatTitle(c)+'“? Jos žinučių nebematysi.'))) return;
   const { error } = await getSb().from('conversation_members').delete().eq('conversation_id', c.id).eq('user_id', teamMe());
   if(error){ toast('Nepavyko: '+error.message); return; }
   TEAM.open = null; await teamLoadConvs(); renderChatTab(); toast('Išėjai iš grupės.');
 }
 async function chatDeleteGroup(c){
-  if(!confirm('Ištrinti grupę „'+chatTitle(c)+'“ visiems nariams kartu su visomis žinutėmis ir nuotraukomis? Šio veiksmo atšaukti negalima.')) return;
+  if(!(await uiConfirm('Ištrinti grupę „'+chatTitle(c)+'“ visiems nariams kartu su visomis žinutėmis ir nuotraukomis? Šio veiksmo atšaukti negalima.'))) return;
   const sb = getSb();
   // photos first (the folder is named after the group)
   try{
@@ -21880,7 +21930,7 @@ function chatNotify(title, text, cid, kind){
   clearTimeout(n._t); n._t = setTimeout(()=>n.classList.remove('show'), 6000);
 }
 async function chatDelete(mid){
-  if(!confirm('Ištrinti šią žinutę?')) return;
+  if(!(await uiConfirm('Ištrinti šią žinutę?'))) return;
   const { data, error } = await getSb().from('messages').update({ deleted_at:new Date().toISOString() }).eq('id', mid).select().single();
   if(error){ toast('Nepavyko: '+error.message); return; }
   if(data) chatAddMessage(data);
@@ -22716,14 +22766,14 @@ function chatInsertAt(ta, text){
   const s = ta.selectionStart ?? ta.value.length, e = ta.selectionEnd ?? ta.value.length;
   ta.value = ta.value.slice(0,s)+text+ta.value.slice(e); ta.selectionStart = ta.selectionEnd = s+text.length; ta.focus();
 }
-function chatFmt(ta, k){
+async function chatFmt(ta, k){
   const s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e);
   const wrap = (a, b)=>{ const t = sel || 'tekstas'; ta.value = ta.value.slice(0,s)+a+t+b+ta.value.slice(e); ta.selectionStart = s+a.length; ta.selectionEnd = s+a.length+t.length; ta.focus(); };
   const lines = pre=>{ const ls = s, le = e; const start = ta.value.lastIndexOf('\n', ls-1)+1; const block = ta.value.slice(start, le) || ''; const out = (block||'').split('\n').map((l,i)=>(typeof pre==='function' ? pre(i) : pre)+l).join('\n'); ta.value = ta.value.slice(0,start)+out+ta.value.slice(le); ta.selectionStart = ta.selectionEnd = start+out.length; ta.focus(); };
   if(k==='b') wrap('*','*'); if(k==='i') wrap('_','_'); if(k==='u') wrap('++','++'); if(k==='s') wrap('~','~');
   if(k==='code') wrap('`','`'); if(k==='pre') wrap('```\n','\n```');
   if(k==='q') lines('> '); if(k==='ul') lines('- '); if(k==='ol') lines(i=>(i+1)+'. ');
-  if(k==='link'){ const url = prompt('Nuoroda (https://…):', 'https://'); if(url && /^https?:\/\/\S+$/.test(url)){ const t = sel || url; ta.value = ta.value.slice(0,s)+(sel ? `[${t}](${url})` : url)+ta.value.slice(e); ta.focus(); } }
+  if(k==='link'){ const url = (await uiPrompt('Nuoroda (https://…):', 'https://')); if(url && /^https?:\/\/\S+$/.test(url)){ const t = sel || url; ta.value = ta.value.slice(0,s)+(sel ? `[${t}](${url})` : url)+ta.value.slice(e); ta.focus(); } }
 }
 function chatEmojiPop(anchor, ta){
   evPopClose();
@@ -23067,7 +23117,7 @@ async function chatToggleMute(c){
   chatOpen(c.id);
 }
 async function chatArchive(c, on){
-  if(on && !confirm(`Archyvuoti ${chatLabel(c)}? Žinutės liks, bet rašyti nebebus galima.`)) return;
+  if(on && !(await uiConfirm(`Archyvuoti ${chatLabel(c)}? Žinutės liks, bet rašyti nebebus galima.`))) return;
   const { error } = await getSb().rpc('chat_channel_archive', { cid:c.id, p_archive:on });
   if(error){ toast('Nepavyko: '+error.message); return; }
   await teamLoadConvs(); chatOpen(c.id); toast(on ? 'Kanalas archyvuotas.' : 'Kanalas grąžintas.');
@@ -23081,7 +23131,7 @@ function chatConvMenu(anchor, c){
     ...(c.kind!=='direct' ? [{ html:'👥 Nariai', fn:()=>chatMembersModal(c) }] : []),
   ];
   if(chan){
-    items.push({ html:'✎ Keisti aprašymą', fn:async ()=>{ const t = prompt('Kanalo aprašymas:', c.topic||''); if(t===null) return; const { error } = await getSb().from('conversations').update({ topic:t.trim() }).eq('id', c.id); if(error){ toast('Nepavyko: '+error.message); return; } await teamLoadConvs(); chatOpen(c.id); } });
+    items.push({ html:'✎ Keisti aprašymą', fn:async ()=>{ const t = (await uiPrompt('Kanalo aprašymas:', c.topic||'')); if(t===null) return; const { error } = await getSb().from('conversations').update({ topic:t.trim() }).eq('id', c.id); if(error){ toast('Nepavyko: '+error.message); return; } await teamLoadConvs(); chatOpen(c.id); } });
     items.push({ html:'➕ Pridėti narių', fn:()=>chatAddMembers(c) });
     items.push({ html:'🚪 Išeiti iš kanalo', fn:()=>chatLeaveGroup(c) });
     if(mine){ items.push({ sep:true }, { html: c.archived_at ? '♻ Grąžinti iš archyvo' : '🗄 Archyvuoti kanalą', fn:()=>chatArchive(c, !c.archived_at) }, { html:'🗑 Ištrinti kanalą', cls:'danger', fn:()=>chatDeleteGroup(c) }); }
@@ -23089,7 +23139,7 @@ function chatConvMenu(anchor, c){
   evPopMenu(anchor, items);
 }
 async function chatLeaveGroup(c){
-  if(!confirm('Išeiti iš '+chatLabel(c)+'?'+(chatPrivate(c) ? ' Privataus kanalo žinučių nebematysi.' : ''))) return;
+  if(!(await uiConfirm('Išeiti iš '+chatLabel(c)+'?'+(chatPrivate(c) ? ' Privataus kanalo žinučių nebematysi.' : '')))) return;
   const { error } = await getSb().from('conversation_members').delete().eq('conversation_id', c.id).eq('user_id', teamMe());
   if(error){ toast('Nepavyko: '+error.message); return; }
   TEAM.open = null; TEAM.thread = null; await teamLoadConvs(); renderChatTab(); toast('Išėjai iš kanalo.');
@@ -23406,7 +23456,7 @@ async function meetAdminLoad(){
       : `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span class="section-sub" style="margin:0;">Google paskyra neprijungta.</span><span style="flex:1"></span><button class="btn primary small" id="admMeetOn">Prijungti Google paskyrą</button></div>`;
   const go = async ()=>{ const x = await meetCall({ action:'connect', origin:location.origin+location.pathname }); if(x.url) location.href = x.url; else toast(x.error||'Nepavyko.'); };
   ['admMeetOn','admMeetRe'].forEach(id=>{ const b = document.getElementById(id); if(b) b.onclick = go; });
-  const off = document.getElementById('admMeetOff'); if(off) off.onclick = async ()=>{ if(!confirm('Atjungti Google paskyrą? Skambučių nuorodas tada reikės įklijuoti ranka.')) return; await meetCall({ action:'disconnect' }); meetAdminLoad(); };
+  const off = document.getElementById('admMeetOff'); if(off) off.onclick = async ()=>{ if(!(await uiConfirm('Atjungti Google paskyrą? Skambučių nuorodas tada reikės įklijuoti ranka.'))) return; await meetCall({ action:'disconnect' }); meetAdminLoad(); };
 }
 function meetReturnFromUrl(){
   const q = new URLSearchParams(location.search), g = q.get('google'); if(!g) return;
@@ -23490,7 +23540,7 @@ async function chatJoinCall(id, starting){
     box.querySelector('[data-cb="pop"]').onclick = ()=>callPopOut();
     box.querySelector('[data-cb="leave"]').onclick = ()=>chatLeaveCall();
     const eb = box.querySelector('[data-cb="end"]'); if(eb) eb.onclick = async ()=>{
-      if(!confirm('Baigti skambutį visiems dalyviams?')) return;
+      if(!(await uiConfirm('Baigti skambutį visiems dalyviams?'))) return;
       const { data } = await getSb().from('calls').update({ ended_at:new Date().toISOString() }).eq('id', id).select().single();
       chatLeaveCall(true); if(data) chatOnCall({ eventType:'UPDATE', new:data });
     };
@@ -23577,6 +23627,32 @@ else document.addEventListener('visibilitychange', ()=>callWindowShown(document.
 function callAutoPip(on){
   try{ if('mediaSession' in navigator) navigator.mediaSession.setActionHandler('enterpictureinpicture', on ? ()=>callPopOut(true) : null); }catch(e){}
 }
+/* ---------- ką rodyti: visas ekranas ar programos langas (Windows / Mac programa) ----------
+   Programa (main.js) atsiunčia ekranus ir atidarytus langus su peržiūromis; čia
+   žmogus pasirenka. Naršyklėje (Chrome / Edge) tokį pasirinkimą rodo pati naršyklė. */
+function screenPick(sources){
+  return new Promise(res=>{
+    const doc = uiDoc();
+    const screens = sources.filter(x=>x.screen), wins = sources.filter(x=>!x.screen);
+    const card = x=>`<button type="button" class="sp-item" data-id="${esc(x.id)}"><span class="sp-th">${x.thumb ? `<img src="${esc(x.thumb)}" alt="">` : ''}</span><span class="sp-n">${x.icon ? `<img class="sp-ic" src="${esc(x.icon)}" alt="">` : ''}<span>${esc(x.screen ? (screens.length > 1 ? x.name : 'Visas ekranas') : x.name)}</span></span></button>`;
+    const el = doc.createElement('div'); el.className = 'ui-ask';
+    el.innerHTML = `<div class="ui-ask-card sp"><div class="sp-h"><b>Ką rodyti kitiems?</b></div>
+      <div class="chipbar sp-tabs"><button type="button" class="chip active" data-t="s">Visas ekranas</button><button type="button" class="chip" data-t="w">Programos langas (${wins.length})</button></div>
+      <div class="sp-grid" data-p="s">${screens.map(card).join('') || '<div class="muted">Ekranų nerasta</div>'}</div>
+      <div class="sp-grid" data-p="w" hidden>${wins.map(card).join('') || '<div class="muted">Atidarytų langų nerasta</div>'}</div>
+      <div class="ui-ask-b"><button type="button" class="btn" data-a="no">Atšaukti</button></div></div>`;
+    const done = id=>{ doc.removeEventListener('keydown', key, true); el.remove(); res(id); };
+    const key = e=>{ if(e.key==='Escape'){ e.preventDefault(); done(null); } };
+    el.addEventListener('click', e=>{
+      const t = e.target.closest('[data-t]'); if(t){ el.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('active', x===t)); el.querySelectorAll('[data-p]').forEach(p=>p.hidden = p.dataset.p!==t.dataset.t); return; }
+      const it = e.target.closest('[data-id]'); if(it) return done(it.dataset.id);
+      if(e.target.closest('[data-a="no"]') || e.target===el) done(null);
+    });
+    doc.addEventListener('keydown', key, true);
+    doc.body.appendChild(el);
+  });
+}
+if(DESK && typeof DESK.onPickScreen==='function') DESK.onPickScreen(screenPick);
 /* ---------- skambučio ekranas (Daily call object) ----------
    Kiekvienas dalyvis – langelis: vaizdas, kai kamera įjungta, kitaip profilio
    nuotrauka (ar inicialai). Kalbantysis paryškinamas, ekrano bendrinimas –
@@ -23585,10 +23661,10 @@ function callAutoPip(on){
 function dcMount(host, co, audioCall){
   host.innerHTML = `<div class="dc"><div class="dc-grid" id="dcGrid"></div><div class="dc-audio" id="dcAudio"></div>
     <div class="dc-bar">
-      <button type="button" class="dc-b" data-dc="mic" title="Mikrofonas"></button>
-      <button type="button" class="dc-b" data-dc="cam" title="Kamera"></button>
-      ${navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia && !EV_TOUCH ? '<button type="button" class="dc-b" data-dc="screen" title="Rodyti ekraną"></button>' : ''}
-      <button type="button" class="dc-b leave" data-dc="leave" title="Išeiti iš skambučio">${SK_ICON.phone}</button>
+      <div class="dc-bl"><button type="button" class="dc-b" data-dc="mic" title="Mikrofonas"></button><span>Mikrofonas</span></div>
+      <div class="dc-bl"><button type="button" class="dc-b" data-dc="cam" title="Kamera"></button><span>Kamera</span></div>
+      ${navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia && !EV_TOUCH ? '<div class="dc-bl"><button type="button" class="dc-b" data-dc="screen" title="Dalintis ekranu"></button><span class="dc-scr-t">Dalintis ekranu</span></div>' : ''}
+      <div class="dc-bl"><button type="button" class="dc-b leave" data-dc="leave" title="Išeiti iš skambučio">${SK_ICON.phone}</button><span>Išeiti</span></div>
     </div></div>`;
   const grid = host.querySelector('#dcGrid'), audioBox = host.querySelector('#dcAudio'), tiles = new Map(), audios = new Map();
   let speaker = '';
@@ -23643,13 +23719,13 @@ function dcMount(host, co, audioCall){
       const b = k=>host.querySelector(`[data-dc="${k}"]`);
       b('mic').innerHTML = ico.mic(micOn); b('mic').classList.toggle('off', !micOn);
       b('cam').innerHTML = ico.cam(camOn); b('cam').classList.toggle('off', !camOn);
-      if(b('screen')){ b('screen').innerHTML = ico.screen(scr); b('screen').classList.toggle('on', scr); }
+      if(b('screen')){ b('screen').innerHTML = ico.screen(scr); b('screen').classList.toggle('on', scr); const st = host.querySelector('.dc-scr-t'); if(st) st.textContent = scr ? 'Baigti rodyti' : 'Dalintis ekranu'; }
     }
   }
   ['joined-meeting','participant-joined','participant-updated','participant-left','track-started','track-stopped'].forEach(ev=>co.on(ev, render));
   co.on('active-speaker-change', e=>{ speaker = e && e.activeSpeaker ? e.activeSpeaker.peerId : ''; render(); });
   host.querySelector('.dc-bar').addEventListener('click', e=>{
-    const b = e.target.closest('[data-dc]'); if(!b) return;
+    const w = e.target.closest('.dc-bl'), b = e.target.closest('[data-dc]') || (w && w.querySelector('[data-dc]')); if(!b) return;
     const k = b.dataset.dc;
     if(k==='mic') co.setLocalAudio(!co.localAudio());
     else if(k==='cam') co.setLocalVideo(!co.localVideo());
@@ -23715,7 +23791,7 @@ async function chatLightbox(mid, i){
 }
 async function chatDeleteGroup(c){
   const what = chatIsChannel(c) ? 'kanalą '+chatLabel(c) : 'pokalbį „'+chatTitle(c)+'“';
-  if(!confirm('Ištrinti '+what+' visiems nariams kartu su visomis žinutėmis ir failais? Šio veiksmo atšaukti negalima.')) return;
+  if(!(await uiConfirm('Ištrinti '+what+' visiems nariams kartu su visomis žinutėmis ir failais? Šio veiksmo atšaukti negalima.'))) return;
   const sb = getSb();
   try{
     const { data } = await stFrom('chat-files').list(c.id, { limit:1000 });
@@ -24257,7 +24333,7 @@ function stkFinishSession(){
     try{ await stkSaveSession(d); await stkLogAdd([{ sheet:STK.sheet, name:'', action:'session_done', from_v:'', to_v:d.date, reason:'suskaičiuota '+done+'/'+items.length }]); closeModal(); toast('Inventorizacija užbaigta.'); renderStocktakeTab(); }
     catch(e){ d.status = 'draft'; toast('Nepavyko: '+e.message); } };
   document.getElementById('stkFdel').onclick = async ()=>{
-    if(done && !confirm('Ištrinti inventorizaciją su '+done+' suvestais kiekiais?')) return;
+    if(done && !(await uiConfirm('Ištrinti inventorizaciją su '+done+' suvestais kiekiais?'))) return;
     const { error } = await getSb().from('stk_sessions').delete().eq('id', d.id);
     if(error){ toast('Nepavyko: '+error.message); return; }
     STK.sessions = STK.sessions.filter(x=>x!==d); closeModal(); renderStocktakeTab(); };
@@ -25495,7 +25571,7 @@ function grForm(g, kind){
   document.querySelectorAll('[data-grm]').forEach(b=>b.onclick = ()=>{ const id = b.dataset.grm, i = draft.members.indexOf(id); if(i>=0) draft.members.splice(i,1); else draft.members.push(id); b.classList.toggle('active', i<0); });
   document.getElementById('grCancel').onclick = ()=>closeModal();
   const del = document.getElementById('grDel');
-  if(del) del.onclick = async ()=>{ if(!confirm('Ištrinti šį įrašą?')) return;
+  if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti šį įrašą?'))) return;
     const r = await getSb().from('gear_issues').delete().eq('id', g.id);
     if(r.error){ toast('Nepavyko: '+r.error.message); return; }
     GR.list = GR.list.filter(x=>x.id!==g.id); (g.photos||[]).length && stFrom(EQ_BUCKET).remove(g.photos.map(p=>p.path)).catch(()=>{});
@@ -25510,7 +25586,7 @@ function grForm(g, kind){
       description:document.getElementById('grDesc').value.trim(), event_name:document.getElementById('grEvent').value.trim() || null,
       photos:draft.photos, updated_at:new Date().toISOString() };
     if(lost){ Object.assign(row, { state:'lost', place:document.getElementById('grPlace').value.trim() || null, noticed_at:document.getElementById('grNoticed').value || null, members:draft.members });
-      if(!row.members.length && !confirm('Nepažymėjai nė vieno nario – niekas negaus pranešimo. Išsaugoti?')) return; }
+      if(!row.members.length && !(await uiConfirm('Nepažymėjai nė vieno nario – niekas negaus pranešimo. Išsaugoti?'))) return; }
     else Object.assign(row, { state:(document.querySelector('input[name="grSt"]:checked')||{}).value || 'usable', assignee:document.getElementById('grAssignee').value || null });
     if(isNew) Object.assign(row, { status:'open', created_by_name:gmMeName ? gmMeName() : '' });
     const btn = document.getElementById('grSave'); btn.disabled = true;
@@ -25605,13 +25681,13 @@ function grWoDecide(g, ok){
   };
 }
 async function grWoCancel(g){
-  if(!g || !confirm('Atšaukti nurašymo prašymą?')) return;
+  if(!g || !(await uiConfirm('Atšaukti nurašymo prašymą?'))) return;
   const r = await getSb().rpc('gear_wo_cancel', { gid:g.id });
   if(r.error){ toast('Nepavyko: '+r.error.message); return; }
   Object.assign(g, r.data); grBadge(); grRenderBody();
 }
 async function grReopen(g){
-  if(!g || !confirm('Grąžinti į aktyvius?')) return;
+  if(!g || !(await uiConfirm('Grąžinti į aktyvius?'))) return;
   const r = await getSb().from('gear_issues').update({ status:'open', resolved_at:null, resolved_by_name:null, resolution:null, updated_at:new Date().toISOString() }).eq('id', g.id).select().single();
   if(r.error){ toast('Nepavyko: '+r.error.message); return; }
   Object.assign(g, r.data); grBadge(); grRenderBody();
@@ -26091,7 +26167,7 @@ function lvDecide(r, ok){
   };
 }
 async function lvCancel(r){
-  if(!r || !confirm('Atšaukti šį prašymą?')) return;
+  if(!r || !(await uiConfirm('Atšaukti šį prašymą?'))) return;
   const res = await getSb().rpc('leave_cancel', { rid:r.id });
   if(res.error){ toast('Nepavyko: '+res.error.message); return; }
   const was = r.status; Object.assign(r, res.data);
@@ -26364,7 +26440,7 @@ function vlForm(kind, v, rec){
   drawFiles();
   document.getElementById('vlX').onclick = ()=>closeModal();
   const del = document.getElementById('vlDel');
-  if(del) del.onclick = async ()=>{ if(!confirm('Ištrinti šį įrašą kartu su failais?')) return;
+  if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti šį įrašą kartu su failais?'))) return;
     const r = await getSb().from('vehicle_logs').delete().eq('id', rec.id);
     if(r.error){ toast('Nepavyko: '+r.error.message); return; }
     VL.list = VL.list.filter(x=>x.id!==rec.id); (rec.files||[]).length && stFrom(VL_BUCKET).remove(rec.files.map(f=>f.path)).catch(()=>{});

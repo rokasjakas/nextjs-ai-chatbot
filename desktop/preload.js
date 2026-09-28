@@ -16,6 +16,12 @@ if (location.origin === ORIGIN) {
     update: () => ipcRenderer.invoke('es:update'),
     // the app window was minimized / hidden (false) or shown again (true)
     onWindow: (cb) => ipcRenderer.on('es:window', (_e, shown) => { try { cb(!!shown); } catch {} }),
+    // screen sharing: the page shows the choice and answers with the id (or null = cancel)
+    onPickScreen: (cb) => (ipcRenderer.send('es:pick-ready'), ipcRenderer.on('es:pick-screen', async (_e, r) => {
+      let id = null;
+      try { id = await cb(r.sources); } catch {}
+      ipcRenderer.send('es:picked', { reqId: r.reqId, id: typeof id === 'string' ? id : null });
+    })),
     onUpdateProgress: (cb) => ipcRenderer.on('es:update-progress', (_e, p) => { try { cb({ got: Number(p.got) || 0, size: Number(p.size) || 0 }); } catch {} }),
   });
 }

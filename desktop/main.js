@@ -16,7 +16,7 @@ const { spawn } = require('child_process');
 
 // the version of this program; EventSolutions-Setup.json / EventSolutions-Mac-<arch>.json
 // in Supabase Storage (bucket "desktop") say which is the newest
-const DESK_VERSION = 8;
+const DESK_VERSION = 9;
 const MAC = process.platform === 'darwin';
 // what this computer downloads when it updates itself
 const PKG = MAC ? { manifest: `EventSolutions-Mac-${process.arch}.json`, file: `EventSolutions-Mac-${process.arch}.zip` }
@@ -152,6 +152,7 @@ function createWindow(show) {
       notify({ title: 'Event Solutions veikia fone', body: 'Pranešimai bus rodomi ir toliau. Visiškai uždaryti: dešiniu pelės mygtuku ant ikonos šalia laikrodžio → Išeiti.' });
     }
   });
+  win.webContents.on('did-start-navigation', (e) => { if (e.isMainFrame && !e.isSameDocument) pickReady = false; });
   win.loadURL(HOME);
 }
 
@@ -249,6 +250,23 @@ ipcMain.on('es:notify', (e, n) => {
   // shown always, also with the window open (the page skips a chat you are reading)
   notify(n, typeof n.url === 'string' ? n.url.slice(0, 500) : './');
 });
+
+// asks the page which screen / window to share; undefined = the page cannot ask (old page)
+let pickSeq = 0, pickReady = false;
+ipcMain.on('es:pick-ready', (e) => { if (win && e.sender === win.webContents) pickReady = true; });
+function pickScreen(list) {
+  return new Promise((resolve) => {
+    if (!win || win.isDestroyed() || !pickReady) return resolve(undefined);
+    const reqId = ++pickSeq;
+    const done = (e, r) => { if (!r || r.reqId !== reqId) return; ipcMain.removeListener('es:picked', done); clearTimeout(t); resolve(r.id === null ? null : (typeof r.id === 'string' ? r.id : undefined)); };
+    const t = setTimeout(() => { ipcMain.removeListener('es:picked', done); resolve(undefined); }, 120000);
+    ipcMain.on('es:picked', done);
+    win.webContents.send('es:pick-screen', {
+      reqId,
+      sources: list.map((x) => ({ id: x.id, name: x.name, screen: x.id.startsWith('screen'), thumb: x.thumbnail.isEmpty() ? '' : x.thumbnail.toDataURL(), icon: x.appIcon && !x.appIcon.isEmpty() ? x.appIcon.toDataURL() : '' })),
+    });
+  });
+}
 
 /* ---------- updates ----------
    Supabase Storage (bucket "desktop", reached through the site's _redirects) has
@@ -395,9 +413,17 @@ if (!app.requestSingleInstanceLock()) {
       }
       cb(o === ORIGIN && ['notifications', 'clipboard-read', 'clipboard-sanitized-write', 'fullscreen', 'pointerLock'].includes(permission));
     });
-    // screen sharing in a video call: the whole main screen
-    s.setDisplayMediaRequestHandler((req, cb) => {
-      desktopCapturer.getSources({ types: ['screen'] }).then((src) => cb(src[0] ? { video: src[0] } : {})).catch(() => cb({}));
+    // screen sharing in a call: the person picks the whole screen or one program's window
+    // (the page shows the choice with previews; older pages: the main screen)
+    s.setDisplayMediaRequestHandler(async (req, cb) => {
+      try {
+        const src = await desktopCapturer.getSources({ types: ['screen', 'window'], thumbnailSize: { width: 320, height: 200 }, fetchWindowIcons: true });
+        const list = src.filter((x) => !/^Event Solutions$|^Skambutis/.test(x.name) || x.id.startsWith('screen'));
+        const id = await pickScreen(list);
+        const chosen = id === undefined ? src.find((x) => x.id.startsWith('screen')) : list.find((x) => x.id === id);
+        if (!chosen) return cb({});
+        cb({ video: chosen, ...(req.audioRequested && !MAC ? { audio: 'loopback' } : {}) });
+      } catch { cb({}); }
     });
     if (app.isPackaged && settings.autoStart === undefined) setAutoStart(true);
     cleanTemp();
