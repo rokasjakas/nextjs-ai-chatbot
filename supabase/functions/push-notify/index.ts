@@ -703,6 +703,24 @@ async function onFeedback(uid: string, id: string, ev: string) {
   });
 }
 
+// „Įranga“: sugadinta / dingusi įranga (public.gear_issues, sql/gear.sql)
+type GearIssue = { id: string; kind: string; item_name: string; qty: number; state: string; place: string | null; assignee: string | null; members: string[] | null; created_by: string };
+async function onGear(uid: string, id: string, ev: string) {
+  const [g] = await db<GearIssue[]>(`gear_issues?select=id,kind,item_name,qty,state,place,assignee,members,created_by&id=eq.${encodeURIComponent(id)}`);
+  if (!g) return { error: "Įrašas nerastas" };
+  const people = new Set<string>([...(g.members ?? []), ...(g.assignee ? [g.assignee] : []), g.created_by]);
+  if (!people.has(uid)) return { error: "Tik įrašo dalyviai" };
+  people.delete(uid);
+  const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
+  const what = `${g.item_name}${g.qty > 1 ? " × " + g.qty : ""}`;
+  const title = ev === "fixed" ? "✅ Sutaisyta: " + what
+    : ev === "found" ? "✅ Rasta: " + what
+    : g.kind === "lost" ? "❓ Dingo: " + what
+    : (g.state === "broken" ? "🔧 Sugadinta: " : "⚠ Pažeista: ") + what;
+  const body = (g.kind === "lost" && g.place && ev === "new" ? "Galimai: " + g.place + " · " : "") + name(me);
+  return await sendTo([...people], { title, body, tag: "gear-" + g.id, url: `./?gear=${g.id}`, kind: "gear" });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
@@ -728,6 +746,7 @@ Deno.serve(async (req) => {
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : "decided"));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
+    if (body.kind === "gear") return json(await onGear(uid, String(body.gear_id ?? ""), ["new", "fixed", "found"].includes(body.event) ? body.event : "new"));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
     if (body.kind === "call") return json(await onCall(uid, String(body.call_id ?? "")));
     if (body.kind === "reaction") return json(await onReaction(uid, String(body.message_id ?? ""), String(body.emoji ?? "").slice(0, 16)));
