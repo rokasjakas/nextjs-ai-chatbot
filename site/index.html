@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-yISS0uUQi8kMION28ZSRKuibCVsAEtIumXPQqJpIN74=' https://cdn.jsdelivr.net; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-j9B3UlH1Q+UEhNrdPDzzt4pYVLLifX/62+THXfwzb50=' https://cdn.jsdelivr.net; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -3520,6 +3520,15 @@ body.gm-open{overflow:hidden;}
 .gr-pi b{font-weight:600;color:var(--text);min-width:0;overflow-wrap:anywhere;} .gr-pi small{flex:0 0 auto;color:var(--text-dim);font-size:11.5px;}
 .gr-pi:hover,.gr-pi.on{background:var(--panel-2);}
 .desk-how{border:1px solid var(--border);border-radius:10px;padding:8px 12px;margin:8px 0;font-size:13px;} .desk-how ol{margin:6px 0 0;padding-left:18px;} .desk-how li{margin:3px 0;}
+.us-row{margin:0 0 12px;}
+.us-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13.5px;margin-bottom:4px;}
+.us-h span{color:var(--muted,#999);font-size:12.5px;}
+.us-bar{height:8px;border-radius:6px;background:var(--line,#333);overflow:hidden;}
+.us-bar i{display:block;height:100%;border-radius:6px;}
+i.us-ok{background:var(--teal,#2E8C77);} i.us-warn{background:var(--amber,#D08A12);} i.us-bad{background:#E5484D;}
+b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-bad{color:#E5484D;}
+.us-row small{display:block;margin-top:3px;font-size:11.5px;}
+.us-links{font-size:12.5px;margin:4px 0 4px;color:var(--muted,#999);} .us-links a{color:var(--accent);}
 .dl-bar{height:8px;border-radius:6px;background:var(--line, #333);overflow:hidden;margin:12px 0 6px;}
 .dl-bar i{display:block;height:100%;width:0;background:var(--accent, #3b82f6);transition:width .2s;}
 .app-upd{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);z-index:5000;width:min(560px, calc(100vw - 24px));display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--panel);border:1px solid var(--accent);box-shadow:0 18px 50px rgba(0,0,0,.5);animation:fadeIn .2s ease-out;}
@@ -10795,6 +10804,11 @@ function renderAdminTab(){
       <p class="section-sub" style="margin:4px 0 10px;">GIF paieškai reikia nemokamo GIPHY API rakto (developers.giphy.com → Create an App → API). Be jo GIF galima siųsti kaip failą arba nuorodą.</p>
       <div class="email-add-row"><input type="text" id="admGiphy" placeholder="GIPHY API raktas" value="${esc((STATE.chatSettings||{}).giphyKey||'')}"><button class="btn small" id="admGiphySave">Išsaugoti</button></div>
     </div>
+    <div class="card" id="admUsage">
+      <div class="row" style="justify-content:space-between;align-items:center;gap:8px;"><h2 class="section-title" style="margin:0;">Limitai ir naudojimas</h2><button class="btn small" id="admUsageR">${slIcon('refresh')} Atnaujinti</button></div>
+      <p class="section-sub" style="margin:4px 0 10px;">Kiek išnaudota nemokamų planų. Pasiekus ~90 % verta išvalyti senus failus arba pereiti į mokamą planą.</p>
+      <div id="admUsageBody"><div class="section-sub">Skaičiuojama…</div></div>
+    </div>
     ${meetAdminCard()}
     <div class="card" id="admAnim">
       <h2 class="section-title" style="margin:0;">Animacijų greitis</h2>
@@ -10814,6 +10828,8 @@ function renderAdminTab(){
   admAnimBind();
   renderAdminPerms();
   meetAdminLoad();
+  admUsageLoad();
+  document.getElementById('admUsageR').onclick = ()=>admUsageLoad();
   admLoad().then(renderAdminUsers);
 }
 function admAnimBind(){
@@ -13035,7 +13051,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v143';
+const APP_VER = 'v144';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -23298,6 +23314,50 @@ async function chatOpenCall(id, answer, join){
 }
 
 // Admin: connect the Google account used for calls
+/* ---------- Admin: limitai ir naudojimas ----------
+   Duomenų bazė ir Supabase failai (rpc admin_usage), Cloudflare R2 (files → usage),
+   vaizdo skambučių minutės šį mėnesį (meet → usage, Daily), prisijungę dabar
+   (Realtime). Ribos – nemokamų planų; pasikeitus planui pakeisk USAGE_LIMITS. */
+const USAGE_LIMITS = { db:500*1048576, storage:1024*1048576, r2:10*1073741824, daily:10000, realtime:200 };
+const SB_REF = (SUPABASE_URL.match(/https:\/\/([a-z0-9]+)\./) || [])[1] || '';
+function fmtBytes(n){ n = +n || 0; const u = ['B','KB','MB','GB','TB']; let i = 0; while(n >= 1024 && i < u.length-1){ n /= 1024; i++; } return (i ? n.toFixed(n < 10 ? 2 : 1) : String(n)).replace('.', ',')+' '+u[i]; }
+function usageRow(title, used, limit, fmt, note){
+  const pct = limit ? Math.min(100, used/limit*100) : 0, cls = pct >= 90 ? 'bad' : pct >= 70 ? 'warn' : 'ok';
+  return `<div class="us-row"><div class="us-h"><b>${esc(title)}</b><span>${esc(fmt(used))} / ${esc(fmt(limit))} · <b class="us-${cls}">${pct < 1 && used > 0 ? '<1' : Math.round(pct)} %</b></span></div>
+    <div class="us-bar"><i class="us-${cls}" style="width:${pct.toFixed(1)}%"></i></div>${note ? `<small class="muted">${note}</small>` : ''}</div>`;
+}
+async function admUsageLoad(){
+  const box = document.getElementById('admUsageBody'); if(!box) return;
+  box.innerHTML = '<div class="section-sub">Skaičiuojama…</div>';
+  const [db, r2, calls] = await Promise.all([
+    getSb().rpc('admin_usage').then(r=>r.error ? { error:r.error.message } : r.data, e=>({ error:e.message })),
+    fsR2().then(on=>on ? fsCall({ action:'usage' }).catch(e=>({ error:e.message })) : null),
+    meetCall({ action:'usage' }).catch(e=>({ error:e.message })),
+  ]);
+  if(!document.getElementById('admUsageBody')) return;
+  const num = n=>Math.round(+n||0).toLocaleString('lt-LT');
+  const err = (what, e)=>`<div class="us-row"><div class="us-h"><b>${esc(what)}</b></div><div class="mail-err" style="margin:4px 0 0;">${esc(e)}</div></div>`;
+  let h = '';
+  if(db && !db.error){
+    h += usageRow('Duomenų bazė (Supabase)', db.db_bytes, USAGE_LIMITS.db, fmtBytes, 'Daugiausia užima: '+(db.tables||[]).slice(0,4).map(t=>esc(t.name)+' '+fmtBytes(t.bytes)).join(', '));
+    const st = (db.buckets||[]).reduce((a,b)=>a+(+b.bytes||0), 0);
+    h += usageRow('Failų saugykla (Supabase)', st, USAGE_LIMITS.storage, fmtBytes, (db.buckets||[]).map(b=>esc(b.name)+' '+fmtBytes(b.bytes)+' ('+num(b.files)+')').join(', ') || 'Tuščia');
+  } else h += err('Duomenų bazė ir failai (Supabase)', db && /admin_usage|function|schema/i.test(db.error) ? 'Paleisk admin_usage.sql (Supabase → SQL Editor).' : (db && db.error) || 'Nepavyko');
+  if(r2 && !r2.error) h += usageRow('Failų saugykla (Cloudflare R2)', r2.bytes, USAGE_LIMITS.r2, fmtBytes, num(r2.files)+' failai · '+Object.entries(r2.folders||{}).sort((a,b)=>b[1].bytes-a[1].bytes).slice(0,5).map(([k,v])=>esc(k)+' '+fmtBytes(v.bytes)).join(', '));
+  else if(r2 && r2.error) h += err('Failų saugykla (Cloudflare R2)', /Nežinomas veiksmas/.test(r2.error) ? 'Įkelk naują files funkciją (npx supabase functions deploy files).' : r2.error);
+  if(calls && calls.daily && !calls.error) h += usageRow('Vaizdo ir garso skambučiai (Daily) – šį mėnesį', calls.minutes, USAGE_LIMITS.daily, n=>num(n)+' min', num(calls.calls)+' skambučiai · kiekvieno dalyvio minutės sumuojamos');
+  else if(calls && calls.error) h += err('Skambučiai (Daily)', /Nežinomas veiksmas/.test(calls.error) ? 'Įkelk naują meet funkciją (npx supabase functions deploy meet --no-verify-jwt).' : calls.error);
+  else h += `<div class="us-row"><div class="us-h"><b>Skambučiai (Daily)</b><span class="muted">neįjungta (nėra DAILY_API_KEY)</span></div></div>`;
+  const conns = TEAM.presenceCh ? Object.values(TEAM.presenceCh.presenceState()||{}).reduce((a,l)=>a+(l||[]).length, 0) : 0;
+  h += usageRow('Prisijungę dabar (Realtime ryšiai)', conns, USAGE_LIMITS.realtime, num, num(Object.keys(TEAM.presence||{}).length)+' žmonės · kiekvienas atidarytas langas ar telefonas – atskiras ryšys');
+  h += `<div class="us-links">Duomenų srautas, funkcijų kvietimai, el. laiškai – ne programoje:
+    <a href="https://supabase.com/dashboard/project/${esc(SB_REF)}/usage" target="_blank" rel="noopener">Supabase naudojimas</a> ·
+    <a href="https://dash.cloudflare.com/?to=/:account/r2/overview" target="_blank" rel="noopener">Cloudflare R2</a> ·
+    <a href="https://dashboard.daily.co/" target="_blank" rel="noopener">Daily</a> ·
+    <a href="https://resend.com/emails" target="_blank" rel="noopener">Resend (el. laiškai)</a></div>
+    <small class="muted">Atnaujinta ${esc(new Date().toLocaleTimeString('lt-LT', { hour:'2-digit', minute:'2-digit' }))}</small>`;
+  box.innerHTML = h;
+}
 function meetAdminCard(){
   return `<div class="card" id="admMeet">
       <h2 class="section-title" style="margin:0;">Vaizdo skambučiai (Google Meet)</h2>

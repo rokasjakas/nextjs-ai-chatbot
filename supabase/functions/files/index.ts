@@ -13,13 +13,14 @@
 //        null = not in R2 (an older file: sign it in Supabase)
 // POST {action:"remove", bucket, paths}       -> { removed }
 // POST {action:"list", bucket, prefix}        -> { names }        (one folder)
+// POST {action:"usage"}                       -> { bytes, files, folders } admins: how much R2 holds
 //
 // Secrets: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET
 // (Cloudflare → R2 → Manage API tokens: Object Read & Write for the bucket).
 import { sha256 } from "npm:@noble/hashes@1.4.0/sha256";
 import { hmac } from "npm:@noble/hashes@1.4.0/hmac";
 
-const VERSION = 3;
+const VERSION = 4;
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -172,6 +173,12 @@ async function handle(c: Caller, b: Record<string, unknown>) {
       return { names };
     }
   }
+  if (b.action === "usage") {
+    const me = await fetch(`${env("SUPABASE_URL")}/rest/v1/profiles?select=role&id=eq.${c.uid}`, { headers: { apikey: c.apikey, Authorization: `Bearer ${c.token}` } })
+      .then((r) => (r.ok ? r.json() : [])).catch(() => []);
+    if (me?.[0]?.role !== "admin") throw new UserError("Tik administratoriui.");
+    return await r2Usage((q) => fetch(r2Url("GET", "", 60, q)).then(async (r) => { const t = await r.text(); if (!r.ok) throw new Error("R2 list " + r.status + ": " + t.slice(0, 200)); return t; }));
+  }
   if (b.action === "check") {
     // the server tries R2 itself (no browser, no CORS): shows whether the
     // keys and the bucket are right
@@ -192,6 +199,27 @@ async function handle(c: Caller, b: Record<string, unknown>) {
     return { check: out };
   }
   throw new UserError("Nežinomas veiksmas.");
+}
+
+// everything in the bucket, page by page (1000 files each): total and per top folder
+export async function r2Usage(list: (q: Record<string, string>) => Promise<string>) {
+  let token = "", bytes = 0, files = 0;
+  const folders: Record<string, { bytes: number; files: number }> = {};
+  for (let page = 0; page < 200; page++) {
+    const xml = await list({ "list-type": "2", "max-keys": "1000", ...(token ? { "continuation-token": token } : {}) });
+    for (const m of xml.matchAll(/<Contents>([\s\S]*?)<\/Contents>/g)) {
+      const key = (m[1].match(/<Key>([^<]*)<\/Key>/) || [])[1] || "";
+      const size = Number((m[1].match(/<Size>(\d+)<\/Size>/) || [])[1] || 0);
+      const top = key.split("/")[0] || "?";
+      bytes += size; files++;
+      const f = folders[top] = folders[top] || { bytes: 0, files: 0 };
+      f.bytes += size; f.files++;
+    }
+    if (!/<IsTruncated>true<\/IsTruncated>/.test(xml)) break;
+    token = ((xml.match(/<NextContinuationToken>([^<]+)<\/NextContinuationToken>/) || [])[1] || "").replace(/&amp;/g, "&");
+    if (!token) break;
+  }
+  return { bytes, files, folders };
 }
 
 Deno.serve(async (req) => {

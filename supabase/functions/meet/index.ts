@@ -212,6 +212,29 @@ async function daily(path: string, body: unknown): Promise<Record<string, unknow
   if (!res.ok) throw new Error(`Daily ${res.status}: ${j.info || j.error || "klaida"}`);
   return j;
 }
+// this month's call minutes (Admin → „Limitai ir naudojimas“): the sum of every
+// participant's time in every call since the 1st (Daily bills per participant minute)
+export async function dailyUsage(fetchPage = dailyGet): Promise<{ minutes: number; calls: number }> {
+  const d = new Date(), from = Math.floor(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1) / 1000);
+  let after = "", seconds = 0, calls = 0;
+  for (let page = 0; page < 50; page++) {
+    const j = await fetchPage(`meetings?timeframe_start=${from}&limit=100${after ? "&starting_after=" + encodeURIComponent(after) : ""}`);
+    const list = (j.data ?? []) as { id: string; participants?: { duration?: number }[] }[];
+    for (const m of list) {
+      calls++;
+      for (const p of m.participants ?? []) seconds += Number(p.duration) || 0;
+    }
+    if (list.length < 100) break;
+    after = list[list.length - 1].id;
+  }
+  return { minutes: Math.round(seconds / 60), calls };
+}
+async function dailyGet(path: string): Promise<Record<string, unknown>> {
+  const res = await fetch(`https://api.daily.co/v1/${path}`, { headers: { Authorization: `Bearer ${env("DAILY_API_KEY")}` } });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`Daily ${res.status}: ${j.info || j.error || "klaida"}`);
+  return j;
+}
 // may this person take part in calls of that conversation? (#bendras: everyone who uses the chat)
 async function inConversation(uid: string, conversationId: string): Promise<boolean> {
   const [c] = await db<{ kind: string }[]>(`conversations?select=kind&id=eq.${encodeURIComponent(conversationId)}`);
@@ -306,6 +329,11 @@ export async function handle(req: Request): Promise<Response> {
     if (body.action === "join") {
       if (!who.canChat) return json({ error: "Nėra prieigos prie chato." }, 403);
       return await join(who, String(body.call_id ?? ""));
+    }
+    if (body.action === "usage") {
+      if (!admin) return json({ error: "Tik administratoriui." }, 403);
+      if (!dailyOn()) return json({ daily: false });
+      try { return json({ daily: true, ...(await dailyUsage()) }); } catch (e) { return json({ daily: true, error: (e as Error).message }); }
     }
     if (body.action === "status") {
       if (!admin) return json({ error: "Tik administratoriui." }, 403);
