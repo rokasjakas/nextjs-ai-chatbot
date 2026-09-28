@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-oK9SDfkhjYQ8ZFBlKsBno2VUjJfa4ZP8tzf6bd3gl30=' https://cdn.jsdelivr.net; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-d/ELAl0PU60tfKnH60ZElHY5T7nRdrNy6DL8JwMWeJI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -13079,7 +13079,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v145';
+const APP_VER = 'v146';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -23495,6 +23495,7 @@ async function chatJoinCall(id, starting){
       chatLeaveCall(true); if(data) chatOnCall({ eventType:'UPDATE', new:data });
     };
     TEAM.live = { id, call, box, frame:null };
+    if(!DESK) callAutoPip(true);
     TEAM.live.timer = setInterval(chatCallPlace, 250);
     chatCallGoTo();
     const v = box.querySelector('#callBoxV');
@@ -23502,7 +23503,8 @@ async function chatJoinCall(id, starting){
       await loadScriptOnce(DAILY_JS, ()=>!!window.Daily);
       if(!TEAM.live || TEAM.live.id!==id) return;
       // our own call screen (Daily call object): the app's look, profile photos when a camera is off
-      const f = window.Daily.createCallObject({ subscribeToTracksAutomatically:true });
+      // avoidEval: Daily's call bundle comes as a <script> (the page's CSP forbids eval)
+      const f = window.Daily.createCallObject({ subscribeToTracksAutomatically:true, dailyConfig:{ avoidEval:true } });
       TEAM.live.frame = f;
       dcMount(v, f, (r.media || call.media)==='audio');
       f.on('left-meeting', ()=>{ if(TEAM.live && TEAM.live.frame===f) chatLeaveCall(true); });
@@ -23523,9 +23525,10 @@ async function chatJoinCall(id, starting){
    Chrome / Edge: „Document Picture-in-Picture“ langas – visas skambučio ekranas.
    Kitur (telefonas, Safari, Firefox): tik vaizdas „vaizdas vaizde“ režimu.
    Skambučio ekranas perkeliamas (ne kopijuojamas), todėl vaizdas ir garsas nenutrūksta. */
-async function callPopOut(){
+async function callPopOut(auto){
   const L = TEAM.live; if(!L) return;
-  if(L.popWin){ try{ L.popWin.focus(); }catch(e){} return; }
+  if(L.popWin){ if(!auto) try{ L.popWin.focus(); }catch(e){} return; }
+  L.autoPop = !!auto;
   const dc = L.box.querySelector('.dc');
   const videoPip = ()=>{
     const v = L.box.querySelector('.dc-tile.speaking.has-video video') || L.box.querySelector('.dc-tile.has-video:not(.me) video') || L.box.querySelector('.dc-tile.has-video video');
@@ -23538,7 +23541,7 @@ async function callPopOut(){
     if(DESK) w = window.open('', 'es-call', 'popup=yes,width=480,height=380');
     else if(window.documentPictureInPicture) w = await documentPictureInPicture.requestWindow({ width:480, height:380 });
   }catch(e){ w = null; }
-  if(!w) return videoPip();
+  if(!w){ if(auto) return; return videoPip(); }
   const d = w.document;
   d.title = 'Skambutis · '+(L.box.querySelector('.call-box-t b')||{}).textContent;
   d.documentElement.className = document.documentElement.className;
@@ -23558,6 +23561,21 @@ async function callPopOut(){
   w.addEventListener('pagehide', back);
   w.addEventListener('unload', back);
   v.querySelector('#callPopBack').onclick = ()=>{ back(); try{ w.close(); }catch(e){} };
+  L.popBack = ()=>{ back(); try{ w.close(); }catch(e){} };
+}
+// the app is minimized, hidden next to the clock or covered: the call pops out above
+// everything by itself, and comes back when the app is in front again
+function callWindowShown(shown){
+  const L = TEAM.live; if(!L || !DESK) return;
+  if(!shown){ if(!L.popWin) callPopOut(true); }
+  else if(L.popWin && L.autoPop && L.popBack) L.popBack();
+}
+// desktop app 1.7+: told by the app; older ones: the page's own visibility
+if(DESK && typeof DESK.onWindow==='function') DESK.onWindow(callWindowShown);
+else document.addEventListener('visibilitychange', ()=>callWindowShown(document.visibilityState!=='hidden'));
+// Chrome / Edge: going to another tab during a call opens the picture-in-picture window
+function callAutoPip(on){
+  try{ if('mediaSession' in navigator) navigator.mediaSession.setActionHandler('enterpictureinpicture', on ? ()=>callPopOut(true) : null); }catch(e){}
 }
 /* ---------- skambučio ekranas (Daily call object) ----------
    Kiekvienas dalyvis – langelis: vaizdas, kai kamera įjungta, kitaip profilio
@@ -23670,6 +23688,7 @@ function chatCallPlace(){
 function chatLeaveCall(quiet){
   const L = TEAM.live; if(!L) return;
   TEAM.live = null;
+  callAutoPip(false);
   if(L.popWin) try{ L.popWin.close(); }catch(e){}
   clearInterval(L.timer);
   try{ if(L.frame){ L.frame.leave().catch(()=>{}).finally(()=>{ try{ L.frame.destroy(); }catch(e){} }); } }catch(e){}

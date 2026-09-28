@@ -16,7 +16,7 @@ const { spawn } = require('child_process');
 
 // the version of this program; EventSolutions-Setup.json / EventSolutions-Mac-<arch>.json
 // in Supabase Storage (bucket "desktop") say which is the newest
-const DESK_VERSION = 7;
+const DESK_VERSION = 8;
 const MAC = process.platform === 'darwin';
 // what this computer downloads when it updates itself
 const PKG = MAC ? { manifest: `EventSolutions-Mac-${process.arch}.json`, file: `EventSolutions-Mac-${process.arch}.zip` }
@@ -135,6 +135,12 @@ function createWindow(show) {
   win.once('ready-to-show', () => { if (show || !startHidden) win.show(); });
   win.webContents.on('render-process-gone', () => { setTimeout(() => { if (win && !win.isDestroyed()) win.reload(); }, 1000); });
   win.on('focus', () => win.flashFrame(false));
+  // the page pops a running call out above everything while the app is minimized or hidden
+  const tell = (shown) => { if (win && !win.isDestroyed()) win.webContents.send('es:window', shown); };
+  win.on('minimize', () => tell(false));
+  win.on('hide', () => tell(false));
+  win.on('restore', () => tell(true));
+  win.on('show', () => tell(true));
   win.on('close', (e) => {
     saveBounds();
     if (quitting) return;

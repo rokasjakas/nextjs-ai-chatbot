@@ -15,13 +15,14 @@ for m in re.finditer(r'<script(?![^>]*\bsrc=)([^>]*)>(.*?)</script>', s, re.S):
 SB = 'yakmikxkcudwloxruhvx.supabase.co'
 csp = {
   'default-src': "'self'",
-  'script-src': "'self' " + ' '.join(hashes) + " https://cdn.jsdelivr.net",
-  'worker-src': "'self' blob: https://cdn.jsdelivr.net",
+  # c.dailywebrtc.net: the Daily call bundle (loaded as a script, dailyConfig.avoidEval)
+  'script-src': "'self' " + ' '.join(hashes) + " https://cdn.jsdelivr.net https://c.dailywebrtc.net",
+  'worker-src': "'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net",
   'style-src': "'self' 'unsafe-inline' https://fonts.googleapis.com",
   'font-src': "'self' data: https://fonts.gstatic.com",
   'img-src': "'self' data: blob: https:",
   'media-src': "'self' data: blob: https:",
-  'connect-src': f"'self' https: wss://{SB} wss://*.daily.co",
+  'connect-src': f"'self' https: wss://{SB} wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com",
   'frame-src': "'self' blob: data: https:",
   'manifest-src': "'self'",
   'object-src': "'none'",

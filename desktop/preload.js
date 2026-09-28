@@ -14,6 +14,8 @@ if (location.origin === ORIGIN) {
     onOpen: (cb) => ipcRenderer.on('es:open', (_e, url) => { try { cb(String(url)); } catch {} }),
     // download the newest installer, install it silently and restart
     update: () => ipcRenderer.invoke('es:update'),
+    // the app window was minimized / hidden (false) or shown again (true)
+    onWindow: (cb) => ipcRenderer.on('es:window', (_e, shown) => { try { cb(!!shown); } catch {} }),
     onUpdateProgress: (cb) => ipcRenderer.on('es:update-progress', (_e, p) => { try { cb({ got: Number(p.got) || 0, size: Number(p.size) || 0 }); } catch {} }),
   });
 }
