@@ -15,7 +15,7 @@ const crypto = require('crypto');
 const { spawn } = require('child_process');
 
 // the version of this program; the site's EventSolutions-Setup.json says which is the newest
-const DESK_VERSION = 3;
+const DESK_VERSION = 4;
 
 // ES_URL: another address for testing (only when run with `npm start`, never in the installed app)
 const HOME = (!app.isPackaged && process.env.ES_URL) || 'https://app.eventsolutions.lt/';
@@ -86,7 +86,8 @@ function guard(wc) {
 function keys(wc) {
   wc.on('before-input-event', (e, i) => {
     if (i.type !== 'keyDown') return;
-    const k = (i.key || '').toLowerCase(), c = i.control || i.meta;
+    // AltGr (Ctrl+Alt on Windows) types letters and signs on the Lithuanian keyboard: never a shortcut
+    const k = (i.key || '').toLowerCase(), c = (i.control || i.meta) && !i.alt;
     let done = true;
     if (k === 'f5' || (c && k === 'r')) wc.reload();
     else if (c && i.shift && k === 'i') wc.toggleDevTools();
@@ -106,6 +107,8 @@ function createWindow(show) {
     title: 'Event Solutions', icon: ICON, autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, spellcheck: true,
+      // hidden next to the clock the page must stay live (chat connection, notifications)
+      backgroundThrottling: false,
       additionalArguments: ['--es-origin=' + ORIGIN, '--es-ver=' + DESK_VERSION],
     },
   });
