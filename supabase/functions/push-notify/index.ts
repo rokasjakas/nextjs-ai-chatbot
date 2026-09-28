@@ -361,7 +361,7 @@ export function wantsCall(p: Prefs | null): boolean {
   return !inQuietHours(pr.quiet);
 }
 async function onCall(uid: string, callId: string) {
-  const [call] = await db<{ id: string; conversation_id: string; created_by: string; meet_url: string; provider?: string; created_at: string; ended_at: string | null }[]>(
+  const [call] = await db<{ id: string; conversation_id: string; created_by: string; meet_url: string; provider?: string; media?: string; created_at: string; ended_at: string | null }[]>(
     `calls?select=*&id=eq.${encodeURIComponent(callId)}`,
   );
   if (!call || call.created_by !== uid || call.ended_at) return { sent: 0, skipped: "not your call" };
@@ -373,10 +373,22 @@ async function onCall(uid: string, callId: string) {
   const members = c.kind === "general" ? users.map((u) => u.id)
     : (await db<{ user_id: string }[]>(`conversation_members?select=user_id&conversation_id=eq.${c.id}`)).map((x) => x.user_id);
   const to = members.filter((id) => id !== uid && byId.has(id) && wantsCall(byId.get(id)!.notify_prefs));
-  const where = c.kind === "direct" ? "" : c.kind === "general" ? "#bendras" : (c.kind === "group" && !c.title) ? "grupėje" : "#" + (c.title || "kanalas");
+  const audio = call.media === "audio";
+  const what = audio ? "Garso skambutis" : "Vaizdo skambutis";
+  // a one-to-one call rings; in a channel or group the members are only told
+  // that a call is going on – they join from the channel when they want
+  if (c.kind !== "direct") {
+    const where = c.kind === "general" ? "#bendras" : (c.kind === "group" && !c.title) ? "Grupėje" : "#" + (c.title || "kanalas");
+    const r = await sendTo(to, {
+      title: `${audio ? "🎧" : "📹"} Vyksta pokalbis · ${where}`,
+      body: `${name(byId.get(uid))} pradėjo ${audio ? "garso" : "vaizdo"} pokalbį. Užeik į kanalą ir spausk „Prisijungti“.`,
+      tag: "callinfo-" + call.id, url: `./?chat=${c.id}`, kind: "callinfo",
+    }, 3600);
+    return { ...r, members: to.length };
+  }
   const r = await sendTo(to, {
-    title: `📹 ${name(byId.get(uid))} skambina`,
-    body: (where ? where + " · " : "") + (call.provider === "daily" ? "Vaizdo skambutis. Priimti ar atmesti?" : "Vaizdo skambutis (Google Meet). Priimti ar atmesti?"),
+    title: `${audio ? "📞" : "📹"} ${name(byId.get(uid))} skambina`,
+    body: call.provider === "daily" ? `${what}. Priimti ar atmesti?` : `${what} (Google Meet). Priimti ar atmesti?`,
     tag: "call-" + call.id, url: `./?call=${call.id}`, kind: "call", call_id: call.id,
     // Google Meet opens straight away; a Daily call opens inside the app
     provider: call.provider === "daily" ? "daily" : "meet", meet: call.provider === "daily" ? undefined : call.meet_url,

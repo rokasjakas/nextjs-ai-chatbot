@@ -9,7 +9,7 @@
 //    its own window.
 //
 // POST {"action":"config"}            (chat users) -> { provider: "daily" | "meet" }
-// POST {"action":"create","conversation_id"}  Daily: creates the room and the
+// POST {"action":"create","conversation_id","media":"video"|"audio"}  Daily: creates the room and the
 //      call row -> { provider:"daily", call }; Meet: -> { url } (see below)
 // POST {"action":"join","call_id"}    -> Daily: { provider, url, token }
 //                                        Meet:  { provider, url }
@@ -41,7 +41,7 @@ const corsHeaders = {
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 const MEET_SCOPE = "https://www.googleapis.com/auth/meetings.space.created";
 const SCOPE = MEET_SCOPE + " openid email";
-export const VERSION = 3;
+export const VERSION = 4;
 const DAILY_HOURS = 4;   // a Daily room lives this long after the call starts
 
 function json(body: unknown, status = 200): Response {
@@ -220,18 +220,20 @@ async function inConversation(uid: string, conversationId: string): Promise<bool
   const m = await db<unknown[]>(`conversation_members?select=user_id&conversation_id=eq.${encodeURIComponent(conversationId)}&user_id=eq.${uid}`);
   return m.length > 0;
 }
-type Call = { id: string; conversation_id: string; created_by: string; meet_url: string; provider: string; room: string | null; created_at: string; ended_at: string | null };
-async function dailyCreate(who: Who, conversationId: string) {
+type Call = { id: string; conversation_id: string; created_by: string; meet_url: string; provider: string; room: string | null; media?: string; created_at: string; ended_at: string | null };
+const mediaOf = (v: unknown) => (v === "audio" ? "audio" : "video");
+async function dailyCreate(who: Who, conversationId: string, media = "video") {
   if (!await inConversation(who.id, conversationId)) return json({ error: "Tu nesi šio pokalbio narys." }, 403);
   const exp = Math.floor(Date.now() / 1000) + DAILY_HOURS * 3600;
   const room = await daily("rooms", {
     name: "es-" + crypto.randomUUID().replace(/-/g, "").slice(0, 16),
     privacy: "private",
-    properties: { exp, eject_at_room_exp: true, enable_prejoin_ui: false, enable_screenshare: true, enable_chat: false, enable_knocking: false },
+    // an audio call starts with every camera off (it can still be switched on)
+    properties: { exp, eject_at_room_exp: true, enable_prejoin_ui: false, enable_screenshare: true, enable_chat: false, enable_knocking: false, start_video_off: media === "audio" },
   });
   const [call] = await db<Call[]>("calls", {
     method: "POST", headers: { Prefer: "return=representation" },
-    body: JSON.stringify({ conversation_id: conversationId, created_by: who.id, provider: "daily", meet_url: room.url, room: room.name }),
+    body: JSON.stringify({ conversation_id: conversationId, created_by: who.id, provider: "daily", meet_url: room.url, room: room.name, media }),
   });
   await db("call_responses", { method: "POST", body: JSON.stringify({ call_id: call.id, user_id: who.id, status: "accepted" }) });
   return json({ provider: "daily", call });
@@ -247,7 +249,7 @@ async function join(who: Who, callId: string) {
     room_name: call.room, user_name: who.name.slice(0, 60), user_id: who.id, is_owner: call.created_by === who.id,
     exp: Math.floor(new Date(call.created_at).getTime() / 1000) + DAILY_HOURS * 3600,
   } });
-  return json({ provider: "daily", url: call.meet_url, token: t.token });
+  return json({ provider: "daily", url: call.meet_url, token: t.token, media: mediaOf(call.media) });
 }
 
 // ---------- handlers ----------
@@ -326,8 +328,10 @@ export async function handle(req: Request): Promise<Response> {
     if (body.action === "create") {
       if (!who.canChat) return json({ error: "Nėra prieigos prie chato." }, 403);
       if (dailyOn() && body.conversation_id) {
-        try { return await dailyCreate(who, String(body.conversation_id)); } catch (e) { return json({ error: (e as Error).message }); }
+        try { return await dailyCreate(who, String(body.conversation_id), mediaOf(body.media)); } catch (e) { return json({ error: (e as Error).message }); }
       }
+      // Google Meet is no longer offered for chat calls: only Daily (inside the app)
+      if (body.conversation_id) return json({ error: "Skambučiai dar neįjungti – administratorius turi serveryje nustatyti DAILY_API_KEY.", code: "not_configured" });
       if (!configured) return json({ error: "Google Meet neprijungtas.", code: "not_connected" });
       try {
         const token = await accessToken();
