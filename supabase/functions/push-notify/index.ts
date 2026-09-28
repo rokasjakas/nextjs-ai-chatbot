@@ -13,6 +13,9 @@
 //      member of the conversation gets a ringing notification with
 //      "Priimti" / "Atmesti" (muted chats ring too; quiet hours do not).
 // POST {"kind":"test"}                   -> the caller's own devices
+// POST {"kind":"event","event_id","users":[…]}  people just written into an
+//      event's crew: each one who really is in it now is told (Renginiai)
+// Topics can be switched off in Profilis → Pranešimai (tasks, events, gear …).
 // POST {"kind":"dial","phone","name"}    -> the caller's own devices: "call this
 //      person" — tapping it on the phone starts the call (Žmonės → Bookingas)
 // POST {"kind":"meeting","meeting_id","mode":"new"|"update"|"cancel"}
@@ -61,6 +64,9 @@ type Prefs = {
   mentions?: boolean;
   threads?: boolean;
   calls?: boolean;
+  tasks?: boolean;
+  events?: boolean;
+  gear?: boolean;
   muted?: string[];
   quiet?: { on?: boolean; from?: string; to?: string };
 };
@@ -115,10 +121,10 @@ export function inQuietHours(q: Prefs["quiet"], now = new Date()): boolean {
   const cur = hm === "24:00" ? "00:00" : hm;
   return q.from <= q.to ? cur >= q.from && cur < q.to : cur >= q.from || cur < q.to;
 }
-export function wants(p: Prefs | null, kind: "general" | "direct" | "group" | "reactions" | "meetings" | "threads", convId: string): boolean {
+export function wants(p: Prefs | null, kind: "general" | "direct" | "group" | "reactions" | "meetings" | "threads" | "tasks" | "events" | "gear" | "other", convId: string): boolean {
   const pr = p ?? {};
   if (pr.enabled === false) return false;
-  if (pr[kind] === false) return false;
+  if (kind !== "other" && pr[kind] === false) return false;
   if ((pr.muted ?? []).includes(convId)) return false;
   return !inQuietHours(pr.quiet);
 }
@@ -216,7 +222,7 @@ async function pushOne(s: Sub, payload: Payload, ttl: number) {
     method: "POST",
     headers: {
       Authorization: vapidHeader(s.endpoint), TTL: String(ttl), "Content-Encoding": "aes128gcm",
-      "Content-Type": "application/octet-stream", Urgency: ttl < 600 ? "high" : "normal", ...(topic ? { Topic: topic } : {}),
+      "Content-Type": "application/octet-stream", Urgency: payload.kind === "reaction" ? "normal" : "high", ...(topic ? { Topic: topic } : {}),
     },
     body: body as unknown as BodyInit,
   });
@@ -596,7 +602,7 @@ async function taskReminders() {
       const m = moments[moments.length - 1];                  // one notice even if several came due together
       const who = new Set(open);
       if (t.lead && (m.kind === "overdue" || (m.kind === "before" && m.n === 0))) who.add(t.lead);   // the one responsible hears it too
-      const ids = [...who];
+      const ids = await wantIds([...who], "tasks");
       const { title, body } = reminderText(t, m);
       const r = t.remind ?? {};
       let pushed = 0, mailErr = "";
@@ -613,6 +619,12 @@ async function taskReminders() {
     await db(`tasks?id=eq.${t.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ sent }) });
   }
   return { fn: PUSH_FN_VERSION, checked: tasks.length, sent: out };
+}
+// the people who want notifications about a topic (Profilis → Pranešimai)
+async function wantIds(ids: string[], kind: "tasks" | "events" | "gear" | "other"): Promise<string[]> {
+  if (!ids.length) return [];
+  const ps = await db<Profile[]>(`profiles?select=id,notify_prefs&id=in.${inList(ids)}`);
+  return ps.filter((p) => wants(p.notify_prefs, kind, kind)).map((p) => p.id);
 }
 async function onTask(uid: string, taskId: string, ev: string) {
   const [t] = await db<Task[]>(`tasks?select=*&id=eq.${encodeURIComponent(taskId)}`);
@@ -633,6 +645,7 @@ async function onTask(uid: string, taskId: string, ev: string) {
     title = (ev === "done" ? "✓ " : "↺ ") + t.title.slice(0, 100);
     body = ev === "done" ? `${me} atliko${left ? ` · liko ${left}` : " · visi atliko"}` : `${me} atšaukė „atlikta“`;
   }
+  ids = await wantIds(ids, "tasks");
   if (!ids.length) return { sent: 0 };
   return await sendTo(ids, { title, body, tag: "task-" + t.id, url: `./?task=${t.id}`, kind: "task" });
 }
@@ -653,11 +666,11 @@ async function onInvoice(uid: string, id: string, ev: string) {
   if (ev === "new") {
     if (v.created_by !== uid) return { error: "Tik įkėlęs asmuo" };
     const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
-    return await sendTo(plus.filter((u) => u !== uid), { title: "🧾 Nauja sąskaita: " + invTitle(v), body: "Įkėlė " + name(me), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+    return await sendTo(await wantIds(plus.filter((u) => u !== uid), "other"), { title: "🧾 Nauja sąskaita: " + invTitle(v), body: "Įkėlė " + name(me), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
   }
   if (!plus.includes(uid)) return { error: "Tik Admin+" };
   if (v.created_by === uid || !INV_STATUS[v.status]) return { sent: 0 };
-  return await sendTo([v.created_by], { title: INV_STATUS[v.status], body: invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+  return await sendTo(await wantIds([v.created_by], "other"), { title: INV_STATUS[v.status], body: invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
 }
 // a reply given in the e-mail (called by invoice-respond with the cron secret)
 async function onInvoiceReply(id: string) {
@@ -715,7 +728,7 @@ async function onGear(uid: string, id: string, ev: string) {
   if (ev === "wo_request") {
     if (g.wo_status !== "pending" || g.wo_requested_by !== uid) return { error: "Prašymo nėra" };
     const url = `./?gear=${g.id}`;
-    const plus = (await plusIds()).filter((u) => u !== uid);
+    const plus = await wantIds((await plusIds()).filter((u) => u !== uid), "gear");
     if (!plus.length) return { sent: 0 };
     const r = await sendTo(plus, { title: "Patvirtinti nurašymą: " + what0, body: (g.wo_requested_name || "") + (g.wo_note ? " · " + g.wo_note.slice(0, 120) : ""), tag: "gear-wo-" + g.id, url, kind: "gear" });
     const aps = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=in.${inList(plus)}`);
@@ -731,7 +744,7 @@ async function onGear(uid: string, id: string, ev: string) {
   }
   if (ev === "wo_approved" || ev === "wo_rejected") {
     if (g.wo_approver !== uid) return { error: "Tik patvirtinęs narys" };
-    const to = [...new Set([g.wo_requested_by, g.created_by, g.assignee].filter((x): x is string => !!x && x !== uid))];
+    const to = await wantIds([...new Set([g.wo_requested_by, g.created_by, g.assignee].filter((x): x is string => !!x && x !== uid))], "gear");
     return await sendTo(to, { title: (ev === "wo_approved" ? "Nurašymas patvirtintas: " : "Nurašymas atmestas: ") + what0, body: g.wo_decision_note ? g.wo_decision_note.slice(0, 140) : "", tag: "gear-wo-" + g.id, url: `./?gear=${g.id}`, kind: "gear" });
   }
   if (!people.has(uid)) return { error: "Tik įrašo dalyviai" };
@@ -743,7 +756,58 @@ async function onGear(uid: string, id: string, ev: string) {
     : g.kind === "lost" ? "Dingo: " + what
     : (g.state === "broken" ? "Sugadinta: " : "Pažeista: ") + what;
   const body = (g.kind === "lost" && g.place && ev === "new" ? "Galimai: " + g.place + " · " : "") + name(me);
-  return await sendTo([...people], { title, body, tag: "gear-" + g.id, url: `./?gear=${g.id}`, kind: "gear" });
+  return await sendTo(await wantIds([...people], "gear"), { title, body, tag: "gear-" + g.id, url: `./?gear=${g.id}`, kind: "gear" });
+}
+
+// Renginiai: a member written into an event's crew (or as its manager) is told.
+// The app sends the people it added; the server checks the caller may edit
+// events and that each of them really is in that event now (by name).
+const normName = (s: string) => String(s || "").toLowerCase()
+  .replace(/[ąčęėįšųūž]/g, (c) => ({ "ą": "a", "č": "c", "ę": "e", "ė": "e", "į": "i", "š": "s", "ų": "u", "ū": "u", "ž": "z" })[c]!)
+  .replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+type EvCrew = { title?: string; note?: string; entries?: { pos?: string; person?: string }[] };
+type EvData = { name?: string; title?: string; kind?: string; date?: string; dateEnd?: string; venue?: string; location?: string; manager?: string; crew?: EvCrew[] };
+async function canEditEvents(uid: string): Promise<boolean> {
+  const [me] = await db<{ role: string }[]>(`profiles?select=role&id=eq.${uid}`);
+  if (!me) return false;
+  if (me.role === "admin") return true;
+  const [rp] = await db<{ can_edit: boolean }[]>(`role_permissions?select=can_edit&role=eq.${encodeURIComponent(me.role)}&section=eq.events`);
+  return !!rp?.can_edit;
+}
+async function onEvent(uid: string, id: string, users: string[]) {
+  if (!(await canEditEvents(uid))) return { error: "Tik tas, kas redaguoja renginius" };
+  const [row] = await db<{ id: string; data: EvData }[]>(`events?select=id,data&id=eq.${encodeURIComponent(id)}`);
+  if (!row) return { error: "Renginys nerastas" };
+  const d = row.data || {};
+  // who is written in, and where
+  const where = new Map<string, string[]>();
+  (d.crew || []).forEach((g) => (g.entries || []).forEach((e) => {
+    const k = normName(e.person || ""); if (!k) return;
+    const w = [g.title, e.pos].filter(Boolean).join(" · ");
+    where.set(k, [...(where.get(k) || []), ...(w ? [w] : [])]);
+  }));
+  if (d.manager) where.set(normName(d.manager), [...(where.get(normName(d.manager)) || []), "Vadovas"]);
+  const want = [...new Set(users.map(String))].filter((u) => u && u !== uid).slice(0, 200);
+  if (!want.length) return { sent: 0 };
+  const ps = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=in.${inList(want)}&role=in.(${APPROVED.join(",")})`);
+  const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
+  const evName = d.kind === "work" ? (d.title || "Sandėlio darbai") : (d.name || "Renginys");
+  const day = (s?: string) => s ? s.slice(5, 10).replace("-", ".") : "";
+  const when = d.date ? day(d.date) + (d.dateEnd && d.dateEnd !== d.date ? "–" + day(d.dateEnd) : "") : "";
+  let sent = 0, skipped = 0;
+  for (const p of ps) {
+    const full = normName([p.first_name, p.last_name].filter(Boolean).join(" ") || p.full_name || "");
+    const hit = where.get(full) || (p.nickname ? where.get(normName(p.nickname)) : undefined);
+    if (!hit) { skipped++; continue; }                  // not in this event
+    if (!wants(p.notify_prefs, "events", "events")) { skipped++; continue; }
+    const r = await sendTo([p.id], {
+      title: "Įrašytas į renginį: " + evName,
+      body: [when, d.venue || d.location, [...new Set(hit)].join(", "), "įrašė " + name(me)].filter(Boolean).join(" · "),
+      tag: "ev-" + row.id, url: `./?event=${encodeURIComponent(row.id)}`, kind: "event",
+    });
+    sent += r.sent;
+  }
+  return { sent, skipped };
 }
 
 Deno.serve(async (req) => {
@@ -771,6 +835,7 @@ Deno.serve(async (req) => {
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : "decided"));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
+    if (body.kind === "event") return json(await onEvent(uid, String(body.event_id ?? ""), Array.isArray(body.users) ? body.users : []));
     if (body.kind === "gear") return json(await onGear(uid, String(body.gear_id ?? ""), ["new", "fixed", "found", "wo_request", "wo_approved", "wo_rejected"].includes(body.event) ? body.event : "new"));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
     if (body.kind === "call") return json(await onCall(uid, String(body.call_id ?? "")));
