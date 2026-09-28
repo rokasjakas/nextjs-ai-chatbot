@@ -15,6 +15,8 @@
 // POST {"kind":"test"}                   -> the caller's own devices
 // POST {"kind":"event","event_id","users":[…]}  people just written into an
 //      event's crew: each one who really is in it now is told (Renginiai)
+// POST {"mode":"new-user","user_id"}  header x-cron-secret (from user-access):
+//      someone registered – every admin gets a notification
 // POST {"kind":"leave","leave_id","event":"new"|"decided"|"cancelled"}  Prašymai:
 //      new / cancelled -> office + Admin+, decided -> the one who asked
 // Topics can be switched off in Profilis → Pranešimai (tasks, events, gear …).
@@ -762,6 +764,20 @@ async function onGear(uid: string, id: string, ev: string) {
   return await sendTo(await wantIds([...people], "gear"), { title, body, tag: "gear-" + g.id, url: `./?gear=${g.id}`, kind: "gear" });
 }
 
+// Naujas narys: someone registered and waits for access – every admin (Admin, Admin+, Super Admin)
+async function onNewUser(id: string) {
+  const [u] = await db<(Profile & { created_at: string })[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs,created_at&id=eq.${encodeURIComponent(id)}`);
+  if (!u || u.role !== "pending") return { sent: 0, skipped: "not pending" };
+  if (Date.now() - new Date(u.created_at).getTime() > 24 * 3600 * 1000) return { sent: 0, skipped: "old" };
+  const admins = (await db<{ id: string }[]>(`profiles?select=id&role=eq.admin`)).map((a) => a.id);
+  const to = await wantIds(admins, "other");
+  return await sendTo(to, {
+    title: "Naujas narys laukia patvirtinimo",
+    body: `${[u.first_name, u.last_name].filter(Boolean).join(" ") || u.full_name || u.email} (${u.email}) – suteik prieigą skiltyje Admin`,
+    tag: "newuser-" + u.id, url: "./?admin=pending", kind: "admin",
+  });
+}
+
 // Prašymai (laisvos dienos / atostogos): a new or cancelled one goes to the
 // office members and Admin+, the decision back to the one who asked
 type Leave = { id: string; user_id: string; user_name: string | null; kind: string; days: string[] | null; date_from: string; date_to: string; reason: string; status: string; decision_note: string | null; decided_by: string | null; decided_by_name: string | null };
@@ -858,7 +874,13 @@ Deno.serve(async (req) => {
       try { ir = await invoiceReminders(); } catch (e) { ir = { error: String(e) }; }   // before invoices.sql the table is missing
       return json({ ...tr, inv: ir });
     }
-    if (body?.mode === "invoice-reply") {
+    // a new member signed up (called by user-access with the cron secret): every admin is told
+    if (body?.mode === "new-user") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      return json(await onNewUser(String(body.user_id ?? "")));
+    }
+        if (body?.mode === "invoice-reply") {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       return json(await onInvoiceReply(String(body.invoice_id ?? "")));

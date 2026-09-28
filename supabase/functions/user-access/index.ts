@@ -14,6 +14,8 @@
 //   Called from the Admin panel after an administrator grants access: tells
 //   the user which access level they got.
 //
+// Also asks push-notify ({"mode":"new-user"}, header x-cron-secret) to notify
+// the administrators' devices; needs the CRON_SECRET secret.
 // Secrets: RESEND_API_KEY (required), ACCESS_FROM or REMINDER_FROM (sender),
 // SITE_URL (optional, the website link put in the e-mails).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
@@ -149,6 +151,17 @@ async function registered(email: string): Promise<void> {
        <p>Prieigą suteiksite svetainės skiltyje <b>Admin</b>.</p>`,
     ),
   );
+  // and a notification on the administrators' phones / computers (push-notify, same CRON_SECRET)
+  const secret = Deno.env.get("CRON_SECRET");
+  if (secret) {
+    try {
+      await fetch(`${env("SUPABASE_URL")}/functions/v1/push-notify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-cron-secret": secret, apikey: env("SUPABASE_SERVICE_ROLE_KEY"), Authorization: `Bearer ${env("SUPABASE_SERVICE_ROLE_KEY")}` },
+        body: JSON.stringify({ mode: "new-user", user_id: p.id }),
+      });
+    } catch (e) { console.error("push-notify new-user", e); }
+  }
 }
 
 async function callerIsAdmin(req: Request): Promise<boolean> {
