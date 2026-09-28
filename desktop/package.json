@@ -1,0 +1,51 @@
+{
+  "name": "eventsolutions-desktop",
+  "productName": "Event Solutions",
+  "version": "1.0.0",
+  "description": "Event Solutions programa Windows kompiuteriui",
+  "author": "Event Solutions",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "./build.sh"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3",
+    "resedit": "^2.0.3"
+  },
+  "build": {
+    "appId": "lt.eventsolutions.app",
+    "productName": "Event Solutions",
+    "copyright": "Event Solutions",
+    "files": [
+      "main.js",
+      "preload.js",
+      "icons/**",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "res"
+    },
+    "afterPack": "./after-pack.js",
+    "win": {
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "res/icon.ico",
+      "executableName": "EventSolutions",
+      "signAndEditExecutable": false
+    },
+    "electronLanguages": [
+      "lt",
+      "en-US"
+    ]
+  }
+}

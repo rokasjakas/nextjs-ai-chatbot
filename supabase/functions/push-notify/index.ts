@@ -258,7 +258,28 @@ async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except =
       }
     }
   }));
-  return { sent, gone, devices, ...(failed.length ? { failed } : {}) };
+  const desktop = payload.kind === "dial" ? 0 : await toDesktop(userIds, payload);
+  return { sent, gone, devices, ...(desktop ? { desktop } : {}), ...(failed.length ? { failed } : {}) };
+}
+
+// The Windows app (desktop/) has no Web Push: it listens to desktop_inbox
+// (desktop_inbox.sql). Only people who opened it in the last 45 days get rows.
+async function toDesktop(userIds: string[], payload: Payload): Promise<number> {
+  try {
+    const since = new Date(Date.now() - 45 * 86400000).toISOString();
+    const on = await db<{ user_id: string }[]>(`desktop_clients?select=user_id&user_id=in.${inList(userIds)}&last_seen=gte.${since}`);
+    if (!on.length) return 0;
+    const rows = on.map((c) => ({ user_id: c.user_id, title: payload.title, body: payload.body, tag: payload.tag, url: payload.url, kind: payload.kind ?? null }));
+    await db("desktop_inbox", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(rows) });
+    if (Math.random() < 0.05) {
+      await db(`desktop_inbox?created_at=lt.${new Date(Date.now() - 3 * 86400000).toISOString()}`, { method: "DELETE" });
+    }
+    return rows.length;
+  } catch (e) {
+    // the table is missing (SQL not run yet) or the database is busy: phones still get theirs
+    console.error("desktop inbox", (e as Error)?.message || String(e));
+    return 0;
+  }
 }
 
 async function chatUsers(): Promise<Profile[]> {
