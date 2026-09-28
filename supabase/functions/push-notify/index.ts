@@ -704,11 +704,36 @@ async function onFeedback(uid: string, id: string, ev: string) {
 }
 
 // „Įranga“: sugadinta / dingusi įranga (public.gear_issues, sql/gear.sql)
-type GearIssue = { id: string; kind: string; item_name: string; qty: number; state: string; place: string | null; assignee: string | null; members: string[] | null; created_by: string };
+type GearIssue = { id: string; kind: string; item_name: string; qty: number; state: string; place: string | null; assignee: string | null; members: string[] | null; created_by: string;
+  wo_status: string | null; wo_approver: string | null; wo_requested_by: string | null; wo_requested_name: string | null; wo_note: string | null; wo_decision_note: string | null };
 async function onGear(uid: string, id: string, ev: string) {
-  const [g] = await db<GearIssue[]>(`gear_issues?select=id,kind,item_name,qty,state,place,assignee,members,created_by&id=eq.${encodeURIComponent(id)}`);
+  const [g] = await db<GearIssue[]>(`gear_issues?select=id,kind,item_name,qty,state,place,assignee,members,created_by,wo_status,wo_approver,wo_requested_by,wo_requested_name,wo_note,wo_decision_note&id=eq.${encodeURIComponent(id)}`);
   if (!g) return { error: "Įrašas nerastas" };
   const people = new Set<string>([...(g.members ?? []), ...(g.assignee ? [g.assignee] : []), g.created_by]);
+  const what0 = `${g.item_name}${g.qty > 1 ? " × " + g.qty : ""}`;
+  // write-off approval: the request goes to every Admin+ (push + e-mail), the answer back to the requester
+  if (ev === "wo_request") {
+    if (g.wo_status !== "pending" || g.wo_requested_by !== uid) return { error: "Prašymo nėra" };
+    const url = `./?gear=${g.id}`;
+    const plus = (await plusIds()).filter((u) => u !== uid);
+    if (!plus.length) return { sent: 0 };
+    const r = await sendTo(plus, { title: "Patvirtinti nurašymą: " + what0, body: (g.wo_requested_name || "") + (g.wo_note ? " · " + g.wo_note.slice(0, 120) : ""), tag: "gear-wo-" + g.id, url, kind: "gear" });
+    const aps = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=in.${inList(plus)}`);
+    const link = (Deno.env.get("APP_URL") || "https://app.eventsolutions.lt").replace(/\/$/, "") + "/?gear=" + g.id;
+    const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
+      <p><b>Prašoma patvirtinti įrangos nurašymą</b></p>
+      <p>${esc(what0)}${g.kind === "lost" ? " (dingęs daiktas)" : g.state === "broken" ? " (sugadintas, negalima naudoti)" : " (pažeistas)"}</p>
+      <p>Prašo: ${esc(g.wo_requested_name || "")}${g.wo_note ? `<br>Priežastis: ${esc(g.wo_note)}` : ""}</p>
+      <p><a href="${esc(link)}" style="display:inline-block;padding:10px 16px;background:#F35E7D;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;">Atidaryti ir patvirtinti</a></p>
+      <p style="color:#777;font-size:12px;margin-top:18px;">EventSolutions App · prašymas išsiųstas visiems Admin+ nariams; kol vienas nepatvirtins, daiktas nenurašomas.</p></div>`;
+    const mailErr = await mailTo(aps.map((p) => p.email).filter(Boolean), "Patvirtinti nurašymą: " + what0.slice(0, 120), html);
+    return { ...r, ...(mailErr ? { mailErr } : {}) };
+  }
+  if (ev === "wo_approved" || ev === "wo_rejected") {
+    if (g.wo_approver !== uid) return { error: "Tik patvirtinęs narys" };
+    const to = [...new Set([g.wo_requested_by, g.created_by, g.assignee].filter((x): x is string => !!x && x !== uid))];
+    return await sendTo(to, { title: (ev === "wo_approved" ? "Nurašymas patvirtintas: " : "Nurašymas atmestas: ") + what0, body: g.wo_decision_note ? g.wo_decision_note.slice(0, 140) : "", tag: "gear-wo-" + g.id, url: `./?gear=${g.id}`, kind: "gear" });
+  }
   if (!people.has(uid)) return { error: "Tik įrašo dalyviai" };
   people.delete(uid);
   const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
@@ -746,7 +771,7 @@ Deno.serve(async (req) => {
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : "decided"));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
-    if (body.kind === "gear") return json(await onGear(uid, String(body.gear_id ?? ""), ["new", "fixed", "found"].includes(body.event) ? body.event : "new"));
+    if (body.kind === "gear") return json(await onGear(uid, String(body.gear_id ?? ""), ["new", "fixed", "found", "wo_request", "wo_approved", "wo_rejected"].includes(body.event) ? body.event : "new"));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
     if (body.kind === "call") return json(await onCall(uid, String(body.call_id ?? "")));
     if (body.kind === "reaction") return json(await onReaction(uid, String(body.message_id ?? ""), String(body.emoji ?? "").slice(0, 16)));
