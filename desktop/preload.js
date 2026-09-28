@@ -7,7 +7,7 @@ const ORIGIN = arg ? arg.slice('--es-origin='.length) : 'https://app.eventsoluti
 
 if (location.origin === ORIGIN) {
   contextBridge.exposeInMainWorld('esDesktop', {
-    version: 1,                                   // bump together with DESK_LATEST in index.html
+    version: 2,                                   // bump together with DESK_LATEST in index.html
     platform: process.platform,
     notify: (n) => ipcRenderer.send('es:notify', n),
     onOpen: (cb) => ipcRenderer.on('es:open', (_e, url) => { try { cb(String(url)); } catch {} }),

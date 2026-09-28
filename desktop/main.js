@@ -139,6 +139,8 @@ function buildTray() {
     { label: 'Atidaryti Event Solutions', click: showWin },
     { type: 'separator' },
     { label: 'Paleisti kartu su Windows', type: 'checkbox', checked: autoStartOn(), click: (m) => { setAutoStart(m.checked); tray.setContextMenu(menu()); } },
+    { label: 'Pranešimų garsas', type: 'checkbox', checked: soundOn(), click: (m) => { settings.sound = m.checked; writeSettings(); tray.setContextMenu(menu()); } },
+    { label: 'Išbandyti pranešimą', click: () => notify({ title: 'Event Solutions', body: soundOn() ? 'Pranešimai veikia – turėjai išgirsti garsą.' : 'Pranešimai veikia (garsas išjungtas).' }, '') },
     { label: 'Perkrauti', click: () => { showWin(); win.webContents.reloadIgnoringCache(); } },
     { type: 'separator' },
     { label: 'Išeiti', click: () => { quitting = true; app.quit(); } },
@@ -147,15 +149,29 @@ function buildTray() {
   tray.on('click', showWin);
 }
 
+const xml = (s) => String(s).replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]);
+function soundOn() { return settings.sound !== false; }
+// Windows toast with its own sound: messages, tasks … get the "message" sound,
+// a video call rings until answered. The icon must be a real file (not inside app.asar).
+function toastXml(title, body, call) {
+  const icon = ICON.replace(/app\.asar([\\/])/, 'app.asar.unpacked$1');
+  const audio = !soundOn() ? '<audio silent="true"/>'
+    : call ? '<audio src="ms-winsoundevent:Notification.Looping.Call" loop="true"/>'
+    : '<audio src="ms-winsoundevent:Notification.IM"/>';
+  return `<toast activationType="foreground" launch="es"${call ? ' scenario="incomingCall"' : ''}>`
+    + '<visual><binding template="ToastGeneric">'
+    + `<text>${xml(title)}</text>${body ? `<text>${xml(body)}</text>` : ''}`
+    + (fs.existsSync(icon) ? `<image placement="appLogoOverride" src="${xml(icon)}"/>` : '')
+    + '</binding></visual>'
+    + (call ? '<actions><action content="Atsiliepti" arguments="es" activationType="foreground"/><action content="Atmesti" arguments="dismiss" activationType="system"/></actions>' : '')
+    + `${audio}</toast>`;
+}
 function notify(n, url) {
   const call = n.kind === 'call';
-  const note = new Notification({
-    title: String(n.title || 'Event Solutions').slice(0, 120),
-    body: String(n.body || '').slice(0, 300),
-    icon: ICON,
-    timeoutType: call ? 'never' : 'default',
-    urgency: call ? 'critical' : 'normal',
-  });
+  const title = String(n.title || 'Event Solutions').slice(0, 120), body = String(n.body || '').slice(0, 300);
+  const opts = { title, body, icon: ICON, silent: !soundOn(), timeoutType: call ? 'never' : 'default', urgency: call ? 'critical' : 'normal' };
+  if (process.platform === 'win32') opts.toastXml = toastXml(title, body, call);
+  const note = new Notification(opts);
   notes.add(note);
   const drop = () => notes.delete(note);
   note.on('click', () => {
@@ -171,11 +187,10 @@ function notify(n, url) {
 ipcMain.on('es:notify', (e, n) => {
   if (!win || e.sender !== win.webContents || !sameOrigin(e.senderFrame ? e.senderFrame.url : '')) return;
   if (!n || typeof n !== 'object') return;
-  // the app is in front of the person: the page shows it itself
-  if (!n.force && win.isVisible() && !win.isMinimized() && win.isFocused()) return;
+  // shown always, also with the window open (the page skips a chat you are reading)
   const url = typeof n.url === 'string' ? n.url.slice(0, 500) : './';
   notify(n, url);
-  win.flashFrame(true);
+  if (!win.isFocused()) win.flashFrame(true);
 });
 
 if (!app.requestSingleInstanceLock()) {
