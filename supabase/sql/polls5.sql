@@ -8,6 +8,8 @@
 --  * rezultatų ekranas: tik nugalėtojas (arba visi atsakymai – show_all)
 -- Supabase → SQL Editor → New query → įklijuok VISĄ → Run.
 -- Saugu paleisti pakartotinai.
+-- (Funkcijose nenaudojama „select … into“ – Supabase SQL Editor ją klaidingai
+--  palaiko nauja lentele ir sugadina užklausą.)
 -- ============================================================
 
 create table if not exists public.poll_sets (
@@ -31,16 +33,15 @@ create index if not exists polls_set on public.polls (set_id);
 
 -- the questions and the permanent QR so far become the first voting
 do $$
-declare s record; v uuid;
+declare v uuid := gen_random_uuid();
 begin
   if not exists (select 1 from public.poll_sets) then
-    select * into s from public.poll_settings where id = 1;
-    insert into public.poll_sets (name, vote_token, results_token, brand, results_w, results_h)
-      values ('Balsavimas',
-              coalesce(s.vote_token, replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', '')),
-              coalesce(s.results_token, replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', '')),
-              coalesce(s.brand, '{}'::jsonb), coalesce(s.results_w, 1920), coalesce(s.results_h, 1080))
-      returning id into v;
+    insert into public.poll_sets (id, name, vote_token, results_token, brand, results_w, results_h)
+      select v, 'Balsavimas',
+             coalesce(max(st.vote_token), replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', '')),
+             coalesce(max(st.results_token), replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', '')),
+             coalesce((array_agg(st.brand))[1], '{}'::jsonb), coalesce(max(st.results_w), 1920), coalesce(max(st.results_h), 1080)
+        from public.poll_settings st where st.id = 1;
     update public.polls set set_id = v where set_id is null;
   end if;
   update public.polls set set_id = (select id from public.poll_sets order by created_at limit 1) where set_id is null;
@@ -70,7 +71,8 @@ begin
   update public.polls set ends_at = now(), starts_at = least(starts_at, now()), updated_at = now()
     where id <> p_id and ends_at > now() and set_id is not distinct from (select set_id from public.polls where id = p_id);
   update public.polls set round = round + 1, starts_at = t, ends_at = t + make_interval(secs => duration_sec), updated_at = now()
-    where id = p_id returning * into p;
+    where id = p_id;
+  p := (select x from public.polls x where x.id = p_id);
   if p.id is null then raise exception 'Balsavimas nerastas'; end if;
   return p;
 end $$;
@@ -80,10 +82,10 @@ create or replace function public.poll_public(p_token text) returns jsonb
   language plpgsql stable security definer set search_path = public as $$
 declare p public.polls; st text; s public.poll_sets;
 begin
-  select * into s from public.poll_sets where vote_token = p_token;
+  s := (select x from public.poll_sets x where x.vote_token = p_token);
   if s.id is not null then p := public.poll_set_current(s.id);
-  else select * into p from public.polls where vote_token = p_token;
-       if p.id is not null then select * into s from public.poll_sets where id = p.set_id; end if; end if;
+  else p := (select x from public.polls x where x.vote_token = p_token);
+       if p.id is not null then s := (select x from public.poll_sets x where x.id = p.set_id); end if; end if;
   if p.id is null then return jsonb_build_object('state', case when s.id is not null then 'idle' else 'invalid' end, 'now', now(), 'brand', coalesce(s.brand, '{}'::jsonb)); end if;
   st := public.poll_state(p);
   if s.id is not null and p_token = s.vote_token and st not in ('waiting', 'live') then st := 'idle'; end if;
@@ -99,12 +101,12 @@ create or replace function public.poll_vote_many(p_token text, p_options text[],
   language plpgsql security definer set search_path = public as $$
 declare p public.polls; s public.poll_sets; opts text[];
 begin
-  select * into s from public.poll_sets where vote_token = p_token;
-  if s.id is not null then select * into p from public.polls where id = p_poll and set_id = s.id;
-  else select * into p from public.polls where vote_token = p_token; end if;
+  s := (select x from public.poll_sets x where x.vote_token = p_token);
+  if s.id is not null then p := (select x from public.polls x where x.id = p_poll and x.set_id = s.id);
+  else p := (select x from public.polls x where x.vote_token = p_token); end if;
   if p.id is null or public.poll_state(p) <> 'live' then return 'ended'; end if;
   if coalesce(length(p_voter), 0) not between 8 and 100 then return 'bad'; end if;
-  select array_agg(distinct x) into opts from unnest(coalesce(p_options, '{}'::text[])) x;
+  opts := (select array_agg(distinct o) from unnest(coalesce(p_options, '{}'::text[])) o);
   if coalesce(array_length(opts, 1), 0) = 0 or (not p.multi and array_length(opts, 1) > 1) then return 'bad'; end if;
   if exists (select 1 from unnest(opts) x where not exists (select 1 from jsonb_array_elements(p.options) o where o->>'id' = x)) then return 'bad'; end if;
   perform pg_advisory_xact_lock(hashtext(p.id::text || ':' || p_voter));
@@ -131,14 +133,14 @@ create or replace function public.poll_results(p_token text) returns jsonb
   language plpgsql stable security definer set search_path = public as $$
 declare p public.polls; s public.poll_sets; perm boolean := false;
 begin
-  select * into s from public.poll_sets where results_token = p_token;
+  s := (select x from public.poll_sets x where x.results_token = p_token);
   if s.id is not null then
     perm := true;
     p := public.poll_set_current(s.id);
-    if p.id is null then select * into p from public.polls where set_id = s.id and ends_at <= now() order by ends_at desc limit 1; end if;
+    if p.id is null then p := (select x from public.polls x where x.set_id = s.id and x.ends_at <= now() order by x.ends_at desc limit 1); end if;
   else
-    select * into p from public.polls where results_token = p_token;
-    if p.id is not null then select * into s from public.poll_sets where id = p.set_id; end if;
+    p := (select x from public.polls x where x.results_token = p_token);
+    if p.id is not null then s := (select x from public.poll_sets x where x.id = p.set_id); end if;
   end if;
   if p.id is null then
     return case when perm then jsonb_build_object('state', 'idle', 'now', now(), 'brand', s.brand, 'w', s.results_w, 'h', s.results_h, 'show_all', s.show_all)
@@ -167,15 +169,17 @@ begin
               'live', (select count(*) from public.polls q where q.set_id = x.id and q.ends_at > now()))
             order by x.created_at desc) from public.poll_sets x), '[]'::jsonb);
   elsif p_action = 'set_create' then
-    insert into public.poll_sets (name) values (left(coalesce(nullif(trim(a->>'name'), ''), 'Balsavimas'), 200)) returning * into s;
-    return to_jsonb(s);
+    v_new := gen_random_uuid();
+    insert into public.poll_sets (id, name) values (v_new, left(coalesce(nullif(trim(a->>'name'), ''), 'Balsavimas'), 200));
+    return (select to_jsonb(x) from public.poll_sets x where x.id = v_new);
   elsif p_action = 'set_update' then
     update public.poll_sets set
         name = left(coalesce(nullif(trim(a->>'name'), ''), name), 200), brand = coalesce(a->'brand', brand),
         results_w = greatest(100, least(8000, coalesce((a->>'results_w')::int, results_w))),
         results_h = greatest(100, least(8000, coalesce((a->>'results_h')::int, results_h))),
         show_all = coalesce((a->>'show_all')::boolean, show_all), updated_at = now()
-      where id = (a->>'id')::uuid returning * into s;
+      where id = (a->>'id')::uuid;
+    s := (select x from public.poll_sets x where x.id = (a->>'id')::uuid);
     if s.id is null then raise exception 'Balsavimas nerastas'; end if;
     return to_jsonb(s);
   elsif p_action = 'set_delete' then
@@ -187,17 +191,18 @@ begin
   elsif p_action = 'create' then
     v_set := (a->>'set')::uuid;
     if not exists (select 1 from public.poll_sets where id = v_set) then raise exception 'Balsavimas nerastas'; end if;
-    insert into public.polls (set_id, topic, question, options, duration_sec, multi, sort, created_by)
-      values (v_set, left(coalesce(a->>'topic', ''), 200), left(coalesce(a->>'question', ''), 500), coalesce(a->'options', '[]'::jsonb),
+    v_new := gen_random_uuid();
+    insert into public.polls (id, set_id, topic, question, options, duration_sec, multi, sort, created_by)
+      values (v_new, v_set, left(coalesce(a->>'topic', ''), 200), left(coalesce(a->>'question', ''), 500), coalesce(a->'options', '[]'::jsonb),
               coalesce((a->>'duration_sec')::int, 60), coalesce((a->>'multi')::boolean, false),
-              coalesce((a->>'sort')::int, (select coalesce(max(sort), 0) + 1 from public.polls where set_id = v_set)), auth.uid())
-      returning * into p;
-    return to_jsonb(p);
+              coalesce((a->>'sort')::int, (select coalesce(max(sort), 0) + 1 from public.polls where set_id = v_set)), auth.uid());
+    return (select to_jsonb(x) from public.polls x where x.id = v_new);
   elsif p_action = 'upload' then
     if coalesce(a->>'mime', '') !~ '^(image/(png|jpeg|webp|gif)|font/(ttf|otf|woff2?|sfnt)|application/(font-woff2?|x-font-(ttf|otf)|vnd\.ms-opentype|octet-stream))$' then
       raise exception 'Netinkamas failo tipas'; end if;
     if length(coalesce(a->>'data', '')) > 12000000 then raise exception 'Failas per didelis'; end if;
-    insert into public.poll_assets (mime, data, bytes) values (a->>'mime', a->>'data', length(a->>'data') * 3 / 4) returning id into v_new;
+    v_new := gen_random_uuid();
+    insert into public.poll_assets (id, mime, data, bytes) values (v_new, a->>'mime', a->>'data', length(a->>'data') * 3 / 4);
     return jsonb_build_object('id', v_new);
   end if;
   v_id := (a->>'id')::uuid;
@@ -206,7 +211,8 @@ begin
         topic = left(coalesce(a->>'topic', topic), 200), question = left(coalesce(a->>'question', question), 500),
         options = coalesce(a->'options', options), duration_sec = coalesce((a->>'duration_sec')::int, duration_sec),
         multi = coalesce((a->>'multi')::boolean, multi), sort = coalesce((a->>'sort')::int, sort), updated_at = now()
-      where id = v_id returning * into p;
+      where id = v_id;
+    p := (select x from public.polls x where x.id = v_id);
   elsif p_action = 'delete' then
     delete from public.polls where id = v_id;
     return '{}'::jsonb;
