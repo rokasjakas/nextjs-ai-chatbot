@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-Ie8KCntrAsr8VIs4HnBjcYqjq9nq1RAcswCYkaslMbE=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-oRXkDj9t15c9JyE0HUT9RzT4yWY4Lt/4ohhrfftUCnY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -11867,12 +11867,13 @@ async function gmtJoin(media){
    ============================================================ */
 const POLL = { list:[], cur:null, res:null, tick:null, saveT:null, off:0, delay:0, err:'', btab:'vote' };
 const QR_JS = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
-const POLL_DELAYS = [[0,'Iš karto'],[10,'10 s'],[30,'30 s'],[60,'1 min'],[120,'2 min'],[300,'5 min']];
+const POLL_DELAYS = [[0,'Iš karto'],[10,'10 s'],[30,'30 s'],[60,'1 min'],[120,'2 min'],[300,'5 min'],[3600,'1 val.']];
+const POLL_DURS = [[30,'30 s'],[60,'1 min'],[120,'2 min'],[300,'5 min'],[600,'10 min'],[1800,'30 min'],[3600,'1 val.']];
 const pollUrl = (k, t)=>location.origin+location.pathname+'?'+k+'='+t;
 const pollState = p=>!p || !p.starts_at ? 'draft' : Date.now()+POLL.off < Date.parse(p.starts_at) ? 'waiting' : Date.now()+POLL.off < Date.parse(p.ends_at) ? 'live' : 'ended';
 const POLL_ST = { draft:'Juodraštis', waiting:'Netrukus prasidės', live:'Vyksta', ended:'Baigtas' };
 function pollClock(ms){ ms = Math.max(0, ms); const s = Math.ceil(ms/1000), h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return (h ? h+':'+String(m).padStart(2,'0') : m)+':'+String(x).padStart(2,'0'); }
-function pollDur(sec){ sec = +sec||0; const m = Math.floor(sec/60), s = sec%60; return (m ? m+' min' : '')+(s ? (m ? ' ' : '')+s+' s' : '') || '0 s'; }
+function pollDur(sec){ sec = +sec||0; const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = sec%60; return [h ? h+' val.' : '', m ? m+' min' : '', s ? s+' s' : ''].filter(Boolean).join(' ') || '0 s'; }
 // the brand's font (uploaded file) for the pages and the preview
 const POLL_FONTS = {};
 async function pollFont(b){
@@ -11929,7 +11930,8 @@ async function pollEditor(id){
         <div class="card"><h2 class="section-title" style="margin:0 0 10px;">Klausimas</h2>
           <label class="field">Klausimas<textarea id="pollQ" rows="2" maxlength="500" placeholder="pvz. Kuri daina skambės paskutinė?">${esc(p.question)}</textarea></label>
           <div class="field"><span>Atsakymų variantai</span><div id="pollOpts"></div><button class="btn small" id="pollAddOpt" style="align-self:flex-start;margin-top:6px;">+ Variantas</button></div>
-          <div class="field"><span>Kiek laiko aktyvus</span><div class="row" style="gap:8px;"><label class="poll-num"><input type="number" id="pollMin" min="0" max="1440" value="${Math.floor(p.duration_sec/60)}"> min</label><label class="poll-num"><input type="number" id="pollSec" min="0" max="59" value="${p.duration_sec%60}"> s</label></div></div>
+          <div class="field"><span>Kiek laiko aktyvus</span><div class="row" style="gap:8px;"><label class="poll-num"><input type="number" id="pollMin" min="0" max="1440" value="${Math.floor(p.duration_sec/60)}"> min</label><label class="poll-num"><input type="number" id="pollSec" min="0" max="59" value="${p.duration_sec%60}"> s</label></div>
+            <div class="chipbar" id="pollDurs" style="margin-top:6px;">${POLL_DURS.map(([v,t])=>`<button class="chip small-chip ${p.duration_sec===v?'active':''}" data-dur="${v}">${t}</button>`).join('')}</div></div>
         </div>
         <div class="card"><h2 class="section-title" style="margin:0 0 4px;">Apipavidalinimas</h2>
           <p class="section-sub" style="margin:0 0 10px;">Balsavimo puslapis ir rezultatų ekranas apipavidalinami atskirai.</p>
@@ -11970,8 +11972,9 @@ async function pollEditor(id){
   pollDrawOpts();
   document.getElementById('pollAddOpt').onclick = ()=>{ POLL.cur.options.push({ id:'o'+Math.random().toString(36).slice(2,8), text:'' }); pollDrawOpts(); pollSaveSoon(); const l = [...document.querySelectorAll('#pollOpts input')].pop(); if(l) l.focus(); };
   document.getElementById('pollQ').oninput = e=>{ POLL.cur.question = e.target.value; pollSaveSoon(); };
-  const dur = ()=>{ const m = Math.max(0, +document.getElementById('pollMin').value||0), s = Math.max(0, Math.min(59, +document.getElementById('pollSec').value||0)); POLL.cur.duration_sec = Math.max(5, Math.min(86400, m*60+s)); pollSaveSoon(); pollDrawCtl(); };
+  const dur = ()=>{ const m = Math.max(0, +document.getElementById('pollMin').value||0), s = Math.max(0, Math.min(59, +document.getElementById('pollSec').value||0)); POLL.cur.duration_sec = Math.max(5, Math.min(86400, m*60+s)); document.querySelectorAll('#pollDurs [data-dur]').forEach(c=>c.classList.toggle('active', +c.dataset.dur===POLL.cur.duration_sec)); pollSaveSoon(); pollDrawCtl(); };
   document.getElementById('pollMin').oninput = dur; document.getElementById('pollSec').oninput = dur;
+  document.querySelectorAll('#pollDurs [data-dur]').forEach(c=>c.onclick = ()=>{ if(['waiting','live'].includes(pollState(POLL.cur))) return; const v = +c.dataset.dur; document.getElementById('pollMin').value = Math.floor(v/60); document.getElementById('pollSec').value = v%60; dur(); });
   const wh = ()=>{ POLL.cur.results_w = Math.max(100, Math.min(8000, +document.getElementById('pollW').value||1920)); POLL.cur.results_h = Math.max(100, Math.min(8000, +document.getElementById('pollH').value||1080)); pollSaveSoon(); };
   document.getElementById('pollW').onchange = wh; document.getElementById('pollH').onchange = wh;
   document.querySelectorAll('[data-wh]').forEach(c=>c.onclick = ()=>{ const [w, h] = c.dataset.wh.split('x'); document.getElementById('pollW').value = w; document.getElementById('pollH').value = h; wh(); });
@@ -14084,7 +14087,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v152';
+const APP_VER = 'v153';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
