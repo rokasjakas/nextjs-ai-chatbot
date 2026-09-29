@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-/BPz3roIU9WkzKKGKe3GhvL+E6HviO4E2bye6BZ1zB8=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-7N842S8aGDzkJVZ7B7OYvs38qC0CvZIJu/RRxD6ELjg=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -500,6 +500,17 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .auth-switch{width:100%;text-transform:uppercase;font-weight:700;letter-spacing:.6px;border:1px solid var(--accent) !important;color:var(--accent) !important;background:transparent !important;}
 .auth-switch:hover{background:color-mix(in srgb, var(--accent) 12%, transparent) !important;}
 .guest-shell{width:100%;max-width:900px;}
+
+/* ---------- Sandėlis: gamintojai, priedai ---------- */
+.inv-bhead td{background:var(--panel-2);border-left:3px solid;font-size:12px;padding:5px 10px !important;letter-spacing:.2px;}
+.inv-brandbar{align-items:center;} .inv-chiplbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;font-weight:800;color:var(--text-dim);margin-right:2px;}
+.inv-brand-guess{color:var(--text-dim);font-style:italic;}
+.inv-acct{font-size:11px;color:var(--accent);margin-top:2px;}
+.np-accask{max-width:520px;width:calc(100% - 32px);} .np-accask .ui-ask-msg{display:flex;flex-direction:column;gap:4px;} .np-accask .ui-ask-msg small{color:var(--text-dim);font-size:12.5px;}
+.np-acc-list{display:flex;flex-direction:column;gap:6px;margin:12px 0 4px;max-height:50vh;overflow:auto;}
+.np-acc-r{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);background:var(--panel-2);cursor:pointer;}
+.np-acc-r span{flex:1;min-width:0;display:flex;flex-direction:column;} .np-acc-r small{color:var(--text-dim);font-size:11.5px;}
+.np-acc-r input[type=text]{width:56px;text-align:center;} .np-acc-r em{font-style:normal;font-size:12px;color:var(--text-dim);min-width:46px;}
 
 /* ---------- meetings with guests: the guest's page (?svecias=) and the calendar ---------- */
 #guestView.gmt-view{align-items:flex-start;}
@@ -3960,7 +3971,21 @@ const META = JSON.parse(document.getElementById('meta-data').textContent);
 const GROUP_LABEL = META.GROUP_LABEL, GROUP_COLOR = META.GROUP_COLOR, GROUP_ABBR = META.GROUP_ABBR;
 // Subnuoma: things hired from other companies for a project (shown only in Projektai, Rūšiavimas, Krovimas)
 GROUP_LABEL.subnuoma = 'Subnuoma'; GROUP_COLOR.subnuoma = '#A98BE8'; GROUP_ABBR.subnuoma = 'SUB';
-const GROUP_ORDER = ['apsvietimas','garsas','video','santvaros','riggingas','pakylos','elektrifikacija','kabeliai','papildomai','converted_containers'];
+// Sandėlio kategorijos (trumpinys – sąraše ir krovime). Senos grupės sujungtos į naujas:
+// riggingas → santvaros, elektrifikacija → kabeliai (defenderiai – atskirai), papildomai → kita
+Object.assign(GROUP_LABEL, { apsvietimas:'Apšvietimas', garsas:'Garsas', video:'Video', santvaros:'Santvaros', kabeliai:'Kabeliai', defenderiai:'Defenderiai', pakylos:'Pakylos', kita:'Kita' });
+Object.assign(GROUP_ABBR, { apsvietimas:'Light', garsas:'Sound', video:'Video', santvaros:'Truss', kabeliai:'Cable', defenderiai:'Def.', pakylos:'Pakyl.', kita:'Kita' });
+Object.assign(GROUP_COLOR, { defenderiai:'#E8B730', kita:'#55606B' });
+const GROUP_ORDER = ['apsvietimas','garsas','video','santvaros','kabeliai','defenderiai','pakylos','kita'];
+const GROUP_LEGACY = { riggingas:'santvaros', elektrifikacija:'kabeliai', papildomai:'kita', converted_containers:'kita' };
+// older saved rows (projects, sessions) may still carry an old key: shown as its new category
+Object.keys(GROUP_LEGACY).forEach(k=>{ GROUP_LABEL[k] = GROUP_LABEL[GROUP_LEGACY[k]]; GROUP_ABBR[k] = GROUP_ABBR[GROUP_LEGACY[k]]; GROUP_COLOR[k] = GROUP_COLOR[GROUP_LEGACY[k]]; });
+function groupKey(g, name){
+  if(/^defender/i.test(String(name||'').trim())) return 'defenderiai';
+  g = GROUP_LEGACY[g] || g;
+  return GROUP_ORDER.includes(g) || g==='subnuoma' ? g : 'kita';
+}
+RAW_ITEMS.forEach(it=>{ it.group = groupKey(it.group, it.name); });
 
 const LS_KEY = 'es_load_planner_v1';
 
@@ -3992,11 +4017,12 @@ function migrateStaleGroups(){
   Object.keys(STATE.itemOverrides).forEach(id=>{
     const ov = STATE.itemOverrides[id];
     if(ov && ov.group && !GROUP_LABEL[ov.group]){ delete ov.group; changed = true; }
+    if(ov && ov.group && GROUP_LEGACY[ov.group]){ ov.group = GROUP_LEGACY[ov.group]; changed = true; }
   });
   STATE.customItems.forEach(it=>{
-    if(it.group && !GROUP_LABEL[it.group]) it.group = 'papildomai';
+    const g = groupKey(it.group || 'kita', it.name); if(g!==it.group){ it.group = g; changed = true; }
   });
-  if(!STATE.settings.groupOrder || !STATE.settings.groupOrder.every(g=>GROUP_LABEL[g])){
+  if(!STATE.settings.groupOrder || STATE.settings.groupOrder.join()!==GROUP_ORDER.join()){
     STATE.settings.groupOrder = GROUP_ORDER.slice();
     changed = true;
   }
@@ -4061,9 +4087,11 @@ function esc(s){ return String(s===undefined||s===null?'':s).replace(/[&<>"']/g,
 function allItems(withSubrent){
   const merged = RAW_ITEMS.map(it=>{
     const ov = STATE.itemOverrides[it.id] || {};
-    return Object.assign({}, it, ov, {isCustom:false});
+    const m = Object.assign({}, it, ov, {isCustom:false});
+    if(ov.group) m.group = groupKey(ov.group);
+    return m;
   });
-  const custom = STATE.customItems.map(it=>Object.assign({}, it, {isCustom:true}));
+  const custom = STATE.customItems.map(it=>Object.assign({}, it, {isCustom:true, group:groupKey(it.group, it.name)}));
   // subnuoma is not part of the warehouse: only projects, Rūšiavimas and Krovimas ask for it
   const sub = withSubrent ? (STATE.subrentItems||[]).map(it=>Object.assign({}, it, {isCustom:true, subrent:true, group:'subnuoma'})) : [];
   return merged.concat(custom, sub);
@@ -4684,7 +4712,7 @@ async function parseExcelForProject(file){
 /* ============================================================
    TAB: Sandėlis (inventory) — browse by group → subgroup, editable rows
    ============================================================ */
-let invFilter = { q:'', group:'', folder:'', missing:false };
+let invFilter = { q:'', group:'', folder:'', brand:null, missing:false };
 
 function renderInventoryTab(){
   stkEnsure(()=>{ if(currentTab==='inventory') renderInvRows(); });
@@ -4713,6 +4741,8 @@ function renderInventoryTab(){
         <label class="checkbox-row"><input type="checkbox" id="invMissingOnly" ${invFilter.missing?'checked':''}> tik be matmenų</label>
       </div>
       <div class="chipbar" id="invGroupChips" style="margin-bottom:8px;"></div>
+      <div class="chipbar inv-brandbar" id="invBrandChips" style="margin-bottom:8px;"></div>
+      <datalist id="invBrandList"></datalist>
       <div class="chipbar" id="invFolderChips" style="margin-bottom:12px;"></div>
       <div class="card" style="background:var(--panel-2);margin:0 0 12px;padding:12px;">
         <div class="row between" style="margin-bottom:8px;">
@@ -4747,7 +4777,7 @@ function renderInventoryTab(){
       <div class="table-wrap scrollx">
         <table>
           <thead><tr>
-            <th>Grupė</th><th>Pavadinimas</th><th>Kodas</th>
+            <th>Kategorija</th><th title="Gamintojas – įrašyk arba pasirink; naujas atsiranda sąraše">Gamintojas</th><th>Pavadinimas</th><th>Kodas</th>
             <th>I (cm)</th><th>P (cm)</th><th>A (cm)</th><th>Svoris (kg)</th><th>Sandėlyje</th>${ipCan() ? '<th class="ip-th" title="Matoma tik administratoriams ir projektų vadovams">Kaina (€) 🔒</th>' : ''}
             <th title="Neapversti / laikyti stačią">Fiksuota pusė</th>
             <th title="Ar galima kraut ant viršaus">Kraunama ant</th>
@@ -4800,10 +4830,36 @@ function ipTile(){
     : `<div class="stat-num">${offerMoney(sum)}</div><div class="stat-label">sandėlio vertė (kaina × kiekis) · kaina įvesta ${n} iš ${items.length} 🔒 mato tik admin ir PM</div>`;
 }
 
+/* ---------- gamintojas (daikto grupė pagal gamintoją: Chauvet, Shure, L-Acoustics…) ----------
+   Įrašomas prie daikto (brand); kol neįrašytas – atpažįstamas iš pavadinimo pradžios
+   pagal žinomų ir jau įrašytų gamintojų sąrašą. Tuščias įrašas ('') – be gamintojo. */
+const BRANDS_KNOWN = ['Chauvet','Briteq','Light Sky','Saggitter','Showtec','Cameo','Stairville','Eurolite','ADJ','Robe','Martin','Clay Paky','Elation','Ayrton','GLP','Astera','Prolights','Antari','Look Solutions','Chamsys','MA Lighting','Avolites',
+  'Shure','Sennheiser','L-Acoustics','DPA','AKG','Audix','Audio-Technica','Rode','Neumann','Behringer','Midas','Yamaha','Allen & Heath','DiGiCo','Focusrite','Pioneer','Denon','Rane','Electro-Voice','d&b audiotechnik','JBL','RCF','Klark Teknik','Radial','Palmer','K&M','Cordial','Gravity','Neutrik',
+  'Blackmagic','Infiled','YesTech','Absen','Novastar','Magnimage','Barco','Epson','Panasonic','Sony','Samsung','LG','Philips','AOC','Dell','Lenovo','Apple','MSI','CoolerMaster','Cisco','Ubiquiti',
+  'Global Truss','Prolyte','Prolyft','Certex','Adam Hall','Penelcom','Eurotruss','Trucon'];
+const BRAND_ALIAS = { 'l acoustics':'L-Acoustics', 'lacoustics':'L-Acoustics', 'gt':'Global Truss', 'ev':'Electro-Voice', 'chamys':'Chamsys', 'briteq':'Briteq', 'trucon':'Trucon', 'kara':'L-Acoustics', 'ks28':'L-Acoustics', 'l2':'L-Acoustics' };
+function invBrandList(){
+  const seen = new Map(), add = b=>{ b = String(b||'').trim(); if(b && !seen.has(normalizeText(b))) seen.set(normalizeText(b), b); };
+  Object.values(STATE.itemOverrides||{}).forEach(o=>o && add(o.brand)); (STATE.customItems||[]).forEach(o=>add(o.brand)); BRANDS_KNOWN.forEach(add);
+  return [...seen.values()];
+}
+let BRAND_CACHE = null;
+function invBrandGuess(name){
+  const n = ' '+normalizeText(String(name||'').replace(/[’']/g, ' ')).replace(/[^a-z0-9&]+/g, ' ').trim()+' ';
+  if(!BRAND_CACHE) BRAND_CACHE = invBrandList().map(b=>[' '+normalizeText(b.replace(/[’']/g, ' ')).replace(/[^a-z0-9&]+/g, ' ').trim()+' ', b]).sort((a,b)=>b[0].length-a[0].length);
+  const first = n.trim().split(' ')[0];
+  if(BRAND_ALIAS[first]) return BRAND_ALIAS[first];
+  const two = n.trim().split(' ').slice(0,2).join(' '); if(BRAND_ALIAS[two]) return BRAND_ALIAS[two];
+  const hit = BRAND_CACHE.find(([k])=>n.startsWith(k)) || BRAND_CACHE.find(([k])=>k.length > 4 && n.includes(k));
+  return hit ? hit[1] : '';
+}
+function invBrand(it){ return !it ? '' : it.brand!=null ? String(it.brand) : invBrandGuess(it.name); }
+function invAccText(it){ const a = invAcc(it); return a.length ? a.map(x=>{ const y = getItem(x.id); return fmt(x.qty,2)+'× '+(y ? y.name : '?'); }).join(', ') : ''; }
+
 function itemPassesBase(it){
   if(invFilter.missing && it.L && it.W && it.H) return false;
   if(invFilter.q){
-    const hay = normalizeText(it.name+' '+it.code);
+    const hay = normalizeText(it.name+' '+it.code+' '+invBrand(it));
     if(!hay.includes(normalizeText(invFilter.q))) return false;
   }
   return true;
@@ -4814,8 +4870,9 @@ function filteredInvItems(){
     if(!itemPassesBase(it)) return false;
     if(invFilter.group && it.group!==invFilter.group) return false;
     if(invFilter.folder && (it.folder||'—')!==invFilter.folder) return false;
+    if(invFilter.brand!=null && invBrand(it)!==invFilter.brand) return false;
     return true;
-  }).sort((a,b)=> GROUP_ORDER.indexOf(a.group)-GROUP_ORDER.indexOf(b.group) || (a.folder||'').localeCompare(b.folder||'','lt') || a.name.localeCompare(b.name,'lt'));
+  }).sort((a,b)=> GROUP_ORDER.indexOf(a.group)-GROUP_ORDER.indexOf(b.group) || (invBrand(a)||'\uffff').localeCompare(invBrand(b)||'\uffff','lt') || a.name.localeCompare(b.name,'lt'));
 }
 
 function updateBulkCount(){
@@ -4824,7 +4881,9 @@ function updateBulkCount(){
 }
 
 function refreshInv(){
+  BRAND_CACHE = null;
   renderInvGroupChips();
+  renderInvBrandChips();
   renderInvFolderChips();
   renderInvRows();
   updateBulkCount();
@@ -4841,11 +4900,26 @@ function renderInvGroupChips(){
     groupsPresent.map(g=>`<button class="chip ${invFilter.group===g?'active':''}" data-g="${g}">${GROUP_LABEL[g]} <span class="count-badge" style="margin-left:4px;">${counts[g]}</span></button>`).join('');
   el.querySelectorAll('.chip').forEach(c=>c.addEventListener('click', ()=>{
     invFilter.group = c.getAttribute('data-g');
-    invFilter.folder = '';
+    invFilter.folder = ''; invFilter.brand = null;
     refreshInv();
   }));
 }
 
+// gamintojai dabar matomoje kategorijoje
+function renderInvBrandChips(){
+  const el = document.getElementById('invBrandChips'); if(!el) return;
+  const base = allItems().filter(itemPassesBase).filter(it=>!invFilter.group || it.group===invFilter.group);
+  const counts = {}; base.forEach(it=>{ const b = invBrand(it); counts[b] = (counts[b]||0)+1; });
+  const brands = Object.keys(counts).filter(Boolean).sort((a,b)=>a.localeCompare(b,'lt'));
+  if(!brands.length){ el.innerHTML = ''; return; }
+  el.innerHTML = `<span class="inv-chiplbl">Gamintojas</span><button class="chip small-chip ${invFilter.brand==null?'active':''}" data-b="*">Visi</button>` +
+    brands.map(b=>`<button class="chip small-chip ${invFilter.brand===b?'active':''}" data-b="${esc(b)}">${esc(b)} <span class="count-badge" style="margin-left:4px;">${counts[b]}</span></button>`).join('') +
+    (counts[''] ? `<button class="chip small-chip ${invFilter.brand===''?'active':''}" data-b="">Be gamintojo <span class="count-badge" style="margin-left:4px;">${counts['']}</span></button>` : '');
+  el.querySelectorAll('[data-b]').forEach(c=>c.addEventListener('click', ()=>{
+    invFilter.brand = c.dataset.b==='*' ? null : c.dataset.b;
+    renderInvBrandChips(); renderInvRows(); updateBulkCount();
+  }));
+}
 function renderInvFolderChips(){
   const el = document.getElementById('invFolderChips');
   if(!invFilter.group){ el.innerHTML=''; return; }
@@ -4865,17 +4939,25 @@ function renderInvFolderChips(){
 function renderInvRows(){
   const rows = filteredInvItems();
   const tbody = document.getElementById('invTbody');
-  if(!rows.length){ tbody.innerHTML = `<tr><td colspan="${ipCan()?15:14}" class="empty-state">Nieko nerasta pagal filtrą.</td></tr>`; return; }
+  if(!rows.length){ tbody.innerHTML = `<tr><td colspan="${ipCan()?16:15}" class="empty-state">Nieko nerasta pagal filtrą.</td></tr>`; return; }
+  const dl = document.getElementById('invBrandList'); if(dl) dl.innerHTML = invBrandList().sort((a,b)=>a.localeCompare(b,'lt')).map(b=>`<option value="${esc(b)}">`).join('');
+  let lastHead = '';
   tbody.innerHTML = rows.map(it=>{
     const col = GROUP_COLOR[it.group]||'#666';
+    const br = invBrand(it), accT = invAccText(it), hk = it.group+'|'+br;
+    const head = hk!==lastHead ? `<tr class="inv-bhead"><td colspan="${ipCan()?16:15}" style="border-left-color:${col}"><b>${esc(GROUP_LABEL[it.group]||'')}</b>${br ? ' · '+esc(br) : ' · <span class="muted">be gamintojo</span>'}</td></tr>` : '';
+    lastHead = hk;
+    return head + (()=>{
     const missing = (!it.L||!it.W||!it.H);
     return `<tr data-id="${it.id}">
-      <td><select data-f="group" style="width:74px;font-weight:700;font-size:11px;background:${col}1c;color:${col};border-color:${col}55;">
+      <td><select data-f="group" title="${esc(GROUP_LABEL[it.group]||'')}" style="width:82px;font-weight:700;font-size:11px;background:${col}1c;color:${col};border-color:${col}55;">
         ${GROUP_ORDER.map(g=>`<option value="${g}" ${g===it.group?'selected':''}>${GROUP_ABBR[g]}</option>`).join('')}
       </select></td>
+      <td><input type="text" data-f="brand" list="invBrandList" value="${esc(br)}" placeholder="—" style="width:120px;" title="${it.brand==null && br ? 'Atpažinta iš pavadinimo – gali pakeisti' : 'Gamintojas'}" class="${it.brand==null && br ? 'inv-brand-guess' : ''}"></td>
       <td style="min-width:180px;">
         <div>${esc(it.name)}${it.isCustom?' <span class="pill" style="background:#8A6FD822;color:#8A6FD8;">custom</span>':''}${it.rented?` <span class="pill" style="background:#8A6FD822;color:var(--violet);">🔄 ${esc(it.supplier||'nuomota')}</span>`:''}</div>
         <div style="font-size:10.5px;color:var(--text-faint);">${esc(it.folder||'')}</div>
+        ${accT ? `<div class="inv-acct" title="Priedai">+ Priedai: ${esc(accT)}</div>` : ''}
       </td>
       <td style="color:var(--text-dim)">${esc(it.code||'—')}</td>
       <td><input type="number" step="0.5" min="0" value="${it.L||''}" data-f="L" style="width:64px;${missing?'border-color:var(--amber)':''}"></td>
@@ -4896,7 +4978,7 @@ function renderInvRows(){
       <td><input type="checkbox" data-f="small" ${it.small?'checked':''} title="Mažas daiktas — krovime sudedamas į dėžę"></td>
       <td><button class="btn small inv-accbtn ${invAcc(it).length?'has':''}" data-acc="${esc(String(it.id))}" data-ro-ok title="${esc(invAcc(it).map(a=>{ const x = getItem(a.id); return (x?x.name:'?')+' × '+a.qty; }).join('\n') || 'Pridėti priedų')}">${invAcc(it).length ? '🔗 '+invAcc(it).length : '+ priedai'}</button></td>
       <td>${it.isCustom?`<button class="icon-btn del-custom" title="Ištrinti">✕</button>`:''}</td>
-    </tr>`;
+    </tr>`; })();
   }).join('');
 
   tbody.querySelectorAll('[data-price]').forEach(el=>el.addEventListener('change', ()=>ipSet(el.dataset.price, el.value, el)));
@@ -4914,13 +4996,17 @@ function renderInvRows(){
               : {stackable:false, stackExceptionTruss:false};
       } else if(f==='group'){
         patch.group = e.target.value;
+      } else if(f==='brand'){
+        // the way it is written first stays (Chauvet, not chauvet)
+        const v = e.target.value.trim().replace(/\s+/g, ' ').slice(0, 40), known = invBrandList().find(b=>normalizeText(b)===normalizeText(v));
+        patch.brand = known || v;
       } else if(e.target.type==='checkbox'){
         patch[f] = e.target.checked;
       } else {
         patch[f] = e.target.value===''? 0 : parseFloat(e.target.value);
       }
       updateItem(id, patch);
-      if(f==='group') refreshInv(); // counts/chips changed
+      if(f==='group' || f==='brand') refreshInv(); // counts/chips changed
     });
   });
   tbody.querySelectorAll('.del-custom').forEach(btn=>{
@@ -4970,7 +5056,8 @@ function openAddItemModal(){
     <h3>Naujas daiktas</h3>
     <div class="grid cols-2">
       <label class="field">Pavadinimas<input type="text" id="ni_name"></label>
-      <label class="field">Grupė<select id="ni_group">${GROUP_ORDER.map(g=>`<option value="${g}">${GROUP_LABEL[g]}</option>`).join('')}</select></label>
+      <label class="field">Kategorija<select id="ni_group">${GROUP_ORDER.map(g=>`<option value="${g}" ${invFilter.group===g?'selected':''}>${GROUP_LABEL[g]} (${GROUP_ABBR[g]})</option>`).join('')}</select></label>
+      <label class="field">Gamintojas<input type="text" id="ni_brand" list="invBrandList" placeholder="pvz. Chauvet (galima įrašyti naują)"></label>
       <label class="field">Ilgis (cm)<input type="number" id="ni_L" value="30"></label>
       <label class="field">Plotis (cm)<input type="number" id="ni_W" value="30"></label>
       <label class="field">Aukštis (cm)<input type="number" id="ni_H" value="30"></label>
@@ -4993,6 +5080,7 @@ function openAddItemModal(){
     const rented = document.getElementById('ni_rented').checked;
     STATE.customItems.push({
       id: uid('custom'), name, code:'', folder: rented?'Nuomota':'Custom', group: document.getElementById('ni_group').value,
+      ...(document.getElementById('ni_brand').value.trim() ? { brand:(v=>invBrandList().find(b=>normalizeText(b)===normalizeText(v)) || v)(document.getElementById('ni_brand').value.trim().slice(0,40)) } : {}),
       L:parseFloat(document.getElementById('ni_L').value)||0, W:parseFloat(document.getElementById('ni_W').value)||0,
       H:parseFloat(document.getElementById('ni_H').value)||0, weight:parseFloat(document.getElementById('ni_weight').value)||0,
       qty:9999, power:0, isTruss:false, orientationLocked:false, stackable:true, stackExceptionTruss:false, fragile:false,
@@ -5044,7 +5132,7 @@ function renderRulesRows(){
       <td>${it? esc(it.name) : '<span style="color:var(--danger)">daiktas ištrintas</span>'}</td>
       <td>${r.unitsPerCase}</td>
       <td>${esc(r.caseName)}</td>
-      <td><span class="badge" style="background:${GROUP_COLOR[it?it.group:'papildomai']}">${esc(r.abbr)}</span></td>
+      <td><span class="badge" style="background:${GROUP_COLOR[it?it.group:'kita']}">${esc(r.abbr)}</span></td>
       <td>${fmt(r.L,0)}×${fmt(r.W,0)}×${fmt(r.H,0)}</td>
       <td>${fmt(r.weight,1)}</td>
       <td>${fmt(totalW,1)} kg</td>
@@ -6026,7 +6114,7 @@ function openPdfReviewModal(targetList, onImported){
       if(!val || qty<=0) return;
       if(val==='__NEW_RENTED__'){
         const newItem = {
-          id: uid('rented'), name: rowData.guessName, code:'', folder:'Nuomota', group:'papildomai',
+          id: uid('rented'), name: rowData.guessName, code:'', folder:'Nuomota', group:'kita',
           L:0,W:0,H:0, weight:0, qty:9999, power:0, isTruss:false, orientationLocked:false,
           stackable:true, stackExceptionTruss:false, fragile:false, rented:true, supplier: rowData.supplier||''
         };
@@ -6133,7 +6221,7 @@ function refreshSmallBox(box, list){
   box.weight = Math.round((smallBoxTare(box) + items.reduce((s,r)=>s+(r.weight||0)*r.qty,0))*10)/10;
   const byGroup = {};
   items.forEach(r=>{ byGroup[r.groupKey] = (byGroup[r.groupKey]||0) + r.qty; });
-  const top = Object.keys(byGroup).sort((a,b)=>byGroup[b]-byGroup[a])[0] || 'papildomai';
+  const top = Object.keys(byGroup).sort((a,b)=>byGroup[b]-byGroup[a])[0] || 'kita';
   box.groupKey = top; box.color = GROUP_COLOR[top];
   box.stackable = !items.some(r=>{ const it = getItem(r.refId); return it && it.fragile; });
 }
@@ -9997,10 +10085,10 @@ function npTree(idx){
   const d = NP.cur.data, g = npActiveGroup(), sp = g ? npGroupSpan(d, g) : null, ed = npGearEd(), pr = npNewPrio(d, g);
   const words = normalizeText(NP.whQ).split(/\s+/).filter(Boolean);
   const match = t=>!words.length || words.every(w=>normalizeText(t).includes(w));
-  const items = allItems(true).filter(it=>match([it.name, it.code, it.folder, GROUP_LABEL[it.group], it.subrent ? npSubrentWords(it) : ''].join(' ')));
+  const items = allItems(true).filter(it=>match([it.name, it.code, it.folder, GROUP_LABEL[it.group], it.subrent ? npSubrentWords(it) : invBrand(it)].join(' ')));
   const bundles = invBundles().filter(b=>match([b.name, 'rinkinys bundle', (b.items||[]).map(x=>{ const it = getItem(x.id); return it ? it.name : ''; }).join(' ')].join(' ')));
   const inGrp = {}; if(g) g.items.forEach(r=>{ if(r.item!=='' && r.item!=null) inGrp[r.item] = (inGrp[r.item]||0) + offerNum(r.qty); });
-  const byG = {}; items.forEach(it=>{ const k = it.group||'papildomai'; ((byG[k] || (byG[k] = {}))[it.folder||'—'] || (byG[k][it.folder||'—'] = [])).push(it); });
+  const byG = {}; items.forEach(it=>{ const k = it.group||'kita'; ((byG[k] || (byG[k] = {}))[it.folder||'—'] || (byG[k][it.folder||'—'] = [])).push(it); });
   const order = GROUP_ORDER.filter(k=>byG[k]).concat(Object.keys(byG).filter(k=>!GROUP_ORDER.includes(k)));
   const open = k=>words.length || NP.whOpen[k];
   const qtyAdd = (attr, title)=>ed && g ? `<span class="np-tadd"><input type="text" inputmode="numeric" class="np-tq" data-tq="${attr}" value="1" aria-label="Kiekis" data-ro-ok><button class="np-add" data-add="${attr}" title="${npE(title)}">+</button></span>` : '';
@@ -10064,13 +10152,39 @@ function npChild(g, parent, itemId, per){
   c.qty = offerNum(parent.qty) * c.per;
 }
 function npScaleChildren(g, parent){ g.items.forEach(c=>{ if(c.parent===parent.id && c.per!=null) c.qty = Math.round(offerNum(parent.qty) * offerNum(c.per) * 100)/100; }); }
-function npAddItem(itemId, qty){
+// an item with accessories (Sandėlis → Priedai) is added: which of them go in too?
+// -> [{ id, qty per one unit }] or null (cancelled)
+function npAccAsk(it, acc, qty){
+  return new Promise(res=>{
+    const doc = uiDoc(), el = doc.createElement('div'); el.className = 'ui-ask'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+    el.innerHTML = `<div class="ui-ask-card np-accask"><div class="ui-ask-msg"><b>Priedai: ${esc(it.name)}</b><small>Pažymėk, kuriuos priedus įdėti kartu (kiekis – vienam vienetui, iš viso × ${fmt(qty,0)}).</small></div>
+      <div class="np-acc-list">${acc.map((a, i)=>{ const x = getItem(a.id); return `<label class="np-acc-r"><input type="checkbox" data-ai="${i}" checked><span><b>${esc(x.name)}</b><small>${esc(GROUP_LABEL[x.group]||'')}${invBrand(x) ? ' · '+esc(invBrand(x)) : ''}</small></span><input type="text" inputmode="decimal" data-aq="${i}" value="${esc(fmt(a.qty,2))}" title="Kiek vienam vienetui"><em data-at="${i}"></em></label>`; }).join('')}</div>
+      <div class="ui-ask-b"><button type="button" class="btn" data-a="no">Atšaukti</button><button type="button" class="btn" data-a="none">Be priedų</button><button type="button" class="btn primary" data-a="yes">Įdėti</button></div></div>`;
+    const tot = ()=>acc.forEach((a, i)=>{ const on = el.querySelector(`[data-ai="${i}"]`).checked, q = offerNum(el.querySelector(`[data-aq="${i}"]`).value); el.querySelector(`[data-at="${i}"]`).textContent = on && q>0 ? '= '+fmt(q*qty,2) : ''; el.querySelector(`[data-aq="${i}"]`).disabled = !on; });
+    const pick = ()=>acc.map((a, i)=>({ id:a.id, qty:offerNum(el.querySelector(`[data-aq="${i}"]`).value) })).filter((a, i)=>el.querySelector(`[data-ai="${i}"]`).checked && a.qty>0);
+    const done = v=>{ doc.removeEventListener('keydown', key, true); el.classList.add('out'); setTimeout(()=>el.remove(), 120); res(v); };
+    const key = e=>{ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done(null); } else if(e.key==='Enter'){ e.preventDefault(); e.stopPropagation(); done(pick()); } };
+    el.addEventListener('input', tot); el.addEventListener('change', tot);
+    el.addEventListener('click', e=>{ const b = e.target.closest('[data-a]'); if(b) done(b.dataset.a==='yes' ? pick() : b.dataset.a==='none' ? [] : null); else if(e.target===el) done(null); });
+    doc.addEventListener('keydown', key, true); doc.body.appendChild(el); tot();
+    setTimeout(()=>{ const y = el.querySelector('[data-a="yes"]'); if(y) y.focus(); }, 30);
+  });
+}
+async function npAddItem(itemId, qty, accPick){
   const g = npActiveGroup(); if(!g || !npGearEd()) return;
   const it = getItem(itemId); qty = Math.max(1, Math.round(offerNum(qty))||1);
   let r = g.items.find(x=>!x.parent && String(x.item)===String(itemId));
+  const accAll = it ? invAcc(it).filter(a=>getItem(a.id)) : [];
+  // a new row with accessories: ask which of them go in
+  if(!r && accAll.length && accPick===undefined){
+    const pick = await npAccAsk(it, accAll, qty);
+    if(pick===null) return;
+    return npAddItem(itemId, qty, pick);
+  }
   if(r) r.qty = offerNum(r.qty) + qty; else { r = { id:npId('npi'), item:it ? it.id : itemId, qty, remark:'' }; if(npNewPrio(NP.cur.data, g)!==Infinity) r.at = new Date().toISOString(); g.items.push(r); }
-  // accessories that go with it (Sandėlis → Priedai)
-  const acc = it ? invAcc(it) : [];
+  // accessories: the chosen ones for a new row; more of an existing row only scales the ones it has
+  const acc = accPick || [];
+  g.items.forEach(c=>{ if(c.parent===r.id && c.per==null){ const a = accAll.find(x=>String(x.id)===String(c.item)); if(a) c.per = offerNum(a.qty); } });
   acc.forEach(a=>{ if(!getItem(a.id)) return; const c = g.items.find(x=>x.parent===r.id && String(x.item)===String(a.id)); if(c){ if(c.per==null) c.per = offerNum(a.qty); } else npChild(g, r, a.id, offerNum(a.qty)); });
   npScaleChildren(g, r);
   npLog(`${g.name}: +${qty} × ${it ? it.name : itemId}${acc.length ? ' (su priedais)' : ''}`);
@@ -10237,7 +10351,7 @@ function invBundles(){ return Array.isArray(STATE.bundles) ? STATE.bundles : [];
 function invPickHtml(q, skip){
   const w = normalizeText(q).split(/\s+/).filter(Boolean);
   if(!w.length) return '<div class="section-sub" style="margin:4px 0;">Įrašyk pavadinimą arba kodą.</div>';
-  const list = allItems().filter(it=>!skip.has(String(it.id)) && w.every(x=>normalizeText([it.name, it.code, it.folder].join(' ')).includes(x))).slice(0, 30);
+  const list = allItems().filter(it=>!skip.has(String(it.id)) && w.every(x=>normalizeText([it.name, it.code, it.folder, invBrand(it)].join(' ')).includes(x))).slice(0, 30);
   return list.map(it=>`<button type="button" class="inv-pick" data-pick="${esc(String(it.id))}"><b>${esc(it.name)}</b><small>${esc(GROUP_LABEL[it.group]||'')} · ${esc(it.folder||'')}${it.code?' · '+esc(it.code):''}</small><span>+</span></button>`).join('') || '<div class="section-sub" style="margin:4px 0;">Nieko nerasta.</div>';
 }
 // a list of items with quantities + a search to add more (used by both dialogs)
@@ -10262,7 +10376,7 @@ function invAccModal(id){
   const rows = invAcc(it).map(a=>({ id:a.id, qty:a.qty })), ed = canEdit('inventory');
   const usedBy = allItems().filter(x=>invAcc(x).some(a=>String(a.id)===String(it.id)));
   openModal(`<div class="row between" style="align-items:center;margin-bottom:6px;"><h3 style="margin:0;">🔗 Priedai: ${esc(it.name)}</h3><button class="icon-btn" id="iaX" style="font-size:20px;">✕</button></div>
-    <p class="section-sub" style="margin:0 0 10px;">Kai šis daiktas pridedamas projekte, kartu automatiškai įsideda ir priedai (kiekis – vienam vienetui). Projekte priedą galima pakeisti arba išimti.</p>
+    <p class="section-sub" style="margin:0 0 10px;">Kai šis daiktas pridedamas projekte, iššoka lentelė su jo priedais – pasirenki, kuriuos įdėti kartu (kiekis – vienam vienetui). Sąraše daiktas rodomas su priedais, pvz. „Light Sky Sirena (+ 1× TrueCon, 1× Filtras)“.</p>
     <div class="inv-le" id="iaLe" data-self="${esc(String(it.id))}">
       <div class="inv-le-rows"></div>
       ${ed ? `<input type="search" class="inv-le-q" placeholder="Pridėti priedą: ieškoti sandėlyje…" autocomplete="off"><div class="inv-le-res"></div>` : ''}
@@ -13508,7 +13622,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v150';
+const APP_VER = 'v151';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -21090,8 +21204,8 @@ function offerSecGroups(title){
   if(/gars|audio|sound|akust/.test(t)) return ['garsas'];
   if(/svies|sviet|apsviet|light|lempa/.test(t)) return ['apsvietimas'];
   if(/vaizd|video|ekran|led|screen|proj/.test(t)) return ['video'];
-  if(/scen|santvar|konstruk|truss|rigg|pakyl|podium/.test(t)) return ['santvaros','riggingas','pakylos'];
-  if(/elektr|kabel|power|srov/.test(t)) return ['elektrifikacija','kabeliai'];
+  if(/scen|santvar|konstruk|truss|rigg|pakyl|podium/.test(t)) return ['santvaros','pakylos'];
+  if(/elektr|kabel|power|srov|defender/.test(t)) return ['kabeliai','defenderiai'];
   return [];
 }
 function offerPickItems(si){
@@ -24799,7 +24913,7 @@ function stkRenderCompare(box){
 }
 
 /* ---- sulyginti su sandėliu ---- */
-const STK_GROUPS = [[/šviesa|sviesa|apšviet/i, ['apsvietimas']], [/garsas/i, ['garsas']], [/vaizd|video/i, ['video']], [/konstruk|ferm/i, ['santvaros','riggingas','pakylos']], [/kabel/i, ['kabeliai','elektrifikacija']]];
+const STK_GROUPS = [[/šviesa|sviesa|apšviet/i, ['apsvietimas']], [/garsas/i, ['garsas']], [/vaizd|video/i, ['video']], [/konstruk|ferm/i, ['santvaros','pakylos']], [/kabel/i, ['kabeliai','defenderiai']], [/defender/i, ['defenderiai']]];
 function stkSheetGroups(sheet){ const g = STK_GROUPS.find(([re])=>re.test(sheet)); return g ? g[1] : []; }
 function stkTokens(s){ return stkNorm(s).replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(Boolean); }
 function stkNums(s){ return (stkNorm(s).replace(/(\d),(\d)/g,'$1.$2').match(/\d+(?:\.\d+)?/g)||[]).map(Number); }
