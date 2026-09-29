@@ -19,7 +19,7 @@ csp = {
   'script-src': "'self' " + ' '.join(hashes) + " https://cdn.jsdelivr.net https://c.dailywebrtc.net",
   'worker-src': "'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net",
   'style-src': "'self' 'unsafe-inline' https://fonts.googleapis.com",
-  'font-src': "'self' data: https://fonts.gstatic.com",
+  'font-src': f"'self' data: https://fonts.gstatic.com https://{SB}",
   'img-src': "'self' data: blob: https:",
   'media-src': "'self' data: blob: https:",
   'connect-src': f"'self' https: wss://{SB} wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com",
