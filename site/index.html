@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-hNNm+EbK0xe86ZFOUyKRckeAfdW7BtgfN9mBsFXrI7k=' 'sha256-Jtr5IC4H0crUGrN1TkmUjoQbk2SvuHFvjopVrvOE83A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-hNNm+EbK0xe86ZFOUyKRckeAfdW7BtgfN9mBsFXrI7k=' 'sha256-PjaTM/+FEKdDrI223Wg7VEfvTd0g6C58XsnQ+QgJbCg=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -12371,7 +12371,8 @@ function pollDrawBrand(){
     ${kind==='results' ? (()=>{ const [wx, wy] = pollWinXY(b); return `<div class="poll-winpos"><div class="poll-col">Nugalėtojo vieta ekrane</div>
       <label class="poll-sz"><span>Horizontaliai (X) · kairė → dešinė</span><input type="range" min="0" max="100" step="1" data-wxy="winX" value="${wx}"><b>${wx}%</b></label>
       <label class="poll-sz"><span>Vertikaliai (Y) · viršus → apačia</span><input type="range" min="0" max="100" step="1" data-wxy="winY" value="${wy}"><b>${wy}%</b></label>
-      <small class="section-sub" style="margin:0;">Vieta laisvame plote po klausimu (režimas „Tik nugalėtoją“). 50 % / 50 % – per vidurį.</small></div>
+      <small class="section-sub" style="margin:0;">Vieta laisvame plote po klausimu (režimas „Tik nugalėtoją“). 50 % / 50 % – per vidurį.</small>
+      <label class="poll-sz"><span>Fejerverkų trukmė</span><input type="range" min="0" max="120" step="5" data-fw value="${pollFwSec(b)}"><b>${pollFwSec(b) ? pollFwSec(b)+' s' : 'be fejerverkų'}</b></label></div>
       <div class="poll-winpos"><div class="poll-col">Logotipas (vykstant balsavimui, rodant nominantus ir nugalėtoją)</div>
       <label class="poll-sz"><span>Dydis</span><input type="range" min="30" max="400" step="5" data-sz="logo" value="${+((b.sizes||{}).logo) || 100}"><b>${+((b.sizes||{}).logo) || 100}%</b></label>
       <label class="poll-sz"><span>Vertikaliai (Y) · aukštyn ↔ žemyn</span><input type="range" min="-10" max="90" step="1" data-iq="logoTY" value="${b.logoTY!=null ? b.logoTY : 0}"><b>${b.logoTY!=null ? b.logoTY : 0}%</b></label>
@@ -12396,6 +12397,7 @@ function pollDrawBrand(){
   box.querySelectorAll('[data-bk2]').forEach(inp=>inp.onchange = ()=>set({ [inp.dataset.bk2]:inp.checked }));
   box.querySelectorAll('[data-sz]').forEach(inp=>inp.oninput = ()=>{ inp.nextElementSibling.textContent = inp.value+'%'; set({ sizes:Object.assign({}, (pollPage(POLL.look.brand, kind).sizes || {}), { [inp.dataset.sz]:+inp.value }) }); });
   box.querySelectorAll('[data-iq]').forEach(inp=>inp.oninput = ()=>{ inp.nextElementSibling.textContent = inp.value+'%'; set({ [inp.dataset.iq]:+inp.value }); });
+  box.querySelectorAll('[data-fw]').forEach(inp=>inp.oninput = ()=>{ inp.nextElementSibling.textContent = +inp.value ? inp.value+' s' : 'be fejerverkų'; set({ fwSec:+inp.value }); });
   box.querySelectorAll('[data-wxy]').forEach(inp=>inp.oninput = ()=>{ inp.nextElementSibling.textContent = inp.value+'%'; const [wx, wy] = pollWinXY(pollPage(POLL.look.brand, kind)); set(Object.assign({ winX:wx, winY:wy }, { [inp.dataset.wxy]:+inp.value })); });
   box.querySelectorAll('[data-tm]').forEach(c=>c.onclick = ()=>{ const g = c.dataset.tm==='gradient'; set({ text:{ mode:c.dataset.tm, stops: g && st.length < 2 ? [st[0], '#FCF6BA'] : st, angle:+t.angle||100 } }, true); });
   box.querySelectorAll('[data-gp]').forEach(c=>c.onclick = ()=>set({ text: c.dataset.gp==='white' ? { mode:'solid', stops:['#FFFFFF'] } : { mode:'gradient', stops:POLL_GRADS[c.dataset.gp].slice(), angle:+t.angle||100 } }, true));
@@ -12729,43 +12731,62 @@ async function pollResLoad0(){
 }
 async function pollResDraw(){
   const d = PR.d, st = document.getElementById('pollStage'); if(!st || !d) return;
-  if(d.state==='invalid'){ st.querySelector('.poll-rs-in').innerHTML = '<div class="poll-msg">Nuoroda nebegalioja.</div>'; return; }
-  const B0 = pollPage(d.brand, 'results'), [B, fam] = await pollLookFast(B0, ()=>{ PR.key = ''; PR.look = ''; });
-  st.style.cssText = pollBrandCss(B, fam)+`width:${d.w}px;height:${d.h}px;--u:${Math.min(d.w, d.h*16/9)/100}px;`;
+  const inner = st.querySelector('.poll-rs-in');
+  if(d.state==='invalid'){ inner.innerHTML = '<div class="poll-msg">Nuoroda nebegalioja.</div>'; return; }
+  const B0 = pollPage(d.brand, 'results'), [B, fam] = await pollLookFast(B0, ()=>{ PR.key = ''; PR.sig = ''; });
+  if(PR.d!==d) return;
+  const css = pollBrandCss(B, fam)+`width:${d.w}px;height:${d.h}px;--u:${Math.min(d.w, d.h*16/9)/100}px;`;
+  const tot = d.total || 0, max = Math.max(1, ...(d.options||[]).map(o=>o.votes||0));
+  // what is on the screen; only the vote counts changing is not a change (they update in place)
+  const sig = JSON.stringify([css, B.logo, d.show_all, d.state, d.poll, d.round, d.at || '', d.topic, d.question, (d.options||[]).map(o=>(o.text||'')+(o.winner ? '*' : '')), d.vote_token,
+    d.show_all===false && d.state==='ended' ? (d.options||[]).map(o=>o.votes) : 0]);
+  if(PR.sig===sig){
+    PR.shown = d;
+    const t = inner.querySelector('.poll-rs-tot'); if(t) t.textContent = tot+' balsavo';
+    inner.querySelectorAll('.poll-rs-row').forEach((row, n)=>{ const o = (d.options||[])[n]; if(!o) return; const pc = tot ? Math.round(o.votes*100/tot) : 0;
+      const b = row.querySelector('b'); if(b) b.textContent = pc+'%'; const bar = row.querySelector('.poll-rs-bar i'); if(bar) bar.style.width = pc+'%'; row.classList.toggle('win', o.votes===max && !!tot && d.state==='ended'); });
+    return;
+  }
+  // every change: fade out, change everything while nothing is visible, fade in
+  const draw = ++PR.drawN;
+  if(PR.sig && !inner.classList.contains('pl-fade')){ inner.classList.add('pl-fade'); await new Promise(r=>setTimeout(r, PR_FADE)); }
+  else inner.classList.add('pl-fade');
+  if(draw!==PR.drawN) return;
+  PR.sig = sig; PR.shown = d;
+  // (setting the style drops the window scaling – put it back at once, or the screen jumps to full size)
+  if(st.dataset.css!==css){ st.style.cssText = css; st.dataset.css = css; }
+  pollResFit();
   st.classList.toggle('has-bg', !!B.bg); st.classList.toggle('acc-grad', !!B.accGrad);
-  if(d.state==='nominees' || d.state==='reveal') return pollResWinner(st, d, B, 0, 1);
-  if(d.state==='idle' && d.show_all===false) return pollResWinner(st, d, B, 0, 1);
-  if(d.state==='idle'){ st.querySelector('.poll-rs-in').innerHTML = B.logo ? `<img class="poll-rs-logo idle" src="${esc(B.logo)}" alt="">` : ''; pollResFit(); return; }
-  const tot = d.total || 0, max = Math.max(1, ...(d.options||[]).map(o=>o.votes));
-  if(d.show_all===false) return pollResWinner(st, d, B, tot, max);
-  st.querySelector('.poll-rs-in').innerHTML = `${B.logo ? `<img class="poll-rs-logo" src="${esc(B.logo)}" alt="">` : ''}<div class="poll-rs-top"><span class="poll-rs-live" id="prLive"></span><span class="poll-rs-tot pl-txt">${esc(tot+' balsavo')}</span></div>
-    ${d.topic ? `<div class="poll-rs-topic pl-txt">${esc(d.topic)}</div>` : ''}<h1 class="poll-rs-q pl-txt">${esc(d.question || '')}</h1>
-    <div class="poll-rs-list">${(d.options||[]).map(o=>{ const pc = tot ? Math.round(o.votes*100/tot) : 0; return `<div class="poll-rs-row ${o.votes===max && tot && d.state==='ended' ? 'win' : ''}"><div class="poll-rs-h"><span class="pl-txt">${esc(o.text || '—')}</span><b class="pl-txt">${pc}%</b></div><div class="poll-rs-bar"><i style="width:${pc}%"></i></div></div>`; }).join('')}</div>`;
-  // everything must fit: the text gets smaller until it does
-  const inner = st.querySelector('.poll-rs-in'); let k = 1;
-  inner.style.setProperty('--k', 1);
+  if(d.state==='nominees' || d.state==='reveal' || d.show_all===false) await pollResWinner(st, d, B, d.state==='idle' ? 0 : tot, d.state==='idle' ? 1 : max);
+  else if(d.state==='idle') inner.innerHTML = B.logo ? `<img class="poll-rs-logo idle" src="${esc(B.logo)}" alt="">` : '';
+  else {
+    pollFireworksStop();
+    inner.innerHTML = `${B.logo ? `<img class="poll-rs-logo" src="${esc(B.logo)}" alt="">` : ''}<div class="poll-rs-top"><span class="poll-rs-live" id="prLive"></span><span class="poll-rs-tot pl-txt">${esc(tot+' balsavo')}</span></div>
+      ${d.topic ? `<div class="poll-rs-topic pl-txt">${esc(d.topic)}</div>` : ''}<h1 class="poll-rs-q pl-txt">${esc(d.question || '')}</h1>
+      <div class="poll-rs-list">${(d.options||[]).map(o=>{ const pc = tot ? Math.round(o.votes*100/tot) : 0; return `<div class="poll-rs-row ${o.votes===max && tot && d.state==='ended' ? 'win' : ''}"><div class="poll-rs-h"><span class="pl-txt">${esc(o.text || '—')}</span><b class="pl-txt">${pc}%</b></div><div class="poll-rs-bar"><i style="width:${pc}%"></i></div></div>`; }).join('')}</div>`;
+    await pollResFitText(inner, d);
+    pollResTick();
+  }
+  if(draw!==PR.drawN) return;
+  pollResFit();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ if(draw===PR.drawN) inner.classList.remove('pl-fade'); }));
+}
+// everything must fit: the text gets smaller until it does (the pictures are measured once they are there)
+async function pollResFitText(inner, d){
+  await pollTimeout(Promise.all([...inner.querySelectorAll('img')].map(im=>im.complete ? null : im.decode().catch(()=>{}))), 1500);
+  let k = 1; inner.style.setProperty('--k', 1);
   for(let n = 0; n < 30 && (inner.scrollHeight > d.h + 1 || inner.scrollWidth > d.w + 1); n++){ k *= 0.92; inner.style.setProperty('--k', k); }
-  pollResTick(); pollResFit();
 }
 /* „Tik nugalėtoją“: the screen goes through phases
    wait – a question will start: only the QR code and the time until it starts (big, in the middle)
    live – the question, and in the winner's place the time left (big) with the QR code next to it
-   won  – the winner appears with golden fireworks (20 s)
+   won  – the winner appears with golden fireworks (20 s, or as set in the look)
    Between phases everything fades out slowly and the next one fades in. */
-const PR_FADE = 1100, PR_FW_MS = 20000;
+const PR_FADE = 1100;
+const pollFwSec = b=>b && b.fwSec!=null ? Math.max(0, Math.min(300, Math.round(+b.fwSec || 0))) : 20;
 function pollResPhase(d){ return d.state==='waiting' ? 'wait' : d.state==='live' ? 'live' : d.state==='ended' ? 'won' : d.state==='nominees' ? 'nom' : d.state==='reveal' ? 'rev' : 'idle'; }
 async function pollResWinner(st, d, B, tot, max){
   const inner = st.querySelector('.poll-rs-in'), phase = pollResPhase(d), key = phase+'|'+d.poll+'|'+d.round+'|'+(d.at||'');
-  // the same phase with the same look: only the number of voters changes – nothing moves or resizes
-  const look = JSON.stringify([d.brand, d.w, d.h, d.topic, d.question, (d.options||[]).map(o=>o.text), d.vote_token]);
-  if(PR.phaseKey===key && PR.look===look && phase!=='won' && phase!=='rev'){ const t = document.getElementById('prTot'); if(t) t.textContent = tot+' balsavo'; pollResFit(); return; }
-  PR.look = look;
-  const draw = ++PR.drawN;
-  if(PR.phaseKey && PR.phaseKey!==key && !inner.classList.contains('pl-fade')){
-    inner.classList.add('pl-fade');
-    await new Promise(r=>setTimeout(r, PR_FADE));
-    if(draw!==PR.drawN) return;
-  }
   const first = PR.phaseKey!==key; PR.phaseKey = key;
   const logo = B.logo ? `<img class="poll-rs-logo" src="${esc(B.logo)}" alt="">` : '';
   const qrOn = !!d.vote_token;
@@ -12773,7 +12794,7 @@ async function pollResWinner(st, d, B, tot, max){
   if(phase==='idle'){
     inner.innerHTML = (B.logo ? `<img class="poll-rs-idlelogo" src="${esc(B.logo)}" alt="">` : '')+(qrOn ? '<div class="poll-rs-idleqr"><canvas id="prQr"></canvas></div>' : '');
     const qc = inner.querySelector('#prQr'); if(qc) pollQrCanvas(qc, pollUrl('balsuoti', d.vote_token), Math.round(Math.min(d.w, d.h)*0.6), qrOpts).catch(()=>qc.remove());
-    pollFireworksStop(); pollResFit(); requestAnimationFrame(()=>inner.classList.remove('pl-fade')); return;
+    pollFireworksStop(); return;
   }
   const head = `${d.topic ? `<div class="poll-rs-topic pl-txt">${esc(d.topic)}</div>` : ''}<h1 class="poll-rs-q pl-txt">${esc(d.question || '')}</h1>`;
   if(phase==='nom' || phase==='rev'){
@@ -12799,18 +12820,17 @@ async function pollResWinner(st, d, B, tot, max){
   const qc = inner.querySelector('#prQr');
   if(qc) pollQrCanvas(qc, pollUrl('balsuoti', d.vote_token), Math.round(Math.min(d.w, d.h)*(phase==='wait' ? 0.7 : 0.5)), qrOpts).catch(()=>qc.remove());
   pollResTick();
-  let k = 1; inner.style.setProperty('--k', 1);
-  for(let n = 0; n < 30 && (inner.scrollHeight > d.h + 1 || inner.scrollWidth > d.w + 1); n++){ k *= 0.92; inner.style.setProperty('--k', k); }
+  await pollResFitText(inner, d);
   // the clock keeps its width while the digits change (fonts without equal-width digits)
   inner.querySelectorAll('#prBig, #prWaitCd').forEach(el=>{ el.style.minWidth = ''; const w = el.getBoundingClientRect().width / (parseFloat(getComputedStyle(document.getElementById('pollStage')).transform.split('(')[1]) || 1); el.style.minWidth = Math.ceil(w*1.12)+'px'; });
-  pollResFit();
-  requestAnimationFrame(()=>inner.classList.remove('pl-fade'));
-  // golden fireworks when the winner appears (also when the page opens within 20 s of the end)
-  if(phase==='won' && tot){
-    const left = PR_FW_MS - (Date.now()+PR.off - Date.parse(d.ends_at)), fk = d.poll+'|'+d.round;
+  // golden fireworks when the winner appears (also when the page opens while they would still be on); length set in the look
+  const fwMs = pollFwSec(B)*1000;
+  if(!fwMs) pollFireworksStop();
+  else if(phase==='won' && tot){
+    const left = fwMs - (Date.now()+PR.off - Date.parse(d.ends_at)), fk = d.poll+'|'+d.round;
     if(left > 1000 && PR.fwKey!==fk){ PR.fwKey = fk; pollFireworks(st, d.w, d.h, left); }
   } else if(phase==='rev' && (d.options||[]).some(o=>o.winner)){
-    const left = PR_FW_MS - (Date.now()+PR.off - Date.parse(d.at)), fk = d.poll+'|rev|'+d.at;
+    const left = fwMs - (Date.now()+PR.off - Date.parse(d.at)), fk = d.poll+'|rev|'+d.at;
     if(left > 1000 && PR.fwKey!==fk){ PR.fwKey = fk; pollFireworks(st, d.w, d.h, left); }
   } else if(phase!=='won') pollFireworksStop();
 }
@@ -12842,7 +12862,8 @@ function pollFireworks(stage, W, H, ms){
   PR.fw = ()=>{ stop = true; cancelAnimationFrame(raf); c.remove(); };
 }
 function pollResTick(){
-  const d = PR.d; if(!d) return;
+  // the clock and labels follow what is on the screen (not the next screen while it is still fading out)
+  const d = PR.shown || PR.d; if(!d) return;
   const now = Date.now()+PR.off;
   const big = document.getElementById('prBig'); if(big) big.textContent = pollClock(Date.parse(d.ends_at) - now);
   const wc = document.getElementById('prWaitCd'); if(wc) wc.textContent = pollClock(Date.parse(d.starts_at) - now);
@@ -14688,7 +14709,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v164';
+const APP_VER = 'v165';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
