@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-ZOZ34Gi33f5hylFs4FJeCmFs381Rba3HQVZltzEgfZk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-aD1Vot2awDLZ+62dvLb4T6ncQfxJr26EdPsVazoOlww=' 'sha256-J5LrxgXr0zxewPfruUeG5Q6HXcHx4In5YzdxdhgP08U=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -508,6 +508,10 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .poll-si .btn{padding:4px 10px;flex:none;}
 .poll-si-look{width:100%;text-align:left;font:inherit;color:var(--text);} .poll-si-look .poll-si-n{background:none;font-size:16px;} .poll-si-look small{white-space:normal;}
 .poll-look{max-width:760px;}
+.poll-setname{font-family:var(--font-head);font-size:26px;text-transform:uppercase;font-weight:500;background:transparent;border:1px solid transparent;padding:2px 6px;min-width:200px;flex:1;max-width:520px;color:var(--text);} .poll-setname:hover,.poll-setname:focus{border-color:var(--border);background:var(--panel-2);}
+.poll-hint{font-size:15px;letter-spacing:1px;text-transform:uppercase;margin-bottom:-8px;} .poll-opts.multi .poll-rad{border-radius:4px;} .poll-opts.multi .poll-ob.picked .poll-rad::after{border-radius:2px;}
+.poll-rs-win{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:calc(var(--u)*1*var(--k));min-height:0;}
+.poll-rs-wl{font-size:calc(var(--u)*2.4*var(--k));letter-spacing:.25em;text-transform:uppercase;} .poll-rs-wt{font-size:calc(var(--u)*8*var(--k));line-height:1;text-transform:uppercase;overflow-wrap:anywhere;} .poll-rs-wp{font-size:calc(var(--u)*2.6*var(--k));font-variant-numeric:tabular-nums;margin-bottom:calc(var(--u)*1.2*var(--k));}
 .poll-si-top{font-style:normal;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;font-weight:800;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .poll-topic{font-size:16px;letter-spacing:3px;text-transform:uppercase;margin-bottom:-8px;font-family:var(--pl-font,var(--font-head));} .poll-rs-topic{font-size:calc(var(--u)*2.2*var(--k));letter-spacing:.2em;text-transform:uppercase;margin-bottom:calc(var(--u)*-1.2*var(--k));}
 .poll-perm .poll-qr canvas{width:170px;height:170px;background:transparent;} .poll-perm .poll-qr.clear canvas{background:repeating-conic-gradient(#8884 0% 25%, transparent 0% 50%) 50%/16px 16px;}
@@ -11972,12 +11976,13 @@ async function pollResolve(b){
 function pollAdminCard(){
   setTimeout(pollAdminLoad, 0);
   return `<div class="card" id="pollAdm">
-    <div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">🗳 Balsavimai</h2><button class="btn primary small" id="pollOpen">Atidaryti balsavimų valdymą</button></div>
+    <div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">🗳 Balsavimai</h2><span class="row" style="gap:6px;"><button class="btn small" id="pollNewSetA">+ Naujas balsavimas</button><button class="btn primary small" id="pollOpen">Visi balsavimai</button></span></div>
     <p class="section-sub" style="margin:4px 0 10px;">Klausimai su atsakymų variantais: žiūrovai balsuoja telefonu per QR kodą, rezultatai rodomi atskiroje nuorodoje (LED ekranui, OBS). Mato tik administratoriai – arba tas, kam duosi redaktoriaus nuorodą.</p>
     <div class="poll-edlink" id="pollEdLink"><div class="section-sub">Kraunama…</div></div></div>`;
 }
 async function pollAdminLoad(){
-  const o = document.getElementById('pollOpen'); if(o) o.onclick = ()=>{ POLL.key = ''; pollManager(document.getElementById('main'), true); };
+  const o = document.getElementById('pollOpen'); if(o) o.onclick = ()=>{ POLL.key = ''; pollSetsView(document.getElementById('main'), true); };
+  const n = document.getElementById('pollNewSetA'); if(n) n.onclick = async ()=>{ POLL.key = ''; const x = await pollNewSet(); if(x) pollManager(document.getElementById('main'), true, x); };
   pollEdLinkDraw();
 }
 async function pollEdLinkDraw(action){
@@ -12003,29 +12008,53 @@ async function renderPollEditorLink(key){
   const el = document.getElementById('guestView'); el.classList.add('poll-edv');
   document.title = 'Balsavimų valdymas · Event Solutions';
   el.innerHTML = `<div class="poll-edpage"><div class="poll-edtop"><div class="brand-cube" role="img" aria-label="Event Solutions"></div><b>EVENT SOLUTIONS</b><span>Balsavimų valdymas</span></div><div id="pollEdRoot"><div class="card empty-state">Kraunama…</div></div></div>`;
-  pollManager(document.getElementById('pollEdRoot'), false);
+  pollSetsView(document.getElementById('pollEdRoot'), false);
 }
 
-async function pollManager(root, admin){
-  POLL.root = root; POLL.admin = admin;
+/* the votings (polls5.sql): each with a name, its own questions, look, QR code and results link */
+const pollNewSet = async ()=>{
+  const name = await uiPrompt('Naujo balsavimo pavadinimas', '', { yes:'Sukurti' });
+  if(name===null) return null;
+  try{ return await pollApi('set_create', { name:String(name).trim() || 'Balsavimas' }); }catch(e){ toast('Nepavyko: '+e.message); return null; }
+};
+async function pollSetsView(root, admin){
+  POLL.root = root; POLL.admin = admin; pollStopTick();
+  let sets;
+  try{ sets = await pollApi('sets'); }
+  catch(e){ root.innerHTML = `<div class="card"><h2 class="section-title">Balsavimai</h2><div class="mail-err">${esc(/Nežinomas veiksmas/.test(e.message) ? 'Supabase paleisk polls5.sql (balsavimai su pavadinimais).' : e.message)}</div>${admin ? '<button class="btn small" id="pollBack" style="margin-top:10px;">‹ Admin</button>' : ''}</div>`; const b = document.getElementById('pollBack'); if(b) b.onclick = renderAdminTab; return; }
+  root.innerHTML = `<div class="${admin ? 'tabpanel ' : ''}poll-sets" id="pollSets">
+    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;">${admin ? '<button class="btn small" id="pollBack">‹ Admin</button>' : ''}<h2 class="section-title" style="margin:0;">Balsavimai</h2><span style="flex:1"></span><button class="btn primary small" id="pollSetNew">+ Naujas balsavimas</button></div>
+    <div class="card">${sets.map(x=>`<button class="poll-li" data-set="${esc(x.id)}">${x.live ? '<span class="poll-st st-live">Vyksta</span>' : ''}<b>${esc(x.name)}</b><small>${esc(ltPlural(x.questions, 'klausimas', 'klausimai', 'klausimų'))} · sukurta ${esc(new Date(x.created_at).toLocaleDateString('lt-LT'))}</small><span>›</span></button>`).join('') || '<div class="section-sub">Balsavimų dar nėra – spausk „+ Naujas balsavimas“.</div>'}</div>
+    <p class="section-sub">Kiekvienas balsavimas turi savo klausimus, apipavidalinimą, nuolatinį QR kodą ir rezultatų nuorodą.</p></div>`;
+  const back = document.getElementById('pollBack'); if(back) back.onclick = renderAdminTab;
+  document.getElementById('pollSetNew').onclick = async ()=>{ const x = await pollNewSet(); if(x) pollManager(root, admin, x); };
+  root.querySelectorAll('[data-set]').forEach(b=>b.onclick = ()=>pollManager(root, admin, sets.find(x=>x.id===b.dataset.set)));
+}
+async function pollManager(root, admin, set){
+  POLL.root = root; POLL.admin = admin; POLL.set = set;
+  POLL.look = { brand:set.brand || {}, w:set.results_w || 1920, h:set.results_h || 1080, vote_token:set.vote_token, results_token:set.results_token, show_all:!!set.show_all };
+  POLL.lookErr = '';
   let list;
-  try{ list = await pollApi('list'); }
-  catch(e){ root.innerHTML = `<div class="card"><h2 class="section-title">Balsavimai</h2><div class="mail-err">${esc(e.message)}</div>${admin ? '<button class="btn small" id="pollBack" style="margin-top:10px;">‹ Admin</button>' : ''}</div>`; const b = document.getElementById('pollBack'); if(b) b.onclick = renderAdminTab; return; }
+  try{ list = await pollApi('list', { set:set.id }); }
+  catch(e){ toast(e.message); return pollSetsView(root, admin); }
   POLL.list = list || [];
-  // the shared look (older databases: the last edited question's, until polls3.sql is run)
-  try{ const l = await pollApi('look'); POLL.look = { brand:(l && l.brand) || {}, w:(l && l.w) || 1920, h:(l && l.h) || 1080, vote_token:l && l.vote_token, results_token:l && l.results_token }; POLL.lookErr = ''; }
-  catch(e){ const last = POLL.list.slice().sort((x,y)=>String(y.updated_at).localeCompare(String(x.updated_at)))[0] || {}; POLL.look = { brand:last.brand || {}, w:last.results_w || 1920, h:last.results_h || 1080 }; POLL.lookErr = 'Kad apipavidalinimas būtų bendras visiems klausimams, Supabase paleisk polls3.sql.'; }
   root.innerHTML = `<div class="${admin ? 'tabpanel ' : ''}poll-mgr" id="pollEd">
-    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;">${admin ? '<button class="btn small" id="pollBack">‹ Admin</button>' : ''}<h2 class="section-title" style="margin:0;">Balsavimai</h2><span class="poll-saved muted" id="pollSaved"></span></div>
+    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;"><button class="btn small" id="pollBack">‹ Visi balsavimai</button><input type="text" id="pollSetName" class="poll-setname" maxlength="200" value="${esc(set.name)}" title="Balsavimo pavadinimas (spausk ir keisk)"><span class="poll-saved muted" id="pollSaved"></span><span style="flex:1"></span><button class="btn small danger" id="pollSetDel">Ištrinti balsavimą</button></div>
     <div class="poll-mgr-cols">
-      <aside class="card poll-side"><button class="poll-si poll-si-look" id="pollLookBtn"><span class="poll-si-n">🎨</span><span class="poll-si-t"><b>Apipavidalinimas</b><small>fonas, logotipas, šriftas, spalvos, ekrano dydis – visiems klausimams</small></span></button><div class="poll-perm" id="pollPerm"></div><div class="row" style="gap:6px;flex-wrap:wrap;margin:10px 0;"><button class="btn primary small" id="pollAdd">+ Klausimas</button><button class="btn small" id="pollBulk">+ Keli klausimai iš karto</button></div><div id="pollSide"></div></aside>
+      <aside class="card poll-side"><button class="poll-si poll-si-look" id="pollLookBtn"><span class="poll-si-n">🎨</span><span class="poll-si-t"><b>Apipavidalinimas</b><small>fonas, logotipas, šriftas, spalvos, rezultatų ekranas – visiems šio balsavimo klausimams</small></span></button><div class="poll-perm" id="pollPerm"></div><div class="row" style="gap:6px;flex-wrap:wrap;margin:10px 0;"><button class="btn primary small" id="pollAdd">+ Klausimas</button><button class="btn small" id="pollBulk">+ Keli klausimai iš karto</button></div><div id="pollSide"></div></aside>
       <section id="pollPane"></section>
     </div></div>`;
-  const back = document.getElementById('pollBack'); if(back) back.onclick = ()=>{ pollStopTick(); renderAdminTab(); };
+  document.getElementById('pollBack').onclick = async ()=>{ if(POLL.saveT) await pollSave(); if(POLL.lookT) await pollLookSave(); pollStopTick(); pollSetsView(root, admin); };
+  document.getElementById('pollSetName').onchange = async e=>{ const n = e.target.value.trim(); if(!n){ e.target.value = POLL.set.name; return; } try{ Object.assign(POLL.set, await pollApi('set_update', { id:POLL.set.id, name:n })); toast('✓ Pavadinimas išsaugotas'); }catch(err){ toast('Nepavyko: '+err.message); } };
+  document.getElementById('pollSetDel').onclick = async ()=>{
+    if(!(await uiConfirm(`Ištrinti balsavimą „${POLL.set.name}“ su visais klausimais ir balsais? Jo QR kodas nebeveiks.`))) return;
+    try{ await pollApi('set_delete', { id:POLL.set.id }); }catch(e){ toast('Nepavyko: '+e.message); return; }
+    pollStopTick(); POLL.cur = null; pollSetsView(root, admin);
+  };
   document.getElementById('pollAdd').onclick = ()=>pollCreate([{ question:'', options:[pollNewOpt(), pollNewOpt()] }]);
   document.getElementById('pollBulk').onclick = pollBulkModal;
   document.getElementById('pollLookBtn').onclick = async ()=>{ if(POLL.saveT) await pollSave(); POLL.view = 'look'; pollSideDraw(); pollPaneDraw(); };
-  if(!POLL.view) POLL.view = 'q';
+  POLL.view = 'q';
   pollDrawLinks();
   const keep = POLL.cur && POLL.list.find(x=>x.id===POLL.cur.id);
   POLL.cur = keep || POLL.list[0] || null;
@@ -12038,7 +12067,7 @@ async function pollManager(root, admin){
 function pollStopTick(){ clearInterval(POLL.tick); clearInterval(POLL.resT); clearInterval(POLL.listT); POLL.tick = POLL.resT = POLL.listT = null; }
 // someone else (another editor) may start or change questions: take their times and new ones
 async function pollListRefresh(){
-  let list; try{ list = await pollApi('list'); }catch(e){ return; }
+  let list; try{ list = await pollApi('list', { set:POLL.set.id }); }catch(e){ return; }
   const ids = new Set(list.map(x=>x.id)), had = new Set(POLL.list.map(x=>x.id));
   let changed = list.length!==POLL.list.length || list.some(x=>!had.has(x.id));
   list.forEach(x=>{ const m = POLL.list.find(y=>y.id===x.id); if(!m) return;
@@ -12060,7 +12089,7 @@ function pollSideDraw(){
 }
 function pollSideTime(p){
   const st = pollState(p), now = Date.now()+POLL.off;
-  return st==='waiting' ? 'po '+pollClock(Date.parse(p.starts_at) - now) : st==='live' ? pollClock(Date.parse(p.ends_at) - now) : (p.options||[]).length+' atsak. · '+pollDur(p.duration_sec);
+  return st==='waiting' ? 'po '+pollClock(Date.parse(p.starts_at) - now) : st==='live' ? pollClock(Date.parse(p.ends_at) - now) : (p.options||[]).length+' atsak.'+(p.multi ? ' (keli)' : '')+' · '+pollDur(p.duration_sec);
 }
 function pollSideTick(){
   let redraw = false;
@@ -12079,7 +12108,7 @@ async function pollCreate(items, silent){
   const base = POLL.cur || POLL.list[POLL.list.length-1] || {};
   const made = [];
   for(const it of items){
-    try{ made.push(await pollApi('create', { topic:it.topic || '', question:it.question, options:it.options, duration_sec:it.duration_sec || base.duration_sec || 60 })); }
+    try{ made.push(await pollApi('create', { set:POLL.set.id, multi:!!it.multi, topic:it.topic || '', question:it.question, options:it.options, duration_sec:it.duration_sec || base.duration_sec || 60 })); }
     catch(e){ toast('Nepavyko: '+e.message); break; }
   }
   if(!made.length) return;
@@ -12122,7 +12151,7 @@ function pollLookDraw(){
   const L = POLL.look;
   pane.innerHTML = `<div class="poll-look">${POLL.lookErr ? `<div class="mail-err" style="margin-bottom:12px;">${esc(POLL.lookErr)}</div>` : ''}
         <div class="card"><h2 class="section-title" style="margin:0 0 4px;">Apipavidalinimas</h2>
-          <p class="section-sub" style="margin:0 0 10px;">Galioja <b>visiems klausimams</b> – esamiems ir naujiems. Balsavimo puslapis ir rezultatų ekranas apipavidalinami atskirai.</p>
+          <p class="section-sub" style="margin:0 0 10px;">Galioja <b>visiems šio balsavimo klausimams</b> – esamiems ir naujiems. Balsavimo puslapis ir rezultatų ekranas apipavidalinami atskirai.</p>
           <div class="chipbar" id="pollBTabs" style="margin-bottom:10px;">${POLL_PAGES.map(([k,t])=>`<button class="chip ${POLL.btab===k?'active':''}" data-bt="${k}">${t}</button>`).join('')}</div>
           <div id="pollBrand"></div>
         </div>
@@ -12130,11 +12159,14 @@ function pollLookDraw(){
           <p class="section-sub" style="margin:0 0 10px;">Rezultatų nuorodoje viskas sutalpinama į tiek pikselių (pvz. LED ekrano ar OBS šaltinio dydis).</p>
           <div class="row" style="gap:8px;align-items:center;flex-wrap:wrap;"><label class="poll-num"><input type="number" id="pollW" min="100" max="8000" value="${L.w}"> px</label>×<label class="poll-num"><input type="number" id="pollH" min="100" max="8000" value="${L.h}"> px</label>
             <span class="chipbar">${[[1920,1080],[1280,720],[3840,2160],[1080,1920],[1024,768]].map(([w,h])=>`<button class="chip small-chip" data-wh="${w}x${h}">${w}×${h}</button>`).join('')}</span></div>
+          <div class="field" style="margin-top:12px;"><span>Ką rodo rezultatų ekranas</span><div class="chipbar" id="pollShow"><button class="chip small-chip ${L.show_all ? '' : 'active'}" data-show="0">Tik nugalėtoją</button><button class="chip small-chip ${L.show_all ? 'active' : ''}" data-show="1">Visus atsakymus</button></div>
+            <small class="section-sub" style="margin:4px 0 0;">„Tik nugalėtoją“: kol vyksta – laikas ir balsų skaičius, pasibaigus – laimėjęs atsakymas (lygiųjų atveju – visi lygūs).</small></div>
         </div>
     </div>`;
   const wh = ()=>{ L.w = Math.max(100, Math.min(8000, +document.getElementById('pollW').value||1920)); L.h = Math.max(100, Math.min(8000, +document.getElementById('pollH').value||1080)); pollLookSaveSoon(); };
   document.getElementById('pollW').onchange = wh; document.getElementById('pollH').onchange = wh;
   document.querySelectorAll('[data-wh]').forEach(c=>c.onclick = ()=>{ const [w, h] = c.dataset.wh.split('x'); document.getElementById('pollW').value = w; document.getElementById('pollH').value = h; wh(); });
+  document.querySelectorAll('#pollShow [data-show]').forEach(c=>c.onclick = ()=>{ L.show_all = c.dataset.show==='1'; document.querySelectorAll('#pollShow [data-show]').forEach(x=>x.classList.toggle('active', x===c)); pollLookSaveSoon(); });
   document.querySelectorAll('#pollBTabs [data-bt]').forEach(c=>c.onclick = ()=>{ POLL.btab = c.dataset.bt; document.querySelectorAll('#pollBTabs [data-bt]').forEach(x=>x.classList.toggle('active', x===c)); pollDrawBrand(); });
   pollDrawBrand();
 }
@@ -12142,8 +12174,8 @@ function pollLookSaveSoon(){ const s = document.getElementById('pollSaved'); if(
 async function pollLookSave(){
   clearTimeout(POLL.lookT); POLL.lookT = null;
   let err = '';
-  try{ const r = await pollApi('set_look', { brand:POLL.look.brand || {}, results_w:POLL.look.w, results_h:POLL.look.h }); if(r) POLL.lookErr = ''; }catch(e){ err = e.message; }
-  const s = document.getElementById('pollSaved'); if(s) s.textContent = err ? 'Neišsaugota: '+(/Nežinomas veiksmas/.test(err) ? 'Supabase paleisk polls3.sql' : err) : 'Išsaugota';
+  try{ const r = await pollApi('set_update', { id:POLL.set.id, brand:POLL.look.brand || {}, results_w:POLL.look.w, results_h:POLL.look.h, show_all:!!POLL.look.show_all }); if(r) Object.assign(POLL.set, r); }catch(e){ err = e.message; }
+  const s = document.getElementById('pollSaved'); if(s) s.textContent = err ? 'Neišsaugota: '+err : 'Išsaugota';
   return !err;
 }
 function pollPaneDraw(){
@@ -12157,6 +12189,7 @@ function pollPaneDraw(){
         <div class="card"><div class="row between" style="align-items:center;margin-bottom:10px;"><h2 class="section-title" style="margin:0;">Klausimas</h2><span class="row" style="gap:4px;"><button class="icon-btn" id="pollUp" title="Aukštyn">▲</button><button class="icon-btn" id="pollDown" title="Žemyn">▼</button><button class="btn small danger" id="pollDel">Ištrinti</button></span></div>
           <label class="field">Tema <small class="muted">(rodoma virš klausimo; nebūtina)</small><input type="text" id="pollTopic" maxlength="200" placeholder="pvz. Muzika, Vakaro programa…" value="${esc(p.topic || '')}"></label>
           <label class="field">Klausimas<textarea id="pollQ" rows="2" maxlength="500" placeholder="pvz. Kuri daina skambės paskutinė?">${esc(p.question)}</textarea></label>
+          <div class="field"><span>Kiek atsakymų galima pasirinkti</span><div class="chipbar" id="pollMulti"><button class="chip small-chip ${p.multi ? '' : 'active'}" data-multi="0">Vieną</button><button class="chip small-chip ${p.multi ? 'active' : ''}" data-multi="1">Kelis</button></div></div>
           <div class="field"><span>Atsakymų variantai</span><div id="pollOpts"></div><button class="btn small" id="pollAddOpt" style="align-self:flex-start;margin-top:6px;">+ Variantas</button></div>
           <div class="field"><span>Kiek laiko aktyvus</span><div class="row" style="gap:8px;"><label class="poll-num"><input type="number" id="pollMin" min="0" max="1440" value="${Math.floor(p.duration_sec/60)}"> min</label><label class="poll-num"><input type="number" id="pollSec" min="0" max="59" value="${p.duration_sec%60}"> s</label></div>
             <div class="chipbar" id="pollDurs" style="margin-top:6px;">${POLL_DURS.map(([v,t])=>`<button class="chip small-chip ${p.duration_sec===v?'active':''}" data-dur="${v}">${t}</button>`).join('')}</div></div>
@@ -12164,7 +12197,8 @@ function pollPaneDraw(){
       </div>
       <div>
         <div class="card poll-ctl" id="pollCtl"></div>
-        <div class="card"><div class="row between" style="align-items:center;"><h2 class="section-title" style="margin:0;">Rezultatai</h2><small class="muted" id="pollTot"></small></div><div id="pollRes" style="margin-top:10px;"></div></div>
+        <div class="card"><div class="row between" style="align-items:center;"><h2 class="section-title" style="margin:0;">Rezultatai</h2><small class="muted" id="pollTot"></small></div><div id="pollRes" style="margin-top:10px;"></div>
+          <div class="row" style="justify-content:flex-end;margin-top:8px;"><a class="btn small" target="_blank" rel="noopener" href="${esc(pollUrl('rezultatai', POLL.look.results_token))}">Atidaryti rezultatų ekraną ↗</a></div></div>
       </div>
     </div>`;
   document.getElementById('pollDel').onclick = async ()=>{
@@ -12183,6 +12217,7 @@ function pollPaneDraw(){
   document.getElementById('pollUp').onclick = ()=>move(-1); document.getElementById('pollDown').onclick = ()=>move(1);
   pollDrawOpts();
   document.getElementById('pollAddOpt').onclick = ()=>{ POLL.cur.options.push(pollNewOpt()); pollDrawOpts(); pollSaveSoon(); const l = [...document.querySelectorAll('#pollOpts input')].pop(); if(l) l.focus(); };
+  document.querySelectorAll('#pollMulti [data-multi]').forEach(c=>c.onclick = ()=>{ if(['waiting','live'].includes(pollState(POLL.cur))){ toast('Kol vyksta balsavimas, keisti negalima.'); return; } POLL.cur.multi = c.dataset.multi==='1'; document.querySelectorAll('#pollMulti [data-multi]').forEach(x=>x.classList.toggle('active', x===c)); pollSaveSoon(); pollSideDraw(); });
   document.getElementById('pollTopic').oninput = e=>{ POLL.cur.topic = e.target.value; pollSaveSoon(); const t = document.querySelector('.poll-si.on .poll-si-top'); if(t) t.textContent = e.target.value; else pollSideDraw(); };
   document.getElementById('pollQ').oninput = e=>{ POLL.cur.question = e.target.value; pollSaveSoon(); const t = document.querySelector(`.poll-si.on .poll-si-t b`); if(t) t.textContent = e.target.value || 'Be klausimo'; };
   const dur = ()=>{ const m = Math.max(0, +document.getElementById('pollMin').value||0), s = Math.max(0, Math.min(59, +document.getElementById('pollSec').value||0)); POLL.cur.duration_sec = Math.max(5, Math.min(86400, m*60+s)); document.querySelectorAll('#pollDurs [data-dur]').forEach(c=>c.classList.toggle('active', +c.dataset.dur===POLL.cur.duration_sec)); pollSaveSoon(); pollDrawCtl(); pollSideTick(); };
@@ -12270,7 +12305,7 @@ async function pollSave(p){
   clearTimeout(POLL.saveT); POLL.saveT = null;
   p = p || POLL.cur; if(!p) return false;
   let err = '';
-  try{ await pollApi('update', { id:p.id, topic:p.topic || '', question:p.question, options:p.options, duration_sec:p.duration_sec }); }catch(e){ err = e.message; }
+  try{ await pollApi('update', { id:p.id, topic:p.topic || '', question:p.question, options:p.options, duration_sec:p.duration_sec, multi:!!p.multi }); }catch(e){ err = e.message; }
   const s = document.getElementById('pollSaved'); if(s) s.textContent = err ? 'Neišsaugota: '+err : 'Išsaugota';
   return !err;
 }
@@ -12385,8 +12420,9 @@ function pollDrawLinks(){
     </div>
     <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:6px;"><button class="btn primary small" id="pollQrDl">⬇ QR (PNG)</button><button class="btn small" data-copy="${esc(v)}">Kopijuoti</button><a class="btn small" href="${esc(v)}" target="_blank" rel="noopener">Atidaryti</a></div>
     <small class="section-sub" style="display:block;margin:6px 0 0;">Rodo tuo metu vykstantį klausimą. Kai nevyksta joks – tik foną ir logotipą.</small>
-    <div class="poll-lk-t" style="margin-top:12px;">Rezultatų ekranas (nesikeičia)</div>
-    <div class="row" style="gap:6px;flex-wrap:wrap;"><button class="btn small" data-copy="${esc(r)}">Kopijuoti</button><a class="btn small" href="${esc(r)}" target="_blank" rel="noopener">Atidaryti</a></div>`;
+    <div class="poll-lk-t" style="margin-top:14px;">Rezultatų ekrano nuoroda (nesikeičia)</div>
+    <div class="poll-url">${esc(r)}</div>
+    <div class="row" style="gap:6px;flex-wrap:wrap;"><button class="btn small primary" data-copy="${esc(r)}">Kopijuoti</button><a class="btn small" href="${esc(r)}" target="_blank" rel="noopener">Atidaryti rezultatų ekraną</a></div>`;
   box.querySelectorAll('[data-copy]').forEach(c=>c.onclick = async ()=>{ try{ await navigator.clipboard.writeText(c.dataset.copy); toast('Nuoroda nukopijuota.'); }catch(e){ await uiPrompt('Nuoroda:', c.dataset.copy); } });
   document.getElementById('pollQrDl').onclick = pollQrPng;
   box.querySelectorAll('[data-qo]').forEach(inp=>{ const apply = ()=>{
@@ -12412,7 +12448,7 @@ async function pollLoadRes(){
   POLL.res = data;
   const box = document.getElementById('pollRes'); if(!box) return;
   const tot = data.total || 0, max = Math.max(1, ...(data.options||[]).map(o=>o.votes));
-  document.getElementById('pollTot').textContent = ltPlural(tot, 'balsas', 'balsai', 'balsų')+(p.round ? ' · '+p.round+' paleidimas' : '');
+  document.getElementById('pollTot').textContent = tot+' balsavo'+(p.round ? ' · '+p.round+' paleidimas' : '');
   box.innerHTML = (data.options||[]).map(o=>{ const pc = tot ? Math.round(o.votes*100/tot) : 0; return `<div class="poll-rrow ${o.votes===max && tot ? 'top' : ''}"><div class="poll-rrow-h"><b>${esc(o.text || '—')}</b><span>${o.votes} · ${pc}%</span></div><div class="poll-bar"><i style="width:${pc}%"></i></div></div>`; }).join('') || '<div class="section-sub">Nėra atsakymų.</div>';
 }
 
@@ -12440,7 +12476,7 @@ async function pollVoteLoad(){
   if(error){ if(!PV.d) pollVoteMsg('Nepavyko prisijungti. Patikrink internetą.'); return; }
   PV.off = Date.parse(data.now) - Date.now();
   const was = PV.d; PV.d = data;
-  if(!was || was.state!==data.state || was.round!==data.round || was.poll!==data.poll || was.topic!==data.topic || was.question!==data.question || JSON.stringify(was.brand)!==JSON.stringify(data.brand)){ PV.voted = false; pollVoteDraw(); }
+  if(!was || was.state!==data.state || was.round!==data.round || was.poll!==data.poll || was.topic!==data.topic || was.question!==data.question || was.multi!==data.multi || JSON.stringify(was.brand)!==JSON.stringify(data.brand)){ PV.voted = false; pollVoteDraw(); }
 }
 function pollVoteMsg(html){ const i = document.querySelector('.poll-pub-in'); if(i) i.innerHTML = (PV.logo||'')+`<div class="poll-msg pl-txt">${html}</div>`; }
 async function pollVoteDraw(){
@@ -12459,10 +12495,15 @@ async function pollVoteDraw(){
   PV.pick = null;
   i.innerHTML = `${PV.logo||''}${d.topic ? `<div class="poll-topic pl-txt">${esc(d.topic)}</div>` : ''}<h1 class="poll-q pl-txt">${esc(d.question || '')}</h1>
     <div class="poll-timer"><small class="pl-txt">${d.state==='waiting' ? 'Prasidės po' : 'Liko laiko'}</small><b class="pl-txt" id="pvClock"></b></div>
-    ${d.state==='live' ? `<div class="poll-opts" role="radiogroup">${(d.options||[]).map(o=>`<button class="poll-ob" role="radio" aria-checked="false" data-ov="${esc(o.id)}"><i class="poll-rad"></i><span class="pl-txt">${esc(o.text)}</span></button>`).join('')}</div>
+    ${d.state==='live' ? `${d.multi ? '<div class="poll-hint pl-txt">Galite pasirinkti kelis atsakymus</div>' : ''}<div class="poll-opts ${d.multi ? 'multi' : ''}" role="${d.multi ? 'group' : 'radiogroup'}">${(d.options||[]).map(o=>`<button class="poll-ob" role="${d.multi ? 'checkbox' : 'radio'}" aria-checked="false" data-ov="${esc(o.id)}"><i class="poll-rad"></i><span class="pl-txt">${esc(o.text)}</span></button>`).join('')}</div>
       <button class="poll-go" id="pvGo" disabled><span class="pl-txt">Balsuoti</span></button>` : '<div class="poll-msg sm pl-txt">Atsakymų variantai atsiras, kai prasidės balsavimas.</div>'}`;
-  i.querySelectorAll('[data-ov]').forEach(b=>b.onclick = ()=>{ if(PV.sending) return; PV.pick = b.dataset.ov; i.querySelectorAll('[data-ov]').forEach(x=>{ x.classList.toggle('picked', x===b); x.setAttribute('aria-checked', x===b ? 'true' : 'false'); }); document.getElementById('pvGo').disabled = false; });
-  const go = document.getElementById('pvGo'); if(go) go.onclick = ()=>{ if(PV.pick) pollVoteSend(PV.pick, go); };
+  PV.picks = new Set();
+  i.querySelectorAll('[data-ov]').forEach(b=>b.onclick = ()=>{ if(PV.sending) return;
+    if(d.multi){ if(PV.picks.has(b.dataset.ov)) PV.picks.delete(b.dataset.ov); else PV.picks.add(b.dataset.ov); }
+    else PV.picks = new Set([b.dataset.ov]);
+    i.querySelectorAll('[data-ov]').forEach(x=>{ const on = PV.picks.has(x.dataset.ov); x.classList.toggle('picked', on); x.setAttribute('aria-checked', on ? 'true' : 'false'); });
+    document.getElementById('pvGo').disabled = !PV.picks.size; });
+  const go = document.getElementById('pvGo'); if(go) go.onclick = ()=>{ if(PV.picks.size) pollVoteSend([...PV.picks], go); };
   pollVoteTick();
 }
 function pollVoteTick(){
@@ -12475,8 +12516,9 @@ function pollVoteTick(){
 async function pollVoteSend(opt, btn){
   if(PV.sending) return; PV.sending = true;
   document.querySelectorAll('.poll-ob, .poll-go').forEach(b=>{ b.disabled = true; }); btn.classList.add('sending');
-  let { data, error } = await getSb().rpc('poll_vote', { p_token:PV.token, p_option:opt, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
-  if(error && /poll_vote|function/i.test(error.message||'')) ({ data, error } = await getSb().rpc('poll_vote', { p_token:PV.token, p_option:opt, p_voter:pollVoterId() }));
+  const opts = Array.isArray(opt) ? opt : [opt];
+  let { data, error } = await getSb().rpc('poll_vote_many', { p_token:PV.token, p_options:opts, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
+  if(error && /poll_vote_many|function/i.test(error.message||'') && opts.length===1) ({ data, error } = await getSb().rpc('poll_vote', { p_token:PV.token, p_option:opts[0], p_voter:pollVoterId(), p_poll:PV.d.poll || null }));
   PV.sending = false;
   if(error){ document.querySelectorAll('.poll-ob, .poll-go').forEach(b=>{ b.disabled = false; }); btn.classList.remove('sending'); toast('Nepavyko išsiųsti – bandykite dar kartą.'); return; }
   if(data==='ended'){ PV.d.state = 'ended'; pollVoteDraw(); return; }
@@ -12507,7 +12549,7 @@ async function pollResLoad(){
   const { data, error } = await getSb().rpc('poll_results', { p_token:PR.token });
   if(error || !data) return;
   if(data.now) PR.off = Date.parse(data.now) - Date.now();
-  const key = JSON.stringify([data.state, data.poll, data.round, data.topic, data.question, data.options, data.total, data.w, data.h, data.brand]);
+  const key = JSON.stringify([data.state, data.poll, data.round, data.topic, data.show_all, data.question, data.options, data.total, data.w, data.h, data.brand]);
   PR.d = data;
   if(key!==PR.key){ PR.key = key; await pollResDraw(); }
 }
@@ -12519,7 +12561,18 @@ async function pollResDraw(){
   st.classList.toggle('has-bg', !!B.bg); st.classList.toggle('acc-grad', !!B.accGrad);
   if(d.state==='idle'){ st.querySelector('.poll-rs-in').innerHTML = B.logo ? `<img class="poll-rs-logo idle" src="${esc(B.logo)}" alt="">` : ''; pollResFit(); return; }
   const tot = d.total || 0, max = Math.max(1, ...(d.options||[]).map(o=>o.votes));
-  st.querySelector('.poll-rs-in').innerHTML = `${B.logo ? `<img class="poll-rs-logo" src="${esc(B.logo)}" alt="">` : ''}<div class="poll-rs-top"><span class="poll-rs-live" id="prLive"></span><span class="poll-rs-tot pl-txt">${esc(ltPlural(tot, 'balsas', 'balsai', 'balsų'))}</span></div>
+  if(d.show_all===false){
+    // only the winner: while it runs – time and number of voters; when it ends – the answer(s) with most votes
+    const ended = d.state==='ended', wins = ended && tot ? (d.options||[]).filter(o=>o.votes===max) : [];
+    st.querySelector('.poll-rs-in').innerHTML = `${B.logo ? `<img class="poll-rs-logo" src="${esc(B.logo)}" alt="">` : ''}<div class="poll-rs-top"><span class="poll-rs-live" id="prLive"></span><span class="poll-rs-tot pl-txt">${esc(tot+' balsavo')}</span></div>
+      ${d.topic ? `<div class="poll-rs-topic pl-txt">${esc(d.topic)}</div>` : ''}<h1 class="poll-rs-q pl-txt">${esc(d.question || '')}</h1>
+      <div class="poll-rs-win">${ended ? (wins.length ? `<div class="poll-rs-wl pl-txt">${wins.length > 1 ? 'Lygiosios' : 'Nugalėtojas'}</div>${wins.map(o=>`<div class="poll-rs-wt pl-txt">${esc(o.text || '—')}</div><div class="poll-rs-wp pl-txt">${tot ? Math.round(o.votes*100/tot) : 0}% · ${esc(ltPlural(o.votes, 'balsas', 'balsai', 'balsų'))}</div>`).join('')}` : '<div class="poll-rs-wl pl-txt">Balsų nėra</div>')
+        : `<div class="poll-rs-wl pl-txt">${d.state==='waiting' ? 'Netrukus prasidės balsavimas' : 'Nugalėtojas paaiškės pasibaigus balsavimui'}</div>`}</div>`;
+    const inner = st.querySelector('.poll-rs-in'); let k = 1; inner.style.setProperty('--k', 1);
+    for(let n = 0; n < 30 && (inner.scrollHeight > d.h + 1 || inner.scrollWidth > d.w + 1); n++){ k *= 0.92; inner.style.setProperty('--k', k); }
+    pollResTick(); pollResFit(); return;
+  }
+  st.querySelector('.poll-rs-in').innerHTML = `${B.logo ? `<img class="poll-rs-logo" src="${esc(B.logo)}" alt="">` : ''}<div class="poll-rs-top"><span class="poll-rs-live" id="prLive"></span><span class="poll-rs-tot pl-txt">${esc(tot+' balsavo')}</span></div>
     ${d.topic ? `<div class="poll-rs-topic pl-txt">${esc(d.topic)}</div>` : ''}<h1 class="poll-rs-q pl-txt">${esc(d.question || '')}</h1>
     <div class="poll-rs-list">${(d.options||[]).map(o=>{ const pc = tot ? Math.round(o.votes*100/tot) : 0; return `<div class="poll-rs-row ${o.votes===max && tot && d.state==='ended' ? 'win' : ''}"><div class="poll-rs-h"><span class="pl-txt">${esc(o.text || '—')}</span><b class="pl-txt">${pc}%</b></div><div class="poll-rs-bar"><i style="width:${pc}%"></i></div></div>`; }).join('')}</div>`;
   // everything must fit: the text gets smaller until it does
@@ -14371,7 +14424,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v157';
+const APP_VER = 'v158';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
