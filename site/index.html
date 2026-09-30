@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-OrDVuKYlbMvQsr5fdMMcTa7bbVR6t9Ftelnbbe2jy3M=' 'sha256-0QSo/Uu31Tr+HDqG0KwNc0muWTisB8+6zmF76H7Y8Ec=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-LBUklLIXc2qL9g0EI4AOCU2RdNzCghiwbP3UsM6rR88=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -489,7 +489,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 
 /* ---------- auth gate & guest share view ---------- */
 #authGate, #guestView{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
-.boot-load{display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--text-dim);font-size:14px;letter-spacing:.04em;} .boot-load i{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:bootSpin .9s linear infinite;}
+.boot-load{display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--text-dim);font-size:14px;letter-spacing:.04em;} .boot-load small{font-size:12px;opacity:.7;letter-spacing:0;} .boot-load i{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:bootSpin .9s linear infinite;}
 @keyframes bootSpin{to{transform:rotate(360deg);}} .boot-pre{position:fixed;inset:0;justify-content:center;z-index:50;background:var(--bg,#111);}
 .auth-card{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:28px 26px;}
 .auth-card h1{font-size:18px;margin:0 0 4px;}
@@ -4053,8 +4053,8 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
   const SUPABASE_KEY = "sb_publishable_OYVSooEWr-aPd__NPM8G3g_MQrSAXbI";
   // the fonts load in the background (media=print) so a slow font server never holds the page
   // if the app has not started after 20 s (a library that did not download on a cold start), reload once by itself
-  setTimeout(()=>{ if(window.__esBoot || !document.body) return; const d = document.createElement('div'); d.id = 'bootPre'; d.className = 'boot-load boot-pre'; d.innerHTML = '<i></i><span>Jungiamasi…</span>'; document.body.appendChild(d); }, 1500);
-  setTimeout(()=>{ if(window.__esBoot) return; try{ if(Date.now() - (+sessionStorage.getItem('esBootReload') || 0) < 90000) return; sessionStorage.setItem('esBootReload', String(Date.now())); }catch(e){ return; } location.reload(); }, 20000);
+  setTimeout(()=>{ if(window.__esBoot || !document.body) return; const d = document.createElement('div'); d.id = 'bootPre'; d.className = 'boot-load boot-pre'; d.innerHTML = '<i></i><span>Jungiamasi…</span><small>Kraunama programa</small>'; document.body.appendChild(d); }, 1500);
+  setTimeout(()=>{ if(window.__esBoot) return; try{ if(Date.now() - (+sessionStorage.getItem('esBootReload') || 0) < 90000) return; sessionStorage.setItem('esBootReload', String(Date.now())); }catch(e){ return; } location.reload(); }, 15000);
   (()=>{ const l = document.getElementById('appFonts'); if(!l) return; const on = ()=>{ l.media = 'all'; }; if(l.sheet) on(); else { l.addEventListener('load', on); l.addEventListener('error', on); } })();
 </script>
 
@@ -8213,10 +8213,22 @@ function setViz3DCameraPreset(preset){
    no login needed), or hand off to the normal app once signed in.
    ============================================================ */
 let SB = null;
+// sign-in steps run one after another inside this page. The browser-wide lock Supabase uses by default
+// waits for other tabs / windows of the app (or a page that is just closing) and could hold the start for many seconds.
+const SB_LOCKS = {};
+function sbLock(name, timeout, fn){ const prev = SB_LOCKS[name] || Promise.resolve(); const run = prev.then(()=>fn(), ()=>fn()); SB_LOCKS[name] = run.catch(()=>{}); return run; }
+// a sign-in request that hangs (often the very first one after the app starts) is cut after 4 s –
+// Supabase then tries again on a fresh connection instead of waiting without end
+function sbFetch(input, init){
+  const url = typeof input==='string' ? input : (input && input.url) || '';
+  if(!/\/auth\/v1\//.test(url) || (init && init.signal)) return fetch(input, init);
+  const c = new AbortController(), t = setTimeout(()=>c.abort(), 4000);
+  return fetch(input, Object.assign({}, init, { signal:c.signal })).finally(()=>clearTimeout(t));
+}
 function getSb(){
   if(SB) return SB;
   if(typeof supabase==='undefined' || !SUPABASE_URL || SUPABASE_URL.indexOf('__')===0) return null;
-  SB = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  SB = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth:{ lock:sbLock }, global:{ fetch:sbFetch } });
   return SB;
 }
 
@@ -8272,6 +8284,7 @@ async function onAuthed(session){
   if(authedFor===session.user.id) return;
   authedFor = session.user.id;
   let state;
+  bootStage('Tikrinama prieiga');
   try{ state = await loadAccess(session); }
   catch(e){ authedFor = null; showAuthGate(); renderLoginScreen('login', 'Nepavyko patikrinti prieigos: '+e.message); return; }
   if(state!=='ok'){ renderAccessWait(state, session.user.email); return; }
@@ -8480,8 +8493,9 @@ function initAuthAndRouting(){
     return;
   }
   // start-up watchdog: a cold start (network not ready yet) could leave the page empty until reloaded
-  setTimeout(bootLoading, 1200); setTimeout(bootStuck, 15000);
-  Promise.race([sb.auth.getSession(), new Promise(r=>setTimeout(()=>r(null), 15000))]).then(r=>{
+  BOOT_STAGE = 'Tikrinamas prisijungimas';
+  setTimeout(bootLoading, 1200); setTimeout(bootStuck, 12000);
+  Promise.race([sb.auth.getSession(), new Promise(r=>setTimeout(()=>r(null), 8000))]).then(r=>{
     if(!r){ bootStuck(); return; }
     const { data } = r;
     // tidy the address bar (tokens / markers) once Supabase has read them
@@ -8503,7 +8517,9 @@ function initAuthAndRouting(){
 
 // nothing on the screen yet: neither the app nor the sign-in (only the "connecting" spinner)
 function bootBlank(){ const app = document.getElementById('app'), g = document.getElementById('authGate'); return !!app && !!g && app.classList.contains('hidden') && (g.classList.contains('hidden') || !!g.querySelector('.boot-load')); }
-function bootLoading(){ if(!bootBlank()) return; const g = document.getElementById('authGate'); g.classList.remove('hidden'); g.innerHTML = '<div class="boot-load"><i></i><span>Jungiamasi…</span></div>'; }
+let BOOT_STAGE = '';
+function bootLoading(){ if(!bootBlank()) return; const g = document.getElementById('authGate'); g.classList.remove('hidden'); g.innerHTML = `<div class="boot-load"><i></i><span>Jungiamasi…</span><small id="bootStage">${esc(BOOT_STAGE)}</small></div>`; }
+function bootStage(t){ BOOT_STAGE = t; const e = document.getElementById('bootStage'); if(e) e.textContent = t; }
 // still nothing after a while: reload once by itself (that is what fixed it by hand); if that did not help – say so, with a button
 function bootStuck(){
   if(!bootBlank()) return;
@@ -14888,7 +14904,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v171';
+const APP_VER = 'v172';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },

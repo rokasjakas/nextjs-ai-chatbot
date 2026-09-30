@@ -1,27 +1,40 @@
 // EventSolutions App — service worker.
-// The page itself is always fetched from the network first, so a new version
-// is picked up on the next start; the saved copy is only used offline.
+// The page is fetched from the network first, so a new version is picked up at
+// once – but when the network is slow (over 2 s) the saved copy opens right away
+// and the fresh one is saved for the next start. Libraries (fixed versions) and
+// fonts are kept, so a start does not wait for them.
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v171';
+const CACHE = 'es-app-v172';
+const LIBS = 'es-lib-v1';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png'];
 
 self.addEventListener('install', e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate', e=>{
-  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE && k!==LIBS).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
 self.addEventListener('fetch', e=>{
   const req = e.request;
   if(req.method!=='GET') return;
   const url = new URL(req.url);
-  if(url.origin!==self.location.origin) return;           // Supabase, fonts, CDN: straight to the network
+  // fixed-version libraries (cdn…/pkg@1.2.3/…) and font files never change: saved on first use
+  if((url.hostname==='cdn.jsdelivr.net' && /@\d/.test(url.pathname)) || url.hostname==='fonts.gstatic.com'){
+    e.respondWith(caches.open(LIBS).then(c=>c.match(req).then(hit=>hit || fetch(req).then(res=>{ if(res.ok) c.put(req, res.clone()); return res; }))));
+    return;
+  }
+  if(url.origin!==self.location.origin) return;           // Supabase, other sites: straight to the network
   if(/\.(apk|exe|part\d+)$|\/EventSolutions-Setup\.json$/i.test(url.pathname)) return;   // app downloads: never cached (and never stored as index.html)
   if(req.mode==='navigate'){
-    e.respondWith(fetch(req).then(res=>{
-      const copy = res.clone(); caches.open(CACHE).then(c=>c.put('./index.html', copy));
+    const net = fetch(req).then(res=>{
+      if(res.ok){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put('./index.html', copy)); }
       return res;
-    }).catch(()=>caches.match('./index.html')));
+    });
+    e.waitUntil(net.catch(()=>{}));
+    e.respondWith(caches.match('./index.html').then(saved=>{
+      if(!saved) return net;
+      return Promise.race([net.catch(()=>saved), new Promise(r=>setTimeout(()=>r(saved), 2000))]);
+    }));
     return;
   }
   e.respondWith(caches.match(req).then(hit=>hit || fetch(req).then(res=>{
