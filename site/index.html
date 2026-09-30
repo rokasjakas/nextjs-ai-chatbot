@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-UoCsazCJ3DaWDiFHPj+Yg22RLqLamam47UWZA6YmQIE=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-87ItuPizF8CVBVHJq/+XYCgMuBjuLoGrOTYfwAqU/2Q=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -520,6 +520,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .poll-wr-row{display:flex;gap:8px;align-items:stretch;} .poll-wr-row input{flex:1;min-width:0;} .poll-wr-x{flex:none;width:52px;font:inherit;font-size:22px;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 35%, transparent);background:rgba(0,0,0,.35);color:var(--pl-col,#fff);cursor:pointer;}
 .poll-more{width:100%;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(20px*var(--sz-result,1));padding:13px 16px;border:2px dashed color-mix(in srgb, var(--pl-col,#fff) 60%, transparent);background:transparent;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;}
 .poll-more:active{background:rgba(255,255,255,.08);} .poll-more small{font-size:.7em;opacity:.75;margin-left:6px;}
+.poll-wr input.dup{border-color:#ff5a5a;} .poll-wr-dup{font-size:calc(14px*var(--sz-result,1));color:#ff8a8a;margin:-4px 0 2px;text-align:left;}
 .poll-warn{font-size:calc(15px*var(--sz-result,1));line-height:1.35;text-align:center;letter-spacing:.3px;}
 .poll-pub .poll-ob{font-size:calc(24px*var(--sz-result,1));} .poll-pub .poll-go{font-size:calc(28px*var(--sz-result,1));} .poll-pub .poll-hint{font-size:calc(15px*var(--sz-result,1));}
 .poll-rs .poll-rs-topic{font-size:calc(var(--u)*6*var(--k)*var(--sz-topic,1));line-height:1;letter-spacing:.04em;margin-bottom:0;text-align:center;} .poll-rs .poll-rs-q{font-size:calc(var(--u)*3.4*var(--k)*var(--sz-question,1));text-align:center;}
@@ -12837,6 +12838,34 @@ async function pollVoteDraw(){
   const go = document.getElementById('pvGo'); if(go) go.onclick = ()=>{ if(PV.picks.size) pollVoteSend([...PV.picks], go); };
   pollVoteTick();
 }
+// the same person typed twice? (same rule as the database, supabase/sql/polls11.sql):
+// accents, letter case, spaces and signs aside; words may be swapped; each word 1 typo (2 from 9 letters),
+// the first letter the same, short words (up to 4 letters) exactly
+const PN_SRC = 'ąčęėįšųūžáàäâãåçéèêëíìîïñóòöôõúùûüýÿłńśźż', PN_DST = 'aceeisuuzaaaaaaceeeeiiiinooooouuuuyylnszz';
+function pollNameNorm(t){ let o = ''; for(const ch of String(t||'').toLowerCase()){ const k = PN_SRC.indexOf(ch); o += k >= 0 ? PN_DST[k] : ch; } return o.replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function pollLev(a, b){
+  if(a===b) return 0; if(!a.length) return b.length; if(!b.length) return a.length;
+  let pp = null, prev = Array.from({ length:b.length + 1 }, (_, j)=>j);
+  for(let i = 1; i <= a.length; i++){
+    const cur = [i];
+    for(let j = 1; j <= b.length; j++){
+      let v = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1]===b[j-1] ? 0 : 1));
+      if(i > 1 && j > 1 && a[i-1]===b[j-2] && a[i-2]===b[j-1]) v = Math.min(v, pp[j-2] + 1);
+      cur.push(v);
+    }
+    pp = prev; prev = cur;
+  }
+  return prev[b.length];
+}
+function pollWordNear(x, y){ const L = Math.max(x.length, y.length); return x===y || (x[0]===y[0] && L > 4 && pollLev(x, y) <= (L <= 8 ? 1 : 2)); }
+function pollNameNear(a, b){
+  if(a===b) return true;
+  const wa = a.split(' '), wb = b.split(' ');
+  if(!a || wa.length!==wb.length) return false;
+  if(wa.every((w, k)=>pollWordNear(w, wb[k]))) return true;
+  const sa = wa.slice().sort(), sb = wb.slice().sort();
+  return sa.every((w, k)=>pollWordNear(w, sb[k]));
+}
 // names typed by the voter (one, or up to write_max different ones)
 function pollWriteDraw(i, d){
   const n = Math.max(1, Math.min(50, +d.write_max || 1));
@@ -12849,7 +12878,14 @@ function pollWriteDraw(i, d){
   const field = first=>`<div class="poll-wr-row"><input type="text" maxlength="80" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Vardas Pavardė">${first ? '' : '<button type="button" class="poll-wr-x" title="Pašalinti" aria-label="Pašalinti">✕</button>'}</div>`;
   const upd = ()=>{
     const ins = [...box.querySelectorAll('input')], v = ins.map(x=>x.value.trim().replace(/\s+/g, ' ')).filter(Boolean);
-    PV.picks = new Set(v); go.disabled = !PV.picks.size;
+    // the same (or nearly the same) name twice: marked, and not sent
+    const seen = []; let dups = 0;
+    ins.forEach(x=>{ const n = pollNameNorm(x.value), row = x.closest('.poll-wr-row'), dup = !!n && seen.some(m=>pollNameNear(n, m));
+      x.classList.toggle('dup', dup); if(n && !dup) seen.push(n); if(dup) dups++;
+      let msg = row.nextElementSibling && row.nextElementSibling.classList.contains('poll-wr-dup') ? row.nextElementSibling : null;
+      if(dup && !msg){ row.insertAdjacentHTML('afterend', '<div class="poll-wr-dup">Šis vardas jau įrašytas – įrašykite kitą arba pašalinkite.</div>'); }
+      if(!dup && msg) msg.remove(); });
+    PV.picks = new Set(ins.filter(x=>!x.classList.contains('dup')).map(x=>x.value.trim().replace(/\s+/g, ' ')).filter(Boolean)); go.disabled = !PV.picks.size || dups > 0;
     go.querySelector('span').textContent = PV.picks.size > 1 ? `Balsuoti (${PV.picks.size})` : 'Balsuoti';
     if(more){ more.hidden = ins.length >= n; const c = document.getElementById('pvMoreN'); if(c) c.textContent = `(${ins.length} iš ${n})`; }
   };
@@ -12858,7 +12894,7 @@ function pollWriteDraw(i, d){
     const row = box.lastElementChild, inp = row.querySelector('input'), x = row.querySelector('.poll-wr-x');
     inp.oninput = upd;
     inp.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); if(!go.disabled) go.click(); } };
-    if(x) x.onclick = ()=>{ row.remove(); upd(); };
+    if(x) x.onclick = ()=>{ const m = row.nextElementSibling; if(m && m.classList.contains('poll-wr-dup')) m.remove(); row.remove(); upd(); };
     if(focus) inp.focus();
     upd();
   };
@@ -12882,7 +12918,7 @@ async function pollVoteSend(opt, btn, write){
   if(write){
     const { data, error } = await getSb().rpc('poll_write', { p_token:PV.token, p_names:opts, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
     PV.sending = false;
-    if(error || data==='bad' || data==='limit'){ document.querySelectorAll('.poll-go, .poll-wr input').forEach(b=>{ b.disabled = false; }); btn.classList.remove('sending'); toast(error ? 'Nepavyko išsiųsti – bandykite dar kartą.' : data==='limit' ? 'Per daug vardų.' : 'Įrašykite vardą ir pavardę.'); return; }
+    if(error || data==='bad' || data==='limit' || data==='dup'){ document.querySelectorAll('.poll-go, .poll-wr input').forEach(b=>{ b.disabled = false; }); btn.classList.remove('sending'); toast(error ? 'Nepavyko išsiųsti – bandykite dar kartą.' : data==='limit' ? 'Per daug vardų.' : data==='dup' ? 'Tas pats vardas įrašytas kelis kartus – palikite vieną.' : 'Įrašykite vardą ir pavardę.'); return; }
     if(data==='ended'){ PV.d.state = 'ended'; pollVoteDraw(); return; }
     try{ localStorage.setItem(pollVotedKey(), '1'); }catch(e){}
     return pollThanks(true);
@@ -14922,7 +14958,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v174';
+const APP_VER = 'v175';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
