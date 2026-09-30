@@ -4,7 +4,7 @@
 // and the fresh one is saved for the next start. Libraries (fixed versions) and
 // fonts are kept, so a start does not wait for them.
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v172';
+const CACHE = 'es-app-v173';
 const LIBS = 'es-lib-v1';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png'];
 
