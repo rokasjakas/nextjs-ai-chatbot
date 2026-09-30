@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-nfuxdO0X0or8uPg2zaJjCEvKl97Gpc1sq2w3A+XPaxE=' 'sha256-3v9l38h7pKu476rzxnYoqZJG9OSuteGpOKDyeUFHfhA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-bgnIjq9SiTMcDyQX54O12Hb6t0A9ubcN/68l6nmYSfc=' 'sha256-3v9l38h7pKu476rzxnYoqZJG9OSuteGpOKDyeUFHfhA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -585,6 +585,8 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .poll-sbtn:disabled{opacity:.45;cursor:not-allowed;}
 .poll-sbtn.hide{justify-content:center;border-style:dashed;padding:11px 16px;} .poll-sbtn.hide b{font-size:20px;}
 .poll-rs-nomq{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u)*2*var(--k));text-align:center;min-height:0;}
+.poll-rs .poll-rs-nomq .poll-rs-topic{font-size:calc(var(--u)*9*var(--k)*var(--sz-topic,1));} .poll-rs .poll-rs-nomq .poll-rs-q{font-size:calc(var(--u)*5.5*var(--k)*var(--sz-question,1));}
+.poll-rs-nomq .poll-rs-qr{margin-top:calc(var(--u)*2*var(--k));}
 .poll-show-now{padding:8px 10px;background:var(--panel-3);margin:8px 0;font-size:13px;} .poll-si-show{font-style:normal;font-size:11px;color:var(--accent);margin-left:4px;} .poll-opt input{flex:1;min-width:0;} .poll-opt-n{width:24px;height:24px;display:grid;place-items:center;background:var(--panel-3);font-weight:800;font-size:12px;flex:none;}
 .poll-num{display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);font-size:13px;} .poll-num input{width:84px;}
 .poll-brand{display:grid;grid-template-columns:1fr 1fr;gap:12px;} @media (max-width: 560px){ .poll-brand{grid-template-columns:1fr;} }
@@ -12955,6 +12957,9 @@ async function renderPollResults(token){
   window.addEventListener('resize', pollResFit);
   setInterval(()=>{ pollResLoad(); }, 1500);
   setInterval(pollResTick, 250);
+  // the screen stays open for hours: when a new version of the app is out, it reloads itself (fading out first)
+  setInterval(async ()=>{ try{ const t = await (await fetch('sw.js', { cache:'no-store' })).text(), m = t.match(/es-app-(v\d+)/);
+    if(m && m[1]!==APP_VER){ const i = document.querySelector('.poll-rs-in'); if(i) i.classList.add('pl-fade'); setTimeout(()=>location.reload(), 1200); } }catch(e){} }, 60000);
   pollResLoad();
 }
 async function pollResLoad(){
@@ -13049,7 +13054,7 @@ async function pollResWinner(st, d, B, tot, max){
   const head = `${d.topic ? `<div class="poll-rs-topic pl-txt">${esc(d.topic)}</div>` : ''}${d.question ? `<h1 class="poll-rs-q pl-txt">${esc(d.question)}</h1>` : ''}`;
   if(phase==='nomq'){
     // the nomination alone: topic and question in the middle
-    inner.innerHTML = `${logo}<div class="poll-rs-nomq ${first ? 'reveal' : ''}">${head}</div>`;
+    inner.innerHTML = `${logo}<div class="poll-rs-nomq ${first ? 'reveal' : ''}">${head}${qrOn ? '<div class="poll-rs-qr big"><canvas id="prQr"></canvas></div><div class="poll-rs-hint pl-txt">Nuskaitykite QR kodą telefonu</div>' : ''}</div>`;
   } else if(phase==='hold'){
     // names typed by the voters: time is up, the winner is shown with the editor's button
     inner.innerHTML = `${logo}${head}<div class="poll-rs-win"><div class="poll-rs-wbox ${first ? 'reveal' : ''}"><div class="poll-rs-wt pl-txt">Balsavimas baigėsi</div></div></div>`;
@@ -14967,7 +14972,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v177';
+const APP_VER = 'v178';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
