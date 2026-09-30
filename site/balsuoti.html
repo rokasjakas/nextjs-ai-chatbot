@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-xT6L0WSuV/0nFjK/o2UjUB1LD/Wl2v05TPPEdslUTvw=' 'sha256-3v9l38h7pKu476rzxnYoqZJG9OSuteGpOKDyeUFHfhA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-dduSaXHIIqKT7ao6A5arC7arPLOA8adN6U1rxcFNVmI=' 'sha256-L3irHGAHpi/3aj8z5iMYk3WUWm0BYWGrSVssdgav7nM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101010">
 <meta name="robots" content="noindex">
@@ -64,6 +64,14 @@ body{
 .poll-more{width:100%;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(20px*var(--sz-result,1));padding:13px 16px;border:2px dashed color-mix(in srgb, var(--pl-col,#fff) 60%, transparent);background:transparent;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;}
 .poll-more:active{background:rgba(255,255,255,.08);} .poll-more small{font-size:.7em;opacity:.75;margin-left:6px;}
 .poll-wr input.dup{border-color:#ff5a5a;} .poll-wr-dup{font-size:calc(14px*var(--sz-result,1));color:#ff8a8a;margin:-4px 0 2px;text-align:left;}
+.poll-mt{display:flex;flex-direction:column;gap:10px;width:100%;} .poll-mt-row{display:flex;flex-direction:column;gap:6px;}
+.poll-mt-t{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(22px*var(--sz-result,1));line-height:1.1;padding:13px 14px;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 55%, transparent);background:rgba(0,0,0,.35);cursor:pointer;text-transform:uppercase;letter-spacing:.3px;}
+.poll-mt-n{flex:none;width:30px;height:30px;display:grid;place-items:center;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 45%, transparent);font-size:.7em;} .poll-mt-ok{margin-left:auto;flex:none;font-style:normal;color:var(--pl-acc);font-size:1.1em;opacity:0;}
+.poll-mt-row.done .poll-mt-ok{opacity:1;} .poll-mt-row.done .poll-mt-t, .poll-mt-row.open .poll-mt-t{border-color:var(--pl-acc);}
+.poll-mt-row input{width:100%;box-sizing:border-box;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(22px*var(--sz-result,1));padding:13px 16px;border:2px solid var(--pl-acc);background:rgba(0,0,0,.45);color:var(--pl-col,#fff);border-radius:0;} .poll-mt-row input:focus{outline:none;}
+.poll-rs-mtw{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*2.2*var(--k)*var(--sz-result,1));width:100%;} .poll-rs-mtw-row{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.4*var(--k));}
+.poll-rs .poll-rs-mtw-t{font-size:calc(var(--u)*2.6*var(--k)*var(--sz-result,1));letter-spacing:.2em;text-transform:uppercase;} .poll-rs .poll-rs-mtw-n{font-size:calc(var(--u)*5.5*var(--k)*var(--sz-result,1));line-height:1.05;text-transform:uppercase;}
+.poll-rs-mtw.one .poll-rs-mtw-t{font-size:calc(var(--u)*3.4*var(--k)*var(--sz-result,1));} .poll-rs-mtw.one .poll-rs-mtw-n{font-size:calc(var(--u)*8*var(--k)*var(--sz-result,1));}
 .poll-warn{font-size:calc(15px*var(--sz-result,1));line-height:1.35;text-align:center;letter-spacing:.3px;}
 .poll-pub .poll-ob{font-size:calc(24px*var(--sz-result,1));} .poll-pub .poll-go{font-size:calc(28px*var(--sz-result,1));} .poll-pub .poll-hint{font-size:calc(15px*var(--sz-result,1));}
 .poll-rs .poll-rs-topic{font-size:calc(var(--u)*6*var(--k)*var(--sz-topic,1));line-height:1;letter-spacing:.04em;margin-bottom:0;text-align:center;} .poll-rs .poll-rs-q{font-size:calc(var(--u)*3.4*var(--k)*var(--sz-question,1));text-align:center;}
@@ -381,6 +389,7 @@ async function pollVoteDraw(){
     ${d.state==='live' ? `${d.multi ? '<div class="poll-hint pl-txt">Galite pasirinkti kelis nominantus</div>' : ''}<div class="poll-opts ${d.multi ? 'multi' : ''}" role="${d.multi ? 'group' : 'radiogroup'}">${(d.options||[]).map(o=>`<button class="poll-ob" role="${d.multi ? 'checkbox' : 'radio'}" aria-checked="false" data-ov="${esc(o.id)}"><i class="poll-rad"></i><span class="pl-txt">${esc(o.text)}</span></button>`).join('')}</div>
       <button class="poll-go" id="pvGo" disabled><span class="pl-txt">Balsuoti</span></button>` : `<div class="poll-msg sm pl-txt">${d.write ? 'Vardą ir pavardę įrašyti galėsite, kai prasidės balsavimas.' : 'Nominantai atsiras, kai prasidės balsavimas.'}</div>`}`;
   PV.picks = new Set();
+  if(d.mw && d.state==='live') return pollMultiDraw(i, d);
   if(d.write && d.state==='live') return pollWriteDraw(i, d);
   i.querySelectorAll('[data-ov]').forEach(b=>b.onclick = ()=>{ if(PV.sending) return;
     if(d.multi){ if(PV.picks.has(b.dataset.ov)) PV.picks.delete(b.dataset.ov); else PV.picks.add(b.dataset.ov); }
@@ -426,6 +435,29 @@ function pollWriteDraw(i, d){
   go.onclick = ()=>{ if(PV.picks.size) pollVoteSend([...PV.picks], go, true); };
   pollVoteTick();
 }
+function pollMultiDraw(i, d){
+  i.querySelectorAll('.poll-opts, .poll-hint').forEach(x=>x.remove());
+  const go = document.getElementById('pvGo'), topics = d.options || [];
+  go.insertAdjacentHTML('beforebegin', `<div class="poll-warn pl-txt">Paspauskite temą ir įrašykite <b>tikslų nominanto vardą ir pavardę</b>, kitaip balsas neužsiskaitys. Balsuoti galėsite užpildę visas temas.</div>
+    <div class="poll-mt">${topics.map((o, k)=>`<div class="poll-mt-row" data-mt="${esc(o.id)}"><button type="button" class="poll-mt-t"><span class="poll-mt-n pl-txt">${k+1}</span><span class="pl-txt">${esc(o.text)}</span><i class="poll-mt-ok">✓</i></button><input type="text" maxlength="80" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Vardas Pavardė" hidden></div>`).join('')}</div>`);
+  const rows = [...i.querySelectorAll('.poll-mt-row')];
+  const upd = ()=>{
+    let filled = 0;
+    rows.forEach(r=>{ const v = r.querySelector('input').value.trim(); r.classList.toggle('done', !!v); if(v) filled++; });
+    go.disabled = !rows.length || filled < rows.length;
+    go.querySelector('span').textContent = filled < rows.length ? `Balsuoti (${filled} iš ${rows.length})` : 'Balsuoti';
+    PV.picks = new Set(filled ? ['typed'] : []);   // something typed: the page is not redrawn under the voter
+  };
+  rows.forEach((r, k)=>{
+    const inp = r.querySelector('input');
+    r.querySelector('.poll-mt-t').onclick = ()=>{ inp.hidden = false; r.classList.add('open'); inp.focus(); };
+    inp.oninput = upd;
+    inp.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); const nx = rows.slice(k+1).concat(rows.slice(0, k)).find(x=>!x.querySelector('input').value.trim()); if(nx) nx.querySelector('.poll-mt-t').click(); else if(!go.disabled) go.click(); } };
+    inp.onblur = ()=>{ if(!inp.value.trim()){ inp.hidden = true; r.classList.remove('open'); } };
+  });
+  go.onclick = ()=>{ if(go.disabled) return; pollVoteSend(rows.map(r=>r.querySelector('input').value.trim().replace(/\s+/g, ' ')), go, 'multi', rows.map(r=>r.dataset.mt)); };
+  upd(); pollVoteTick();
+}
 function pollVoteTick(){
   const d = PV.d; if(!d || PV.voted) return;
   const now = Date.now()+PV.off;
@@ -433,11 +465,19 @@ function pollVoteTick(){
   if(d.state==='live' && now >= Date.parse(d.ends_at)){ d.state = 'ended'; pollVoteDraw(); return; }
   const c = document.getElementById('pvClock'); if(c) c.textContent = pollClock((d.state==='waiting' ? Date.parse(d.starts_at) : Date.parse(d.ends_at)) - now);
 }
-async function pollVoteSend(opt, btn, write){
+async function pollVoteSend(opt, btn, write, topics){
   if(PV.preview){ toast('Peržiūra – balsas nesiunčiamas.'); return; }
   if(PV.sending) return; PV.sending = true;
-  document.querySelectorAll('.poll-ob, .poll-go, .poll-wr input').forEach(b=>{ b.disabled = true; }); btn.classList.add('sending');
+  document.querySelectorAll('.poll-ob, .poll-go, .poll-wr input, .poll-mt input, .poll-mt-t').forEach(b=>{ b.disabled = true; }); btn.classList.add('sending');
   const opts = Array.isArray(opt) ? opt : [opt];
+  if(write==='multi'){
+    const { data, error } = await getSb().rpc('poll_mwrite', { p_token:PV.token, p_topics:topics, p_names:opts, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
+    PV.sending = false;
+    if(error || data==='bad'){ document.querySelectorAll('.poll-go, .poll-mt input, .poll-mt-t').forEach(b=>{ b.disabled = false; }); btn.classList.remove('sending'); toast(error ? 'Nepavyko išsiųsti – bandykite dar kartą.' : 'Įrašykite vardą ir pavardę kiekvienoje temoje.'); return; }
+    if(data==='ended'){ PV.d.state = 'ended'; pollVoteDraw(); return; }
+    try{ localStorage.setItem(pollVotedKey(), '1'); }catch(e){}
+    return pollThanks(true);
+  }
   if(write){
     const { data, error } = await getSb().rpc('poll_write', { p_token:PV.token, p_names:opts, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
     PV.sending = false;

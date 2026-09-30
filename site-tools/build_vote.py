@@ -40,7 +40,7 @@ NAMES = ['toast', 'esc', 'ltPlural', 'pollClock', 'pollTimeout', 'POLL_FONTS', '
          'pollPage', 'pollStops', 'pollGrad', 'pollCssUrl', 'pollBrandCss', 'POLL_SIZES', 'pollWinXY', 'POLL_ASSETS', 'pollAsset',
          'pollLookFast', 'pollResolve', 'pollNumOpts', 'PN_SRC', 'pollNameNorm', 'pollLev', 'pollWordNear', 'pollNameNear',
          'PV', 'pollVoterId', 'pollVotedKey', 'renderPollVote', 'pollVoteLoad', 'pollVoteLoad0', 'pollVoteMsg', 'pollVoteDraw',
-         'pollWriteDraw', 'pollVoteTick', 'pollVoteSend', 'pollThanks']
+         'pollWriteDraw', 'pollMultiDraw', 'pollVoteTick', 'pollVoteSend', 'pollThanks']
 code = '\n'.join(grab(n) for n in NAMES)
 sb_url = re.search(r'const SUPABASE_URL = "([^"]+)"', s).group(1)
 sb_key = re.search(r'const SUPABASE_KEY = "([^"]+)"', s).group(1)
