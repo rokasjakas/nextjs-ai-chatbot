@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-yJJv+c4fFF6FIMMdDvwmbDWLD2ewNKcYdnmZdXi4PrI=' 'sha256-6i0ab2Ile9+4t/5NPUNsQBXSf00MXxH56v0hKYbNT1s=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-cl5NOWaONEe6W9J2LMK3vAviUDiSUregWJWx56LYo44=' 'sha256-6i0ab2Ile9+4t/5NPUNsQBXSf00MXxH56v0hKYbNT1s=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -1330,6 +1330,17 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 .chat-main{display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--bg);}
 .chat-empty{margin:auto;color:var(--text-dim);font-size:14px;padding:30px;text-align:center;}
 .chat-head{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--panel);}
+.ctk{padding:12px 14px;display:flex;flex-direction:column;gap:10px;} .ctk-list{display:flex;flex-direction:column;gap:8px;}
+.ctk-add{display:flex;gap:6px;flex-wrap:wrap;align-items:center;} .ctk-add input[type=text]{flex:1;min-width:200px;} .ctk-add select{max-width:220px;}
+.ctk-i{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--border);border-left:5px solid;}
+.ctk-i.no{border-left-color:#E5484D;background:color-mix(in srgb, #E5484D 12%, var(--panel));}
+.ctk-i.ok{border-left-color:#30A46C;background:color-mix(in srgb, #30A46C 14%, var(--panel));}
+.ctk-chk{flex:none;width:28px;height:28px;display:grid;place-items:center;border:2px solid #E5484D;background:transparent;color:#fff;font-weight:800;cursor:pointer;border-radius:4px;}
+.ctk-chk.on{border-color:#30A46C;background:#30A46C;} .ctk-chk:disabled{cursor:not-allowed;opacity:.7;}
+.ctk-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;} .ctk-b b{font-size:14.5px;} .ctk-i.ok .ctk-b b{text-decoration:line-through;opacity:.8;}
+.ctk-b small{color:var(--text-dim);font-size:12px;} .ctk-i.no .ctk-b small{color:color-mix(in srgb, #E5484D 70%, var(--text));} .ctk-i.ok .ctk-b small{color:color-mix(in srgb, #30A46C 75%, var(--text));}
+.ctk-late{color:#E5484D;font-weight:700;} .ctk-x{flex:none;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:15px;padding:4px 6px;}
+.ctk-n:not(:empty){display:inline-block;margin-left:6px;min-width:18px;padding:0 5px;border-radius:9px;background:#E5484D;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;}
 .chat-head-t{flex:1;min-width:0;display:flex;flex-direction:column;}
 .chat-head-t b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .chat-head-t small{color:var(--text-dim);font-size:12px;}
@@ -15049,7 +15060,9 @@ function tkName(id){ return id===teamMe() ? 'Aš' : teamShort(teamMember(id)); }
 function tkToCal(){
   CAL.todos = TK.list.filter(t=>t.due_at && !tkDone(t)).map(t=>{ const l = tkLocal(t.due_at); return { id:t.id, title:t.title, due_date:l.d, due_time:l.t==='00:00'?null:l.t, description:t.note||'' }; });
 }
-function tkApply(rows){ TK.list = rows||[]; TK.ok = true; tkToCal(); }
+// a channel's tasks are seen by all its members; my lists keep only those I made or that are given to me
+const tkForMe = t=>{ const me = teamMe(); return !t.conversation_id || t.created_by===me || (t.assignees||[]).includes(me) || t.lead===me; };
+function tkApply(rows){ TK.list = (rows||[]).filter(tkForMe); TK.ok = true; tkToCal(); }
 function tkUpsert(r){ const i = TK.list.findIndex(x=>x.id===r.id); if(i>=0) TK.list[i] = r; else TK.list.push(r); tkToCal(); }
 function tkLive(){
   if(TK.ch || !TK.ok || !getSb()) return;
@@ -15068,6 +15081,7 @@ function tkLive(){
         if(TK.list.some(x=>x.id===r.id) || r.created_by===me || (r.assignees||[]).includes(me) || r.lead===me) tkUpsert(r);
       }
       tkToCal(); if(currentTab==='home' || currentTab==='chat'){ calRender(); tkRender(); }
+      chatTasksLive(p);
     }).subscribe();
   }catch(e){}
 }
@@ -15113,7 +15127,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v188';
+const APP_VER = 'v189';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24476,6 +24490,7 @@ async function chatOpen(cid, opts){
   if(!c){ await chatLoadBrowse(); c = chatConv(cid) || { id:cid, kind:'channel', members:[] }; }
   const main = document.getElementById('chMain'); if(!main) return;
   const joined = c.kind==='general' || (c.members||[]).includes(teamMe());
+  if(TEAM.convTab==='tasks' && c.kind==='direct') TEAM.convTab = 'messages';
   const muted = (notifyPrefs().muted||[]).includes(c.id);
   const others = (c.members||[]).filter(id=>id!==teamMe());
   const sub = c.kind==='direct' ? `<span data-status-text="${esc(others[0]||'')}">${esc(teamStatusText(teamMember(others[0])||{id:others[0]}))}</span>`
@@ -24489,7 +24504,7 @@ async function chatOpen(cid, opts){
       <button class="sk-hb" id="chMute" title="${muted?'Įjungti pranešimus':'Nutildyti'}">${muted ? SK_ICON.belloff : SK_ICON.bell}</button>
       <button class="sk-hb" id="chConvMenu" title="Daugiau">${SK_ICON.more}</button>
     </div>
-    <div class="sk-tabs"><button class="${TEAM.convTab==='messages'?'on':''}" data-ct="messages">Žinutės</button><button class="${TEAM.convTab==='files'?'on':''}" data-ct="files">Failai ir nuorodos</button></div>
+    <div class="sk-tabs"><button class="${TEAM.convTab==='messages'?'on':''}" data-ct="messages">Žinutės</button><button class="${TEAM.convTab==='files'?'on':''}" data-ct="files">Failai ir nuorodos</button>${c.kind!=='direct' ? `<button class="${TEAM.convTab==='tasks'?'on':''}" data-ct="tasks">Užduotys<span class="ctk-n" id="chTkN"></span></button>` : ''}</div>
     <div class="sk-msgs" id="chMsgs"><div class="empty-state">Kraunama…</div></div>
     <div class="chat-uploads" id="chUploads"></div>
     <div class="chat-panel hidden" id="chPanel"></div>
@@ -24510,7 +24525,8 @@ async function chatOpen(cid, opts){
   if(joined && !c.archived_at) chatBindComposer('ch', { cid });
   chatDrawUploads();
   chatRenderList();
-  if(TEAM.convTab==='files'){ chatShowConvTab(cid); }
+  if(c.kind!=='direct') chatTasksLoad(cid);
+  if(TEAM.convTab==='files' || TEAM.convTab==='tasks'){ chatShowConvTab(cid); }
   else { await chatLoadMessages(cid); if(opts.mid) chatFlash(opts.mid); }
   if(TEAM.thread) chatOpenThread(TEAM.thread, opts.mid); else chatCloseThread(true);
   chatCallBar(); chatCallPlace();
@@ -24519,7 +24535,95 @@ async function chatOpen(cid, opts){
 }
 function chatShowConvTab(cid){
   if(TEAM.convTab==='files'){ chatFilesMain(cid); return; }
+  if(TEAM.convTab==='tasks'){ chatTasksMain(cid); return; }
+  if(!TEAM.msgs[cid]){ chatLoadMessages(cid); return; }
   chatRenderMessages(cid, true);
+}
+/* Kanalo užduotys (tab „Užduotys“): tasks with conversation_id = the channel. Anyone in the channel adds one
+   and names who is responsible; the responsible person ticks it – done ones are green, the rest red.
+   A task given to someone also shows in their „Man paskirtos“ list, with its reminders. */
+TEAM.ctk = TEAM.ctk || {};
+async function chatTasksLoad(cid){
+  const { data, error } = await getSb().from('tasks').select('*').eq('conversation_id', cid).order('created_at');
+  TEAM.ctkErr = error ? (/conversation_id|column|schema cache/i.test(error.message) ? 'Kanalo užduotys dar neįjungtos – Supabase paleisk channel_tasks.sql.' : error.message) : '';
+  TEAM.ctk[cid] = error ? [] : (data||[]);
+  chatTasksBadge(cid);
+  if(TEAM.open===cid && TEAM.convTab==='tasks') chatTasksMain(cid, true);
+}
+const ctkDone = t=>!tkOpen(t).length;
+function chatTasksBadge(cid){
+  const n = (TEAM.ctk[cid]||[]).filter(t=>!ctkDone(t)).length, el = document.getElementById('chTkN');
+  if(el && TEAM.open===cid) el.textContent = n ? String(n) : '';
+}
+function chatTasksPeople(c){
+  const ids = c.kind==='general' ? TEAM.members.filter(m=>roleCanChat(m.role)).map(m=>m.id) : (c.members||[]);
+  const me = teamMe();
+  return [me].concat(ids.filter(u=>u!==me).sort((a,b)=>tkName(a).localeCompare(tkName(b), 'lt')));
+}
+function chatTasksMain(cid, fresh){
+  const box = document.getElementById('chMsgs'); if(!box || TEAM.open!==cid) return;
+  if(!fresh && !TEAM.ctk[cid]){ box.innerHTML = '<div class="empty-state">Kraunama…</div>'; chatTasksLoad(cid); return; }
+  const c = chatConv(cid) || { id:cid, kind:'channel', members:[] }, me = teamMe();
+  const list = (TEAM.ctk[cid]||[]).slice().sort((a,b)=>(ctkDone(a)-ctkDone(b)) || (a.due_at||'9999').localeCompare(b.due_at||'9999') || String(a.created_at).localeCompare(String(b.created_at)));
+  const joined = c.kind==='general' || (c.members||[]).includes(me);
+  const keep = document.getElementById('ctkTitle'), kept = keep ? { t:keep.value, w:document.getElementById('ctkWho').value, d:document.getElementById('ctkDue').value } : null;
+  box.innerHTML = `<div class="ctk">
+    ${TEAM.ctkErr ? `<div class="section-sub" style="color:var(--danger);">${esc(TEAM.ctkErr)}</div>` : ''}
+    ${joined ? `<div class="ctk-add"><input type="text" id="ctkTitle" maxlength="300" placeholder="Nauja užduotis…">
+      <select id="ctkWho" title="Kas atsakingas už atlikimą">${chatTasksPeople(c).map(u=>`<option value="${esc(u)}">👤 ${esc(u===me ? 'Aš' : tkName(u))}</option>`).join('')}</select>
+      <input type="date" id="ctkDue" title="Iki kada (nebūtina)"><button class="btn primary small" id="ctkAdd">+ Pridėti užduotį</button></div>` : ''}
+    <div class="ctk-list">${list.map(t=>{ const done = ctkDone(t), who = tkPeople(t), can = who.includes(me), late = !done && t.due_at && new Date(t.due_at).getTime() < Date.now();
+      return `<div class="ctk-i ${done ? 'ok' : 'no'}" data-ctk="${esc(t.id)}">
+        <button type="button" class="ctk-chk ${done ? 'on' : ''}" data-ctkdone="${esc(t.id)}" ${can ? '' : `disabled title="Pažymėti gali atsakingas: ${esc(who.map(tkName).join(', '))}"`} aria-label="Atlikta">${done ? '✓' : ''}</button>
+        <div class="ctk-b"><b>${esc(t.title)}</b><small>👤 ${esc(who.map(tkName).join(', '))}${t.due_at ? ` · <span class="${late ? 'ctk-late' : ''}">📅 ${esc(tkWhen(t.due_at))}</span>` : ''} · ${done ? '✓ atlikta' : 'neatlikta'}${t.created_by!==who[0] ? ' · pridėjo '+esc(tkName(t.created_by)) : ''}</small></div>
+        ${t.created_by===me ? `<button type="button" class="ctk-x" data-ctkdel="${esc(t.id)}" title="Ištrinti užduotį">✕</button>` : ''}</div>`; }).join('') || '<div class="empty-state">Šiame kanale užduočių dar nėra.</div>'}</div>
+  </div>`;
+  if(kept){ document.getElementById('ctkTitle').value = kept.t; document.getElementById('ctkWho').value = kept.w; document.getElementById('ctkDue').value = kept.d; }
+  const add = document.getElementById('ctkAdd');
+  if(add){ add.onclick = ()=>chatTaskAdd(cid); document.getElementById('ctkTitle').onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); chatTaskAdd(cid); } }; }
+  box.querySelectorAll('[data-ctkdone]').forEach(b=>b.onclick = ()=>chatTaskTick(cid, b.dataset.ctkdone, !b.classList.contains('on')));
+  box.querySelectorAll('[data-ctkdel]').forEach(b=>b.onclick = ()=>chatTaskDel(cid, b.dataset.ctkdel));
+  chatTasksBadge(cid);
+}
+async function chatTaskAdd(cid){
+  const ti = document.getElementById('ctkTitle'), title = ti.value.trim(), who = document.getElementById('ctkWho').value, due = document.getElementById('ctkDue').value, me = teamMe();
+  if(!title){ toast('Įrašyk užduotį.'); ti.focus(); return; }
+  const due_at = due ? new Date(due+'T09:00').toISOString() : null;
+  const row = { title, note:'', due_at, conversation_id:cid, assignees: who && who!==me ? [who] : [], lead: who && who!==me ? who : null, remind: due_at ? { before:[0], at:[], push:true, email:false, overdue:false } : {} };
+  const btn = document.getElementById('ctkAdd'); btn.disabled = true;
+  const { data, error } = await getSb().from('tasks').insert(row).select().single();
+  btn.disabled = false;
+  if(error){ toast('Nepavyko: '+(/conversation_id|column|schema cache/i.test(error.message) ? 'Supabase paleisk channel_tasks.sql.' : error.message), 5000); return; }
+  (TEAM.ctk[cid] = TEAM.ctk[cid] || []).push(data);
+  if(tkForMe(data)) tkUpsert(data);
+  if(row.assignees.length) tkNotify(data.id, 'new');
+  ti.value = ''; document.getElementById('ctkDue').value = ''; document.getElementById('ctkWho').value = me;
+  chatTasksMain(cid, true); ti.focus && document.getElementById('ctkTitle') && document.getElementById('ctkTitle').focus();
+  toast('✓ Užduotis pridėta'+(row.assignees.length ? ' – atsakingas: '+tkName(who) : ''));
+}
+async function chatTaskTick(cid, id, on){
+  const { data, error } = await getSb().rpc('task_set_done', { tid:id, is_done:on });
+  if(error){ toast('Nepavyko: '+error.message); return; }
+  const l = TEAM.ctk[cid] || [], i = l.findIndex(x=>x.id===id); if(i>=0 && data && data.id) l[i] = data;
+  if(data && data.id && tkForMe(data)) tkUpsert(data);
+  if(data && data.created_by!==teamMe()) tkNotify(id, on ? 'done' : 'undone');
+  chatTasksMain(cid, true);
+}
+async function chatTaskDel(cid, id){
+  const t = (TEAM.ctk[cid]||[]).find(x=>x.id===id); if(!t) return;
+  if(!(await uiConfirm('Ištrinti užduotį „'+t.title+'“?'))) return;
+  const { error } = await getSb().from('tasks').delete().eq('id', id);
+  if(error){ toast('Nepavyko: '+error.message); return; }
+  TEAM.ctk[cid] = (TEAM.ctk[cid]||[]).filter(x=>x.id!==id); TK.list = TK.list.filter(x=>x.id!==id); tkToCal();
+  chatTasksMain(cid, true);
+}
+// changes by others (realtime on public.tasks)
+function chatTasksLive(p){
+  const r = p.new && p.new.id ? p.new : p.old; if(!r || !r.conversation_id || !TEAM.ctk) return;
+  const cid = r.conversation_id, l = TEAM.ctk[cid]; if(!l) return;
+  const i = l.findIndex(x=>x.id===r.id);
+  if(p.eventType==='DELETE'){ if(i>=0) l.splice(i, 1); } else if(i>=0) l[i] = p.new; else l.push(p.new);
+  if(TEAM.open===cid){ chatTasksBadge(cid); if(TEAM.convTab==='tasks') chatTasksMain(cid, true); }
 }
 async function chatLoadMessages(cid, older){
   const sb = getSb(); if(!sb) return;
