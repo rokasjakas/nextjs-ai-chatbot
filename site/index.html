@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-VrlikqjUEGKDGTfTxtpp7Bh4skuc9WA+FjlDS0NY6KM=' 'sha256-6i0ab2Ile9+4t/5NPUNsQBXSf00MXxH56v0hKYbNT1s=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-ouoHVnKHi4ojImzxqo6ro2GBfjm6X3kDxYcnxUveZtA=' 'sha256-6i0ab2Ile9+4t/5NPUNsQBXSf00MXxH56v0hKYbNT1s=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -12195,18 +12195,14 @@ async function pollManager(root, admin, set){
   catch(e){ toast(e.message); return pollSetsView(root, admin); }
   POLL.list = list || [];
   root.innerHTML = `<div class="${admin ? 'tabpanel ' : ''}poll-mgr" id="pollEd">
-    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;"><button class="btn small" id="pollBack">‹ Visi balsavimai</button><input type="text" id="pollSetName" class="poll-setname" maxlength="200" value="${esc(set.name)}" title="Balsavimo pavadinimas (spausk ir keisk)"><span class="poll-saved muted" id="pollSaved"></span><span style="flex:1"></span><button class="btn small danger" id="pollSetDel">Ištrinti balsavimą</button></div>
+    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;"><button class="btn small" id="pollBack">‹ Visi balsavimai</button><input type="text" id="pollSetName" class="poll-setname" maxlength="200" value="${esc(set.name)}" title="Balsavimo pavadinimas (spausk ir keisk)"><span class="poll-saved muted" id="pollSaved"></span></div>
     <div class="poll-mgr-cols">
       <aside class="card poll-side"><button class="poll-si poll-si-look" id="pollLookBtn"><span class="poll-si-n">🎨</span><span class="poll-si-t"><b>Apipavidalinimas</b><small>fonas, logotipas, šriftas, spalvos, rezultatų ekranas – visoms šio balsavimo nominacijoms</small></span></button><div class="poll-perm" id="pollPerm"></div><div class="row" style="gap:6px;flex-wrap:wrap;margin:10px 0;"><button class="btn primary small" id="pollAdd">+ Nominacija</button><button class="btn small" id="pollBulk">+ Kelios nominacijos iš karto</button><button class="btn small" id="pollAddSp" title="Įterpiama po pažymėtos nominacijos; vietą keisk ▲ ▼">+ Užsklanda</button></div><div class="poll-legend"><span><i style="background:#F2C12E"></i>Laimėtojas pažymėtas iš anksto</span><span><i style="background:#E5484D"></i>Balsuojama</span><span><i style="background:#3E8EDE"></i>Įrašo patys</span></div><div id="pollSide"></div></aside>
       <section id="pollPane"></section>
     </div></div>`;
   document.getElementById('pollBack').onclick = async ()=>{ if(POLL.saveT) await pollSave(); if(POLL.lookT) await pollLookSave(); pollStopTick(); pollSetsView(root, admin); };
   document.getElementById('pollSetName').onchange = async e=>{ const n = e.target.value.trim(); if(!n){ e.target.value = POLL.set.name; return; } try{ Object.assign(POLL.set, await pollApi('set_update', { id:POLL.set.id, name:n })); toast('✓ Pavadinimas išsaugotas'); }catch(err){ toast('Nepavyko: '+err.message); } };
-  document.getElementById('pollSetDel').onclick = async ()=>{
-    if(!(await uiConfirm(`Ištrinti balsavimą „${POLL.set.name}“ su visomis nominacijomis ir balsais? Jo QR kodas nebeveiks.`))) return;
-    try{ await pollApi('set_delete', { id:POLL.set.id }); }catch(e){ toast('Nepavyko: '+e.message); return; }
-    pollStopTick(); POLL.cur = null; pollSetsView(root, admin);
-  };
+  // a voting cannot be deleted here (all its nominations, votes and its QR code would be lost at once)
   document.getElementById('pollAdd').onclick = ()=>pollCreate([{ question:'', options:[pollNewOpt(), pollNewOpt()] }]);
   document.getElementById('pollBulk').onclick = pollBulkModal;
   document.getElementById('pollAddSp').onclick = pollAddSplash;
@@ -15046,7 +15042,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v185';
+const APP_VER = 'v186';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
