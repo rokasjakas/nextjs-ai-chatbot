@@ -5,7 +5,7 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v175';
+const CACHE = 'es-app-v176';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png'];
 
 self.addEventListener('install', e=>{
@@ -20,6 +20,11 @@ self.addEventListener('fetch', e=>{
   const url = new URL(req.url);
   if(url.origin!==self.location.origin) return;           // Supabase, CDN, fonts: straight to the network
   if(/\.(apk|exe|part\d+)$|\/EventSolutions-Setup\.json$/i.test(url.pathname)) return;   // app downloads: never cached (and never stored as index.html)
+  // other pages (the voting page …): from the network, the saved copy only offline
+  if(req.mode==='navigate' && !/\/(index\.html)?$/.test(url.pathname)){
+    e.respondWith(fetch(req).then(res=>{ if(res.ok){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put(url.pathname, copy)); } return res; }).catch(()=>caches.match(url.pathname)));
+    return;
+  }
   if(req.mode==='navigate'){
     const net = fetch(req).then(res=>{
       if(res.ok){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put('./index.html', copy)); }

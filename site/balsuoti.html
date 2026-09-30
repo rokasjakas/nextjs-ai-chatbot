@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-rgXLXt/C4sgqRAjbWVBWc3h3qAuGT0lIalplsaFjHwc=' 'sha256-3v9l38h7pKu476rzxnYoqZJG9OSuteGpOKDyeUFHfhA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101010">
+<meta name="robots" content="noindex">
+<title>Balsavimas · Event Solutions</title>
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://yakmikxkcudwloxruhvx.supabase.co">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Teko:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&family=Roboto:wght@500;700&display=swap" rel="stylesheet" media="print" id="appFonts">
+<style>
+
+:root{
+  color-scheme:dark;
+  /* eventsolutions.lt: near-black, flat dark blocks, square corners,
+     pink / teal / blue brand stripes */
+  --bg:#101010; --bg-deep:#0B0B0B; --panel:#1A1A1A; --panel-2:#222222; --border:#2C2C2C;
+  --rail-bg:#151515;
+  --text:#F5F5F5; --text-dim:#A3A3A3; --text-faint:#666666;
+  --accent:#F35E7D; --accent-ink:#FFFFFF;
+  --pink:#F35E7D; --teal:#50AD97; --blue:#4E9BC9; --amber:#F2A93B; --violet:#8062D4;
+  --slate:#7C8592; --red:#C9484B; --grey:#55606B;
+  --ok:#50AD97; --warn:#F2A93B; --danger:#F0506E;
+  --panel-3:#2A2A2A; --border-2:#3A3A3A; --input:#0E0E10;
+  --fill-hover:#EDEDED; --hi-rgb:255 255 255;
+  --radius:3px;
+  --font-head:'Teko','Roboto',system-ui,sans-serif;
+  --font-body:'Source Sans 3','Source Sans Pro','Roboto',system-ui,sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:var(--font-body);
+  font-size:14.5px; line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--panel);border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:9px;
+  font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:200;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.hidden{display:none !important;}
+#authGate, #guestView{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.poll-mgr-cols{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;align-items:start;} .poll-side{position:sticky;top:calc(var(--sticky-top, 0px) + 10px);max-height:calc(100vh - 40px);overflow:auto;}
+@media (max-width: 1100px){ .poll-mgr-cols{grid-template-columns:1fr;} .poll-side{position:static;max-height:none;} }
+.poll-si{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);background:var(--panel-2);margin-bottom:6px;cursor:pointer;} .poll-si:hover{border-color:color-mix(in srgb, var(--accent) 50%, var(--border));} .poll-si.on{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 10%, var(--panel-2));}
+.poll-si-n{width:22px;height:22px;display:grid;place-items:center;background:var(--panel-3);font-weight:800;font-size:11.5px;flex:none;} .poll-si-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;} .poll-si-t b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .poll-si-t small{font-size:11.5px;color:var(--text-dim);display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-variant-numeric:tabular-nums;}
+.poll-si .btn{padding:4px 10px;flex:none;}
+.poll-si-look{width:100%;text-align:left;font:inherit;color:var(--text);} .poll-si-look .poll-si-n{background:none;font-size:16px;} .poll-si-look small{white-space:normal;}
+.poll-look{max-width:760px;}
+.poll-setname{font-family:var(--font-head);font-size:26px;text-transform:uppercase;font-weight:500;background:transparent;border:1px solid transparent;padding:2px 6px;min-width:200px;flex:1;max-width:520px;color:var(--text);} .poll-setname:hover,.poll-setname:focus{border-color:var(--border);background:var(--panel-2);}
+.poll-hint{font-size:15px;letter-spacing:1px;text-transform:uppercase;margin-bottom:-8px;} .poll-opts.multi .poll-rad{border-radius:4px;} .poll-opts.multi .poll-ob.picked .poll-rad::after{border-radius:2px;}
+.poll-rs-win{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:calc(var(--u)*1*var(--k));min-height:0;}
+.poll-rs-wl{font-size:calc(var(--u)*2.4*var(--k));letter-spacing:.25em;text-transform:uppercase;} .poll-rs-wt{font-size:calc(var(--u)*8*var(--k));line-height:1;text-transform:uppercase;overflow-wrap:anywhere;} .poll-rs-wp{font-size:calc(var(--u)*2.6*var(--k));font-variant-numeric:tabular-nums;margin-bottom:calc(var(--u)*1.2*var(--k));}
+.poll-pub .poll-topic{font-size:calc(clamp(32px,8.5vw,54px)*var(--sz-topic,1));line-height:1;letter-spacing:.04em;margin-bottom:-6px;} .poll-pub .poll-q{font-size:calc(clamp(20px,5.2vw,30px)*var(--sz-question,1));}
+.poll-pub .poll-timer b{font-size:calc(64px*var(--sz-time,1));} .poll-pub .poll-timer small{font-size:calc(14px*var(--sz-time,1));}
+.poll-wr{display:flex;flex-direction:column;gap:10px;width:100%;} .poll-wr input{width:100%;box-sizing:border-box;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(22px*var(--sz-result,1));padding:14px 16px;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 55%, transparent);background:rgba(0,0,0,.35);color:var(--pl-col,#fff);border-radius:0;} .poll-wr input:focus{outline:none;border-color:var(--pl-acc);}
+.poll-wr-row{display:flex;gap:8px;align-items:stretch;} .poll-wr-row input{flex:1;min-width:0;} .poll-wr-x{flex:none;width:52px;font:inherit;font-size:22px;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 35%, transparent);background:rgba(0,0,0,.35);color:var(--pl-col,#fff);cursor:pointer;}
+.poll-more{width:100%;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(20px*var(--sz-result,1));padding:13px 16px;border:2px dashed color-mix(in srgb, var(--pl-col,#fff) 60%, transparent);background:transparent;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;}
+.poll-more:active{background:rgba(255,255,255,.08);} .poll-more small{font-size:.7em;opacity:.75;margin-left:6px;}
+.poll-wr input.dup{border-color:#ff5a5a;} .poll-wr-dup{font-size:calc(14px*var(--sz-result,1));color:#ff8a8a;margin:-4px 0 2px;text-align:left;}
+.poll-warn{font-size:calc(15px*var(--sz-result,1));line-height:1.35;text-align:center;letter-spacing:.3px;}
+.poll-pub .poll-ob{font-size:calc(24px*var(--sz-result,1));} .poll-pub .poll-go{font-size:calc(28px*var(--sz-result,1));} .poll-pub .poll-hint{font-size:calc(15px*var(--sz-result,1));}
+.poll-rs .poll-rs-topic{font-size:calc(var(--u)*6*var(--k)*var(--sz-topic,1));line-height:1;letter-spacing:.04em;margin-bottom:0;text-align:center;} .poll-rs .poll-rs-q{font-size:calc(var(--u)*3.4*var(--k)*var(--sz-question,1));text-align:center;}
+.poll-rs .poll-rs-top{font-size:calc(var(--u)*1.9*var(--k)*var(--sz-time,1));}
+.poll-rs .poll-rs-h{font-size:calc(var(--u)*3*var(--k)*var(--sz-result,1));} .poll-rs .poll-rs-bar{height:calc(var(--u)*2.2*var(--k)*var(--sz-result,1));}
+.poll-rs .poll-rs-wl{font-size:calc(var(--u)*2.4*var(--k)*var(--sz-result,1));} .poll-rs .poll-rs-wt{font-size:calc(var(--u)*8*var(--k)*var(--sz-result,1));} .poll-rs .poll-rs-wp{font-size:calc(var(--u)*2.6*var(--k)*var(--sz-result,1));}
+.poll-rs .poll-rs-win{position:relative;display:block;}
+.poll-rs .poll-rs-wbox{position:absolute;left:var(--win-x,50%);top:var(--win-y,50%);transform:translate(calc(var(--win-x,50%)*-1),calc(var(--win-y,50%)*-1));display:flex;flex-direction:column;align-items:var(--win-ai,center);text-align:var(--win-ta,center);gap:calc(var(--u)*1*var(--k));width:max-content;max-width:100%;}
+.poll-rs .poll-rs-wbox .poll-rs-wt{overflow-wrap:normal;word-break:normal;}
+.poll-rs-sptopic{position:absolute;left:var(--tp-x,50%);top:var(--tp-y,50%);transform:translate(calc(var(--tp-x,50%)*-1),calc(var(--tp-y,50%)*-1));font-size:calc(var(--u)*7*var(--sz-topic,1));line-height:1.05;letter-spacing:.03em;text-align:center;white-space:pre-line;width:max-content;max-width:94%;overflow-wrap:anywhere;}
+.poll-sp-prev{position:relative;width:100%;overflow:hidden;background:#111;} .poll-sp-prev .poll-rs{pointer-events:none;}
+.poll-si.splash .poll-si-n{background:var(--accent);color:#fff;} .poll-si.splash b{font-weight:600;}
+.poll-rs .poll-rs-nom{font-size:calc(var(--u)*4.6*var(--k)*var(--sz-result,1));line-height:1.1;text-transform:uppercase;} .poll-rs-wbox.noms{gap:calc(var(--u)*1.6*var(--k)*var(--sz-result,1));}
+.poll-rs-wbox.reveal.noms > *{animation-delay:0s;} .poll-rs-wbox.noms > *{animation:pollReveal 1.2s cubic-bezier(.2,.9,.25,1) both;}
+.poll-sizes{display:flex;flex-direction:column;gap:6px;margin-top:14px;} .poll-sz{display:grid;grid-template-columns:minmax(120px,210px) 1fr 52px;align-items:center;gap:10px;font-size:13px;} .poll-sz b{text-align:right;font-variant-numeric:tabular-nums;font-size:12.5px;}
+.poll-winpos{display:flex;flex-direction:column;gap:6px;margin-top:14px;} .poll-pos{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,30px);gap:4px;padding:6px;background:#111;border:1px solid var(--border);width:max-content;}
+.poll-pos button{border:1px solid var(--border);background:var(--panel-2);cursor:pointer;display:grid;place-items:center;padding:0;} .poll-pos button i{width:14px;height:6px;background:var(--text-dim);opacity:.4;} .poll-pos button.on{border-color:var(--accent);} .poll-pos button.on i{background:var(--accent);opacity:1;}
+.poll-rs-in{transition:opacity 1.1s ease;} .poll-rs-in.pl-fade{opacity:0;}
+.poll-rs-waitbox{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u)*1.4*var(--k));text-align:center;min-height:0;}
+.poll-rs-cd{font-size:calc(var(--u)*9*var(--k)*var(--sz-time,1));line-height:1;font-variant-numeric:tabular-nums;} .poll-rs-hint{font-size:calc(var(--u)*1.8*var(--k)*var(--sz-time,1));letter-spacing:.2em;text-transform:uppercase;opacity:.85;}
+.poll-rs-qr canvas{display:block;width:calc(var(--u)*16*var(--k));height:calc(var(--u)*16*var(--k));image-rendering:pixelated;} .poll-rs-qr.big canvas{width:calc(var(--u)*24*var(--k));height:calc(var(--u)*24*var(--k));}
+.poll-rs-liverow{display:flex;align-items:center;gap:calc(var(--u)*3*var(--k));} .poll-rs-livet{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.6*var(--k));}
+.poll-rs .poll-rs-big{font-size:calc(var(--u)*11*var(--k)*var(--sz-clock,1));font-variant-numeric:tabular-nums;text-align:center;}
+.poll-rs .poll-rs-liverow{gap:calc(var(--u)*3*var(--k)*var(--sz-clock,1));} .poll-rs .poll-rs-livet .poll-rs-wl{font-size:calc(var(--u)*2.4*var(--k)*var(--sz-clock,1));}
+.poll-rs .poll-rs-liverow .poll-rs-qr canvas{width:calc(var(--u)*16*var(--k)*var(--sz-clock,1));height:calc(var(--u)*16*var(--k)*var(--sz-clock,1));}
+.poll-rs .poll-rs-qr.big canvas{width:calc(var(--u)*24*var(--k)*var(--sz-clock,1));height:calc(var(--u)*24*var(--k)*var(--sz-clock,1));} .poll-rs .poll-rs-cd{font-size:calc(var(--u)*9*var(--k)*var(--sz-clock,1));text-align:center;}
+.poll-rs-idlelogo{position:absolute;left:var(--il-x,50%);top:var(--il-y,8%);transform:translate(calc(var(--il-x,50%)*-1),calc(var(--il-y,8%)*-1));width:auto;height:calc(var(--u)*12*var(--sz-idlelogo,1));max-width:90%;object-fit:contain;}
+.poll-rs-idleqr{position:absolute;left:var(--iq-x,50%);top:var(--iq-y,85%);transform:translate(calc(var(--iq-x,50%)*-1),calc(var(--iq-y,85%)*-1));}
+.poll-rs-idleqr canvas{display:block;width:calc(var(--u)*18*var(--sz-idleqr,1));height:calc(var(--u)*18*var(--sz-idleqr,1));}
+.poll-rs-wbox.reveal > *{animation:pollReveal 1.6s cubic-bezier(.2,.9,.25,1) both;} .poll-rs-wbox.reveal > *:nth-child(2){animation-delay:.25s;} .poll-rs-wbox.reveal > *:nth-child(3){animation-delay:.5s;}
+.poll-rs-wbox.reveal .poll-rs-wt{filter:drop-shadow(0 0 calc(var(--u)*1.5) rgba(255,210,90,.55));}
+@keyframes pollReveal{0%{opacity:0;transform:scale(.55);filter:blur(12px);} 60%{opacity:1;transform:scale(1.06);filter:blur(0);} 100%{opacity:1;transform:scale(1);}}
+.poll-fw{position:absolute;inset:0;pointer-events:none;z-index:0;transition:opacity .8s;} .poll-rs > .poll-rs-in{z-index:1;}
+.poll-si-top{font-style:normal;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;font-weight:800;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.poll-topic{font-size:16px;letter-spacing:3px;text-transform:uppercase;margin-bottom:-8px;font-family:var(--pl-font,var(--font-head));} .poll-rs-topic{font-size:calc(var(--u)*2.2*var(--k));letter-spacing:.2em;text-transform:uppercase;margin-bottom:calc(var(--u)*-1.2*var(--k));}
+.poll-perm .poll-qr canvas{width:170px;height:170px;background:transparent;} .poll-perm .poll-qr.clear canvas{background:repeating-conic-gradient(#8884 0% 25%, transparent 0% 50%) 50%/16px 16px;}
+.poll-qro{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--text-dim);} .poll-qro label{display:inline-flex;align-items:center;gap:6px;} .poll-qro input[type=color]{width:34px;height:26px;padding:1px;border:1px solid var(--border);background:var(--panel-2);} .poll-qro .off{opacity:.45;} .poll-logo.idle{max-height:40vh;max-width:80%;margin:auto;} .poll-rs-logo.idle{margin:auto;max-height:45%;max-width:60%;} .poll-look .card{margin-bottom:14px;}
+#guestView.poll-edv{display:block;padding:16px;align-items:stretch;} .poll-edpage{max-width:1500px;margin:0 auto;} .poll-edtop{display:flex;align-items:center;gap:10px;margin:0 0 14px;} .poll-edtop .brand-cube{width:28px;height:28px;} .poll-edtop b{font-family:var(--font-head);font-weight:500;font-size:22px;letter-spacing:.6px;} .poll-edtop span{margin-left:auto;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);font-weight:700;}
+.poll-edlink{border-top:1px solid var(--border);padding-top:10px;}
+.poll-gf{display:flex;flex-direction:column;gap:8px;margin-top:12px;} .poll-gf-top .chip{font-size:14px;}
+.poll-sample{font-family:var(--pl-font,var(--font-head)) !important;}
+.poll-li{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);cursor:pointer;margin-bottom:6px;font:inherit;}
+.poll-li:hover{border-color:var(--accent);} .poll-li b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .poll-li small{color:var(--text-dim);font-size:12px;white-space:nowrap;}
+.poll-st{font-size:10.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:2px 7px;border:1px solid currentColor;white-space:nowrap;color:var(--text-dim);}
+.poll-st.st-live{color:#2E8C77;} .poll-st.st-waiting{color:var(--amber);} .poll-st.st-ended{color:var(--danger);}
+.poll-cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start;} .poll-cols .card{margin-bottom:14px;}
+@media (max-width: 900px){ .poll-cols{grid-template-columns:1fr;} }
+.poll-opt{display:flex;align-items:center;gap:8px;margin-bottom:6px;} .poll-win-ck{display:flex;align-items:center;gap:3px;font-size:12px;white-space:nowrap;cursor:pointer;opacity:.55;} .poll-win-ck.on{opacity:1;color:var(--accent);font-weight:700;} .poll-win-ck input{margin:0;}
+.poll-show-now{padding:8px 10px;background:var(--panel-3);margin:8px 0;font-size:13px;} .poll-si-show{font-style:normal;font-size:11px;color:var(--accent);margin-left:4px;} .poll-opt input{flex:1;min-width:0;} .poll-opt-n{width:24px;height:24px;display:grid;place-items:center;background:var(--panel-3);font-weight:800;font-size:12px;flex:none;}
+.poll-num{display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);font-size:13px;} .poll-num input{width:84px;}
+.poll-brand{display:grid;grid-template-columns:1fr 1fr;gap:12px;} @media (max-width: 560px){ .poll-brand{grid-template-columns:1fr;} }
+.poll-up{display:flex;flex-direction:column;gap:6px;} .poll-up > span,.poll-col{font-size:12px;font-weight:700;color:var(--text-dim);} .poll-up .btn{align-self:flex-start;}
+.poll-up-prev{height:84px;border:1px solid var(--border);background:#111 center/cover;display:grid;place-items:center;color:var(--text-dim);font-size:12.5px;padding:6px;text-align:center;overflow:hidden;}
+.poll-col{display:flex;flex-direction:column;gap:6px;} .poll-col input[type=color]{width:100%;height:38px;padding:2px;background:var(--panel-2);border:1px solid var(--border);}
+.poll-big{display:flex;flex-direction:column;gap:2px;margin:14px 0;} .poll-big small{color:var(--text-dim);} .poll-big b{font-family:var(--font-head);font-size:56px;line-height:1;font-weight:500;}
+.poll-big.live b{color:#2E8C77;} .poll-ctl .btn{width:100%;justify-content:center;}
+.poll-delay{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;font-size:12.5px;color:var(--text-dim);} .poll-delay .chipbar{align-items:center;}
+.poll-links{display:flex;gap:14px;flex-wrap:wrap;} .poll-qr canvas{width:180px;height:180px;display:block;background:#fff;image-rendering:pixelated;} .poll-lk{flex:1;min-width:220px;}
+.poll-lk-t{font-size:11px;letter-spacing:.8px;text-transform:uppercase;font-weight:800;color:var(--text-dim);margin-bottom:4px;}
+.poll-url{font-size:12px;word-break:break-all;background:var(--panel-2);border:1px solid var(--border);padding:6px 8px;margin-bottom:6px;user-select:all;}
+.poll-rrow{margin-bottom:10px;} .poll-rrow-h{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;margin-bottom:4px;} .poll-rrow-h span{color:var(--text-dim);white-space:nowrap;}
+.poll-bar{height:10px;background:var(--panel-3);} .poll-bar i{display:block;height:100%;background:var(--accent);transition:width .5s;} .poll-rrow.top .poll-bar i{background:#2E8C77;}
+#guestView.poll-pubv,#guestView.poll-resv{padding:0;display:block;min-height:0;}
+.poll-pub{position:fixed;inset:0;overflow:auto;color:var(--pl-col,#fff);font-family:var(--pl-font,var(--font-head));background:#111;display:flex;}
+.poll-pub.has-bg{background:linear-gradient(rgba(0,0,0,var(--pl-dim)),rgba(0,0,0,var(--pl-dim))),var(--pl-bg) center/cover no-repeat;}
+.poll-pub-in{margin:auto;width:100%;max-width:640px;padding:28px 20px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:18px;text-align:center;}
+.poll-timer{display:flex;flex-direction:column;align-items:center;} .poll-timer small{font-size:14px;letter-spacing:2px;text-transform:uppercase;opacity:.8;} .poll-timer b{font-size:64px;line-height:1;font-weight:500;color:var(--pl-acc,#E5486C);font-variant-numeric:tabular-nums;}
+.poll-q{font-size:clamp(28px,7vw,46px);line-height:1.05;margin:0;font-weight:500;text-transform:uppercase;overflow-wrap:anywhere;}
+.poll-opts{display:flex;flex-direction:column;gap:10px;}
+.poll-ob{font:inherit;font-size:24px;line-height:1.1;padding:16px 16px;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 55%, transparent);background:rgba(0,0,0,.35);cursor:pointer;text-transform:uppercase;letter-spacing:.3px;transition:transform .1s, background .15s, border-color .15s;display:flex;align-items:center;gap:14px;text-align:left;}
+.poll-ob:active{transform:scale(.98);} .poll-ob.picked{border-color:var(--pl-acc,#E5486C);background:color-mix(in srgb, var(--pl-acc,#E5486C) 22%, rgba(0,0,0,.45));} .poll-ob:disabled:not(.picked){opacity:.45;}
+.poll-rad{width:22px;height:22px;border-radius:50%;border:2px solid var(--pl-col,#fff);flex:none;display:grid;place-items:center;} .poll-ob.picked .poll-rad{border-color:var(--pl-acc,#E5486C);} .poll-ob.picked .poll-rad::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--pl-acc,#E5486C);}
+.poll-go{font:inherit;font-size:28px;letter-spacing:1px;text-transform:uppercase;padding:16px;border:2px solid var(--pl-acc,#E5486C);background:color-mix(in srgb, var(--pl-acc,#E5486C) 30%, rgba(0,0,0,.5));cursor:pointer;margin-top:4px;transition:opacity .15s, transform .1s;}
+.poll-go:disabled{opacity:.4;cursor:default;} .poll-go:not(:disabled):active{transform:scale(.98);} .poll-go.sending{opacity:.7;}
+.poll-pub h1,.poll-pub button,.poll-pub small,.poll-pub b,.poll-rs h1,.poll-rs span,.poll-rs b{font-family:var(--pl-font,var(--font-head));}
+.poll-rs.acc-grad .poll-rs-bar i,.poll-pub.acc-grad .poll-ob.picked .poll-rad::after,.poll-pub.acc-grad .poll-ok{background:var(--pl-grad);} .poll-pub.acc-grad .poll-ok{color:#111;-webkit-text-fill-color:#111;}
+.pl-txt{background:var(--pl-grad,linear-gradient(#fff,#fff));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;}
+.poll-logo{display:block;max-width:min(70%,320px);max-height:120px;margin:0 auto;object-fit:contain;}
+.poll-rs-logo{display:block;max-height:calc(var(--u)*9*var(--k)*var(--sz-logo,1));max-width:min(96%, calc(40% * var(--sz-logo,1)));object-fit:contain;align-self:center;position:relative;top:var(--lg-y,0%);flex:none;}
+.poll-txt{display:flex;flex-direction:column;gap:8px;margin-top:12px;} .poll-sep{width:1px;align-self:stretch;background:var(--border);margin:0 4px;}
+.poll-stops{display:flex;align-items:center;gap:8px;flex-wrap:wrap;} .poll-stop{display:inline-flex;align-items:center;gap:2px;} .poll-stop input{width:46px;height:34px;padding:2px;background:var(--panel-2);border:1px solid var(--border);}
+.poll-sample{background:#111;padding:14px;font-family:var(--font-head);font-size:34px;text-transform:uppercase;line-height:1;}
+.poll-up-prev.logo img{max-width:100%;max-height:70px;object-fit:contain;}
+.poll-msg{font-size:34px;line-height:1.1;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px;} .poll-msg small{font-size:18px;text-transform:none;opacity:.8;} .poll-msg.sm{font-size:18px;text-transform:none;opacity:.8;}
+.poll-ok{width:84px;height:84px;border-radius:50%;background:var(--pl-acc,#E5486C);display:grid;place-items:center;font-size:46px;color:#fff;-webkit-text-fill-color:#fff;}
+.poll-rs-wrap{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);overflow:hidden;background:#000;}
+.poll-rs{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;color:var(--pl-col,#fff);font-family:var(--pl-font,var(--font-head));background:#111;}
+.poll-rs.has-bg{background:linear-gradient(rgba(0,0,0,var(--pl-dim)),rgba(0,0,0,var(--pl-dim))),var(--pl-bg) center/cover no-repeat;}
+.poll-rs-in{--k:1;position:absolute;inset:0;padding:calc(var(--u)*4*var(--k)) calc(var(--u)*5*var(--k));display:flex;flex-direction:column;gap:calc(var(--u)*2.2*var(--k));overflow:hidden;}
+.poll-rs-top{display:flex;justify-content:space-between;align-items:center;font-size:calc(var(--u)*1.9*var(--k));letter-spacing:.15em;text-transform:uppercase;opacity:.9;gap:20px;}
+.poll-rs-live{display:inline-flex;align-items:center;gap:.5em;font-variant-numeric:tabular-nums;} .poll-rs-live i{width:.6em;height:.6em;border-radius:50%;background:var(--pl-acc,#E5486C);animation:pollPulse 1.2s infinite;}
+@keyframes pollPulse{50%{opacity:.25;}}
+.poll-rs-q{font-size:calc(var(--u)*5.2*var(--k));line-height:1;margin:0;font-weight:500;text-transform:uppercase;overflow-wrap:anywhere;}
+.poll-rs-list{flex:1;display:flex;flex-direction:column;justify-content:center;gap:calc(var(--u)*1.8*var(--k));min-height:0;}
+.poll-rs-h{display:flex;justify-content:space-between;align-items:baseline;gap:1em;font-size:calc(var(--u)*3*var(--k));line-height:1.05;text-transform:uppercase;margin-bottom:calc(var(--u)*.6*var(--k));}
+.poll-rs-h span{overflow-wrap:anywhere;} .poll-rs-h b{font-weight:500;font-variant-numeric:tabular-nums;}
+.poll-rs-bar{height:calc(var(--u)*2.2*var(--k));background:rgba(255,255,255,.14);} .poll-rs-bar i{display:block;height:100%;background:var(--pl-acc,#E5486C);transition:width .8s cubic-bezier(.2,.8,.2,1);}
+.poll-rs-row.win .poll-rs-h{color:var(--pl-acc,#E5486C);}
+.poll-rs-in > .poll-msg{margin:auto;font-size:calc(var(--u)*4);}
+</style>
+</head>
+<body>
+<div id="guestView" class="hidden"></div>
+<div id="toast"></div>
+<script>
+// built from index.html by site-tools/build_vote.py – edit the voting code there, not here
+(()=>{ const l = document.getElementById('appFonts'); if(!l) return; const on = ()=>{ l.media = 'all'; }; if(l.sheet) on(); else { l.addEventListener('load', on); l.addEventListener('error', on); } })();
+const SUPABASE_URL = "https://yakmikxkcudwloxruhvx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OYVSooEWr-aPd__NPM8G3g_MQrSAXbI";
+// the database functions over plain fetch (the same headers supabase-js sends); a request is cut after 10 s
+const SBL = { rpc(name, args){
+  const c = new AbortController(), t = setTimeout(()=>c.abort(), 10000);
+  return fetch(SUPABASE_URL+'/rest/v1/rpc/'+name, { method:'POST', signal:c.signal, headers:{ apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json' }, body:JSON.stringify(args || {}) })
+    .then(async r=>{ const txt = await r.text(); let d = null; try{ d = txt ? JSON.parse(txt) : null; }catch(e){}
+      return r.ok ? { data:d, error:null } : { data:null, error:{ message:(d && d.message) || ('HTTP '+r.status) } }; })
+    .catch(e=>({ data:null, error:{ message:String(e && e.message || e) } }))
+    .finally(()=>clearTimeout(t));
+} };
+function getSb(){ return SBL; }
+async function pollSbReady(){ return SBL; }
+function toast(msg, ms){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._h);
+  toast._h = setTimeout(()=>t.classList.remove('show'), ms || 2400);
+}
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function ltPlural(n, one, few, many){
+  const m10 = n%10, m100 = n%100;
+  const w = (m10===1 && m100!==11) ? one : (m10>=2 && m10<=9 && !(m100>=12 && m100<=19)) ? few : many;
+  return n+' '+w;
+}
+function pollClock(ms){ ms = Math.max(0, ms); const s = Math.ceil(ms/1000), h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return (h ? h+':'+String(m).padStart(2,'0') : m)+':'+String(x).padStart(2,'0'); }
+const pollTimeout = (p, ms, fb)=>Promise.race([Promise.resolve(p).catch(()=>fb), new Promise(r=>setTimeout(()=>r(fb), ms))]);
+const POLL_FONTS = {};
+const POLL_GF = {};
+const pollGfOk = n=>/^[A-Za-z0-9][A-Za-z0-9 ]{1,59}$/.test(String(n||''));
+function pollGFont(name){
+  if(!pollGfOk(name)) return Promise.resolve(false);
+  if(!POLL_GF[name]) POLL_GF[name] = new Promise(res=>{
+    const add = (q, fallback)=>{
+      const l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family='+name.trim().replace(/ +/g, '+')+q+'&display=swap';
+      l.onload = async ()=>{ try{ await pollTimeout(Promise.all([document.fonts.load(`400 1em "${name}"`), document.fonts.load(`700 1em "${name}"`)]), 6000); }catch(e){}
+        res([...document.fonts].some(f=>f.family.replace(/["']/g, '')===name && f.status==='loaded')); };
+      // not every font has bold: ask again for the regular one only
+      l.onerror = ()=>{ l.remove(); if(fallback) fallback(); else res(false); };
+      document.head.appendChild(l);
+    };
+    add(':wght@400;700', ()=>add('', null));
+  });
+  return POLL_GF[name];
+}
+async function pollFont(b){
+  if(b && !b.font && b.gfont) return (await pollGFont(b.gfont)) ? b.gfont : '';
+  if(!b || !b.font) return '';
+  let h = 0; for(const ch of String(b.font)) h = (h*31 + ch.charCodeAt(0)) >>> 0;
+  const fam = 'PollBrand_'+h.toString(36);
+  if(!POLL_FONTS[fam]){ POLL_FONTS[fam] = (async()=>{ try{ const a = await pollAsset(b.font); if(!a) return false; const f = new FontFace(fam, a.buf || `url("${pollCssUrl(a.url)}")`); await pollTimeout(f.load(), 8000); if(f.status!=='loaded') return false; document.fonts.add(f); return true; }catch(e){ return false; } })(); }
+  return (await POLL_FONTS[fam]) ? fam : '';
+}
+function pollPage(b, kind){ b = b || {}; return (b[kind] && typeof b[kind]==='object') ? b[kind] : {}; }
+function pollStops(t){ t = t || {}; const st = (Array.isArray(t.stops) ? t.stops : []).filter(c=>/^#[0-9a-f]{3,8}$/i.test(c)); return st.length ? st : ['#FFFFFF']; }
+function pollGrad(t){ const st = pollStops(t); return t && t.mode==='gradient' && st.length > 1 ? `linear-gradient(${+t.angle||100}deg,${st.join(',')})` : `linear-gradient(${st[0]},${st[0]})`; }
+const pollCssUrl = u=>String(u||'').replace(/["\\\n]/g, '');
+function pollBrandCss(b, fam){
+  b = b || {};
+  const acc = /^#[0-9a-f]{3,8}$/i.test(b.accent||'') ? b.accent : '#E5486C', dim = b.bg ? (b.dim!=null ? +b.dim : 0.35) : 0;
+  // text sizes (%, 100 = as designed) and where the winner stands on the results screen
+  const z = b.sizes || {}, sz = POLL_SIZES.map(k=>`--sz-${k}:${Math.max(30, Math.min(400, +z[k] || 100))/100};`).join('');
+  const [wx, wy] = pollWinXY(b);
+  const win = `--win-x:${wx}%;--win-y:${wy}%;--win-ai:${wx < 34 ? 'flex-start' : wx > 66 ? 'flex-end' : 'center'};--win-ta:${wx < 34 ? 'left' : wx > 66 ? 'right' : 'center'};`;
+  const iqx = b.idleX!=null ? Math.max(0, Math.min(100, +b.idleX)) : 50, iqy = b.idleY!=null ? Math.max(0, Math.min(100, +b.idleY)) : 85;
+  const tpx = b.topicX!=null ? Math.max(0, Math.min(100, +b.topicX)) : 50, tpy = b.topicY!=null ? Math.max(0, Math.min(100, +b.topicY)) : 50;
+  const lgy = b.logoTY!=null ? Math.max(-10, Math.min(90, +b.logoTY)) : 0;
+  const ilx = b.logoX!=null ? Math.max(0, Math.min(100, +b.logoX)) : 50, ily = b.logoY!=null ? Math.max(0, Math.min(100, +b.logoY)) : 8;
+  return `--pl-grad:${pollGrad(b.text)};--pl-col:${pollStops(b.text)[0]};--pl-acc:${acc};--pl-font:${fam ? `'${fam}',` : ''}var(--font-head);${b.bg ? `--pl-bg:url("${pollCssUrl(b.bg)}");` : ''}--pl-dim:${dim};${sz}${win}--iq-x:${iqx}%;--iq-y:${iqy}%;--il-x:${ilx}%;--il-y:${ily}%;--lg-y:${lgy}%;--tp-x:${tpx}%;--tp-y:${tpy}%;`;
+}
+const POLL_SIZES = ['topic','question','time','result','clock','idleqr','idlelogo','logo'];
+function pollWinXY(b){
+  b = b || {};
+  const old = /^[tmb][lcr]$/.test(b.winPos||'') ? b.winPos : 'mc';
+  const x = b.winX!=null ? +b.winX : { l:0, c:50, r:100 }[old[1]], y = b.winY!=null ? +b.winY : { t:0, m:50, b:100 }[old[0]];
+  return [Math.max(0, Math.min(100, x)), Math.max(0, Math.min(100, y))];
+}
+const POLL_ASSETS = {};
+function pollAsset(ref){
+  ref = String(ref||''); if(!ref) return Promise.resolve(null);
+  if(!ref.startsWith('asset:')) return Promise.resolve({ url:ref });
+  const id = ref.slice(6);
+  if(!POLL_ASSETS[id]) POLL_ASSETS[id] = (async()=>{
+    const { data, error } = await getSb().rpc('poll_asset', { p_id:id });
+    if(error || !data) return null;
+    const bin = Uint8Array.from(atob(data.data), c=>c.charCodeAt(0));
+    return { url:URL.createObjectURL(new Blob([bin], { type:data.mime })), buf:bin.buffer };
+  })().catch(()=>null);
+  return POLL_ASSETS[id];
+}
+async function pollLookFast(B0, onLate){
+  const full = Promise.all([pollResolve(B0), pollFont(B0)]);
+  const r = await pollTimeout(full, 1500, null);
+  if(r) return r;
+  full.then(()=>{ try{ onLate(); }catch(e){} }).catch(()=>{});
+  return [Object.assign({}, B0, { bg:'', logo:'' }), ''];
+}
+async function pollResolve(b){
+  b = Object.assign({}, b || {});
+  const [bg, logo] = await Promise.all([pollAsset(b.bg), pollAsset(b.logo)]);
+  b.bg = bg ? bg.url : ''; b.logo = logo ? logo.url : '';
+  return b;
+}
+function pollNumOpts(d){ if(d && Array.isArray(d.options)) d.options = d.options.map((o, i)=>Object.assign({}, o, { text:String(o.text||'').trim() || String(i+1) })); if(d && typeof d.question==='string') d.question = d.question.trim(); return d; }
+const PN_SRC = 'ąčęėįšųūžáàäâãåçéèêëíìîïñóòöôõúùûüýÿłńśźż', PN_DST = 'aceeisuuzaaaaaaceeeeiiiinooooouuuuyylnszz';
+function pollNameNorm(t){ let o = ''; for(const ch of String(t||'').toLowerCase()){ const k = PN_SRC.indexOf(ch); o += k >= 0 ? PN_DST[k] : ch; } return o.replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function pollLev(a, b){
+  if(a===b) return 0; if(!a.length) return b.length; if(!b.length) return a.length;
+  let pp = null, prev = Array.from({ length:b.length + 1 }, (_, j)=>j);
+  for(let i = 1; i <= a.length; i++){
+    const cur = [i];
+    for(let j = 1; j <= b.length; j++){
+      let v = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1]===b[j-1] ? 0 : 1));
+      if(i > 1 && j > 1 && a[i-1]===b[j-2] && a[i-2]===b[j-1]) v = Math.min(v, pp[j-2] + 1);
+      cur.push(v);
+    }
+    pp = prev; prev = cur;
+  }
+  return prev[b.length];
+}
+function pollWordNear(x, y){ const L = Math.max(x.length, y.length); return x===y || (x[0]===y[0] && L > 4 && pollLev(x, y) <= (L <= 8 ? 1 : 2)); }
+function pollNameNear(a, b){
+  if(a===b) return true;
+  const wa = a.split(' '), wb = b.split(' ');
+  if(!a || wa.length!==wb.length) return false;
+  if(wa.every((w, k)=>pollWordNear(w, wb[k]))) return true;
+  const sa = wa.slice().sort(), sb = wb.slice().sort();
+  return sa.every((w, k)=>pollWordNear(w, sb[k]));
+}
+const PV = { token:'', d:null, off:0, t:null, poll:null, voted:false };
+function pollVoterId(){
+  let v = ''; try{ v = localStorage.getItem('es_poll_voter') || ''; }catch(e){}
+  if(!/^[a-z0-9]{16,}$/.test(v)){ v = Array.from(crypto.getRandomValues(new Uint8Array(12)), b=>b.toString(36).padStart(2,'0')).join('').slice(0, 20); try{ localStorage.setItem('es_poll_voter', v); }catch(e){} }
+  return v;
+}
+function pollVotedKey(){ return 'es_poll_voted_'+(PV.d && PV.d.poll ? PV.d.poll : PV.token.slice(0, 16))+'_'+(PV.d ? PV.d.round : 0); }
+async function renderPollVote(token){
+  PV.token = token; PV.preview = new URLSearchParams(location.search).get('perziura')==='1';
+  const el = document.getElementById('guestView'); el.classList.add('poll-pubv');
+  el.innerHTML = `<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Kraunama…</div></div></div>`;
+  document.title = 'Balsavimas · Event Solutions';
+  // the permanent QR: keeps asking which question runs now (the next one appears by itself);
+  // started first, so a slow first answer never leaves the page waiting
+  PV.poll = setInterval(()=>{ if(document.visibilityState==='visible') pollVoteLoad(); }, 3000);
+  PV.t = setInterval(pollVoteTick, 250);
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') pollVoteLoad(); });
+  pollVoteLoad();
+}
+async function pollVoteLoad(){
+  if(PV.busy && Date.now() - PV.busy < 8000) return;
+  PV.busy = Date.now();
+  try{ await pollVoteLoad0(); }
+  catch(e){ if(!PV.d) pollVoteMsg('Nepavyko prisijungti.<small>Bandoma iš naujo…</small>'); }
+  finally{ PV.busy = 0; }
+}
+async function pollVoteLoad0(){
+  const sb = await pollSbReady(); if(!sb){ if(!PV.d) pollVoteMsg('Nepavyko prisijungti.<small>Patikrinkite internetą – bandoma iš naujo…</small>'); return; }
+  let { data, error } = await pollTimeout(sb.rpc('poll_public', { p_token:PV.token }), 10000, { data:null, error:{ message:'timeout' } });
+  if(error || !data){ if(!PV.d) pollVoteMsg('Nepavyko prisijungti.<small>Patikrinkite internetą – bandoma iš naujo…</small>'); return; }
+  PV.off = Date.parse(data.now) - Date.now();
+  pollNumOpts(data);
+  // preview (from the editor): a sample question when nothing runs
+  if(PV.preview && !['live','waiting'].includes(data.state)){
+    PV.demoEnd = PV.demoEnd || new Date(Date.now()+5*60000).toISOString();
+    data = Object.assign({}, data, { state:'live', poll:'demo', round:1, multi:false, topic:'Tema', question:'Pavyzdinė nominacija – kaip atrodo?', starts_at:new Date(Date.now()-1000).toISOString(), ends_at:PV.demoEnd,
+      options:[{ id:'a', text:'Pirmas nominantas' },{ id:'b', text:'Antras nominantas' },{ id:'c', text:'Trečias nominantas' }] });
+  }
+  const was = PV.d; PV.d = data;
+  if(!was || was.state!==data.state || was.round!==data.round || was.poll!==data.poll || was.topic!==data.topic || was.question!==data.question || was.multi!==data.multi || JSON.stringify(was.brand)!==JSON.stringify(data.brand)){ PV.voted = false; pollVoteDraw(); }
+}
+function pollVoteMsg(html){ const i = document.querySelector('.poll-pub-in'); if(i) i.innerHTML = (PV.logo||'')+`<div class="poll-msg pl-txt">${html}</div>`; }
+async function pollVoteDraw(){
+  const d = PV.d, pub = document.querySelector('.poll-pub'); if(!pub || !d) return;
+  const B0 = pollPage(d.brand, 'vote'), [B, fam] = await pollLookFast(B0, ()=>{ if(PV.d===d && !(PV.picks && PV.picks.size)){ pollVoteDraw(); } });
+  pub.style.cssText = pollBrandCss(B, fam);
+  pub.classList.toggle('has-bg', !!B.bg); pub.classList.toggle('acc-grad', !!B.accGrad);
+  PV.logo = B.logo ? `<img class="poll-logo" src="${esc(B.logo)}" alt="">` : '';
+  let voted = false; try{ voted = !!localStorage.getItem(pollVotedKey()); }catch(e){}
+  if(d.state==='idle'){ const i = document.querySelector('.poll-pub-in'); if(i) i.innerHTML = PV.logo ? PV.logo.replace('class="poll-logo"', 'class="poll-logo idle"') : ''; return; }
+  if(d.state==='invalid') return pollVoteMsg('Ši nuoroda nebegalioja.');
+  if(d.state==='ended') return pollVoteMsg('Balsavimas baigtas.<small>Ačiū, kad dalyvavote!</small>');
+  if(d.state==='draft') return pollVoteMsg('Balsavimas dar neprasidėjo.<small>Palaukite – puslapis atsinaujins pats.</small>');
+  if(voted && d.state==='live' && !PV.preview) return pollThanks(false);
+  const i = document.querySelector('.poll-pub-in');
+  PV.pick = null;
+  i.innerHTML = `${PV.logo||''}${d.topic ? `<div class="poll-topic pl-txt">${esc(d.topic)}</div>` : ''}${d.question ? `<h1 class="poll-q pl-txt">${esc(d.question)}</h1>` : ''}
+    <div class="poll-timer"><small class="pl-txt">${d.state==='waiting' ? 'Prasidės po' : 'Liko laiko'}</small><b class="pl-txt" id="pvClock"></b></div>
+    ${d.state==='live' ? `${d.multi ? '<div class="poll-hint pl-txt">Galite pasirinkti kelis nominantus</div>' : ''}<div class="poll-opts ${d.multi ? 'multi' : ''}" role="${d.multi ? 'group' : 'radiogroup'}">${(d.options||[]).map(o=>`<button class="poll-ob" role="${d.multi ? 'checkbox' : 'radio'}" aria-checked="false" data-ov="${esc(o.id)}"><i class="poll-rad"></i><span class="pl-txt">${esc(o.text)}</span></button>`).join('')}</div>
+      <button class="poll-go" id="pvGo" disabled><span class="pl-txt">Balsuoti</span></button>` : `<div class="poll-msg sm pl-txt">${d.write ? 'Vardą ir pavardę įrašyti galėsite, kai prasidės balsavimas.' : 'Nominantai atsiras, kai prasidės balsavimas.'}</div>`}`;
+  PV.picks = new Set();
+  if(d.write && d.state==='live') return pollWriteDraw(i, d);
+  i.querySelectorAll('[data-ov]').forEach(b=>b.onclick = ()=>{ if(PV.sending) return;
+    if(d.multi){ if(PV.picks.has(b.dataset.ov)) PV.picks.delete(b.dataset.ov); else PV.picks.add(b.dataset.ov); }
+    else PV.picks = new Set([b.dataset.ov]);
+    i.querySelectorAll('[data-ov]').forEach(x=>{ const on = PV.picks.has(x.dataset.ov); x.classList.toggle('picked', on); x.setAttribute('aria-checked', on ? 'true' : 'false'); });
+    document.getElementById('pvGo').disabled = !PV.picks.size; });
+  const go = document.getElementById('pvGo'); if(go) go.onclick = ()=>{ if(PV.picks.size) pollVoteSend([...PV.picks], go); };
+  pollVoteTick();
+}
+function pollWriteDraw(i, d){
+  const n = Math.max(1, Math.min(50, +d.write_max || 1));
+  i.querySelectorAll('.poll-opts, .poll-hint').forEach(x=>x.remove());
+  const go = document.getElementById('pvGo');
+  go.insertAdjacentHTML('beforebegin', `<div class="poll-warn pl-txt">Įrašykite <b>tikslų vardą ir pavardę</b>, kitaip balsas neužsiskaitys.${n > 1 ? `<br>Galite įrašyti iki ${n} skirtingų – spauskite „Įrašyti kitą“, o baigę – „Balsuoti“.` : ''}</div>
+    <div class="poll-wr"></div>
+    ${n > 1 ? '<button class="poll-more" id="pvMore" type="button"><span class="pl-txt">+ Įrašyti kitą</span><small class="pl-txt" id="pvMoreN"></small></button>' : ''}`);
+  const box = i.querySelector('.poll-wr'), more = document.getElementById('pvMore');
+  const field = first=>`<div class="poll-wr-row"><input type="text" maxlength="80" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Vardas Pavardė">${first ? '' : '<button type="button" class="poll-wr-x" title="Pašalinti" aria-label="Pašalinti">✕</button>'}</div>`;
+  const upd = ()=>{
+    const ins = [...box.querySelectorAll('input')], v = ins.map(x=>x.value.trim().replace(/\s+/g, ' ')).filter(Boolean);
+    // the same (or nearly the same) name twice: marked, and not sent
+    const seen = []; let dups = 0;
+    ins.forEach(x=>{ const n = pollNameNorm(x.value), row = x.closest('.poll-wr-row'), dup = !!n && seen.some(m=>pollNameNear(n, m));
+      x.classList.toggle('dup', dup); if(n && !dup) seen.push(n); if(dup) dups++;
+      let msg = row.nextElementSibling && row.nextElementSibling.classList.contains('poll-wr-dup') ? row.nextElementSibling : null;
+      if(dup && !msg){ row.insertAdjacentHTML('afterend', '<div class="poll-wr-dup">Šis vardas jau įrašytas – įrašykite kitą arba pašalinkite.</div>'); }
+      if(!dup && msg) msg.remove(); });
+    PV.picks = new Set(ins.filter(x=>!x.classList.contains('dup')).map(x=>x.value.trim().replace(/\s+/g, ' ')).filter(Boolean)); go.disabled = !PV.picks.size || dups > 0;
+    go.querySelector('span').textContent = PV.picks.size > 1 ? `Balsuoti (${PV.picks.size})` : 'Balsuoti';
+    if(more){ more.hidden = ins.length >= n; const c = document.getElementById('pvMoreN'); if(c) c.textContent = `(${ins.length} iš ${n})`; }
+  };
+  const add = (first, focus)=>{
+    box.insertAdjacentHTML('beforeend', field(first));
+    const row = box.lastElementChild, inp = row.querySelector('input'), x = row.querySelector('.poll-wr-x');
+    inp.oninput = upd;
+    inp.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); if(!go.disabled) go.click(); } };
+    if(x) x.onclick = ()=>{ const m = row.nextElementSibling; if(m && m.classList.contains('poll-wr-dup')) m.remove(); row.remove(); upd(); };
+    if(focus) inp.focus();
+    upd();
+  };
+  add(true, false);
+  if(more) more.onclick = ()=>{ if(box.querySelectorAll('input').length >= n) return; add(false, true); };
+  go.onclick = ()=>{ if(PV.picks.size) pollVoteSend([...PV.picks], go, true); };
+  pollVoteTick();
+}
+function pollVoteTick(){
+  const d = PV.d; if(!d || PV.voted) return;
+  const now = Date.now()+PV.off;
+  if(d.state==='waiting' && now >= Date.parse(d.starts_at)){ pollVoteLoad(); return; }
+  if(d.state==='live' && now >= Date.parse(d.ends_at)){ d.state = 'ended'; pollVoteDraw(); return; }
+  const c = document.getElementById('pvClock'); if(c) c.textContent = pollClock((d.state==='waiting' ? Date.parse(d.starts_at) : Date.parse(d.ends_at)) - now);
+}
+async function pollVoteSend(opt, btn, write){
+  if(PV.preview){ toast('Peržiūra – balsas nesiunčiamas.'); return; }
+  if(PV.sending) return; PV.sending = true;
+  document.querySelectorAll('.poll-ob, .poll-go, .poll-wr input').forEach(b=>{ b.disabled = true; }); btn.classList.add('sending');
+  const opts = Array.isArray(opt) ? opt : [opt];
+  if(write){
+    const { data, error } = await getSb().rpc('poll_write', { p_token:PV.token, p_names:opts, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
+    PV.sending = false;
+    if(error || data==='bad' || data==='limit' || data==='dup'){ document.querySelectorAll('.poll-go, .poll-wr input').forEach(b=>{ b.disabled = false; }); btn.classList.remove('sending'); toast(error ? 'Nepavyko išsiųsti – bandykite dar kartą.' : data==='limit' ? 'Per daug vardų.' : data==='dup' ? 'Tas pats vardas įrašytas kelis kartus – palikite vieną.' : 'Įrašykite vardą ir pavardę.'); return; }
+    if(data==='ended'){ PV.d.state = 'ended'; pollVoteDraw(); return; }
+    try{ localStorage.setItem(pollVotedKey(), '1'); }catch(e){}
+    return pollThanks(true);
+  }
+  let { data, error } = await getSb().rpc('poll_vote_many', { p_token:PV.token, p_options:opts, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
+  if(error && /poll_vote_many|function/i.test(error.message||'') && opts.length===1) ({ data, error } = await getSb().rpc('poll_vote', { p_token:PV.token, p_option:opts[0], p_voter:pollVoterId(), p_poll:PV.d.poll || null }));
+  PV.sending = false;
+  if(error){ document.querySelectorAll('.poll-ob, .poll-go').forEach(b=>{ b.disabled = false; }); btn.classList.remove('sending'); toast('Nepavyko išsiųsti – bandykite dar kartą.'); return; }
+  if(data==='ended'){ PV.d.state = 'ended'; pollVoteDraw(); return; }
+  if(data==='bad'){ toast('Nepavyko – atnaujinkite puslapį.'); return; }
+  try{ localStorage.setItem(pollVotedKey(), '1'); }catch(e){}
+  pollThanks(true);
+}
+function pollThanks(fresh){
+  PV.voted = true;
+  pollVoteMsg(`<span class="poll-ok">✓</span>Ačiū už jūsų balsą!${fresh ? '' : '<small>Jūs jau balsavote.</small>'}`);
+  if(fresh) setTimeout(()=>{ try{ window.close(); }catch(e){} setTimeout(()=>{ const i = document.querySelector('.poll-pub-in'); if(i && !window.closed) i.innerHTML = (PV.logo||'')+`<div class="poll-msg pl-txt"><span class="poll-ok">✓</span>Ačiū už jūsų balsą!<small>Šį langą galite uždaryti.</small></div>`; }, 400); }, 2500);
+}
+const token = new URLSearchParams(location.search).get('balsuoti');
+document.getElementById('guestView').classList.remove('hidden');
+if(token) renderPollVote(token); else document.getElementById('guestView').innerHTML = '<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Ši nuoroda nebegalioja.</div></div></div>';
+</script>
+</body>
+</html>
