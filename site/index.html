@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-OrDVuKYlbMvQsr5fdMMcTa7bbVR6t9Ftelnbbe2jy3M=' 'sha256-0QfC2jo1uKTmWq4b6xDCTfEfyLovP8Ox4GA6wVJayGE=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-OrDVuKYlbMvQsr5fdMMcTa7bbVR6t9Ftelnbbe2jy3M=' 'sha256-aet0l5R9qggheJ6RoaDeBOSGl/QLQ0eOIwOja0U9zbg=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -12923,7 +12923,7 @@ async function pollResDraw(){
   else if(d.state==='idle') inner.innerHTML = B.logo ? `<img class="poll-rs-logo idle" src="${esc(B.logo)}" alt="">` : '';
   else {
     pollFireworksStop();
-    inner.innerHTML = `${B.logo ? `<img class="poll-rs-logo" src="${esc(B.logo)}" alt="">` : ''}<div class="poll-rs-top"><span class="poll-rs-live" id="prLive"></span><span class="poll-rs-tot pl-txt">${esc(tot+' balsavo')}</span></div>
+    inner.innerHTML = `${B.logo ? `<img class="poll-rs-logo" src="${esc(B.logo)}" alt="">` : ''}
       ${d.topic ? `<div class="poll-rs-topic pl-txt">${esc(d.topic)}</div>` : ''}${d.question ? `<h1 class="poll-rs-q pl-txt">${esc(d.question)}</h1>` : ''}
       <div class="poll-rs-list">${(d.options||[]).map(o=>{ const pc = tot ? Math.round(o.votes*100/tot) : 0; return `<div class="poll-rs-row ${o.votes===max && tot && d.state==='ended' ? 'win' : ''}"><div class="poll-rs-h"><span class="pl-txt">${esc(o.text || '—')}</span><b class="pl-txt">${pc}%</b></div><div class="poll-rs-bar"><i style="width:${pc}%"></i></div></div>`; }).join('')}</div>`;
     await pollResFitText(inner, d);
@@ -12972,9 +12972,9 @@ async function pollResWinner(st, d, B, tot, max){
   } else {
     const ended = phase==='won', wins = ended && tot ? (d.options||[]).filter(o=>o.votes===max) : [];
     const box = phase==='live' ? `<div class="poll-rs-liverow"><div class="poll-rs-livet"><div class="poll-rs-wl pl-txt">Liko laiko</div><div class="poll-rs-wt poll-rs-big pl-txt" id="prBig"></div></div>${qrOn ? '<div class="poll-rs-qr"><canvas id="prQr"></canvas></div>' : ''}</div>`
-      : wins.length ? `<div class="poll-rs-wl pl-txt">${wins.length > 1 ? 'Lygiosios' : 'Nugalėtojas'}</div>${wins.map(o=>`<div class="poll-rs-wt pl-txt">${esc(o.text || '—')}</div><div class="poll-rs-wp pl-txt">${tot ? Math.round(o.votes*100/tot) : 0}% · ${esc(ltPlural(o.votes, 'balsas', 'balsai', 'balsų'))}</div>`).join('')}`
+      : wins.length ? `<div class="poll-rs-wl pl-txt">${wins.length > 1 ? 'Lygiosios' : 'Nugalėtojas'}</div>${wins.map(o=>`<div class="poll-rs-wt pl-txt">${esc(o.text || '—')}</div>`).join('')}`
       : '<div class="poll-rs-wl pl-txt">Balsų nėra</div>';
-    inner.innerHTML = `${logo}<div class="poll-rs-top"><span class="poll-rs-live" id="prLive"></span><span class="poll-rs-tot pl-txt" id="prTot">${esc(tot+' balsavo')}</span></div>
+    inner.innerHTML = `${logo}
       ${d.topic ? `<div class="poll-rs-topic pl-txt">${esc(d.topic)}</div>` : ''}${d.question ? `<h1 class="poll-rs-q pl-txt">${esc(d.question)}</h1>` : ''}
       <div class="poll-rs-win"><div class="poll-rs-wbox ${ended && first ? 'reveal' : ''}">${box}</div></div>`;
   }
@@ -14871,7 +14871,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v169';
+const APP_VER = 'v170';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
