@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-OrDVuKYlbMvQsr5fdMMcTa7bbVR6t9Ftelnbbe2jy3M=' 'sha256-aet0l5R9qggheJ6RoaDeBOSGl/QLQ0eOIwOja0U9zbg=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-OrDVuKYlbMvQsr5fdMMcTa7bbVR6t9Ftelnbbe2jy3M=' 'sha256-0QSo/Uu31Tr+HDqG0KwNc0muWTisB8+6zmF76H7Y8Ec=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
@@ -12338,7 +12338,8 @@ function pollPaneDraw(){
    or its winner chosen beforehand – no voting */
 function pollShowDraw(){
   const box = document.getElementById('pollShowBox'); if(!box || !POLL.cur) return;
-  box.hidden = POLL.cur.kind==='write'; if(box.hidden) return;
+  if(POLL.cur.kind==='write') return pollShowDrawWrite(box);
+  box.hidden = false;
   const p = POLL.cur, dsp = POLL.set.display || null, here = dsp && dsp.poll===p.id ? dsp.mode : '';
   const other = dsp && dsp.poll!==p.id ? POLL.list.find(x=>x.id===dsp.poll) : null;
   const hasWin = (p.options||[]).some(o=>o.winner);
@@ -12355,13 +12356,25 @@ function pollShowDraw(){
   document.getElementById('pollShowWin').onclick = ()=>pollShow('winner');
   const off = document.getElementById('pollShowOff'); if(off) off.onclick = pollShowOff;
 }
+function pollShowDrawWrite(box){
+  const p = POLL.cur, dsp = POLL.set.display || null, here = dsp && dsp.poll===p.id ? dsp.mode : '', st = pollState(p);
+  box.hidden = false;
+  box.innerHTML = `<h2 class="section-title" style="margin:0 0 4px;">Nugalėtojas</h2>
+    <small class="muted">Pasibaigus laikui rezultatų ekrane rodoma „Balsavimas baigėsi“. Nugalėtojas (daugiausiai kartų įrašytas vardas) pasirodo tik paspaudus mygtuką.</small>
+    ${here==='winner' ? '<div class="poll-show-now">Dabar rodomas: <b>🏆 nugalėtojas</b></div>' : ''}
+    <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:8px;">
+      <button class="btn small ${here==='winner' ? '' : 'primary'}" id="pollShowWin" ${st==='draft' ? 'disabled title="Pirma pradėk balsavimą"' : ''}>🏆 Parodyti nugalėtoją</button>
+      ${dsp ? '<button class="btn small" id="pollShowOff">Slėpti</button>' : ''}</div>`;
+  document.getElementById('pollShowWin').onclick = ()=>pollShow('winner');
+  const off = document.getElementById('pollShowOff'); if(off) off.onclick = pollShowOff;
+}
 async function pollShow(mode){
   const p = POLL.cur; if(!p) return;
   const run = POLL.list.find(x=>['waiting','live'].includes(pollState(x)));
   if(run && !(await uiConfirm(`Dabar ${pollState(run)==='live' ? 'vyksta' : 'laukia'} balsavimas „${run.question || 'be nominacijos'}“ – jis bus sustabdytas.`, { yes:'Rodyti' }))) return;
   if(POLL.saveT && !(await pollSave(p))) return;
   let r; try{ r = await pollApi('show', { id:p.id, mode }); }
-  catch(e){ toast(/Nežinomas veiksmas|Netinkamas rodymas/.test(e.message) ? 'Supabase paleisk '+(mode==='splash' ? 'polls8.sql' : 'polls7.sql')+' (atnaujinimas).' : 'Nepavyko: '+e.message); return; }
+  catch(e){ toast(/Nežinomas veiksmas|Netinkamas rodymas/.test(e.message) ? 'Supabase paleisk '+(mode==='splash' ? 'polls8.sql' : 'polls7.sql')+' (atnaujinimas).' : /nepažymėtas/.test(e.message) && p.kind==='write' ? 'Supabase paleisk polls10.sql (atnaujinimas).' : 'Nepavyko: '+e.message); return; }
   POLL.set.display = r && r.display || null;
   if(run){ await pollListRefresh(); const c = document.getElementById('pollCtl'); if(c) c.dataset.st = ''; pollDrawCtl(); pollDrawOpts(); }
   pollShowDraw(); pollSideDraw();
@@ -12621,6 +12634,7 @@ function pollDrawCtl(tickOnly){
   if(tickOnly && box.dataset.st===st){ const c = box.querySelector('.poll-clock'); if(c) c.textContent = pollClock(left); return; }
   if(box.dataset.st && box.dataset.st!==st){ pollDrawOpts(); pollLoadRes(); }
   box.dataset.st = st;
+  if(POLL.cur.kind==='write') pollShowDraw();
   const delays = `<div class="poll-delay"><span>Pradėti po:</span><span class="chipbar">${POLL_DELAYS.map(([v,t])=>`<button class="chip small-chip ${POLL.delay===v?'active':''}" data-dl="${v}">${t}</button>`).join('')}<label class="poll-num"><input type="number" id="pollDlIn" min="0" max="86400" value="${POLL.delay}"> s</label></span></div>`;
   box.innerHTML = `<div class="row between" style="align-items:center;"><h2 class="section-title" style="margin:0;">Balsavimas</h2><span class="poll-st st-${st}">${POLL_ST[st]}${p.round ? ' · '+p.round+' k.' : ''}</span></div>
     ${st==='waiting' ? `<div class="poll-big"><small>Prasidės po</small><b class="poll-clock">${pollClock(left)}</b></div><button class="btn danger" id="pollStop">⏹ Atšaukti / sustabdyti</button>`
@@ -12919,7 +12933,7 @@ async function pollResDraw(){
   pollResFit();
   st.classList.toggle('has-bg', !!B.bg); st.classList.toggle('acc-grad', !!B.accGrad);
   if(d.state==='splash'){ pollFireworksStop(); inner.innerHTML = pollSplashHtml(B, d.topic); }
-  else if(d.state==='nominees' || d.state==='reveal' || d.show_all===false) await pollResWinner(st, d, B, d.state==='idle' ? 0 : tot, d.state==='idle' ? 1 : max);
+  else if(d.state==='nominees' || d.state==='reveal' || d.hold || d.show_all===false) await pollResWinner(st, d, B, d.state==='idle' ? 0 : tot, d.state==='idle' ? 1 : max);
   else if(d.state==='idle') inner.innerHTML = B.logo ? `<img class="poll-rs-logo idle" src="${esc(B.logo)}" alt="">` : '';
   else {
     pollFireworksStop();
@@ -12946,7 +12960,7 @@ async function pollResFitText(inner, d){
    Between phases everything fades out slowly and the next one fades in. */
 const PR_FADE = 1100;
 const pollFwSec = b=>b && b.fwSec!=null ? Math.max(0, Math.min(300, Math.round(+b.fwSec || 0))) : 20;
-function pollResPhase(d){ return d.state==='waiting' ? 'wait' : d.state==='live' ? 'live' : d.state==='ended' ? 'won' : d.state==='nominees' ? 'nom' : d.state==='reveal' ? 'rev' : 'idle'; }
+function pollResPhase(d){ return d.hold ? 'hold' : d.state==='waiting' ? 'wait' : d.state==='live' ? 'live' : d.state==='ended' ? 'won' : d.state==='nominees' ? 'nom' : d.state==='reveal' ? 'rev' : 'idle'; }
 async function pollResWinner(st, d, B, tot, max){
   const inner = st.querySelector('.poll-rs-in'), phase = pollResPhase(d), key = phase+'|'+d.poll+'|'+d.round+'|'+(d.at||'');
   const first = PR.phaseKey!==key; PR.phaseKey = key;
@@ -12959,7 +12973,10 @@ async function pollResWinner(st, d, B, tot, max){
     pollFireworksStop(); return;
   }
   const head = `${d.topic ? `<div class="poll-rs-topic pl-txt">${esc(d.topic)}</div>` : ''}${d.question ? `<h1 class="poll-rs-q pl-txt">${esc(d.question)}</h1>` : ''}`;
-  if(phase==='nom' || phase==='rev'){
+  if(phase==='hold'){
+    // names typed by the voters: time is up, the winner is shown with the editor's button
+    inner.innerHTML = `${logo}${head}<div class="poll-rs-win"><div class="poll-rs-wbox ${first ? 'reveal' : ''}"><div class="poll-rs-wt pl-txt">Balsavimas baigėsi</div></div></div>`;
+  } else if(phase==='nom' || phase==='rev'){
     // nominees, or the winner chosen beforehand – no QR, no clock, no votes
     const list = (d.options||[]).filter(o=>String(o.text||'').trim()), wins = list.filter(o=>o.winner);
     const box = phase==='nom' ? list.map(o=>`<div class="poll-rs-nom pl-txt">${esc(o.text)}</div>`).join('')
@@ -14871,7 +14888,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v170';
+const APP_VER = 'v171';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
