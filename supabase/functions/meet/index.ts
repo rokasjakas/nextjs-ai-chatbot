@@ -17,6 +17,9 @@
 // POST {"action":"left","call_id","session_id"}  (anyone, no login: guests too) someone left the call;
 //      when nobody else is in it any more the call is ended for everybody, and an online
 //      meeting's summary goes out (notes, files, chat)
+// POST {"action":"check","call_ids":[…]}  (chat users) calls shown as going on: any that nobody is in
+//      any more (a phone that was switched off, a closed app, two people leaving together) is ended
+//      -> { ended: [ids] }
 // POST {"action":"status"}            (admin)  -> { configured, connected, email }
 // POST {"action":"connect","origin"}  (admin)  -> { url } Google consent page
 // GET  ?code=…&state=…                (Google redirects here after consent)
@@ -44,7 +47,7 @@ const corsHeaders = {
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 const MEET_SCOPE = "https://www.googleapis.com/auth/meetings.space.created";
 const SCOPE = MEET_SCOPE + " openid email";
-export const VERSION = 5;
+export const VERSION = 6;
 const DAILY_HOURS = 4;   // a Daily room lives this long after the call starts
 
 function json(body: unknown, status = 200): Response {
@@ -288,12 +291,40 @@ export async function callLeft(callId: string, sessionId: string, wait = (ms: nu
   if (!/^[0-9a-f-]{36}$/i.test(callId)) return { ended: false };
   const [call] = await db<Call[]>(`calls?select=*&id=eq.${callId}`);
   if (!call || call.ended_at || call.provider !== "daily" || !call.room || !dailyOn()) return { ended: false };
-  for (let i = 0; i < 3; i++) {
+  // Daily's list of who is in the room lags a little behind: ask a few times
+  for (let i = 0; i < 4; i++) {
     const others = (await presence(call.room)).filter((p) => p.id !== sessionId);
     if (!others.length) break;
-    if (i === 2) return { ended: false, present: others.length };
-    await wait(4000);
+    if (i === 3) return { ended: false, present: others.length };
+    await wait(5000);
   }
+  return await callEnd(call);
+}
+// calls still shown as going on: end each one nobody is in (a minute after it was started at the
+// earliest – the one who started it is still joining); a phone switched off or an app closed
+// without saying goodbye leaves the call open otherwise
+export async function callCheck(ids: string[]) {
+  const ok = ids.filter((x) => /^[0-9a-f-]{36}$/i.test(x)).slice(0, 20);
+  if (!ok.length || !dailyOn()) return { ended: [] };
+  const calls = await db<Call[]>(`calls?select=*&id=in.(${ok.join(",")})&ended_at=is.null`);
+  const ended: string[] = [];
+  for (const call of calls) {
+    if (call.provider !== "daily" || !call.room) continue;
+    const age = Date.now() - Date.parse(call.created_at);
+    if (age < 60e3) continue;
+    let empty = age > DAILY_HOURS * 3600e3;
+    if (!empty) {
+      try { empty = !(await presence(call.room)).length; } catch (e) {
+        // the room is gone at Daily (expired or deleted): nobody can be in it
+        empty = /Daily 404/.test((e as Error).message);
+      }
+    }
+    if (empty && (await callEnd(call)).ended) ended.push(call.id);
+  }
+  return { ended };
+}
+async function callEnd(call: Call) {
+  const callId = call.id;
   const now = new Date().toISOString();
   const [ended] = await db<Call[]>(`calls?id=eq.${callId}&ended_at=is.null`, { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ ended_at: now }) });
   if (!ended) return { ended: false };
@@ -369,6 +400,10 @@ export async function handle(req: Request): Promise<Response> {
     if (body.action === "join") {
       if (!who.canChat) return json({ error: "Nėra prieigos prie chato." }, 403);
       return await join(who, String(body.call_id ?? ""));
+    }
+    if (body.action === "check") {
+      if (!who.canChat) return json({ error: "Nėra prieigos prie chato." }, 403);
+      return json(await callCheck(Array.isArray(body.call_ids) ? body.call_ids.map(String) : []));
     }
     if (body.action === "usage") {
       if (!admin) return json({ error: "Tik administratoriui." }, 403);
