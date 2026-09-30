@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Lbz5rHagZV4aSuPfdZBrIeySLBXhQRtTnRrLETKwUDE=' 'sha256-6i0ab2Ile9+4t/5NPUNsQBXSf00MXxH56v0hKYbNT1s=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-yJJv+c4fFF6FIMMdDvwmbDWLD2ewNKcYdnmZdXi4PrI=' 'sha256-6i0ab2Ile9+4t/5NPUNsQBXSf00MXxH56v0hKYbNT1s=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -12195,12 +12195,13 @@ async function pollManager(root, admin, set){
   catch(e){ toast(e.message); return pollSetsView(root, admin); }
   POLL.list = list || [];
   root.innerHTML = `<div class="${admin ? 'tabpanel ' : ''}poll-mgr" id="pollEd">
-    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;"><button class="btn small" id="pollBack">‹ Visi balsavimai</button><input type="text" id="pollSetName" class="poll-setname" maxlength="200" value="${esc(set.name)}" title="Balsavimo pavadinimas (spausk ir keisk)"><span class="poll-saved muted" id="pollSaved"></span></div>
+    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;"><button class="btn small" id="pollBack">‹ Visi balsavimai</button><input type="text" id="pollSetName" class="poll-setname" maxlength="200" value="${esc(set.name)}" title="Balsavimo pavadinimas (spausk ir keisk)"><span class="poll-saved muted" id="pollSaved"></span><span style="flex:1"></span><button class="btn small" id="pollSetCopy" title="Naujas balsavimas su tomis pačiomis nominacijomis ir apipavidalinimu (be balsų, su savo QR kodu)">⧉ Sukurti kopiją</button></div>
     <div class="poll-mgr-cols">
       <aside class="card poll-side"><button class="poll-si poll-si-look" id="pollLookBtn"><span class="poll-si-n">🎨</span><span class="poll-si-t"><b>Apipavidalinimas</b><small>fonas, logotipas, šriftas, spalvos, rezultatų ekranas – visoms šio balsavimo nominacijoms</small></span></button><div class="poll-perm" id="pollPerm"></div><div class="row" style="gap:6px;flex-wrap:wrap;margin:10px 0;"><button class="btn primary small" id="pollAdd">+ Nominacija</button><button class="btn small" id="pollBulk">+ Kelios nominacijos iš karto</button><label class="btn small" title="PDF arba Word (DOCX): „V.1. METŲ RAKTAS“ – tema, kita eilutė – nominacija, po ja – nominantai">📄 Iš dokumento (PDF / DOCX)<input type="file" id="pollDocIn" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden></label><button class="btn small" id="pollAddSp" title="Įterpiama po pažymėtos nominacijos; vietą keisk ▲ ▼">+ Užsklanda</button></div><div class="poll-legend"><span><i style="background:#F2C12E"></i>Laimėtojas pažymėtas iš anksto</span><span><i style="background:#E5484D"></i>Balsuojama</span><span><i style="background:#3E8EDE"></i>Įrašo patys</span></div><div id="pollSide"></div></aside>
       <section id="pollPane"></section>
     </div></div>`;
   document.getElementById('pollBack').onclick = async ()=>{ if(POLL.saveT) await pollSave(); if(POLL.lookT) await pollLookSave(); pollStopTick(); pollSetsView(root, admin); };
+  document.getElementById('pollSetCopy').onclick = pollSetCopy;
   document.getElementById('pollSetName').onchange = async e=>{ const n = e.target.value.trim(); if(!n){ e.target.value = POLL.set.name; return; } try{ Object.assign(POLL.set, await pollApi('set_update', { id:POLL.set.id, name:n })); toast('✓ Pavadinimas išsaugotas'); }catch(err){ toast('Nepavyko: '+err.message); } };
   // a voting cannot be deleted here (all its nominations, votes and its QR code would be lost at once)
   document.getElementById('pollAdd').onclick = ()=>pollCreate([{ question:'', options:[pollNewOpt(), pollNewOpt()] }]);
@@ -12268,6 +12269,28 @@ async function pollSelect(id){
   pollSideDraw(); pollPaneDraw();
 }
 // the look is shared: a new question only needs its text
+/* „Sukurti kopiją“: a new voting „<name> (Copy YYYY-MM-DD HH:MM)“ with the same nominations and splash screens
+   (in the same order), look, results screen size and mode – no votes, its own QR code and results link */
+async function pollSetCopy(){
+  const src = POLL.set; if(!src) return;
+  if(POLL.saveT) await pollSave(); if(POLL.lookT) await pollLookSave();
+  const d = new Date(), z = n=>String(n).padStart(2, '0');
+  const name = (src.name+' (Copy '+d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+' '+z(d.getHours())+':'+z(d.getMinutes())+')').slice(0, 200);
+  if(!(await uiConfirm(`Sukurti kopiją „${name}“? Bus nukopijuotos visos nominacijos, užsklandos ir apipavidalinimas (be balsų). Kopija turės savo QR kodą.`, { yes:'Sukurti kopiją', danger:false }))) return;
+  const btn = document.getElementById('pollSetCopy'); if(btn) btn.disabled = true;
+  toast('Kuriama kopija…', 4000);
+  try{
+    const list = await pollApi('list', { set:src.id }) || [];
+    const ns = await pollApi('set_create', { name });
+    await pollApi('set_update', { id:ns.id, brand:POLL.look.brand || src.brand || {}, results_w:POLL.look.w, results_h:POLL.look.h, show_all:!!POLL.look.show_all });
+    for(const [k, p] of list.entries()){
+      await pollApi('create', { set:ns.id, kind:p.kind || 'question', brand:p.brand || {}, topic:p.topic || '', question:p.question || '', options:(p.options||[]).map(o=>Object.assign({}, o)),
+        duration_sec:p.duration_sec || 60, multi:!!p.multi, write_max:p.write_max || 1, sort:k });
+    }
+    toast(`✓ Sukurta kopija „${name}“ (${ltPlural(list.length, 'įrašas', 'įrašai', 'įrašų')}) – rasite „Visi balsavimai“ sąraše.`, 5000);
+  }catch(e){ toast('Kopija nepavyko: '+e.message, 5000); }
+  if(btn) btn.disabled = false;
+}
 async function pollCreate(items, silent){
   const base = POLL.cur || POLL.list[POLL.list.length-1] || {};
   const made = [];
@@ -15090,7 +15113,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v187';
+const APP_VER = 'v188';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
