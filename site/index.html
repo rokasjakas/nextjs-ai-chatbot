@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Dvh8vDyLD0NsmHr6HfR0irqDyQHKTnkNopBuwzv53vw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-6KeBU1O2NjLSe4ZzLIxNp91q2KMAMg4NRgziKCCcteA=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4569,9 +4569,6 @@ body.ev-full-on{overflow:hidden;}
   (()=>{ const l = document.getElementById('appFonts'); if(!l) return; const on = ()=>{ l.media = 'all'; }; if(l.sheet) on(); else { l.addEventListener('load', on); l.addEventListener('error', on); } })();
 </script>
 
-<script async src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
-<script async src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"></script>
-<script async src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 
 <script>
@@ -5285,6 +5282,7 @@ async function extractPdfText(file){
  * tell Claude and it'll adjust the parser to the real layout.
  */
 async function parseExcelForProject(file){
+  await libNeed('xlsx');
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, {type:'array', cellDates:false});
   const out = { title:null, schedule:{montazas:'',renginys:'',demontazas:''}, equipment:[] };
@@ -6610,7 +6608,7 @@ function utaSumHtml(groups){
 }
 function utaWhen(iso){ const d = new Date(iso); if(isNaN(d)) return String(iso||''); const t = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); return calISO(d).slice(5).replace('-','.')+(t==='00:00' ? '' : ' '+t); }
 function utaExport(groups){
-  if(!window.XLSX){ toast('Excel biblioteka dar kraunasi – bandyk po akimirkos.'); return; }
+  if(!window.XLSX){ toast('Kraunama Excel biblioteka…'); libNeed('xlsx').then(ok=>ok ? utaExport(groups) : toast('Excel biblioteka neįsikėlė – patikrink ryšį.')); return; }
   const rows = [];
   groups.forEach(g=>g.rows.forEach(t=>rows.push({ 'Kam':g.name, 'Kortelė':t.card_no, 'Valst. nr.':t.plate||'', 'Data':t.tx_date, 'Laikas':utaWhen(t.tx_at).slice(6), 'Stotis':t.station||'', 'Šalis':t.country||'', 'Produktas':t.product||'', 'Kiekis':t.quantity!=null ? +t.quantity : '', 'Vnt.':t.unit||'', 'Suma be PVM':t.amount_net!=null ? +t.amount_net : '', 'Suma':t.amount_gross!=null ? +t.amount_gross : '', 'Valiuta':t.currency||'', 'Rida':t.mileage!=null ? +t.mileage : '' })));
   const sum = groups.map(g=>({ 'Kam':g.name, 'Kortelės':[...g.cards].join(', '), 'Pylimų':g.fills, 'Kitos operacijos':g.other, 'Dienos':utaDaysText(g.days), 'Kuras (l)':Math.round(g.fuel*100)/100, 'Suma':Math.round(g.sum*100)/100 }));
@@ -6861,7 +6859,7 @@ async function utaPdfTable(file){
   return { raw, txt:raw, hi:0, map:{ card:0, plate:1, date:2, time:3, station:4, product:5, qty:6, unit:7, gross:8, km:9 }, score:9 };
 }
 async function utaImport(file){
-  if(!window.XLSX){ toast('Excel biblioteka dar kraunasi – bandyk po akimirkos.'); return; }
+  if(!window.XLSX && !(await libNeed('xlsx'))){ toast('Excel biblioteka neįsikėlė – patikrink ryšį.'); return; }
   if(/\.pdf$/i.test(file.name)){
     let b = null;
     try{ b = await utaPdfTable(file); }catch(e){ toast('Nepavyko perskaityti PDF: '+e.message, 6000); return; }
@@ -8143,6 +8141,7 @@ function rebuildViz3D(revealCount){
   const bin = currentBin();
   const container = document.getElementById('vizCanvas');
   if(!bin){ disposeViz3D(); container.innerHTML = `<div class="empty-state">Sudėk krovinio sąrašą – krovimas apskaičiuojamas automatiškai.</div>`; return; }
+  if(typeof THREE==='undefined'){ container.innerHTML = '<div class="empty-state">Kraunamas 3D vaizdas…</div>'; libNeed('three').then(ok=>{ if(ok && document.getElementById('vizCanvas')===container) rebuildViz3D(revealCount); else if(!ok) container.innerHTML = '<div class="empty-state">3D variklis nepasiekiamas (tinklo klaida įkeliant three.js).</div>'; }); return; }
   const v = ensureViz3D(container);
   if(!v) return;
   setViz3DBin(bin, revealCount);
@@ -9204,7 +9203,7 @@ async function handleProjectPdfImport(e, p, applyTitle){
 async function handleProjectExcelImport(e, p, applyTitle){
   const file = e.target.files[0];
   if(!file) return;
-  if(typeof XLSX==='undefined'){ toast('Excel skaitymo biblioteka nepasiekiama (tinklo klaida).'); return; }
+  if(typeof XLSX==='undefined' && !(await libNeed('xlsx'))){ toast('Excel skaitymo biblioteka nepasiekiama (tinklo klaida).'); return; }
   toast('Skaitomas Excel…');
   try{
     const result = await parseExcelForProject(file);
@@ -9850,13 +9849,24 @@ async function onAuthed(session){
   authedFor = session.user.id;
   let state;
   bootStage('Tikrinama prieiga');
+  const kept = accCacheGet(session.user.id);
+  if(kept){
+    ACCESS.profile = kept.prof; ACCESS.role = kept.prof.role; ACCESS.fallback = false; accApplyPerms(kept.rows);
+    const before = JSON.stringify([kept.prof.role, kept.prof.level, ACCESS.perms]);
+    loadAccess(session).then(st=>{
+      if(st!=='ok'){ location.reload(); return; }
+      if(JSON.stringify([ACCESS.profile.role, ACCESS.profile.level, ACCESS.perms])!==before){ try{ applyAccessToNav(); if(typeof currentTab!=='undefined' && currentTab) setTab(canView(currentTab) ? currentTab : 'home'); }catch(e){} }
+    }).catch(()=>{});
+    state = 'ok';
+  } else {
   try{ state = await loadAccess(session); }
   catch(e){ authedFor = null; showAuthGate(); renderLoginScreen('login', 'Nepavyko patikrinti prieigos: '+e.message); return; }
+  }
   if(state!=='ok'){ renderAccessWait(state, session.user.email); return; }
   document.getElementById('authGate').classList.add('hidden');
   document.getElementById('authGate').innerHTML = '';
   document.getElementById('app').classList.remove('hidden');
-  if(!appStarted){ appStarted = true; applyAccessToNav(); initApp(); setTimeout(pwaRefresh, 1500); teamStart(); setTimeout(fbStart, 800); setTimeout(invStart, 1100); if(JUST_CONFIRMED) setTimeout(()=>toast('✓ El. paštas patvirtintas. Sveiki!'), 400); }
+  if(!appStarted){ appStarted = true; applyAccessToNav(); initApp(); libWarm(); setTimeout(pwaRefresh, 1500); teamStart(); setTimeout(fbStart, 800); setTimeout(invStart, 1100); if(JUST_CONFIRMED) setTimeout(()=>toast('✓ El. paštas patvirtintas. Sveiki!'), 400); }
 }
 
 function showAuthGate(){
@@ -10212,6 +10222,7 @@ const isSuper = ()=>accLevel()==='super';
 
 async function loadAccess(session){
   const sb = getSb();
+  const permsQ = sb.from('role_permissions').select('*');   // asked together with the profile
   const { data: prof, error } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
   if(error){
     // The roles SQL has not been run yet: the database still uses the old
@@ -10225,7 +10236,15 @@ async function loadAccess(session){
   if(!prof) return 'pending';
   ACCESS.profile = prof; ACCESS.role = prof.role; ACCESS.fallback = false;
   if(prof.role==='pending' || prof.role==='blocked') return prof.role;
-  const { data: rows } = await sb.from('role_permissions').select('*');
+  const { data: rows } = await permsQ;
+  accCacheSet(session.user.id, prof, rows);
+  accApplyPerms(rows);
+  return 'ok';
+}
+const ACC_CACHE = 'es-acc-cache';
+function accCacheSet(id, prof, rows){ try{ localStorage.setItem(ACC_CACHE, JSON.stringify({ id, prof, rows:rows||[] })); }catch(e){} }
+function accCacheGet(id){ try{ const c = JSON.parse(localStorage.getItem(ACC_CACHE)||'null'); return c && c.id===id && c.prof && !['pending','blocked'].includes(c.prof.role) ? c : null; }catch(e){ return null; } }
+function accApplyPerms(rows){
   const perms = JSON.parse(JSON.stringify(ACCESS_DEFAULTS));
   if(rows && rows.length){
     const known = new Set(rows.map(r=>r.section));
@@ -13869,10 +13888,16 @@ async function pollResolve(b){
 }
 
 /* Admin kortelė: valdymas ir redaktoriaus nuoroda */
+const pollOn = ()=>!!((typeof STATE!=='undefined' && STATE && STATE.uiSettings) || {}).pollOn;
+function pollToggle(on){ STATE.uiSettings = Object.assign({}, STATE.uiSettings, { pollOn:!!on }); saveState(); toast(on ? 'Balsavimas įjungtas.' : 'Balsavimas išjungtas.'); renderAdminTab(); }
 function pollAdminCard(){
+  if(!pollOn()){ setTimeout(()=>{ const b = document.getElementById('pollOnBtn'); if(b) b.onclick = ()=>pollToggle(true); }, 0);
+    return `<div class="card" id="pollAdm"><div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">🗳 Balsavimai <small class="muted" style="font-size:12px;font-weight:600;">išjungta</small></h2><button type="button" class="btn small primary" id="pollOnBtn">Įjungti</button></div>
+      <p class="section-sub" style="margin:4px 0 0;">Kol išjungta, balsavimo funkcija neveikia ir niekaip neįtakoja programos. Įjungus – atsiras valdymas ir redaktoriaus nuoroda (galioja visiems).</p></div>`; }
+  setTimeout(()=>{ const b = document.getElementById('pollOffBtn'); if(b) b.onclick = async ()=>{ if(await uiConfirm('Išjungti balsavimą? Valdymas pasislėps (balsavimų duomenys lieka).')) pollToggle(false); }; }, 0);
   setTimeout(pollAdminLoad, 0);
   return `<div class="card" id="pollAdm">
-    <div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">🗳 Balsavimai</h2><span class="row" style="gap:6px;"><button class="btn small" id="pollNewSetA">+ Naujas balsavimas</button><button class="btn primary small" id="pollOpen">Visi balsavimai</button></span></div>
+    <div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">🗳 Balsavimai</h2><span class="row" style="gap:6px;"><button class="btn small" id="pollNewSetA">+ Naujas balsavimas</button><button class="btn primary small" id="pollOpen">Visi balsavimai</button><button type="button" class="btn small" id="pollOffBtn">Išjungti</button></span></div>
     <p class="section-sub" style="margin:4px 0 10px;">Nominacijos su nominantais: žiūrovai balsuoja telefonu per QR kodą, rezultatai rodomi atskiroje nuorodoje (LED ekranui, OBS). Mato tik administratoriai – arba tas, kam duosi redaktoriaus nuorodą.</p>
     <div class="poll-edlink" id="pollEdLink"><div class="section-sub">Kraunama…</div></div></div>`;
 }
@@ -15741,7 +15766,7 @@ async function rpDraw(){
   }catch(e){ box.innerHTML = `<div class="card"><div class="mail-err">Nepavyko: ${esc(e.message||e)}</div></div>`; }
 }
 function rpXls(name, sheets){
-  if(typeof XLSX==='undefined'){ toast('Excel biblioteka dar kraunasi – bandyk po akimirkos.'); return; }
+  if(typeof XLSX==='undefined'){ toast('Kraunama Excel biblioteka…'); libNeed('xlsx').then(ok=>ok ? rpXls(name, sheets) : toast('Excel biblioteka neįsikėlė – patikrink ryšį.')); return; }
   const wb = XLSX.utils.book_new();
   sheets.forEach(([n, aoa])=>XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), n));
   XLSX.writeFile(wb, name+'_'+RP.from+'_'+RP.to+'.xlsx');
@@ -17248,7 +17273,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v234';
+const APP_VER = 'v235';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -20651,7 +20676,7 @@ function ppRemModal(c, editId){
    Sritis (several: „Šviesa, Garsas“ – in order of priority, a level can be
    added „Šviesa – Pro“), Lygis, Teisės (B, C…), Pastabos. */
 async function ppXlsImport(file){
-  if(typeof XLSX==='undefined'){ toast('Excel skaitytuvas dar neįsikrovė – pabandyk po kelių sekundžių.'); return; }
+  if(typeof XLSX==='undefined' && !(await libNeed('xlsx'))){ toast('Excel skaitytuvas neįsikėlė – patikrink ryšį.'); return; }
   let rows;
   try{ const wb = XLSX.read(await file.arrayBuffer(), { type:'array' }); const sh = wb.Sheets[wb.SheetNames[0]]; rows = XLSX.utils.sheet_to_json(sh, { header:1, raw:false, defval:'' }); }
   catch(e){ toast('Nepavyko perskaityti failo: '+e.message); return; }
@@ -24477,6 +24502,11 @@ const SRI = {
   'https://cdn.jsdelivr.net/npm/@daily-co/daily-js@0.92.2/dist/daily.js': 'sha384-qkOcWks7O6ZM0W8bDQRvE2Zigs/pWm7ioqYeangGqWoaqMEFUNeAKYLp8J+qWiUS',
   'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js': 'sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k',
 };
+/* big libraries (Excel, 3D) are not loaded at start: when first needed, or quietly a while after the app opened */
+const LIB_SRC = { xlsx:['https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js', ()=>!!window.XLSX], three:['https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js', ()=>typeof THREE!=='undefined'] };
+const LIB_P = {};
+function libNeed(k){ const [src, test] = LIB_SRC[k]; if(test()) return Promise.resolve(true); return LIB_P[k] = LIB_P[k] || loadScriptOnce(src, test).then(()=>{ if(test()) return true; delete LIB_P[k]; return false; }, ()=>{ delete LIB_P[k]; return false; }); }
+function libWarm(){ const go = ()=>{ libNeed('xlsx'); setTimeout(()=>libNeed('three'), 4000); }; setTimeout(()=>window.requestIdleCallback ? requestIdleCallback(go, { timeout:8000 }) : go(), 15000); }
 function loadScriptOnce(src, test){
   if(test()) return Promise.resolve();
   return new Promise((res, rej)=>{ const s = document.createElement('script'); s.src = src; if(SRI[src]){ s.integrity = SRI[src]; s.crossOrigin = 'anonymous'; } s.onload = ()=>res(); s.onerror = ()=>rej(new Error('Nepavyko įkelti PDF įrankio (patikrink internetą).')); document.head.appendChild(s); });
@@ -24675,6 +24705,7 @@ async function clFileText(file){
     const ta = document.createElement('textarea'); ta.innerHTML = txt; return ta.value;
   }
   if(/\.(xlsx|xls|csv)$/.test(n)){
+    await libNeed('xlsx');
     const wb = XLSX.read(await file.arrayBuffer(), { type:'array' });
     return wb.SheetNames.map(sn=>XLSX.utils.sheet_to_json(wb.Sheets[sn], { header:1, raw:false, defval:'' })
       .map(r=>r.map(x=>String(x).trim()).filter(Boolean).join(' ')).filter(Boolean).join('\n')).join('\n');
@@ -29485,7 +29516,7 @@ async function stkLogModal(it){
 
 /* ---- Excel ---- */
 async function stkImportFile(f){
-  let wb;
+  let wb; await libNeed('xlsx');
   try{ wb = XLSX.read(await f.arrayBuffer(), { type:'array', cellStyles:true, cellDates:true }); }
   catch(e){ toast('Nepavyko perskaityti failo: '+e.message); return; }
   const res = stkParseWorkbook(wb);
@@ -29536,6 +29567,7 @@ async function stkImport(sheets){
   return { items:newItems.length, sessions:sessRows.length };
 }
 function stkExport(){
+  if(!window.XLSX){ toast('Kraunama Excel biblioteka…'); libNeed('xlsx').then(ok=>ok ? stkExport() : toast('Excel biblioteka neįsikėlė – patikrink ryšį.')); return; }
   const sheet = STK.sheet, sess = stkSheetSessions(sheet).filter(s=>s.status!=='draft' || Object.keys(s.counts).length);
   const head = ['Įrenginys', 'Kiekis (vnt.)'].concat(sess.map(s=>'Inventorizacija '+(s.date||s.label||''))).concat(['Trūkumas/Perteklius (vnt.)', 'Sandėlyje (programoje)', 'Komentaras']);
   const aoa = [head]; let sec = null;
@@ -31603,7 +31635,7 @@ function vlReportBody(){
   box.querySelectorAll('[data-vlline]').forEach(b=>b.onclick = ()=>vlView(VL.list.find(x=>x.id===b.dataset.vlline)));
 }
 function vlReportXls(){
-  if(typeof XLSX==='undefined'){ toast('Excel biblioteka neįsikėlė – pabandyk dar kartą.'); return; }
+  if(typeof XLSX==='undefined'){ toast('Kraunama Excel biblioteka…'); libNeed('xlsx').then(ok=>ok ? vlReportXls() : toast('Excel biblioteka neįsikėlė – patikrink ryšį.')); return; }
   const D = vlReportData();
   const sum = [['Automobilis','Tvarkymai','Išlaidos (€)','Problemos','Atviros dabar','Rida nuo','Rida iki']].concat(D.rows.map(r=>[r.name, r.svc.length, Math.round(r.cost*100)/100, r.prob.length, r.openNow.length, r.kmFrom, r.kmTo]))
     .concat([['Iš viso', D.rows.reduce((s,r)=>s+r.svc.length,0), Math.round(D.total*100)/100, D.rows.reduce((s,r)=>s+r.prob.length,0), D.rows.reduce((s,r)=>s+r.openNow.length,0)]]);
@@ -31975,6 +32007,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 00:40', v:'v235', k:'chg', t:'Greitesnis atidarymas, balsavimo jungiklis', f:'Programa (naršyklėje, Windows programoje ir telefone) atsidaro iš karto iš įrašytos kopijos – nebelaukiama tinklo ir nesiunčiamas visas puslapis kas kartą. Išėjus naujai versijai programa pasiūlo persikrauti. Prieiga tikrinama fone, o didelės bibliotekos (Excel, 3D) kraunamos tik kai prireikia. Admin → Balsavimai: nauji mygtukai Įjungti / Išjungti; kol išjungta, balsavimas niekaip neįtakoja programos.' },
   { d:'2026-10-04 00:10', v:'v234', k:'new', t:'Video chate', f:'Chate per „+“ atsirado „Vaizdo įrašas“: galima įkelti video iš kompiuterio ar telefono (iki 200 MB). Video rodomas pačioje žinutėje su grotuvu – žiūrima neišėjus iš chato, galima per visą ekraną, o po juo – mygtukas atsisiųsti. Video, pasirinktas kaip nuotrauka, irgi siunčiamas nesuspaustas kaip video.' },
   { d:'2026-10-03 23:40', v:'v233', k:'fix', t:'Skambučio langeliai kvadratiniai', f:'Vaizdo skambutyje kiekvienas dalyvis dabar rodomas kvadratiniame langelyje, langeliai dedami šalia vienas kito ir sutalpinami į ekraną (telefone ir kompiuteryje). Veidas nebenukerpamas kaip plačiame horizontaliame lange; išjungus kamerą rodoma nuotrauka arba vardo ir pavardės pirmosios raidės.' },
   { d:'2026-10-03 23:10', v:'v232', k:'new', t:'Savas fonas ir Ofiso / Sandėlio plytelės', f:'Pagrindiniame puslapyje Ofiso ir Sandėlio plytelėse vietoje atsitiktinės informacijos mažomis raidėmis rodomi tos grupės įrankiai (narys pats susidėliotos tvarkos). Profilis → Išvaizda → Fonas: kiekvienas narys gali įkelti savo paveikslėlį visam puslapiui ir nustatyti patamsinimą – kiti narių fonų nemato.' },

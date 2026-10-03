@@ -1,15 +1,15 @@
 // EventSolutions App — service worker.
-// The page is fetched from the network first, so a new version is picked up at
-// once – but when the network is slow (over 2 s) the saved copy opens right away
-// and the fresh one is saved for the next start.
+// The page opens from the saved copy at once; a new version comes with a new
+// worker (CACHE changes each release), which saves the new page and the open app
+// offers to reload.
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v234';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png'];
+const CACHE = 'es-app-v235';
+const SHELL = ['./index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png'];
 
 self.addEventListener('install', e=>{
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL.map(u=>new Request(u, { cache:'reload' })))).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate', e=>{
   e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
@@ -25,16 +25,13 @@ self.addEventListener('fetch', e=>{
     e.respondWith(fetch(req).then(res=>{ if(res.ok){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put(url.pathname, copy)); } return res; }).catch(()=>caches.match(url.pathname)));
     return;
   }
+  // the app itself: the saved copy opens at once (no waiting for the network, no 1 MB download each start).
+  // Each release ships a new worker that saves the new page when it installs; the open app then offers to reload.
   if(req.mode==='navigate'){
-    const net = fetch(req).then(res=>{
+    e.respondWith(caches.match('./index.html').then(saved=>saved || fetch(req).then(res=>{
       if(res.ok){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put('./index.html', copy)); }
       return res;
-    });
-    e.waitUntil(net.catch(()=>{}));
-    e.respondWith(caches.match('./index.html').then(saved=>{
-      if(!saved) return net;
-      return Promise.race([net.catch(()=>saved), new Promise(r=>setTimeout(()=>r(saved), 2000))]);
-    }));
+    })));
     return;
   }
   e.respondWith(caches.match(req).then(hit=>hit || fetch(req).then(res=>{
