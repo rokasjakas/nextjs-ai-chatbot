@@ -1,19 +1,20 @@
 // Supabase Edge Function: ai-chat
 //
 // The „AI asistentas“ card on the app's home page: a team member asks everyday
-// questions, Claude answers in Lithuanian. The answer is streamed back as plain
-// text (chunks of UTF-8), so it appears while it is being written.
+// questions, Google Gemini answers in Lithuanian. The answer is streamed back as
+// plain text (chunks of UTF-8), so it appears while it is being written.
 //
 // POST { messages: [{ role:"user"|"assistant", content:"…" }, …] }   (the last one is the user's)
 //   -> text/plain stream with the answer
 //
 // Only a signed-in, approved member may ask (the public anon key alone is not enough).
-// Secret: ANTHROPIC_API_KEY   (supabase secrets set ANTHROPIC_API_KEY=sk-ant-…)
-// Deploy: supabase functions deploy ai-chat
-import Anthropic from "npm:@anthropic-ai/sdk";
+// Secrets: GEMINI_API_KEY   (free key: aistudio.google.com → Get API key)
+//          GEMINI_MODEL     (optional; default gemini-flash-latest – Google's newest fast model, in the free tier)
+//   supabase secrets set GEMINI_API_KEY=…
+// Deploy:  supabase functions deploy ai-chat
+// On the free tier Google may use the questions to improve its models – the card says so.
 
-export const VERSION = 1;
-const MODEL = "claude-opus-5-5";
+export const VERSION = 2;
 const MAX_TURNS = 40;          // messages kept from the conversation
 const MAX_CHARS = 12000;       // per message
 
@@ -46,57 +47,82 @@ async function approvedMember(req: Request): Promise<boolean> {
   return res.ok && (await res.json()) === true;
 }
 
+type Turn = { role: "user" | "model"; parts: { text: string }[] };
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
   if (!(await approvedMember(req))) return json({ error: "Prisijunk iš naujo (tik patvirtintiems nariams)." }, 401);
-  const key = (Deno.env.get("ANTHROPIC_API_KEY") ?? "").trim();
-  if (!key) return json({ error: "AI dar nesukonfigūruotas: Supabase → Edge Functions → Secrets → ANTHROPIC_API_KEY." }, 503);
+  const key = (Deno.env.get("GEMINI_API_KEY") ?? "").trim();
+  if (!key) return json({ error: "AI dar nesukonfigūruotas: Supabase → Edge Functions → Secrets → GEMINI_API_KEY." }, 503);
+  const model = (Deno.env.get("GEMINI_MODEL") ?? "").trim() || "gemini-flash-latest";
 
   let body: { messages?: { role?: string; content?: string }[] };
   try { body = await req.json(); } catch { return json({ error: "Blogas užklausos formatas." }, 400); }
   // only plain user/assistant text, alternating, starting and ending with the user
-  const msgs: Anthropic.MessageParam[] = [];
+  const turns: Turn[] = [];
   for (const m of (body.messages ?? []).slice(-MAX_TURNS)) {
-    const role = m?.role === "assistant" ? "assistant" : m?.role === "user" ? "user" : null;
+    const role = m?.role === "assistant" ? "model" : m?.role === "user" ? "user" : null;
     const text = String(m?.content ?? "").slice(0, MAX_CHARS).trim();
     if (!role || !text) continue;
-    if (msgs.length && msgs[msgs.length - 1].role === role) msgs[msgs.length - 1].content += "\n\n" + text;
-    else msgs.push({ role, content: text });
+    if (turns.length && turns[turns.length - 1].role === role) turns[turns.length - 1].parts[0].text += "\n\n" + text;
+    else turns.push({ role, parts: [{ text }] });
   }
-  while (msgs.length && msgs[0].role !== "user") msgs.shift();
-  if (!msgs.length || msgs[msgs.length - 1].role !== "user") return json({ error: "Nėra klausimo." }, 400);
+  while (turns.length && turns[0].role !== "user") turns.shift();
+  if (!turns.length || turns[turns.length - 1].role !== "user") return json({ error: "Nėra klausimo." }, 400);
 
-  const client = new Anthropic({ apiKey: key });
-  const enc = new TextEncoder();
+  const api = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: SYSTEM }] },
+      contents: turns,
+      generationConfig: { maxOutputTokens: 4096 },
+    }),
+  });
+  if (!api.ok || !api.body) {
+    const t = await api.text().catch(() => "");
+    console.error("ai-chat", api.status, t.slice(0, 500));
+    const msg = api.status === 429 ? "Pasiektas nemokamo plano limitas – pabandyk po minutės."
+      : api.status === 400 && /API key/i.test(t) ? "Neteisingas GEMINI_API_KEY."
+      : api.status === 403 ? "GEMINI_API_KEY neturi teisės (patikrink raktą)."
+      : api.status === 404 ? `Modelis „${model}“ nerastas (GEMINI_MODEL).`
+      : `AI klaida (${api.status}).`;
+    return json({ error: msg }, 502);
+  }
+
+  // Google sends Server-Sent Events: "data: {json}" lines; only the answer's text goes on to the app
+  const enc = new TextEncoder(), dec = new TextDecoder();
+  const reader = api.body.getReader();
   const out = new ReadableStream<Uint8Array>({
     async start(ctrl) {
+      let buf = "", any = false, blocked = "";
+      const take = (line: string) => {
+        if (!line.startsWith("data:")) return;
+        const data = line.slice(5).trim(); if (!data || data === "[DONE]") return;
+        try {
+          const j = JSON.parse(data);
+          const c = j?.candidates?.[0];
+          for (const p of c?.content?.parts ?? []) if (typeof p?.text === "string" && !p.thought) { ctrl.enqueue(enc.encode(p.text)); any = true; }
+          if (c?.finishReason === "MAX_TOKENS") blocked = "\n\n(Atsakymas nutrūko – per ilgas.)";
+          else if (c?.finishReason && !["STOP", "FINISH_REASON_UNSPECIFIED"].includes(c.finishReason)) blocked = "\n\n(Į šį klausimą atsakyti negaliu.)";
+          if (j?.promptFeedback?.blockReason) blocked = "\n\n(Į šį klausimą atsakyti negaliu.)";
+        } catch { /* a broken line: skip */ }
+      };
       try {
-        // a declined request is re-run on Anthropic's recommended fallback model (server side)
-        const params = {
-          model: MODEL,
-          max_tokens: 16000,
-          betas: ["server-side-fallback-2026-07-01"],
-          fallbacks: "default",
-          output_config: { effort: "low" },   // everyday questions: quick answers
-          system: SYSTEM,
-          messages: msgs,
-        };
-        // deno-lint-ignore no-explicit-any
-        const stream = client.beta.messages.stream(params as any);
-        for await (const ev of stream) {
-          if (ev.type === "content_block_delta" && ev.delta.type === "text_delta") ctrl.enqueue(enc.encode(ev.delta.text));
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buf += dec.decode(value, { stream: true });
+          let i;
+          while ((i = buf.indexOf("\n")) >= 0) { take(buf.slice(0, i).replace(/\r$/, "")); buf = buf.slice(i + 1); }
         }
-        const final = await stream.finalMessage();
-        if (final.stop_reason === "refusal") ctrl.enqueue(enc.encode("\n\n(Į šį klausimą atsakyti negaliu.)"));
-        else if (final.stop_reason === "max_tokens") ctrl.enqueue(enc.encode("\n\n(Atsakymas nutrūko – per ilgas.)"));
+        if (buf) take(buf);
+        if (blocked) ctrl.enqueue(enc.encode(blocked));
+        else if (!any) ctrl.enqueue(enc.encode("(Atsakymo nėra.)"));
       } catch (e) {
-        let msg = "AI klaida.";
-        if (e instanceof Anthropic.AuthenticationError) msg = "Neteisingas ANTHROPIC_API_KEY.";
-        else if (e instanceof Anthropic.RateLimitError) msg = "Per daug užklausų – pabandyk po minutės.";
-        else if (e instanceof Anthropic.APIError) msg = `AI klaida (${e.status}).`;
-        console.error("ai-chat", (e as Error).message);
-        ctrl.enqueue(enc.encode("\n\n⚠ " + msg));
+        console.error("ai-chat stream", (e as Error).message);
+        ctrl.enqueue(enc.encode("\n\n⚠ Ryšys su AI nutrūko."));
       } finally {
         ctrl.close();
       }
