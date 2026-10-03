@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-ovAugMK+shNjufCruytdXtF4YCm18ZbYDIbP0kD1ed0=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-95rD2b9Jl+sZ0ig0+0GSiNtZ3QhMuWP9rb/cxatve3g=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -16120,20 +16120,29 @@ const HOME_GROUPS = [
   {id:'warehouse', title:'Sandėlis', color:'#4E9BC9', tabs:['projects','newproj','sort','load','rentals','handovers','inventory','stocktake','gear','rules'],
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-5 9 5v12"/><path d="M7 21v-8h10v8"/><path d="M7 17h10"/></svg>'},
 ];
+const HOME_GROUP_EXTRA = {
+  warehouse: [{ key:'works', after:'inventory', title:'Atlikti darbai', color:'#50AD97', desc:'Valymas, patikros, remontai: kada, su kuo ir kas darė.',
+    icon:()=>slIcon('cog'), can:()=>canView('inventory'),
+    stat:()=>{ if(!IW.loaded || IW.err) return ''; const m = calISO(new Date()).slice(0,7), n = IW.list.filter(w=>String(w.work_date).startsWith(m)).length; return n ? 'Šį mėnesį: '+ltPlural(n,'darbas','darbai','darbų') : ''; },
+    go:()=>{ setTab('inventory'); iwOpen(); } }]
+};
 const homeRailIcon = tab=>{ const b = document.querySelector('.rail-btn[data-tab="'+tab+'"] svg'); return b ? b.outerHTML : ''; };
 function homeGroupOpen(id){
   const g = HOME_GROUPS.find(x=>x.id===id); if(!g) return;
   const tiles = g.tabs.filter(t=>canView(t)).map(t=>HOME_TILES.find(x=>x.tab===t)).filter(Boolean);
+  // tools that are not tabs of their own, right after the tab they belong to
+  (HOME_GROUP_EXTRA[id]||[]).filter(x=>x.can()).forEach(x=>{ const i = tiles.findIndex(t=>t.tab===x.after); tiles.splice(i>=0 ? i+1 : tiles.length, 0, x); });
   openModal(`<div class="row between" style="align-items:center;margin-bottom:12px;"><h3 style="margin:0;display:flex;align-items:center;gap:10px;"><span class="hg-ic" style="background:${g.color}22;color:${g.color};">${g.icon}</span>${esc(g.title)}</h3><button class="icon-btn" id="hgX" style="font-size:20px;">✕</button></div>
     <div class="hg-list">${tiles.map(t=>`
-      <button class="hg-item" data-go="${t.tab}">
-        <span class="hg-ic" style="background:${t.color}22;color:${t.color};">${homeRailIcon(t.tab)}</span>
-        <span class="hg-t"><b>${esc(t.title)}</b><small>${homeTileStat(t.tab) || esc(t.desc)}</small></span><span class="hg-arrow">›</span>
+      <button class="hg-item" ${t.key ? `data-extra="${t.key}"` : `data-go="${t.tab}"`}>
+        <span class="hg-ic" style="background:${t.color}22;color:${t.color};">${t.key ? t.icon() : homeRailIcon(t.tab)}</span>
+        <span class="hg-t"><b>${esc(t.title)}</b><small>${(t.key ? t.stat() : homeTileStat(t.tab)) || esc(t.desc)}</small></span><span class="hg-arrow">›</span>
       </button>`).join('')}</div>`);
   document.getElementById('modalRoot').classList.add('hg-modal');
   document.getElementById('hgX').onclick = closeModal;
   document.querySelectorAll('.hg-item').forEach(b=>b.onclick = ()=>{
     closeModal();
+    if(b.dataset.extra){ const x = (HOME_GROUP_EXTRA[id]||[]).find(e=>e.key===b.dataset.extra); if(x) x.go(); return; }
     const tab = b.dataset.go;
     if(tab==='load' && STATE.activeProjectId){ STATE.activeProjectId = null; saveState(); }
     setTab(tab);
@@ -16613,7 +16622,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v206';
+const APP_VER = 'v207';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -29515,6 +29524,7 @@ const GS_FN = [
   { t:'Kalendorius', d:'šventės ir renginiai', ic:'calendar', kw:'datos sventes', go:()=>gsClick('calHdr') },
   { t:'Pridėti užduotį', d:'sau, su priminimais', ic:'tasks', kw:'uzduotis priminimas todo pastaba', go:()=>gsClick('tkHdrAdd') },
   { t:'Priskirti užduotį', d:'kitiems nariams', ic:'users', kw:'uzduotis paskirti deleguoti', go:()=>gsClick('tkHdrAssign') },
+  { t:'Atlikti darbai', d:'Sandėlis: valymas, patikros, remontai', ic:'cog', kw:'atlikti darbai valymas patikra profilaktika remontas', can:()=>canView('inventory'), go:()=>{ setTab('inventory'); iwOpen(); } },
   { t:'Pranešti apie pažeistą įrangą', d:'Įranga', ic:'alert', kw:'sugadinta pazeista sulauzyta taisyti gedimas', can:()=>canView('gear') && canView('inventory'), go:()=>gsGear('damage', true) },
   { t:'Pranešti apie dingusį daiktą', d:'Įranga', ic:'search', kw:'dingo pamestas prarastas', can:()=>canView('gear'), go:()=>gsGear('lost', true) },
   { t:'Tikrinti įrangos likutį', d:'pagal datą ar laikotarpį', ic:'warehouse', kw:'likutis laisva uzimta rezervuota kiek yra sandelis', can:()=>canView('gear'), go:()=>gsGear('stock') },
