@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-6Nutnn1sHyuzFqXOc0uC7rhcKbjDQa48dQ7GD/7i0QI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-F++J10Tw9AHWWu7SvdVvxm+V/F31YxB9fWyKU6fF81w=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4118,8 +4118,19 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .help-pop{position:fixed;z-index:1200;max-width:340px;background:var(--panel);color:var(--text);border:1px solid var(--border-2,var(--border));border-radius:var(--radius,8px);box-shadow:0 14px 34px rgba(0,0,0,.4);padding:10px 12px;font-size:12.5px;line-height:1.45;}
 </style>
 <style id="evNewCss">
+table.xg thead th{color:var(--text) !important;font-size:11.5px !important;font-weight:800 !important;letter-spacing:.4px;}
+table.xg thead th small{color:var(--text-dim) !important;font-size:10px !important;font-weight:500 !important;}
+table.xg th,table.xg td{border-right:1px solid var(--xg-col, var(--border-2, #3a3a3a)) !important;}
+table.xg thead th{border-right:1px solid var(--xg-col, var(--border-2, #3a3a3a)) !important;}
+:root{--xg-col:color-mix(in srgb, var(--text) 22%, transparent);}
+table.xg thead th{position:sticky;}
+.xg-rsz{position:absolute;top:0;right:-4px;width:9px;height:100%;cursor:col-resize;z-index:8;touch-action:none;}
+.xg-rsz::after{content:'';position:absolute;top:20%;bottom:20%;left:3px;width:3px;border-radius:2px;background:transparent;transition:background .12s;}
+th:hover > .xg-rsz::after{background:var(--text-faint);} .xg-rsz:hover::after,.xg-rsz.on::after{background:var(--accent) !important;}
+body.xg-resizing,body.xg-resizing *{cursor:col-resize !important;user-select:none !important;}
 /* ---------- naujo renginio langas ---------- */
 .na-hint{display:block;font-size:11.5px;min-height:14px;margin-top:2px;color:var(--text-dim);} .na-hint.ok{color:var(--green,#50AD97);} .na-hint.new{color:var(--amber,#F2A93B);}
+.na-mp{display:flex;flex-direction:column;gap:6px;} .na-mp input.hidden{display:none;}
 .na-loc{display:flex;gap:6px;align-items:stretch;} .na-loc input{flex:1;min-width:0;} .na-loc .btn{display:inline-flex;align-items:center;padding:0 10px;}
 .addr-sug{position:absolute;left:0;right:0;top:100%;z-index:50;margin-top:4px;background:var(--panel);border:1px solid var(--border-2,var(--border));border-radius:var(--radius,8px);box-shadow:0 12px 30px rgba(0,0,0,.35);max-height:300px;overflow-y:auto;padding:4px;}
 .addr-sug.hidden{display:none;}
@@ -4141,8 +4152,10 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .na-chip button{background:none;border:0;color:var(--text-dim);cursor:pointer;padding:0;display:flex;} .na-chip button:hover{color:var(--danger,#e5484d);} .na-chip svg{width:15px;height:15px;}
 @media (max-width:640px){ .na-pos{grid-template-columns:repeat(2,minmax(0,1fr));} }
 /* ---------- renginių lentelė: mastelis, visas langas, be slankiklių ---------- */
-.xg-hs,.xg-rowhs,.xg.xg-over .xg-rowhs{display:none !important;}
-.xg-wrap{scrollbar-width:none;} .xg-wrap::-webkit-scrollbar{display:none;width:0;height:0;}
+.xg-rowhs,.xg.xg-over .xg-rowhs{display:none !important;}
+.xg-hs{position:sticky;bottom:0;z-index:6;background:var(--bg);margin:0;padding:8px 0 4px;} .xg-hs.hidden{display:none !important;} .xg-hs input[type=range]{height:26px;} .xg-hs-b{width:36px;height:30px;}
+.xg-wrap{scrollbar-width:auto;scrollbar-color:var(--text-faint) var(--panel-2);}
+.xg-wrap::-webkit-scrollbar{display:block;height:16px;width:12px;} .xg-wrap::-webkit-scrollbar-thumb{background:var(--text-faint);border-radius:8px;border:3px solid var(--panel-2);} .xg-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent);} .xg-wrap::-webkit-scrollbar-track{background:var(--panel-2);}
 .ev-zoom{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--border);border-radius:var(--radius,8px);padding:1px;}
 .ev-zoom .btn{border:0 !important;padding:4px 7px;min-width:0;} .ev-zoom b{font-size:12px;min-width:40px;text-align:center;font-variant-numeric:tabular-nums;cursor:pointer;}
 .tabpanel.xg-panel.ev-full{position:fixed;inset:0;z-index:850;background:var(--bg);padding:10px 12px;overflow:hidden;display:flex;flex-direction:column;gap:8px;}
@@ -17018,7 +17031,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v216';
+const APP_VER = 'v217';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18702,8 +18715,8 @@ function evAddNew(kind){
          <datalist id="dl-evorgs">${evOrgList().map(t=>`<option value="${esc(t)}">`).join('')}</datalist>
          <label class="field">Vieta<span class="na-loc"><input type="text" id="na_loc" autocomplete="off" placeholder="Pradėk rašyti vietą ar adresą…"><a class="btn small" id="na_map" target="_blank" rel="noopener" title="Atidaryti Google Maps">${slIcon('map')}</a></span></label>
          <div class="grid cols-2" style="gap:8px;">
-           <label class="field">Office atsakingas<input type="text" id="na_mgrO" data-combo="dl-people"></label>
-           <label class="field">Tech atsakingas<input type="text" id="na_mgrT" data-combo="dl-people"></label>
+           <div class="field">Office atsakingas${evMemberPick('na_mgrO')}</div>
+           <div class="field">Tech atsakingas${evMemberPick('na_mgrT')}</div>
          </div>
          <div class="na-crew">
            <div class="na-crew-h">Pozicijos <small>kiek žmonių reikės – vėliau lentelėje priskirsi</small></div>
@@ -18752,6 +18765,19 @@ function evAddNew(kind){
   setTimeout(()=>$('na_name').focus(), 50);
 }
 /* the pop-up's helpers: remembered types / organizers, the address search, positions and people */
+// a registered member, or „✎ Įrašyti ranka…“ – then a text field for any name
+function evMemberNames(){ return [...new Set((TEAM.members||[]).filter(m=>!['pending','blocked'].includes(m.role)).map(teamName).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'lt')); }
+function evMemberPick(id){
+  return `<span class="na-mp" data-mp="${id}"><select data-mpsel><option value="">— pasirink narį —</option>${evMemberNames().map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('')}<option value="__own">✎ Įrašyti ranka…</option></select><input type="text" id="${id}" class="hidden" placeholder="Vardas Pavardė" autocomplete="off"></span>`;
+}
+function evMemberPickWire(){
+  document.querySelectorAll('#modalRoot [data-mp]').forEach(w=>{
+    const sel = w.querySelector('select'), inp = w.querySelector('input');
+    const fill = ()=>{ const cur = sel.value; sel.innerHTML = '<option value="">— pasirink narį —</option>'+evMemberNames().map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('')+'<option value="__own">✎ Įrašyti ranka…</option>'; sel.value = cur; };
+    sel.onchange = ()=>{ const own = sel.value==='__own'; inp.classList.toggle('hidden', !own); inp.value = own ? '' : sel.value; if(own) inp.focus(); };
+    if(!(TEAM.members||[]).length && typeof teamLoadMembers==='function') teamLoadMembers().then(fill).catch(()=>{});
+  });
+}
 const EV_NEW_POS = [{k:'A', label:'Garsas (A)'}, {k:'L', label:'Šviesa (L)'}, {k:'V', label:'Video (V)'}, {k:'C', label:'Crew'}];
 function evUniq(list){ const seen = new Set(), out = []; list.forEach(x=>{ x = String(x||'').trim(); const k = normalizeText(x); if(x && !seen.has(k)){ seen.add(k); out.push(x); } }); return out; }
 function evTypeList(){ return evUniq(evOpts().eventTypes.concat(EV.events.map(e=>e.kind==='work' ? '' : e.artist))).slice(0, 200); }
@@ -18759,6 +18785,7 @@ function evOrgList(){ return evUniq(evOpts().organizers.concat(EV.events.map(e=>
 function evMapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q||''); }
 function evNewWire(){
   const $ = id=>document.getElementById(id);
+  evMemberPickWire();
   // organizer: already known or new (it will be remembered)
   const org = $('na_org'), hint = $('na_orgHint');
   const orgHint = ()=>{ const v = org.value.trim(); if(!v){ hint.textContent = ''; return; }
@@ -18924,7 +18951,10 @@ function evColgroup(cols, list){
   const MIN = {name:100, needs:60, loc:72, org:72, mgr:62};
   const mins = keys.map(k=>MIN[k]||W[k]).concat(cols.map(c=>c.w<90 ? 46 : 96)).concat([118, 96]);
   const crew = keys.map(()=>false).concat(cols.map(()=>true)).concat([false,false]);
-  EV.colW = {widths, fixed, mins, phone, crew};
+  // widths dragged by hand (for everyone) win over the automatic ones
+  const ckeys = keys.concat(cols.map(c=>'c:'+c.key)).concat(['log','notes']), own = evOpts().colWidths || {};
+  if(!phone) ckeys.forEach((k, i)=>{ const v = +own[k]; if(v >= 30){ widths[i] = v; fixed[i] = true; mins[i] = Math.min(mins[i], v); } });
+  EV.colW = {widths, fixed, mins, phone, crew, keys:ckeys};
   return '<colgroup>'+widths.map(w=>`<col style="width:${w}px">`).join('')+'</colgroup>';
 }
 function evGridHead(cols){
@@ -18973,8 +19003,8 @@ function renderEventList(){
   });
   el.innerHTML = `
     <div class="xg-meta">${searching ? 'Rasta: <b>'+list.length+'</b>' : ltPlural(nEv,'renginys','renginiai','renginių')+(nWork?' · '+ltPlural(nWork,'sandėlio darbai','sandėlio darbai','sandėlio darbų'):'')}<span class="xg-fold-all"><button type="button" class="btn small" id="evFoldAll">▸ Sutraukti visus</button><button type="button" class="btn small" id="evUnfoldAll">▾ Išskleisti visus</button></span><span class="xg-hint">← slink į šonus →</span></div>
-    <div class="xg-hs hidden" id="xgHs"><button type="button" class="xg-hs-b" data-hs="-1" title="Į kairę">‹</button><input type="range" id="xgHsR" min="0" max="100" value="0" step="1" aria-label="Slinkti lentelę į šonus"><button type="button" class="xg-hs-b" data-hs="1" title="Į dešinę">›</button></div>
-    <div class="xg-wrap" id="xgWrap"><table class="xg" id="xgTable">${evColgroup(cols, list)}${evGridHead(cols)}<tbody>${rows}</tbody></table></div>`;
+    <div class="xg-wrap" id="xgWrap"><table class="xg" id="xgTable">${evColgroup(cols, list)}${evGridHead(cols)}<tbody>${rows}</tbody></table></div>
+    <div class="xg-hs hidden" id="xgHs"><button type="button" class="xg-hs-b" data-hs="-1" title="Į kairę">‹</button><input type="range" id="xgHsR" min="0" max="100" value="0" step="1" aria-label="Slinkti lentelę į šonus"><button type="button" class="xg-hs-b" data-hs="1" title="Į dešinę">›</button></div>`;
   evFitGrid();
   evAutosizeAll(el);
   EV.visibleIds = list.map(e=>e.id);
@@ -18999,7 +19029,7 @@ document.addEventListener('input', e=>{
 // Computer: every event row slides on its own (its slider, trackpad, Shift + wheel) like
 // frozen panes in Excel – Data and Pavadinimas stay; the header row follows the row under the mouse.
 EV.rowX = EV.rowX || {};
-function evRowMode(){ return !EV.phoneLayout; }
+function evRowMode(){ return false; }   // the whole sheet scrolls sideways together (one slider at the bottom)
 function evRowMax(){
   const w = document.getElementById('xgWrap'), t = document.getElementById('xgTable');
   return w && t ? Math.max(0, t.offsetWidth - w.clientWidth) : 0;
@@ -19136,6 +19166,30 @@ document.addEventListener('keydown', e=>{
   if(e.key==='Escape' && document.querySelector('.tabpanel.xg-panel.ev-full')){ evFullSet(false); return; }
   if((e.ctrlKey || e.metaKey) && !e.altKey && (e.key==='+' || e.key==='=' || e.key==='-')){ e.preventDefault(); evZoomSet(evZoom() + (e.key==='-' ? -0.1 : 0.1)); }
 });
+/* drag the right edge of a column title to make it wider / narrower – kept for everyone;
+   a double click gives the column its automatic width back */
+function evColResizeWire(){
+  const t = document.getElementById('xgTable'); if(!t || !EV.colW || EV.colW.phone) return;
+  const ths = [...t.querySelectorAll('thead tr:first-child > th')];
+  ths.forEach((th, i)=>{
+    if(th.querySelector(':scope > .xg-rsz')) return;
+    const h = document.createElement('span'); h.className = 'xg-rsz'; h.title = 'Tempk – keisti plotį visiems · dukart spausk – automatinis plotis'; th.appendChild(h);
+    h.addEventListener('dblclick', e=>{ e.preventDefault(); e.stopPropagation(); const k = EV.colW.keys[i], o = evOpts(); if(o.colWidths && k in o.colWidths){ delete o.colWidths[k]; saveState(); renderEventList(); } });
+    h.addEventListener('pointerdown', e=>{
+      e.preventDefault(); e.stopPropagation();
+      const col = t.querySelectorAll('colgroup col')[i]; if(!col) return;
+      const z = evZoom(), x0 = e.clientX, w0 = parseFloat(col.style.width) || th.offsetWidth, tw0 = parseFloat(t.style.width) || t.offsetWidth;
+      h.setPointerCapture(e.pointerId); document.body.classList.add('xg-resizing'); h.classList.add('on');
+      let w = w0;
+      const mv = ev=>{ w = Math.max(36, Math.round(w0 + (ev.clientX - x0) / z)); col.style.width = w+'px'; t.style.width = (tw0 + w - w0)+'px'; };
+      const up = ()=>{ h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up);
+        document.body.classList.remove('xg-resizing'); h.classList.remove('on');
+        if(Math.abs(w - w0) < 2) return;
+        const o = evOpts(); o.colWidths = Object.assign({}, o.colWidths||{}, { [EV.colW.keys[i]]:w }); saveState(); renderEventList(); };
+      h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+    });
+  });
+}
 function evFitGrid(){
   const w = document.getElementById('xgWrap'); if(!w) return;
   const tbl = document.getElementById('xgTable');
@@ -19165,11 +19219,13 @@ function evFitGrid(){
     if(d) tbl.style.setProperty('--xg-left', d.offsetWidth+'px');
   }
   evHScroll(w);
+  evColResizeWire();
   const rail = document.querySelector('aside.rail');
   const bottom = rail && getComputedStyle(rail).position==='fixed' && rail.getBoundingClientRect().top > window.innerHeight/2 ? rail.offsetHeight : 0;
   const top = w.getBoundingClientRect().top + window.scrollY;
   const pad = parseFloat(getComputedStyle(document.getElementById('main')).paddingBottom) || 0;
-  w.style.maxHeight = Math.max(240, window.innerHeight - top - bottom - Math.min(pad, 12) - 2)+'px';
+  const hs = document.getElementById('xgHs'), hsH = hs && !hs.classList.contains('hidden') ? 44 : 0;
+  w.style.maxHeight = Math.max(240, window.innerHeight - top - bottom - Math.min(pad, 12) - 2 - hsH)+'px';
 }
 function evAutosize(t){ t.style.height = 'auto'; t.style.height = (t.scrollHeight+2)+'px'; }
 function evAutosizeAll(root){ root.querySelectorAll('textarea.xg-ta').forEach(evAutosize); }
@@ -31248,6 +31304,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 17:40', v:'v217', k:'fix', t:'Renginių lentelė: slinkimas, stulpelių plotis, aiškios ribos', f:'Visa lentelė slenka į kairę ir dešinę kartu – apačioje slankiklis (ir pelės ratukas su Shift). Stulpelio plotį galima keisti tempiant jo antraštės dešinį kraštą – plotis išsaugomas visiems ir keisti gali visi (dukart spustelėjus – automatinis plotis). Stulpelių pavadinimai ryškūs, stulpelių ribos aiškiai matomos. Naujame renginyje Office ir Tech atsakingas renkami iš registruotų narių arba įrašomi ranka.' },
   { d:'2026-10-03 17:05', v:'v216', k:'new', t:'Atnaujinimų sąrašas ir „?“ paaiškinimai', f:'Viršutinėje juostoje – „Atnaujinimai“: visi pakeitimai nuo 2026-09-22 su data, laiku ir trumpu aprašu; paspaudus atsidaro pilnas aprašymas. Ilgi paaiškinimai po antraštėmis pakeisti „?“ mygtukais – paspaudus parodomas visas paaiškinimas.' },
   { d:'2026-10-03 16:48', v:'v215', k:'chg', t:'Žmonės – kompaktiškas sąrašas', f:'Kiekvienas žmogus – viena eilutė: vardas, grupės, valandinis / stafkė ir telefonas. Ryškesnė skirtis tarp žmonių ir grupių. Paspaudus atsidaro visa informacija (el. paštas, adresas, pastabos, skambučių istorija). Projekto „Bendra“ formoje plačiame ekrane – keturi laukai eilėje.' },
   { d:'2026-10-03 16:44', v:'v214', k:'new', t:'Krovimas – tik simuliacija', f:'Krovimas nebėra privalomas: viršuje pasirenki projektą (arba laisvą sąrašą) ir transportą – įmonės, nuomojamą (iš Transporto nuomos su išmatavimais) arba transporto tipą. „Palyginti visus tipus“ parodo, kiek kurio transporto reikės ir koks užpildymas. Projektų įrangos grupės: tuščios – kompaktiškos, galima suskleisti / išskleisti, pasirinkta grupė ryškiai pažymėta.' },
