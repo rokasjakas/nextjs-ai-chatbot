@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-ztQfRbvTrygVdvxcnx34uV5RpA9hwDfBnWx5/hvl/wY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-oX/el8PFx/jh49v+sInwkcHVo8svBNyYR8zPgRUPl3I=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4201,6 +4201,22 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .xg-timepop .dp-twc{background:none !important;border:0 !important;padding:2px !important;font-size:11px !important;color:var(--text-dim);} .xg-timepop .tw-acts button{border:0;border-radius:0;padding:0;} .xg-timepop .tw-acts button + button{border-left:1px solid var(--border);}
 .dp-tw .tw-host.off .tw{opacity:.45;} .dp-tw .tw-i{font-size:14px;} .dp-twc{border:0;background:none;color:var(--text-dim);font:inherit;font-size:11px;cursor:pointer;padding:2px;text-align:right;} .dp-twc:hover{color:var(--accent);}
 </style>
+<style id="homeGlassCss">
+.modal-backdrop.hg-grow .modal{animation:none !important;}
+.modal-backdrop.hg-out{opacity:0;transition:opacity .26s ease;}
+/* glass: the date / weather strip too; small boxes inside glass cards: darker glass with an edge */
+body.gl-cards .home-mini{background:color-mix(in srgb, var(--panel) var(--gl-a,55%), transparent) !important;-webkit-backdrop-filter:blur(var(--gl-b,18px)) saturate(1.5);backdrop-filter:blur(var(--gl-b,18px)) saturate(1.5);
+  border:1px solid rgb(var(--hi-rgb) / .14) !important;box-shadow:inset 0 1px 0 rgb(255 255 255 / .08), 0 8px 32px rgb(0 0 0 / .22);}
+body.gl-cards .card .inv-cat, body.gl-cards .card .fb-foot, body.gl-cards .card .fb-item, body.gl-cards .card .stat-tile, body.gl-cards .card .an-tile{
+  background:color-mix(in srgb, #000 24%, transparent) !important;border:1px solid rgb(var(--hi-rgb) / .16) !important;box-shadow:inset 0 1px 0 rgb(255 255 255 / .05);
+  -webkit-backdrop-filter:none;backdrop-filter:none;}
+body.gl-cards .card .inv-cat:hover, body.gl-cards .card .fb-foot:hover{background:color-mix(in srgb, #000 34%, transparent) !important;border-color:rgb(var(--hi-rgb) / .26) !important;}
+/* left menu: the name under the mouse grows 5% */
+@media (hover:hover) and (min-width:761px){
+  :root[data-ui="v2"] aside.rail .rail-btn .rail-tip{transition:transform .2s cubic-bezier(.2,.8,.2,1) !important;transform-origin:left center;}
+  :root[data-ui="v2"] aside.rail .rail-btn:hover .rail-tip{transform:scale(1.05) !important;}
+}
+</style>
 <style id="radCss">
 /* own corner roundness: windows that have their own fixed corners follow it too */
 body.rad-own .modal, body.rad-own .ui-ask-card, body.rad-own .combo-pop, body.rad-own .cal-pop, body.rad-own .ltd-pop, body.rad-own .op-pop, body.rad-own .help-pop,
@@ -4247,7 +4263,7 @@ body.gl-menu .rail .rail-btn.active{box-shadow:inset 0 1px 0 rgb(255 255 255 / .
 body.has-bg{background:linear-gradient(rgb(0 0 0 / var(--bg-dim,.55)), rgb(0 0 0 / var(--bg-dim,.55))), var(--bg-img) center / cover no-repeat fixed !important;}
 :root[data-theme="light"] body.has-bg{background:linear-gradient(rgb(255 255 255 / var(--bg-dim,.55)), rgb(255 255 255 / var(--bg-dim,.55))), var(--bg-img) center / cover no-repeat fixed !important;}
 body.has-bg .shell,body.has-bg .shell-main,body.has-bg main,body.has-bg .app-shell{background:transparent !important;}
-body.has-bg .pageheader,body.has-bg .topbar{background:color-mix(in srgb, var(--bg) 78%, transparent) !important;backdrop-filter:blur(8px);}
+body.has-bg:not(.gl-menu) .pageheader,body.has-bg:not(.gl-menu) .topbar{background:color-mix(in srgb, var(--bg) 78%, transparent) !important;backdrop-filter:blur(8px);}
 .pf-bg{display:flex;gap:12px;align-items:flex-start;}
 .pf-bg-prev{flex:none;width:120px;height:72px;border-radius:var(--radius,8px);border:1px dashed var(--border-2,var(--border));background:var(--panel-2) center / cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--text-faint);}
 .pf-bg-prev.has{border-style:solid;}
@@ -16896,7 +16912,20 @@ const HOME_GROUPS = [
 ];
 const HOME_GROUP_EXTRA = {};
 const homeRailIcon = tab=>{ const b = document.querySelector('.rail-btn[data-tab="'+tab+'"] svg'); return b ? b.outerHTML : ''; };
-function homeGroupOpen(id, arrange){
+let HG_FROM = null;   // the group window was opened from its tile (so it shrinks back into it)
+// the window grows out of the tile that was pressed, and shrinks back into it when closed
+function hgGrow(root, from, back){
+  if(!root || !from || !root.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return Promise.resolve();
+  const a = from.getBoundingClientRect(), b = root.getBoundingClientRect(); if(!a.width || !b.width) return Promise.resolve();
+  const t = `translate(${a.left + a.width/2 - (b.left + b.width/2)}px, ${a.top + a.height/2 - (b.top + b.height/2)}px) scale(${a.width/b.width}, ${a.height/b.height})`;
+  const k = [{ transform:t, opacity:.6 }, { transform:'none', opacity:1 }], kids = [{ opacity:0 }, { opacity:0, offset:.45 }, { opacity:1 }];
+  const o = { duration:back ? 280 : 420, easing:'cubic-bezier(.4,0,.2,1)', fill:'both' };
+  root.style.transformOrigin = '50% 50%';
+  const an = root.animate(back ? k.slice().reverse() : k, o);
+  [...root.children].forEach(c=>c.animate(back ? kids.slice().reverse() : kids, o));
+  return an.finished.catch(()=>{});
+}
+function homeGroupOpen(id, arrange, fromTile){
   const g = HOME_GROUPS.find(x=>x.id===id); if(!g) return;
   let tiles = g.tabs.filter(t=>canView(t)).map(t=>HOME_TILES.find(x=>x.tab===t)).filter(Boolean);
   // tools that are not tabs of their own, right after the tab they belong to
@@ -16916,7 +16945,11 @@ function homeGroupOpen(id, arrange){
       </div>`).join('')}</div>
     ${arrange && Array.isArray(prefGet('hgOrder_'+id)) ? '<button type="button" class="btn small" id="hgReset" style="margin-top:10px;">Atstatyti pradinę tvarką</button>' : ''}`);
   document.getElementById('modalRoot').classList.add('hg-modal');
-  document.getElementById('hgX').onclick = closeModal;
+  if(fromTile){ HG_FROM = id; const bd = document.getElementById('modalBackdrop'); bd.classList.add('hg-grow'); hgGrow(document.getElementById('modalRoot'), fromTile); }
+  const hgShut = ()=>{ const from = HG_FROM===id && currentTab==='home' ? document.querySelector(`.home-tile[data-group="${id}"]`) : null, bd = document.getElementById('modalBackdrop'); HG_FROM = null;
+    if(!from || !bd){ closeModal(); return; } bd.classList.add('hg-out'); hgGrow(document.getElementById('modalRoot'), from, true).then(()=>closeModal(true)); };
+  { const bd = document.getElementById('modalBackdrop'); bd.addEventListener('click', e=>{ if(e.target===bd){ e.stopImmediatePropagation(); hgShut(); } }, true); }
+  document.getElementById('hgX').onclick = hgShut;
   document.getElementById('hgArr').onclick = ()=>homeGroupOpen(id, !arrange);
   const list = document.getElementById('hgList');
   const save = ()=>{ prefSet('hgOrder_'+id, [...list.querySelectorAll('.hg-item')].map(x=>x.dataset.k)); if(currentTab==='home') try{ renderHome(); }catch(e){} };
@@ -16960,11 +16993,9 @@ function homeTileList(){
 function homeTileHtml(t){
   if(t.group){
     const title = k=>(HOME_TILES.find(x=>x.tab===k)||{}).title||k;
-    const kids = byOrder(t.kids, prefGet('hgOrder_'+t.group), k=>k);
     return `<button class="home-tile home-group" data-group="${t.group}" data-k="${t.group}" style="--tc:${t.color}">
       <span class="ht-icon" style="background:${t.color}22;color:${t.color};">${t.icon}</span>
-      <span class="ht-text"><span class="ht-title">${esc(t.title)}</span>
-        <span class="ht-tools">${kids.map(k=>`<span>${esc(title(k))}</span>`).join('')}</span></span>
+      <span class="ht-text"><span class="ht-title">${esc(t.title)}</span></span>
     </button>`;
   }
   return `<button class="home-tile" data-go="${t.tab}" data-k="${t.tab}" style="--tc:${t.color||'var(--accent)'}">
@@ -17419,7 +17450,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v242';
+const APP_VER = 'v243';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18367,7 +18398,7 @@ function renderHomeTab(){
     if(tab==='load' && STATE.activeProjectId){ STATE.activeProjectId = null; saveState(); }
     setTab(tab);
   }));
-  document.querySelectorAll('.home-tile[data-group]').forEach(b=>b.addEventListener('click', ()=>homeGroupOpen(b.dataset.group)));
+  document.querySelectorAll('.home-tile[data-group]').forEach(b=>b.addEventListener('click', ()=>homeGroupOpen(b.dataset.group, false, b)));
   if(side){ calRender(); todoRender(); calLoad(); fbCardRender(); invCard(); }
   document.getElementById('wxToggle').addEventListener('click', ()=>{
     wxOpen = !wxOpen;
@@ -32211,6 +32242,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 00:10', v:'v243', k:'chg', t:'Pradžia: plytelė išsiplečia, daugiau stiklo', f:'Paspaudus Ofisą ar Sandėlį langas su puslapiais išsiplečia iš pačios plytelės, uždarant susitraukia atgal. Plytelėse nebėra puslapių sąrašo. Stiklo režime: juosta su data ir orais, Sąskaitų (Freelance, Paslaugų, Nuomos, Pirkinių) ir Klaidų langeliai – stikliniai, tamsesni, su apvadu; viršutinė juosta tokio pat stiklo kaip kiti. Kairiajame meniu užvedus pelę pavadinimas padidėja 5 %.' },
   { d:'2026-10-04 23:40', v:'v242', k:'chg', t:'Stiklas: švelnesnis fono suliejimas', f:'Stiklo režime atidarius langą (pvz. paspaudus Ofisas) fonas už jo vėl suliejamas švelniai, kaip anksčiau – ne 4 kartus stipriau. Gilus lango šešėlis lieka. Ta pati taisyklė taikoma visiems iššokantiems langams ir meniu.' },
   { d:'2026-10-04 23:20', v:'v241', k:'new', t:'Švytėjimas užvedus pelę, stipresnis stiklas langams', f:'Pradžioje užvedus pelę ant Ofiso, Sandėlio, Chato ir kitų plytelių jos švelniai sušvyti savo spalva ir truputį padidėja, nuvedus – grįžta. Profilis → Išvaizda: efektą galima išjungti, nustatyti padidėjimą ir švytėjimą. Ten pat – nauja „Langų kampai“: kiek apvalūs langai, kortelės ir mygtukai. Stiklo režime iššokantys langai meta gilų šešėlį, o vaizdas po jais suliejamas 4 kartus stipriau.' },
   { d:'2026-10-04 22:50', v:'v240', k:'chg', t:'Telefone: Namai viduryje', f:'Telefono programėlės apatinėje juostoje viduryje visada yra apvalus mygtukas „Namai“ – vienu paspaudimu grįžti į pradžią. Šalia jo – tavo „Mano programos“ (dvi kairėje, viena dešinėje) ir „Meniu“.' },

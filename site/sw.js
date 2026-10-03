@@ -5,7 +5,7 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v242';
+const CACHE = 'es-app-v243';
 const SHELL = ['./manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png'];
 
 // Cloudflare Pages redirects /index.html to /: a redirected response can't answer a page load (the browser shows
