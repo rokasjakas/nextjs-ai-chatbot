@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-WNx8eF0sSrYTg0caFK+E8VVkOxEJQj/xwOkSZYAOXUY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-hedQv+4sBkDLlI0g4MSIRc7cmmLaNRXhHNgW3PZQE5o=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -1911,6 +1911,14 @@ button.icon-btn .bi svg,label.icon-btn .bi svg{width:20px;height:20px;stroke-wid
 .of-pop{position:fixed;inset:0;z-index:95;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:12px 16px 40px;}
 body.of-pop-open{overflow:hidden;}
 .of-pop .of-bar{top:0 !important;}
+/* offer editor in its own window: the top bar sits at the very top and is solid – what scrolls under it is hidden;
+   the side panel stays right below the bar */
+.of-pop{padding-top:0 !important;}
+.of-pop .of-editor > .of-bar{border-top-left-radius:0 !important;border-top-right-radius:0 !important;background:var(--gl-base, var(--panel)) !important;
+  -webkit-backdrop-filter:none !important;backdrop-filter:none !important;margin-top:0;}
+@media (min-width:1100px){
+  .of-pop .of-side-panel{top:calc(var(--of-bar-h, 110px) + 12px) !important;max-height:calc(100vh - var(--of-bar-h, 110px) - 24px) !important;}
+}
 .of-pop .tabpanel{max-width:1500px;margin:0 auto;}
 @media(max-width:760px){ .of-pop{padding:8px 8px calc(40px + env(safe-area-inset-bottom,0px));padding-top:calc(8px + env(safe-area-inset-top,0px));} }
 .btn.of-create{font-size:14px;padding:10px 18px;}
@@ -17495,7 +17503,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v248';
+const APP_VER = 'v249';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25418,7 +25426,15 @@ function ofHost(){
   return h;
 }
 function ofClosePop(){ const h = document.getElementById('ofPop'); if(h) fadeAway(h); document.body.classList.remove('of-pop-open'); }
+// the side panel stays right under the offer's top bar (its real height, one or two rows)
+function ofBarWatch(){
+  const bar = document.querySelector('.of-editor .of-bar'); if(!bar) return;
+  const host = bar.closest('.of-pop') || document.documentElement;
+  const set = ()=>host.style.setProperty('--of-bar-h', bar.offsetHeight+'px');
+  set(); if(typeof ResizeObserver==='function' && !bar._ro){ bar._ro = new ResizeObserver(set); bar._ro.observe(bar); }
+}
 function offerEditorRender(){
+  setTimeout(ofBarWatch, 0);
   const o = OFFER.cur, d = o.data, main = ofHost();
   const t = offerTotals(d), stock = offerStock(d), over = stock.filter(x=>x.used > x.stock);
   const ro = !canEdit('offers'), vs = ofVersions(d);
@@ -32287,6 +32303,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 02:20', v:'v249', k:'fix', t:'Pasiūlymo redaktorius: meniu ir šoninė juosta vietoje', f:'Slenkant pasiūlymą žemyn viršutinis meniu lieka vietoje ir yra nepermatomas – po juo palindusi pasiūlymo dalis nebesimato. Dešinė juosta (Suma, Likutis, Komentarai) laikosi iškart po meniu ir nebepasislepia.' },
   { d:'2026-10-05 02:00', v:'v248', k:'chg', t:'Stiklas: stipresnis suliejimas po langu', f:'Stiklo režime atidarytas langas (pvz. Sandėlis) ir iššokantys meniu liko tokios pačios spalvos, bet tai, kas tiesiai po jais, suliejama 4 kartus stipriau – detalės nebepersišviečia. Fonas aplink langą suliejamas švelniai.' },
   { d:'2026-10-05 01:20', v:'v246', k:'fix', t:'Šviesi tema: tekstai matomi; aiškūs stulpelių skirtukai', f:'Renginių lentelėje stulpelius skiria storesnės, gerai matomos linijos. Šviesioje temoje nebelieka baltų tekstų: jei pasirinkta balta akcento spalva, šviesioje temoje ji rodoma tamsi (mygtukai, nuorodos, „Šiandien“, skaičiai), o stiklinio meniu tekstai – tamsūs. Tamsioje temoje – atvirkščiai, juodas akcentas rodomas šviesus.' },
   { d:'2026-10-05 01:00', v:'v245', k:'fix', t:'Stiklas: fiksuoti stulpeliai', f:'Stiklo režime renginių lentelėje Data ir Renginio pavadinimas bei lentelių antraštės nebėra permatomi – slenkant į šoną turinys po jais suliejamas ir nesimaišo.' },
