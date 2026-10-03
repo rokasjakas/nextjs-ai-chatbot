@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-ud+YB3/3GdHRQQ8cyWA6gojV58zB9M+xbyttzV5pYsI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-HFwAPrGKSZxvc+ojONKSvX3Rq2stw8SiiRPhsztqqD4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -363,6 +363,17 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .rp-bar .field{margin:0;min-width:150px;} .rp-bar input[type=date]{min-width:0;}
 .rp-bar .rp-q{flex:1;min-width:200px;}
 .rv-off{opacity:.55;}
+.rp-docs{margin-top:4px;cursor:pointer;}
+.modal.rv-modal{max-width:860px;}
+.rv-docs{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+.rv-up{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin:8px 0;} .rv-up .field{margin:0;}
+.rv-hist{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
+.rv-he{border:1px solid var(--border);border-radius:10px;padding:10px;} .rv-he.new{border-color:color-mix(in srgb, var(--ok) 50%, var(--border));}
+.rv-he-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;} .rv-he-h .uta-rx{margin-left:auto;}
+.rv-gal{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.rv-gi{width:92px;height:92px;padding:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--panel-2);cursor:zoom-in;}
+.rv-gi img{width:100%;height:100%;object-fit:cover;display:block;}
+.rv-dl{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;} .rv-dl .fl-chip{cursor:pointer;}
 .rv-comp{margin-top:12px;} .rv-comp-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 6px;}
 .rp-acts{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;}
 .uta-dsum td{background:var(--panel-2);}
@@ -5747,7 +5758,7 @@ function fleetFromUrl(){
    išmatavimai, paros kaina, kontaktai. Ataskaitos → Transporto nuoma prie
    kiekvieno nuomoto (pagal valst. nr. arba vardą, pvz. „Fura Alius“) prideda
    kainą ir kontaktus. */
-const RV = { loaded:false, loading:null, err:'', list:[], all:[] };
+const RV = { loaded:false, loading:null, err:'', list:[], all:[], docs:[], docsErr:'' };
 const RV_KINDS = [['van','🚐 Mikroautobusai','Mikroautobusas'], ['box','🚚 Būdos','Būda'], ['truck','🚛 Fūros','Fūra']];
 const RV_PLURAL = { van:['mikroautobusas','mikroautobusai','mikroautobusų'], box:['būda','būdos','būdų'], truck:['fūra','fūros','fūrų'] };
 async function rvLoad(force){
@@ -5758,6 +5769,8 @@ async function rvLoad(force){
     const r = await sb.from('rent_vehicles').select('*').order('company').order('name');
     if(r.error) RV.err = /does not exist|relation|schema cache/i.test(r.error.message) ? 'Nuomojamo transporto lentelės dar nėra – Supabase paleisk supabase/sql/rent_vehicles.sql.' : r.error.message;
     else { RV.all = r.data||[]; RV.list = RV.all.filter(x=>!x.dismissed); RV.err = ''; }
+    if(!RV.err){ const d = await sb.from('rent_vehicle_docs').select('*').order('rent_date', { ascending:false }).order('created_at', { ascending:false }).limit(5000);
+      if(d.error) RV.docsErr = /does not exist|relation|schema cache/i.test(d.error.message) ? 'Nuotraukoms ir dokumentams Supabase paleisk rent_vehicles3.sql.' : d.error.message; else { RV.docs = d.data||[]; RV.docsErr = ''; } }
     RV.loaded = true; RV.loading = null;
   })();
   return RV.loading;
@@ -5825,7 +5838,7 @@ function rvDraw(){
   const tile = r=>`<button type="button" class="fl-tile ${r.active===false ? 'rv-off' : ''}" data-rved="${esc(r.id)}">
         <span class="fl-tile-h"><b>${esc(r.plate || r.aliases || r.name || 'Transportas')}</b>${r.source==='auto' && !r.company ? '<span class="fl-chip warn">nauja iš renginio</span>' : ''}</span>
         <span class="fl-tile-m">${esc([r.plate ? r.name : (r.aliases ? r.name : ''), rvDims(r)].filter(Boolean).join(' · ') || '—')}</span>
-        <span class="fl-tile-s">${r.price_day!=null ? `<span class="fl-chip ok">💶 ${esc(rvMoney(r.price_day))} / para</span>` : '<span class="fl-chip">kaina neįrašyta</span>'}${r.contact_name || r.phone ? `<span class="fl-chip">📞 ${esc([r.contact_name, r.phone].filter(Boolean).join(' · '))}</span>` : ''}${r.aliases && r.plate ? `<span class="fl-chip">✍ ${esc(r.aliases)}</span>` : ''}${r.active===false ? '<span class="fl-chip">nebenaudojamas</span>' : ''}</span>
+        <span class="fl-tile-s">${r.price_day!=null ? `<span class="fl-chip ok">💶 ${esc(rvMoney(r.price_day))} / para</span>` : '<span class="fl-chip">kaina neįrašyta</span>'}${r.contact_name || r.phone ? `<span class="fl-chip">📞 ${esc([r.contact_name, r.phone].filter(Boolean).join(' · '))}</span>` : ''}${r.aliases && r.plate ? `<span class="fl-chip">✍ ${esc(r.aliases)}</span>` : ''}${rvDocCount(r.id) ? `<span class="fl-chip">📎 ${rvDocCount(r.id)}</span>` : ''}${r.active===false ? '<span class="fl-chip">nebenaudojamas</span>' : ''}</span>
       </button>`;
   box.innerHTML = (RV.syncErr ? `<div class="card"><div class="mail-err">${esc(RV.syncErr)}</div></div>` : '') + RV_KINDS.map(([k, title])=>{ const list = RV.list.filter(r=>r.kind===k);
     // one block per company (several plates of Movie Wheels together); without a company first, to be filled in
@@ -5865,10 +5878,13 @@ function rvForm(r, kind){
     </div>
     <label class="field" style="margin-top:8px;">Pastabos<textarea id="rvNote" rows="2">${v(r.note)}</textarea></label>
     <label class="checkbox-row" style="margin-top:6px;"><input type="checkbox" id="rvActive" ${r.active!==false ? 'checked' : ''}> Naudojamas</label>
+    ${isNew ? '' : '<div id="rvDocs"></div>'}
     ${!isNew && (r.phone || r.email) ? `<div class="row" style="gap:6px;margin-top:8px;">${r.phone ? `<a class="btn small" href="tel:${esc(String(r.phone).replace(/\s+/g,''))}">📞 Skambinti</a>` : ''}${r.email ? `<a class="btn small" href="mailto:${esc(r.email)}">✉ Rašyti</a>` : ''}</div>` : ''}
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:14px;">${!isNew && ed ? '<button type="button" class="btn danger small" id="rvDel">Ištrinti</button>' : '<span></span>'}
       <span class="row" style="gap:8px;"><button type="button" class="btn" id="rvX">${ed ? 'Atšaukti' : 'Uždaryti'}</button>${ed ? '<button type="button" class="btn primary" id="rvSave">Išsaugoti</button>' : ''}</span></div>`);
   let k = r.kind;
+  document.getElementById('modalRoot').classList.add('rv-modal');
+  if(!isNew) rvDocsDraw(r);
   document.querySelectorAll('#rvKind [data-k]').forEach(b=>b.onclick = ()=>{ k = b.dataset.k; document.querySelectorAll('#rvKind [data-k]').forEach(x=>x.classList.toggle('active', x===b)); });
   if(!ed) document.querySelectorAll('#modalRoot input, #modalRoot textarea').forEach(x=>x.disabled = true);
   // a company already known: its contacts and price are filled in when still empty
@@ -5904,6 +5920,67 @@ function rvForm(r, kind){
     rvSort();
     closeModal(); rvDraw(); toast('✓ Išsaugota.');
   };
+}
+/* photos and documents (rental contracts, handover acts…): every upload is an entry in the vehicle's
+   history – its date, a note, the files; renting it again later adds a new entry on top */
+function rvDocCount(id){ return RV.docs.filter(d=>d.rent_vehicle_id===id).reduce((n,d)=>n+(d.files||[]).length, 0); }
+const rvIsImg = f=>/^image\//.test(f.type||'') || /\.(jpe?g|png|webp|gif|heic)$/i.test(f.name||'');
+function rvDocsDraw(r){
+  const box = document.getElementById('rvDocs'); if(!box) return;
+  const ed = canEdit('fleet'), me = teamMe(), list = RV.docs.filter(d=>d.rent_vehicle_id===r.id);
+  const today = calISO(new Date());
+  box.innerHTML = `<div class="rv-docs"><div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><b>📷 Nuotraukos ir dokumentai</b><span class="muted">${list.length ? ltPlural(list.length,'įrašas','įrašai','įrašų')+' istorijoje' : ''}</span></div>
+    ${RV.docsErr ? `<div class="mail-err">${esc(RV.docsErr)}</div>` : ''}
+    ${ed && !RV.docsErr ? `<div class="rv-up">
+      <label class="field">Data<input type="date" id="rvdDate" value="${today}"></label>
+      <label class="field" style="flex:1;min-width:180px;">Pastaba<input type="text" id="rvdNote" placeholder="pvz. Nuoma Festivaliui – sutartis, perdavimo aktas"></label>
+      <label class="btn small primary" style="cursor:pointer;align-self:flex-end;">📎 Įkelti nuotraukas / dokumentus<input type="file" id="rvdFiles" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.odt,.txt,.heic,.heif" hidden></label>
+      <span id="rvdUp" class="muted" style="align-self:center;"></span></div>` : ''}
+    ${list.length ? `<div class="rv-hist">${list.map((d, n)=>{ const imgs = (d.files||[]).filter(rvIsImg), docs = (d.files||[]).filter(f=>!rvIsImg(f));
+      return `<div class="rv-he ${n===0 ? 'new' : ''}"><div class="rv-he-h"><b>${esc(rpWhen(d.rent_date))}</b>${n===0 ? '<span class="fl-chip ok">naujausi</span>' : ''}${d.note ? `<span>${esc(d.note)}</span>` : ''}<small class="muted">${esc(d.created_by_name||'')}</small>
+        ${ed || d.created_by===me ? `<button type="button" class="uta-rx" data-rvdx="${esc(d.id)}" title="Ištrinti šį įrašą ir jo failus">✕</button>` : ''}</div>
+        ${imgs.length ? `<div class="rv-gal">${imgs.map((f, i)=>`<button type="button" class="rv-gi" data-rvdg="${esc(d.id)}" data-i="${i}"><img data-bucket="${VL_BUCKET}" data-path="${esc(f.path)}" alt=""></button>`).join('')}</div>` : ''}
+        ${docs.length ? `<div class="rv-dl">${docs.map((f, i)=>`<button type="button" class="fl-chip" data-rvdd="${esc(d.id)}" data-i="${i}">${invFileIcon(f)} ${esc(f.name||'dokumentas')}</button>`).join('')}</div>` : ''}</div>`; }).join('')}</div>` : (RV.docsErr ? '' : '<div class="muted" style="margin-top:6px;">Dar nieko neįkelta.</div>')}</div>`;
+  teamFillImages(box);
+  const inp = document.getElementById('rvdFiles'); if(inp) inp.onchange = ()=>{ const files = [...inp.files]; inp.value = ''; if(files.length) rvDocsUpload(r, files); };
+  box.querySelectorAll('[data-rvdg]').forEach(b=>b.onclick = async ()=>{ const d = RV.docs.find(x=>x.id===b.dataset.rvdg), imgs = (d.files||[]).filter(rvIsImg);
+    const urls = await sbSignedUrls(VL_BUCKET, imgs.map(f=>f.path)); venLightbox({ photos: imgs.map((f, i)=>({ url:urls[i]||'', name:f.name })) }, +b.dataset.i); });
+  box.querySelectorAll('[data-rvdd]').forEach(b=>b.onclick = async ()=>{ const d = RV.docs.find(x=>x.id===b.dataset.rvdd), f = (d.files||[]).filter(x=>!rvIsImg(x))[+b.dataset.i];
+    const [u] = await sbSignedUrls(VL_BUCKET, [f.path]); if(u) window.open(u, '_blank', 'noopener'); else toast('Failo atidaryti nepavyko.'); });
+  box.querySelectorAll('[data-rvdx]').forEach(b=>b.onclick = async ()=>{ const d = RV.docs.find(x=>x.id===b.dataset.rvdx); if(!d) return;
+    if(!(await uiConfirm('Ištrinti '+rpWhen(d.rent_date)+' įrašą ir jo '+ltPlural((d.files||[]).length,'failą','failus','failų')+'?'))) return;
+    const res = await getSb().from('rent_vehicle_docs').delete().eq('id', d.id);
+    if(res.error){ toast('Nepavyko: '+res.error.message); return; }
+    if((d.files||[]).length) stFrom(VL_BUCKET).remove(d.files.map(f=>f.path)).catch(()=>{});
+    RV.docs = RV.docs.filter(x=>x.id!==d.id); rvDocsDraw(r); rvDraw(); });
+}
+async function rvDocsUpload(r, files){
+  const up = document.getElementById('rvdUp'), date = (document.getElementById('rvdDate')||{}).value || calISO(new Date()), note = ((document.getElementById('rvdNote')||{}).value||'').trim();
+  const id = crypto.randomUUID ? crypto.randomUUID() : uid('rvd'), done = [];
+  for(let k = 0; k < files.length; k++){
+    if(up) up.textContent = 'Keliama '+(k+1)+' / '+files.length+'…';
+    try{
+      let blob = files[k], type = files[k].type || 'application/octet-stream', name = files[k].name || 'failas';
+      if(/^image\//.test(type) && !/gif/.test(type)){ try{ const sh = await venShrink(files[k]); blob = sh.blob; type = 'image/jpeg'; name = name.replace(/\.[a-z0-9]+$/i, '')+'.jpg'; }catch(e){} }
+      if(blob.size > 20*1024*1024) throw new Error(name+' didesnis nei 20 MB');
+      const ext = (name.match(/\.([a-z0-9]{2,5})$/i)||[])[1] || (type==='application/pdf' ? 'pdf' : 'bin');
+      const path = `rent/${r.id}/${id}/${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}.${ext.toLowerCase()}`;
+      const { error } = await stFrom(VL_BUCKET).upload(path, blob, { contentType:type, upsert:false });
+      if(error) throw error;
+      done.push({ path, name, type, size:blob.size });
+    }catch(e){ toast('Nepavyko įkelti: '+(/row-level|not found|bucket/i.test(e.message||'') ? 'Supabase paleisk rent_vehicles3.sql.' : (e.message||e)), 5000); }
+  }
+  if(up) up.textContent = '';
+  if(!done.length) return;
+  // the same day and note as the newest entry: the files join it, else a new entry on top of the history
+  const same = RV.docs.find(d=>d.rent_vehicle_id===r.id && String(d.rent_date)===date && (d.note||'')===note);
+  const res = same ? await getSb().from('rent_vehicle_docs').update({ files:(same.files||[]).concat(done) }).eq('id', same.id).select().single()
+    : await getSb().from('rent_vehicle_docs').insert({ id, rent_vehicle_id:r.id, rent_date:date, note, files:done, created_by_name: ACCESS.profile ? teamName(ACCESS.profile) : '' }).select().single();
+  if(res.error){ stFrom(VL_BUCKET).remove(done.map(f=>f.path)).catch(()=>{}); toast('Nepavyko išsaugoti: '+(/does not exist|relation|schema cache/i.test(res.error.message) ? 'Supabase paleisk rent_vehicles3.sql.' : res.error.message), 5000); return; }
+  if(same) Object.assign(same, res.data); else RV.docs.unshift(res.data);
+  RV.docs.sort((a,b)=>String(b.rent_date).localeCompare(String(a.rent_date)) || String(b.created_at).localeCompare(String(a.created_at)));
+  const n = document.getElementById('rvdNote'); if(n) n.value = '';
+  rvDocsDraw(r); rvDraw(); toast('✓ Įkelta: '+ltPlural(done.length,'failas','failai','failų'));
 }
 // the rental vehicle of a summary line: the same plate, or a truck whose company / contact / „kaip rašoma“ has that name
 function rvStems(r){
@@ -14972,7 +15049,8 @@ function rpXls(name, sheets){
 }
 function rpActBtn(acts, fn){ if(!acts) return; acts.innerHTML = `<button type="button" class="btn small" id="rpXls">${slIcon('download')} Excel</button>`; document.getElementById('rpXls').onclick = fn; }
 // a group line that opens its rows (the same look as the UTA table)
-function rpBindOpen(box, redraw){ box.querySelectorAll('[data-rpo]').forEach(r=>r.onclick = e=>{ if(e.target.closest('a')) return; RP.open = RP.open===r.dataset.rpo ? '' : r.dataset.rpo; redraw(); }); }
+function rpBindOpen(box, redraw){ box.querySelectorAll('[data-rvopen]').forEach(b=>b.onclick = ()=>{ const r = RV.list.find(x=>x.id===b.dataset.rvopen); if(r) rvForm(r); });
+  box.querySelectorAll('[data-rpo]').forEach(r=>r.onclick = e=>{ if(e.target.closest('a,button')) return; RP.open = RP.open===r.dataset.rpo ? '' : r.dataset.rpo; redraw(); }); }
 
 /* ---------- Transporto nuoma: renginių logistika ----------
    Kiekviena renginio transporto eilutė (diena, automobilis, vairuotojas).
@@ -15074,7 +15152,7 @@ function rpRentDraw(box, acts){
     <div class="uta-tot"><span>Nuomotas transportas: <b>${D.rows.length}</b> kart.</span><span>Renginių: <b>${evs.size}</b></span><span>Skirtingų: <b>${D.groups.length}</b></span>${cost ? `<span>Nuomos kaina: <b>${esc(rvMoney(cost))}</b></span>` : ''}</div>
     ${D.rows.length ? `<div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Transportas</th><th>Įmonė, kontaktai</th><th>Kartų</th><th>Dienos</th><th>Kaina parai</th><th>Suma</th></tr></thead><tbody>
       ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key || RP.q ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b>${g.vehs ? (g.company ? `<small>${esc(g.vehs.join(', '))}</small>` : '') : g.rv ? `<small>${esc([(RV_KINDS.find(k=>k[0]===g.rv.kind)||[])[2], g.rv.name, g.rv.plate].filter(Boolean).join(' · '))}</small>` : ''}</td>
-        <td>${g.rv && (g.rv.company || contact(g.rv)) ? `<b>${esc(g.rv.company||'')}</b><small>${contact(g.rv)}</small>` : '<span class="muted">neįrašyta</span>'}</td>
+        <td>${g.rv && (g.rv.company || contact(g.rv)) ? `<b>${esc(g.rv.company||'')}</b><small>${contact(g.rv)}</small>` : '<span class="muted">neįrašyta</span>'}${g.rv && !g.vehs && rvDocCount(g.rv.id) ? `<button type="button" class="fl-chip rp-docs" data-rvopen="${esc(g.rv.id)}" title="Nuotraukos ir dokumentai">📎 ${rvDocCount(g.rv.id)}</button>` : ''}</td>
         <td>${g.rows.length}<small>${ltPlural(g.evs.size,'renginys','renginiai','renginių')}</small></td>
         <td class="uta-days">${esc([...g.days].sort().map(d=>RP.from.slice(0,4)===RP.to.slice(0,4) ? d.slice(5).replace('-','.') : rpWhen(d)).join(', '))}<small>${ltPlural(g.days.size,'diena','dienos','dienų')}</small></td>
         <td>${g.prices ? (g.prices.size ? [...g.prices].sort((a,b)=>a-b).map(rvMoney).map(esc).join(' / ') : '—') : g.rv && g.rv.price_day!=null ? esc(rvMoney(g.rv.price_day))+(g.rv.price_note ? `<small>${esc(g.rv.price_note)}</small>` : '') : '—'}</td>
@@ -16360,7 +16438,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v202';
+const APP_VER = 'v203';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
