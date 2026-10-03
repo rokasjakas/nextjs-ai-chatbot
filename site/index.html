@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Ga58idU10y8YPA+Rba3o5R1uS7waM0beYVrsdXG4j48=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-46vfBmmDAR/2JjfwFGyBuoJobOti7oS0VetkaQU8RPk=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -357,6 +357,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .uta-days{max-width:220px;white-space:normal;font-size:12.5px;}
 .uta-prod{display:block;white-space:nowrap;}
 .uta-det > td{background:var(--bg-deep);padding:6px 8px 12px;} .uta-det .uta-t{font-size:12.5px;}
+.uta-range input[type=date]{width:auto;min-width:0;}
 .uta-tot{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0;font-size:14px;}
 .uta-reps{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
 .uta-rx{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:0 0 0 4px;font-size:12px;} .uta-rx:hover{color:var(--danger);}
@@ -5735,7 +5736,7 @@ function fleetFromUrl(){
    ir už kiek – kiekvienam automobiliui / žmogui. Stulpeliai ataskaitoje
    atpažįstami pagal pavadinimus (lietuviškai, angliškai, vokiškai), prieš
    įkeliant juos galima pasitikslinti. Tas pats pylimas įrašomas tik kartą. */
-const UTA = { loaded:false, loading:null, err:'', cards:[], reports:[], month:'', tx:{}, txErr:'', open:'', q:'' };
+const UTA = { loaded:false, loading:null, err:'', cards:[], reports:[], from:'', to:'', tx:{}, txErr:'', open:'', q:'' };
 const UTA_MONTHS = ['sausis','vasaris','kovas','balandis','gegužė','birželis','liepa','rugpjūtis','rugsėjis','spalis','lapkritis','gruodis'];
 const utaMonthNow = ()=>{ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); };
 const utaMonthName = m=>{ const [y, mm] = String(m).split('-'); return (UTA_MONTHS[+mm-1] || m)+' '+y; };
@@ -5758,8 +5759,8 @@ async function utaLoad(force){
     const e = c.error || r.error;
     if(e) UTA.err = /does not exist|relation|schema cache/i.test(e.message) ? 'UTA lentelių dar nėra – Supabase paleisk supabase/sql/uta.sql.' : e.message;
     else { UTA.cards = c.data||[]; UTA.reports = r.data||[]; UTA.err = ''; }
-    if(!UTA.month) UTA.month = utaLastMonth() || utaMonthNow();
-    if(!UTA.err){ await utaLoadMonth(UTA.month); const last = utaLastMonth(); if(last && last!==UTA.month) await utaLoadMonth(last); }
+    if(!UTA.from) utaSetMonth(utaLastMonth() || utaMonthNow());
+    if(!UTA.err){ await utaLoadRange(); const last = utaLastMonth(); if(last) await utaLoadMonth(last); }
     UTA.loaded = true; UTA.loading = null;
   })();
   return UTA.loading;
@@ -5772,6 +5773,29 @@ async function utaLoadMonth(m, force){
   if(r.error){ UTA.txErr = r.error.message; UTA.tx[m] = []; return; }
   UTA.txErr = ''; UTA.tx[m] = r.data||[];
 }
+// the period shown under „Pylimai“: from – to (both days included)
+function utaMonthRange(m){ const [y, mm] = m.split('-').map(Number); return [m+'-01', m+'-'+String(new Date(y, mm, 0).getDate()).padStart(2,'0')]; }
+function utaSetMonth(m){ [UTA.from, UTA.to] = utaMonthRange(m); }
+const utaRangeKey = ()=>UTA.from+'|'+UTA.to;
+async function utaLoadRange(force){
+  const k = utaRangeKey(); if(UTA.tx[k] && !force) return;
+  const r = await getSb().from('uta_tx').select('*').gte('tx_date', UTA.from).lte('tx_date', UTA.to).order('tx_at').limit(50000);
+  if(r.error){ UTA.txErr = r.error.message; UTA.tx[k] = []; return; }
+  UTA.txErr = ''; UTA.tx[k] = r.data||[];
+}
+function utaPresets(){
+  const d = new Date(), y = d.getFullYear(), m = d.getMonth()+1, mk = (yy, mm)=>{ const t = new Date(yy, mm-1, 1); return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0'); }, today = calISO(d);
+  const out = [['Šis mėnuo', ...utaMonthRange(mk(y, m))], ['Praėjęs mėnuo', ...utaMonthRange(mk(y, m-1))], ['Paskutiniai 3 mėn.', utaMonthRange(mk(y, m-2))[0], today],
+    ['Paskutiniai 6 mėn.', utaMonthRange(mk(y, m-5))[0], today], ['Šie metai', y+'-01-01', today], ['Praėję metai', (y-1)+'-01-01', (y-1)+'-12-31']];
+  [...new Set(UTA.reports.map(r=>String(r.month).slice(0,7)))].sort().reverse().forEach(mm=>out.push([utaMonthName(mm), ...utaMonthRange(mm)]));
+  return out;
+}
+function utaRangeLabel(){
+  if(UTA.from.slice(0,7)===UTA.to.slice(0,7) && utaMonthRange(UTA.from.slice(0,7)).join()===[UTA.from, UTA.to].join()) return utaMonthName(UTA.from.slice(0,7));
+  return UTA.from.replace(/-/g,'.')+' – '+UTA.to.replace(/-/g,'.');
+}
+// the days of the fills: day numbers within one month, month.day over a longer period
+function utaDaysText(days){ const one = UTA.from.slice(0,7)===UTA.to.slice(0,7); return [...days].sort().map(d=>one ? String(+d.slice(8)) : d.slice(5).replace('-','.')).join(', '); }
 function utaCardById(id){ return id ? UTA.cards.find(c=>c.id===id) : null; }
 // the card of a report line: the same number, or a masked one (7002 **** 1234) when only one card fits
 function utaCardFor(no){
@@ -5821,7 +5845,7 @@ function utaVehBox(v){
   box.innerHTML = `<div class="card uta-veh"><div class="row between" style="align-items:center;"><b>⛽ UTA kuras</b><button type="button" class="btn small" id="vehUtaGo">Atidaryti UTA →</button></div>
     <div class="uta-veh-r">${cards.length ? cards.map(c=>`<span class="fl-chip">💳 ${esc(utaMask(c.card_no))}</span>`).join('') : '<span class="muted">Kortelė nepriskirta</span>'}
     ${s ? (s.n || s.other ? `<span>${esc(utaMonthName(s.m))}: <b>${ltPlural(s.n,'pylimas','pylimai','pylimų')}</b> · ${esc(utaQty(s.qty))} · ${esc(utaMoney(s.sum))}</span>` : `<span class="muted">${esc(utaMonthName(s.m))}: pylimų nėra</span>`) : ''}</div></div>`;
-  document.getElementById('vehUtaGo').onclick = ()=>{ UTA.open = 'v:'+v.id; if(s) UTA.month = s.m; FLEET.sub = 'uta'; try{ localStorage.setItem('fleetSub', 'uta'); }catch(e){} fleetClose(); renderFleetTab(); };
+  document.getElementById('vehUtaGo').onclick = ()=>{ UTA.open = 'v:'+v.id; if(s) utaSetMonth(s.m); FLEET.sub = 'uta'; try{ localStorage.setItem('fleetSub', 'uta'); }catch(e){} fleetClose(); renderFleetTab(); };
 }
 
 /* the tab */
@@ -5831,15 +5855,12 @@ async function utaRender(){
   if(!TEAM.members || !TEAM.members.length) teamLoadMembers().then(()=>{ if(document.getElementById('utaBox')) utaDraw(); }).catch(()=>{});
   utaDraw();
 }
-function utaMonths(){
-  const s = new Set([utaMonthNow(), UTA.month]); UTA.reports.forEach(r=>s.add(String(r.month).slice(0,7)));
-  return [...s].filter(Boolean).sort().reverse();
-}
 function utaDraw(){
   const box = document.getElementById('utaBox'); if(!box) return;
   const ed = canEdit('fleet');
   if(UTA.err){ box.innerHTML = `<div class="card"><div class="mail-err">${esc(UTA.err)}</div></div>`; return; }
-  const list = UTA.tx[UTA.month], groups = list ? utaGroups(list) : [], reps = UTA.reports.filter(r=>String(r.month).slice(0,7)===UTA.month);
+  const list = UTA.tx[utaRangeKey()], groups = list ? utaGroups(list) : [], reps = UTA.reports.filter(r=>String(r.month).slice(0,7) >= UTA.from.slice(0,7) && String(r.month).slice(0,7) <= UTA.to.slice(0,7));
+  const pres = utaPresets(), cur = pres.find(p=>p[1]===UTA.from && p[2]===UTA.to);
   const tot = groups.reduce((a,g)=>({ fills:a.fills+g.fills, fuel:a.fuel+g.fuel, sum:a.sum+g.sum }), { fills:0, fuel:0, sum:0 });
   const own = c=>{
     if(c.assign_kind==='vehicle'){ const v = STATE.vehicles.find(x=>x.id===c.vehicle_id); return '🚐 '+esc(v ? v.name+(v.plate ? ' · '+v.plate : '') : (c.vehicle_name || 'automobilis')+(v ? '' : ' (nebėra parke)')); }
@@ -5860,15 +5881,16 @@ function utaDraw(){
     </div>
     <div class="card">
       <div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">⛽ Pylimai</h2>
-        <span class="row" style="gap:6px;flex-wrap:wrap;"><select id="utaMonth">${utaMonths().map(m=>`<option value="${m}" ${m===UTA.month?'selected':''}>${esc(utaMonthName(m))}</option>`).join('')}</select>
+        <span class="row uta-range" style="gap:6px;flex-wrap:wrap;align-items:center;"><select id="utaPreset">${cur ? '' : '<option value="" selected>Pasirinktas laikotarpis</option>'}${pres.map(p=>`<option value="${p[1]}|${p[2]}" ${cur===p?'selected':''}>${esc(p[0])}</option>`).join('')}</select>
+        <input type="date" id="utaFrom" value="${UTA.from}" title="Nuo"><span class="muted">–</span><input type="date" id="utaTo" value="${UTA.to}" title="Iki">
         ${list && list.length ? '<button type="button" class="btn small" id="utaXls">⬇ Excel</button>' : ''}</span></div>
       ${UTA.txErr ? `<div class="mail-err">${esc(UTA.txErr)}</div>` : ''}
-      ${!list ? '<div class="empty-state">Kraunama…</div>' : !list.length ? `<div class="empty-state">${esc(utaMonthName(UTA.month))}: įrašų nėra.${ed ? ' Įkelk to mėnesio UTA ataskaitą.' : ''}</div>` : `
+      ${!list ? '<div class="empty-state">Kraunama…</div>' : !list.length ? `<div class="empty-state">${esc(utaRangeLabel())}: įrašų nėra.${ed ? ' Įkelk to laikotarpio UTA ataskaitą.' : ''}</div>` : `
       <div class="uta-tot"><span>Pylimų: <b>${tot.fills}</b></span><span>Kuro: <b>${esc(utaQty(tot.fuel))}</b></span><span>Iš viso: <b>${esc(utaMoney(tot.sum))}</b></span></div>
       <div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Kam</th><th>Pylimų</th><th>Dienos</th><th>Kiekiai</th><th>Suma</th></tr></thead><tbody>
       ${groups.map(g=>`<tr class="uta-g ${UTA.open===g.key ? 'on' : ''} ${g.none ? 'none' : ''}" data-utag="${esc(g.key)}"><td><b>${esc(g.name)}</b>${g.kind==='card' ? '' : `<small>${[...g.cards].map(esc).join(', ')}</small>`}</td>
         <td>${g.fills}${g.other ? `<small>+ ${g.other} kt.</small>` : ''}</td>
-        <td class="uta-days">${[...g.days].sort().map(d=>+d.slice(8)).join(', ')}</td>
+        <td class="uta-days">${esc(utaDaysText(g.days))}</td>
         <td>${Object.entries(g.prod).map(([p,x])=>`<span class="uta-prod">${esc(p)}: <b>${fmt(x.qty,1)}${x.unit ? ' '+esc(x.unit) : ''}</b></span>`).join('')}</td>
         <td><b>${esc(utaMoney(g.sum))}</b></td></tr>
         ${UTA.open===g.key ? `<tr class="uta-det"><td colspan="5"><table class="uta-t"><thead><tr><th>Data</th><th>Stotis</th><th>Produktas</th><th>Kiekis</th><th>Suma</th><th>Rida</th><th>Kortelė</th></tr></thead><tbody>
@@ -5881,7 +5903,10 @@ function utaDraw(){
   const nb = document.getElementById('utaNew'); if(nb) nb.onclick = ()=>utaCardForm(null);
   box.querySelectorAll('[data-utaed]').forEach(b=>b.onclick = ()=>utaCardForm(UTA.cards.find(c=>c.id===b.dataset.utaed)));
   const f = document.getElementById('utaFile'); if(f) f.onchange = ()=>{ const file = f.files[0]; f.value = ''; if(file) utaImport(file); };
-  document.getElementById('utaMonth').onchange = async e=>{ UTA.month = e.target.value; UTA.open = ''; utaDraw(); await utaLoadMonth(UTA.month); utaDraw(); };
+  const setRange = async (a, b)=>{ if(!a || !b) return; if(a > b) [a, b] = [b, a]; UTA.from = a; UTA.to = b; UTA.open = ''; utaDraw(); await utaLoadRange(); utaDraw(); };
+  document.getElementById('utaPreset').onchange = e=>{ if(e.target.value){ const [a, b] = e.target.value.split('|'); setRange(a, b); } };
+  document.getElementById('utaFrom').onchange = e=>setRange(e.target.value, UTA.to);
+  document.getElementById('utaTo').onchange = e=>setRange(UTA.from, e.target.value);
   box.querySelectorAll('[data-utag]').forEach(r=>r.onclick = ()=>{ UTA.open = UTA.open===r.dataset.utag ? '' : r.dataset.utag; utaDraw(); });
   const x = document.getElementById('utaXls'); if(x) x.onclick = ()=>utaExport(groups);
   box.querySelectorAll('[data-utarx]').forEach(b=>b.onclick = async e=>{
@@ -5890,7 +5915,7 @@ function utaDraw(){
     if(!(await uiConfirm(`Ištrinti ataskaitą „${r.file_name||''}“ ir jos ${r.rows} eilutes?`))) return;
     const res = await getSb().from('uta_reports').delete().eq('id', r.id);
     if(res.error){ toast('Nepavyko: '+res.error.message); return; }
-    UTA.reports = UTA.reports.filter(z=>z.id!==r.id); await utaLoadMonth(UTA.month, true); utaDraw(); toast('Ataskaita ištrinta.');
+    UTA.reports = UTA.reports.filter(z=>z.id!==r.id); UTA.tx = {}; await utaLoadRange(); if(utaLastMonth()) await utaLoadMonth(utaLastMonth()); utaDraw(); toast('Ataskaita ištrinta.');
   });
 }
 function utaWhen(iso){ const d = new Date(iso); if(isNaN(d)) return String(iso||''); return calISO(d).slice(5).replace('-','.')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
@@ -5898,11 +5923,12 @@ function utaExport(groups){
   if(!window.XLSX){ toast('Excel biblioteka dar kraunasi – bandyk po akimirkos.'); return; }
   const rows = [];
   groups.forEach(g=>g.rows.forEach(t=>rows.push({ 'Kam':g.name, 'Kortelė':t.card_no, 'Valst. nr.':t.plate||'', 'Data':t.tx_date, 'Laikas':utaWhen(t.tx_at).slice(6), 'Stotis':t.station||'', 'Šalis':t.country||'', 'Produktas':t.product||'', 'Kiekis':t.quantity!=null ? +t.quantity : '', 'Vnt.':t.unit||'', 'Suma be PVM':t.amount_net!=null ? +t.amount_net : '', 'Suma':t.amount_gross!=null ? +t.amount_gross : '', 'Valiuta':t.currency||'', 'Rida':t.mileage!=null ? +t.mileage : '' })));
-  const sum = groups.map(g=>({ 'Kam':g.name, 'Kortelės':[...g.cards].join(', '), 'Pylimų':g.fills, 'Kitos operacijos':g.other, 'Dienos':[...g.days].sort().map(d=>+d.slice(8)).join(', '), 'Kuras (l)':Math.round(g.fuel*100)/100, 'Suma':Math.round(g.sum*100)/100 }));
+  const sum = groups.map(g=>({ 'Kam':g.name, 'Kortelės':[...g.cards].join(', '), 'Pylimų':g.fills, 'Kitos operacijos':g.other, 'Dienos':utaDaysText(g.days), 'Kuras (l)':Math.round(g.fuel*100)/100, 'Suma':Math.round(g.sum*100)/100 }));
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sum), 'Suvestinė');
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Pylimai');
-  XLSX.writeFile(wb, 'UTA_'+UTA.month+'.xlsx');
+  const whole = utaMonthRange(UTA.from.slice(0,7)).join()===[UTA.from, UTA.to].join();
+  XLSX.writeFile(wb, 'UTA_'+(whole ? UTA.from.slice(0,7) : UTA.from+'_'+UTA.to)+'.xlsx');
 }
 
 /* a card: number, whom it belongs to, valid until */
@@ -6199,7 +6225,7 @@ async function utaImportRun(file, rows, month, fresh, addCards){
     await sb.from('uta_reports').update({ rows:added }).eq('id', rep.data.id);
     UTA.reports.unshift(Object.assign(rep.data, { rows:added }));
     UTA.reports.sort((a,b)=>String(b.month).localeCompare(String(a.month)) || String(b.created_at).localeCompare(String(a.created_at)));
-    UTA.month = month; await utaLoadMonth(month, true);
+    UTA.tx = {}; utaSetMonth(month); await utaLoadRange(); await utaLoadMonth(utaLastMonth());
     closeModal(); utaDraw(); toast(`✓ Įkelta ${added} eil.${added < list.length ? ` (${list.length-added} jau buvo)` : ''}`);
   }catch(e){
     go.disabled = false; go.textContent = 'Bandyti dar kartą';
@@ -15843,7 +15869,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v194';
+const APP_VER = 'v195';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
