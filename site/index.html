@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-VM+1S0OP+bp7ejm415NyVWBB0nhSCIT96UuHb7F8Oqk=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-qIuUtf0jeITXyoyFISvjczwmBQwKqzgi/SVOF5qwhvk=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4278,7 +4278,13 @@ body.gl-cards .card, body.gl-cards .home-tile, body.gl-cards .stat-tile, body.gl
   box-shadow:inset 0 1px 0 rgb(255 255 255 / .08), 0 8px 32px rgb(0 0 0 / .22);
 }
 body.gl-cards .card .card{-webkit-backdrop-filter:none;backdrop-filter:none;}
-/* pop-up windows: a deep shadow; the page behind an open window is blurred lightly (⅓ of the glass blur) */
+/* pop-up windows: darker, nearly solid glass right under the window (the details below hardly show through),
+   a deep shadow; the page around an open window is blurred lightly (⅓ of the glass blur) */
+body.gl-win :is(.modal, .ui-ask-card, .pp-dial-in, .call-ring-card){
+  background:color-mix(in srgb, color-mix(in srgb, var(--gl-base, var(--panel)) 72%, var(--gl-tint,#000)) 93%, transparent) !important;}
+body.gl-win :is(.combo-pop, .cal-pop, .ltd-pop, .op-pop, .help-pop){
+  background:color-mix(in srgb, color-mix(in srgb, var(--gl-base, var(--panel)) 78%, var(--gl-tint,#000)) 94%, transparent) !important;
+  -webkit-backdrop-filter:blur(calc(var(--gl-b,18px) * 3)) saturate(1.4);backdrop-filter:blur(calc(var(--gl-b,18px) * 3)) saturate(1.4);}
 body.gl-win .modal, body.gl-win .combo-pop, body.gl-win .cal-pop, body.gl-win .ltd-pop, body.gl-win .op-pop, body.gl-win .ui-ask-card, body.gl-win .help-pop, body.gl-win .pp-dial-in, body.gl-win .call-ring-card{
   box-shadow:inset 0 1px 0 rgb(255 255 255 / .1), 0 24px 70px rgb(0 0 0 / .55), 0 6px 18px rgb(0 0 0 / .35) !important;}
 body.gl-win .modal-backdrop, body.gl-win .ui-ask, body.gl-win .nav-menu{-webkit-backdrop-filter:blur(calc(var(--gl-b,18px) / 3));backdrop-filter:blur(calc(var(--gl-b,18px) / 3));background:rgb(0 0 0 / .35);}
@@ -17487,7 +17493,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v246';
+const APP_VER = 'v247';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32279,6 +32285,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 01:40', v:'v247', k:'chg', t:'Stiklas: langai tamsesni', f:'Stiklo režime atidarytas langas (pvz. Sandėlis) ir iššokantys meniu dabar tamsesni ir beveik nepermatomi – detalės po jais nebepersišviečia. Fonas aplink langą suliejamas švelniai, kaip buvo.' },
   { d:'2026-10-05 01:20', v:'v246', k:'fix', t:'Šviesi tema: tekstai matomi; aiškūs stulpelių skirtukai', f:'Renginių lentelėje stulpelius skiria storesnės, gerai matomos linijos. Šviesioje temoje nebelieka baltų tekstų: jei pasirinkta balta akcento spalva, šviesioje temoje ji rodoma tamsi (mygtukai, nuorodos, „Šiandien“, skaičiai), o stiklinio meniu tekstai – tamsūs. Tamsioje temoje – atvirkščiai, juodas akcentas rodomas šviesus.' },
   { d:'2026-10-05 01:00', v:'v245', k:'fix', t:'Stiklas: fiksuoti stulpeliai', f:'Stiklo režime renginių lentelėje Data ir Renginio pavadinimas bei lentelių antraštės nebėra permatomi – slenkant į šoną turinys po jais suliejamas ir nesimaišo.' },
   { d:'2026-10-05 00:40', v:'v244', k:'chg', t:'Stiklas visur vienodas', f:'Įjungus stiklą (glass) visoje programoje – renginiuose, projektuose, chate, pašte, sąskaitose, languose ir meniu – pilki langeliai, laukeliai ir lentelės tapo tamsesniu stiklu su šviesiu apvadu, kaip Užduočių ir Sąskaitų kortelėse. Šviesioje temoje – šviesus stiklas.' },
