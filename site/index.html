@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-qZPCMFUZSCFRSpwnaFwtMOZJQ16n9MA/y1p+SR4je+A=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-1wMwyj/FCFNSvvcTq3NcTyd4JIBHvFNsUOLhcFFZKZ0=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4227,6 +4227,28 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .dp-tw{display:grid !important;grid-template-columns:1fr 1fr;gap:8px;} .dp-tw > div{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-dim);}
 .xg-timepop .dp-twc{background:none !important;border:0 !important;padding:2px !important;font-size:11px !important;color:var(--text-dim);} .xg-timepop .tw-acts button{border:0;border-radius:0;padding:0;} .xg-timepop .tw-acts button + button{border-left:1px solid var(--border);}
 .dp-tw .tw-host.off .tw{opacity:.45;} .dp-tw .tw-i{font-size:14px;} .dp-twc{border:0;background:none;color:var(--text-dim);font:inherit;font-size:11px;cursor:pointer;padding:2px;text-align:right;} .dp-twc:hover{color:var(--accent);}
+</style>
+<style id="hsFoldCss">
+/* right-side home cards: a handle at the bottom folds a card to its small version */
+.hs-fold{position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);z-index:3;width:38px;height:18px;padding:0;border-radius:9px;border:1px solid var(--border);background:var(--panel);color:var(--text-dim);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.0;transition:opacity .15s, color .15s, border-color .15s;}
+.hs-fold svg{width:18px;height:18px;}
+.hs-item:hover .hs-fold, .hs-item.fold .hs-fold, .hs-fold:focus-visible{opacity:1;}
+.hs-fold:hover{color:var(--text);border-color:var(--accent);}
+@media (hover:none){ .hs-fold{opacity:.85;} }
+.hs-item[data-k="music"] .hs-fold{opacity:.75;}   /* the player covers the card – the handle stays visible */
+.home-side .hs-item{margin-bottom:4px;}
+/* what stays in the small version */
+.hs-item.fold[data-k="inv"] .inv-card > :not(.inv-h),
+.hs-item.fold[data-k="fb"] .fb-card > :not(.fb-card-h):not(.fb-foot),
+.hs-item.fold[data-k="cal"] .card > :not(.cal-head):not(.cal-up),
+.hs-item.fold[data-k="todo"] .card > :not(.cal-head),
+.hs-item.fold[data-k="ai"] .card > :not(.cal-head),
+.hs-item.fold[data-k="music"] .card > :not(.cal-head){display:none !important;}
+.hs-item.fold[data-k="fb"] .fb-card-h{margin-bottom:8px;}
+.hs-item.fold[data-k="cal"] .cal-up{margin-top:8px;}
+.hs-item.fold .card{padding-bottom:14px;}
+body.gl-cards .hs-fold{background:color-mix(in srgb, var(--gl-base, var(--panel)) 85%, transparent);border-color:rgb(var(--hi-rgb) / .2);}
 </style>
 <style id="aiMusCss">
 .aic-list{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;margin:6px 0 8px;scrollbar-width:thin;}
@@ -10767,6 +10789,16 @@ function aicStore(){ try{ sessionStorage.setItem(aicKey(), JSON.stringify(AIC.ms
 function aicMd(t){
   return esc(t).replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/`([^`\n]+)`/g, '<code>$1</code>')
     .split('\n').map(l=>/^\s*[-•*]\s+/.test(l) ? '<span class="aic-li">• '+l.replace(/^\s*[-•*]\s+/, '')+'</span>' : /^#{1,4}\s+/.test(l) ? '<b>'+l.replace(/^#{1,4}\s+/, '')+'</b>' : l).join('<br>');
+}
+// the cards on the right of the home page fold to a small version (each member their own, kept with the profile)
+function hsFolded(k){ const f = prefGet('homeFold'); return Array.isArray(f) && f.includes(k); }
+function hsFoldToggle(k){
+  const f = (Array.isArray(prefGet('homeFold')) ? prefGet('homeFold') : []).filter(x=>x!==k), on = !hsFolded(k);
+  if(on) f.push(k); prefSet('homeFold', f);
+  const it = document.querySelector(`.home-side .hs-item[data-k="${k}"]`); if(!it) return;
+  it.classList.toggle('fold', on);
+  const b = it.querySelector('[data-hsfold]'); if(b){ b.innerHTML = slIcon(on ? 'dropdown' : 'dropup'); b.title = on ? 'Išskleisti' : 'Suskleisti'; b.setAttribute('aria-label', b.title); }
+  musicDockSync();
 }
 function aiCardRender(){
   const box = document.getElementById('homeAi'); if(!box) return;
@@ -17768,7 +17800,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v256';
+const APP_VER = 'v257';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18701,10 +18733,11 @@ function renderHomeTab(){
     </div>
     <div class="home-tiles">${homeTileList().map(homeTileHtml).join('')}</div>
   </div>
-  ${side ? `<aside class="home-side">${byOrder((isPlus() ? ['inv'] : []).concat(['cal','fb','todo','ai','music']), (o=>Array.isArray(o) && isPlus() && !o.includes('inv') ? ['inv'].concat(o) : o)(prefGet('homeSide')), k=>k).map(k=>`<div class="hs-item" data-k="${k}"><span class="hs-grip" title="Tempk, kad sukeistum vietomis"></span><div class="card${k==='fb'?' fb-card-wrap':k==='inv'?' inv-card-wrap':''}" id="${({cal:'homeCal',fb:'homeFb',todo:'homeTodo',inv:'homeInv',ai:'homeAi',music:'homeMusic'})[k]}"></div></div>`).join('')}</aside>` : ''}
+  ${side ? `<aside class="home-side">${byOrder((isPlus() ? ['inv'] : []).concat(['cal','fb','todo','ai','music']), (o=>Array.isArray(o) && isPlus() && !o.includes('inv') ? ['inv'].concat(o) : o)(prefGet('homeSide')), k=>k).map(k=>`<div class="hs-item${hsFolded(k) ? ' fold' : ''}" data-k="${k}"><span class="hs-grip" title="Tempk, kad sukeistum vietomis"></span><button type="button" class="hs-fold" data-hsfold="${k}" title="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}" aria-label="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}">${slIcon(hsFolded(k) ? 'dropdown' : 'dropup')}</button><div class="card${k==='fb'?' fb-card-wrap':k==='inv'?' inv-card-wrap':''}" id="${({cal:'homeCal',fb:'homeFb',todo:'homeTodo',inv:'homeInv',ai:'homeAi',music:'homeMusic'})[k]}"></div></div>`).join('')}</aside>` : ''}
   </div>`;
   const editing = ()=>document.body.classList.contains('home-edit');
   makeSortable(document.querySelector('.home-tiles'), { item:'.home-tile', key:el=>el.dataset.k, editing, onDrop:keys=>prefSet('homeTiles', keys) });
+  document.querySelectorAll('.home-side [data-hsfold]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); hsFoldToggle(b.dataset.hsfold); });
   if(side) makeSortable(document.querySelector('.home-side'), { item:'.hs-item', handle:'.hs-grip', key:el=>el.dataset.k, editing, onDrop:keys=>prefSet('homeSide', keys) });
   document.body.classList.remove('home-edit');
   document.getElementById('homeArrange').onclick = ()=>{
@@ -32674,6 +32707,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 23:37', v:'v257', k:'new', t:'Dešinės kortelės suskleidžiamos', f:'Pradžios puslapyje dešinės pusės korteles (Sąskaitos, Kalendorius, Klaidos, Užduotys, AI asistentas, Muzika) galima suskleisti rankenėle kortelės apačioje – lieka tik mini versija (antraštė ir svarbiausia informacija). Suskleidus Muziką grotuvas lieka mažas kampe ir groja toliau. Kiekvienas narys savo.' },
   { d:'2026-10-03 23:21', v:'v256', k:'chg', t:'AI asistentas – ir per Groq', f:'AI asistentas gali veikti per nemokamą Groq (raktas be banko kortelės: console.groq.com), Google Gemini arba kitą panašią paslaugą – naudojama ta, kurios raktas įrašytas.' },
   { d:'2026-10-03 23:19', v:'v255', k:'chg', t:'AI asistentas – nemokamas (Google Gemini)', f:'AI asistentas pradžios puslapyje dabar naudoja nemokamą Google Gemini planą. Nemokamame plane yra limitai (keliolika klausimų per minutę) ir Google gali naudoti klausimus savo AI tobulinti – nerašyk konfidencialios informacijos.' },
   { d:'2026-10-03 23:14', v:'v254', k:'new', t:'AI asistentas ir Muzika pradžioje', f:'Pradžios puslapyje – dvi naujos kortelės. „AI asistentas“: užduok kasdienį klausimą ir Claude (Anthropic) atsakys lietuviškai, atsakymas rodomas jam rašantis, pokalbį galima tęsti ar pradėti naują. „Muzika“: pasirink Spotify arba YouTube, įklijuok grojaraščio ar dainos nuorodą. Prisijungus prie savo Spotify – grojamos visos dainos; YouTube be reklamų – su YouTube Premium. Išėjus iš pradžios grotuvas lieka mažas kampe ir muzika negroja iš naujo. Korteles galima sukeisti vietomis kaip ir kitas.' },
