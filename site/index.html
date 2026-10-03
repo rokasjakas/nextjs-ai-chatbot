@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-92Yz7WCfSW1Gf2CLc4nqVy/VhqQVQy8GAGqhekv5WUw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-h1v20URE2hUaHkKTbXDo1au54y9/2zKsUYnWzG4YdY4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -14788,10 +14788,19 @@ function rpBindOpen(box, redraw){ box.querySelectorAll('[data-rpo]').forEach(r=>
    Kiekviena renginio transporto eilutė (diena, automobilis, vairuotojas).
    Nuomotas – automobilis, kurio nėra parke (pagal pavadinimą ar valst. nr.),
    arba įrašyta „nuoma“. */
-function rpOwnVeh(text){
-  const t = normalizeText(text), p = utaNorm(text);
-  if(!t || /nuom/.test(t)) return null;
-  return (STATE.vehicles||[]).find(v=>{ const n = normalizeText(v.name), pl = utaNorm(v.plate); return (n && n.length >= 3 && t.includes(n)) || (pl && pl.length >= 4 && p.includes(pl)); }) || null;
+// what goes into the rental summary: a plate (ABC123 / ABC 123) that is not one of the company's
+// vehicles, or a truck written as „… fura“ (Areko fura, Aliaus fura); anything else is left out
+const RP_PLATE = /(^|[^A-Za-zĄČĘĖĮŠŲŪŽąčęėįšųūž0-9])([A-Za-z]{3})[\s-]?(\d{3})(?!\d)/;
+function rpRentKey(text){
+  const t = String(text||'').trim(); if(!t) return null;
+  const m = t.match(RP_PLATE);
+  if(m){
+    const plate = (m[2]+m[3]).toUpperCase();
+    if((STATE.vehicles||[]).some(v=>utaNorm(v.plate)===plate)) return null;
+    return { key:'p:'+plate, name:plate.slice(0,3)+' '+plate.slice(3) };
+  }
+  if(/(^|[^a-ząčęėįšųūž])fur(a|os|ą|oje)(?![a-ząčęėįšųūž])/i.test(t)){ const n = t.replace(/\s+/g, ' '); return { key:'f:'+normalizeText(n), name:n.charAt(0).toUpperCase()+n.slice(1) }; }
+  return null;
 }
 function rpEvDays(ev){
   const a = ev.date, b = ev.dateEnd && ev.dateEnd >= ev.date ? ev.dateEnd : ev.date, out = [];
@@ -14814,14 +14823,14 @@ function rpRentData(){
     (ev.logistics||[]).forEach(l=>{
       const date = rpLogDate(ev, l); if(!date || date < RP.from || date > RP.to) return;
       String(l.vehicle||'').split('\n').map(x=>x.trim()).filter(Boolean).forEach(car=>{
-        if(rpOwnVeh(car)) return;
-        rows.push({ date, car, driver:String(l.driver||'').split('\n').map(x=>x.trim()).filter(Boolean).join(', '), ev:ev.kind==='work' ? (ev.title||'Sandėlio darbai') : (ev.name||ev.title||'Renginys'), evId:ev.id, loc:String(ev.location||'').split('\n')[0] });
+        const k = rpRentKey(car); if(!k) return;
+        rows.push({ date, car, key:k.key, kname:k.name, driver:String(l.driver||'').split('\n').map(x=>x.trim()).filter(Boolean).join(', '), ev:ev.kind==='work' ? (ev.title||'Sandėlio darbai') : (ev.name||ev.title||'Renginys'), evId:ev.id, loc:String(ev.location||'').split('\n')[0] });
       });
     });
   });
   rows.sort((a,b)=>a.date.localeCompare(b.date));
   const g = {};
-  rows.forEach(r=>{ const k = normalizeText(r.car), x = g[k] = g[k] || { key:'r:'+k, name:r.car, rows:[], days:new Set(), evs:new Set() }; x.rows.push(r); x.days.add(r.date); x.evs.add(r.evId); });
+  rows.forEach(r=>{ const k = r.key, x = g[k] = g[k] || { key:k, name:r.kname, rows:[], days:new Set(), evs:new Set() }; x.rows.push(r); x.days.add(r.date); x.evs.add(r.evId); });
   return { rows, groups:Object.values(g).sort((a,b)=>b.rows.length-a.rows.length || a.name.localeCompare(b.name, 'lt')) };
 }
 function rpRentDraw(box, acts){
@@ -14830,15 +14839,15 @@ function rpRentDraw(box, acts){
     <div class="uta-tot"><span>Nuomotas transportas: <b>${D.rows.length}</b> kart.</span><span>Renginių: <b>${evs.size}</b></span><span>Skirtingų: <b>${D.groups.length}</b></span></div>
     ${D.rows.length ? `<div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Transportas</th><th>Kartų</th><th>Renginių</th><th>Dienos</th></tr></thead><tbody>
       ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b></td><td>${g.rows.length}</td><td>${g.evs.size}</td><td class="uta-days">${esc([...g.days].sort().map(d=>RP.from.slice(0,4)===RP.to.slice(0,4) ? d.slice(5).replace('-','.') : rpWhen(d)).join(', '))}</td></tr>
-        ${RP.open===g.key ? `<tr class="uta-det"><td colspan="4"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Data</th><th>Renginys</th><th>Vieta</th><th>Vairuotojas</th></tr></thead><tbody>
-          ${g.rows.map(r=>`<tr><td>${esc(rpWhen(r.date))}</td><td>${esc(r.ev)}</td><td>${esc(r.loc)}</td><td>${esc(r.driver)}</td></tr>`).join('')}</tbody></table></div></td></tr>` : ''}`).join('')}
+        ${RP.open===g.key ? `<tr class="uta-det"><td colspan="4"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Data</th><th>Renginys</th><th>Vieta</th><th>Įrašyta</th><th>Vairuotojas</th></tr></thead><tbody>
+          ${g.rows.map(r=>`<tr><td>${esc(rpWhen(r.date))}</td><td>${esc(r.ev)}</td><td>${esc(r.loc)}</td><td>${esc(r.car)}</td><td>${esc(r.driver)}</td></tr>`).join('')}</tbody></table></div></td></tr>` : ''}`).join('')}
     </tbody></table></div>
-    <small class="muted">Imama iš renginių skilties „Transportas“. Nuomotu laikomas automobilis, kurio nėra parke (pagal pavadinimą ar valst. nr.), arba įrašyta „Nuoma“.</small>`
+    <small class="muted">Imama iš renginių skilties „Transportas“. Įtraukiami valstybiniai numeriai (pvz. ABC123 ar ABC 123), kurių nėra įmonės transporto sąraše, ir furos (pvz. „Areko fura“).</small>`
     : '<div class="empty-state">Šiuo laikotarpiu renginiuose nuomoto transporto nėra.</div>'}</div>`;
   rpBindOpen(box, ()=>rpRentDraw(box, acts));
   if(D.rows.length) rpActBtn(acts, ()=>rpXls('transporto_nuoma', [
     ['Suvestinė', [['Transportas','Kartų','Renginių','Dienos']].concat(D.groups.map(g=>[g.name, g.rows.length, g.evs.size, [...g.days].sort().join(', ')]))],
-    ['Visi', [['Data','Transportas','Renginys','Vieta','Vairuotojas']].concat(D.rows.map(r=>[r.date, r.car, r.ev, r.loc, r.driver]))]]));
+    ['Visi', [['Data','Transportas','Įrašyta','Renginys','Vieta','Vairuotojas']].concat(D.rows.map(r=>[r.date, r.kname, r.car, r.ev, r.loc, r.driver]))]]));
 }
 
 /* ---------- UTA: kuras pagal transportą, kortelę arba bendrai ---------- */
@@ -16116,7 +16125,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v197';
+const APP_VER = 'v198';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
