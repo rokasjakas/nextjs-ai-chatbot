@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-T2kMjWYHSe1RBttd34QqutnwfvytZ55P7AaKtmKp/HA=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Zyzt3RP1L004Lx1qr0bElSCOoreMG3wSDWR2r/MgFLI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -361,6 +361,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .rp-subs{flex-wrap:wrap;}
 .rp-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
 .rp-bar .field{margin:0;min-width:150px;} .rp-bar input[type=date]{min-width:0;}
+.rp-bar .rp-q{flex:1;min-width:200px;}
 .rp-acts{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;}
 .uta-dsum td{background:var(--panel-2);}
 .uta-tot{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0;font-size:14px;}
@@ -14710,7 +14711,9 @@ setTimeout(()=>{ try{ ppDialFromUrl(); }catch(e){} }, 0);
    transportą / kortelę / bendrai), Subnuoma (projektų subnuoma pagal
    tiekėją) ir Krovimai (ankstesnė suvestinė).
    ============================================================ */
-const RP = { sub:'veh', from:'', to:'', veh:'', utaBy:'veh', open:'' };
+const RP = { sub:'veh', from:'', to:'', veh:'', utaBy:'veh', open:'', q:'' };
+// the search word: every part keeps only the lines that have it
+function rpMatch(...parts){ if(!RP.q) return true; const h = normalizeText(parts.filter(x=>x!=null).join(' ')); return normalizeText(RP.q).split(' ').filter(Boolean).every(w=>h.includes(w)); }
 try{ const x = JSON.parse(localStorage.getItem('rpState')||'null'); if(x) Object.assign(RP, { sub:x.sub||'veh', from:x.from||'', to:x.to||'', veh:x.veh||'', utaBy:x.utaBy||'veh' }); }catch(e){}
 function rpSave(){ try{ localStorage.setItem('rpState', JSON.stringify({ sub:RP.sub, from:RP.from, to:RP.to, veh:RP.veh, utaBy:RP.utaBy })); }catch(e){} }
 const RP_SUBS = [
@@ -14740,6 +14743,7 @@ function renderStatsTab(){
       <label class="field">Iki<input type="date" id="rpTo" value="${esc(RP.to)}"></label>
       ${RP.sub==='veh' ? `<label class="field">Automobilis<select id="rpVeh"><option value="">Visi</option>${(STATE.vehicles||[]).map(v=>`<option value="${esc(v.id)}" ${RP.veh===v.id ? 'selected' : ''}>${esc(vlVehName(v.id))}</option>`).join('')}</select></label>` : ''}
       ${RP.sub==='uta' ? `<label class="field">Rodyti<select id="rpUtaBy">${[['veh','Pagal transportą (AUTO 1, AUTO 2…)'],['card','Pagal kortelę'],['all','Bendrai']].map(([k, l])=>`<option value="${k}" ${RP.utaBy===k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>` : ''}
+      <label class="field rp-q">Paieška<input type="search" id="rpQ" value="${esc(RP.q||'')}" placeholder="${{veh:'automobilis, darbas, servisas…', rent:'numeris, fura, renginys, vairuotojas…', uta:'AUTO 1, degalinė, kuras, kortelė…', sub:'tiekėjas, daiktas, projektas…'}[RP.sub]||'Ieškoti…'}" autocomplete="off"></label>
       <span class="rp-acts" id="rpActs"></span>
     </div>`}
     <div id="rpBody"><div class="card empty-state">Kraunama…</div></div>
@@ -14751,6 +14755,7 @@ function renderStatsTab(){
   const f = document.getElementById('rpFrom'); if(f) f.onchange = e=>setRange(e.target.value, RP.to);
   const t = document.getElementById('rpTo'); if(t) t.onchange = e=>setRange(RP.from, e.target.value);
   const vs = document.getElementById('rpVeh'); if(vs) vs.onchange = e=>{ RP.veh = e.target.value; rpSave(); rpDraw(); };
+  const q = document.getElementById('rpQ'); if(q) q.oninput = ()=>{ clearTimeout(RP.qt); RP.qt = setTimeout(()=>{ RP.q = q.value.trim(); rpDraw(); }, 200); };
   const ub = document.getElementById('rpUtaBy'); if(ub) ub.onchange = e=>{ RP.utaBy = e.target.value; RP.open = ''; rpSave(); rpDraw(); };
   rpDraw();
 }
@@ -14762,7 +14767,7 @@ async function rpDraw(){
     if(sub==='loads') return rpLoadsDraw(box);
     if(sub==='veh'){
       await vlLoad(); if(!still()) return;
-      Object.assign(VLR, { from:RP.from, to:RP.to, veh:RP.veh });
+      Object.assign(VLR, { from:RP.from, to:RP.to, veh:RP.veh, q:RP.q });
       box.innerHTML = VL.err ? `<div class="card"><div class="mail-err">${esc(VL.err)}</div></div>` : '<div class="card"><div id="vlrBody"></div></div>';
       vlReportBody();
       if(acts && !VL.err){ acts.innerHTML = `<button type="button" class="btn small" id="rpXls">${slIcon('download')} Excel</button><button type="button" class="btn small" id="rpPrint">${slIcon('print')} Spausdinti / PDF</button>`;
@@ -14847,8 +14852,8 @@ function rpRentData(){
     (ev.logistics||[]).forEach(l=>{
       const date = rpLogDate(ev, l); if(!date || date < RP.from || date > RP.to) return;
       String(l.vehicle||'').split('\n').map(x=>x.trim()).filter(Boolean).forEach(car=>{
-        const r = { date, car, driver:String(l.driver||'').split('\n').map(x=>x.trim()).filter(Boolean).join(', '), ev:ev.kind==='work' ? (ev.title||'Sandėlio darbai') : (ev.name||ev.title||'Renginys'), evId:ev.id, loc:String(ev.location||'').split('\n')[0] };
-        const k = rpRentKey(car);
+        const r0 = { date, car, driver:String(l.driver||'').split('\n').map(x=>x.trim()).filter(Boolean).join(', '), ev:ev.kind==='work' ? (ev.title||'Sandėlio darbai') : (ev.name||ev.title||'Renginys'), evId:ev.id, loc:String(ev.location||'').split('\n')[0] };
+        const r = r0, k = rpRentKey(car);
         if(!k){ rest.push(r); return; }
         Object.assign(r, { key:k.key, kname:k.name });
         if(k.fura){ const f = furas[k.stem] = furas[k.stem] || {}; if(k.names.length){ const nm = k.names.join(' '); f[nm] = (f[nm]||0) + 1; } }
@@ -14859,6 +14864,7 @@ function rpRentData(){
   // the same owner written by name only („Alius“) joins his truck
   rest.forEach(r=>{ const st = rpNameOnly(r.car); if(st && furas[st]){ const nm = rpWords(r.car).filter(w=>!RP_NOISE.test(w)).join(' '); furas[st][nm] = (furas[st][nm]||0) + 1; rows.push(Object.assign(r, { key:'f:'+st, kname:'' })); } });
   rows.forEach(r=>{ if(r.key.startsWith('f:')) r.kname = rpFuraName(furas[r.key.slice(2)]||{}); });
+  if(RP.q){ const keep = rows.filter(r=>rpMatch(r.car, r.kname, r.ev, r.loc, r.driver, r.date)); rows.length = 0; rows.push(...keep); }
   rows.sort((a,b)=>a.date.localeCompare(b.date));
   const g = {};
   rows.forEach(r=>{ const k = r.key, x = g[k] = g[k] || { key:k, name:r.kname, rows:[], days:new Set(), evs:new Set() }; x.rows.push(r); x.days.add(r.date); x.evs.add(r.evId); });
@@ -14869,12 +14875,12 @@ function rpRentDraw(box, acts){
   box.innerHTML = `<div class="card">
     <div class="uta-tot"><span>Nuomotas transportas: <b>${D.rows.length}</b> kart.</span><span>Renginių: <b>${evs.size}</b></span><span>Skirtingų: <b>${D.groups.length}</b></span></div>
     ${D.rows.length ? `<div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Transportas</th><th>Kartų</th><th>Renginių</th><th>Dienos</th></tr></thead><tbody>
-      ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b></td><td>${g.rows.length}</td><td>${g.evs.size}</td><td class="uta-days">${esc([...g.days].sort().map(d=>RP.from.slice(0,4)===RP.to.slice(0,4) ? d.slice(5).replace('-','.') : rpWhen(d)).join(', '))}</td></tr>
-        ${RP.open===g.key ? `<tr class="uta-det"><td colspan="4"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Data</th><th>Renginys</th><th>Vieta</th><th>Įrašyta</th><th>Vairuotojas</th></tr></thead><tbody>
+      ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key || RP.q ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b></td><td>${g.rows.length}</td><td>${g.evs.size}</td><td class="uta-days">${esc([...g.days].sort().map(d=>RP.from.slice(0,4)===RP.to.slice(0,4) ? d.slice(5).replace('-','.') : rpWhen(d)).join(', '))}</td></tr>
+        ${RP.open===g.key || RP.q ? `<tr class="uta-det"><td colspan="4"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Data</th><th>Renginys</th><th>Vieta</th><th>Įrašyta</th><th>Vairuotojas</th></tr></thead><tbody>
           ${g.rows.map(r=>`<tr><td>${esc(rpWhen(r.date))}</td><td>${esc(r.ev)}</td><td>${esc(r.loc)}</td><td>${esc(r.car)}</td><td>${esc(r.driver)}</td></tr>`).join('')}</tbody></table></div></td></tr>` : ''}`).join('')}
     </tbody></table></div>
     <small class="muted">Imama iš renginių skilties „Transportas“. Įtraukiami valstybiniai numeriai (pvz. ABC123 ar ABC 123), kurių nėra įmonės transporto sąraše, ir furos (pvz. „Areko fura“) – sujungiamos pagal savininko vardą (Fura Alius, 7,5m fura Alius, Aliaus fura ir tiesiog „Alius“).</small>`
-    : '<div class="empty-state">Šiuo laikotarpiu renginiuose nuomoto transporto nėra.</div>'}</div>`;
+    : `<div class="empty-state">${RP.q ? 'Pagal „'+esc(RP.q)+'“ nieko nerasta.' : 'Šiuo laikotarpiu renginiuose nuomoto transporto nėra.'}</div>`}</div>`;
   rpBindOpen(box, ()=>rpRentDraw(box, acts));
   if(D.rows.length) rpActBtn(acts, ()=>rpXls('transporto_nuoma', [
     ['Suvestinė', [['Transportas','Kartų','Renginių','Dienos']].concat(D.groups.map(g=>[g.name, g.rows.length, g.evs.size, [...g.days].sort().join(', ')]))],
@@ -14887,9 +14893,11 @@ async function rpUtaDraw(box, acts){
   UTA.from = RP.from; UTA.to = RP.to;
   await utaLoadRange();
   if(currentTab!=='stats' || RP.sub!=='uta') return;
-  const list = UTA.tx[utaRangeKey()] || [], groups = utaGroups(list, RP.utaBy);
+  const all = UTA.tx[utaRangeKey()] || [];
+  const list = RP.q ? all.filter(t=>rpMatch(t.station, t.product, t.plate, t.card_no, t.country, t.tx_date, utaOwner(t).name, utaCardOwner(t).name)) : all, groups = utaGroups(list, RP.utaBy);
+  if(RP.q && !RP.utaQ) UTA.open = '*'; RP.utaQ = RP.q;
   box.innerHTML = `<div class="card">${UTA.txErr ? `<div class="mail-err">${esc(UTA.txErr)}</div>` : ''}
-    ${list.length ? utaSumHtml(groups) : '<div class="empty-state">Šiuo laikotarpiu UTA pylimų nėra. Ataskaitas įkelk Transportas → UTA kortelės.</div>'}</div>`;
+    ${list.length ? utaSumHtml(groups) : `<div class="empty-state">${RP.q && all.length ? 'Pagal „'+esc(RP.q)+'“ nieko nerasta.' : 'Šiuo laikotarpiu UTA pylimų nėra. Ataskaitas įkelk Transportas → UTA kortelės.'}</div>`}</div>`;
   box.querySelectorAll('[data-utag]').forEach(r=>r.onclick = ()=>{ UTA.open = UTA.open===r.dataset.utag ? '' : r.dataset.utag; rpUtaDraw(box, acts); });
   if(list.length && acts){ acts.innerHTML = `<button type="button" class="btn small" id="rpAll">${UTA.open==='*' ? 'Suskleisti' : 'Rodyti visus pylimus'}</button><button type="button" class="btn small" id="rpXls">${slIcon('download')} Excel</button>`;
     document.getElementById('rpAll').onclick = ()=>{ UTA.open = UTA.open==='*' ? '' : '*'; rpUtaDraw(box, acts); };
@@ -14914,6 +14922,7 @@ function rpSubData(){
         if(r.item==null || r.item==='') return;
         const it = getItem(r.item); if(!it || !it.subrent) return;
         const q = offerNum(r.qty) || 0, name = npSubrentName(it).replace(/^\([^)]*\)\s*/, ''), who = String(it.supplier||'').trim() || 'Nuomotojas nežinomas';
+        if(!rpMatch(who, name, d.name, d.number, (d.client||{}).name, (d.location||{}).name)) return;
         const row = { supplier:who, item:name, itemId:String(it.id), qty:q, from:a, to:b, days:Math.max(1, Math.round((new Date(b+'T12:00:00') - new Date(a+'T12:00:00'))/864e5) + 1), project:d.name||'Projektas', status:st };
         rows.push(row);
         const S = sup[who] = sup[who] || { key:'s:'+normalizeText(who), name:who, items:{}, rows:[], projects:new Set() };
@@ -14931,13 +14940,13 @@ function rpSubDraw(box, acts){
   box.innerHTML = `<div class="card">
     <div class="uta-tot"><span>Tiekėjų: <b>${D.groups.length}</b></span><span>Nuomų: <b>${D.rows.length}</b></span><span>Vienetų iš viso: <b>${esc(fmt(D.rows.reduce((s,r)=>s+r.qty,0),0))}</b></span></div>
     ${D.rows.length ? `<div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Tiekėjas</th><th>Projektų</th><th>Kas nuomota (vnt. · kartų)</th></tr></thead><tbody>
-      ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b></td><td>${g.projects.size}</td>
+      ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key || RP.q ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b></td><td>${g.projects.size}</td>
         <td>${Object.values(g.items).sort((a,b)=>b.qty-a.qty).map(i=>`<span class="uta-prod">${esc(i.name)}: <b>${esc(fmt(i.qty,0))} vnt.</b> <span class="muted">· ${i.times}×</span></span>`).join('')}</td></tr>
-        ${RP.open===g.key ? `<tr class="uta-det"><td colspan="3"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Laikas</th><th>Projektas</th><th>Daiktas</th><th>Kiekis</th><th>Dienų</th><th>Būsena</th></tr></thead><tbody>
+        ${RP.open===g.key || RP.q ? `<tr class="uta-det"><td colspan="3"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Laikas</th><th>Projektas</th><th>Daiktas</th><th>Kiekis</th><th>Dienų</th><th>Būsena</th></tr></thead><tbody>
           ${g.rows.map(r=>`<tr><td>${esc(rpWhen(r.from))}${r.to!==r.from ? ' – '+esc(rpWhen(r.to)) : ''}</td><td>${esc(r.project)}</td><td>${esc(r.item)}</td><td>${esc(fmt(r.qty,0))}</td><td>${r.days}</td><td>${esc(st(r.status))}</td></tr>`).join('')}</tbody></table></div></td></tr>` : ''}`).join('')}
     </tbody></table></div>
     <small class="muted">Imama iš projektų (Projektai → Įranga) subnuomos daiktų – patvirtintų, paruoštų, vykstančių ir grąžintų subprojektų.</small>`
-    : '<div class="empty-state">Šiuo laikotarpiu subnuomos projektuose nėra.</div>'}</div>`;
+    : `<div class="empty-state">${RP.q ? 'Pagal „'+esc(RP.q)+'“ nieko nerasta.' : 'Šiuo laikotarpiu subnuomos projektuose nėra.'}</div>`}</div>`;
   rpBindOpen(box, ()=>rpSubDraw(box, acts));
   if(D.rows.length) rpActBtn(acts, ()=>rpXls('subnuoma', [
     ['Pagal tiekėją', [['Tiekėjas','Daiktas','Vnt. iš viso','Kartų','Vnt.×dienų']].concat(...D.groups.map(g=>Object.values(g.items).map(i=>[g.name, i.name, i.qty, i.times, i.unitDays])))],
@@ -15214,7 +15223,6 @@ function homeTileStat(tab){
       const p = activeProject();
       return p ? 'Paskutinis: '+esc(p.name) : 'Planuoti krovimą';
     }
-    if(tab==='stats') return ltPlural(STATE.sessions.length,'išsaugotas krovimas','išsaugoti krovimai','išsaugotų krovimų');
   }catch(e){}
   return '';
 }
@@ -15287,13 +15295,6 @@ function homeTileInfo(tab){
         lines.push('Artimiausia pabaiga:');
         lines.push(esc(next.v.name)+' — '+label[next.d]+' '+when);
       } else lines.push('Įvesk dokumentų galiojimo datas');
-    }
-    if(tab==='stats'){
-      const month = new Date().toISOString().slice(0,7);
-      const inMonth = STATE.sessions.filter(x=>String(x.date||'').startsWith(month)).length;
-      lines.push('Šį mėnesį: '+ltPlural(inMonth,'krovimas','krovimai','krovimų'));
-      const last = STATE.sessions.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
-      if(last) lines.push('Paskutinis: '+fmtDate(last.date)+(last.name?' · '+esc(last.name):''));
     }
   }catch(e){}
   return lines;
@@ -16156,7 +16157,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v199';
+const APP_VER = 'v200';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -29738,6 +29739,7 @@ function vlLineHtml(x, withCar){
 /* ---------- suvestinė ---------- */
 const VLR = { from:'', to:'', veh:'' };
 function vlReport(){
+  VLR.q = '';
   const today = calISO(new Date()), y = today.slice(0,4);
   if(!VLR.from){ VLR.from = y+'-01-01'; VLR.to = today; }
   const monthStart = today.slice(0,8)+'01', lm = (()=>{ const d = new Date(); d.setDate(1); d.setMonth(d.getMonth()-1); return calISO(d); })(), lmEnd = lmDay(monthStart, -1);
@@ -29766,7 +29768,8 @@ function vlReportData(){
   const ids = new Set(vehs.map(v=>v.id));
   // records of vehicles removed from the fleet are kept too
   VL.list.forEach(x=>{ if(!VLR.veh && !ids.has(x.vehicle_id)){ ids.add(x.vehicle_id); vehs.push({ id:x.vehicle_id, name:x.vehicle_name||'Pašalintas automobilis', removed:true }); } });
-  const inRange = VL.list.filter(x=>ids.has(x.vehicle_id) && String(x.log_date)>=a && String(x.log_date)<=b)
+  const q = VLR.q && typeof rpMatch==='function' ? x=>rpMatch(x.title, x.description, x.category, x.place, x.created_by_name, vlVehName(x.vehicle_id, x), (VL_SEV[x.severity]||{}).label) : ()=>true;
+  const inRange = VL.list.filter(x=>ids.has(x.vehicle_id) && String(x.log_date)>=a && String(x.log_date)<=b && q(x))
     .sort((x,y)=>String(x.log_date).localeCompare(String(y.log_date)));
   const rows = vehs.map(v=>{
     const recs = inRange.filter(x=>x.vehicle_id===v.id), svc = recs.filter(x=>x.kind==='service'), prob = recs.filter(x=>x.kind==='problem');
@@ -29775,7 +29778,7 @@ function vlReportData(){
     const openNow = VL.list.filter(x=>x.vehicle_id===v.id && x.kind==='problem' && x.status==='open');
     return { v, name: v.removed ? v.name : vlVehName(v.id), svc, prob, cost: svc.reduce((s,x)=>s+(+x.cost||0), 0), kmFrom: kms.length ? Math.min(...kms) : null, kmTo: kms.length ? Math.max(...kms) : null, byCat, openNow,
       docs: v.docs || null };
-  }).filter(r=>!r.v.removed || r.svc.length || r.prob.length);
+  }).filter(r=>(!r.v.removed && !VLR.q) || r.svc.length || r.prob.length);
   return { a, b, rows, list:inRange, total: rows.reduce((s,r)=>s+r.cost, 0) };
 }
 function vlReportBody(){
