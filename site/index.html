@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-95rD2b9Jl+sZ0ig0+0GSiNtZ3QhMuWP9rb/cxatve3g=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-JZxVqJme7bv3ITvWChEVCCKuATcSIxlBdagat+GB4+c=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-FaTlBt7cBgqN8TBk/i1t/adPePH/nfEv+wOzfn/vOWc=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -11,7 +11,12 @@ if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol===
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
 if(/iP(hone|ad|od)/.test(navigator.userAgent)){ var vm=document.querySelector('meta[name=viewport]'); vm.content += ', maximum-scale=1'; }</script>
 <script>/* the chosen theme before anything is drawn (no dark flash) */
-try{ if(localStorage.getItem('es-theme')==='light') document.documentElement.setAttribute('data-theme','light'); }catch(e){}</script>
+try{ if(localStorage.getItem('es-theme')==='light') document.documentElement.setAttribute('data-theme','light'); }catch(e){}
+/* the chosen design (Profilis → Išvaizda: V1 / V2 and its colours), also before anything is drawn */
+try{ var u = JSON.parse(localStorage.getItem('es-ui')||'null'); if(u && u.v==='v2'){ var r = document.documentElement, lum = function(h){ var m = /^#?([0-9a-f]{6})$/i.exec(h||''); if(!m) return -1; var n = parseInt(m[1],16), c = [n>>16&255, n>>8&255, n&255].map(function(x){ x/=255; return x<=.03928 ? x/12.92 : Math.pow((x+.055)/1.055, 2.4); }); return .2126*c[0]+.7152*c[1]+.0722*c[2]; };
+  r.setAttribute('data-ui','v2');
+  if(lum(u.accent)>=0){ r.style.setProperty('--v2-accent', u.accent); r.style.setProperty('--v2-accent-ink', lum(u.accent)>.4 ? '#0C1B2A' : '#FFFFFF'); }
+  if(lum(u.rail)>=0){ r.style.setProperty('--v2-rail', u.rail); r.style.setProperty('--v2-rail-ink', lum(u.rail)>.4 ? '#1D2229' : '#E8E8E8'); } } }catch(e){}</script>
 <title>EventSolutions App</title>
 <meta name="application-name" content="EventSolutions App">
 <meta name="apple-mobile-web-app-title" content="EventSolutions App">
@@ -4043,6 +4048,135 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 .gr-mem{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
 .gr-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;} .gr-gal img{width:100%;border-radius:8px;display:block;}
 @media (max-width:640px){ .gr-card{flex-wrap:wrap;} .gr-acts{flex-direction:row;width:100%;justify-content:flex-end;} .gr-form{grid-template-columns:1fr;} .gr-pi{flex-direction:column;align-items:flex-start;gap:1px;} .gr-states{grid-template-columns:1fr;} }
+</style>
+<style id="uiV2">
+/* ============================================================
+   Dizainas V2 (Profilis → Išvaizda): Rentman stiliaus – platus šoninis
+   meniu su pavadinimais, žema viršutinė juosta, ramūs pilki paviršiai,
+   Source Sans šriftas be didžiųjų raidžių, kontūriniai mygtukai.
+   Spalvos: --v2-accent (pagrindinė) ir --v2-rail (šoninis meniu),
+   keičiamos profilyje. V1 – viskas kaip anksčiau.
+   ============================================================ */
+:root[data-ui="v2"]{
+  --bg:#141414; --bg-deep:#1E1E1E; --panel:#232323; --panel-2:#2A2A2A; --panel-3:#313131; --border:#343434; --border-2:#454545;
+  --input:#1A1A1A; --text:#E8E8E8; --text-dim:#A2A2A2; --text-faint:#6E6E6E;
+  --accent:var(--v2-accent, #6AB0F3); --accent-ink:var(--v2-accent-ink, #0C1B2A); --blue:var(--v2-accent, #6AB0F3);
+  --rail-bg:var(--v2-rail, #1E1E1E);
+  --radius:4px;
+  --font-head:'Source Sans 3','Source Sans Pro','Roboto',system-ui,sans-serif;
+  --font-body:'Source Sans 3','Source Sans Pro','Roboto',system-ui,sans-serif;
+}
+:root[data-ui="v2"][data-theme="light"]{
+  --bg:#F2F3F5; --bg-deep:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F6F8; --panel-3:#E9EBEF; --border:#E0E3E8; --border-2:#C9CDD4;
+  --input:#FFFFFF; --text:#1D2229; --text-dim:#5B6370; --text-faint:#9AA1AB;
+  --accent:var(--v2-accent, #2F80D8); --accent-ink:var(--v2-accent-ink, #FFFFFF); --blue:var(--v2-accent, #2F80D8);
+  --rail-bg:var(--v2-rail, #FFFFFF);
+}
+:root[data-ui="v2"] body{font-size:14px;}
+/* headings: plain, not uppercase */
+:root[data-ui="v2"] :is(h1,h2,h3,h4,.page-title,.section-title,.crumbs,.nm-head b,.auth-card h1){font-family:var(--font-head);text-transform:none !important;letter-spacing:0 !important;}
+:root[data-ui="v2"] h1.page-title{font-size:18px;font-weight:600;line-height:1.2;padding:0;}
+:root[data-ui="v2"] .section-title,:root[data-ui="v2"] h2.section-title{font-size:16px;font-weight:600;line-height:1.25;}
+:root[data-ui="v2"] .modal h3,:root[data-ui="v2"] #modalRoot h3{font-size:18px;font-weight:600;line-height:1.25;}
+:root[data-ui="v2"] h4{font-size:14.5px;font-weight:600;}
+:root[data-ui="v2"] .stat-num{font-size:28px;font-weight:600;line-height:1.05;}
+:root[data-ui="v2"] .home-tile .ht-title{font-size:19px;font-weight:600;text-transform:none;line-height:1.15;letter-spacing:0;}
+:root[data-ui="v2"] .home-tile{min-height:0;padding:18px;gap:12px;border-left-width:1px;}
+:root[data-ui="v2"] .home-tile .ht-icon{width:56px;height:56px;border-radius:8px;} :root[data-ui="v2"] .home-tile .ht-icon svg{width:30px;height:30px;}
+/* surfaces */
+:root[data-ui="v2"] .card{background:var(--panel);border-color:var(--border);box-shadow:none;}
+:root[data-ui="v2"] main{max-width:1600px;padding:18px 22px 60px;}
+/* buttons: outlined in the main colour, the main action filled */
+:root[data-ui="v2"] button.btn,:root[data-ui="v2"] :where(button,label,a).btn.small{background:transparent;border:1px solid color-mix(in srgb, var(--accent) 70%, transparent);color:var(--accent);font-weight:600;}
+:root[data-ui="v2"] button.btn:hover,:root[data-ui="v2"] :where(button,label,a).btn.small:hover{background:color-mix(in srgb, var(--accent) 12%, transparent);border-color:var(--accent);}
+:root[data-ui="v2"] .btn.primary,:root[data-ui="v2"] button.btn.primary,:root[data-ui="v2"] :where(button,label,a).btn.small.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);text-transform:none;letter-spacing:0;font-family:var(--font-body);font-weight:600;}
+:root[data-ui="v2"] button.btn.danger,:root[data-ui="v2"] .btn.small.danger{color:var(--danger);border-color:color-mix(in srgb, var(--danger) 60%, transparent);}
+:root[data-ui="v2"] .icon-btn{color:var(--text-dim);}
+:root[data-ui="v2"] .icon-btn:hover{color:var(--text);}
+/* inputs */
+:root[data-ui="v2"] :is(input,select,textarea){background:var(--input);border-color:var(--border-2);}
+:root[data-ui="v2"] :is(input,select,textarea):focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);}
+/* tabs: underlined like Rentman */
+:root[data-ui="v2"] .viewmode-toggle{border:0;border-bottom:1px solid var(--border);border-radius:0 !important;background:transparent;gap:4px;overflow:visible;}
+:root[data-ui="v2"] .viewmode-toggle button{background:transparent;border-radius:0 !important;color:var(--text-dim);border-bottom:2px solid transparent;margin-bottom:-1px;padding:7px 12px;font-weight:600;}
+:root[data-ui="v2"] .viewmode-toggle button.active{background:transparent;color:var(--text);border-bottom-color:var(--accent);}
+:root[data-ui="v2"] button.chip.active,:root[data-ui="v2"] .chip.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+/* the top bar: low, the page name on the left, tools as quiet icons */
+:root[data-ui="v2"] header.pageheader{padding:8px 20px;padding-top:calc(8px + env(safe-area-inset-top,0px));background:var(--bg-deep);min-height:54px;display:flex;flex-direction:column;justify-content:center;}
+:root[data-ui="v2"] header.pageheader .crumbs{display:none;}
+:root[data-ui="v2"] .pageheader .row.between{align-items:center;}
+:root[data-ui="v2"] .topbar-right :where(button,label).btn.small:not(.primary){border-color:transparent;color:var(--text-dim);}
+:root[data-ui="v2"] .topbar-right :where(button,label).btn.small:not(.primary):hover{color:var(--text);background:color-mix(in srgb, var(--text) 7%, transparent);}
+:root[data-ui="v2"] .fb-hdr{background:transparent !important;box-shadow:none !important;}
+/* the side menu: wide, icons with names; the active one filled in the main colour */
+@media (min-width:761px){
+  :root[data-ui="v2"] aside.rail{width:236px;align-items:stretch;gap:0;padding:0 0 10px;padding-top:env(safe-area-inset-top,0px);background:var(--rail-bg);border-right:1px solid color-mix(in srgb, var(--v2-rail-ink, var(--text)) 10%, transparent);color:var(--v2-rail-ink, var(--text));overflow-y:auto;overflow-x:hidden;transition:width .18s;}
+  :root[data-ui="v2"] .rail-logo{width:auto;height:56px;margin:0;padding:0 14px;display:flex;align-items:center;gap:10px;border-radius:0;border-bottom:1px solid color-mix(in srgb, var(--v2-rail-ink, var(--text)) 10%, transparent);color:inherit;text-align:left;}
+  :root[data-ui="v2"] .rail-logo:hover{transform:none;background:color-mix(in srgb, var(--v2-rail-ink, var(--text)) 6%, transparent);}
+  :root[data-ui="v2"] .rail-logo .brand-cube{width:28px !important;height:28px !important;}
+  :root[data-ui="v2"] .rail-logo::after{content:'UAB „Centas plius“\A Event Solutions App';white-space:pre;font-size:12.5px;font-weight:700;line-height:1.25;font-family:var(--font-body);}
+  :root[data-ui="v2"] .rail-toggle{width:auto;height:38px;margin:6px 8px 4px;padding:0 10px;justify-content:flex-start;gap:12px;border-radius:4px;border:0;color:color-mix(in srgb, var(--v2-rail-ink, var(--text)) 70%, transparent);}
+  :root[data-ui="v2"] .rail-toggle::after{content:'Visos programos';font-size:13.5px;font-family:var(--font-body);}
+  :root[data-ui="v2"] .rail-toggle:hover{background:color-mix(in srgb, var(--v2-rail-ink, var(--text)) 7%, transparent);color:var(--v2-rail-ink, var(--text));}
+  :root[data-ui="v2"] nav.rail-nav{align-items:stretch;gap:1px;padding:0 0 6px;}
+  :root[data-ui="v2"] .rail-btn{width:auto;height:38px;margin:0;padding:0 18px;border-radius:0 !important;border:0;justify-content:flex-start;gap:14px;color:color-mix(in srgb, var(--v2-rail-ink, var(--text)) 82%, transparent);box-shadow:none !important;}
+  :root[data-ui="v2"] .rail-btn svg{width:19px;height:19px;flex:0 0 auto;opacity:.85;}
+  :root[data-ui="v2"] .rail-btn .rail-tip{position:static;order:2;transform:none;opacity:1;background:none;border:0;padding:0;color:inherit;font-size:13.5px;font-weight:500;pointer-events:none;overflow:hidden;text-overflow:ellipsis;}
+  :root[data-ui="v2"] .rail-btn:hover{background:color-mix(in srgb, var(--v2-rail-ink, var(--text)) 7%, transparent);color:var(--v2-rail-ink, var(--text));}
+  :root[data-ui="v2"] .rail-btn.active{background:var(--accent);color:var(--accent-ink);}
+  :root[data-ui="v2"] .rail-btn.active svg{opacity:1;}
+  :root[data-ui="v2"] .rail-btn[data-tab="home"]{margin-bottom:6px;}
+  :root[data-ui="v2"] .rail-btn[data-tab="home"]::before{content:'';position:absolute;left:12px;right:12px;bottom:-4px;border-bottom:1px solid color-mix(in srgb, var(--v2-rail-ink, var(--text)) 10%, transparent);}
+  :root[data-ui="v2"] .rail-btn.rail-profile{margin-top:auto;}
+  :root[data-ui="v2"] .rail-btn[data-badge]:not([data-badge=""])::after{top:50%;right:12px;transform:translateY(-50%);}
+  :root[data-ui="v2"] .nm-panel{left:236px;}
+  /* folded: only the icons */
+  :root[data-ui="v2"] body.v2-fold aside.rail{width:64px;}
+  :root[data-ui="v2"] body.v2-fold .rail-logo::after,:root[data-ui="v2"] body.v2-fold .rail-toggle::after,:root[data-ui="v2"] body.v2-fold .rail-btn .rail-tip{display:none;}
+  :root[data-ui="v2"] body.v2-fold .rail-btn{padding:0;justify-content:center;}
+  :root[data-ui="v2"] body.v2-fold .rail-toggle,:root[data-ui="v2"] body.v2-fold .rail-logo{justify-content:center;padding:0;}
+  :root[data-ui="v2"] body.v2-fold .nm-panel{left:64px;}
+  :root[data-ui="v2"] body.v2-fold .rail-fold{justify-content:center;padding:0;}
+  :root[data-ui="v2"] .rail-fold{display:flex;}
+}
+.rail-fold{display:none;}
+:root[data-ui="v2"] .rail-fold{align-items:center;justify-content:flex-start;padding:0 10px;gap:10px;margin:2px 8px 4px;height:32px;border:0;border-radius:4px;background:transparent;color:color-mix(in srgb, var(--v2-rail-ink, var(--text)) 60%, transparent);cursor:pointer;font:inherit;font-size:12.5px;}
+:root[data-ui="v2"] .rail-fold:hover{background:color-mix(in srgb, var(--v2-rail-ink, var(--text)) 7%, transparent);color:var(--v2-rail-ink, var(--text));}
+/* phones: the bottom bar keeps its place, in the new colours */
+@media (max-width:760px){
+  :root[data-ui="v2"] h1.page-title{font-size:18px !important;line-height:1.2 !important;}
+  :root[data-ui="v2"] .rail-btn.active{background:var(--accent);color:var(--accent-ink);box-shadow:none !important;}
+}
+/* no capitals anywhere (Rentman writes everything in plain case); no brand stripes */
+:root[data-ui="v2"] body *:not(kbd){text-transform:none !important;}
+:root[data-ui="v2"] .home-mini{padding-right:16px;} :root[data-ui="v2"] .home-mini::after{display:none;}
+:root[data-ui="v2"] .home-tile:hover{border-left-color:var(--accent);transform:none;}
+/* the top bar on a computer: one row, quiet icon buttons (the name shows on hover), the save button filled */
+@media (min-width:641px){
+  :root[data-ui="v2"] .pageheader .row.between{flex-wrap:nowrap;gap:12px;}
+  :root[data-ui="v2"] .topbar-right{gap:2px;}
+  :root[data-ui="v2"] .topbar-right :is(.btn,label.btn,.tm-head-chat,.theme-btn):not(.primary){border-color:transparent !important;font-size:0;gap:0;width:36px;min-width:36px;padding:0;border-radius:4px !important;color:var(--text-dim);background:none;}
+  :root[data-ui="v2"] .topbar-right :is(.btn,label.btn,.tm-head-chat,.theme-btn):not(.primary):hover{background:color-mix(in srgb, var(--text) 8%, transparent);color:var(--text);}
+  :root[data-ui="v2"] .topbar-right .bi svg,:root[data-ui="v2"] .topbar-right .theme-btn svg{width:19px;height:19px;}
+  :root[data-ui="v2"] .topbar-right kbd{display:none;}
+  :root[data-ui="v2"] .topbar-right .fb-hdr .fb-hdr-i{font-size:17px;}
+  :root[data-ui="v2"] .topbar-right .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent) !important;border-radius:4px !important;font-size:13px;padding:0 12px;}
+  :root[data-ui="v2"] .topbar-right .btn.primary:hover{filter:brightness(1.08);background:var(--accent);}
+  :root[data-ui="v2"] .tb-sep{height:22px;margin:0 6px;}
+}
+/* Profilis → Išvaizda */
+.pf-ui-vers{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.pf-ui-v{display:flex;flex-direction:column;gap:6px;align-items:stretch;padding:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel-2);color:var(--text);cursor:pointer;font:inherit;text-align:left;}
+.pf-ui-v.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);}
+.pf-ui-v small{color:var(--text-dim);font-size:11.5px;}
+.pf-ui-prev{height:58px;border-radius:3px;display:grid;grid-template-columns:22% 1fr;overflow:hidden;border:1px solid rgb(127 127 127 / .3);}
+.pf-ui-prev i{display:block;} .pf-ui-prev .p-rail{display:flex;flex-direction:column;gap:3px;padding:5px 3px;} .pf-ui-prev .p-rail b{height:5px;border-radius:2px;opacity:.5;background:currentColor;} .pf-ui-prev .p-rail b.on{opacity:1;}
+.pf-ui-prev .p-main{display:flex;flex-direction:column;gap:4px;padding:5px;} .pf-ui-prev .p-main b{height:8px;border-radius:2px;}
+.pf-ui-cols{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.pf-ui-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;} .pf-ui-row > span{min-width:110px;color:var(--text-dim);}
+.pf-sw{width:24px;height:24px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:inset 0 0 0 1px rgb(127 127 127 / .45);}
+.pf-sw.on{border-color:var(--text);}
+.pf-ui-row input[type=color]{width:30px;height:26px;padding:0;border:0;background:none;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -9541,11 +9675,47 @@ const THEME_ICON = {
   light:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
   dark:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
 };
+/* ---------- Dizainas: V1 (ankstesnis) arba V2 (Rentman stiliaus), V2 spalvos ----------
+   Įsimenama šiame įrenginyje (localStorage 'es-ui'): { v:'v1'|'v2', accent:'#…', rail:'#…' } */
+const UI_ACCENTS = [['#6AB0F3','Mėlyna'],['#F35E7D','Rožinė'],['#50AD97','Žalia'],['#F2A93B','Oranžinė'],['#8062D4','Violetinė'],['#E5484D','Raudona'],['#9AA3AE','Pilka']];
+const UI_RAILS = [['','Pagal temą'],['#1E1E1E','Grafitas'],['#0E0E0E','Juoda'],['#14213D','Tamsiai mėlyna'],['#1B2E2A','Tamsiai žalia'],['#FFFFFF','Balta'],['#EEF2F7','Šviesiai pilka']];
+function uiPrefs(){ try{ const u = JSON.parse(localStorage.getItem('es-ui')||'null'); return Object.assign({ v:'v1', accent:'', rail:'' }, u||{}); }catch(e){ return { v:'v1', accent:'', rail:'' }; } }
+function uiLum(h){ const m = /^#?([0-9a-f]{6})$/i.exec(h||''); if(!m) return -1; const n = parseInt(m[1],16); const c = [n>>16&255, n>>8&255, n&255].map(x=>{ x/=255; return x<=.03928 ? x/12.92 : Math.pow((x+.055)/1.055, 2.4); }); return .2126*c[0]+.7152*c[1]+.0722*c[2]; }
+function uiApply(p){
+  p = p || uiPrefs();
+  const r = document.documentElement;
+  ['--v2-accent','--v2-accent-ink','--v2-rail','--v2-rail-ink'].forEach(k=>r.style.removeProperty(k));
+  if(p.v==='v2'){
+    r.setAttribute('data-ui', 'v2');
+    if(uiLum(p.accent)>=0){ r.style.setProperty('--v2-accent', p.accent); r.style.setProperty('--v2-accent-ink', uiLum(p.accent)>.4 ? '#0C1B2A' : '#FFFFFF'); }
+    if(uiLum(p.rail)>=0){ r.style.setProperty('--v2-rail', p.rail); r.style.setProperty('--v2-rail-ink', uiLum(p.rail)>.4 ? '#1D2229' : '#E8E8E8'); }
+  } else r.removeAttribute('data-ui');
+  uiFoldInit();
+}
+function uiSet(patch){
+  const p = Object.assign(uiPrefs(), patch);
+  try{ localStorage.setItem('es-ui', JSON.stringify(p)); }catch(e){}
+  uiApply(p);
+  // pictures drawn in code take the new colours
+  if(typeof currentTab!=='undefined' && ['stats','load','home'].includes(currentTab) && typeof setTab==='function') setTab(currentTab);
+}
+// V2: the side menu can be folded to icons only (remembered)
+function uiFoldInit(){
+  const rail = document.querySelector('aside.rail'); if(!rail) return;
+  let b = document.getElementById('railFold');
+  if(!b){ b = document.createElement('button'); b.type = 'button'; b.id = 'railFold'; b.className = 'rail-fold';
+    const t = document.getElementById('railToggle'); if(t && t.nextSibling) rail.insertBefore(b, t.nextSibling); else rail.appendChild(b);
+    b.onclick = ()=>{ const on = !document.body.classList.contains('v2-fold'); document.body.classList.toggle('v2-fold', on); try{ localStorage.setItem('es-ui-fold', on ? '1' : ''); }catch(e){} uiFoldInit(); }; }
+  let fold = false; try{ fold = localStorage.getItem('es-ui-fold')==='1'; }catch(e){}
+  document.body.classList.toggle('v2-fold', fold);
+  b.textContent = fold ? '›' : '‹ Suskleisti meniu'; b.title = fold ? 'Išskleisti meniu' : 'Suskleisti meniu (tik ikonos)';
+}
 function themeNow(){ return document.documentElement.getAttribute('data-theme')==='light' ? 'light' : 'dark'; }
 function themeSet(t){
   if(t==='light') document.documentElement.setAttribute('data-theme','light'); else document.documentElement.removeAttribute('data-theme');
   try{ localStorage.setItem('es-theme', t); }catch(e){}
   themeInit();
+  if(document.getElementById('pfUi')) pfUiDraw();
   // pictures drawn in code (charts, the truck load) take the new colours
   if(typeof currentTab!=='undefined' && ['stats','load','home'].includes(currentTab) && typeof setTab==='function') setTab(currentTab);
 }
@@ -16622,7 +16792,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v207';
+const APP_VER = 'v208';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24604,6 +24774,28 @@ function renderJobsTab(){
 }
 
 /* ---------- Profile tab ---------- */
+// Profilis → Išvaizda → Dizainas: V1 / V2 and, for V2, its colours
+function pfUiDraw(){
+  const box = document.getElementById('pfUi'); if(!box) return;
+  const p = uiPrefs(), prev = (rail, ink, acc, main, panel)=>`<span class="pf-ui-prev"><i class="p-rail" style="background:${rail};color:${ink}"><b class="on" style="background:${acc};opacity:1"></b><b></b><b></b><b></b></i><i class="p-main" style="background:${main}"><b style="background:${panel};width:70%"></b><b style="background:${panel}"></b><b style="background:${acc};width:30%"></b></i></span>`;
+  const dark = themeNow()==='dark', acc = p.accent || (dark ? '#6AB0F3' : '#2F80D8'), rail = p.rail || (dark ? '#1E1E1E' : '#FFFFFF'), rink = uiLum(rail)>.4 ? '#1D2229' : '#E8E8E8';
+  box.innerHTML = `<div class="section-title" style="font-size:14px;margin:14px 0 0;">Dizainas</div>
+    <div class="pf-ui-vers">
+      <button type="button" class="pf-ui-v ${p.v!=='v2' ? 'on' : ''}" data-uiv="v1">${prev(dark ? '#151515' : '#FFFFFF', dark ? '#ddd' : '#333', '#F35E7D', dark ? '#101010' : '#F3F3F1', dark ? '#222' : '#fff')}<b>V1</b><small>Ankstesnis dizainas</small></button>
+      <button type="button" class="pf-ui-v ${p.v==='v2' ? 'on' : ''}" data-uiv="v2">${prev(rail, rink, acc, dark ? '#141414' : '#F2F3F5', dark ? '#2A2A2A' : '#fff')}<b>V2</b><small>Naujas: platus meniu su pavadinimais</small></button>
+    </div>
+    ${p.v==='v2' ? `<div class="pf-ui-cols">
+      <div class="pf-ui-row"><span>Pagrindinė spalva</span>${UI_ACCENTS.map(([c, n])=>`<button type="button" class="pf-sw ${p.accent===c ? 'on' : ''}" data-uiacc="${c}" title="${n}" style="background:${c}"></button>`).join('')}<input type="color" id="pfUiAcc" value="${acc}" title="Kita spalva"></div>
+      <div class="pf-ui-row"><span>Šoninis meniu</span>${UI_RAILS.map(([c, n])=>`<button type="button" class="pf-sw ${p.rail===c ? 'on' : ''}" data-uirail="${c}" title="${n}" style="background:${c || (dark ? '#1E1E1E' : '#FFFFFF')}">${c ? '' : '<small style="font-size:9px;">A</small>'}</button>`).join('')}<input type="color" id="pfUiRail" value="${rail}" title="Kita spalva"></div>
+      <button type="button" class="btn small" id="pfUiReset" style="align-self:flex-start;">Atstatyti spalvas</button>
+    </div>` : ''}`;
+  box.querySelectorAll('[data-uiv]').forEach(b=>b.onclick = ()=>{ uiSet({ v:b.dataset.uiv }); pfUiDraw(); });
+  box.querySelectorAll('[data-uiacc]').forEach(b=>b.onclick = ()=>{ uiSet({ accent:b.dataset.uiacc }); pfUiDraw(); });
+  box.querySelectorAll('[data-uirail]').forEach(b=>b.onclick = ()=>{ uiSet({ rail:b.dataset.uirail }); pfUiDraw(); });
+  const a = document.getElementById('pfUiAcc'); if(a) a.onchange = ()=>{ uiSet({ accent:a.value }); pfUiDraw(); };
+  const rl = document.getElementById('pfUiRail'); if(rl) rl.onchange = ()=>{ uiSet({ rail:rl.value }); pfUiDraw(); };
+  const rs = document.getElementById('pfUiReset'); if(rs) rs.onclick = ()=>{ uiSet({ accent:'', rail:'' }); pfUiDraw(); };
+}
 function renderProfileTab(){
   const me = ACCESS.profile || {};
   const first = me.first_name || (me.full_name||'').split(' ')[0] || '';
@@ -24651,6 +24843,7 @@ function renderProfileTab(){
             <button type="button" data-pftheme="light" class="${themeNow()==='light'?'active':''}">☀️ Šviesi</button>
           </div>
           <div class="section-sub" style="margin:8px 0 0;">Tema įsimenama šiame įrenginyje.</div>
+          <div class="pf-ui" id="pfUi"></div>
         </div>
         <div class="card pf-sec">
           <h2 class="section-title">Paskyra</h2>
@@ -24666,6 +24859,7 @@ function renderProfileTab(){
     <div class="card pf-sec" id="pfApp"></div>
     ${canView('chat') ? '<div class="card tm-profile pf-sec" id="pfNotify"></div>' : ''}
   </div>`;
+  pfUiDraw();
   document.querySelectorAll('[data-pftheme]').forEach(b=>b.onclick = ()=>{ themeSet(b.dataset.pftheme); document.querySelectorAll('[data-pftheme]').forEach(x=>x.classList.toggle('active', x===b)); });
   document.getElementById('pfOut').onclick = ()=>document.getElementById('signOutBtn').click();
   document.getElementById('pfPwBtn').onclick = ()=>pfPasswordPopup();
@@ -30679,6 +30873,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
   THEME_ICON.dark = slIcon('sun', '', 'width="20" height="20"');
   HOME_GROUPS[0].icon = slIcon('briefcase'); HOME_GROUPS[1].icon = slIcon('warehouse');
   try{ themeInit(); }catch(e){}
+  try{ uiApply(); }catch(e){}
 })();
 /* emoji used as icons in text („📍 Vilnius“, „✉ el. paštas“ …) become the
    same line icons; people's own chat messages keep their emoji */
