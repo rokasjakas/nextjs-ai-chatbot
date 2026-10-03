@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-s9NkLjBYYMUnQSFksW/TGaD/HH+wkgVds1Umx2Aw7IE=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-V3Ip67k4ypyjtQhQVfJ8sTUz3UvLM3ATGsxlBuAKEuw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4118,6 +4118,10 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .help-pop{position:fixed;z-index:1200;max-width:340px;background:var(--panel);color:var(--text);border:1px solid var(--border-2,var(--border));border-radius:var(--radius,8px);box-shadow:0 14px 34px rgba(0,0,0,.4);padding:10px 12px;font-size:12.5px;line-height:1.45;}
 </style>
 <style id="evNewCss">
+.xg-otel{display:flex;align-items:center;gap:4px;padding:0 4px 4px;} .xg-otel svg{width:14px;height:14px;color:var(--text-dim);flex:none;}
+.xg-otel input{flex:1;min-width:0;border:0 !important;background:transparent !important;padding:2px 2px !important;font-size:12px;color:var(--text);box-shadow:none !important;}
+.xg-otel a{display:flex;padding:2px;border-radius:5px;} .xg-otel a svg{color:var(--accent);} .xg-otel a:hover{background:rgb(var(--hi-rgb) / .08);}
+
 td.xg-date.st-unconf{background:#F2C94C !important;color:#1d1a10 !important;} td.xg-date.st-unconf small,td.xg-date.st-unconf .xg-dend{color:#3b3210 !important;}
 td.xg-date.st-conf{background:#50AD97 !important;color:#06231c !important;} td.xg-date.st-conf small,td.xg-date.st-conf .xg-dend{color:#0d3a2f !important;}
 td.xg-date.st-cancel{background:#E5484D !important;color:#fff !important;} td.xg-date.st-cancel small,td.xg-date.st-cancel .xg-dend{color:#ffe3e3 !important;}
@@ -17051,7 +17055,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v222';
+const APP_VER = 'v223';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18349,7 +18353,7 @@ function evColKey(t){ return normalizeText(t||''); }
 /* ---------- search ---------- */
 function evSearchActive(){ return !!(EVQ.q.trim() || EVQ.from || EVQ.to); }
 function evHaystack(ev){
-  const parts = [ev.date, ev.dateEnd, ev.name, ev.artist, ev.title, ev.time, (ev.needs||[]).join(' '), ev.needsNote, ev.location, ev.organizer, ev.manager, ev.notes];
+  const parts = [ev.date, ev.dateEnd, ev.name, ev.artist, ev.title, ev.time, (ev.needs||[]).join(' '), ev.needsNote, ev.location, ev.organizer, ev.organizerPhone, ev.manager, ev.notes];
   (ev.times||[]).forEach(t=>parts.push(t.label, t.time));
   (ev.crew||[]).forEach(g=>{ parts.push(g.title, g.note); (g.entries||[]).forEach(x=>parts.push(x.pos, x.person)); });
   (ev.logistics||[]).forEach(l=>parts.push(l.vehicle, l.driver));
@@ -18455,7 +18459,8 @@ function evCellData(c){
     case 'name': return { name:ev.name||'', artist:ev.artist||'' };
     case 'needs': return { needs:clone(ev.needs||[]), needsNote:ev.needsNote||'' };
     case 'manager': return { text: ev.manager||'', office: ev.managerOffice, tech: ev.managerTech };
-    case 'location': case 'organizer': case 'notes': return { text: ev[c.cell]||'' };
+    case 'organizer': return { text: ev.organizer||'', tel: ev.organizerPhone||'' };
+    case 'location': case 'notes': return { text: ev[c.cell]||'' };
     case 'times': return { times:clone(ev.times||[]) };
     case 'log': return { logistics:clone(ev.logistics||[]) };
     case 'crew': return { groups: clone((ev.crew||[]).filter(g=>evColKey(g.title)===c.col)) };
@@ -18478,7 +18483,8 @@ function evCellPaste(c, clip){
     case 'name': ev.name = d.name; ev.artist = d.artist; break;
     case 'needs': ev.needs = d.needs; ev.needsNote = d.needsNote; break;
     case 'manager': ev.manager = d.text; ev.managerOffice = d.office!=null ? d.office : d.text; ev.managerTech = d.tech||''; break;
-    case 'location': case 'organizer': case 'notes': ev[c.cell] = d.text; break;
+    case 'organizer': ev.organizer = d.text; if(d.tel!=null) ev.organizerPhone = d.tel; break;
+    case 'location': case 'notes': ev[c.cell] = d.text; break;
     case 'times': ev.times = d.times; break;
     case 'log': ev.logistics = d.logistics; break;
     case 'crew': {
@@ -18741,7 +18747,7 @@ function evAddNew(kind){
       : `<label class="field">Pavadinimas *<input type="text" id="na_name" placeholder="pvz. Neurostart Radisson"></label>
          <div class="grid cols-2" style="gap:8px;">
            <label class="field">Renginio tipas<input type="text" id="na_artist" list="dl-evtypes" autocomplete="off" placeholder="pvz. Konferencija"></label>
-           <label class="field">Organizatorius<input type="text" id="na_org" list="dl-evorgs" autocomplete="off"><small class="na-hint" id="na_orgHint"></small></label>
+           <div class="field">Organizatorius<input type="text" id="na_org" list="dl-evorgs" autocomplete="off"><input type="tel" id="na_orgTel" placeholder="Tel. numeris" autocomplete="off" style="margin-top:4px;"><small class="na-hint" id="na_orgHint"></small></div>
          </div>
          <datalist id="dl-evtypes">${evTypeList().map(t=>`<option value="${esc(t)}">`).join('')}</datalist>
          <datalist id="dl-evorgs">${evOrgList().map(t=>`<option value="${esc(t)}">`).join('')}</datalist>
@@ -18893,6 +18899,10 @@ const EV_NEW_DUTY = [['L', 'Šviesa (L)'], ['V', 'Video (V)'], ['A', 'Garsas (A)
 function evUniq(list){ const seen = new Set(), out = []; list.forEach(x=>{ x = String(x||'').trim(); const k = normalizeText(x); if(x && !seen.has(k)){ seen.add(k); out.push(x); } }); return out; }
 function evTypeList(){ return evUniq(evOpts().eventTypes.concat(EV.events.map(e=>e.kind==='work' ? '' : e.artist))).slice(0, 200); }
 function evOrgList(){ return evUniq(evOpts().organizers.concat(EV.events.map(e=>e.kind==='work' ? '' : e.organizer))).slice(0, 300); }
+// organizers' phone numbers, remembered for everyone (eventOptions.orgPhones)
+function evOrgPhone(name){ const k = normalizeText(name||''); if(!k) return ''; const m = evOpts().orgPhones || {}; if(m[k]) return m[k];
+  const e = EV.events.find(x=>x.organizerPhone && normalizeText(x.organizer||'')===k); return e ? e.organizerPhone : ''; }
+function evOrgPhoneSet(name, tel){ const k = normalizeText(name||''); tel = String(tel||'').trim(); if(!k || !tel) return; const o = evOpts(); o.orgPhones = Object.assign({}, o.orgPhones||{}); if(o.orgPhones[k]===tel) return; o.orgPhones[k] = tel; saveState(); }
 function evMapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q||''); }
 function evNewWire(){
   const $ = id=>document.getElementById(id);
@@ -18908,6 +18918,9 @@ function evNewWire(){
     const known = evOrgList().some(x=>normalizeText(x)===normalizeText(v));
     hint.textContent = known ? '✓ jau žinomas' : 'naujas – bus įsimintas'; hint.className = 'na-hint '+(known ? 'ok' : 'new'); };
   org.addEventListener('input', orgHint);
+  // a known organizer brings their phone number along
+  org.addEventListener('input', ()=>{ const t = evOrgPhone(org.value); if(t && !$('na_orgTel').dataset.own) $('na_orgTel').value = t; });
+  $('na_orgTel').addEventListener('input', ()=>{ $('na_orgTel').dataset.own = '1'; });
   // place: known venues and earlier places first, then a real address from the map
   const loc = $('na_loc'), map = $('na_map');
   const setMap = ()=>{ map.href = evMapUrl(loc.value.trim() || 'Lietuva'); };
@@ -18930,10 +18943,11 @@ function evNewWire(){
 function evNewApply(ev, name){
   const $ = id=>document.getElementById(id), o = evOpts(), val = id=>($(id) ? $(id).value.trim() : '');
   const office = val('na_mgrO'), tech = val('na_mgrT');
-  Object.assign(ev, { name, artist:val('na_artist'), location:val('na_loc'), organizer:val('na_org'), dateEnd:val('na_end'),
+  Object.assign(ev, { name, artist:val('na_artist'), location:val('na_loc'), organizer:val('na_org'), organizerPhone:val('na_orgTel'), dateEnd:val('na_end'),
     managerOffice:office, managerTech:tech, manager:[office, tech ? tech+' (tech)' : ''].filter(Boolean).join(', ') });
   if(ev.artist && !o.eventTypes.some(x=>normalizeText(x)===normalizeText(ev.artist))) o.eventTypes.push(ev.artist);
   if(ev.organizer && !o.organizers.some(x=>normalizeText(x)===normalizeText(ev.organizer))) o.organizers.push(ev.organizer);
+  evOrgPhoneSet(ev.organizer, ev.organizerPhone);
   [office, tech].forEach(n=>{ if(n) evRememberPerson(n); });
   const group = (test, title)=>{ let g = ev.crew.find(x=>test(normalizeText(x.title))); if(!g){ g = {id:uid('g'), title, note:'', entries:[]}; ev.crew.push(g); } return g; };
   // montage before / on the day / dismantling: „day, time“ and the A / L / V / Crew places in one column
@@ -19059,7 +19073,7 @@ function evColgroup(cols, list){
   const phone = EV.phoneLayout = evIsPhone();
   const W = phone ? XG_W.phone : Object.assign({}, XG_W.desk, {
     loc: evTextWidth(list, ev=>ev.location, 110, 380),
-    org: evTextWidth(list, ev=>ev.organizer, 100, 340),
+    org: Math.max(evTextWidth(list, ev=>ev.organizer, 100, 340), evTextWidth(list, ev=>ev.organizerPhone ? ev.organizerPhone+'   ' : '', 100, 200) + 26),
     mgr: evTextWidth(list, ev=>ev.manager, 90, 280),
     needs: Math.max(evTextWidth(list, ev=>(ev.needs||[]).join('  '), 110, 260, 5.8), evTextWidth(list, ev=>ev.needsNote, 110, 320)),
     notes: evTextWidth(list, ev=>ev.notes, 150, 480, 5.6),
@@ -19083,7 +19097,7 @@ function evGridHead(cols){
     <th class="xg-c-name xg-h-info">Renginio pavadinimas<small>renginio tipas</small></th>
     <th class="xg-c-needs xg-h-info">Poreikis</th>
     <th class="xg-c-loc xg-h-info">Renginio vieta<small>lokacija</small></th>
-    <th class="xg-c-org xg-h-info">Organizatorius<small>patekimas / tech</small></th>
+    <th class="xg-c-org xg-h-info">Organizatorius<small>tel. numeris</small></th>
     <th class="xg-c-mgr xg-h-info">Atsakingi<small>office / tech</small></th>
     <th class="xg-c-tl xg-h-info">Renkamės</th>
     <th class="xg-c-tv xg-h-info">Laikai</th>
@@ -21100,7 +21114,7 @@ function evRowHtml(ev, cols){
       ${evTa('needsNote', ev.needsNote, 'detalės')}
     </td>
     <td class="xg-info" data-cell="location" tabindex="-1">${evTa('location', ev.location, 'vieta, adresas')}</td>
-    <td class="xg-info" data-cell="organizer" tabindex="-1"><textarea class="xg-ta" data-f="organizer" rows="1" data-combo="dl-evorgs" placeholder="vardas, tel.">${esc(ev.organizer||'')}</textarea></td>
+    <td class="xg-info" data-cell="organizer" tabindex="-1"><textarea class="xg-ta" data-f="organizer" rows="1" data-combo="dl-evorgs" placeholder="organizatorius">${esc(ev.organizer||'')}</textarea><div class="xg-otel"><input type="tel" data-f="organizerPhone" value="${esc(ev.organizerPhone||'')}" placeholder="tel. numeris" autocomplete="off">${ev.organizerPhone ? `<a href="tel:${esc(String(ev.organizerPhone).replace(/[^\d+]/g,''))}" title="Skambinti">${slIcon('phone')}</a>` : ''}</div></td>
     <td class="xg-info" data-cell="manager" tabindex="-1">${evMgrHtml(ev)}</td>
     <td class="xg-info xg-tl" data-cell="times" tabindex="-1">${times.map((t,i)=>`<div class="xg-line"><input type="text" data-t="${i}" data-k="label" value="${esc(t.label)}" placeholder="…"></div>`).join('')}
       <div class="xg-adds"><button type="button" data-act="add-time">+ laikas</button></div></td>
@@ -21252,7 +21266,9 @@ function bindEventListEvents(){
       renderEventList(); return;
     }
     if(t.dataset.k==='person' || t.dataset.k==='driver' || t.dataset.f==='manager'){ evRememberPerson(t.value); }
-    if(t.dataset.f==='organizer'){ const v = t.value.trim(), o = evOpts(); if(v && !o.organizers.some(x=>normalizeText(x)===normalizeText(v))){ o.organizers.push(v); saveState(); } }
+    if(t.dataset.f==='organizer'){ const v = t.value.trim(), o = evOpts(); if(v && !o.organizers.some(x=>normalizeText(x)===normalizeText(v))){ o.organizers.push(v); saveState(); }
+      const tel = evOrgPhone(v); if(tel && !(ev.organizerPhone||'').trim()){ ev.organizerPhone = tel; evSave(ev); const f = t.closest('td') && t.closest('td').querySelector('[data-f="organizerPhone"]'); if(f) f.value = tel; } }
+    if(t.dataset.f==='organizerPhone'){ evOrgPhoneSet(ev.organizer, t.value); }
     if(t.dataset.k==='person') setTimeout(evRefreshWidths, 50);
   });
   list.addEventListener('click', e=>{
@@ -31436,6 +31452,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 19:40', v:'v223', k:'new', t:'Organizatoriaus telefonas', f:'Prie organizatoriaus – telefono numeris: renginio lentelėje po organizatoriumi (su mygtuku paskambinti) ir kuriant renginį. Numeris įsimenamas – pasirinkus anksčiau įrašytą organizatorių jo telefonas įrašomas pats.' },
   { d:'2026-10-03 19:20', v:'v222', k:'new', t:'Renginiai: statusas, atsakingi, vieta, montavimai', f:'Datos stulpelis rodo renginio statusą: geltona – Nepatvirtintas (naujas renginys), žalia – Patvirtintas, raudona – Atšauktas; paspaudus atsidaro langas su data ir statusu. Renginio vietai – adresų paieška (Erdvės, anksčiau naudotos vietos, žemėlapis), organizatoriui – anksčiau įrašyti. Atsakingi rodomi „Office: …  Tech: …“, paspaudus pasirenkami iš narių arba įrašomi ranka. Daiktų rūšiavime „+ žmogus“ atidaro žmonių sąrašą. Kuriant renginį – trys skiltys: Montavimas prieš renginį, Montavimas renginio dieną ir Demontavimas su data, laiku ir A / L / V / Crew pozicijomis viename stulpelyje. Atskirų Garsas / VJ / Šviesa stulpelių nebėra, operatoriuose vietoje V/Operatorius – VJ.' },
   { d:'2026-10-03 18:45', v:'v221', k:'fix', t:'Matosi pažymėta data', f:'Kai pagrindinė spalva šviesi (pvz. balta), pažymėta data kalendoriuje ir kiti ženkliukai ant pagrindinės spalvos dabar rašomi tamsiai – tekstas visada matomas.' },
   { d:'2026-10-03 18:30', v:'v220', k:'chg', t:'Budintys: − / +', f:'Naujo renginio lange budinčių skaičius (Šviesa L, Video V, Garsas A) ir pažymėtų operatorių skaičius keičiami mygtukais − / + kaip ir pozicijos.' },
