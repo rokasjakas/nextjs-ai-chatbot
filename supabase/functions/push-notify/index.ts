@@ -151,7 +151,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 12;
+const PUSH_FN_VERSION = 13;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -239,12 +239,12 @@ async function pushOne(s: Sub, payload: Payload, ttl: number) {
   await res.body?.cancel().catch(() => {});
 }
 
-async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except = ""): Promise<{ sent: number; gone: number; devices?: number; failed?: string[] }> {
+async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except = ""): Promise<{ sent: number; gone: number; devices?: number; stale?: number; failed?: string[] }> {
   if (!userIds.length) return { sent: 0, gone: 0 };
   let subs = await db<Sub[]>(`push_subscriptions?select=*&user_id=in.${inList(userIds)}`);
   const devices = subs.length;
   if (except) subs = subs.filter((s) => s.endpoint !== except);
-  let sent = 0, gone = 0;
+  let sent = 0, gone = 0, staleN = 0;
   const failed: string[] = [];
   await Promise.all(subs.map(async (s) => {
     try {
@@ -253,8 +253,12 @@ async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except =
     } catch (e) {
       const status = e instanceof PushError ? e.status : 0;
       const note = (e instanceof PushError ? `${e.status} ${e.body}`.trim() : (e as Error)?.message || String(e)).slice(0, 220);
-      if (status === 404 || status === 410) {                 // the device is gone
+      // the device is gone, or it was subscribed with another (old) server key – it can never get a push again:
+      // forget it; the app on that device subscribes anew by itself when opened
+      const stale = (status === 401 || status === 403) && /VAPID public key mismatch|UnauthorizedRegistration|does not correspond to the sender|InvalidCredentials/i.test(note);
+      if (status === 404 || status === 410 || stale) {
         gone++;
+        if (stale) staleN++;
         await db(`push_subscriptions?endpoint=eq.${encodeURIComponent(s.endpoint)}`, { method: "DELETE" });
       } else {
         console.error("push failed", note);
@@ -264,7 +268,7 @@ async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except =
   }));
   const desktop = payload.kind === "dial" ? 0 : await toDesktop(userIds, payload);
   const ios = await toIos(userIds, payload, ttl);
-  return { sent, gone, devices, ...(desktop ? { desktop } : {}), ...(ios ? { ios } : {}), ...(failed.length ? { failed } : {}) };
+  return { sent, gone, devices, ...(staleN ? { stale: staleN } : {}), ...(desktop ? { desktop } : {}), ...(ios ? { ios } : {}), ...(failed.length ? { failed } : {}) };
 }
 
 // ---------- iPhone app: Apple Push Notification service (APNs) ----------
