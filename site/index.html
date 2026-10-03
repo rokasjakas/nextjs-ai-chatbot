@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Ho5AhInFEm7BWbPPgLqm5i4C2EEbu7bHFGqyNzu75L4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-fxu6rWYXwNN0bmEvQN0yDapQ6FqPfOx9eC0nAUQ1qTw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4051,6 +4051,38 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 .gr-mem{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
 .gr-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;} .gr-gal img{width:100%;border-radius:8px;display:block;}
 @media (max-width:640px){ .gr-card{flex-wrap:wrap;} .gr-acts{flex-direction:row;width:100%;justify-content:flex-end;} .gr-form{grid-template-columns:1fr;} .gr-pi{flex-direction:column;align-items:flex-start;gap:1px;} .gr-states{grid-template-columns:1fr;} }
+</style>
+<style id="evNewCss">
+/* ---------- naujo renginio langas ---------- */
+.na-hint{display:block;font-size:11.5px;min-height:14px;margin-top:2px;color:var(--text-dim);} .na-hint.ok{color:var(--green,#50AD97);} .na-hint.new{color:var(--amber,#F2A93B);}
+.na-loc{display:flex;gap:6px;align-items:stretch;} .na-loc input{flex:1;min-width:0;} .na-loc .btn{display:inline-flex;align-items:center;padding:0 10px;}
+.addr-sug{position:absolute;left:0;right:0;top:100%;z-index:50;margin-top:4px;background:var(--panel);border:1px solid var(--border-2,var(--border));border-radius:var(--radius,8px);box-shadow:0 12px 30px rgba(0,0,0,.35);max-height:300px;overflow-y:auto;padding:4px;}
+.addr-sug.hidden{display:none;}
+.addr-it{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;color:var(--text);font:inherit;padding:7px 8px;border-radius:6px;cursor:pointer;}
+.addr-it:hover,.addr-it.on{background:var(--panel-2);} .addr-it svg{width:18px;height:18px;color:var(--text-dim);flex:none;}
+.addr-it span{display:flex;flex-direction:column;min-width:0;flex:1;} .addr-it b{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .addr-it small{font-size:11.5px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.addr-it i{font-style:normal;font-size:10.5px;padding:1px 6px;border-radius:9px;background:var(--panel-3,var(--panel-2));color:var(--text-dim);}
+.na-crew{border:1px solid var(--border);border-radius:var(--radius,8px);padding:10px;margin:6px 0 4px;}
+.na-crew-h{font-weight:700;font-size:13px;margin-bottom:6px;} .na-crew-h small{font-weight:400;color:var(--text-dim);margin-left:6px;}
+.na-pos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.na-cnt{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-dim);}
+.na-step{display:flex;align-items:stretch;border:1px solid var(--border);border-radius:var(--radius,8px);overflow:hidden;}
+.na-step button{background:var(--panel-2);border:0;color:var(--text);width:30px;font-size:16px;cursor:pointer;} .na-step button:hover{color:var(--accent);}
+.na-step input{border:0 !important;border-radius:0 !important;text-align:center;width:100%;min-width:0;padding:6px 0;-moz-appearance:textfield;}
+.na-step input::-webkit-inner-spin-button,.na-step input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.na-ppl{display:flex;flex-wrap:wrap;gap:5px;align-items:center;border:1px solid var(--border);border-radius:var(--radius,8px);padding:4px 6px;min-height:36px;background:var(--input);margin-top:4px;}
+.na-ppl input{flex:1;min-width:90px;border:0 !important;background:transparent !important;padding:4px 2px !important;box-shadow:none !important;}
+.na-chip{display:inline-flex;align-items:center;gap:3px;background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:2px 4px 2px 9px;font-size:12.5px;color:var(--text);}
+.na-chip button{background:none;border:0;color:var(--text-dim);cursor:pointer;padding:0;display:flex;} .na-chip button:hover{color:var(--danger,#e5484d);} .na-chip svg{width:15px;height:15px;}
+@media (max-width:640px){ .na-pos{grid-template-columns:repeat(2,minmax(0,1fr));} }
+/* ---------- renginių lentelė: mastelis, visas langas, be slankiklių ---------- */
+.xg-hs,.xg-rowhs,.xg.xg-over .xg-rowhs{display:none !important;}
+.xg-wrap{scrollbar-width:none;} .xg-wrap::-webkit-scrollbar{display:none;width:0;height:0;}
+.ev-zoom{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--border);border-radius:var(--radius,8px);padding:1px;}
+.ev-zoom .btn{border:0 !important;padding:4px 7px;min-width:0;} .ev-zoom b{font-size:12px;min-width:40px;text-align:center;font-variant-numeric:tabular-nums;cursor:pointer;}
+.tabpanel.xg-panel.ev-full{position:fixed;inset:0;z-index:850;background:var(--bg);padding:10px 12px;overflow:hidden;display:flex;flex-direction:column;gap:8px;}
+.tabpanel.xg-panel.ev-full #evList{flex:1;min-height:0;}
+body.ev-full-on{overflow:hidden;}
 </style>
 <style id="uiV2">
 /* ============================================================
@@ -16795,7 +16827,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v211';
+const APP_VER = 'v212';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -17788,6 +17820,8 @@ function defaultEventOptions(){
     crewTemplate: ['Daiktų rūšiavimas','Montavimas diena prieš','Montavimas renginio dieną','Demontavimas','Garsas','VJ','Šviesa','Budi renginyje'],
     timeLabels: ['Sandėlyje','Išvažiuoti','Lokacijoje','Soundcheck','Repeticija','Paruošti iki','Pradžia','Pabaiga','Demontavimas'],
     workTitles: ['Sandėlio darbai','Servisas'],
+    eventTypes: [],    // „Renginio tipas“ written before
+    organizers: [],    // organizers written before
     contactGroups: ['Šviesa','Garsas','Video','Operatoriai','Crew','Elektra','Vairuotojai','Kita'],
   };
 }
@@ -18128,6 +18162,8 @@ function renderEventsTab(){
         <button class="btn small" id="evGearPlan" title="Kas kada užimta ir kur trūksta">📅 Įrangos planas</button>
         <button class="btn small" id="evLists">⚙ Sąrašai</button>
         <button class="btn small" id="evImport" title="Įkelti renginius ir paėmimus iš Google Sheets (paruošto .json failo)">⬆ Importuoti</button>
+        <span class="ev-zoom"><button type="button" class="btn small" id="evZoomOut" title="Tolinti (Ctrl −)">${slIcon('zoomout')}</button><b id="evZoomV" title="Grąžinti 100 %">100 %</b><button type="button" class="btn small" id="evZoomIn" title="Artinti (Ctrl +)">${slIcon('zoomin')}</button></span>
+        <button type="button" class="btn small" id="evFull" title="Atidaryti per visą langą (Esc – uždaryti)">${slIcon('fullscreen')}</button>
       </div>
     </div>
     <div id="evError"></div>
@@ -18148,6 +18184,7 @@ function renderEventsTab(){
   document.getElementById('evLists').onclick = ()=> openEventListsModal('needs');
   document.getElementById('evGearPlan').onclick = ()=>gearPlan();
   document.getElementById('evImport').onclick = openEventImportModal;
+  evZoomWire();
   const q = document.getElementById('evQ');
   q.addEventListener('input', ()=>{ EVQ.q = q.value; clearTimeout(evSearchTimer); evSearchTimer = setTimeout(renderEventList, 180); });
   document.getElementById('evFrom').addEventListener('change', e=>{ EVQ.from = e.target.value; renderEventList(); });
@@ -18171,7 +18208,7 @@ function renderEventsTab(){
    copied / pasted as usual. */
 const EV_TOUCH = window.matchMedia && window.matchMedia('(hover:none)').matches;
 var EVCLIP = null;   // {cell, label, data, text}
-const EV_CELL_LABEL = {name:'Pavadinimas', needs:'Poreikis', location:'Vieta', organizer:'Organizatorius', manager:'Projekto vadovas', times:'Renkamės / laikai', crew:'Komanda', log:'Logistika', notes:'Pastabos'};
+const EV_CELL_LABEL = {name:'Pavadinimas', needs:'Poreikis', location:'Vieta', organizer:'Organizatorius', manager:'Atsakingi', times:'Renkamės / laikai', crew:'Komanda', log:'Logistika', notes:'Pastabos'};
 function evCellOf(el){
   const td = el && el.closest && el.closest('#evList td[data-cell]');
   if(!td) return null;
@@ -18457,7 +18494,6 @@ function evAddNew(kind){
   const work = kind==='work', o = evOpts();
   const today = evToday();
   const date = evMonthKey(today)===EV.month ? today : EV.month+'-01';
-  const projects = (STATE.projects||[]).filter(p=>p.eventDate && daysUntil(p.eventDate)>=-7).sort((a,b)=>a.eventDate.localeCompare(b.eventDate));
   openModal(`<h3>${work ? 'Nauji sandėlio darbai' : 'Naujas renginys'}</h3>
     <div class="grid cols-2" style="gap:8px;">
       <label class="field">Data *<input type="date" id="na_date" value="${esc(date)}"></label>
@@ -18468,12 +18504,24 @@ function evAddNew(kind){
          <datalist id="dl-worktitles">${o.workTitles.map(t=>`<option value="${esc(t)}">`).join('')}</datalist>`
       : `<label class="field">Pavadinimas *<input type="text" id="na_name" placeholder="pvz. Neurostart Radisson"></label>
          <div class="grid cols-2" style="gap:8px;">
-           <label class="field">Tipas / atlikėjas<input type="text" id="na_artist"></label>
-           <label class="field">Vieta<input type="text" id="na_loc"></label>
-           <label class="field">Organizatorius<input type="text" id="na_org"></label>
-           <label class="field">Projekto vadovas<input type="text" id="na_mgr" data-combo="dl-people"></label>
+           <label class="field">Renginio tipas<input type="text" id="na_artist" list="dl-evtypes" autocomplete="off" placeholder="pvz. Konferencija"></label>
+           <label class="field">Organizatorius<input type="text" id="na_org" list="dl-evorgs" autocomplete="off"><small class="na-hint" id="na_orgHint"></small></label>
          </div>
-         ${projects.length ? `<label class="field">Rentman projektas<select id="na_proj"><option value="">— nesusieta —</option>${projects.map(p=>`<option value="${esc(p.id)}">${esc(p.eventDate+' '+p.name)}</option>`).join('')}</select></label>` : ''}`}
+         <datalist id="dl-evtypes">${evTypeList().map(t=>`<option value="${esc(t)}">`).join('')}</datalist>
+         <datalist id="dl-evorgs">${evOrgList().map(t=>`<option value="${esc(t)}">`).join('')}</datalist>
+         <label class="field">Vieta<span class="na-loc"><input type="text" id="na_loc" autocomplete="off" placeholder="Pradėk rašyti vietą ar adresą…"><a class="btn small" id="na_map" target="_blank" rel="noopener" title="Atidaryti Google Maps">${slIcon('map')}</a></span></label>
+         <div class="grid cols-2" style="gap:8px;">
+           <label class="field">Office atsakingas<input type="text" id="na_mgrO" data-combo="dl-people"></label>
+           <label class="field">Tech atsakingas<input type="text" id="na_mgrT" data-combo="dl-people"></label>
+         </div>
+         <div class="na-crew">
+           <div class="na-crew-h">Pozicijos <small>kiek žmonių reikės – vėliau lentelėje priskirsi</small></div>
+           <div class="na-pos">${EV_NEW_POS.map(p=>`<label class="na-cnt"><span>${p.label}</span><span class="na-step"><button type="button" data-step="-1" aria-label="Mažiau">−</button><input type="number" min="0" max="30" value="0" id="na_pos_${p.k}" inputmode="numeric"><button type="button" data-step="1" aria-label="Daugiau">+</button></span></label>`).join('')}</div>
+           <div class="grid cols-2" style="gap:8px;margin-top:8px;">
+             <div class="field">Budintys<div class="na-ppl" data-ppl="duty"><input type="text" data-combo="dl-people" placeholder="+ vardas, Enter"></div></div>
+             <div class="field">Operatoriai<div class="na-ppl" data-ppl="ops"><input type="text" data-combo="dl-people" placeholder="+ vardas, Enter"></div></div>
+           </div>
+         </div>`}
     <label class="field">Pastabos<textarea id="na_notes" rows="2"></textarea></label>
     ${canView('chat') ? `<label class="checkbox-row"><input type="checkbox" id="na_chat" ${work ? '' : 'checked'}> 💬 Sukurti kanalą chate</label>` : ''}
     <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;">
@@ -18482,7 +18530,7 @@ function evAddNew(kind){
     </div>`);
   const $ = id=>document.getElementById(id);
   $('na_x').onclick = closeModal;
-  const p = $('na_proj'); if(p) p.addEventListener('change', ()=>{ const pr = (STATE.projects||[]).find(x=>x.id===p.value); if(pr){ if(!$('na_name').value.trim()) $('na_name').value = pr.name; if(pr.eventDate) $('na_date').value = pr.eventDate; } });
+  if(!work) evNewWire();
   $('na_go').onclick = ()=>{
     const d = $('na_date').value, name = $('na_name').value.trim();
     if(!d){ toast('Pasirink datą.'); $('na_date').focus(); return; }
@@ -18492,9 +18540,7 @@ function evAddNew(kind){
     ev.autoChat = !!($('na_chat') && $('na_chat').checked);
     if(work){ ev.title = name; ev.time = $('na_time').value.trim(); if(!o.workTitles.includes(name)){ o.workTitles.push(name); saveState(); } }
     else {
-      Object.assign(ev, { name, artist:$('na_artist').value.trim(), location:$('na_loc').value.trim(), organizer:$('na_org').value.trim(), manager:$('na_mgr').value.trim(), dateEnd:$('na_end').value || '' });
-      if(p && p.value) ev.projectId = p.value;
-      if(ev.manager) evRememberPerson(ev.manager);
+      evNewApply(ev, name);
     }
     closeModal();
     EV.events.push(ev);
@@ -18513,6 +18559,100 @@ function evAddNew(kind){
     toast(work ? 'Sandėlio darbai sukurti.' : 'Renginys sukurtas.');
   };
   setTimeout(()=>$('na_name').focus(), 50);
+}
+/* the pop-up's helpers: remembered types / organizers, the address search, positions and people */
+const EV_NEW_POS = [{k:'A', label:'Garsas (A)'}, {k:'L', label:'Šviesa (L)'}, {k:'V', label:'Video (V)'}, {k:'C', label:'Crew'}];
+function evUniq(list){ const seen = new Set(), out = []; list.forEach(x=>{ x = String(x||'').trim(); const k = normalizeText(x); if(x && !seen.has(k)){ seen.add(k); out.push(x); } }); return out; }
+function evTypeList(){ return evUniq(evOpts().eventTypes.concat(EV.events.map(e=>e.kind==='work' ? '' : e.artist))).slice(0, 200); }
+function evOrgList(){ return evUniq(evOpts().organizers.concat(EV.events.map(e=>e.kind==='work' ? '' : e.organizer))).slice(0, 300); }
+function evMapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q||''); }
+function evNewWire(){
+  const $ = id=>document.getElementById(id);
+  // organizer: already known or new (it will be remembered)
+  const org = $('na_org'), hint = $('na_orgHint');
+  const orgHint = ()=>{ const v = org.value.trim(); if(!v){ hint.textContent = ''; return; }
+    const known = evOrgList().some(x=>normalizeText(x)===normalizeText(v));
+    hint.textContent = known ? '✓ jau žinomas' : 'naujas – bus įsimintas'; hint.className = 'na-hint '+(known ? 'ok' : 'new'); };
+  org.addEventListener('input', orgHint);
+  // place: known venues and earlier places first, then a real address from the map
+  const loc = $('na_loc'), map = $('na_map');
+  const setMap = ()=>{ map.href = evMapUrl(loc.value.trim() || 'Lietuva'); };
+  setMap(); loc.addEventListener('input', setMap);
+  if(canView('venues') && !VEN.loaded) venLoad().catch(()=>{});
+  addrSuggest(loc, q=>{
+    const n = normalizeText(q);
+    const venues = (VEN.list||[]).filter(v=>normalizeText(v.name+' '+(v.address||'')).includes(n)).slice(0, 5).map(v=>({ title:v.name, sub:v.address||'Erdvė', value:v.address ? v.name+', '+v.address : v.name, tag:'Erdvė' }));
+    const before = evUniq(EV.events.map(e=>e.location)).filter(x=>normalizeText(x).includes(n) && !venues.some(v=>normalizeText(v.value)===normalizeText(x))).slice(0, 4).map(x=>({ title:x, sub:'naudota anksčiau', value:x }));
+    return venues.concat(before);
+  }, setMap);
+  // + / − for the positions
+  document.querySelectorAll('#modalRoot .na-step button').forEach(b=>b.onclick = ()=>{ const i = b.parentElement.querySelector('input'); i.value = Math.max(0, Math.min(30, (+i.value||0) + +b.dataset.step)); });
+  // people chips
+  document.querySelectorAll('#modalRoot .na-ppl').forEach(box=>{
+    const inp = box.querySelector('input');
+    const add = ()=>{ const v = inp.value.trim().replace(/,$/, ''); if(!v) return; inp.value = '';
+      if([...box.querySelectorAll('.na-chip')].some(c=>normalizeText(c.dataset.n)===normalizeText(v))) return;
+      const c = document.createElement('span'); c.className = 'na-chip'; c.dataset.n = v; c.innerHTML = esc(v)+'<button type="button" aria-label="Pašalinti">'+slIcon('close')+'</button>';
+      c.querySelector('button').onclick = ()=>c.remove(); box.insertBefore(c, inp); };
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===','){ e.preventDefault(); add(); } });
+    inp.addEventListener('change', add); inp.addEventListener('blur', add);
+  });
+}
+function evNewApply(ev, name){
+  const $ = id=>document.getElementById(id), o = evOpts(), val = id=>($(id) ? $(id).value.trim() : '');
+  const office = val('na_mgrO'), tech = val('na_mgrT');
+  Object.assign(ev, { name, artist:val('na_artist'), location:val('na_loc'), organizer:val('na_org'), dateEnd:val('na_end'),
+    managerOffice:office, managerTech:tech, manager:[office, tech ? tech+' (tech)' : ''].filter(Boolean).join(', ') });
+  if(ev.artist && !o.eventTypes.some(x=>normalizeText(x)===normalizeText(ev.artist))) o.eventTypes.push(ev.artist);
+  if(ev.organizer && !o.organizers.some(x=>normalizeText(x)===normalizeText(ev.organizer))) o.organizers.push(ev.organizer);
+  [office, tech].forEach(n=>{ if(n) evRememberPerson(n); });
+  // positions: A1…, L1…, V1… in their own tables, Crew in „Crew“
+  const group = (test, title)=>{ let g = ev.crew.find(x=>test(normalizeText(x.title))); if(!g){ g = {id:uid('g'), title, note:'', entries:[]}; ev.crew.push(g); } return g; };
+  const GRP = { A:[t=>/gars|audio/.test(t), 'Garsas'], L:[t=>/svies|sviec|apsviet/.test(t), 'Šviesa'], V:[t=>/video|vj|ekran|led/.test(t), 'VJ'], C:[t=>/^crew/.test(t), 'Crew'] };
+  EV_NEW_POS.forEach(p=>{ const n = Math.min(30, +val('na_pos_'+p.k)||0); if(!n) return; const g = group(...GRP[p.k]);
+    for(let i=1;i<=n;i++) g.entries.push({ pos:(p.k==='C' ? 'CREW' : p.k+i), person:'', status:'' }); });
+  const ppl = k=>[...document.querySelectorAll('#modalRoot .na-ppl[data-ppl="'+k+'"] .na-chip')].map(c=>c.dataset.n);
+  const duty = ppl('duty'), ops = ppl('ops');
+  if(duty.length){ const g = group(t=>/budi/.test(t), 'Budi renginyje'); duty.forEach(n=>{ g.entries.push({ pos:'', person:n, status:'' }); evRememberPerson(n); }); }
+  if(ops.length){ const g = group(t=>/operator/.test(t), 'Operatoriai'); ops.forEach(n=>{ g.entries.push({ pos:'OP', person:n, status:'' }); evRememberPerson(n); }); }
+  ev.crew.forEach(g=>{ if(g.entries.length > 1) g.entries = g.entries.filter(e=>e.pos || e.person); });
+  saveState();
+}
+/* address search under a text field: own suggestions first, then real addresses
+   from the map (OpenStreetMap / Photon – free, no key) */
+function addrSuggest(inp, local, picked){
+  const wrap = inp.parentElement; wrap.style.position = 'relative';
+  const box = document.createElement('div'); box.className = 'addr-sug hidden'; wrap.appendChild(box);
+  let items = [], at = -1, timer = 0, seq = 0;
+  const draw = ()=>{ box.classList.toggle('hidden', !items.length);
+    box.innerHTML = items.map((x,i)=>`<button type="button" class="addr-it ${i===at?'on':''}" data-i="${i}">${slIcon(x.tag ? 'building' : x.osm ? 'place' : 'clock')}<span><b>${esc(x.title)}</b><small>${esc(x.sub||'')}</small></span>${x.tag ? `<i>${esc(x.tag)}</i>` : ''}</button>`).join(''); };
+  const pick = i=>{ const x = items[i]; if(!x) return; inp.value = x.value; items = []; draw(); if(picked) picked(x); inp.dispatchEvent(new Event('input')); };
+  box.addEventListener('mousedown', e=>{ const b = e.target.closest('[data-i]'); if(b){ e.preventDefault(); pick(+b.dataset.i); } });
+  inp.addEventListener('keydown', e=>{ if(!items.length) return;
+    if(e.key==='ArrowDown'){ e.preventDefault(); at = (at+1) % items.length; draw(); }
+    else if(e.key==='ArrowUp'){ e.preventDefault(); at = (at-1+items.length) % items.length; draw(); }
+    else if(e.key==='Enter' && at>=0){ e.preventDefault(); pick(at); }
+    else if(e.key==='Escape'){ items = []; draw(); } });
+  inp.addEventListener('blur', ()=>setTimeout(()=>{ items = []; draw(); }, 150));
+  inp.addEventListener('input', e=>{ if(!e.isTrusted) return;
+    const q = inp.value.trim(); clearTimeout(timer); at = -1;
+    if(q.length < 2){ items = []; draw(); return; }
+    items = local(q); draw();
+    if(q.length < 3) return;
+    const my = ++seq;
+    timer = setTimeout(async ()=>{
+      try{
+        const r = await fetch('https://photon.komoot.io/api/?limit=6&lat=55.17&lon=23.88&q='+encodeURIComponent(q));
+        const j = await r.json(); if(my!==seq) return;
+        const osm = (j.features||[]).map(f=>{ const p = f.properties||{};
+          const street = [p.street, p.housenumber].filter(Boolean).join(' '), city = p.city || p.town || p.village || p.county || '';
+          const title = p.name || street || city, sub = [p.name && street ? street : '', city !== title ? city : '', p.country].filter(Boolean).join(', ');
+          return { title, sub, value:[title, sub].filter(Boolean).join(', '), osm:true }; }).filter(x=>x.title);
+        const seen = new Set(items.map(x=>normalizeText(x.value)));
+        items = items.concat(osm.filter(x=>!seen.has(normalizeText(x.value)))).slice(0, 10); draw();
+      }catch(err){}
+    }, 320);
+  });
 }
 function evImportProjects(){
   const inMonth = (STATE.projects||[]).filter(p=>evMonthKey(p.eventDate)===EV.month);
@@ -18599,11 +18739,11 @@ function evColgroup(cols, list){
 function evGridHead(cols){
   return `<thead><tr>
     <th class="xg-c-date xg-h-date">Data</th>
-    <th class="xg-c-name xg-h-info">Renginio pavadinimas<small>tipas / atlikėjas</small></th>
+    <th class="xg-c-name xg-h-info">Renginio pavadinimas<small>renginio tipas</small></th>
     <th class="xg-c-needs xg-h-info">Poreikis</th>
     <th class="xg-c-loc xg-h-info">Renginio vieta<small>lokacija</small></th>
     <th class="xg-c-org xg-h-info">Organizatorius<small>patekimas / tech</small></th>
-    <th class="xg-c-mgr xg-h-info">Projekto vadovas<small>koordinatorius</small></th>
+    <th class="xg-c-mgr xg-h-info">Atsakingi<small>office / tech</small></th>
     <th class="xg-c-tl xg-h-info">Renkamės</th>
     <th class="xg-c-tv xg-h-info">Laikai</th>
     ${cols.map(c=>`<th class="xg-c-crew xg-h-crew${c.narrow?' xg-narrow':''}" title="${esc(c.title)}">${esc(c.title)}</th>`).join('')}
@@ -18775,15 +18915,46 @@ function evHScroll(w){
   w.addEventListener('touchend', ()=>{ tx = null; }, { passive:true });
 }
 // the grid scrolls inside its own box so the header row and the date/name columns stay visible
+/* lentelės mastelis (įsimenamas šiame įrenginyje) ir visas langas */
+function evZoom(){ if(EV.zoom==null){ let z = 1; try{ z = +localStorage.getItem('es-ev-zoom') || 1; }catch(e){} EV.zoom = Math.min(1.5, Math.max(0.5, z)); } return EV.zoom; }
+function evZoomSet(z){
+  EV.zoom = Math.round(Math.min(1.5, Math.max(0.5, z))*10)/10;
+  try{ localStorage.setItem('es-ev-zoom', String(EV.zoom)); }catch(e){}
+  const v = document.getElementById('evZoomV'); if(v) v.textContent = Math.round(EV.zoom*100)+' %';
+  evFitGrid();
+}
+function evFullSet(on){
+  const p = document.querySelector('.tabpanel.xg-panel'); if(!p) return;
+  p.classList.toggle('ev-full', on); document.body.classList.toggle('ev-full-on', on);
+  const b = document.getElementById('evFull'); if(b){ b.innerHTML = slIcon(on ? 'fullscreenexit' : 'fullscreen'); b.title = on ? 'Uždaryti visą langą (Esc)' : 'Atidaryti per visą langą (Esc – uždaryti)'; }
+  setTimeout(evFitGrid, 30);
+}
+function evZoomWire(){
+  const $ = id=>document.getElementById(id);
+  $('evZoomOut').onclick = ()=>evZoomSet(evZoom()-0.1);
+  $('evZoomIn').onclick = ()=>evZoomSet(evZoom()+0.1);
+  $('evZoomV').title = 'Sutalpinti visą lentelę į langą (dar kartą – 100 %)';
+  $('evZoomV').onclick = ()=>{ if(evZoom()!==1){ evZoomSet(1); return; } const w = $('xgWrap'), t = $('xgTable'); if(!w || !t) return;
+    const nat = parseFloat(t.style.width) || t.scrollWidth; if(nat > w.clientWidth) evZoomSet(Math.floor(w.clientWidth / nat * 10) / 10); };
+  $('evZoomV').textContent = Math.round(evZoom()*100)+' %';
+  $('evFull').onclick = ()=>evFullSet(!document.querySelector('.tabpanel.xg-panel.ev-full'));
+  document.body.classList.remove('ev-full-on');
+}
+document.addEventListener('keydown', e=>{
+  if(currentTab!=='events' || document.getElementById('modalBackdrop')) return;
+  if(e.key==='Escape' && document.querySelector('.tabpanel.xg-panel.ev-full')){ evFullSet(false); return; }
+  if((e.ctrlKey || e.metaKey) && !e.altKey && (e.key==='+' || e.key==='=' || e.key==='-')){ e.preventDefault(); evZoomSet(evZoom() + (e.key==='-' ? -0.1 : 0.1)); }
+});
 function evFitGrid(){
   const w = document.getElementById('xgWrap'); if(!w) return;
   const tbl = document.getElementById('xgTable');
   if(tbl){
     // computer: stretch or shrink the flexible columns to the screen width
     // (date / Renkamės / Laikai keep their size); below 55 % it scrolls instead
-    const cw = EV.colW;
+    const cw = EV.colW, z = evZoom();
+    tbl.style.zoom = z === 1 ? '' : String(z);
     if(cw){
-      const avail = w.clientWidth;
+      const avail = Math.floor(w.clientWidth / z);
       const at = k=>cw.widths.map((x,i)=>cw.fixed[i] ? x : Math.max(cw.mins[i], Math.floor(x*k)));
       const sum = a=>a.reduce((x,y)=>x+y,0);
       let lo = 0, hi = 3;
@@ -20551,7 +20722,7 @@ function evRowHtml(ev, cols){
     ${evDateCellHtml(ev)}
     <td class="xg-c-name xg-name" data-cell="name" tabindex="-1">
       <textarea class="xg-ta xg-title" data-f="name" rows="1" placeholder="Pavadinimas">${esc(ev.name||'')}</textarea>
-      <textarea class="xg-ta xg-sub" data-f="artist" rows="1" placeholder="tipas / atlikėjas">${esc(ev.artist||'')}</textarea>
+      <textarea class="xg-ta xg-sub" data-f="artist" rows="1" placeholder="renginio tipas">${esc(ev.artist||'')}</textarea>
       <div class="xg-tools">${menu}${(()=>{ const n = gearCount(ev), sh = n ? gearShort(ev) : 0, sp = n && gearSpan(ev), late = sp && gearOutstanding(ev) && calISO(new Date())>sp[1]; return `<button type="button" class="xg-more xg-gear ${n?'has':''} ${sh?'bad':''} ${late?'late':''}" data-act="gear" data-ic="1" title="Įranga${n?': '+n+' vnt.'+(sh?' · trūksta '+sh+' poz.':'')+(late?' · negrąžinta '+gearOutstanding(ev)+' vnt.':''):' – rezervuoti iš sandėlio'}">${slIcon('warehouse')}${n?`<i>${n>99?'99+':n}</i>`:''}</button>`; })()}${ev.projectId?`<button type="button" class="xg-more" data-act="open-load" title="Atidaryti krovimą">📦</button>`:''}${ev.chatId && canView('chat') ? `<button type="button" class="xg-more" data-act="open-chat" title="Renginio kanalas chate">💬</button>` : ''}${canView('mail') ? `<button type="button" class="xg-more xg-letter${ev.letter && ev.letter.sentAt ? ' sent' : ''}" data-act="letter" title="${ev.letter && ev.letter.sentAt ? 'Laiškas komandai išsiųstas '+esc(String(ev.letter.sentAt).slice(5,16).replace('T',' '))+' — atidaryti' : 'Laiškas komandai'}">✉</button>` : ''}</div>
       <input type="range" class="xg-rowhs" min="0" max="100" value="0" step="1" title="Slinkti į šonus" aria-label="Slinkti lentelę į šonus">
     </td>
@@ -30596,7 +30767,7 @@ function setTab(key){
   document.getElementById('pageTitle').textContent = label;
   document.getElementById('crumbTab').textContent = '/ '+label.toUpperCase();
   document.getElementById('main').classList.toggle('wide', key==='events' || key==='offers' || key==='stocktake');
-  document.getElementById('main').classList.toggle('chat-full', key==='chat');
+  document.getElementById('main').classList.toggle('chat-full', key==='chat'); if(key!=='events') document.body.classList.remove('ev-full-on');
   document.getElementById('main').classList.toggle('mail-full', key==='mail');
   if(key!=='offers') ofClosePop();
   document.getElementById('main').classList.toggle('fit-screen', key==='events');
