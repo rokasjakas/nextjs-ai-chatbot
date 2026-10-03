@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-fxu6rWYXwNN0bmEvQN0yDapQ6FqPfOx9eC0nAUQ1qTw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Jq+d+F8BkvXIEewAptAtZbbPvxSGpydHuLjJ7yI5DuY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -372,6 +372,10 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .rp-bar .rp-q{flex:1;min-width:200px;}
 .rv-off{opacity:.55;}
 .modal.iw-modal{max-width:900px;}
+.iw-page{display:flex;flex-direction:column;gap:12px;} .iw-top{padding:12px 14px;} .iw-top .iw-bar{margin:0;}
+.iw-facets{display:flex;flex-direction:column;gap:6px;margin-top:8px;} .iw-facets:empty{display:none;} .iw-fr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;} .iw-fr > span{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-dim);min-width:72px;}
+.iw-page .iw-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:10px;} .iw-page .iw-row{background:var(--panel);}
+@media (max-width:640px){ .iw-page .iw-list{grid-template-columns:1fr;} }
 .iw-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin:10px 0 4px;} .iw-bar .field{margin:0;} .iw-bar .iw-q{flex:1;min-width:200px;}
 .iw-list{display:flex;flex-direction:column;gap:8px;}
 .iw-row{border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;}
@@ -1548,6 +1552,10 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 .hg-list{display:flex;flex-direction:column;gap:8px;}
 .hg-item{display:flex;align-items:center;gap:14px;text-align:left;background:var(--panel-2,rgb(var(--hi-rgb) / .03));border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font:inherit;cursor:pointer;}
 .hg-item:hover{border-color:var(--accent);}
+.hg-list.arranging .hg-item{cursor:grab;} .hg-list.arranging .hg-item.dragging{opacity:.45;border-style:dashed;}
+.hg-grip{display:flex;color:var(--text-dim);} .hg-grip svg{width:20px;height:20px;}
+.hg-mv{display:flex;gap:4px;margin-left:auto;} .hg-mv button{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid var(--border);border-radius:var(--radius,8px);background:var(--panel);color:var(--text);cursor:pointer;} .hg-mv button:disabled{opacity:.3;cursor:default;} .hg-mv button:not(:disabled):hover{border-color:var(--accent);color:var(--accent);} .hg-mv svg{width:18px;height:18px;}
+.hg-arr-tip{font-size:12px;color:var(--text-dim);margin:-4px 0 10px;}
 .hg-ic{width:46px;height:46px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;flex:none;}
 .hg-ic svg{width:26px;height:26px;}
 .hg-t{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
@@ -4251,6 +4259,9 @@ body.ev-full-on{overflow:hidden;}
     <button class="rail-btn" data-mobile="more" data-tab="stocktake" data-label="Inventorizacija"><span class="rail-tip">Inventorizacija</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 10l1.5 1.5L13 8.5"/><path d="M8.5 16l1.5 1.5L13 14.5"/><path d="M15 10.5h1.5M15 16.5h1.5"/></svg>
     </button>
+    <button class="rail-btn" data-mobile="more" data-tab="works" data-label="Atlikti darbai"><span class="rail-tip">Atlikti darbai</span>
+      <svg viewBox="0 0 24 24"></svg>
+    </button>
     <button class="rail-btn" data-mobile="more" data-tab="gear" data-label="Įranga"><span class="rail-tip">Įranga: pažeista ir dingusi</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3.5 17.3a1.8 1.8 0 0 0 2.6 2.6l5.8-5.8a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.3-.5-.5-2.3z"/><path d="M17 16.5v2.5M17 21h.01"/></svg>
     </button>
@@ -4378,7 +4389,7 @@ const slIcon = (k, cls, attrs)=> SL[k] ? `<svg class="sl${cls?' '+cls:''}" viewB
 (function(){
   const RAIL = { home:'house', events:'calendar', projects:'folder', load:'cart', rentals:'pickup', handovers:'handover', inventory:'warehouse',
     rules:'package', fleet:'truck', stats:'chart', chat:'chat', members:'users', people:'card', jobs:'tasks', offers:'receipt',
-    venues:'building', admin:'shield', profile:'user', gear:'alert', newproj:'addbox', sort:'sorting', stocktake:'checklist',
+    venues:'building', admin:'shield', profile:'user', gear:'alert', newproj:'addbox', sort:'sorting', stocktake:'checklist', works:'build',
     games:'games', mail:'mail', invoices:'invoice' };
   document.querySelectorAll('.rail-btn').forEach(b=>{
     const k = b.id==='railMore' ? 'dots' : RAIL[b.dataset.tab], s = b.querySelector('svg');
@@ -5448,7 +5459,7 @@ function bindInventoryEvents(){
   document.getElementById('invMissingOnly').addEventListener('change', e=>{ invFilter.missing=e.target.checked; refreshInv(); });
   document.getElementById('addItemBtn').addEventListener('click', openAddItemModal);
   document.getElementById('bundlesBtn').addEventListener('click', invBundlesModal);
-  document.getElementById('iwBtn').addEventListener('click', iwOpen);
+  document.getElementById('iwBtn').addEventListener('click', ()=>setTab('works'));
   document.getElementById('bulkApplyBtn').addEventListener('click', ()=>{
     const rows = filteredInvItems();
     if(!rows.length){ toast('Nėra matomų daiktų pagal filtrą.'); return; }
@@ -9879,7 +9890,7 @@ function canView(tab){
   if(tab==='home') return true;
   if(HIDDEN_TABS.has(tab)) return false;
   if(tab==='sort') return canView('load');
-  if(tab==='stocktake') return canView('inventory');
+  if(tab==='stocktake' || tab==='works') return canView('inventory');
   if(tab==='gear') return canView('inventory') || !!window.GR_MINE;
   if((tab==='chat' || tab==='mail') && ACCESS.fallback) return false;
   if(TEAM_TABS.includes(tab)) return !!ACCESS.role && !ACCESS.fallback;
@@ -9888,7 +9899,7 @@ function canView(tab){
 }
 function canEdit(tab){
   if(tab==='sort') return canEdit('load');
-  if(tab==='stocktake') return canEdit('inventory');
+  if(tab==='stocktake' || tab==='works') return canEdit('inventory');
   if(tab==='gear') return canEdit('inventory');
   if(tab==='admin') return ACCESS.role==='admin' || isSuper();
   if(tab==='chat' || tab==='mail') return canView(tab);      // who may see the chat / mail may also write
@@ -11868,7 +11879,7 @@ function invAccModal(id){
    pastaba, nuotraukos (equipment-photos/works/<id>/…, item_works.sql).
    Paieška pagal laikotarpį ir žodžius („sirena“ – kada ir kas su ja daryta).
    ============================================================ */
-const IW = { list:[], loaded:false, loading:null, err:'', from:'', to:'', q:'' };
+const IW = { list:[], loaded:false, loading:null, err:'', from:'', to:'', q:'', kind:'', who:'' };
 const IW_KINDS = ['Valymas', 'Profilaktinė patikra', 'Remontas', 'Testavimas', 'Kalibravimas', 'Programinės įrangos atnaujinimas', 'Dalių keitimas', 'Kita'];
 async function iwLoad(force){
   if(IW.loaded && !force) return;
@@ -11889,31 +11900,49 @@ function iwMatch(w){
   const h = normalizeText([w.kind, w.note, w.scope, (w.item_names||[]).join(' '), (w.done_by||[]).join(' '), w.created_by_name, w.work_date].join(' '));
   return normalizeText(IW.q).split(' ').filter(Boolean).every(x=>h.includes(x));
 }
-async function iwOpen(){
-  openModal(`<div class="row between" style="align-items:center;"><h3 style="margin:0;">🛠 Atlikti darbai</h3><button type="button" class="icon-btn" id="iwX">✕</button></div>
-    <div class="iw-bar">
-      <label class="field">Laikotarpis<select id="iwPre"><option value="">Visas laikas</option>${rpPresets().map(p=>`<option value="${p[1]}|${p[2]}" ${IW.from===p[1] && IW.to===p[2] ? 'selected' : ''}>${esc(p[0])}</option>`).join('')}</select></label>
-      <label class="field">Nuo<input type="date" id="iwFrom" value="${esc(IW.from)}"></label>
-      <label class="field">Iki<input type="date" id="iwTo" value="${esc(IW.to)}"></label>
-      <label class="field iw-q">Paieška<input type="search" id="iwQ" value="${esc(IW.q)}" placeholder="daiktas, darbas, kas darė… pvz. sirena" autocomplete="off"></label>
-      ${canEdit('inventory') ? '<button type="button" class="btn primary small" id="iwNew" style="align-self:flex-end;">+ Registruoti darbą</button>' : ''}
+function iwOpen(){ if(currentTab==='works') renderWorksTab(); else setTab('works'); }
+async function renderWorksTab(){
+  const ed = canEdit('inventory');
+  document.getElementById('main').innerHTML = `<div class="tabpanel iw-page">
+    <div class="card iw-top">
+      <div class="iw-bar">
+        <label class="field">Laikotarpis<select id="iwPre"><option value="">Visas laikas</option>${rpPresets().map(p=>`<option value="${p[1]}|${p[2]}" ${IW.from===p[1] && IW.to===p[2] ? 'selected' : ''}>${esc(p[0])}</option>`).join('')}</select></label>
+        <label class="field">Nuo<input type="date" id="iwFrom" value="${esc(IW.from)}"></label>
+        <label class="field">Iki<input type="date" id="iwTo" value="${esc(IW.to)}"></label>
+        <label class="field iw-q">Paieška<input type="search" id="iwQ" value="${esc(IW.q)}" placeholder="daiktas, darbas, kas darė… pvz. sirena" autocomplete="off"></label>
+        ${ed ? '<button type="button" class="btn primary" id="iwNew">+ Registruoti darbą</button>' : ''}
+      </div>
+      <div class="iw-facets" id="iwFacets"></div>
     </div>
-    <div id="iwBody"><div class="empty-state">Kraunama…</div></div>`);
-  document.getElementById('modalRoot').classList.add('iw-modal');
-  document.getElementById('iwX').onclick = ()=>closeModal();
-  const nb = document.getElementById('iwNew'); if(nb) nb.onclick = ()=>iwForm(null);
-  document.getElementById('iwPre').onchange = e=>{ const [a, b] = e.target.value ? e.target.value.split('|') : ['', '']; IW.from = a; IW.to = b; document.getElementById('iwFrom').value = a; document.getElementById('iwTo').value = b; iwDraw(); };
-  document.getElementById('iwFrom').onchange = e=>{ IW.from = e.target.value; document.getElementById('iwPre').value = ''; iwDraw(); };
-  document.getElementById('iwTo').onchange = e=>{ IW.to = e.target.value; document.getElementById('iwPre').value = ''; iwDraw(); };
-  const q = document.getElementById('iwQ'); q.oninput = ()=>{ clearTimeout(IW.qt); IW.qt = setTimeout(()=>{ IW.q = q.value; iwDraw(); }, 200); };
-  await iwLoad(); iwDraw();
+    <div id="iwBody"><div class="card empty-state">Kraunama…</div></div>
+  </div>`;
+  const $ = id=>document.getElementById(id);
+  const nb = $('iwNew'); if(nb) nb.onclick = ()=>iwForm(null);
+  $('iwPre').onchange = e=>{ const [a, b] = e.target.value ? e.target.value.split('|') : ['', '']; IW.from = a; IW.to = b; $('iwFrom').value = a; $('iwTo').value = b; iwDraw(); };
+  $('iwFrom').onchange = e=>{ IW.from = e.target.value; $('iwPre').value = ''; iwDraw(); };
+  $('iwTo').onchange = e=>{ IW.to = e.target.value; $('iwPre').value = ''; iwDraw(); };
+  const q = $('iwQ'); q.oninput = ()=>{ clearTimeout(IW.qt); IW.qt = setTimeout(()=>{ IW.q = q.value; iwDraw(); }, 200); };
+  await iwLoad(); if(currentTab==='works') iwDraw();
   if(!TEAM.members || !TEAM.members.length) teamLoadMembers().catch(()=>{});
+}
+// the chips above the list: by work and by person (click = filter)
+function iwFacets(list){
+  const box = document.getElementById('iwFacets'); if(!box) return;
+  const cnt = (arr)=>{ const m = new Map(); arr.forEach(k=>{ if(k) m.set(k, (m.get(k)||0)+1); }); return [...m].sort((a,b)=>b[1]-a[1]); };
+  const kinds = cnt(list.map(w=>w.kind||'Darbas')), who = cnt(list.flatMap(w=>w.done_by||[]));
+  const chip = (t, n, on, attr)=>`<button type="button" class="chip small-chip ${on ? 'active' : ''}" ${attr}="${esc(t)}">${esc(t)} <span class="count-badge">${n}</span></button>`;
+  box.innerHTML = (kinds.length ? `<div class="iw-fr"><span>Darbai</span>${kinds.map(([k,n])=>chip(k, n, IW.kind===k, 'data-fk')).join('')}</div>` : '')
+    + (who.length ? `<div class="iw-fr"><span>Kas darė</span>${who.map(([k,n])=>chip(k, n, IW.who===k, 'data-fw')).join('')}</div>` : '');
+  box.querySelectorAll('[data-fk]').forEach(b=>b.onclick = ()=>{ IW.kind = IW.kind===b.dataset.fk ? '' : b.dataset.fk; iwDraw(); });
+  box.querySelectorAll('[data-fw]').forEach(b=>b.onclick = ()=>{ IW.who = IW.who===b.dataset.fw ? '' : b.dataset.fw; iwDraw(); });
 }
 function iwDraw(){
   const box = document.getElementById('iwBody'); if(!box) return;
   if(IW.err){ box.innerHTML = `<div class="mail-err">${esc(IW.err)}</div>`; return; }
-  const list = IW.list.filter(iwMatch), me = teamMe(), ed = canEdit('inventory');
-  box.innerHTML = `<div class="section-sub" style="margin:4px 0 8px;">${IW.q || IW.from || IW.to ? `Rasta: <b>${list.length}</b>` : `Iš viso įrašų: <b>${list.length}</b>`}</div>
+  const base = IW.list.filter(iwMatch), me = teamMe(), ed = canEdit('inventory');
+  iwFacets(base);
+  const list = base.filter(w=>(!IW.kind || (w.kind||'Darbas')===IW.kind) && (!IW.who || (w.done_by||[]).includes(IW.who)));
+  box.innerHTML = `<div class="section-sub" style="margin:4px 0 8px;">${IW.q || IW.from || IW.to || IW.kind || IW.who ? `Rasta: <b>${list.length}</b>` : `Iš viso įrašų: <b>${list.length}</b>`}</div>
     ${list.length ? `<div class="iw-list">${list.map(w=>{ const imgs = (w.files||[]);
       const items = (w.item_names||[]), shown = items.slice(0, 12);
       return `<div class="iw-row"><div class="iw-h"><b>${esc(rpWhen(w.work_date))}</b><span class="iw-kind">${esc(w.kind||'Darbas')}</span>${(w.done_by||[]).length ? `<span class="iw-who">👷 ${esc(w.done_by.join(', '))}</span>` : ''}
@@ -11922,7 +11951,7 @@ function iwDraw(){
         ${w.note ? `<div class="iw-note">${esc(w.note)}</div>` : ''}
         ${imgs.length ? `<div class="rv-gal">${imgs.map((f, i)=>`<button type="button" class="rv-gi" data-iwg="${esc(w.id)}" data-i="${i}"><img data-bucket="${EQ_BUCKET}" data-path="${esc(f.path)}" alt=""></button>`).join('')}</div>` : ''}
         <small class="muted">Įrašė ${esc(w.created_by_name||'')} · ${esc(String(w.created_at||'').slice(0,16).replace('T',' '))}</small></div>`; }).join('')}</div>`
-      : `<div class="empty-state">${IW.q || IW.from || IW.to ? 'Pagal paiešką nieko nerasta.' : 'Atliktų darbų dar neužregistruota.'}</div>`}`;
+      : `<div class="card empty-state">${IW.q || IW.from || IW.to || IW.kind || IW.who ? 'Pagal paiešką nieko nerasta.' : 'Atliktų darbų dar neužregistruota.'}</div>`}`;
   teamFillImages(box);
   box.querySelectorAll('[data-iwg]').forEach(b=>b.onclick = async ()=>{ const w = IW.list.find(x=>x.id===b.dataset.iwg), fs = w.files||[]; const urls = await sbSignedUrls(EQ_BUCKET, fs.map(f=>f.path)); venLightbox({ photos: fs.map((f, i)=>({ url:urls[i]||'', name:f.name })) }, +b.dataset.i); });
   box.querySelectorAll('[data-iwed]').forEach(b=>b.onclick = ()=>iwForm(IW.list.find(x=>x.id===b.dataset.iwed)));
@@ -11997,7 +12026,7 @@ function iwForm(w){
       }catch(e){ toast('Nepavyko įkelti: '+(/row-level|not found|bucket/i.test(e.message||'') ? 'Supabase paleisk item_works.sql.' : (e.message||e)), 5000); }
     }
     $('iwfUp').textContent = ''; };
-  $('iwfX').onclick = ()=>{ if(added.length) stFrom(EQ_BUCKET).remove(added).catch(()=>{}); iwOpen(); };
+  $('iwfX').onclick = ()=>{ if(added.length) stFrom(EQ_BUCKET).remove(added).catch(()=>{}); closeModal(); };
   $('iwfSave').onclick = async ()=>{
     if($('iwfUp').textContent){ toast('Palauk, kol įsikels nuotraukos.'); return; }
     const kind = $('iwfKind').value.trim(), date = $('iwfDate').value;
@@ -12010,7 +12039,7 @@ function iwForm(w){
     if(r.error){ toast('Nepavyko: '+(/does not exist|relation|schema cache/i.test(r.error.message) ? 'Supabase paleisk item_works.sql.' : r.error.message), 5000); return; }
     if(isNew) IW.list.unshift(r.data); else Object.assign(w, r.data);
     IW.list.sort((a,b)=>String(b.work_date).localeCompare(String(a.work_date)) || String(b.created_at).localeCompare(String(a.created_at)));
-    toast('✓ Darbas užregistruotas'); iwOpen();
+    closeModal(); toast('✓ Darbas užregistruotas'); iwOpen();
   };
 }
 
@@ -15823,6 +15852,7 @@ const HOME_TILES = [
   {tab:'load', title:'Krovimas', color:'#F2C94C', desc:'Krovimo planas automobiliams, 3D vaizdas ir tvarka.'},
   {tab:'inventory', title:'Sandėlis', color:'#4E9BC9', desc:'Visa įranga: matmenys, svoris, žymės.'},
   {tab:'gear', title:'Įranga', color:'#E8590C', desc:'Pažeista, sugadinta ir dingusi įranga: nuotraukos, kas taiso, kas žino.'},
+  {tab:'works', title:'Atlikti darbai', color:'#50AD97', desc:'Valymas, patikros, remontai: kada, su kuo ir kas darė.'},
   {tab:'stocktake', title:'Inventorizacija', color:'#6FB7A8', desc:'Sandėlio inventorizacijos: kiekiai, istorija, palyginimas ir sulyginimas su sandėliu.'},
   {tab:'rules', title:'Pakavimas', color:'#8062D4', desc:'Dėžės ir flight case\'ai — kiek vienetų telpa.'},
   {tab:'fleet', title:'Transportas', color:'#50AD97', desc:'Automobilių parkas ir dokumentų priminimai.'},
@@ -16322,30 +16352,52 @@ const byOrder = (list, order, key)=>{ if(!Array.isArray(order)) return list; con
 const HOME_GROUPS = [
   {id:'office', title:'Ofisas', color:'#F35E7D', tabs:['events','people','jobs','offers','invoices','venues','fleet'],
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/><path d="M11 13v2h2v-2"/></svg>'},
-  {id:'warehouse', title:'Sandėlis', color:'#4E9BC9', tabs:['projects','newproj','sort','load','rentals','handovers','inventory','stocktake','gear','rules'],
+  {id:'warehouse', title:'Sandėlis', color:'#4E9BC9', tabs:['projects','newproj','sort','load','rentals','handovers','inventory','works','stocktake','gear','rules'],
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-5 9 5v12"/><path d="M7 21v-8h10v8"/><path d="M7 17h10"/></svg>'},
 ];
-const HOME_GROUP_EXTRA = {
-  warehouse: [{ key:'works', after:'inventory', title:'Atlikti darbai', color:'#50AD97', desc:'Valymas, patikros, remontai: kada, su kuo ir kas darė.',
-    icon:()=>slIcon('cog'), can:()=>canView('inventory'),
-    stat:()=>{ if(!IW.loaded || IW.err) return ''; const m = calISO(new Date()).slice(0,7), n = IW.list.filter(w=>String(w.work_date).startsWith(m)).length; return n ? 'Šį mėnesį: '+ltPlural(n,'darbas','darbai','darbų') : ''; },
-    go:()=>{ setTab('inventory'); iwOpen(); } }]
-};
+const HOME_GROUP_EXTRA = {};
 const homeRailIcon = tab=>{ const b = document.querySelector('.rail-btn[data-tab="'+tab+'"] svg'); return b ? b.outerHTML : ''; };
-function homeGroupOpen(id){
+function homeGroupOpen(id, arrange){
   const g = HOME_GROUPS.find(x=>x.id===id); if(!g) return;
-  const tiles = g.tabs.filter(t=>canView(t)).map(t=>HOME_TILES.find(x=>x.tab===t)).filter(Boolean);
+  let tiles = g.tabs.filter(t=>canView(t)).map(t=>HOME_TILES.find(x=>x.tab===t)).filter(Boolean);
   // tools that are not tabs of their own, right after the tab they belong to
   (HOME_GROUP_EXTRA[id]||[]).filter(x=>x.can()).forEach(x=>{ const i = tiles.findIndex(t=>t.tab===x.after); tiles.splice(i>=0 ? i+1 : tiles.length, 0, x); });
-  openModal(`<div class="row between" style="align-items:center;margin-bottom:12px;"><h3 style="margin:0;display:flex;align-items:center;gap:10px;"><span class="hg-ic" style="background:${g.color}22;color:${g.color};">${g.icon}</span>${esc(g.title)}</h3><button class="icon-btn" id="hgX" style="font-size:20px;">✕</button></div>
-    <div class="hg-list">${tiles.map(t=>`
-      <button class="hg-item" ${t.key ? `data-extra="${t.key}"` : `data-go="${t.tab}"`}>
+  // each member's own order („Keisti tvarką“), kept with the profile
+  const keyOf = t=>t.key ? 'x:'+t.key : t.tab;
+  tiles = byOrder(tiles, prefGet('hgOrder_'+id), keyOf);
+  openModal(`<div class="row between" style="align-items:center;margin-bottom:12px;gap:8px;"><h3 style="margin:0;display:flex;align-items:center;gap:10px;flex:1;"><span class="hg-ic" style="background:${g.color}22;color:${g.color};">${g.icon}</span>${esc(g.title)}</h3>
+      <button type="button" class="btn small ${arrange ? 'primary' : ''}" id="hgArr" title="Keisti puslapių tvarką">${slIcon(arrange ? 'check' : 'sorting')} ${arrange ? 'Baigti' : 'Keisti tvarką'}</button><button class="icon-btn" id="hgX" style="font-size:20px;">✕</button></div>
+    ${arrange ? '<div class="hg-arr-tip">Tempk už rankenėlės arba spausk rodykles. Tvarka išsaugoma tik tau.</div>' : ''}
+    <div class="hg-list ${arrange ? 'arranging' : ''}" id="hgList">${tiles.map((t,i)=>`
+      <div class="hg-item" role="button" tabindex="0" data-k="${esc(keyOf(t))}" ${t.key ? `data-extra="${t.key}"` : `data-go="${t.tab}"`} ${arrange ? 'draggable="true"' : ''}>
+        ${arrange ? `<span class="hg-grip">${slIcon('drag')}</span>` : ''}
         <span class="hg-ic" style="background:${t.color}22;color:${t.color};">${t.key ? t.icon() : homeRailIcon(t.tab)}</span>
-        <span class="hg-t"><b>${esc(t.title)}</b><small>${(t.key ? t.stat() : homeTileStat(t.tab)) || esc(t.desc)}</small></span><span class="hg-arrow">›</span>
-      </button>`).join('')}</div>`);
+        <span class="hg-t"><b>${esc(t.title)}</b><small>${(t.key ? t.stat() : homeTileStat(t.tab)) || esc(t.desc)}</small></span>
+        ${arrange ? `<span class="hg-mv"><button type="button" data-mv="-1" title="Aukštyn" ${i===0?'disabled':''}>${slIcon('arrowup')}</button><button type="button" data-mv="1" title="Žemyn" ${i===tiles.length-1?'disabled':''}>${slIcon('arrowdown')}</button></span>` : '<span class="hg-arrow">›</span>'}
+      </div>`).join('')}</div>
+    ${arrange && Array.isArray(prefGet('hgOrder_'+id)) ? '<button type="button" class="btn small" id="hgReset" style="margin-top:10px;">Atstatyti pradinę tvarką</button>' : ''}`);
   document.getElementById('modalRoot').classList.add('hg-modal');
   document.getElementById('hgX').onclick = closeModal;
-  document.querySelectorAll('.hg-item').forEach(b=>b.onclick = ()=>{
+  document.getElementById('hgArr').onclick = ()=>homeGroupOpen(id, !arrange);
+  const list = document.getElementById('hgList');
+  const save = ()=>{ prefSet('hgOrder_'+id, [...list.querySelectorAll('.hg-item')].map(x=>x.dataset.k)); if(currentTab==='home') try{ renderHome(); }catch(e){} };
+  if(arrange){
+    const rs = document.getElementById('hgReset'); if(rs) rs.onclick = ()=>{ prefSet('hgOrder_'+id, null); homeGroupOpen(id, true); };
+    list.querySelectorAll('[data-mv]').forEach(b=>b.onclick = e=>{ e.stopPropagation();
+      const it = b.closest('.hg-item'), d = +b.dataset.mv;
+      if(d<0 && it.previousElementSibling) list.insertBefore(it, it.previousElementSibling);
+      else if(d>0 && it.nextElementSibling) list.insertBefore(it.nextElementSibling, it);
+      save(); homeGroupOpen(id, true); });
+    let drag = null;
+    list.querySelectorAll('.hg-item').forEach(it=>{
+      it.addEventListener('dragstart', e=>{ drag = it; it.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; try{ e.dataTransfer.setData('text/plain', it.dataset.k); }catch(err){} });
+      it.addEventListener('dragend', ()=>{ it.classList.remove('dragging'); if(drag){ drag = null; save(); homeGroupOpen(id, true); } });
+      it.addEventListener('dragover', e=>{ if(!drag || drag===it) return; e.preventDefault(); const r = it.getBoundingClientRect(); list.insertBefore(drag, e.clientY < r.top + r.height/2 ? it : it.nextElementSibling); });
+    });
+    return;
+  }
+  list.querySelectorAll('.hg-item').forEach(b=>b.onkeydown = e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); b.click(); } });
+  list.querySelectorAll('.hg-item').forEach(b=>b.onclick = ()=>{
     closeModal();
     if(b.dataset.extra){ const x = (HOME_GROUP_EXTRA[id]||[]).find(e=>e.key===b.dataset.extra); if(x) x.go(); return; }
     const tab = b.dataset.go;
@@ -16827,7 +16879,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v212';
+const APP_VER = 'v213';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -29892,7 +29944,7 @@ const GS_FN = [
   { t:'Kalendorius', d:'šventės ir renginiai', ic:'calendar', kw:'datos sventes', go:()=>gsClick('calHdr') },
   { t:'Pridėti užduotį', d:'sau, su priminimais', ic:'tasks', kw:'uzduotis priminimas todo pastaba', go:()=>gsClick('tkHdrAdd') },
   { t:'Priskirti užduotį', d:'kitiems nariams', ic:'users', kw:'uzduotis paskirti deleguoti', go:()=>gsClick('tkHdrAssign') },
-  { t:'Atlikti darbai', d:'Sandėlis: valymas, patikros, remontai', ic:'cog', kw:'atlikti darbai valymas patikra profilaktika remontas', can:()=>canView('inventory'), go:()=>{ setTab('inventory'); iwOpen(); } },
+  { t:'Atlikti darbai', d:'Sandėlis: valymas, patikros, remontai', ic:'cog', kw:'atlikti darbai valymas patikra profilaktika remontas', can:()=>canView('inventory'), go:()=>setTab('works') },
   { t:'Pranešti apie pažeistą įrangą', d:'Įranga', ic:'alert', kw:'sugadinta pazeista sulauzyta taisyti gedimas', can:()=>canView('gear') && canView('inventory'), go:()=>gsGear('damage', true) },
   { t:'Pranešti apie dingusį daiktą', d:'Įranga', ic:'search', kw:'dingo pamestas prarastas', can:()=>canView('gear'), go:()=>gsGear('lost', true) },
   { t:'Tikrinti įrangos likutį', d:'pagal datą ar laikotarpį', ic:'warehouse', kw:'likutis laisva uzimta rezervuota kiek yra sandelis', can:()=>canView('gear'), go:()=>gsGear('stock') },
@@ -30729,6 +30781,7 @@ const TABS = {
   newproj: renderNewProjTab,
   sort: renderSortTab,
   stocktake: renderStocktakeTab,
+  works: renderWorksTab,
   games: renderGamesTab,
   gear: renderGearTab,
   invoices: renderInvoicesTab,
