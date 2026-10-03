@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-VYmfZD/3cAjp6XtToZjb/cQr4VS2ia6uQhv180TZzcI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-VM+1S0OP+bp7ejm415NyVWBB0nhSCIT96UuHb7F8Oqk=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -18,7 +18,8 @@ try{ var u = JSON.parse(localStorage.getItem('es-ui')||'null') || {};
   if(!localStorage.getItem('es-ui-v2all')){ u.v = 'v2'; localStorage.setItem('es-ui', JSON.stringify(u)); localStorage.setItem('es-ui-v2all', '1'); }
   if(u.v!=='v1'){ var r = document.documentElement, lum = function(h){ var m = /^#?([0-9a-f]{6})$/i.exec(h||''); if(!m) return -1; var n = parseInt(m[1],16), c = [n>>16&255, n>>8&255, n&255].map(function(x){ x/=255; return x<=.03928 ? x/12.92 : Math.pow((x+.055)/1.055, 2.4); }); return .2126*c[0]+.7152*c[1]+.0722*c[2]; };
   r.setAttribute('data-ui','v2');
-  if(lum(u.accent)>=0){ r.style.setProperty('--v2-accent', u.accent); r.style.setProperty('--v2-accent-ink', lum(u.accent)>.4 ? '#0C1B2A' : '#FFFFFF'); }
+  var acc = u.accent, lt = localStorage.getItem('es-theme')==='light'; if(lum(acc)>=0){ if(lt && lum(acc)>.6) acc = '#1D2229'; else if(!lt && lum(acc)<.04) acc = '#E8E8E8'; }
+  if(lum(acc)>=0){ r.style.setProperty('--v2-accent', acc); r.style.setProperty('--v2-accent-ink', lum(acc)>.4 ? '#0C1B2A' : '#FFFFFF'); }
   if(lum(u.rail)>=0){ r.style.setProperty('--v2-rail', u.rail); r.style.setProperty('--v2-rail-ink', lum(u.rail)>.4 ? '#1D2229' : '#E8E8E8'); } } }catch(e){}</script>
 <title>EventSolutions App</title>
 <meta name="application-name" content="EventSolutions App">
@@ -4205,6 +4206,7 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 /* glass everywhere: inside the page, windows and menus every grey box / field / line becomes darker glass with a light edge.
    The real panel colour is kept in --gl-base (taken on body), the rest is changed only below it. */
 body.gl-menu, body.gl-win, body.gl-cards{--gl-base:var(--panel);--gl-tint:#000;}
+body.gl-menu aside.rail, body.gl-menu .nm-panel{--v2-rail-ink:var(--text);}
 :root[data-theme="light"] body.gl-menu, :root[data-theme="light"] body.gl-win, :root[data-theme="light"] body.gl-cards{--gl-tint:#fff;}
 body.gl-cards main, body.gl-win .modal, body.gl-win .combo-pop, body.gl-win .cal-pop, body.gl-win .ltd-pop, body.gl-win .op-pop, body.gl-win .ui-ask-card, body.gl-win .help-pop, body.gl-win .pp-dial-in, body.gl-menu .nm-panel, body.gl-menu .pageheader, body.gl-menu aside.rail{
   --panel:color-mix(in srgb, var(--gl-tint,#000) 20%, transparent);
@@ -4363,7 +4365,9 @@ main.ro-mode .xg-mgr{cursor:default;}
 .ev-ppi b{font-weight:600;font-size:13.5px;} .ev-ppi small{margin-left:auto;color:var(--text-dim);font-size:11.5px;} .ev-ppi.had{opacity:.55;}
 table.xg thead th{color:var(--text) !important;font-size:11.5px !important;font-weight:800 !important;letter-spacing:.4px;}
 table.xg thead th small{color:var(--text-dim) !important;font-size:10px !important;font-weight:500 !important;}
-table.xg th,table.xg td{border-right:1px solid var(--xg-col, var(--border-2, #3a3a3a)) !important;}
+/* clearly visible lines between the columns (also on glass) */
+:root{--xg-col:rgb(255 255 255 / .26);} :root[data-theme="light"]{--xg-col:rgb(0 0 0 / .28);}
+table.xg th,table.xg td{border-right:2px solid var(--xg-col) !important;}
 table.xg thead th{border-right:1px solid var(--xg-col, var(--border-2, #3a3a3a)) !important;}
 :root{--xg-col:color-mix(in srgb, var(--text) 22%, transparent);}
 table.xg thead th{position:sticky;}
@@ -10139,13 +10143,17 @@ const UI_ACCENTS = [['#6AB0F3','Mėlyna'],['#F35E7D','Rožinė'],['#50AD97','Ža
 const UI_RAILS = [['','Pagal temą'],['#1E1E1E','Grafitas'],['#0E0E0E','Juoda'],['#14213D','Tamsiai mėlyna'],['#1B2E2A','Tamsiai žalia'],['#FFFFFF','Balta'],['#EEF2F7','Šviesiai pilka']];
 function uiPrefs(){ try{ const u = JSON.parse(localStorage.getItem('es-ui')||'null'); return Object.assign({ v:'v2', accent:'', rail:'' }, u||{}); }catch(e){ return { v:'v2', accent:'', rail:'' }; } }
 function uiLum(h){ const m = /^#?([0-9a-f]{6})$/i.exec(h||''); if(!m) return -1; const n = parseInt(m[1],16); const c = [n>>16&255, n>>8&255, n&255].map(x=>{ x/=255; return x<=.03928 ? x/12.92 : Math.pow((x+.055)/1.055, 2.4); }); return .2126*c[0]+.7152*c[1]+.0722*c[2]; }
+// a white accent on the light theme (or a black one on the dark) would make every accent text invisible: use a readable shade there
+function uiAccentFor(acc){ const l = uiLum(acc); if(l < 0) return acc; const light = document.documentElement.getAttribute('data-theme')==='light';
+  return light && l > .6 ? '#1D2229' : !light && l < .04 ? '#E8E8E8' : acc; }
 function uiApply(p){
   p = p || uiPrefs();
   const r = document.documentElement;
   ['--v2-accent','--v2-accent-ink','--v2-rail','--v2-rail-ink'].forEach(k=>r.style.removeProperty(k));
   if(p.v==='v2'){
     r.setAttribute('data-ui', 'v2');
-    if(uiLum(p.accent)>=0){ r.style.setProperty('--v2-accent', p.accent); r.style.setProperty('--v2-accent-ink', uiLum(p.accent)>.4 ? '#0C1B2A' : '#FFFFFF'); }
+    const acc = uiAccentFor(p.accent);
+    if(uiLum(acc)>=0){ r.style.setProperty('--v2-accent', acc); r.style.setProperty('--v2-accent-ink', uiLum(acc)>.4 ? '#0C1B2A' : '#FFFFFF'); }
     if(uiLum(p.rail)>=0){ r.style.setProperty('--v2-rail', p.rail); r.style.setProperty('--v2-rail-ink', uiLum(p.rail)>.4 ? '#1D2229' : '#E8E8E8'); }
   } else r.removeAttribute('data-ui');
   uiFoldInit();
@@ -10172,7 +10180,7 @@ function themeNow(){ return document.documentElement.getAttribute('data-theme')=
 function themeSet(t){
   if(t==='light') document.documentElement.setAttribute('data-theme','light'); else document.documentElement.removeAttribute('data-theme');
   try{ localStorage.setItem('es-theme', t); }catch(e){}
-  themeInit();
+  themeInit(); try{ uiApply(); }catch(e){}
   if(document.getElementById('pfUi')) pfUiDraw();
   // pictures drawn in code (charts, the truck load) take the new colours
   if(typeof currentTab!=='undefined' && ['stats','load','home'].includes(currentTab) && typeof setTab==='function') setTab(currentTab);
@@ -17479,7 +17487,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v245';
+const APP_VER = 'v246';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32271,6 +32279,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 01:20', v:'v246', k:'fix', t:'Šviesi tema: tekstai matomi; aiškūs stulpelių skirtukai', f:'Renginių lentelėje stulpelius skiria storesnės, gerai matomos linijos. Šviesioje temoje nebelieka baltų tekstų: jei pasirinkta balta akcento spalva, šviesioje temoje ji rodoma tamsi (mygtukai, nuorodos, „Šiandien“, skaičiai), o stiklinio meniu tekstai – tamsūs. Tamsioje temoje – atvirkščiai, juodas akcentas rodomas šviesus.' },
   { d:'2026-10-05 01:00', v:'v245', k:'fix', t:'Stiklas: fiksuoti stulpeliai', f:'Stiklo režime renginių lentelėje Data ir Renginio pavadinimas bei lentelių antraštės nebėra permatomi – slenkant į šoną turinys po jais suliejamas ir nesimaišo.' },
   { d:'2026-10-05 00:40', v:'v244', k:'chg', t:'Stiklas visur vienodas', f:'Įjungus stiklą (glass) visoje programoje – renginiuose, projektuose, chate, pašte, sąskaitose, languose ir meniu – pilki langeliai, laukeliai ir lentelės tapo tamsesniu stiklu su šviesiu apvadu, kaip Užduočių ir Sąskaitų kortelėse. Šviesioje temoje – šviesus stiklas.' },
   { d:'2026-10-05 00:10', v:'v243', k:'chg', t:'Pradžia: plytelė išsiplečia, daugiau stiklo', f:'Paspaudus Ofisą ar Sandėlį langas su puslapiais išsiplečia iš pačios plytelės, uždarant susitraukia atgal. Plytelėse nebėra puslapių sąrašo. Stiklo režime: juosta su data ir orais, Sąskaitų (Freelance, Paslaugų, Nuomos, Pirkinių) ir Klaidų langeliai – stikliniai, tamsesni, su apvadu; viršutinė juosta tokio pat stiklo kaip kiti. Kairiajame meniu užvedus pelę pavadinimas padidėja 5 %.' },
