@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-V3Ip67k4ypyjtQhQVfJ8sTUz3UvLM3ATGsxlBuAKEuw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-5zH0814SySJ8waygsWh9ilXj3UnzhRkkz6vqZ0HQ7YE=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -1341,7 +1341,7 @@ td.xg-copied{animation:xgcopy .9s ease-out;}
 .xg-daypop .dp-grid{margin:3px 0 8px;}
 .xg-daypop .dp-grid button{padding:7px 0;}
 .xg-daypop .dp-grid button.ev{border-color:#e6b8b7;color:#e6b8b7;font-weight:700;}
-.xg-daypop .dp-grid button.on{color:#fff;}
+.xg-daypop .dp-grid button.on{color:var(--fill-ink,#fff);}
 .xg-daypop .dp-times{display:flex;gap:8px;margin-bottom:8px;}
 .xg-daypop .dp-times label{flex:1;display:flex;align-items:center;gap:3px;font-size:12px;color:var(--text-dim);}
 .xg-daypop .dp-times select{flex:1;min-width:0;padding:6px 18px 6px 6px !important;background-position:right 4px center !important;font-size:13px;}
@@ -4116,6 +4116,29 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .help-q{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--border-2,var(--border));background:var(--panel-2);color:var(--text-dim);font-size:12px;font-weight:700;cursor:pointer;padding:0;line-height:1;flex:none;vertical-align:middle;}
 .help-q:hover,.help-q.on{border-color:var(--accent);color:var(--accent);}
 .help-pop{position:fixed;z-index:1200;max-width:340px;background:var(--panel);color:var(--text);border:1px solid var(--border-2,var(--border));border-radius:var(--radius,8px);box-shadow:0 14px 34px rgba(0,0,0,.4);padding:10px 12px;font-size:12.5px;line-height:1.45;}
+</style>
+<style id="twCss">
+.tw{--tw-lh:24px;position:relative;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:var(--radius,8px);background:var(--panel);overflow:hidden;user-select:none;}
+.tw-c{display:flex;flex-direction:column;min-width:0;} .tw-c + .tw-c{border-left:1px solid var(--border);}
+.tw-l{height:var(--tw-lh);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);position:relative;z-index:2;background:var(--panel);}
+.tw-col{height:calc(var(--tw-rows) * 34px);overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;position:relative;z-index:1;outline:none;overscroll-behavior:contain;
+  -webkit-mask:linear-gradient(to bottom, transparent, #000 28%, #000 72%, transparent);mask:linear-gradient(to bottom, transparent, #000 28%, #000 72%, transparent);}
+.tw-col::-webkit-scrollbar{display:none;}
+.tw-i{height:34px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:16px;font-variant-numeric:tabular-nums;color:var(--text);cursor:pointer;}
+.tw-i.on{color:var(--accent-ink,#fff);font-weight:700;}
+.tw-band{position:absolute;left:0;right:0;height:34px;background:var(--accent);z-index:0;pointer-events:none;}
+.tw-col:focus-visible{box-shadow:inset 0 0 0 2px var(--accent);}
+.tw-acts{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-top:0;border-radius:0 0 var(--radius,8px) var(--radius,8px);overflow:hidden;margin-top:-1px;}
+.tw-acts button{display:flex;align-items:center;justify-content:center;height:38px;border:0;background:var(--panel-2);color:var(--text);cursor:pointer;} .tw-acts button + button{border-left:1px solid var(--border);}
+.tw-acts button:hover{background:var(--accent);color:var(--accent-ink,#fff);} .tw-acts svg{width:20px;height:20px;}
+.ltd-twh{margin-top:8px;} .ltd-twh .tw{border-radius:var(--radius,8px);}
+.ltd-tfoot{margin-top:6px;} .ltd-pop:has(.ltd-tfoot) .tw{border-radius:var(--radius,8px) var(--radius,8px) 0 0;} .ltd-pop:has(.ltd-tfoot) .tw-acts{margin-top:0;}
+.ltd-pop:has(.ltd-tfoot){width:220px;} .ltd-pop:has(.ltd-tfoot) .ltd-twh{margin-top:0;} .ltd-pop:has(.ltd-tfoot) .ltd-foot{order:3;}
+.ltd-pop:has(.ltd-tfoot){display:flex;flex-direction:column;}
+.xg-timepop:not(.xg-daypop){width:220px;padding:8px;} .xg-timepop .tw{border-radius:var(--radius,8px) var(--radius,8px) 0 0;}
+.dp-tw{display:grid !important;grid-template-columns:1fr 1fr;gap:8px;} .dp-tw > div{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-dim);}
+.xg-timepop .dp-twc{background:none !important;border:0 !important;padding:2px !important;font-size:11px !important;color:var(--text-dim);} .xg-timepop .tw-acts button{border:0;border-radius:0;padding:0;} .xg-timepop .tw-acts button + button{border-left:1px solid var(--border);}
+.dp-tw .tw-host.off .tw{opacity:.45;} .dp-tw .tw-i{font-size:14px;} .dp-twc{border:0;background:none;color:var(--text-dim);font:inherit;font-size:11px;cursor:pointer;padding:2px;text-align:right;} .dp-twc:hover{color:var(--accent);}
 </style>
 <style id="evNewCss">
 .xg-otel{display:flex;align-items:center;gap:4px;padding:0 4px 4px;} .xg-otel svg{width:14px;height:14px;color:var(--text-dim);flex:none;}
@@ -16312,6 +16335,30 @@ function ltdSet(el, v){
   // a date with time is handed over when the picker closes (Gerai), not on every click
   if(el.dataset.ltd!=='dt'){ el._ltdWas = v; el._ltdCommitted = v; el.dispatchEvent(new Event('change', { bubbles:true })); }
 }
+/* ---------- time wheel: hours and minutes as two scrolling columns, the chosen row in the band ---------- */
+const TW_H = 34;
+function twWheel(opt){
+  opt = opt || {}; const rows = opt.rows || 5, pad = (rows-1)/2*TW_H;
+  const m0 = /^(\d{1,2}):(\d{2})$/.exec(String(opt.value||'').trim()), now = new Date();
+  const sel = { h: m0 ? +m0[1] : (opt.empty==null ? now.getHours() : +opt.empty.split(':')[0]), m: m0 ? +m0[2] : 0 };
+  const el = document.createElement('div'); el.className = 'tw'; el.style.setProperty('--tw-rows', rows);
+  const col = (k, n)=>`<div class="tw-c"><div class="tw-l">${k==='h' ? 'Valanda' : 'Minutės'}</div><div class="tw-col" data-k="${k}" tabindex="0" style="padding:${pad}px 0">${Array.from({length:n}, (_, i)=>`<div class="tw-i" data-v="${i}">${String(i).padStart(2,'0')}</div>`).join('')}</div></div>`;
+  el.innerHTML = `<div class="tw-band" style="top:calc(var(--tw-lh) + ${pad}px)"></div>${col('h', 24)}${col('m', 60)}`;
+  const val = ()=>String(sel.h).padStart(2,'0')+':'+String(sel.m).padStart(2,'0');
+  const mark = c=>{ const k = c.dataset.k; c.querySelectorAll('.tw-i').forEach(i=>i.classList.toggle('on', +i.dataset.v===sel[k])); };
+  el.querySelectorAll('.tw-col').forEach(c=>{
+    const k = c.dataset.k, max = k==='h' ? 23 : 59; let t = 0, quiet = false;
+    const go = (v, smooth)=>{ v = Math.max(0, Math.min(max, v)); quiet = !smooth; c.scrollTo({ top:v*TW_H, behavior:smooth ? 'smooth' : 'auto' }); if(!smooth){ sel[k] = v; mark(c); setTimeout(()=>{ quiet = false; }, 30); } };
+    c._go = go;
+    c.addEventListener('scroll', ()=>{ if(quiet) return; const v = Math.max(0, Math.min(max, Math.round(c.scrollTop / TW_H)));
+      if(v!==sel[k]){ sel[k] = v; mark(c); } clearTimeout(t); t = setTimeout(()=>{ if(opt.onChange) opt.onChange(val()); }, 90); }, { passive:true });
+    c.addEventListener('click', e=>{ const i = e.target.closest('.tw-i'); if(i) go(+i.dataset.v, true); });
+    c.addEventListener('keydown', e=>{ if(e.key==='ArrowDown' || e.key==='ArrowUp'){ e.preventDefault(); go(sel[k] + (e.key==='ArrowDown' ? 1 : -1), true); } });
+  });
+  const init = ()=>el.querySelectorAll('.tw-col').forEach(c=>c._go(sel[c.dataset.k], false));
+  requestAnimationFrame(init); setTimeout(init, 60);
+  return { el, value:val, init, set(v){ const m = /^(\d{1,2}):(\d{2})$/.exec(v||''); if(m){ sel.h = +m[1]; sel.m = +m[2]; init(); } } };
+}
 function ltdOpen(el){
   if(!el || el.readOnly || el.disabled) return;
   if(LTD && LTD.el===el) return;
@@ -16324,6 +16371,7 @@ function ltdOpen(el){
   const init = cur(), base = ltdParseDate(init.d) ? new Date(init.d+'T12:00:00') : new Date();
   const st = { y:base.getFullYear(), m:base.getMonth(), t:init.t || (k==='dt' ? '09:00' : '') };
   const min = el.getAttribute('min') ? String(el.getAttribute('min')).slice(0,10) : '', max = el.getAttribute('max') ? String(el.getAttribute('max')).slice(0,10) : '';
+  let tw = null;
   const timeHtml = t=>{ const [h, mi] = (t||'').split(':');
     return `<div class="ltd-time"><div class="ltd-th">Valanda</div><div class="ltd-hg">${Array.from({length:24},(_,i)=>`<button type="button" data-h="${ltdPad(i)}" class="${h===ltdPad(i)?'on':''}">${ltdPad(i)}</button>`).join('')}</div>
       <div class="ltd-th">Minutės</div><div class="ltd-mg">${['00','05','10','15','20','25','30','35','40','45','50','55'].map(x=>`<button type="button" data-mi="${x}" class="${mi===x?'on':''}">${x}</button>`).join('')}</div></div>`; };
@@ -16341,9 +16389,15 @@ function ltdOpen(el){
         <button type="button" data-nav="1" aria-label="Kitas mėnuo">›</button></div>
         <div class="ltd-grid">${LTD_DAYS.map(x=>`<span>${x}</span>`).join('')}${cells}</div>`;
     }
-    if(k!=='date') html += timeHtml(k==='time' ? cur().t : st.t);
-    html += `<div class="ltd-foot"><button type="button" data-clear>Išvalyti</button>${k!=='time' ? '<button type="button" data-today>Šiandien</button>' : '<button type="button" data-now>Dabar</button>'}${k==='dt' ? '<button type="button" data-ok class="ltd-ok">Gerai</button>' : ''}</div>`;
+    if(k!=='date') html += '<div class="ltd-twh"></div>';
+    html += k==='time'
+      ? `<div class="ltd-foot ltd-tfoot"><button type="button" data-clear>Išvalyti</button><button type="button" data-now>Dabar</button></div><div class="tw-acts"><button type="button" data-twok title="Gerai">${slIcon('check')}</button><button type="button" data-twx title="Atšaukti">${slIcon('close')}</button></div>`
+      : `<div class="ltd-foot"><button type="button" data-clear>Išvalyti</button><button type="button" data-today>Šiandien</button>${k==='dt' ? '<button type="button" data-ok class="ltd-ok">Gerai</button>' : ''}</div>`;
     box.innerHTML = html;
+    const twh = box.querySelector('.ltd-twh');
+    if(twh){ const t0 = k==='time' ? cur().t : st.t;
+      tw = twWheel({ value:t0, onChange:v=>{ if(k==='time') return; st.t = v; if(cur().d) ltdSet(el, cur().d+'T'+v); } });
+      twh.appendChild(tw.el); }
     box.querySelectorAll('[data-nav]').forEach(b=>b.onclick = ()=>{ st.m += +b.dataset.nav; if(st.m<0){ st.m = 11; st.y--; } if(st.m>11){ st.m = 0; st.y++; } draw(); });
     const ms = box.querySelector('[data-mon]'); if(ms) ms.onchange = ()=>{ st.m = +ms.value; draw(); };
     const yr = box.querySelector('[data-yr]'); if(yr) yr.onchange = ()=>{ const y = +yr.value; if(y>1900 && y<2200){ st.y = y; draw(); } };
@@ -16360,7 +16414,9 @@ function ltdOpen(el){
       else { st.t = ((st.t||'').split(':')[0]||'09')+':'+b.dataset.mi; if(cur().d) ltdSet(el, cur().d+'T'+st.t); draw(); } });
     const cl = box.querySelector('[data-clear]'); cl.onclick = ()=>{ ltdSet(el, ''); ltdClose(); };
     const td = box.querySelector('[data-today]'); if(td) td.onclick = ()=>{ const t = ltdIso(new Date()); if(k==='date'){ ltdSet(el, t); ltdClose(); } else { ltdSet(el, t+'T'+(st.t||'09:00')); st.y = new Date().getFullYear(); st.m = new Date().getMonth(); draw(); } };
-    const nw = box.querySelector('[data-now]'); if(nw) nw.onclick = ()=>{ const n = new Date(); ltdSet(el, ltdPad(n.getHours())+':'+ltdPad(Math.floor(n.getMinutes()/5)*5)); ltdClose(); };
+    const nw = box.querySelector('[data-now]'); if(nw) nw.onclick = ()=>{ const n = new Date(); if(tw) tw.set(ltdPad(n.getHours())+':'+ltdPad(n.getMinutes())); };
+    const tok = box.querySelector('[data-twok]'); if(tok) tok.onclick = ()=>{ if(k==='time') ltdSet(el, tw.value()); else { st.t = tw.value(); if(cur().d) ltdSet(el, cur().d+'T'+st.t); } ltdClose(); };
+    const tx = box.querySelector('[data-twx]'); if(tx) tx.onclick = ()=>{ if(k==='time' && el._ltdWas!=null) ltdSet(el, el._ltdWas); ltdClose(); };
     const ok = box.querySelector('[data-ok]'); if(ok) ok.onclick = ()=>ltdClose();
     LTD && LTD.place();
   };
@@ -17055,7 +17111,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v223';
+const APP_VER = 'v224';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18556,30 +18612,21 @@ function evTimePop(inp){
     inp.dispatchEvent(new Event('input', {bubbles:true}));
     if(close){ inp.dispatchEvent(new Event('change', {bubbles:true})); evPopClose(); }
   };
-  const draw = ()=>{
-    const hours = Array.from({length:24}, (_,i)=>String(i).padStart(2,'0'));
-    const mins = ['00','05','10','15','20','25','30','35','40','45','50','55'];
-    m.innerHTML = `
-      <div class="tp-h">Valanda</div>
-      <div class="tp-grid">${hours.map(h=>`<button type="button" data-h="${h}" class="${h===cur.h?'on':''}">${h}</button>`).join('')}</div>
-      <div class="tp-h">Minutės</div>
-      <div class="tp-grid">${mins.map(x=>`<button type="button" data-m="${x}" class="${x===cur.m?'on':''}">:${x}</button>`).join('')}</div>
+  const tw = twWheel({ value: cur.h ? cur.h+':'+(cur.m||'00') : '' });
+  m.innerHTML = `<div class="tw-host"></div>
       <div class="tp-foot">
         <button type="button" data-clear>Išvalyti</button>
         ${EV_TOUCH ? '<button type="button" data-type>⌨ Ranka</button>' : ''}
-        <button type="button" data-ok class="tp-ok">Gerai</button>
-      </div>`;
-  };
-  draw();
-  m.addEventListener('pointerdown', e=>e.preventDefault());   // keep the cell focused
-  m.addEventListener('mousedown', e=>e.preventDefault());
+      </div><div class="tw-acts"><button type="button" data-ok title="Gerai">${slIcon('check')}</button><button type="button" data-x title="Atšaukti">${slIcon('close')}</button></div>`;
+  m.querySelector('.tw-host').appendChild(tw.el);
+  m.addEventListener('pointerdown', e=>{ if(!e.target.closest('.tw-col')) e.preventDefault(); });   // keep the cell focused (the wheels may be dragged)
+  m.addEventListener('mousedown', e=>{ if(!e.target.closest('.tw-col')) e.preventDefault(); });
   m.addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b) return;
-    if(b.dataset.h){ cur.h = b.dataset.h; if(!cur.m) cur.m = '00'; set(cur.h+':'+cur.m, false); draw(); }
-    else if(b.dataset.m){ cur.m = b.dataset.m; set((cur.h||'00')+':'+cur.m, true); }
-    else if(b.hasAttribute('data-clear')){ set('', true); }
+    if(b.hasAttribute('data-clear')){ set('', true); }
     else if(b.hasAttribute('data-type')){ evPopClose(); inp.setAttribute('inputmode','numeric'); inp.blur(); setTimeout(()=>inp.focus(), 30); }
-    else if(b.hasAttribute('data-ok')){ inp.dispatchEvent(new Event('change', {bubbles:true})); evPopClose(); }
+    else if(b.hasAttribute('data-ok')){ set(tw.value(), true); }
+    else if(b.hasAttribute('data-x')){ evPopClose(); }
   });
   document.body.appendChild(m);
   const r = inp.getBoundingClientRect(), h = m.offsetHeight, w = m.offsetWidth;
@@ -18633,7 +18680,7 @@ function evDayTimePop(inp, ev){
       <div class="dp-head"><button type="button" data-mo="-1">‹</button><b>${esc(evMonthLabel(ym))}</b><button type="button" data-mo="1">›</button></div>
       <div class="dp-wd">${['Pr','An','Tr','Kt','Pn','Št','Sk'].map(x=>`<span>${x}</span>`).join('')}</div>
       <div class="dp-grid">${cells.join('')}</div>
-      <div class="dp-times"><label>Nuo ${selHM('from', p.from)}</label><label>Iki ${selHM('to', p.to)}</label></div>
+      <div class="dp-times dp-tw"><div><span>Nuo</span><div class="tw-host" data-tw="from"></div><button type="button" class="dp-twc" data-twclear="from">be laiko</button></div><div><span>Iki</span><div class="tw-host" data-tw="to"></div><button type="button" class="dp-twc" data-twclear="to">be laiko</button></div></div>
       <div class="dp-prev">${esc(evFormatDayTime(p)) || '<span style="opacity:.5">— nieko nepasirinkta —</span>'}</div>
       <div class="tp-foot">
         <button type="button" data-clear>Išvalyti</button>
@@ -18641,18 +18688,21 @@ function evDayTimePop(inp, ev){
         <button type="button" data-ok class="tp-ok">Gerai</button>
       </div>`;
   };
+  const wheels = ()=>{ ['from','to'].forEach(k=>{ const host = m.querySelector('[data-tw="'+k+'"]'); if(!host) return;
+      const w = twWheel({ value:p[k], rows:3, empty:k==='to' && p.from ? p.from : null, onChange:v=>{ p[k] = v; apply(false); } }); host.appendChild(w.el); host.classList.toggle('off', !p[k]); }); };
   const apply = close=>{
     inp.value = evFormatDayTime(p);
     inp.dispatchEvent(new Event('input', {bubbles:true}));
     if(close){ inp.dispatchEvent(new Event('change', {bubbles:true})); evPopClose(); }
     else { const pv = m.querySelector('.dp-prev'); if(pv) pv.textContent = inp.value || '—'; }
   };
-  draw();
-  m.addEventListener('pointerdown', e=>{ if(e.target.tagName!=='SELECT' && e.target.tagName!=='OPTION') e.preventDefault(); });
+  draw(); wheels();
+  m.addEventListener('pointerdown', e=>{ if(e.target.tagName!=='SELECT' && e.target.tagName!=='OPTION' && !e.target.closest('.tw-col')) e.preventDefault(); });
   m.addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b) return;
-    if(b.dataset.mo){ ym = evShiftMonth(ym, +b.dataset.mo); draw(); }
-    else if(b.dataset.d){ p.day = p.day===b.dataset.d ? '' : b.dataset.d; draw(); apply(false); }
+    if(b.dataset.twclear){ p[b.dataset.twclear] = ''; if(b.dataset.twclear==='from') p.to = ''; draw(); wheels(); apply(false); return; }
+    if(b.dataset.mo){ ym = evShiftMonth(ym, +b.dataset.mo); draw(); wheels(); }
+    else if(b.dataset.d){ p.day = p.day===b.dataset.d ? '' : b.dataset.d; draw(); wheels(); apply(false); }
     else if(b.hasAttribute('data-clear')){ p.day = p.from = p.to = ''; apply(true); }
     else if(b.hasAttribute('data-type')){ evPopClose(); inp.setAttribute('inputmode','text'); inp.blur(); setTimeout(()=>inp.focus(), 30); }
     else if(b.hasAttribute('data-ok')){ apply(true); }
@@ -31452,6 +31502,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 20:00', v:'v224', k:'chg', t:'Laiko pasirinkimas ratukais', f:'Visur, kur renkamas laikas, – du slenkantys stulpeliai (valandos ir minutės kas 1 min.), pasirinkta eilutė paryškinta pagrindine spalva, apačioje ✓ (gerai) ir ✕ (atšaukti). Renginių lentelėje „Laikai“ ir „diena, laikas“ (Nuo / Iki) – tokie patys ratukai.' },
   { d:'2026-10-03 19:40', v:'v223', k:'new', t:'Organizatoriaus telefonas', f:'Prie organizatoriaus – telefono numeris: renginio lentelėje po organizatoriumi (su mygtuku paskambinti) ir kuriant renginį. Numeris įsimenamas – pasirinkus anksčiau įrašytą organizatorių jo telefonas įrašomas pats.' },
   { d:'2026-10-03 19:20', v:'v222', k:'new', t:'Renginiai: statusas, atsakingi, vieta, montavimai', f:'Datos stulpelis rodo renginio statusą: geltona – Nepatvirtintas (naujas renginys), žalia – Patvirtintas, raudona – Atšauktas; paspaudus atsidaro langas su data ir statusu. Renginio vietai – adresų paieška (Erdvės, anksčiau naudotos vietos, žemėlapis), organizatoriui – anksčiau įrašyti. Atsakingi rodomi „Office: …  Tech: …“, paspaudus pasirenkami iš narių arba įrašomi ranka. Daiktų rūšiavime „+ žmogus“ atidaro žmonių sąrašą. Kuriant renginį – trys skiltys: Montavimas prieš renginį, Montavimas renginio dieną ir Demontavimas su data, laiku ir A / L / V / Crew pozicijomis viename stulpelyje. Atskirų Garsas / VJ / Šviesa stulpelių nebėra, operatoriuose vietoje V/Operatorius – VJ.' },
   { d:'2026-10-03 18:45', v:'v221', k:'fix', t:'Matosi pažymėta data', f:'Kai pagrindinė spalva šviesi (pvz. balta), pažymėta data kalendoriuje ir kiti ženkliukai ant pagrindinės spalvos dabar rašomi tamsiai – tekstas visada matomas.' },
