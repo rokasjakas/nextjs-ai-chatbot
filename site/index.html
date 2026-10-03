@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-h1v20URE2hUaHkKTbXDo1au54y9/2zKsUYnWzG4YdY4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-T2kMjWYHSe1RBttd34QqutnwfvytZ55P7AaKtmKp/HA=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -14789,8 +14789,14 @@ function rpBindOpen(box, redraw){ box.querySelectorAll('[data-rpo]').forEach(r=>
    Nuomotas – automobilis, kurio nėra parke (pagal pavadinimą ar valst. nr.),
    arba įrašyta „nuoma“. */
 // what goes into the rental summary: a plate (ABC123 / ABC 123) that is not one of the company's
-// vehicles, or a truck written as „… fura“ (Areko fura, Aliaus fura); anything else is left out
+// vehicles, or a truck written with „fura“ – grouped by its owner's name (Fura Alius, 7,5m Fura Alius,
+// Aliaus fura → Alius); a line with only that name („Alius“) joins the same group
 const RP_PLATE = /(^|[^A-Za-zĄČĘĖĮŠŲŪŽąčęėįšųūž0-9])([A-Za-z]{3})[\s-]?(\d{3})(?!\d)/;
+const RP_FURA = /^fur(a|os|ą|oje|ų)$/i;
+const RP_NOISE = /^(\d.*|m|t|tn|ton\w*|kub\w*|nuom\w*|masin\w*|mašin\w*|vilkik\w*|puspriekab\w*|priekab\w*|su|ir|be|didel\w*|maž\w*|tentin\w*|šaldytuv\w*)$/i;
+// a name word without its ending: Alius / Aliaus → al, Arekas / Areko → arek
+function rpStem(w){ const n = normalizeText(w); for(const e of ['iaus','ius','aus','ias','ys','is','as','us','io','os','es','e','o','a','u']) if(n.length - e.length >= 2 && n.endsWith(e)) return n.slice(0, -e.length); return n; }
+function rpWords(t){ return String(t||'').split(/[\s,;:()\/.+\-–—]+/).map(w=>w.trim()).filter(Boolean); }
 function rpRentKey(text){
   const t = String(text||'').trim(); if(!t) return null;
   const m = t.match(RP_PLATE);
@@ -14799,8 +14805,26 @@ function rpRentKey(text){
     if((STATE.vehicles||[]).some(v=>utaNorm(v.plate)===plate)) return null;
     return { key:'p:'+plate, name:plate.slice(0,3)+' '+plate.slice(3) };
   }
-  if(/(^|[^a-ząčęėįšųūž])fur(a|os|ą|oje)(?![a-ząčęėįšųūž])/i.test(t)){ const n = t.replace(/\s+/g, ' '); return { key:'f:'+normalizeText(n), name:n.charAt(0).toUpperCase()+n.slice(1) }; }
-  return null;
+  const ws = rpWords(t);
+  if(!ws.some(w=>RP_FURA.test(w))) return null;
+  const names = ws.filter(w=>!RP_FURA.test(w) && !RP_NOISE.test(w) && /[a-ząčęėįšųūž]/i.test(w));
+  const stem = names.map(rpStem).join(' ');
+  return { key:'f:'+stem, name:'', fura:true, stem, names };
+}
+// a line with only a name: the owner of one of the trucks found
+function rpNameOnly(text){
+  const ws = rpWords(text).filter(w=>!RP_NOISE.test(w));
+  if(!ws.length || ws.length > 2 || !ws.every(w=>/^[A-Za-zĄČĘĖĮŠŲŪŽąčęėįšųūž]+$/.test(w))) return '';
+  return ws.map(rpStem).join(' ');
+}
+// the name shown for a truck owner: the nominative form when it was written (Alius rather than Aliaus)
+function rpFuraName(variants){
+  const all = Object.entries(variants).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+  const nom = all.find(n=>/(as|is|ys|us|ius|ė)$/i.test(n.split(' ').pop()));
+  // only the genitive written (Areko, Aliaus): its nominative
+  const gen = w=>w.replace(/iaus$/i, 'ius').replace(/aus$/i, 'us').replace(/([^aeiouy])o$/i, '$1as').replace(/ės$/i, 'ė');
+  const n = nom || (all[0] ? all[0].split(' ').map(gen).join(' ') : '');
+  return n ? n.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ')+' – fura' : 'Fura (savininkas neįrašytas)';
 }
 function rpEvDays(ev){
   const a = ev.date, b = ev.dateEnd && ev.dateEnd >= ev.date ? ev.dateEnd : ev.date, out = [];
@@ -14817,17 +14841,24 @@ function rpLogDate(ev, l){
   return days[0] || ev.date || '';
 }
 function rpRentData(){
-  const rows = [];
+  const rows = [], rest = [], furas = {};
   (EV.events||[]).forEach(ev=>{
     if(!ev || ev.deletedAt) return;
     (ev.logistics||[]).forEach(l=>{
       const date = rpLogDate(ev, l); if(!date || date < RP.from || date > RP.to) return;
       String(l.vehicle||'').split('\n').map(x=>x.trim()).filter(Boolean).forEach(car=>{
-        const k = rpRentKey(car); if(!k) return;
-        rows.push({ date, car, key:k.key, kname:k.name, driver:String(l.driver||'').split('\n').map(x=>x.trim()).filter(Boolean).join(', '), ev:ev.kind==='work' ? (ev.title||'Sandėlio darbai') : (ev.name||ev.title||'Renginys'), evId:ev.id, loc:String(ev.location||'').split('\n')[0] });
+        const r = { date, car, driver:String(l.driver||'').split('\n').map(x=>x.trim()).filter(Boolean).join(', '), ev:ev.kind==='work' ? (ev.title||'Sandėlio darbai') : (ev.name||ev.title||'Renginys'), evId:ev.id, loc:String(ev.location||'').split('\n')[0] };
+        const k = rpRentKey(car);
+        if(!k){ rest.push(r); return; }
+        Object.assign(r, { key:k.key, kname:k.name });
+        if(k.fura){ const f = furas[k.stem] = furas[k.stem] || {}; if(k.names.length){ const nm = k.names.join(' '); f[nm] = (f[nm]||0) + 1; } }
+        rows.push(r);
       });
     });
   });
+  // the same owner written by name only („Alius“) joins his truck
+  rest.forEach(r=>{ const st = rpNameOnly(r.car); if(st && furas[st]){ const nm = rpWords(r.car).filter(w=>!RP_NOISE.test(w)).join(' '); furas[st][nm] = (furas[st][nm]||0) + 1; rows.push(Object.assign(r, { key:'f:'+st, kname:'' })); } });
+  rows.forEach(r=>{ if(r.key.startsWith('f:')) r.kname = rpFuraName(furas[r.key.slice(2)]||{}); });
   rows.sort((a,b)=>a.date.localeCompare(b.date));
   const g = {};
   rows.forEach(r=>{ const k = r.key, x = g[k] = g[k] || { key:k, name:r.kname, rows:[], days:new Set(), evs:new Set() }; x.rows.push(r); x.days.add(r.date); x.evs.add(r.evId); });
@@ -14842,7 +14873,7 @@ function rpRentDraw(box, acts){
         ${RP.open===g.key ? `<tr class="uta-det"><td colspan="4"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Data</th><th>Renginys</th><th>Vieta</th><th>Įrašyta</th><th>Vairuotojas</th></tr></thead><tbody>
           ${g.rows.map(r=>`<tr><td>${esc(rpWhen(r.date))}</td><td>${esc(r.ev)}</td><td>${esc(r.loc)}</td><td>${esc(r.car)}</td><td>${esc(r.driver)}</td></tr>`).join('')}</tbody></table></div></td></tr>` : ''}`).join('')}
     </tbody></table></div>
-    <small class="muted">Imama iš renginių skilties „Transportas“. Įtraukiami valstybiniai numeriai (pvz. ABC123 ar ABC 123), kurių nėra įmonės transporto sąraše, ir furos (pvz. „Areko fura“).</small>`
+    <small class="muted">Imama iš renginių skilties „Transportas“. Įtraukiami valstybiniai numeriai (pvz. ABC123 ar ABC 123), kurių nėra įmonės transporto sąraše, ir furos (pvz. „Areko fura“) – sujungiamos pagal savininko vardą (Fura Alius, 7,5m fura Alius, Aliaus fura ir tiesiog „Alius“).</small>`
     : '<div class="empty-state">Šiuo laikotarpiu renginiuose nuomoto transporto nėra.</div>'}</div>`;
   rpBindOpen(box, ()=>rpRentDraw(box, acts));
   if(D.rows.length) rpActBtn(acts, ()=>rpXls('transporto_nuoma', [
@@ -16125,7 +16156,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v198';
+const APP_VER = 'v199';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
