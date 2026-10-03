@@ -5,11 +5,20 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v237';
-const SHELL = ['./index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png'];
+const CACHE = 'es-app-v238';
+const SHELL = ['./manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png'];
 
+// Cloudflare Pages redirects /index.html to /: a redirected response can't answer a page load (the browser shows
+// ERR_FAILED), so the page is taken from ./ and every saved copy is made a plain (not redirected) response
+function plain(res){
+  if(!res || !res.redirected) return Promise.resolve(res);
+  return res.blob().then(b=>new Response(b, { status:res.status, statusText:res.statusText, headers:res.headers }));
+}
+function savePage(c){
+  return fetch('./', { cache:'reload' }).then(plain).then(res=>{ if(res && res.ok) return c.put('./index.html', res); });
+}
 self.addEventListener('install', e=>{
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL.map(u=>new Request(u, { cache:'reload' })))).then(()=>self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c=>Promise.all([savePage(c), c.addAll(SHELL.map(u=>new Request(u, { cache:'reload' })))])).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate', e=>{
   e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
@@ -22,20 +31,21 @@ self.addEventListener('fetch', e=>{
   if(/\.(apk|exe|part\d+)$|\/EventSolutions-Setup\.json$/i.test(url.pathname)) return;   // app downloads: never cached (and never stored as index.html)
   // other pages (the voting page …): from the network, the saved copy only offline
   if(req.mode==='navigate' && !/\/(index\.html)?$/.test(url.pathname)){
-    e.respondWith(fetch(req).then(res=>{ if(res.ok){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put(url.pathname, copy)); } return res; }).catch(()=>caches.match(url.pathname)));
+    e.respondWith(fetch(req).then(res=>{ if(res.ok && !res.redirected){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put(url.pathname, copy)); } return res; }).catch(()=>caches.match(url.pathname).then(plain)));
     return;
   }
   // the app itself: the saved copy opens at once (no waiting for the network, no 1 MB download each start).
   // Each release ships a new worker that saves the new page when it installs; the open app then offers to reload.
   if(req.mode==='navigate'){
-    e.respondWith(caches.match('./index.html').then(saved=>saved || fetch(req).then(res=>{
-      if(res.ok){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put('./index.html', copy)); }
+    const net = ()=>fetch(req).then(res=>{
+      if(res.ok && !res.redirected){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put('./index.html', copy)); }
       return res;
-    })));
+    });
+    e.respondWith(caches.match('./index.html').then(saved=>saved && saved.ok ? plain(saved) : net()).catch(()=>net()));
     return;
   }
-  e.respondWith(caches.match(req).then(hit=>hit || fetch(req).then(res=>{
-    if(res.ok){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put(req, copy)); }
+  e.respondWith(caches.match(req).then(hit=>hit ? plain(hit) : fetch(req).then(res=>{
+    if(res.ok && !res.redirected){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put(req, copy)); }
     return res;
   })));
 });
