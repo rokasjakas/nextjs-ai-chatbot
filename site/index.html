@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-n3tzEs3CHpm8w7XHfdNVLXspoQc/5qkktu28SC4YnkI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-H/wF+bSUOFRRFHF8njQb/99k2peCEdqwOJ6oRHJIN4c=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -1298,6 +1298,24 @@ tr.xg-folded .xg-date-ico{display:none;}
 .ven-form{display:flex;flex-direction:column;gap:10px;}
 .ven-form input,.ven-form textarea,.ven-form select{width:100%;min-width:0;}
 .ven-form textarea{resize:vertical;}
+.ven-sps{display:flex;flex-direction:column;gap:8px;}
+.ven-spe, .ven-sp{border:1px solid var(--border);border-radius:var(--radius,8px);background:var(--panel-2);}
+.ven-spe > summary, .ven-sp > summary{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;list-style:none;}
+.ven-spe > summary::-webkit-details-marker, .ven-sp > summary::-webkit-details-marker{display:none;}
+.ven-spe > summary::before, .ven-sp > summary::before{content:'▸';color:var(--text-dim);transition:transform .15s;} .ven-spe[open] > summary::before, .ven-sp[open] > summary::before{transform:rotate(90deg);}
+.ven-spe > summary b, .ven-sp > summary b{font-size:14.5px;} .ven-spe > summary small, .ven-sp > summary small{color:var(--text-dim);font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ven-spa{display:flex;gap:2px;margin-left:auto;} .ven-spa button{width:28px;height:28px;border:0;border-radius:var(--radius,6px);background:transparent;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.ven-spa button:hover:not(:disabled){background:rgb(var(--hi-rgb) / .08);color:var(--text);} .ven-spa button:disabled{opacity:.3;cursor:default;} .ven-spa svg{width:16px;height:16px;}
+.ven-spc{margin-left:auto;font-size:12px;color:var(--text-dim);white-space:nowrap;}
+.ven-spf{display:flex;flex-direction:column;gap:8px;padding:2px 12px 12px;}
+.ven-sp > .ven-gallery, .ven-sp > .ven-fields{margin:0 12px 10px;}
+.ven-dims{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;} @media(max-width:640px){ .ven-dims{grid-template-columns:repeat(2,minmax(0,1fr));} }
+.ven-spl{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--text-dim);margin-top:4px;}
+.ven-plans{display:flex;flex-direction:column;gap:4px;}
+.ven-plan{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius,6px);font-size:13px;}
+.ven-plan b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;} .ven-plan small{color:var(--text-dim);}
+.ven-plan button{border:0;background:none;color:var(--text-dim);cursor:pointer;font-size:16px;} .ven-plan button:hover{color:var(--danger);}
+.ven-spv{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
 .ven-sec{font-family:var(--font-head);font-size:18px;text-transform:uppercase;letter-spacing:.3px;color:#E07A5F;margin-top:6px;border-bottom:1px solid var(--border);padding-bottom:3px;}
 .ven-edit-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;}
 .ven-ep{position:relative;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;background:#141416;}
@@ -17615,7 +17633,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v252';
+const APP_VER = 'v253';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -23187,6 +23205,26 @@ function venNew(){
   return { id:uid('ven'), name:'', address:'', access:'', unloading:'', power:'', smoke:'', smokeNote:'', lift:'', liftNote:'', stairs:'',
     ceiling:'', rigging:'', tour3d:'', contactName:'', phone:'', email:'', notes:'', photos:[], createdAt:new Date().toISOString() };
 }
+/* a place (e.g. Valdovų rūmai) has several spaces (halls, yards…), each with its own sizes, power, photos and plans */
+const VEN_TECH = ['power','smoke','smokeNote','lift','liftNote','stairs','ceiling','rigging'];
+function venSpaceNew(name){ return { id:uid('sp'), name:name||'', len:'', wid:'', hei:'', area:'', capacity:'', power:'', smoke:'', smokeNote:'', lift:'', liftNote:'', stairs:'', rigging:'', tour3d:'', notes:'', photos:[], plans:[] }; }
+// the spaces of a place; an older entry (its technical data on the place itself) shows them as its first space
+function venSpacesOf(v){
+  if(Array.isArray(v.spaces)) return v.spaces;
+  if(!VEN_TECH.some(k=>v[k])) return [];
+  return [Object.assign(venSpaceNew('Pagrindinė erdvė'), { power:v.power||'', smoke:v.smoke||'', smokeNote:v.smokeNote||'', lift:v.lift||'', liftNote:v.liftNote||'', stairs:v.stairs||'', rigging:v.rigging||'', hei:v.ceiling||'', tour3d:'' })];
+}
+function venMigrate(v){ if(!Array.isArray(v.spaces)){ v.spaces = venSpacesOf(v).map(s=>Object.assign({}, s)); VEN_TECH.forEach(k=>{ delete v[k]; }); } return v; }
+function venNum(x){ const n = parseFloat(String(x||'').replace(',', '.')); return isFinite(n) ? n : null; }
+function venArea(s){ if(venNum(s.area)!=null) return venNum(s.area); const l = venNum(s.len), w = venNum(s.wid); return l!=null && w!=null ? Math.round(l*w*10)/10 : null; }
+function venDims(s){
+  const d = [s.len, s.wid, s.hei].map(x=>String(x||'').trim()), a = venArea(s), out = [];
+  if(d[0] || d[1]) out.push((d[0]||'?')+' × '+(d[1]||'?')+(d[2] ? ' × '+d[2] : '')+' m');
+  else if(d[2]) out.push('aukštis '+d[2]+(/m\s*$/.test(d[2]) ? '' : ' m'));
+  if(a!=null) out.push(String(a).replace('.', ',')+' m²');
+  if(s.capacity) out.push('iki '+s.capacity+' žm.');
+  return out.join(' · ');
+}
 async function venLoad(force){
   if(VEN.loaded && !force) return;
   try{ const c = JSON.parse(localStorage.getItem('venCache')||'null'); if(c && !VEN.loaded) VEN.list = c; }catch(e){}
@@ -23217,7 +23255,7 @@ async function venDelete(v){
   if(sb){
     const { error } = await sb.from('venues').delete().eq('id', v.id);
     if(error){ toast('Nepavyko ištrinti: '+error.message); return false; }
-    const paths = (v.photos||[]).map(p=>p.path);
+    const paths = (v.photos||[]).map(p=>p.path).concat(...venSpacesOf(v).map(s=>(s.photos||[]).concat(s.plans||[]).map(p=>p.path)));
     if(paths.length) await stFrom(VEN_BUCKET).remove(paths);
   }
   VEN.list = VEN.list.filter(x=>x.id!==v.id);
@@ -23236,8 +23274,8 @@ async function venShrink(file){
   const blob = await new Promise(r=>c.toBlob(r, 'image/jpeg', 0.82));
   return { blob, w:c.width, h:c.height };
 }
-async function venUpload(v, files, onProgress){
-  const sb = getSb(); if(!sb) return 0;
+async function venUpload(v, files, onProgress, into){
+  const sb = getSb(); if(!sb) return 0; into = into || v;
   let done = 0;
   for(const f of files){
     if(!/^image\//.test(f.type)) continue;
@@ -23247,11 +23285,32 @@ async function venUpload(v, files, onProgress){
       const path = v.id+'/'+uid('p')+'.jpg';
       const { error } = await stFrom(VEN_BUCKET).upload(path, blob, { contentType:'image/jpeg', upsert:false });
       if(error){ toast('Nuotraukos įkelti nepavyko: '+error.message); continue; }
-      (v.photos = v.photos||[]).push({ path, w, h, name:f.name, addedAt:new Date().toISOString() });
+      (into.photos = into.photos||[]).push({ path, w, h, name:f.name, addedAt:new Date().toISOString() });
       done++;
     }catch(e){ toast('Nepavyko apdoroti '+f.name); }
   }
   return done;
+}
+// plans: any file (PDF, picture, drawing) kept as it is
+async function venUploadPlans(v, sp, files, onProgress){
+  let done = 0;
+  for(const f of files){
+    onProgress && onProgress(done+1, files.length);
+    if(f.size > 50*1024*1024){ toast('„'+f.name+'“ per didelis (iki 50 MB).'); continue; }
+    const ext = (String(f.name).match(/\.([A-Za-z0-9]{1,8})$/)||[])[1];
+    const path = v.id+'/plans/'+uid('f')+(ext ? '.'+ext.toLowerCase() : '');
+    const { error } = await stFrom(VEN_BUCKET).upload(path, f, { contentType:f.type||'application/octet-stream', upsert:false });
+    if(error){ toast('Plano įkelti nepavyko: '+error.message); continue; }
+    (sp.plans = sp.plans||[]).push({ path, name:String(f.name).slice(0,200), size:f.size, mime:f.type||'', addedAt:new Date().toISOString() });
+    done++;
+  }
+  return done;
+}
+async function venOpenFile(p){
+  const { data, error } = await stFrom(VEN_BUCKET).createSignedUrl(p.path, 600, { download:p.name||true });
+  if(error || !data){ toast('Nepavyko atidaryti: '+(error ? error.message : '')); return; }
+  const a = document.createElement('a'); a.href = data.signedUrl; a.rel = 'noopener'; a.target = '_blank'; a.download = p.name||'';
+  document.body.appendChild(a); a.click(); a.remove();
 }
 async function venPhotoUrls(paths){
   const now = Date.now();
@@ -23320,11 +23379,17 @@ function venLightbox(v, start){
 function venMatches(v, q){
   const t = normalizeText(q).split(' ').filter(Boolean);
   if(!t.length) return true;
-  const h = ' '+normalizeText([v.name, v.address, v.access, v.contactName, v.phone, v.email, v.notes, v.power, v.unloading].join(' '))+' ';
+  const h = ' '+normalizeText([v.name, v.address, v.access, v.contactName, v.phone, v.email, v.notes, v.power, v.unloading].concat(venSpacesOf(v).map(s=>[s.name, s.power, s.notes].join(' '))).join(' '))+' ';
   return t.every(x=>h.includes(x));
 }
 function venBadges(v){
-  const b = [];
+  const b = [], sps = venSpacesOf(v);
+  if(Array.isArray(v.spaces)){
+    if(sps.length) b.push(`<span class="ven-b" title="${esc(sps.map(s=>s.name||'Erdvė').join(', '))}">🏛 ${sps.length} ${sps.length===1 ? 'erdvė' : sps.length < 10 ? 'erdvės' : 'erdvių'}</span>`);
+    const ph = (v.photos||[]).length + sps.reduce((a,s)=>a+(s.photos||[]).length, 0), pl = sps.reduce((a,s)=>a+(s.plans||[]).length, 0);
+    if(ph) b.push(`<span class="ven-b">📷 ${ph}</span>`); if(pl) b.push(`<span class="ven-b">📐 ${pl} plan.</span>`);
+    return b.join('');
+  }
   if(v.power) b.push(`<span class="ven-b" title="Elektra">⚡ ${esc(String(v.power).split('\n')[0].slice(0,40))}</span>`);
   if(v.smoke) b.push(`<span class="ven-b smoke-${esc(v.smoke)}" title="Dūmai">${v.smoke==='taip'?'💨 Dūmai galima':v.smoke==='ne'?'🚭 Dūmų negalima':'💨 Dūmai — derinti'}</span>`);
   if(v.lift) b.push(`<span class="ven-b" title="Liftas">${v.lift==='nera'?'🪜 Tik laiptai':'🛗 '+(v.lift==='kroviniu'?'Krovininis liftas':'Liftas')}</span>`);
@@ -23358,7 +23423,7 @@ function renderVenueList(){
     return;
   }
   el.innerHTML = rows.map(v=>{
-    const ph = (v.photos||[])[0];
+    const ph = (v.photos||[])[0] || venSpacesOf(v).map(s=>(s.photos||[])[0]).find(Boolean);
     return `<button class="ven-card" data-ven="${esc(v.id)}">
       <div class="ven-thumb">${ph ? `<img data-photo="${esc(ph.path)}" alt="" loading="lazy">` : '<span>🏛</span>'}</div>
       <div class="ven-main">
@@ -23380,7 +23445,7 @@ function openVenueView(v){
   if(!v) return;
   const tel = v.phone ? v.phone.replace(/[^\d+]/g,'') : '';
   const map = v.address ? 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(v.address) : '';
-  const smoke = VEN_SMOKE.find(s=>s[0]===v.smoke), lift = VEN_LIFT.find(s=>s[0]===v.lift);
+  const spaces = venSpacesOf(v);
   openModal(`
     <div class="ven-view">
       <div class="row between" style="gap:10px;align-items:flex-start;">
@@ -23398,12 +23463,22 @@ function openVenueView(v){
         ${venField('Adresas', venText(v.address))}
         ${venField('Patekimas', venText(v.access))}
         ${venField('Privažiavimas / iškrovimas', venText(v.unloading))}
-        ${venField('Elektra', venText(v.power))}
-        ${venField('Dūmai / haze', smoke && v.smoke ? `<b class="smoke-${esc(v.smoke)}">${esc(smoke[1])}</b>${v.smokeNote?'<br>'+venText(v.smokeNote):''}` : venText(v.smokeNote))}
-        ${venField('Liftas', lift && v.lift ? `<b>${esc(lift[1])}</b>${v.liftNote?'<br>'+venText(v.liftNote):''}` : venText(v.liftNote))}
-        ${venField('Laiptai', venText(v.stairs))}
-        ${venField('Lubų aukštis', venText(v.ceiling))}
-        ${venField('Kabinimo taškai', venText(v.rigging))}
+      </div>
+      ${spaces.length ? `<div class="ven-sec">Erdvės (${spaces.length})</div><div class="ven-spv">${spaces.map((s, si)=>{ const sm = VEN_SMOKE.find(x=>x[0]===s.smoke), lf = VEN_LIFT.find(x=>x[0]===s.lift), dims = venDims(s);
+        return `<details class="ven-sp" ${spaces.length===1 ? 'open' : ''}><summary><b>${esc(s.name||'Erdvė '+(si+1))}</b>${dims ? `<small>${esc(dims)}</small>` : ''}<span class="ven-spc">${(s.photos||[]).length ? '📷 '+s.photos.length : ''}${(s.plans||[]).length ? ' 📐 '+s.plans.length : ''}</span></summary>
+          ${(s.photos||[]).length ? `<div class="ven-gallery">${s.photos.map((p,i)=>`<button class="ven-ph" data-sp="${si}" data-i="${i}"><img data-photo="${esc(p.path)}" alt=""></button>`).join('')}</div>` : ''}
+          <div class="ven-fields">
+            ${venField('Išmatavimai', esc(dims))}
+            ${venField('Elektra', venText(s.power))}
+            ${venField('Dūmai / haze', sm && s.smoke ? `<b class="smoke-${esc(s.smoke)}">${esc(sm[1])}</b>${s.smokeNote?'<br>'+venText(s.smokeNote):''}` : venText(s.smokeNote))}
+            ${venField('Liftas', lf && s.lift ? `<b>${esc(lf[1])}</b>${s.liftNote?'<br>'+venText(s.liftNote):''}` : venText(s.liftNote))}
+            ${venField('Laiptai', venText(s.stairs))}
+            ${venField('Kabinimo taškai', venText(s.rigging))}
+            ${venField('3D turas', s.tour3d ? `<a href="${esc(/^https?:\/\//i.test(s.tour3d)?s.tour3d:'https://'+s.tour3d)}" target="_blank" rel="noopener">Atidaryti 3D turą</a>` : '')}
+            ${venField('Planai', (s.plans||[]).length ? `<span class="ven-plans">${s.plans.map((p,i)=>`<button type="button" class="chat-file" data-plan="${si}:${i}"><span class="chat-file-ic">${chatFileIcon(p.name, p.mime)}</span><span class="chat-file-t"><b>${esc(p.name||'planas')}</b><small>${esc(chatSize(p.size))} · atidaryti</small></span></button>`).join('')}</span>` : '')}
+            ${venField('Pastabos', venText(s.notes))}
+          </div></details>`; }).join('')}</div>` : ''}
+      <div class="ven-fields">
         ${venField('Kontaktinis asmuo', venText(v.contactName))}
         ${venField('Telefonas', tel ? `<a href="tel:${esc(tel)}">${esc(v.phone)}</a>` : '')}
         ${venField('El. paštas', v.email ? `<a href="mailto:${esc(v.email)}">${esc(v.email)}</a>` : '')}
@@ -23416,12 +23491,14 @@ function openVenueView(v){
   document.getElementById('vv_x').onclick = closeModal;
   const ed = document.getElementById('vv_edit');
   if(ed) ed.onclick = ()=>openVenueEdit(JSON.parse(JSON.stringify(v)), false);
-  document.querySelectorAll('#modalRoot .ven-ph').forEach(b=>b.onclick = ()=>venLightbox(v, +b.dataset.i));
+  document.querySelectorAll('#modalRoot .ven-ph').forEach(b=>b.onclick = ()=>venLightbox(b.dataset.sp!=null ? spaces[+b.dataset.sp] : v, +b.dataset.i));
+  document.querySelectorAll('#modalRoot [data-plan]').forEach(b=>b.onclick = ()=>{ const [si, i] = b.dataset.plan.split(':').map(Number); const p = (spaces[si].plans||[])[i]; if(p) venOpenFile(p); });
   venFillPhotos(document.getElementById('modalRoot'));
 }
 
 /* ---------- edit (pop-up, saved with „Išsaugoti“) ---------- */
 function openVenueEdit(v, isNew){
+  venMigrate(v);
   const opt = (list, cur)=>list.map(([k,l])=>`<option value="${k}" ${k===(cur||'')?'selected':''}>${l}</option>`).join('');
   const ta = (k, label, ph, rows)=>`<label class="field">${label}<textarea data-k="${k}" rows="${rows||2}" placeholder="${esc(ph||'')}">${esc(v[k]||'')}</textarea></label>`;
   const inp = (k, label, ph, type)=>`<label class="field">${label}<input type="${type||'text'}" data-k="${k}" value="${esc(v[k]||'')}" placeholder="${esc(ph||'')}"></label>`;
@@ -23433,20 +23510,11 @@ function openVenueEdit(v, isNew){
       ${inp('address','Adresas','Laisvės pr. 5, Vilnius')}
       ${ta('access','Patekimas','Įėjimas, raktai / apsauga, darbo laikas, leidimai…',3)}
       ${ta('unloading','Privažiavimas / iškrovimas','Kur privažiuoja fura / busas, rampa, parkavimas…',2)}
-      <div class="ven-sec">Techninė informacija</div>
-      ${ta('power','Elektra','pvz. 3× 32A CEE, 1× 63A, skydas prie scenos (atstumas ~20 m)',3)}
-      <div class="grid cols-2" style="gap:8px;">
-        <label class="field">Dūmai / haze<select data-k="smoke">${opt(VEN_SMOKE, v.smoke)}</select></label>
-        ${inp('smokeNote','Pastaba dėl dūmų','pvz. išjungti detektorius per apsaugą')}
-        <label class="field">Liftas<select data-k="lift">${opt(VEN_LIFT, v.lift)}</select></label>
-        ${inp('liftNote','Lifto matmenys / keliamoji galia','pvz. 2×1,5 m, 1000 kg')}
-      </div>
-      ${ta('stairs','Laiptai','pvz. 2 aukštas, 30 laiptelių, siauri posūkiai',2)}
-      <div class="grid cols-2" style="gap:8px;">
-        ${inp('ceiling','Lubų aukštis','pvz. 6 m')}
-        ${inp('rigging','Kabinimo taškai','pvz. 8 taškai po 500 kg')}
-      </div>
-      ${inp('tour3d','Nuoroda į 3D turą','https://…', 'url')}
+      ${inp('tour3d','Nuoroda į 3D turą (visos vietos)','https://…', 'url')}
+      <div class="ven-sec">Erdvės</div>
+      <div class="section-sub" style="margin:-4px 0 2px;">Salės, kiemai, terasos… Kiekviena erdvė – su savo išmatavimais, elektra, nuotraukomis ir planais.</div>
+      <div id="ve_spaces" class="ven-sps"></div>
+      <button type="button" class="btn" id="ve_spAdd" style="justify-content:center;">${slIcon('plus')} Pridėti erdvę</button>
       <div class="ven-sec">Kontaktai</div>
       <div class="grid cols-2" style="gap:8px;">
         ${inp('contactName','Kontaktinis asmuo','Vardas Pavardė')}
@@ -23454,7 +23522,7 @@ function openVenueEdit(v, isNew){
       </div>
       ${inp('email','El. paštas','vardas@imone.lt','email')}
       ${ta('notes','Papildoma informacija','Viskas, kas dar svarbu komandai',3)}
-      <div class="ven-sec">Nuotraukos</div>
+      <div class="ven-sec">Bendros nuotraukos</div>
       <div class="ven-edit-photos" id="ve_photos"></div>
       <label class="btn" style="cursor:pointer;justify-content:center;">📷 Pridėti nuotraukų<input type="file" id="ve_files" accept="image/*" multiple style="display:none;"></label>
       <div id="ve_prog" class="section-sub" style="margin:4px 0 0;"></div>
@@ -23474,7 +23542,59 @@ function openVenueEdit(v, isNew){
     venFillPhotos(box);
   };
   drawPhotos();
-  const collect = ()=>{ root.querySelectorAll('[data-k]').forEach(f=>{ v[f.dataset.k] = f.value.trim(); }); };
+  // the spaces: drawn from v.spaces; what is typed is read back before every redraw and on save
+  const spBox = document.getElementById('ve_spaces'), openSp = new Set(v.spaces.length===1 ? [v.spaces[0].id] : []);
+  const spRead = ()=>{ spBox.querySelectorAll('[data-sk]').forEach(f=>{ const [i, k] = f.dataset.sk.split(':'); const s = v.spaces[+i]; if(s) s[k] = f.value.trim(); });
+    spBox.querySelectorAll('details.ven-spe').forEach(d=>{ const s = v.spaces[+d.dataset.si]; if(s){ if(d.open) openSp.add(s.id); else openSp.delete(s.id); } }); };
+  const spInp = (i, k, label, ph, type)=>`<label class="field">${label}<input type="${type||'text'}" data-sk="${i}:${k}" value="${esc(v.spaces[i][k]||'')}" placeholder="${esc(ph||'')}"></label>`;
+  const spTa = (i, k, label, ph, rows)=>`<label class="field">${label}<textarea data-sk="${i}:${k}" rows="${rows||2}" placeholder="${esc(ph||'')}">${esc(v.spaces[i][k]||'')}</textarea></label>`;
+  const drawSpaces = ()=>{
+    spBox.innerHTML = v.spaces.map((s, i)=>`<details class="ven-spe" data-si="${i}" ${openSp.has(s.id) ? 'open' : ''}>
+      <summary><b>${esc(s.name||'Nauja erdvė')}</b><small>${esc(venDims(s))}</small><span class="ven-spa">
+        <button type="button" data-spmv="${i}:-1" title="Aukštyn" ${i===0?'disabled':''}>${slIcon('arrowup')}</button><button type="button" data-spmv="${i}:1" title="Žemyn" ${i===v.spaces.length-1?'disabled':''}>${slIcon('arrowdown')}</button><button type="button" data-sprm="${i}" title="Pašalinti erdvę">${slIcon('close')}</button></span></summary>
+      <div class="ven-spf">
+        ${spInp(i,'name','Erdvės pavadinimas *','pvz. Didžioji salė, Kiemas, Terasa')}
+        <div class="ven-dims">${spInp(i,'len','Ilgis, m','30')}${spInp(i,'wid','Plotis, m','20')}${spInp(i,'hei','Aukštis (lubos), m','6')}${spInp(i,'area','Plotas, m²', String(venArea(Object.assign({}, s, {area:''}))||'apskaičiuojamas'))}${spInp(i,'capacity','Talpa, žm.','300')}</div>
+        ${spTa(i,'power','Elektra','pvz. 3× 32A CEE, 1× 63A, skydas prie scenos (atstumas ~20 m)',2)}
+        <div class="grid cols-2" style="gap:8px;">
+          <label class="field">Dūmai / haze<select data-sk="${i}:smoke">${opt(VEN_SMOKE, s.smoke)}</select></label>
+          ${spInp(i,'smokeNote','Pastaba dėl dūmų','pvz. išjungti detektorius per apsaugą')}
+          <label class="field">Liftas<select data-sk="${i}:lift">${opt(VEN_LIFT, s.lift)}</select></label>
+          ${spInp(i,'liftNote','Lifto matmenys / keliamoji galia','pvz. 2×1,5 m, 1000 kg')}
+        </div>
+        <div class="grid cols-2" style="gap:8px;">${spInp(i,'stairs','Laiptai','pvz. 2 aukštas, 30 laiptelių')}${spInp(i,'rigging','Kabinimo taškai','pvz. 8 taškai po 500 kg')}</div>
+        ${spInp(i,'tour3d','3D turas (šios erdvės)','https://…','url')}
+        ${spTa(i,'notes','Pastabos','Kas dar svarbu apie šią erdvę',2)}
+        <div class="ven-spl">Nuotraukos</div>
+        <div class="ven-edit-photos">${(s.photos||[]).map((p,j)=>`<div class="ven-ep"><img data-photo="${esc(p.path)}" alt=""><button type="button" data-sprmph="${i}:${j}" title="Pašalinti">×</button></div>`).join('') || '<div class="section-sub" style="margin:0;">Nuotraukų nėra.</div>'}</div>
+        <div class="ven-spl">Planai</div>
+        <div class="ven-plans">${(s.plans||[]).map((p,j)=>`<span class="ven-plan"><span class="chat-file-ic">${chatFileIcon(p.name, p.mime)}</span><b>${esc(p.name||'planas')}</b><small>${esc(chatSize(p.size))}</small><button type="button" data-sprmpl="${i}:${j}" title="Pašalinti">×</button></span>`).join('') || '<div class="section-sub" style="margin:0;">Planų nėra.</div>'}</div>
+        <div class="row" style="gap:6px;flex-wrap:wrap;">
+          <label class="btn small" style="cursor:pointer;">📷 Pridėti nuotraukų<input type="file" accept="image/*" multiple hidden data-spph="${i}"></label>
+          <label class="btn small" style="cursor:pointer;">📐 Pridėti planą (PDF, nuotrauka, brėžinys)<input type="file" multiple hidden data-sppl="${i}"></label>
+          <span class="section-sub" data-spprog="${i}" style="margin:0;"></span></div>
+      </div></details>`).join('') || '<div class="section-sub" style="margin:0;">Erdvių dar nėra. Spausk „Pridėti erdvę“.</div>';
+    spBox.querySelectorAll('[data-spmv]').forEach(b=>b.onclick = e=>{ e.preventDefault(); spRead(); const [i, d] = b.dataset.spmv.split(':').map(Number); const j = i+d; if(j<0 || j>=v.spaces.length) return; [v.spaces[i], v.spaces[j]] = [v.spaces[j], v.spaces[i]]; drawSpaces(); });
+    spBox.querySelectorAll('[data-sprm]').forEach(b=>b.onclick = async e=>{ e.preventDefault(); spRead(); const s = v.spaces[+b.dataset.sprm];
+      if(!(await uiConfirm('Pašalinti erdvę „'+(s.name||'Nauja erdvė')+'“ su jos nuotraukomis ir planais?'))) return;
+      (s.photos||[]).concat(s.plans||[]).forEach(p=>removed.push(p.path)); v.spaces.splice(+b.dataset.sprm, 1); drawSpaces(); });
+    spBox.querySelectorAll('[data-sprmph]').forEach(b=>b.onclick = ()=>{ spRead(); const [i, j] = b.dataset.sprmph.split(':').map(Number); removed.push(v.spaces[i].photos[j].path); v.spaces[i].photos.splice(j, 1); drawSpaces(); });
+    spBox.querySelectorAll('[data-sprmpl]').forEach(b=>b.onclick = ()=>{ spRead(); const [i, j] = b.dataset.sprmpl.split(':').map(Number); removed.push(v.spaces[i].plans[j].path); v.spaces[i].plans.splice(j, 1); drawSpaces(); });
+    spBox.querySelectorAll('input[type=file][data-spph], input[type=file][data-sppl]').forEach(inp=>inp.addEventListener('change', async e=>{
+      const files = Array.from(e.target.files||[]); e.target.value = ''; if(!files.length) return;
+      spRead(); const i = +(inp.dataset.spph ?? inp.dataset.sppl), s = v.spaces[i], prog = spBox.querySelector(`[data-spprog="${i}"]`), pr = (n, all)=>{ if(prog) prog.textContent = 'Įkeliama '+n+' / '+all+'…'; };
+      const before = (inp.dataset.spph!=null ? s.photos : s.plans)||[], was = before.length;
+      if(inp.dataset.spph!=null) await venUpload(v, files, pr, s); else await venUploadPlans(v, s, files, pr);
+      ((inp.dataset.spph!=null ? s.photos : s.plans)||[]).slice(was).forEach(p=>uploaded.push(p.path));
+      drawSpaces(); }));
+    spBox.querySelectorAll('[data-sk$=":name"],[data-sk$=":len"],[data-sk$=":wid"],[data-sk$=":hei"],[data-sk$=":area"],[data-sk$=":capacity"]').forEach(f=>f.addEventListener('input', ()=>{ spRead(); const d = f.closest('details'), s = v.spaces[+d.dataset.si];
+      d.querySelector('summary b').textContent = s.name || 'Nauja erdvė'; d.querySelector('summary small').textContent = venDims(s); }));
+    venFillPhotos(spBox);
+  };
+  drawSpaces();
+  document.getElementById('ve_spAdd').onclick = ()=>{ spRead(); const s = venSpaceNew(''); v.spaces.push(s); openSp.add(s.id); drawSpaces();
+    const d = spBox.querySelector(`details[data-si="${v.spaces.length-1}"]`); if(d){ d.scrollIntoView({ block:'nearest', behavior:'smooth' }); const n = d.querySelector('[data-sk$=":name"]'); if(n) n.focus(); } };
+  const collect = ()=>{ root.querySelectorAll('[data-k]').forEach(f=>{ v[f.dataset.k] = f.value.trim(); }); spRead(); v.spaces.forEach((s, i)=>{ if(!s.name) s.name = 'Erdvė '+(i+1); }); };
   document.getElementById('ve_files').addEventListener('change', async e=>{
     const files = Array.from(e.target.files||[]); e.target.value = '';
     if(!files.length) return;
@@ -32417,6 +32537,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 23:10', v:'v253', k:'new', t:'Erdvės: vieta su keliomis erdvėmis', f:'Erdvių skiltyje vieta (pvz. Valdovų rūmai) dabar turi pagrindinę informaciją (adresas, patekimas, iškrovimas, kontaktai, bendros nuotraukos) ir atskiras erdves – „+ Pridėti erdvę“. Kiekvienai erdvei: pavadinimas, išmatavimai (ilgis × plotis × aukštis, plotas skaičiuojamas pats), talpa, elektra, dūmai, liftas, laiptai, kabinimo taškai, 3D turas, pastabos, nuotraukos ir planai (PDF, nuotraukos, brėžiniai). Ankstesnių įrašų techniniai duomenys tapo pirmąja erdve „Pagrindinė erdvė“.' },
   { d:'2026-10-03 22:57', v:'v252', k:'chg', t:'Sticky note kaip puslapio kortelė', f:'Prisegti užrašai pradžios puslapyje dabar atrodo kaip kitos kortelės – ta pati spalva, apvadas, kampai, šriftai (su stiklo efektu, jei jis įjungtas). Geltona juostelė viršuje rodo, kad tai prisegtas užrašas.' },
   { d:'2026-10-03 22:54', v:'v251', k:'new', t:'Notes: atskiri užrašai ir sticky notes', f:'Užduotys → Notes: „+ Naujas užrašas“ – pavadinimas, data ir užrašas, išsaugoma paspaudus „Saugoti“. Užrašų sąrašas, paspaudus – redaguoti arba ištrinti. Pažymėjus „Prisegti pagrindiniame lange“ užrašas tampa geltonu sticky note pradžios puslapyje – jį galima tempti į bet kurią vietą (vieta įsimenama), redaguoti ir atsegti. Ankstesnis užrašas tapo pirmuoju sąraše. Užrašus mato tik tu.' },
   { d:'2026-10-03 22:50', v:'v250', k:'fix', t:'Atnaujinimų laikai', f:'Atnaujinimų sąraše laikai dabar tikri – kada pakeitimas iš tikrųjų buvo išleistas (Lietuvos laiku).' },
