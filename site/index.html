@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-T0Qny/aZUl1HtTmtnZ4HJloG2wDcy6mb6djHwlpBgoQ=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-rqEQJZsRdLRkK3itjjyPyHUrOmgAvY50sEEutHhk+9k=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -17741,7 +17741,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v263';
+const APP_VER = 'v264';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24650,10 +24650,24 @@ function mlRemember(folder, uid, m){ MAIL.cache.set(mlKey(folder, uid), m); if(M
 // logs in to the mail server anew, and several at once make it stall.
 // A click made while another letter is still loading waits its turn; if the
 // user has clicked something else meanwhile, the older click is skipped.
+// the newest letters' text is kept in the database by the mail function (mail_bodies): taken from there at once;
+// only the others are read from the mail server
+async function mlFromDb(folder, uid){
+  if(MAIL.noBodies) return null;
+  try{
+    const sb = getSb(), me = teamMe(); if(!sb || !me) return null;
+    const q = sb.from('mail_bodies').select('data').eq('user_id', me).eq('folder', folder).eq('uid', uid).maybeSingle();
+    const { data, error } = await Promise.race([q, new Promise(r=>setTimeout(()=>r({ data:null, error:{ message:'timeout' } }), 6000))]);
+    if(error){ if(/mail_bodies|relation|schema cache|does not exist/i.test(error.message||'')) MAIL.noBodies = true; return null; }
+    return data && data.data && data.data.uid ? Object.assign({}, data.data, { _db:true }) : null;
+  }catch(e){ return null; }
+}
 function mlReadOne(folder, uid, req){
-  const run = (MAIL.readChain || Promise.resolve()).then(()=>{
+  const run = (MAIL.readChain || Promise.resolve()).then(async ()=>{
     if(req!==MAIL.openReq) return null;
     const hit = MAIL.cache.get(mlKey(folder, uid)); if(hit) return hit;
+    const kept = await mlFromDb(folder, uid); if(kept) return kept;
+    if(req!==MAIL.openReq) return null;
     return mailCall({ action:'read', folder, uid });
   });
   MAIL.readChain = run.catch(()=>{});
@@ -24662,7 +24676,9 @@ function mlReadOne(folder, uid, req){
 async function mlPrefetch(folder, uid){
   const k = mlKey(folder, uid); if(MAIL.cache.has(k) || (MAIL.pf||{})[k] || MAIL.opening) return;
   MAIL.pf = MAIL.pf || {}; MAIL.pf[k] = true;
-  try{ const m = await mailCall({ action:'read', folder, uid, peek:true }); if(m && m.uid) mlRemember(folder, uid, m); }catch(e){}
+  try{ const kept = await mlFromDb(folder, uid); if(kept){ mlRemember(folder, uid, kept); delete MAIL.pf[k]; return; }
+    if(!MAIL.noBodies){ delete MAIL.pf[k]; return; }      // the mail function keeps them: no extra logins to the mail server
+    const m = await mailCall({ action:'read', folder, uid, peek:true }); if(m && m.uid) mlRemember(folder, uid, m); }catch(e){}
   delete MAIL.pf[k];
 }
 async function mlPrefetchSome(items){
@@ -24694,7 +24710,8 @@ async function mailOpen(uid, row, fromFolder){
   }
   let m = cached;
   try{
-    if(!cached){ MAIL.opening = true; try{ m = await mlReadOne(folder, uid, req); } finally{ MAIL.opening = false; } if(!m) return; mlRemember(folder, uid, m); }
+    if(!cached){ MAIL.opening = true; try{ m = await mlReadOne(folder, uid, req); } finally{ MAIL.opening = false; } if(!m) return; mlRemember(folder, uid, m);
+      if(m._db && wasUnseen) mailCall({ action:'seen', folder, uid, seen:true }).catch(()=>{}); }
     else if(wasUnseen) mailCall({ action:'seen', folder, uid, seen:true }).catch(()=>{});
   }catch(e){
     if(req!==MAIL.openReq) return;
@@ -32647,6 +32664,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 00:21', v:'v264', k:'fix', t:'El. paštas: laiškai atsidaro iš karto', f:'Naujausių laiškų turinys dabar fone parsisiunčiamas ir laikomas programėlėje – paspaudus laišką jis atsidaro iš karto, nelaukiant pašto serverio (anksčiau laiškai kartais ilgai rodė „Kraunama“). Senesni laiškai skaitomi kaip anksčiau.' },
   { d:'2026-10-04 00:06', v:'v263', k:'fix', t:'Pradžia: plytelės nenusikerpa, kortelės skleidžiasi sklandžiai', f:'Užvedus pelę ant Ofiso, Sandėlio ir kt. plytelių jų padidėjimas ir švytėjimas nebenukerpamas. Dešinės pusės kortelės suskleidžiamos ir išskleidžiamos sklandžia animacija.' },
   { d:'2026-10-04 00:02', v:'v262', k:'chg', t:'Muzikos kortelė pašalinta', f:'Pradžios puslapyje nebeliko Muzikos kortelės (Spotify / YouTube grotuvo).' },
   { d:'2026-10-04 00:02', v:'v262', k:'chg', t:'Muzika: be atskiro grotuvo lango', f:'Pašalintas mygtukas „Atidaryti pilną grotuvą“ ir atskiras grotuvo langas – muzika groja kortelėje (ir mažame grotuve kampe kituose puslapiuose), kaip anksčiau.' },

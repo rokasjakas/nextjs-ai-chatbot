@@ -21,6 +21,8 @@
 //   delete    {folder, uid}              -> moves to Trash
 //   settings / settings_save {settings:{sig, auto:{on,from,to,subject,text}}}
 //   sync      {folder}                   -> brings public.mail_index up to date (the app reads the list from there)
+//             and keeps the newest letters' text in public.mail_bodies (sql/mail_bodies.sql): the app opens
+//             them from the database at once, without waiting for the mail server
 //   (the signature is built from the profile: name, job title, phone)
 // POST with header x-cron-secret: <CRON_SECRET> (every 10 min from pg_cron)
 //   sends the automatic replies ("out of office") for everyone who has it on
@@ -44,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 11;
+const VERSION = 12;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -405,6 +407,48 @@ async function idxPatch(user: string, folder: string, uid: number, patch: Partia
 }
 async function idxGone(user: string, folder: string, uid: number) {
   try { await idxDelete(user, folder, [uid]); } catch (e) { console.error("mail_index delete", (e as Error).message); }
+  await bodyDelete(user, folder, [uid]);
+}
+// ---------- the newest letters' text kept in the database (public.mail_bodies) ----------
+// Opening a letter then needs no mail server at all; letters not kept there are read live as before.
+const BODY_MAX_JSON = 1_500_000, BODY_PER_RUN = 15, BODY_MS = 12_000, BODY_KEEP = 60;
+let bodiesOk = true;     // the table may not exist yet (sql/mail_bodies.sql not run): then nothing is kept
+async function bodySave(user: string, folder: string, uid: number, data: unknown) {
+  if (!bodiesOk) return;
+  const json = JSON.stringify(data);
+  if (json.length > BODY_MAX_JSON) return;
+  try {
+    await db("mail_bodies?on_conflict=user_id,folder,uid", {
+      method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({ user_id: user, folder, uid, data, fetched_at: new Date().toISOString() }),
+    });
+  } catch (e) { if (/mail_bodies|relation|schema cache/i.test((e as Error).message)) bodiesOk = false; console.error("mail_bodies save", (e as Error).message); }
+}
+async function bodyDelete(user: string, folder: string, uids: number[]) {
+  if (!bodiesOk || !uids.length) return;
+  try { for (let i = 0; i < uids.length; i += 300) await db(`mail_bodies?user_id=eq.${user}&folder=eq.${enc(folder)}&uid=in.(${uids.slice(i, i + 300).join(",")})`, { method: "DELETE", headers: { Prefer: "return=minimal" } }); }
+  catch (e) { console.error("mail_bodies delete", (e as Error).message); }
+}
+// after a sync, on the same connection: the newest letters whose text is not kept yet
+async function bodyPrefetch(c: ImapFlow, user: string, folder: string, present: number[]) {
+  if (!bodiesOk || !present.length) return 0;
+  const t0 = Date.now();
+  const newest = present.slice().sort((x, y) => y - x).slice(0, BODY_KEEP);
+  let have: { uid: number }[] = [];
+  try { have = await db<{ uid: number }[]>(`mail_bodies?select=uid&user_id=eq.${user}&folder=eq.${enc(folder)}&limit=2000`); }
+  catch (e) { if (/mail_bodies|relation|schema cache/i.test((e as Error).message)) bodiesOk = false; return 0; }
+  const hset = new Set(have.map((r) => Number(r.uid)));
+  // the ones that dropped out of the newest are let go (the database keeps only the newest letters)
+  const keep = new Set(newest);
+  await bodyDelete(user, folder, [...hset].filter((u) => !keep.has(u)));
+  let done = 0;
+  for (const uid of newest) {
+    if (done >= BODY_PER_RUN || Date.now() - t0 > BODY_MS) break;
+    if (hset.has(uid)) continue;
+    try { await bodySave(user, folder, uid, await readOn(c, folder, uid, true, true, { s: "" })); done++; }
+    catch (e) { console.error(`mail_bodies ${folder}/${uid}`, (e as Error).message); break; }   // a slow server: leave the rest for the next run
+  }
+  return done;
 }
 function idxRow(user: string, folder: string, m: { uid: number; envelope?: { date?: Date; subject?: string; from?: Addr[]; to?: Addr[] }; internalDate?: Date | string; flags?: Set<string>; bodyStructure?: unknown; size?: number }): Partial<IdxRow> {
   const d = m.envelope?.date ?? (m.internalDate ? new Date(m.internalDate as string) : null);
@@ -422,6 +466,8 @@ async function syncFolder(user: string, a: Account, folder: string) {
   const [st] = await db<SyncState[]>(`mail_sync?select=uidvalidity,modseq,synced_at&user_id=eq.${user}&folder=eq.${enc(folder)}`);
   return await withImap(a, async (c) => {
     const path = await folderPath(c, folder);
+    let present: number[] = [];
+    const res = await (async () => {
     const lock = await c.getMailboxLock(path);
     try {
       const mb = c.mailbox as unknown as { exists?: number; uidValidity?: bigint; highestModseq?: bigint };
@@ -431,12 +477,12 @@ async function syncFolder(user: string, a: Account, folder: string) {
         await db(`mail_index?user_id=eq.${user}&folder=eq.${enc(folder)}`, { method: "DELETE", headers: { Prefer: "return=minimal" } });   // the folder was re-created: start over
       } else known = await dbAllUids(user, folder);
       // a kept connection may still hold the folder's old state: ask the server for the current one
-      const present: number[] = ((await c.search({ all: true }, { uid: true })) || []) as number[];
+      present = ((await c.search({ all: true }, { uid: true })) || []) as number[];
       const now = await c.status(path, { highestModseq: true }).catch(() => null) as { highestModseq?: bigint } | null;
       const modseq = now?.highestModseq ?? mb.highestModseq;
       const pset = new Set(present), kset = new Set(known);
       const removed = known.filter((u) => !pset.has(u));
-      if (removed.length) await idxDelete(user, folder, removed);
+      if (removed.length) { await idxDelete(user, folder, removed); await bodyDelete(user, folder, removed); }
       // what to add now: recent letters first, then the newest by number, then older ones in later runs
       const fresh = present.filter((u) => !kset.has(u));
       let take: number[] = [];
@@ -486,7 +532,10 @@ async function syncFolder(user: string, a: Account, folder: string) {
     } finally {
       lock.release();
     }
-  }, true, 45_000);
+    })();
+    (res as Record<string, unknown>).bodies = await bodyPrefetch(c, user, folder, present).catch(() => 0);
+    return res;
+  }, true, 60_000);
 }
 // pg_cron, every minute: Inbox for everyone (Sent every 5 min), one after another
 async function runSyncAll() {
@@ -1136,6 +1185,7 @@ async function handle(me: Me, body: Record<string, unknown>) {
       needUid();
       const r = await read(a, folder, uid, body.peek === true);
       if (body.peek !== true) idxPatch(me.id, folder, uid, { seen: true });
+      bodySave(me.id, folder, uid, r).catch(() => {});
       return r;
     }
     case "folders":
