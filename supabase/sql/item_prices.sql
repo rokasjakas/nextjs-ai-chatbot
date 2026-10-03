@@ -17,3 +17,7 @@ create policy "prices admin and pm" on public.item_prices
   using (public.is_admin() or coalesce(public.my_role(), '') = 'pm')
   with check (public.is_admin() or coalesce(public.my_role(), '') = 'pm');
 grant select, insert, update, delete on public.item_prices to authenticated;
+revoke all on public.item_prices from anon;
+
+-- Supabase: read the list of tables again (otherwise the app may still say the table is missing)
+notify pgrst, 'reload schema';
