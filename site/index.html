@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-nLIKWmrtxYxomzuiCpQrNwlwN6+0W6ijYaAeXu/bwYg=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-qZPCMFUZSCFRSpwnaFwtMOZJQ16n9MA/y1p+SR4je+A=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -10774,7 +10774,7 @@ function aiCardRender(){
   box.innerHTML = `<div class="cal-head"><b style="display:inline-flex;align-items:center;gap:8px;">${slIcon('sparkle')}AI asistentas</b><span style="flex:1"></span>${msgs.length ? '<button type="button" class="btn small" id="aicNew" title="Pradėti naują pokalbį">Naujas</button>' : ''}</div>
     <div class="aic-list" id="aicList">${msgs.length ? msgs.map((m, i)=>`<div class="aic-m ${m.role==='user' ? 'me' : 'ai'}">${m.role==='user' ? esc(m.content).replace(/\n/g,'<br>') : (m.content ? aicMd(m.content) : '<span class="aic-dots"><i></i><i></i><i></i></span>')}</div>`).join('') : '<div class="aic-empty">Klausk ko nori – pvz. „Kaip apskaičiuoti srovę 10 kW trifazei apkrovai?“ ar „Parašyk trumpą laišką klientui dėl atvykimo laiko“.</div>'}</div>
     <div class="aic-in"><textarea id="aicText" rows="1" placeholder="Klausk AI…" ${AIC.busy ? 'disabled' : ''}></textarea><button type="button" class="btn primary small" id="aicSend" ${AIC.busy ? 'disabled' : ''} title="Siųsti (Enter)">${slIcon('send')}</button></div>
-    <small class="aic-note">Atsako Google Gemini (nemokamas planas – Google gali naudoti klausimus savo AI tobulinti, todėl nerašyk konfidencialios informacijos). Pokalbis saugomas tik šioje naršyklės kortelėje.</small>`;
+    <small class="aic-note">Atsako nemokamas AI – paslaugos teikėjas gali naudoti klausimus savo AI tobulinti, todėl nerašyk konfidencialios informacijos. Pokalbis saugomas tik šioje naršyklės kortelėje.</small>`;
   const list = document.getElementById('aicList'); list.scrollTop = list.scrollHeight;
   const ta = document.getElementById('aicText');
   const grow = ()=>{ ta.style.height = 'auto'; ta.style.height = Math.min(140, ta.scrollHeight)+'px'; };
@@ -17768,7 +17768,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v255';
+const APP_VER = 'v256';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32674,6 +32674,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 23:21', v:'v256', k:'chg', t:'AI asistentas – ir per Groq', f:'AI asistentas gali veikti per nemokamą Groq (raktas be banko kortelės: console.groq.com), Google Gemini arba kitą panašią paslaugą – naudojama ta, kurios raktas įrašytas.' },
   { d:'2026-10-03 23:19', v:'v255', k:'chg', t:'AI asistentas – nemokamas (Google Gemini)', f:'AI asistentas pradžios puslapyje dabar naudoja nemokamą Google Gemini planą. Nemokamame plane yra limitai (keliolika klausimų per minutę) ir Google gali naudoti klausimus savo AI tobulinti – nerašyk konfidencialios informacijos.' },
   { d:'2026-10-03 23:14', v:'v254', k:'new', t:'AI asistentas ir Muzika pradžioje', f:'Pradžios puslapyje – dvi naujos kortelės. „AI asistentas“: užduok kasdienį klausimą ir Claude (Anthropic) atsakys lietuviškai, atsakymas rodomas jam rašantis, pokalbį galima tęsti ar pradėti naują. „Muzika“: pasirink Spotify arba YouTube, įklijuok grojaraščio ar dainos nuorodą. Prisijungus prie savo Spotify – grojamos visos dainos; YouTube be reklamų – su YouTube Premium. Išėjus iš pradžios grotuvas lieka mažas kampe ir muzika negroja iš naujo. Korteles galima sukeisti vietomis kaip ir kitas.' },
   { d:'2026-10-03 23:10', v:'v253', k:'new', t:'Erdvės: vieta su keliomis erdvėmis', f:'Erdvių skiltyje vieta (pvz. Valdovų rūmai) dabar turi pagrindinę informaciją (adresas, patekimas, iškrovimas, kontaktai, bendros nuotraukos) ir atskiras erdves – „+ Pridėti erdvę“. Kiekvienai erdvei: pavadinimas, išmatavimai (ilgis × plotis × aukštis, plotas skaičiuojamas pats), talpa, elektra, dūmai, liftas, laiptai, kabinimo taškai, 3D turas, pastabos, nuotraukos ir planai (PDF, nuotraukos, brėžiniai). Ankstesnių įrašų techniniai duomenys tapo pirmąja erdve „Pagrindinė erdvė“.' },
