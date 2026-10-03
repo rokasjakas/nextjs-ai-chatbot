@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Rgxgxn2r4FTbFe0Tr3btBYXOygODPbVbv6pm5AL0ALM=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-gz/BSY51uhOHEXwh0b3mhOgs1k0KM9iT8f9ebQ1LIQs=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4158,6 +4158,18 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .dp-tw{display:grid !important;grid-template-columns:1fr 1fr;gap:8px;} .dp-tw > div{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-dim);}
 .xg-timepop .dp-twc{background:none !important;border:0 !important;padding:2px !important;font-size:11px !important;color:var(--text-dim);} .xg-timepop .tw-acts button{border:0;border-radius:0;padding:0;} .xg-timepop .tw-acts button + button{border-left:1px solid var(--border);}
 .dp-tw .tw-host.off .tw{opacity:.45;} .dp-tw .tw-i{font-size:14px;} .dp-twc{border:0;background:none;color:var(--text-dim);font:inherit;font-size:11px;cursor:pointer;padding:2px;text-align:right;} .dp-twc:hover{color:var(--accent);}
+</style>
+<style id="bgCss">
+body.has-bg{background:linear-gradient(rgb(0 0 0 / var(--bg-dim,.55)), rgb(0 0 0 / var(--bg-dim,.55))), var(--bg-img) center / cover no-repeat fixed !important;}
+:root[data-theme="light"] body.has-bg{background:linear-gradient(rgb(255 255 255 / var(--bg-dim,.55)), rgb(255 255 255 / var(--bg-dim,.55))), var(--bg-img) center / cover no-repeat fixed !important;}
+body.has-bg .shell,body.has-bg .shell-main,body.has-bg main,body.has-bg .app-shell{background:transparent !important;}
+body.has-bg .pageheader,body.has-bg .topbar{background:color-mix(in srgb, var(--bg) 78%, transparent) !important;backdrop-filter:blur(8px);}
+.pf-bg{display:flex;gap:12px;align-items:flex-start;}
+.pf-bg-prev{flex:none;width:120px;height:72px;border-radius:var(--radius,8px);border:1px dashed var(--border-2,var(--border));background:var(--panel-2) center / cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--text-faint);}
+.pf-bg-prev.has{border-style:solid;}
+.pf-bg-c{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1;} .pf-bg-dim{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);} .pf-bg-dim input{flex:1;accent-color:var(--accent);}
+.home-tile .ht-tools{display:flex;flex-wrap:wrap;gap:2px 10px;margin-top:4px;font-size:11.5px;font-weight:500;color:var(--text-dim);line-height:1.35;}
+.home-tile .ht-tools span{white-space:nowrap;} .home-tile .ht-tools span + span::before{content:'·';margin-right:10px;color:var(--text-faint);}
 </style>
 <style id="evNewCss">
 tr.xg-cancel > td{background:color-mix(in srgb, #E5484D 16%, var(--panel)) !important;}
@@ -16769,10 +16781,11 @@ function homeTileList(){
 function homeTileHtml(t){
   if(t.group){
     const title = k=>(HOME_TILES.find(x=>x.tab===k)||{}).title||k;
+    const kids = byOrder(t.kids, prefGet('hgOrder_'+t.group), k=>k);
     return `<button class="home-tile home-group" data-group="${t.group}" data-k="${t.group}">
       <span class="ht-icon" style="background:${t.color}22;color:${t.color};">${t.icon}</span>
-      <span class="ht-text"><span class="ht-title">${esc(t.title)}</span><span class="ht-stat">${t.kids.map(k=>esc(title(k))).join(' · ')}</span>
-        <span class="ht-extra">${t.kids.map(k=>{ const s = homeTileStat(k); return s ? `<span><b>${esc(title(k))}:</b> ${s}</span>` : ''; }).join('')}</span></span>
+      <span class="ht-text"><span class="ht-title">${esc(t.title)}</span>
+        <span class="ht-tools">${kids.map(k=>`<span>${esc(title(k))}</span>`).join('')}</span></span>
     </button>`;
   }
   return `<button class="home-tile" data-go="${t.tab}" data-k="${t.tab}">
@@ -17227,7 +17240,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v231';
+const APP_VER = 'v232';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25763,6 +25776,56 @@ function renderJobsTab(){
 
 /* ---------- Profile tab ---------- */
 // Profilis → Išvaizda → Dizainas: V1 / V2 and, for V2, its colours
+/* ---------- own background picture (Profilis → Išvaizda), each member their own ---------- */
+const BG = { url:'', path:'', done:false };
+function bgPref(){ const p = prefGet('bgImg'); return p && typeof p==='object' ? p : null; }
+async function bgApply(){
+  BG.done = true;
+  const p = bgPref(), root = document.documentElement;
+  root.style.setProperty('--bg-dim', String(p && p.dim!=null ? p.dim : 0.55));
+  if(!p || !p.path){ document.body.classList.remove('has-bg'); root.style.removeProperty('--bg-img'); if(BG.url){ try{ URL.revokeObjectURL(BG.url); }catch(e){} } BG.url = ''; BG.path = ''; return; }
+  if(BG.path===p.path && BG.url){ document.body.classList.add('has-bg'); return; }
+  try{
+    const blob = await stBlob('avatars', p.path); if(!blob) return;
+    if(BG.url){ try{ URL.revokeObjectURL(BG.url); }catch(e){} }
+    BG.url = URL.createObjectURL(blob); BG.path = p.path;
+    root.style.setProperty('--bg-img', `url("${BG.url}")`);
+    document.body.classList.add('has-bg');
+  }catch(e){}
+}
+async function bgUpload(file, msg){
+  if(!file || !/^image\//.test(file.type)){ toast('Pasirink paveikslėlį.'); return; }
+  try{
+    if(msg) msg.textContent = 'Įkeliama…';
+    const { blob } = await venShrink(file);
+    const path = teamMe()+'/bg-'+uid('b')+'.jpg';
+    const { error } = await stFrom('avatars').upload(path, blob, { contentType:'image/jpeg', upsert:false });
+    if(error) throw new Error(error.message);
+    const old = bgPref();
+    prefSet('bgImg', { path, dim: old && old.dim!=null ? old.dim : 0.55 });
+    if(old && old.path) stFrom('avatars').remove([old.path]).catch(()=>{});
+    BG.path = ''; await bgApply();
+    if(msg) msg.textContent = ''; toast('Fonas pakeistas.');
+  }catch(e){ if(msg) msg.textContent = 'Nepavyko: '+(e.message||e); }
+}
+function bgUiHtml(){
+  const p = bgPref();
+  return `<div class="section-title" style="font-size:14px;margin:14px 0 4px;">Fonas</div>
+    <div class="pf-bg">
+      <span class="pf-bg-prev ${p && p.path ? 'has' : ''}" style="${p && p.path && BG.url ? `background-image:url('${BG.url}')` : ''}">${p && p.path ? '' : '<small>be fono</small>'}</span>
+      <div class="pf-bg-c">
+        <div class="row" style="gap:6px;flex-wrap:wrap;"><label class="btn small" style="cursor:pointer;">${slIcon('image')} ${p && p.path ? 'Keisti foną' : 'Įkelti foną'}<input type="file" id="pfBgFile" accept="image/*" hidden></label>${p && p.path ? '<button type="button" class="btn small" id="pfBgDel">Pašalinti</button>' : ''}</div>
+        ${p && p.path ? `<label class="pf-bg-dim">Patamsinimas <input type="range" id="pfBgDim" min="0.1" max="0.9" step="0.05" value="${p.dim!=null ? p.dim : 0.55}"></label>` : ''}
+        <small class="muted" id="pfBgMsg">Matai tik tu – kiekvienas narys gali turėti savo foną.</small>
+      </div>
+    </div>`;
+}
+function bgUiWire(redraw){
+  const f = document.getElementById('pfBgFile'); if(f) f.onchange = async ()=>{ const file = f.files && f.files[0]; f.value = ''; await bgUpload(file, document.getElementById('pfBgMsg')); redraw(); };
+  const d = document.getElementById('pfBgDel'); if(d) d.onclick = ()=>{ const p = bgPref(); if(p && p.path) stFrom('avatars').remove([p.path]).catch(()=>{}); prefSet('bgImg', null); bgApply(); redraw(); };
+  const r = document.getElementById('pfBgDim'); if(r){ r.oninput = ()=>document.documentElement.style.setProperty('--bg-dim', r.value);
+    r.onchange = ()=>{ const p = bgPref(); if(p) prefSet('bgImg', Object.assign({}, p, { dim:+r.value })); }; }
+}
 function pfUiDraw(){
   const box = document.getElementById('pfUi'); if(!box) return;
   const p = uiPrefs(), prev = (rail, ink, acc, main, panel)=>`<span class="pf-ui-prev"><i class="p-rail" style="background:${rail};color:${ink}"><b class="on" style="background:${acc};opacity:1"></b><b></b><b></b><b></b></i><i class="p-main" style="background:${main}"><b style="background:${panel};width:70%"></b><b style="background:${panel}"></b><b style="background:${acc};width:30%"></b></i></span>`;
@@ -25776,7 +25839,8 @@ function pfUiDraw(){
       <div class="pf-ui-row"><span>Pagrindinė spalva</span>${UI_ACCENTS.map(([c, n])=>`<button type="button" class="pf-sw ${p.accent===c ? 'on' : ''}" data-uiacc="${c}" title="${n}" style="background:${c}"></button>`).join('')}<input type="color" id="pfUiAcc" value="${acc}" title="Kita spalva"></div>
       <div class="pf-ui-row"><span>Šoninis meniu</span>${UI_RAILS.map(([c, n])=>`<button type="button" class="pf-sw ${p.rail===c ? 'on' : ''}" data-uirail="${c}" title="${n}" style="background:${c || (dark ? '#1E1E1E' : '#FFFFFF')}">${c ? '' : '<small style="font-size:9px;">A</small>'}</button>`).join('')}<input type="color" id="pfUiRail" value="${rail}" title="Kita spalva"></div>
       <button type="button" class="btn small" id="pfUiReset" style="align-self:flex-start;">Atstatyti spalvas</button>
-    </div>` : ''}`;
+    </div>` : ''}${bgUiHtml()}`;
+  bgUiWire(pfUiDraw);
   box.querySelectorAll('[data-uiv]').forEach(b=>b.onclick = ()=>{ uiSet({ v:b.dataset.uiv }); pfUiDraw(); });
   box.querySelectorAll('[data-uiacc]').forEach(b=>b.onclick = ()=>{ uiSet({ accent:b.dataset.uiacc }); pfUiDraw(); });
   box.querySelectorAll('[data-uirail]').forEach(b=>b.onclick = ()=>{ uiSet({ rail:b.dataset.uirail }); pfUiDraw(); });
@@ -31565,6 +31629,7 @@ let currentTab = 'home';
 
 function setTab(key){
   animApply();
+  if(!BG.done && ACCESS.profile) bgApply();
   if(!TABS[key] || !canView(key)) key = 'home';
   const same = key===currentTab && document.getElementById('main').children.length>0, y0 = window.scrollY;
   if(!same) keepReset();
@@ -31872,6 +31937,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 23:10', v:'v232', k:'new', t:'Savas fonas ir Ofiso / Sandėlio plytelės', f:'Pagrindiniame puslapyje Ofiso ir Sandėlio plytelėse vietoje atsitiktinės informacijos mažomis raidėmis rodomi tos grupės įrankiai (narys pats susidėliotos tvarkos). Profilis → Išvaizda → Fonas: kiekvienas narys gali įkelti savo paveikslėlį visam puslapiui ir nustatyti patamsinimą – kiti narių fonų nemato.' },
   { d:'2026-10-03 22:50', v:'v231', k:'fix', t:'Skambinti per telefoną – pasenusi registracija', f:'Mygtukas pervadintas į „Skambinti“. Jei telefono pranešimų registracija sukurta su senu raktu („VAPID public key mismatch“), ji dabar automatiškai pašalinama ir parodomas aiškus paaiškinimas: telefone atidaryti programėlę – ji užsiregistruoja iš naujo. Reikia įdiegti atnaujintą push-notify funkciją.' },
   { d:'2026-10-03 22:30', v:'v230', k:'new', t:'Žmonės: Užimtumas', f:'Žmonių puslapyje aiškūs skirtukai ARCHYVAS / BOOKINGAS / UŽIMTUMAS. Užimtume – didelis mėnesio kalendorius per visą plotį: kiekvienoje dienoje matosi, kas pasakė, kad yra laisvas (gali dirbti), kas sutiko ir kam reikia perskambinti ir pasitikslinti. Skambučio žymose atsirado nauja „Perskambinti“. Galima filtruoti pagal grupę, paiešką ir žymos rūšį, paspaudus žmogų atsidaro jo kortelė.' },
   { d:'2026-10-03 22:05', v:'v229', k:'fix', t:'Nuomos tipo mygtukai telpa', f:'Renginio transporto nuomoje mygtukas „Mikroautobusas“ nebeišlenda už langelio ribų – jei netelpa, persikelia į kitą eilutę.' },
