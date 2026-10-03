@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-zcb7d3Z7EMk3r2ygckAO2g6WGt6FSKZqQzPchAAq3Y0=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-6Nutnn1sHyuzFqXOc0uC7rhcKbjDQa48dQ7GD/7i0QI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4083,6 +4083,23 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 @media (max-width:640px){ .gr-card{flex-wrap:wrap;} .gr-acts{flex-direction:row;width:100%;justify-content:flex-end;} .gr-form{grid-template-columns:1fr;} .gr-pi{flex-direction:column;align-items:flex-start;gap:1px;} .gr-states{grid-template-columns:1fr;} }
 </style>
 <style id="ldSimCss">
+.btn.cl-hdr{position:relative;display:inline-flex;align-items:center;gap:6px;} .cl-hdr-i{display:inline-flex;} .cl-hdr-i svg{width:18px;height:18px;}
+.cl-hdr[data-badge]:not([data-badge=""])::after{content:attr(data-badge);position:absolute;top:-6px;right:-6px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--accent);color:var(--accent-ink,#fff);font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+:root[data-ui="v2"] .topbar-right .btn.cl-hdr{font-size:13px !important;width:auto !important;min-width:0 !important;padding:0 10px !important;gap:6px !important;color:var(--text) !important;}
+@media (max-width:900px){ .cl-hdr-t{display:none;} :root[data-ui="v2"] .topbar-right .btn.cl-hdr{padding:0 8px !important;} }
+#modalRoot.cl-modal-w{max-width:760px;}
+.cl-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;}
+.cl-list{display:flex;flex-direction:column;gap:12px;max-height:min(68vh,720px);overflow-y:auto;padding-right:4px;}
+.cl-dh{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-dim);padding:2px 0 6px;border-bottom:1px solid var(--border-2,var(--border));margin-bottom:4px;position:sticky;top:0;background:var(--panel);z-index:1;}
+.cl-it{border-bottom:1px solid var(--border);} .cl-it.fresh .cl-row b::after{content:'naujas';margin-left:8px;font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;}
+.cl-row{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;color:var(--text);font:inherit;text-align:left;padding:8px 2px;cursor:pointer;}
+.cl-row:hover{background:rgb(var(--hi-rgb) / .04);}
+.cl-time{font-variant-numeric:tabular-nums;font-size:12px;color:var(--text-dim);width:40px;flex:none;}
+.cl-k{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:2px 7px;border-radius:9px;color:var(--c);background:color-mix(in srgb, var(--c) 16%, transparent);flex:none;}
+.cl-row b{flex:1;font-size:13.5px;font-weight:600;} .cl-row small{color:var(--text-faint);font-size:11px;}
+.cl-ar{display:flex;color:var(--text-dim);transition:transform .15s;} .cl-ar svg{width:20px;height:20px;} .cl-it.open .cl-ar{transform:rotate(180deg);}
+.cl-full{display:none;padding:0 6px 10px 52px;font-size:13px;line-height:1.5;color:var(--text-dim);} .cl-it.open .cl-full{display:block;}
+.help-q.hq-auto{margin-left:8px;}
 /* project „Bendra“: on a wide screen four fields in a row instead of two wide ones */
 @media (min-width:1400px){
   .np-grid .np-col:first-child .grid.cols-2{grid-template-columns:repeat(4,minmax(0,1fr));}
@@ -4371,6 +4388,7 @@ body.ev-full-on{overflow:hidden;}
  <span id="teamHead" class="tm-head"></span>
  <span id="cloudStatus" style="font-size:12px;align-self:center;"></span>
         <button class="btn small gs-hdr" id="gsHdr" type="button" title="Paieška: programos, funkcijos, nariai, daiktai (Ctrl+K)">🔎 <span class="tb-lbl">Ieškoti</span><kbd>Ctrl K</kbd></button>
+        <button class="btn small cl-hdr" id="clHdr" type="button" title="Atnaujinimai – kas pakeista ir pridėta"><span class="cl-hdr-i"></span><span class="cl-hdr-t">Atnaujinimai</span></button>
         <button class="btn small fb-hdr" id="fbHdr" type="button" title="Pranešti klaidą arba pasiūlyti – kol puslapis testuojamas"><span class="fb-hdr-i">🐞</span><span class="fb-hdr-t">Klaidos / pasiūlymai</span></button>
         <button class="btn primary small" id="saveAllBtn" title="Išsaugoti viską serveryje dabar">💾 Išsaugoti</button>
         <button class="icon-btn theme-btn" id="themeBtn" type="button"></button>
@@ -13718,7 +13736,7 @@ async function pollEdLinkDraw(action){
   const box = document.getElementById('pollEdLink'); if(!box) return;
   const { data, error } = await getSb().rpc('poll_editor_link', { p_action:action || 'get' });
   if(error){ box.innerHTML = `<div class="mail-err">${/poll_editor_link|does not exist|schema cache/i.test(error.message) ? 'Redaktoriaus nuorodai Supabase paleisk polls2.sql.' : esc(error.message)}</div>`; return; }
-  const url = data.on && data.token ? pollUrl('balsavimai', data.token) : '';
+  const url = data && data.on && data.token ? pollUrl('balsavimai', data.token) : '';
   box.innerHTML = `<div class="poll-lk-t">Redaktoriaus nuoroda (be prisijungimo)</div>
     ${url ? `<div class="poll-url">${esc(url)}</div><div class="row" style="gap:6px;flex-wrap:wrap;"><button class="btn small primary" data-el="copy">Kopijuoti</button><a class="btn small" href="${esc(url)}" target="_blank" rel="noopener">Atidaryti</a><button class="btn small" data-el="new">Nauja nuoroda</button><button class="btn small danger" data-el="off">Išjungti</button></div>
       <p class="section-sub" style="margin:6px 0 0;">Kas turi šią nuorodą, gali kurti, keisti, paleisti ir trinti balsavimus. „Nauja nuoroda“ – senoji nustoja veikti.</p>`
@@ -17000,7 +17018,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v215';
+const APP_VER = 'v216';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31227,6 +31245,147 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
   groupIconSvg = g => slIcon(G[g] || 'extra');
   try{ themeInit(); }catch(e){}
   try{ uiApply(); }catch(e){}
+})();
+/* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
+const CHANGELOG = [
+  { d:'2026-10-03 17:05', v:'v216', k:'new', t:'Atnaujinimų sąrašas ir „?“ paaiškinimai', f:'Viršutinėje juostoje – „Atnaujinimai“: visi pakeitimai nuo 2026-09-22 su data, laiku ir trumpu aprašu; paspaudus atsidaro pilnas aprašymas. Ilgi paaiškinimai po antraštėmis pakeisti „?“ mygtukais – paspaudus parodomas visas paaiškinimas.' },
+  { d:'2026-10-03 16:48', v:'v215', k:'chg', t:'Žmonės – kompaktiškas sąrašas', f:'Kiekvienas žmogus – viena eilutė: vardas, grupės, valandinis / stafkė ir telefonas. Ryškesnė skirtis tarp žmonių ir grupių. Paspaudus atsidaro visa informacija (el. paštas, adresas, pastabos, skambučių istorija). Projekto „Bendra“ formoje plačiame ekrane – keturi laukai eilėje.' },
+  { d:'2026-10-03 16:44', v:'v214', k:'new', t:'Krovimas – tik simuliacija', f:'Krovimas nebėra privalomas: viršuje pasirenki projektą (arba laisvą sąrašą) ir transportą – įmonės, nuomojamą (iš Transporto nuomos su išmatavimais) arba transporto tipą. „Palyginti visus tipus“ parodo, kiek kurio transporto reikės ir koks užpildymas. Projektų įrangos grupės: tuščios – kompaktiškos, galima suskleisti / išskleisti, pasirinkta grupė ryškiai pažymėta.' },
+  { d:'2026-10-03 16:40', v:'v213', k:'new', t:'„Atlikti darbai“ – atskiras puslapis; grupių tvarka', f:'„Atlikti darbai“ dabar atskiras puslapis (meniu ir Sandėlio grupėje) su paieška, laikotarpiu ir filtrais pagal darbą bei žmogų. Pagrindiniame puslapyje Ofiso ir Sandėlio languose – „Keisti tvarką“: kiekvienas narys susidėlioja puslapius sau.' },
+  { d:'2026-10-03 16:37', v:'v212', k:'new', t:'Naujas renginys: tipas, adresas, atsakingi, pozicijos', f:'Naujo renginio lange: „Renginio tipas“ ir organizatorius įsimenami kitam kartui; vietai – adreso paieška (Erdvės, anksčiau naudotos vietos ir žemėlapis) su nuoroda į Google Maps; Office ir Tech atsakingi; iškart nurodomas Garso (A), Šviesos (L), Video (V) ir Crew pozicijų skaičius, budintys ir operatoriai. Rentman projekto pasirinkimas išimtas. Renginių lentelė: mastelis (−/+, Ctrl −/+), „per visą langą“, be slankiklių.' },
+  { d:'2026-10-03 16:33', v:'v211', k:'fix', t:'Pilnas plotis, chatas, pasiūlymų laukai', f:'Puslapiai užpildo visą plotį nuo meniu iki dešinio krašto, kalendorius pristumtas į dešinę. Chato apačia nebenukerpama. Chate „Pradžia“ pervadinta į „Viskas“. Pasiūlymuose ir kituose ranka pildomuose dokumentuose dingo juodos dėmės laukeliuose.' },
+  { d:'2026-10-03 14:40', v:'v210', k:'chg', t:'Ikonos visur – Material Symbols', f:'Likę simboliai ir emoji, naudoti kaip ikonos (✕, ✓, rodyklės, ⛽, 🚐, 🛠 ir kt.), sąrašų rodyklės ir varnelės pakeisti „Outlined Fill – Material Symbols“ ikonomis.' },
+  { d:'2026-10-03 14:34', v:'v209', k:'chg', t:'V2 dizainas visiems', f:'V2 dizainas įjungtas visiems vartotojams. Visos programos ikonos – „Outlined Fill – Material Symbols“. V1 dar galima pasirinkti Profilis → Išvaizda.' },
+  { d:'2026-10-03 14:22', v:'v208', k:'new', t:'Dizainas V2', f:'Profilis → Išvaizda → Dizainas: V1 (kaip buvo) arba V2 – platus šoninis meniu su pavadinimais (galima suskleisti), žema viršutinė juosta su ikonų mygtukais, pasirenkamos pagrindinė ir meniu spalvos.' },
+  { d:'2026-10-03 14:11', v:'v207', k:'new', t:'Sandėlis → Atlikti darbai pagrindiniame', f:'Pagrindinio puslapio Sandėlio grupėje ir viršutinėje paieškoje atsirado „Atlikti darbai“.' },
+  { d:'2026-10-03 14:05', v:'v206', k:'new', t:'Atlikti darbai su įranga', f:'Registruojami valymai, patikros, remontai: daiktai arba visa grupė / pogrupis, kas darė, pastaba, nuotraukos. Paieška pagal laikotarpį ir žodį (pvz. „sirena“ – kada ir kas daryta). Reikia paleisti item_works.sql.' },
+  { d:'2026-10-03 13:40', v:'v205', k:'new', t:'Pasiūlymai: Silent Concept ir paruoštos skiltys', f:'Kuriant pasiūlymą – Event Solutions arba Silent Concept (savo antraštė, parašas, pradinės skiltys, filtras sąraše). „+ Nauja skiltis“ – paruošti variantai (Konstrukcijos, Gretutinės paslaugos, Elektrifikacija) arba įrašyti ranka.' },
+  { d:'2026-10-03 13:23', v:'v204', k:'fix', t:'Išdavimų PDF su nuotraukomis', f:'Išdavimo PDF nuotraukos įkeliamos per failų funkciją, kai naršyklė jų negali paimti tiesiogiai.' },
+  { d:'2026-10-03 13:15', v:'v203', k:'new', t:'Nuomojamo transporto nuotraukos ir dokumentai', f:'Kiekvienam nuomojamam automobiliui – nuotraukos, sutartys, aktai kaip istorija su datomis (naujausi viršuje). Reikia paleisti rent_vehicles3.sql ir atnaujinti files funkciją.' },
+  { d:'2026-10-03 13:06', v:'v202', k:'new', t:'Transporto nuoma pildosi iš renginių', f:'Iš renginių transporto automatiškai pridedami valst. nr., kurių nėra įmonės parke, ir „Fura …“. Grupuojama pagal įmonę, atsirado trečias tipas – Būdos.' },
+  { d:'2026-10-03 12:56', v:'v201', k:'new', t:'Transportas → Transporto nuoma', f:'Nuomojami mikroautobusai, būdos ir fūros: įmonė, transportas, išmatavimai, paros kaina, kontaktai. Ataskaitoje pridedama kaina ir kontaktai.' },
+  { d:'2026-10-03 12:47', v:'v200', k:'chg', t:'Ataskaitos: paieška', f:'Pagrindiniame puslapyje Ataskaitų plytelė rodo tik pavadinimą. Ataskaitose – paieška pagal žodį visose dalyse.' },
+  { d:'2026-10-03 12:41', v:'v199', k:'chg', t:'Fūros grupuojamos pagal savininką', f:'„Fura Alius“, „7,5m Fura Alius“, „Aliaus fura“, „Alius“ – vienoje eilutėje.' },
+  { d:'2026-10-03 12:36', v:'v198', k:'chg', t:'Nuomos ataskaita be įmonės transporto', f:'Į automobilių nuomos suvestinę patenka tik valst. nr., kurių nėra įmonės parke (ABC123 / ABC 123), ir fūros („… fura“).' },
+  { d:'2026-10-03 12:28', v:'v197', k:'new', t:'Ataskaitos', f:'„Suvestinės“ tapo „Ataskaitos“: vienas laikotarpis visoms dalims – Transportas (tvarkymai pagal automobilį), Transporto nuoma (iš renginių), UTA (bendrai, pagal kortelę ar automobilį), Subnuoma (pagal tiekėjus) ir krovimai.' },
+  { d:'2026-10-03 12:12', v:'v196', k:'fix', t:'UTA sąskaitos PDF', f:'UNION TANK sąskaitos PDF skaitomas eilutė po eilutės: grupuojama pagal transporto priemonę, kiekvieno pylimo kiekis, kaina ir sumos.' },
+  { d:'2026-10-03 12:04', v:'v195', k:'chg', t:'UTA: bet koks laikotarpis', f:'Pylimus galima žiūrėti už bet kurį laikotarpį (nuo–iki, greiti pasirinkimai, ataskaitų mėnesiai).' },
+  { d:'2026-10-03 12:02', v:'v194', k:'new', t:'UTA ataskaitos PDF', f:'Mėnesines UTA ataskaitas galima įkelti ir PDF formatu.' },
+  { d:'2026-10-03 11:47', v:'v193', k:'new', t:'Transportas: plytelės, Admin+ trynimas, UTA', f:'Automobiliai – trumpos plytelės, pilna informacija atsidaro lange. Ištrinti galima tik su Admin+ patvirtinimu. Nauja dalis UTA: kortelės (kam priskirtos) ir mėnesinės ataskaitos – kiek, kada ir kur pylėsi.' },
+  { d:'2026-10-01 14:22', v:'v192', k:'fix', t:'Balsavimo puslapis neužsidaro', f:'Prabalsavus puslapis lieka atidarytas, kita nominacija atsiranda pati.' },
+  { d:'2026-10-01 14:20', v:'v191', k:'new', t:'Užsklanda su QR arba be', f:'Balsavimo užsklandą galima rodyti su QR kodu arba be jo, keisti QR dydį ir padėtį.' },
+  { d:'2026-09-30 19:47', v:'v190', k:'fix', t:'Skambučiai baigiasi visiems išėjus', f:'Chato skambutis nebelieka „aktyvus“, kai visi iš jo išėjo.' },
+  { d:'2026-09-30 19:38', v:'v189', k:'new', t:'Chato kanalų užduotys', f:'Kanaluose – skirtukas „Užduotys“: užduotys su atsakingu žmogumi, žalia – atlikta, raudona – neatlikta.' },
+  { d:'2026-09-30 18:00', k:'new', t:'Balsavimų kopijos ir nominacijos iš dokumento', f:'„Sukurti kopiją“ nukopijuoja balsavimą. Nominacijas galima įkelti iš PDF / DOCX dokumento. Nominacijos su keliomis temomis, vardai rašomi atskirai kiekvienai temai.' },
+  { d:'2026-09-30 16:33', k:'chg', t:'Balsavimų rodymas ekrane', f:'Kiekvienai nominacijai – „Parodyti nominaciją“, aiškūs rodymo mygtukai, nominacijos vaizdas su QR kodu, „Balsavimas baigėsi“ ir laimėtojas ant mygtuko, spalvos pagal tipą.' },
+  { d:'2026-09-30 12:46', k:'fix', t:'QR balsavimo puslapis greitesnis', f:'Atskiras mažas „balsuoti“ puslapis atsidaro iškart; nebelieka „Kraunama…“ antrą kartą skenuojant; įrašyti vardai be dublių (panašūs rašymai skaičiuojami kaip tas pats žmogus).' },
+  { d:'2026-09-30 12:16', k:'fix', t:'Greitesnis paleidimas', f:'Užstrigęs prisijungimas nutraukiamas po 4 s, programa atsidaro iš išsaugotos versijos net lėtame tinkle; niekada nelieka tuščio ekrano.' },
+  { d:'2026-09-30 11:39', k:'new', t:'Balsavimai su įrašomais vardais', f:'Nominacijos, kuriose balsuojantys patys įrašo vardą; rezultatai be procentų, tik laimėtojas.' },
+  { d:'2026-09-29 15:34', k:'new', t:'Balsavimų užsklandos ir nominantai', f:'Užsklandos tarp nominacijų, iš anksto pasirinktų nominantų ar laimėtojo rodymas, rezultatų logotipas, fejerverkai, išnykimo efektai.' },
+  { d:'2026-09-29 12:53', k:'new', t:'Admin → Balsavimai', f:'Balsavimas QR kodu su rezultatų ekranu: daug klausimų, vienas bendras QR, spalvos, šriftai, teksto dydžiai, laikmatis, vienas ar keli atsakymai.' },
+  { d:'2026-09-29 12:06', k:'new', t:'Sandėlis: kategorijos ir gamintojai', f:'Naujos kategorijos, gamintojai, priedų pasirinkimas projektuose.' },
+  { d:'2026-09-28 19:57', k:'new', t:'Susitikimai su svečiais', f:'Online susitikimai su išorės svečiais; skambučiai baigiasi visiems išėjus.' },
+  { d:'2026-09-28 19:32', k:'new', t:'Skambučių ekranas', f:'Savas skambučio langas su profilio nuotraukomis, atskiras langas virš kitų, ekrano ar lango rodymas, rodomas ekranas užima vietą.' },
+  { d:'2026-09-28 19:17', k:'chg', t:'Programos stiliaus patvirtinimo langai', f:'Patvirtinimo ir įvedimo langai – programos stiliaus vietoje naršyklės.' },
+  { d:'2026-09-28 18:09', k:'new', t:'Admin: limitai ir naudojimas', f:'Kortelė su duomenų bazės, saugyklos, R2, Daily minučių ir Realtime naudojimu.' },
+  { d:'2026-09-28 17:58', k:'new', t:'Windows ir Mac programos', f:'Darbalaukio programa su pranešimais, garsu ir automatiniu atnaujinimu; Mac (Apple M ir Intel) versija.' },
+  { d:'2026-09-28 17:02', k:'new', t:'Garso ir vaizdo skambučiai chate', f:'Skambinti galima su vaizdu arba tik garsu; kanaluose – pranešimas vietoje skambėjimo.' },
+  { d:'2026-09-28 14:29', k:'new', t:'Pranešimas apie naują narį', f:'Administratoriams ateina pranešimas, kai užsiregistruoja naujas narys.' },
+  { d:'2026-09-28 13:36', k:'new', t:'Transportas: tvarkymai ir problemos', f:'Automobilių tvarkymų žurnalas, praneštos problemos, sąskaitos ir laikotarpio ataskaita.' },
+  { d:'2026-09-28 13:05', k:'new', t:'Žmonių įkainiai', f:'Valandinis ir stafkė – mato tik office, projektų vadovai ir administratoriai.' },
+  { d:'2026-09-28 12:13', k:'new', t:'Kalendorius visiems', f:'Kalendoriuje – renginiai visiems, savo vaidmenys ir kas nedirba.' },
+  { d:'2026-09-28 11:57', k:'new', t:'Laisvos dienos ir atostogos', f:'Prašymai su Admin+ patvirtinimu ir pranešimais.' },
+  { d:'2026-09-28 11:34', k:'new', t:'Pranešimai komandai apie renginius', f:'Renginio komandos pranešimai, temų jungikliai, svarbūs pranešimai iškart.' },
+  { d:'2026-09-28 10:19', k:'new', t:'Pažeista ir dingusi įranga', f:'Įrangos problemų sąrašas su nuotraukomis ir pranešimais; nurašymas tik su Admin+ patvirtinimu.' },
+  { d:'2026-09-25 23:08', k:'chg', t:'El. pašto sąrašas greitesnis', f:'Laiškų sąrašas saugomas duomenų bazėje ir sinchronizuojamas kas minutę.' },
+  { d:'2026-09-25 22:27', k:'fix', t:'Saugumas', f:'Rentman funkcijos tik prisijungusiems nariams, bendrinami projektai tik pagal nuorodą, senos lentelės tik administratoriams.' },
+  { d:'2026-09-25 21:01', k:'new', t:'Žaidimai ir užrašai', f:'Žaidimai su rekordų lentele; asmeniniai užrašai (užduotys, skaičiuotuvas).' },
+  { d:'2026-09-25 20:15', k:'new', t:'Inventorizacija', f:'Sandėlio inventorizacijos: kiekiai, atskiri vienetai, istorija, palyginimas ir sulyginimas su sandėliu.' },
+  { d:'2026-09-25 18:07', k:'new', t:'Subnuoma', f:'Iš kitų įmonių nuomojama įranga projektams.' },
+  { d:'2026-09-25 16:56', k:'new', t:'Rūšiavimas ir krovimo eiga', f:'Projektų krovimo ir pasiruošimo eiga matoma projekte.' },
+  { d:'2026-09-25 15:33', k:'new', t:'Rinkiniai sandėlyje', f:'Keli daiktai pridedami į projektą kartu vienu paspaudimu.' },
+  { d:'2026-09-25 15:13', k:'new', t:'Sukurti projektą', f:'Projektų kūrimas: subprojektai, laikai, įranga, klientai.' },
+  { d:'2026-09-25 13:50', k:'new', t:'Admin+ / Super Admin ir sąskaitos', f:'Nauji lygiai Admin+ ir Super Admin. Gautos sąskaitos: tvirtinimas, atsakymai el. paštu, priminimai, pirkimų tipas.' },
+  { d:'2026-09-25 12:10', k:'new', t:'Sandėlio kainos', f:'Daiktų kainos – mato tik administratoriai ir projektų vadovai. Reikia paleisti item_prices.sql.' },
+  { d:'2026-09-25 11:42', k:'new', t:'Pasiūlymai: klientai', f:'Klientų sąrašas ir teisės „Sukurti projektą“ skilčiai.' },
+  { d:'2026-09-25 11:01', k:'new', t:'Klaidos ir pasiūlymai', f:'Mygtukas pranešti klaidą ar pasiūlyti; administratoriaus atsakymas praneša autoriui.' },
+  { d:'2026-09-24 23:24', k:'new', t:'Užduotys', f:'Savo ir paskirtos užduotys su terminais, atsakingu, atlikimu kiekvienam ir priminimais.' },
+  { d:'2026-09-24 22:57', k:'new', t:'Žmonės: bookingas', f:'Žymos „gali“, „atsisakė“, el. laiškų priminimai apie užsakytas dienas.' },
+  { d:'2026-09-24 20:24', k:'new', t:'Failų saugykla (R2)', f:'Failai saugomi Cloudflare R2 su teisių patikrinimu.' },
+  { d:'2026-09-24 19:45', k:'fix', t:'Push pranešimai', f:'Pranešimai į telefoną ir kompiuterį – patikimesni, aiškios klaidų priežastys.' },
+  { d:'2026-09-24 17:55', k:'new', t:'Žmonės: kontaktų archyvas', f:'Kontaktai ir skambučių žurnalas, skambinimas iš telefono vienu paspaudimu.' },
+  { d:'2026-09-24 17:30', k:'new', t:'Renginio laiškas komandai', f:'Formatuotas laiškas su siuntėjo parašu.' },
+  { d:'2026-09-24 15:55', k:'chg', t:'El. paštas greitesnis', f:'Greitesnis laiškų atidarymas, visi aplankai, patikimesnis ryšys.' },
+  { d:'2026-09-24 14:21', k:'new', t:'Paėmimų nuotraukos ir Išdavimai', f:'Įrangos nuotraukos paėmimams ir nauja skiltis Išdavimai su perdavimo aktu.' },
+  { d:'2026-09-24 13:34', k:'new', t:'Vaizdo skambučiai chate', f:'Skambučiai tiesiai chate (Daily.co).' },
+  { d:'2026-09-24 12:00', k:'new', t:'Naujas chatas', f:'Kanalai, gijos, paminėjimai, išsaugotos žinutės, veikla ir failai.' },
+  { d:'2026-09-24 05:24', k:'new', t:'Pasiūlymai ir projektų vadovo rolė', f:'Pasiūlymų kūrimas ir nauja projektų vadovo rolė.' },
+  { d:'2026-09-24 04:24', k:'new', t:'Kalendorius ir užrašai pagrindiniame', f:'Kalendorius su kvietimais ir asmeninis darbų sąrašas.' },
+  { d:'2026-09-24 03:57', k:'new', t:'El. paštas programoje', f:'Pašto dėžutė su parašu, automatiniu atsakymu ir paieška.' },
+  { d:'2026-09-24 02:24', k:'new', t:'Nariai, profiliai ir chatas', f:'Narių profiliai, prisijungę nariai, komandos chatas su reakcijomis ir pranešimais.' },
+  { d:'2026-09-24 00:19', k:'new', t:'Erdvės', f:'Renginių vietos: patekimas, elektra, liftas, kontaktai, nuotraukos.' },
+  { d:'2026-09-23 23:15', k:'new', t:'Prieigos lygiai', f:'Vartotojų lygiai, administratoriaus patvirtinimas ir teisės pagal rolę.' },
+  { d:'2026-09-23 21:43', k:'new', t:'Renginiai ir Paėmimai', f:'Renginių ir paėmimų lentelės bendrai komandai, perkėlimas iš Google Sheets.' },
+  { d:'2026-09-23 18:37', k:'new', t:'Transporto dokumentų priminimai', f:'Priminimai apie automobilių dokumentus pasirinktu laiku ir su savo įspėjimo terminu.' },
+  { d:'2026-09-23 17:15', k:'new', t:'Rentman projektai', f:'Rentman projektų ir jų įrangos įkėlimas pagal datas.' },
+];
+const CL_KIND = { new:['Nauja','#50AD97'], chg:['Pakeista','#6AB0F3'], fix:['Pataisyta','#F2A93B'] };
+function clSeen(){ try{ return localStorage.getItem('es-cl-seen') || ''; }catch(e){ return ''; } }
+function clBadge(){
+  const b = document.getElementById('clHdr'); if(!b) return;
+  const seen = clSeen(), n = seen ? CHANGELOG.filter(x=>x.d > seen).length : Math.min(CHANGELOG.length, 9);
+  b.dataset.badge = n ? (n > 9 ? '9+' : String(n)) : '';
+  const i = b.querySelector('.cl-hdr-i'); if(i && !i.firstChild) i.innerHTML = slIcon('news');
+}
+function clOpen(){
+  const seen = clSeen(), days = new Map();
+  CHANGELOG.forEach((x, i)=>{ const d = x.d.slice(0,10); if(!days.has(d)) days.set(d, []); days.get(d).push([x, i]); });
+  const dayLabel = d=>{ const t = new Date(d+'T12:00:00'); return isNaN(t) ? d : d.replace(/-/g,'.')+' · '+t.toLocaleDateString('lt-LT', { weekday:'long' }); };
+  openModal(`<div class="row between" style="align-items:center;margin-bottom:6px;"><h3 style="margin:0;display:flex;align-items:center;gap:8px;">${slIcon('news')} Atnaujinimai</h3><button type="button" class="icon-btn" id="clX">✕</button></div>
+    <div class="cl-top"><span class="section-sub" style="margin:0;">Nuo 2026-09-22 · ${CHANGELOG.length} pakeitimai · spausk eilutę – pilnas aprašymas</span>
+      <span class="chipbar" id="clF">${[['','Visi'], ...Object.entries(CL_KIND).map(([k,v])=>[k, v[0]])].map(([k,l])=>`<button type="button" class="chip small-chip ${k ? '' : 'active'}" data-clk="${k}">${l}</button>`).join('')}</span></div>
+    <input type="search" id="clQ" placeholder="Ieškoti atnaujinimuose…" autocomplete="off" style="width:100%;margin:8px 0;">
+    <div class="cl-list" id="clList">${[...days].map(([d, list])=>`<div class="cl-day"><div class="cl-dh">${esc(dayLabel(d))}</div>${list.map(([x, i])=>`
+      <div class="cl-it ${seen && x.d > seen ? 'fresh' : ''}" data-cli="${i}" data-k="${x.k}">
+        <button type="button" class="cl-row"><span class="cl-time">${esc(x.d.slice(11,16))}</span><span class="cl-k" style="--c:${CL_KIND[x.k][1]}">${CL_KIND[x.k][0]}</span><b>${esc(x.t)}</b>${x.v ? `<small>${esc(x.v)}</small>` : ''}<span class="cl-ar">${slIcon('dropdown')}</span></button>
+        <div class="cl-full">${esc(x.f)}</div></div>`).join('')}</div>`).join('')}</div>`);
+  document.getElementById('modalRoot').classList.add('cl-modal-w');
+  document.getElementById('clX').onclick = closeModal;
+  const list = document.getElementById('clList');
+  list.querySelectorAll('.cl-row').forEach(b=>b.onclick = ()=>b.parentElement.classList.toggle('open'));
+  let kind = '';
+  const filter = ()=>{ const q = normalizeText(document.getElementById('clQ').value);
+    list.querySelectorAll('.cl-it').forEach(it=>{ const x = CHANGELOG[+it.dataset.cli]; it.hidden = (kind && x.k!==kind) || (q && !normalizeText(x.t+' '+x.f+' '+(x.v||'')).includes(q)); });
+    list.querySelectorAll('.cl-day').forEach(d=>{ d.hidden = ![...d.querySelectorAll('.cl-it')].some(x=>!x.hidden); }); };
+  document.getElementById('clQ').oninput = filter;
+  document.querySelectorAll('#clF [data-clk]').forEach(b=>b.onclick = ()=>{ kind = b.dataset.clk; document.querySelectorAll('#clF [data-clk]').forEach(x=>x.classList.toggle('active', x===b)); filter(); });
+  try{ localStorage.setItem('es-cl-seen', CHANGELOG[0].d); }catch(e){}
+  clBadge();
+}
+/* long explanations under titles become a „?“ next to the title (the text opens on click) */
+function helpScan(root){
+  if(!root || !root.querySelectorAll) return;
+  root.querySelectorAll('p.section-sub:not([data-hq])').forEach(p=>{
+    if(p.closest('#modalRoot, .no-help, #modalBackdrop')) return;
+    const txt = p.textContent.replace(/\s+/g,' ').trim();
+    if(txt.length < 60 || p.querySelector('input,button,select,textarea,a,label')) return;
+    let hd = p.previousElementSibling;
+    if(hd && !hd.matches('h1,h2,h3,h4,.section-title,.fb-sec')) hd = hd.querySelector('h1,h2,h3,h4,.section-title,.fb-sec');
+    if(!hd) return;
+    p.dataset.hq = '1'; p.hidden = true;
+    if(hd.querySelector(':scope > .help-q')) return;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'help-q hq-auto'; b.dataset.help = txt; b.textContent = '?'; b.title = 'Paaiškinimas';
+    hd.appendChild(b);
+  });
+}
+(function(){
+  const start = ()=>{
+    const m = document.getElementById('main'); if(!m) return;
+    helpScan(m); let q = false;
+    new MutationObserver(()=>{ if(q) return; q = true; requestAnimationFrame(()=>{ q = false; helpScan(m); }); }).observe(m, { childList:true, subtree:true });
+    const b = document.getElementById('clHdr'); if(b){ b.addEventListener('click', clOpen); clBadge(); }
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 /* „?“ next to a title: the explanation opens on click (instead of long texts under everything) */
 document.addEventListener('click', e=>{
