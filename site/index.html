@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-2XkJ9t0yUZZsn7z9qlxCCNRIp6KA8pmPNdb8JkPLEjs=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-4AU/J3g6zy9hxmQk2mCPhers9e9pabZmz7yz+kUVFNc=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4141,6 +4141,12 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .dp-tw .tw-host.off .tw{opacity:.45;} .dp-tw .tw-i{font-size:14px;} .dp-twc{border:0;background:none;color:var(--text-dim);font:inherit;font-size:11px;cursor:pointer;padding:2px;text-align:right;} .dp-twc:hover{color:var(--accent);}
 </style>
 <style id="evNewCss">
+.xg-rent{display:flex;flex-direction:column;gap:3px;margin-top:3px;padding:4px;border-radius:6px;background:rgb(var(--hi-rgb) / .04);}
+.xg-rent input{width:100%;min-width:0;font-size:12px;padding:3px 6px !important;border:1px solid var(--border) !important;border-radius:5px !important;background:var(--input) !important;}
+.xg-rent input.miss{border-color:#E5484D !important;background:color-mix(in srgb, #E5484D 12%, var(--input)) !important;}
+.xg-rent input.miss::placeholder{color:#E5484D;}
+.xg-rk{display:flex;gap:3px;flex-wrap:wrap;} .xg-rk button{flex:1;min-width:0;font:inherit;font-size:11px;padding:3px 4px;border-radius:5px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);cursor:pointer;white-space:nowrap;}
+.xg-rk.miss button{border-color:#E5484D;color:#E5484D;} .xg-rk button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink,#fff);font-weight:700;}
 #modalRoot.gp-modal{max-width:1000px;width:100%;}
 .gp-pop{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin-top:10px;}
 .gp-left,.gp-right{display:flex;flex-direction:column;gap:8px;min-width:0;}
@@ -6138,8 +6144,11 @@ async function rvSync(){
   try{
     await rvLoad(); if(RV.err) return 0;
     if(!EV.loaded && canView('events')) await evLoad();
-    const plates = new Map(), furas = new Map();
-    (EV.events||[]).forEach(ev=>{ if(!ev || ev.deletedAt) return;
+    const plates = new Map(), furas = new Map(), rents = new Map();
+    (EV.events||[]).forEach(ev=>{ if(!ev || ev.deletedAt || !evCounts(ev)) return;
+      (ev.logistics||[]).forEach(l=>{ const x = l.rent; if(!x || !x.kind || !(x.plate || x.company)) return;
+        const pl = utaNorm(x.plate||''), k = pl ? 'p:'+pl : 'c:'+normalizeText(x.company)+':'+x.kind;
+        if(!rents.has(k)) rents.set(k, { x, pl, from:(ev.name||'renginys')+' '+rpWhen(ev.date) }); });
       (ev.logistics||[]).forEach(l=>String(l.vehicle||'').split('\n').map(x=>x.trim()).filter(Boolean).forEach(car=>{
         const k = rpRentKey(car); if(!k) return;
         const from = (ev.kind==='work' ? (ev.title||'Sandėlio darbai') : (ev.name||'renginys'))+' '+rpWhen(ev.date);
@@ -6148,6 +6157,13 @@ async function rvSync(){
       }));
     });
     const add = [];
+    // written in the event as „Nuoma“: supplier, plate, kind
+    rents.forEach(({ x, pl, from }, key)=>{
+      if(pl){ if(RV.all.some(r=>utaNorm(r.plate)===pl)) return; plates.delete('p:'+pl); }
+      else if(RV.all.some(r=>normalizeText(r.company||'')===normalizeText(x.company) && r.kind===x.kind)) return;
+      const o = x.company ? RV.list.find(r=>normalizeText(r.company||'')===normalizeText(x.company)) : null;
+      add.push(Object.assign({ kind:x.kind, plate: pl ? (/^[A-Z]{3}\d{3}$/.test(pl) ? pl.slice(0,3)+' '+pl.slice(3) : pl) : null, name: pl ? '' : (EV_RENT_KINDS.find(k=>k[0]===x.kind)||[])[1]||'', company:x.company||'', source:'auto', note:'Pridėta iš renginio: '+from },
+        o ? { contact_name:o.contact_name||'', phone:o.phone||'', email:o.email||'', price_day:o.kind===x.kind ? o.price_day : null } : {})); });
     plates.forEach((x, key)=>{ const pl = key.slice(2);
       if(RV.all.some(r=>utaNorm(r.plate)===pl || rvStems(r).has('#'+pl))) return;
       let name = x.car.replace(RP_PLATE, '$1').replace(/\s+/g, ' ').trim(), company = '', o = null;
@@ -6334,6 +6350,7 @@ function rvFor(key){
   if(!RV.list.length || !key) return null;
   if(key.startsWith('p:')){ const pl = key.slice(2); return RV.list.find(r=>utaNorm(r.plate)===pl) || RV.list.find(r=>rvStems(r).has('#'+pl)) || null; }
   if(key.startsWith('f:')){ const st = key.slice(2); if(!st) return null; return RV.list.find(r=>r.kind==='truck' && rvStems(r).has(st)) || RV.list.find(r=>rvStems(r).has(st)) || null; }
+  if(key.startsWith('c:')){ const [, c, k] = key.split(':'); if(!c) return null; return RV.list.find(r=>normalizeText(r.company||'')===c && (!k || r.kind===k)) || RV.list.find(r=>normalizeText(r.company||'')===c) || null; }
   return null;
 }
 
@@ -15739,9 +15756,14 @@ function rpLogDate(ev, l){
 function rpRentData(){
   const rows = [], rest = [], furas = {};
   (EV.events||[]).forEach(ev=>{
-    if(!ev || ev.deletedAt) return;
+    if(!ev || ev.deletedAt || !evCounts(ev)) return;
     (ev.logistics||[]).forEach(l=>{
       const date = rpLogDate(ev, l); if(!date || date < RP.from || date > RP.to) return;
+      if(l.rent){ const x = l.rent, pl = utaNorm(x.plate||''), kt = (EV_RENT_KINDS.find(k=>k[0]===x.kind)||[])[1] || 'Transportas';
+        const key = pl ? 'p:'+pl : 'c:'+normalizeText(x.company||'')+':'+(x.kind||'');
+        const kname = pl ? (/^[A-Z]{3}\d{3}$/.test(pl) ? pl.slice(0,3)+' '+pl.slice(3) : pl)+(x.company ? '' : '') : (x.company ? x.company+' – '+kt : kt+' (tiekėjas neįrašytas)');
+        rows.push({ date, car:evRentLabel(x) || 'Nuoma', driver:String(l.driver||'').split('\n').map(s=>s.trim()).filter(Boolean).join(', '), ev:ev.kind==='work' ? (ev.title||'Sandėlio darbai') : (ev.name||ev.title||'Renginys'), evId:ev.id, loc:String(ev.location||'').split('\n')[0], key, kname, rent:x });
+        return; }
       String(l.vehicle||'').split('\n').map(x=>x.trim()).filter(Boolean).forEach(car=>{
         const r0 = { date, car, driver:String(l.driver||'').split('\n').map(x=>x.trim()).filter(Boolean).join(', '), ev:ev.kind==='work' ? (ev.title||'Sandėlio darbai') : (ev.name||ev.title||'Renginys'), evId:ev.id, loc:String(ev.location||'').split('\n')[0] };
         const r = r0, k = rpRentKey(car);
@@ -17131,7 +17153,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v225';
+const APP_VER = 'v226';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18394,12 +18416,15 @@ function evPeopleDatalist(){
   let dp = document.getElementById('dl-positions');
   if(!dp){ dp = document.createElement('datalist'); dp.id = 'dl-positions'; document.body.appendChild(dp); }
   dp.innerHTML = evOpts().positions.map(p=>`<option value="${esc(p)}">`).join('');
+  let drc = document.getElementById('dl-rvcomp');
+  if(!drc){ drc = document.createElement('datalist'); drc.id = 'dl-rvcomp'; document.body.appendChild(drc); }
+  drc.innerHTML = evUniq((typeof RV!=='undefined' ? RV.list : []).map(r=>r.company).concat((evOpts().suppliers||[]).map(s=>s && s.name), EV.events.flatMap(e=>(e.logistics||[]).map(l=>l.rent && l.rent.company)))).sort((a,b)=>a.localeCompare(b,'lt')).map(c=>`<option value="${esc(c)}">`).join('');
   let dor = document.getElementById('dl-evorgs');
   if(!dor){ dor = document.createElement('datalist'); dor.id = 'dl-evorgs'; document.body.appendChild(dor); }
   dor.innerHTML = evOrgList().map(t=>`<option value="${esc(t)}">`).join('');
   let dv = document.getElementById('dl-vehicles');
   if(!dv){ dv = document.createElement('datalist'); dv.id = 'dl-vehicles'; document.body.appendChild(dv); }
-  dv.innerHTML = STATE.vehicles.map(v=>`<option value="${esc(v.name+(v.plate?' '+v.plate:''))}">`).join('') + ['Nuoma','Fura','Kurjeris'].map(x=>`<option value="${x}">`).join('');
+  dv.innerHTML = STATE.vehicles.map(v=>`<option value="${esc(v.name+(v.plate?' '+v.plate:''))}">`).join('') + ['Nuoma','Kurjeris'].map(x=>`<option value="${x}">`).join('');
   let ds = document.getElementById('dl-suppliers');
   if(!ds){ ds = document.createElement('datalist'); ds.id = 'dl-suppliers'; document.body.appendChild(ds); }
   ds.innerHTML = evOpts().suppliers.map(s=>`<option value="${esc(s.name)}">`).join('');
@@ -18497,6 +18522,7 @@ function renderEventsTab(){
   document.getElementById('evGearPlan').onclick = ()=>gearPlan();
   document.getElementById('evImport').onclick = openEventImportModal;
   evZoomWire();
+  if((canView('fleet') || canView('stats')) && typeof rvLoad==='function' && !RV.loaded) rvLoad().then(()=>{ try{ evPeopleDatalist(); }catch(e){} }).catch(()=>{});
   if(canView('people') && typeof ppLoad==='function' && !PP.loaded) ppLoad().then(()=>{ try{ evPeopleDatalist(); }catch(e){} }).catch(()=>{});
   if(canView('venues') && !VEN.loaded) venLoad().catch(()=>{});
   const q = document.getElementById('evQ');
@@ -19260,7 +19286,7 @@ function evColgroup(cols, list){
     mgr: evTextWidth(list, ev=>ev.manager, 90, 280),
     needs: Math.max(evTextWidth(list, ev=>(ev.needs||[]).join('  '), 110, 260, 5.8), evTextWidth(list, ev=>ev.needsNote, 110, 320)),
     notes: evTextWidth(list, ev=>ev.notes, 150, 480, 5.6),
-    log: evTextWidth(list, ev=>(ev.logistics||[]).map(l=>[l.vehicle, l.driver].join('\n')).join('\n'), 160, 320, 6.6) + 30 });
+    log: Math.max(evTextWidth(list, ev=>(ev.logistics||[]).map(l=>[l.vehicle, l.driver, evRentLabel(l.rent)].join('\n')).join('\n'), 160, 320, 6.6) + 30, list.some(ev=>(ev.logistics||[]).some(evLogIsRent)) ? 250 : 0) });
   cols.forEach(c=>{ c.w = phone ? W.crew : evCrewWidth(c, list); c.narrow = !phone && c.w < 100; });
   const keys = ['date','name','needs','loc','org','mgr','tl','tv'];
   const widths = keys.map(k=>W[k]).concat(cols.map(c=>c.w)).concat([W.log, W.notes]);
@@ -19572,6 +19598,20 @@ function evGroupCellHtml(g, gi, simple){
     <div class="xg-adds">${simple ? '' : `<button type="button" data-act="grp-pop" data-g="${gi}" title="Atidaryti: pozicijos, žmonės, laisvi technikai">${slIcon('tune')}</button>`}<button type="button" data-act="add-entry" data-g="${gi}" title="Pridėti žmogų">+<span class="xg-lbl"> žmogus</span></button>${simple?'':`<button type="button" data-act="add-pos" data-g="${gi}" title="Tuščia pozicija (pvz. V1) — raudona, kol neįrašytas žmogus">+<span class="xg-lbl"> poz.</span></button>`}</div>
   </div>`;
 }
+// a rented vehicle: the supplier (e.g. Movie Wheels), the plate and its kind – red until written
+const EV_RENT_KINDS = [['truck','Fūra'], ['box','Būda'], ['van','Mikroautobusas']];
+// reports take only confirmed events (Nepatvirtintas / Atšauktas stay out; events from before statuses count)
+function evCounts(ev){ return !ev.status || ev.status==='conf'; }
+function evLogIsRent(l){ return !!(l && (l.rent || /^\s*nuom/i.test(l.vehicle||''))); }
+function evRentHtml(l, i){
+  const r = l.rent || {};
+  return `<div class="xg-rent">
+    <input type="text" data-l="${i}" data-rk="company" class="${r.company ? '' : 'miss'}" value="${esc(r.company||'')}" placeholder="tiekėjas, pvz. Movie Wheels" data-combo="dl-rvcomp" autocomplete="off">
+    <input type="text" data-l="${i}" data-rk="plate" class="${r.plate ? '' : 'miss'}" value="${esc(r.plate||'')}" placeholder="valst. nr." autocomplete="off">
+    <span class="xg-rk ${r.kind ? '' : 'miss'}">${EV_RENT_KINDS.map(([k, t])=>`<button type="button" data-act="rent-kind" data-i="${i}" data-v="${k}" class="${r.kind===k ? 'on' : ''}">${t}</button>`).join('')}</span>
+  </div>`;
+}
+function evRentLabel(r){ return r ? [r.company, r.plate, (EV_RENT_KINDS.find(k=>k[0]===r.kind)||[])[1]].filter(Boolean).join(' · ') : ''; }
 function evLogCellHtml(ev){
   return `<td class="xg-log" data-cell="log" tabindex="-1">${(ev.logistics||[]).map((l,i)=>`
     <div class="xg-line xg-logl">
@@ -19579,6 +19619,7 @@ function evLogCellHtml(ev){
       <div class="xg-logv">
         <textarea class="xg-ta" rows="1" data-l="${i}" data-k="vehicle" data-combo="dl-vehicles" placeholder="automobilis">${esc(l.vehicle||'')}</textarea>
         <textarea class="xg-ta xg-drv" rows="1" data-l="${i}" data-k="driver" data-combo="dl-people" placeholder="vairuotojas">${esc(l.driver||'')}</textarea>
+        ${evLogIsRent(l) ? evRentHtml(l, i) : ''}
       </div>
       <button type="button" class="xg-x" data-act="del-log" data-i="${i}" title="Pašalinti">×</button>
     </div>`).join('')}
@@ -21417,6 +21458,7 @@ function bindEventListEvents(){
       ev.times[+t.dataset.t][t.dataset.k] = t.value;
       if(t.dataset.k==='time') t.parentElement.classList.toggle('has', !!t.value.trim());
     }
+    else if(t.dataset.rk!==undefined){ const l = ev.logistics[+t.dataset.l]; l.rent = Object.assign({}, l.rent||{}, { [t.dataset.rk]: t.value.trim() }); t.classList.toggle('miss', !t.value.trim()); }
     else if(t.dataset.l!==undefined){ ev.logistics[+t.dataset.l][t.dataset.k] = t.value; }
     else if(t.dataset.g!==undefined && t.dataset.i!==undefined){
       const entry = ev.crew[+t.dataset.g].entries[+t.dataset.i];
@@ -21452,6 +21494,10 @@ function bindEventListEvents(){
     if(t.dataset.f==='organizer'){ const v = t.value.trim(), o = evOpts(); if(v && !o.organizers.some(x=>normalizeText(x)===normalizeText(v))){ o.organizers.push(v); saveState(); }
       const tel = evOrgPhone(v); if(tel && !(ev.organizerPhone||'').trim()){ ev.organizerPhone = tel; evSave(ev); const f = t.closest('td') && t.closest('td').querySelector('[data-f="organizerPhone"]'); if(f) f.value = tel; } }
     if(t.dataset.f==='organizerPhone'){ evOrgPhoneSet(ev.organizer, t.value); }
+    if(t.dataset.l!==undefined && t.dataset.k==='vehicle'){ const l = ev.logistics[+t.dataset.l], rent = /^\s*nuom/i.test(t.value||'');
+      if(rent && !l.rent){ l.rent = {}; evSave(ev); rerenderEventCard(ev); setTimeout(()=>{ const f = document.querySelector('tr[data-ev="'+ev.id+'"] [data-rk="company"][data-l="'+t.dataset.l+'"]'); if(f) f.focus(); }, 30); }
+      else if(!rent && l.rent){ delete l.rent; evSave(ev); rerenderEventCard(ev); } }
+    if(t.dataset.rk!==undefined && typeof rvSyncSoon==='function') rvSyncSoon();
     if(t.dataset.k==='person') setTimeout(evRefreshWidths, 50);
   });
   list.addEventListener('click', e=>{
@@ -21521,6 +21567,7 @@ function bindEventListEvents(){
     else if(act==='add-log'){ (ev.logistics = ev.logistics||[]).push({day:'', vehicle:'', driver:''}); focus = `.xg-log > .xg-logl:nth-of-type(${ev.logistics.length}) [data-k="vehicle"]`; }
     else if(act==='del-log'){ ev.logistics.splice(i,1); }
     else if(act==='del-need'){ ev.needs = (ev.needs||[]).filter(n=>n!==b.dataset.v); }
+    else if(act==='rent-kind'){ const l = ev.logistics[i]; if(!l) return; l.rent = Object.assign({}, l.rent||{}, { kind:b.dataset.v }); if(typeof rvSyncSoon==='function') rvSyncSoon(); }
     else return;
     evUndoPush(ev.id, before);
     evSave(ev); rerenderEventCard(ev);
@@ -31640,6 +31687,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 21:00', v:'v226', k:'new', t:'Renginio transportas: nuoma', f:'Renginio logistikos (transporto) stulpelyje pasirinkus „Nuoma“ atsiranda laukai: tiekėjas (pvz. Movie Wheels – siūlomi jau žinomi), valstybinis numeris ir privalomas tipas – Fūra, Būda arba Mikroautobusas. Kol tiekėjas, numeris ar tipas neįrašyti, jie pažymėti raudonai (išsaugoti galima). Kai renginys patvirtintas (žalias), įrašytas transportas pats atsiranda Transportas → Transporto nuoma, o Ataskaitose (Transporto nuoma) kaupiamas pagal datą su tiekėju ir kaina. Nepatvirtintų ir atšauktų renginių transportas į ataskaitą nepatenka.' },
   { d:'2026-10-03 20:30', v:'v225', k:'new', t:'Komandos stulpelių langas', f:'Renginyje paspaudus Daiktų rūšiavimo, Montavimų, Demontavimo, Budinčių ar Operatorių langelį (arba ⚙ mygtuką) atsidaro langas: diena ir laikas, kiek reikia A / L / V / Crew (budintiems – L / V / A, operatoriams – L/Operatorius, A/Operatorius, VJ) su − / +, pozicijų sąrašas su žmonėmis ir dešinėje technikų sąrašas. Pažymėjus „Rodyti tik laisvus“ rodomi tik tie, kuriems skambinta ir jie pasakė, kad tą dieną gali ar sutiko. Paspaudus žmogų jis įrašomas į laisvą poziciją. Jei pozicijų nėra – jas ar žmones galima įvesti pačiame lange.' },
   { d:'2026-10-03 20:00', v:'v224', k:'chg', t:'Laiko pasirinkimas ratukais', f:'Visur, kur renkamas laikas, – du slenkantys stulpeliai (valandos ir minutės kas 1 min.), pasirinkta eilutė paryškinta pagrindine spalva, apačioje ✓ (gerai) ir ✕ (atšaukti). Renginių lentelėje „Laikai“ ir „diena, laikas“ (Nuo / Iki) – tokie patys ratukai.' },
   { d:'2026-10-03 19:40', v:'v223', k:'new', t:'Organizatoriaus telefonas', f:'Prie organizatoriaus – telefono numeris: renginio lentelėje po organizatoriumi (su mygtuku paskambinti) ir kuriant renginį. Numeris įsimenamas – pasirinkus anksčiau įrašytą organizatorių jo telefonas įrašomas pats.' },
