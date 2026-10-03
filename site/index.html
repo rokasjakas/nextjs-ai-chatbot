@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-683vRwBLR4Mr8vQIn7WkZWW2qY0Ij8MagE0CQ1JR/P8=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Dvh8vDyLD0NsmHr6HfR0irqDyQHKTnkNopBuwzv53vw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -1531,6 +1531,10 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 .mail-text{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;background:rgb(var(--hi-rgb) / .03);border:1px solid var(--border);border-radius:8px;padding:12px;max-height:55vh;overflow:auto;margin:0;}
 .mail-actions{gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center;}
 .mail-compose-text{min-height:200px;resize:vertical;width:100%;}
+.chat-vid{display:flex;flex-direction:column;gap:4px;max-width:min(420px,100%);margin:2px 0 6px;}
+.chat-vid video{display:block;width:100%;max-height:min(60vh,460px);border-radius:10px;background:#000;}
+.chat-vid-dl{display:flex;align-items:center;gap:6px;align-self:flex-start;max-width:100%;background:none;border:0;padding:2px 4px;color:var(--text-dim);font:inherit;font-size:12px;cursor:pointer;}
+.chat-vid-dl:hover{color:var(--text);} .chat-vid-dl svg{width:16px;height:16px;flex:none;} .chat-vid-dl span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .chat-vid-dl small{flex:none;opacity:.8;}
 .chat-file{display:flex;align-items:center;gap:10px;text-align:left;background:rgba(0,0,0,.18);border:1px solid rgb(var(--hi-rgb) / .12);border-radius:10px;padding:8px 10px;margin:0 0 4px;color:inherit;font:inherit;cursor:pointer;max-width:320px;width:100%;}
 .chat-file:hover{background:rgba(0,0,0,.28);}
 .chat-file-ic{font-size:26px;line-height:1;flex:none;}
@@ -17244,7 +17248,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v233';
+const APP_VER = 'v234';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -23171,10 +23175,10 @@ async function sbSignedUrls(bucket, paths){
 }
 async function teamFillImages(root){
   const groups = {};
-  root.querySelectorAll('img[data-bucket][data-path]').forEach(i=>{ (groups[i.dataset.bucket] = groups[i.dataset.bucket]||[]).push(i); });
+  root.querySelectorAll('img[data-bucket][data-path], video[data-bucket][data-path]:not([src])').forEach(i=>{ (groups[i.dataset.bucket] = groups[i.dataset.bucket]||[]).push(i); });
   for(const b of Object.keys(groups)){
     const imgs = groups[b], urls = await sbSignedUrls(b, imgs.map(i=>i.dataset.path));
-    imgs.forEach((img,i)=>{ if(urls[i]) img.src = urls[i]; });
+    imgs.forEach((img,i)=>{ if(urls[i]) img.src = img.tagName==='VIDEO' ? urls[i]+'#t=0.1' : urls[i]; });   // a video: its first frame shows
   }
 }
 function teamAvatar(p, size, withDot){
@@ -26185,6 +26189,7 @@ async function chatOpen(cid){
     <div class="chat-compose">
       <button class="icon-btn" id="chEmoji" title="Emoji">😀</button>
       <label class="icon-btn" title="Nuotraukos" style="cursor:pointer;">📷<input type="file" id="chFiles" accept="image/*" multiple style="display:none;"></label>
+      <label class="icon-btn" title="Vaizdo įrašas (iki 200 MB)" style="cursor:pointer;">🎬<input type="file" id="chVidOld" accept="video/*" multiple style="display:none;"></label>
       <label class="icon-btn" title="Failas (iki 200 MB)" style="cursor:pointer;">📎<input type="file" id="chAny" multiple style="display:none;"></label>
       <button class="icon-btn chat-gif-btn" id="chGif" title="GIF">GIF</button>
       <textarea id="chText" rows="1" placeholder="Rašyk žinutę…"></textarea>
@@ -26201,6 +26206,7 @@ async function chatOpen(cid){
   document.getElementById('chGif').onclick = ()=>chatPanel('gif');
   document.getElementById('chFiles').addEventListener('change', e=>{ const f = Array.from(e.target.files||[]); e.target.value = ''; if(f.length) chatSendFiles(f); });
   document.getElementById('chAny').addEventListener('change', e=>{ const f = Array.from(e.target.files||[]); e.target.value = ''; if(f.length) chatSendAnyFiles(f); });
+  document.getElementById('chVidOld').addEventListener('change', e=>{ const f = Array.from(e.target.files||[]); e.target.value = ''; if(f.length) chatSendAnyFiles(f); });
   chatDrawUploads();
   chatRenderList();
   await chatLoadMessages(cid);
@@ -26239,7 +26245,7 @@ function chatRenderMessages(cid, toBottom){
       : (att.length ? `<div class="chat-att n${Math.min(att.length,4)}">${att.map((a,i)=>a.type==='gif'
             ? `<button class="chat-ph" data-mid="${esc(m.id)}" data-i="${i}"><img src="${esc(a.url)}" alt="GIF" loading="lazy"></button>`
             : `<button class="chat-ph" data-mid="${esc(m.id)}" data-i="${i}"><img data-bucket="chat-files" data-path="${esc(a.path)}" alt=""></button>`).join('')}</div>` : '')
-        + files.map(a=>`<button class="chat-file" data-fpath="${esc(a.path)}" data-fname="${esc(a.name||'failas')}" title="Atsisiųsti"><span class="chat-file-ic">${chatFileIcon(a.name, a.mime)}</span><span class="chat-file-t"><b>${esc(a.name||'failas')}</b><small>${esc(chatSize(a.size))} · atsisiųsti</small></span></button>`).join('')
+        + files.map(a=>chatIsVideo(a) ? chatVideoHtml(a) : `<button class="chat-file" data-fpath="${esc(a.path)}" data-fname="${esc(a.name||'failas')}" title="Atsisiųsti"><span class="chat-file-ic">${chatFileIcon(a.name, a.mime)}</span><span class="chat-file-t"><b>${esc(a.name||'failas')}</b><small>${esc(chatSize(a.size))} · atsisiųsti</small></span></button>`).join('')
         + (m.body ? `<div class="chat-text">${chatLinkify(m.body)}</div>` : '');
     html += `<div class="chat-msg ${mine?'mine':''} ${cont?'cont':''}" data-mid="${esc(m.id)}">
       ${!mine ? `<span class="chat-msg-av">${cont ? '' : teamAvatar(who || {id:m.sender_id}, 30)}</span>` : ''}
@@ -26718,6 +26724,7 @@ async function chatDelete(mid){
 }
 async function chatSendFiles(files){
   const cid = TEAM.open, sb = getSb(); if(!cid || !sb) return;
+  const vids = files.filter(f=>/^video\//.test(f.type)); if(vids.length){ await chatSendAnyFiles(vids); files = files.filter(f=>!vids.includes(f)); if(!files.length) return; }
   const att = [];
   toast('Siunčiama '+files.length+' nuotr.…');
   for(const f of files){
@@ -26738,7 +26745,13 @@ async function chatSendFiles(files){
 const CHAT_MAX_FILE = 200*1024*1024;
 const CHAT_UP = [];   // uploads in progress: {id, cid, name, size, loaded, xhr}
 function chatSize(n){ n = +n||0; return n>=1048576 ? (n/1048576).toFixed(n>=10485760?0:1)+' MB' : Math.max(1, Math.round(n/1024))+' KB'; }
-function chatAttLabel(att){ const f = (att||[]).find(a=>a.type==='file'); return f ? '📎 '+(f.name||'Failas') : '📷 Nuotrauka'; }
+function chatAttLabel(att){ const f = (att||[]).find(a=>a.type==='file'); return f ? (chatIsVideo(f) ? '🎬 Vaizdo įrašas' : '📎 '+(f.name||'Failas')) : '📷 Nuotrauka'; }
+/* videos in the chat: watched right there, and downloaded */
+function chatIsVideo(a){ return !!a && (String(a.mime||'').startsWith('video/') || /\.(mp4|m4v|mov|webm|ogv|3gp)$/i.test(String(a.name||a.path||''))); }
+function chatVideoHtml(a, cls){
+  return `<div class="chat-vid"><video controls playsinline preload="metadata" data-bucket="chat-files" data-path="${esc(a.path)}"></video>
+    <button type="button" class="chat-vid-dl ${cls||''}" data-fpath="${esc(a.path)}" data-fname="${esc(a.name||'video')}" title="Atsisiųsti">${slIcon('download')}<span>${esc(a.name||'video')}</span><small>${esc(chatSize(a.size))}</small></button></div>`;
+}
 function chatFileIcon(name, mime){
   const e = String(name||'').split('.').pop().toLowerCase(), t = String(mime||'');
   if(/pdf/.test(e)) return '📕';
@@ -27466,7 +27479,7 @@ function chatMsgHtml(m, o){
       + (att.length ? `<div class="chat-att sk-att n${Math.min(att.length,4)}">${att.map((a,i)=>a.type==='gif'
             ? `<button class="chat-ph" data-mid="${esc(m.id)}" data-i="${i}"><img src="${esc(a.url)}" alt="GIF" loading="lazy"></button>`
             : `<button class="chat-ph" data-mid="${esc(m.id)}" data-i="${i}"><img data-bucket="chat-files" data-path="${esc(a.path)}" alt=""></button>`).join('')}</div>` : '')
-      + files.map(a=>`<button class="chat-file sk-file" data-fpath="${esc(a.path)}" data-fname="${esc(a.name||'failas')}" title="Atsisiųsti"><span class="chat-file-ic">${chatFileIcon(a.name, a.mime)}</span><span class="chat-file-t"><b>${esc(a.name||'failas')}</b><small>${esc(chatSize(a.size))} · atsisiųsti</small></span></button>`).join('');
+      + files.map(a=>chatIsVideo(a) ? chatVideoHtml(a) : `<button class="chat-file sk-file" data-fpath="${esc(a.path)}" data-fname="${esc(a.name||'failas')}" title="Atsisiųsti"><span class="chat-file-ic">${chatFileIcon(a.name, a.mime)}</span><span class="chat-file-t"><b>${esc(a.name||'failas')}</b><small>${esc(chatSize(a.size))} · atsisiųsti</small></span></button>`).join('');
   return `<div class="sk-msg ${o.cont?'cont':''} ${mine?'mine':''}" data-mid="${esc(m.id)}">
     <div class="sk-av">${o.cont ? `<span class="sk-ctime">${esc(chatHM(m.created_at))}</span>` : teamAvatar(who || {id:m.sender_id}, 36)}</div>
     <div class="sk-body">
@@ -27615,6 +27628,7 @@ function chatComposerHtml(p, placeholder, extra){
       ${main ? '<button class="sk-cb sk-gif" data-cact="gif" title="GIF">GIF</button>' : ''}
       <input type="file" id="${main?'chFiles':'thFiles'}" accept="image/*" multiple style="display:none;">
       <input type="file" id="${main?'chAny':'thAny'}" multiple style="display:none;">
+      <input type="file" id="${main?'chVid':'thVid'}" accept="video/*" multiple style="display:none;">
       <span style="flex:1"></span>
       <button class="sk-send" id="${p}Send" title="Siųsti (Enter)">${SK_ICON.send}</button>
     </div>
@@ -27636,9 +27650,11 @@ function chatBindComposer(p, ctx){
   const imgIn = document.getElementById(p==='ch'?'chFiles':'thFiles'), anyIn = document.getElementById(p==='ch'?'chAny':'thAny');
   imgIn.addEventListener('change', e=>{ const f = Array.from(e.target.files||[]); e.target.value = ''; if(f.length) chatSendFilesTo(f, ctx, true); });
   anyIn.addEventListener('change', e=>{ const f = Array.from(e.target.files||[]); e.target.value = ''; if(f.length) chatSendFilesTo(f, ctx, false); });
+  const vidIn = document.getElementById(p==='ch'?'chVid':'thVid');
+  vidIn.addEventListener('change', e=>{ const f = Array.from(e.target.files||[]); e.target.value = ''; if(f.length) chatSendFilesTo(f, ctx, false); });
   comp.querySelectorAll('[data-cact]').forEach(b=>b.onclick = e=>{
     const a = b.dataset.cact;
-    if(a==='attach') evPopMenu(b, [{ html:'📷 Nuotrauka', fn:()=>imgIn.click() }, { html:'📎 Failas (iki 200 MB)', fn:()=>anyIn.click() }]);
+    if(a==='attach') evPopMenu(b, [{ html:'📷 Nuotrauka', fn:()=>imgIn.click() }, { html:'🎬 Vaizdo įrašas (iki 200 MB)', fn:()=>vidIn.click() }, { html:'📎 Failas (iki 200 MB)', fn:()=>anyIn.click() }]);
     if(a==='tools'){ TEAM.hideTools = !chatToolsHidden(); document.querySelectorAll('.sk-tools').forEach(t=>t.classList.toggle('hidden', TEAM.hideTools)); }
     if(a==='emoji'){ if(p==='ch') chatPanel('emoji'); else chatEmojiPop(b, ta); }
     if(a==='gif') chatPanel('gif');
@@ -31959,6 +31975,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 00:10', v:'v234', k:'new', t:'Video chate', f:'Chate per „+“ atsirado „Vaizdo įrašas“: galima įkelti video iš kompiuterio ar telefono (iki 200 MB). Video rodomas pačioje žinutėje su grotuvu – žiūrima neišėjus iš chato, galima per visą ekraną, o po juo – mygtukas atsisiųsti. Video, pasirinktas kaip nuotrauka, irgi siunčiamas nesuspaustas kaip video.' },
   { d:'2026-10-03 23:40', v:'v233', k:'fix', t:'Skambučio langeliai kvadratiniai', f:'Vaizdo skambutyje kiekvienas dalyvis dabar rodomas kvadratiniame langelyje, langeliai dedami šalia vienas kito ir sutalpinami į ekraną (telefone ir kompiuteryje). Veidas nebenukerpamas kaip plačiame horizontaliame lange; išjungus kamerą rodoma nuotrauka arba vardo ir pavardės pirmosios raidės.' },
   { d:'2026-10-03 23:10', v:'v232', k:'new', t:'Savas fonas ir Ofiso / Sandėlio plytelės', f:'Pagrindiniame puslapyje Ofiso ir Sandėlio plytelėse vietoje atsitiktinės informacijos mažomis raidėmis rodomi tos grupės įrankiai (narys pats susidėliotos tvarkos). Profilis → Išvaizda → Fonas: kiekvienas narys gali įkelti savo paveikslėlį visam puslapiui ir nustatyti patamsinimą – kiti narių fonų nemato.' },
   { d:'2026-10-03 22:50', v:'v231', k:'fix', t:'Skambinti per telefoną – pasenusi registracija', f:'Mygtukas pervadintas į „Skambinti“. Jei telefono pranešimų registracija sukurta su senu raktu („VAPID public key mismatch“), ji dabar automatiškai pašalinama ir parodomas aiškus paaiškinimas: telefone atidaryti programėlę – ji užsiregistruoja iš naujo. Reikia įdiegti atnaujintą push-notify funkciją.' },
