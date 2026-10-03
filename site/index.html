@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-6KeBU1O2NjLSe4ZzLIxNp91q2KMAMg4NRgziKCCcteA=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Wq3L2a+VGbXCsD85HL5MlaPDdEWJA9fQEMmip9FbcmM=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3231,6 +3231,31 @@ input.inv-autof{border-color:var(--ok) !important;box-shadow:0 0 0 2px rgb(80 17
 /* Sukurti projektą */
 .np .fb-sec{display:flex;align-items:center;gap:6px;}
 .np-st{background:color-mix(in srgb, var(--c) 22%, transparent);color:var(--c);border:1px solid color-mix(in srgb, var(--c) 45%, transparent);}
+.np-vt{margin-left:auto;} .np-vt button{display:inline-flex;align-items:center;gap:6px;} .np-vt svg{width:16px;height:16px;}
+.np-tcard{margin-top:14px;padding:0;overflow:hidden;}
+.np-tbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--text-dim);}
+.np-tbar.on{background:color-mix(in srgb, var(--accent) 12%, transparent);color:var(--text);}
+.np-tbar .btn svg{width:15px;height:15px;}
+.np-tw{overflow-x:auto;scrollbar-width:thin;}
+table.np-t{width:100%;border-collapse:collapse;font-size:13px;}
+table.np-t th{position:sticky;top:0;z-index:1;background:var(--panel);text-align:left;font-size:12px;font-weight:800;color:var(--text);padding:12px 10px;border-bottom:1px solid var(--border-2,var(--border));white-space:nowrap;cursor:pointer;user-select:none;}
+table.np-t th:hover{color:var(--accent);} table.np-t th.on{color:var(--accent);} table.np-t th i{font-style:normal;font-size:9px;margin-left:5px;}
+table.np-t th.np-tc,table.np-t th.np-tcol{cursor:default;}
+table.np-t td{padding:10px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle;}
+table.np-t tbody tr{cursor:pointer;transition:background .12s;} table.np-t tbody tr:hover{background:rgb(var(--hi-rgb) / .05);} table.np-t tbody tr.sel{background:color-mix(in srgb, var(--accent) 10%, transparent);}
+table.np-t tbody tr:last-child td{border-bottom:0;} table.np-t tr.np-done td{opacity:.6;}
+table.np-t td.num{font-variant-numeric:tabular-nums;}
+table.np-t .np-tsep{border-right:1px solid var(--border-2,var(--border));}
+.np-tc{width:34px;padding-right:0 !important;} .np-tcol{width:50px;}
+.np-tsel{display:inline-flex;cursor:pointer;} .np-tsel input{width:17px;height:17px;margin:0;accent-color:var(--accent);cursor:pointer;}
+.np-tdot{display:block;width:18px;height:18px;border-radius:50%;}
+.np-tname{font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;}
+.np-tst{display:inline-flex;align-items:center;gap:6px;} .np-tst::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--c);flex:none;}
+.np-tprog{display:inline-flex;gap:8px;align-items:center;}
+.np-pg{display:inline-flex;align-items:center;gap:3px;color:var(--text-faint);} .np-pg svg{width:17px;height:17px;} .np-pg small{font-size:10.5px;font-weight:700;}
+.np-pg.ok{color:#50AD97;} .np-pg.bad{color:#F35E7D;} .np-pg.mid{color:#F2A93B;}
+.np-tloc{max-width:170px;overflow:hidden;text-overflow:ellipsis;}
+.np-tact{text-align:right;} .np-tact .icon-btn{width:30px;height:30px;} .np-tact svg{width:17px;height:17px;}
 .np-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
 .np-list .card + .card{margin-top:0;}
 .np-item{display:flex;justify-content:space-between;gap:12px;text-align:left;cursor:pointer;color:var(--text);font:inherit;width:100%;border-left:4px solid var(--c) !important;}
@@ -11252,11 +11277,12 @@ function npListRender(){
         <select id="npPer" data-ro-ok>${NP_PERIODS.map(([k,l])=>`<option value="${k}" ${P.k===k?'selected':''}>${l}</option>`).join('')}</select>
         ${P.k==='custom' ? `<label>Nuo <input type="date" id="npPerFrom" value="${npE(P.from)}" data-ro-ok></label><label>Iki <input type="date" id="npPerTo" value="${npE(P.to)}" data-ro-ok></label>` : `<small>${npE(perText)}</small>`}
         <small class="np-per-n">Rodoma <b>${list.length}</b> iš ${all.length}</small>
+        <span class="viewmode-toggle np-vt" data-ro-ok>${[['table','Lentelė','menu'],['cards','Kortelės','gridview']].map(([k,l,ic])=>`<button type="button" data-npview="${k}" class="${npView()===k?'active':''}" title="${l}">${slIcon(ic)}<span>${l}</span></button>`).join('')}</span>
       </div>
       <div class="of-search"><input type="search" id="npQ" placeholder="Ieškoti: pavadinimas, klientas, vieta, žyma, numeris…" value="${npE(NP.q)}"></div>
     </div>
     ${NP.err ? `<div class="card mail-err">${npE(NP.err)}</div>` : ''}
-    <div class="np-list">${list.map(p=>{
+    ${npView()==='table' ? npTableHtml(list, all.length ? (inPer.length ? 'Nieko nerasta.' : 'Šiuo laikotarpiu projektų nėra. Pasirink kitą laikotarpį arba „Visi“.') : 'Projektų dar nėra. Spausk „+ Naujas projektas“.') : `<div class="np-list">${list.map(p=>{
       const d = p.data, sp = npProjSpan(d), t = npTotals(d), sh = npShortages(d, npBusyIndex(p)).length;
       return `<div class="card np-item ${npIsDone(p) ? 'np-done' : ''}" role="button" tabindex="0" data-npopen="${npE(p.id)}" data-ro-ok style="--c:${npE(d.color||'#4E9BC9')}">
         <span class="np-main"><span class="np-namerow"><b>${d.number ? `<span class="np-num">${npE(d.number)}</span> ` : ''}${npE(d.name||'Be pavadinimo')}</b>
@@ -11274,17 +11300,82 @@ function npListRender(){
           ${(d.tags||[]).length ? `<span class="np-tags">${d.tags.map(x=>`<span>${npE(x)}</span>`).join('')}</span>` : ''}
           <span class="np-item-act">
             <button class="btn small" data-ro-ok data-nppdf="${npE(p.id)}" title="Išsaugoti PDF">📄 PDF</button></span></span>
-      </div>`; }).join('') || `<div class="card empty-state">${all.length ? (inPer.length ? 'Nieko nerasta.' : 'Šiuo laikotarpiu projektų nėra. Pasirink kitą laikotarpį arba „Visi“.') : 'Projektų dar nėra. Spausk „+ Naujas projektas“.'}</div>`}</div>
+      </div>`; }).join('') || `<div class="card empty-state">${all.length ? (inPer.length ? 'Nieko nerasta.' : 'Šiuo laikotarpiu projektų nėra. Pasirink kitą laikotarpį arba „Visi“.') : 'Projektų dar nėra. Spausk „+ Naujas projektas“.'}</div>`}</div>`}
   </div>`;
+  npTableWire(main, list);
   main.querySelectorAll('[data-npst]').forEach(b=>b.onclick = ()=>{ NP.st = b.dataset.npst; npRender(); });
   const q = document.getElementById('npQ'); q.oninput = ()=>{ NP.q = q.value; clearTimeout(q._t); q._t = setTimeout(()=>{ npRender(); const x = document.getElementById('npQ'); x.focus(); x.selectionStart = x.selectionEnd = x.value.length; }, 250); };
   document.getElementById('npPer').onchange = e=>{ P.k = e.target.value; if(P.k==='custom' && !P.from && !P.to){ const r = range; P.from = r[0] || calISO(new Date()); P.to = r[1] || ''; } try{ localStorage.setItem('npPer', JSON.stringify(P)); }catch(err){} npRender(); };
   [['npPerFrom','from'],['npPerTo','to']].forEach(([id, k])=>{ const el = document.getElementById(id); if(el) el.addEventListener('change', ()=>{ P[k] = el.value; try{ localStorage.setItem('npPer', JSON.stringify(P)); }catch(err){} npRender(); }); });
-  main.querySelectorAll('[data-npopen]').forEach(b=>{ b.onclick = e=>{ if(e.target.closest('button')) return; npOpen(b.dataset.npopen); }; b.onkeydown = e=>{ if(e.key==='Enter' && e.target===b) npOpen(b.dataset.npopen); }; });
+  main.querySelectorAll('[data-npview]').forEach(b=>b.onclick = ()=>{ try{ localStorage.setItem('npView', b.dataset.npview); }catch(err){} npRender(); });
+  main.querySelectorAll('[data-npopen]').forEach(b=>{ b.onclick = e=>{ if(e.target.closest('button, input, label, .np-tsel')) return; npOpen(b.dataset.npopen); }; b.onkeydown = e=>{ if(e.key==='Enter' && e.target===b) npOpen(b.dataset.npopen); }; });
   main.querySelectorAll('[data-nppdf]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); const p = NP.list.find(x=>x.id===b.dataset.nppdf); if(p) npPdfModal(p); });
   main.querySelectorAll('[data-npload]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); const p = NP.list.find(x=>x.id===b.dataset.npload); if(p) npGoLoad(p, 'sort'); });
   const nb = document.getElementById('npNew'); if(nb) nb.onclick = ()=>npNewModal();
   document.getElementById('npTpls').onclick = npTplManager;
+}
+/* ---------- the list as a table (like Rentman): one row per project, sortable columns ---------- */
+function npView(){ try{ return localStorage.getItem('npView')==='cards' ? 'cards' : 'table'; }catch(e){ return 'table'; } }
+const NP_WD = ['Sekmadienis','Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis'];
+function npDayText(ms){ if(!isFinite(ms)) return '—'; const d = new Date(ms); return NP_WD[d.getDay()]+' '+String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear(); }
+function npCreator(p){ const d = p.data; const m = p.created_by && typeof teamMember==='function' ? teamMember(p.created_by) : null; return d.createdByName || (m ? teamName(m) : '') || npManagerName(d); }
+// each row's values, also used for sorting and the Excel file
+function npRowVals(p){
+  const d = p.data, sp = npProjSpan(d), t = npTotals(d), st = npStatus(d);
+  return { p, d, sp, t, st, name:(d.number ? d.number+' ' : '')+(d.name||'Be pavadinimo'), stText:npSt(st)[1], a:sp ? sp[0] : Infinity, b:sp ? sp[1] : Infinity,
+    who:npCreator(p), loc:d.location.name || d.location.address || '', short:npShortages(d, npBusyIndex(p)).length, ls:npLoadSummary(p) };
+}
+const NP_COLS = [
+  ['name','Pavadinimas', r=>r.name], ['st','Projekto būsena', r=>r.stText], ['a','Planavimo pradžia', r=>r.a], ['w','Bendras svoris', r=>r.t.weight],
+  ['v','Bendras tūris', r=>r.t.volume], ['b','Planavimo pabaiga', r=>r.b], ['prog','Eiga', r=>(r.short ? 0 : 1) + (r.ls ? (r.ls.done ? 2 : (r.ls.L||r.ls.S)/r.ls.T) : 0)],
+  ['pw','Bendra galia', r=>r.t.power], ['who','Vardas, pavardė (sukūrė)', r=>r.who], ['loc','Vieta', r=>r.loc],
+];
+function npTableHtml(list, empty){
+  if(!list.length) return `<div class="card empty-state" style="margin-top:14px;">${npE(empty)}</div>`;
+  const S = NP.sort || (NP.sort = { k:'', dir:1 }), sel = NP.sel || (NP.sel = new Set());
+  let rows = list.map(npRowVals);
+  const col = NP_COLS.find(c=>c[0]===S.k);
+  if(col) rows.sort((x, y)=>{ const a = col[2](x), b = col[2](y); return (typeof a==='number' && typeof b==='number' ? (a===b ? 0 : a < b ? -1 : 1) : String(a).localeCompare(String(b), 'lt', { numeric:true })) * S.dir; });
+  const ids = rows.map(r=>r.p.id), nSel = ids.filter(i=>sel.has(i)).length, allOn = nSel===ids.length;
+  const n2 = x=>Number(x||0).toLocaleString('lt-LT', { minimumFractionDigits:2, maximumFractionDigits:2 });
+  const prog = r=>{
+    const a = r.short ? `<span class="np-pg bad" title="Trūksta įrangos: ${r.short}">${slIcon('package')}</span>` : `<span class="np-pg ok" title="Įrangos užtenka">${slIcon('package')}</span>`;
+    const l = !r.ls ? `<span class="np-pg" title="Rūšiavimas ir krovimas nepradėti">${slIcon('check')}</span>`
+      : r.ls.done ? `<span class="np-pg ok" title="Krovimas baigtas">${slIcon('check')}</span>`
+      : `<span class="np-pg mid" title="${r.ls.S ? 'Atrūšiuota '+Math.round(r.ls.S/r.ls.T*100)+'%' : ''}${r.ls.L ? ' · pakrauta '+Math.round(r.ls.L/r.ls.T*100)+'%' : ''}">${slIcon('check')}<small>${Math.round(Math.max(r.ls.S, r.ls.L)/r.ls.T*100)}%</small></span>`;
+    return a + l;
+  };
+  return `<div class="card np-tcard">
+    <div class="np-tbar ${nSel ? 'on' : ''}"><span>${nSel ? `Pažymėta: <b>${nSel}</b>` : `Projektų: <b>${rows.length}</b>`}</span>
+      <span class="row" style="gap:6px;">${nSel ? '<button type="button" class="btn small" data-ro-ok id="npSelClr">Atžymėti</button>' : ''}<button type="button" class="btn small" data-ro-ok id="npXls" title="${nSel ? 'Pažymėtus' : 'Visus rodomus'} projektus į Excel">${slIcon('download')} Excel</button></span></div>
+    <div class="np-tw"><table class="np-t"><thead><tr>
+      <th class="np-tc"><label class="np-tsel"><input type="checkbox" id="npSelAll" data-ro-ok ${allOn ? 'checked' : ''}></label></th><th class="np-tcol">Spalva</th>
+      ${NP_COLS.map(([k,l])=>`<th data-npsort="${k}" class="${S.k===k ? 'on' : ''} ${k==='st' ? 'np-tsep' : ''}">${l}${S.k===k ? `<i>${S.dir>0 ? '▲' : '▼'}</i>` : ''}</th>`).join('')}<th></th></tr></thead>
+      <tbody>${rows.map(r=>`<tr data-npopen="${npE(r.p.id)}" tabindex="0" class="${sel.has(r.p.id) ? 'sel' : ''} ${npIsDone(r.p) ? 'np-done' : ''}">
+        <td class="np-tc"><label class="np-tsel"><input type="checkbox" data-npsel="${npE(r.p.id)}" data-ro-ok ${sel.has(r.p.id) ? 'checked' : ''}></label></td>
+        <td class="np-tcol"><i class="np-tdot" style="background:${npE(r.d.color||'#4E9BC9')}"></i></td>
+        <td class="np-tname">${r.d.number ? `<span class="np-num">${npE(r.d.number)}</span> ` : ''}${npE(r.d.name||'Be pavadinimo')}</td>
+        <td class="np-tsep"><span class="np-tst" style="--c:${npSt(r.st)[2]}">${npE(r.stText)}</span></td>
+        <td>${npE(npDayText(r.a))}</td><td class="num">${n2(r.t.weight)} kg</td><td class="num">${n2(r.t.volume)} m³</td><td>${npE(npDayText(r.b))}</td>
+        <td><span class="np-tprog">${prog(r)}</span></td><td class="num">${n2(r.t.power)} W</td><td>${npE(r.who)}</td><td class="np-tloc">${npE(r.loc)}</td>
+        <td class="np-tact">${canView('sort') && r.t.count ? `<button type="button" class="icon-btn" data-ro-ok data-npload="${npE(r.p.id)}" title="Rūšiavimas">${slIcon('sorting')}</button>` : ''}<button type="button" class="icon-btn" data-ro-ok data-nppdf="${npE(r.p.id)}" title="PDF">${slIcon('file')}</button></td>
+      </tr>`).join('')}</tbody></table></div></div>`;
+}
+function npTableWire(main, list){
+  const tb = main.querySelector('.np-t'); if(!tb) return;
+  const sel = NP.sel, ids = [...tb.querySelectorAll('tbody tr')].map(r=>r.dataset.npopen);
+  tb.querySelectorAll('[data-npsort]').forEach(th=>th.onclick = ()=>{ const k = th.dataset.npsort; NP.sort = NP.sort.k===k ? (NP.sort.dir>0 ? { k, dir:-1 } : { k:'', dir:1 }) : { k, dir:1 }; npRender(); });
+  tb.querySelectorAll('[data-npsel]').forEach(c=>c.onchange = ()=>{ if(c.checked) sel.add(c.dataset.npsel); else sel.delete(c.dataset.npsel); npRender(); });
+  const all = document.getElementById('npSelAll'); if(all) all.onchange = ()=>{ ids.forEach(i=>all.checked ? sel.add(i) : sel.delete(i)); npRender(); };
+  const clr = document.getElementById('npSelClr'); if(clr) clr.onclick = ()=>{ sel.clear(); npRender(); };
+  const x = document.getElementById('npXls'); if(x) x.onclick = async ()=>{
+    if(!window.XLSX && !(await libNeed('xlsx'))){ toast('Excel biblioteka neįsikėlė – patikrink ryšį.'); return; }
+    const pick = ids.filter(i=>sel.has(i)), use = (pick.length ? pick : ids).map(i=>npRowVals(NP.list.find(p=>p.id===i)));
+    const aoa = [['Pavadinimas','Projekto būsena','Planavimo pradžia','Bendras svoris, kg','Bendras tūris, m³','Planavimo pabaiga','Bendra galia, W','Sukūrė','Vieta']]
+      .concat(use.map(r=>[r.name, r.stText, isFinite(r.a) ? npFmt(r.a) : '', Math.round(r.t.weight*100)/100, Math.round(r.t.volume*100)/100, isFinite(r.b) ? npFmt(r.b) : '', Math.round(r.t.power), r.who, r.loc]));
+    const wb = XLSX.utils.book_new(), ws = XLSX.utils.aoa_to_sheet(aoa); ws['!cols'] = [{wch:36},{wch:16},{wch:17},{wch:12},{wch:12},{wch:17},{wch:12},{wch:22},{wch:24}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Projektai'); XLSX.writeFile(wb, 'Projektai_'+calISO(new Date())+'.xlsx');
+  };
 }
 function npManagerName(d){ const m = d.manager && typeof teamMember==='function' ? teamMember(d.manager) : null; return m ? teamName(m) : (d.managerName || d.createdByName || '—'); }
 
@@ -17273,7 +17364,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v235';
+const APP_VER = 'v236';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32007,6 +32098,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 01:10', v:'v236', k:'new', t:'Projektai – lentelė', f:'Projektų sąrašas dabar rodomas lentele kaip Rentman: spalva, pavadinimas, būsena, planavimo pradžia ir pabaiga (su savaitės diena), bendras svoris, tūris, galia, eiga (ar užtenka įrangos, rūšiavimas/krovimas), kas sukūrė ir vieta. Stulpelius galima rikiuoti paspaudus antraštę, projektus pažymėti varnelėmis ir atsisiųsti į Excel. Mygtukas „Kortelės“ grąžina ankstesnį vaizdą.' },
   { d:'2026-10-04 00:40', v:'v235', k:'chg', t:'Greitesnis atidarymas, balsavimo jungiklis', f:'Programa (naršyklėje, Windows programoje ir telefone) atsidaro iš karto iš įrašytos kopijos – nebelaukiama tinklo ir nesiunčiamas visas puslapis kas kartą. Išėjus naujai versijai programa pasiūlo persikrauti. Prieiga tikrinama fone, o didelės bibliotekos (Excel, 3D) kraunamos tik kai prireikia. Admin → Balsavimai: nauji mygtukai Įjungti / Išjungti; kol išjungta, balsavimas niekaip neįtakoja programos.' },
   { d:'2026-10-04 00:10', v:'v234', k:'new', t:'Video chate', f:'Chate per „+“ atsirado „Vaizdo įrašas“: galima įkelti video iš kompiuterio ar telefono (iki 200 MB). Video rodomas pačioje žinutėje su grotuvu – žiūrima neišėjus iš chato, galima per visą ekraną, o po juo – mygtukas atsisiųsti. Video, pasirinktas kaip nuotrauka, irgi siunčiamas nesuspaustas kaip video.' },
   { d:'2026-10-03 23:40', v:'v233', k:'fix', t:'Skambučio langeliai kvadratiniai', f:'Vaizdo skambutyje kiekvienas dalyvis dabar rodomas kvadratiniame langelyje, langeliai dedami šalia vienas kito ir sutalpinami į ekraną (telefone ir kompiuteryje). Veidas nebenukerpamas kaip plačiame horizontaliame lange; išjungus kamerą rodoma nuotrauka arba vardo ir pavardės pirmosios raidės.' },
