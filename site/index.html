@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-rqEQJZsRdLRkK3itjjyPyHUrOmgAvY50sEEutHhk+9k=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-p5Hlr9Zf1dQiUhugy+R/IOiOflQJN42ilNjqFMQyzac=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -2585,118 +2585,167 @@ main.fit-screen{padding-bottom:12px;}
   .of-side-panel{top:calc(var(--head-h,0px) + 12px) !important;max-height:calc(100vh - var(--head-h,0px) - 24px);overflow-y:auto;scrollbar-width:thin;}
   .mail-page:not(.mail-off) .mail-pane{top:calc(var(--head-h,0px) + 12px) !important;}
 }
-/* ---------- El. paštas (kaip Roundcube) ---------- */
+/* ---------- El. paštas (kaip Roundcube; išvaizda – kaip Gmail) ---------- */
 main.mail-full{padding:0;max-width:none;}
-.ml{display:grid;grid-template-columns:230px minmax(300px,420px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);border-top:1px solid var(--border);background:var(--bg);min-height:360px;}
-.ml.ml-off{grid-template-columns:1fr;grid-template-rows:1fr;}
+/* the look: the app's colours with Gmail's layout – a pill „Rašyti“, pill folders,
+   the list and the letter on one rounded sheet, round icon buttons */
+.ml{--ml-r:16px;--ml-sel:color-mix(in srgb, var(--accent) 20%, transparent);display:grid;grid-template-columns:240px minmax(320px,440px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);background:var(--bg);min-height:360px;padding:10px 12px 12px 0;}
+.ml.ml-off{grid-template-columns:1fr;grid-template-rows:1fr;padding:0;}
 .ml.ml-off .ml-side,.ml.ml-off .ml-bar,.ml.ml-off .ml-read{display:none;}
-.ml.ml-off .ml-list{grid-column:1;grid-row:1;border:0;align-items:center;justify-content:flex-start;padding:30px 16px;overflow:auto;}
+.ml.ml-off .ml-list{grid-column:1;grid-row:1;border:0;border-radius:0;background:none;align-items:center;justify-content:flex-start;padding:30px 16px;overflow:auto;}
 .ml-connect{max-width:560px;width:100%;}
-.ml-side{grid-column:1;grid-row:1/3;background:var(--rail-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0;padding:12px 10px;gap:10px;}
-.ml-compose{width:100%;justify-content:center;gap:8px;}
-.ml-compose .ml-i{width:18px;height:18px;}
-.ml-folders{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;min-height:0;}
-.ml-f{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;color:var(--text-dim);font:inherit;font-size:14.5px;text-align:left;padding:8px 10px 8px 12px;border-radius:var(--radius);cursor:pointer;}
-.ml-f .ml-i{width:18px;height:18px;flex:none;}
-.ml-f:hover{background:var(--panel-2);color:var(--text);}
-.ml-f.on{background:rgb(var(--hi-rgb) / .07);color:var(--text);box-shadow:inset 3px 0 0 var(--accent);}
-.ml-f.has{color:var(--text);font-weight:700;}
+.ml-side{grid-column:1;grid-row:1/3;display:flex;flex-direction:column;min-height:0;padding:2px 12px 0 0;gap:14px;}
+.ml-compose{align-self:flex-start;margin-left:10px;height:56px;padding:0 24px 0 18px;border-radius:var(--ml-r) !important;gap:12px;font-size:14.5px;font-weight:600;background:var(--ml-sel) !important;color:var(--text) !important;border:0 !important;box-shadow:0 1px 3px rgb(0 0 0 / .18);transition:box-shadow .15s, background .15s;}
+.ml-compose:hover{box-shadow:0 3px 10px rgb(0 0 0 / .28);background:color-mix(in srgb, var(--accent) 30%, transparent) !important;}
+.ml-compose .ml-i{width:20px;height:20px;}
+.ml-folders{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;min-height:0;scrollbar-width:thin;}
+.ml-f{display:flex;align-items:center;gap:14px;width:100%;background:none;border:0;color:var(--text);font:inherit;font-size:14px;text-align:left;height:34px;padding:0 14px 0 22px;border-radius:0 999px 999px 0;cursor:pointer;flex:none;}
+.ml-f .ml-i{width:18px;height:18px;flex:none;color:var(--text-dim);}
+.ml-f:hover{background:rgb(var(--hi-rgb) / .07);}
+.ml-f.on{background:var(--ml-sel);font-weight:700;}
+.ml-f.on .ml-i{color:var(--text);}
+.ml-f.has{font-weight:700;}
 .ml-fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.ml-fc{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--accent);color:var(--accent-ink,#fff);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;}
-.ml-side-foot{display:flex;align-items:center;gap:6px;border-top:1px solid var(--border);padding-top:8px;font-size:12px;color:var(--text-dim);}
+.ml-fc{font-size:12.5px;font-weight:700;color:var(--text);}
+.ml-side-foot{display:flex;align-items:center;gap:6px;border-top:1px solid var(--border);padding:8px 0 4px 22px;font-size:12px;color:var(--text-dim);}
 .ml-side-foot span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.ml-bar{grid-column:2/4;grid-row:1;display:flex;align-items:center;gap:2px;padding:6px 10px;border-bottom:1px solid var(--border);background:var(--panel);min-width:0;overflow-x:auto;scrollbar-width:none;}
-.ml-tb{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:62px;height:50px;padding:0 6px;background:none;border:0;border-radius:var(--radius);color:var(--text);font:inherit;font-size:11.5px;cursor:pointer;flex:none;}
-.ml-tb .ml-i{width:20px;height:20px;}
-.ml-tb:hover:not(:disabled){background:var(--panel-2);}
-.ml-tb:disabled{opacity:.35;cursor:default;}
-.ml-tb-s{min-width:32px;height:32px;}
+.ml-bar{grid-column:2/4;grid-row:1;display:flex;align-items:center;gap:2px;padding:8px 12px 8px 10px;border-bottom:1px solid var(--border);background:var(--panel);border-radius:var(--ml-r) var(--ml-r) 0 0;min-width:0;overflow-x:auto;scrollbar-width:none;}
+.ml-tb{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;background:none;border:0;border-radius:50%;color:var(--text);font:inherit;font-size:11.5px;cursor:pointer;flex:none;transition:background .12s;}
+.ml-tb span{display:none;}
+.ml-tb .ml-i{width:19px;height:19px;}
+.ml-tb:hover:not(:disabled){background:rgb(var(--hi-rgb) / .09);}
+.ml-tb:disabled{opacity:.3;cursor:default;}
+.ml-tb-s{width:32px;height:32px;}
 .ml-tb-s .ml-i{width:17px;height:17px;}
-.ml-tsep{width:1px;height:30px;background:var(--border);margin:0 4px;flex:none;}
+.ml-tsep{width:1px;height:22px;background:var(--border);margin:0 6px;flex:none;}
 .ml-tflex{flex:1;min-width:8px;}
-.ml-search{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:0 4px 0 10px;width:260px;flex:none;color:var(--text-dim);}
-.ml-search .ml-i{width:16px;height:16px;}
-.ml-search input{flex:1;min-width:0;background:none !important;border:0 !important;box-shadow:none !important;color:var(--text);padding:8px 0 !important;outline:none;}
-.ml-sf{background:none;border:0;color:var(--text-dim);width:30px;height:30px;border-radius:var(--radius);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+.ml-search{display:flex;align-items:center;gap:8px;background:rgb(var(--hi-rgb) / .07);border:1px solid transparent;border-radius:999px;padding:0 6px 0 16px;width:min(46%, 560px);min-width:220px;flex:none;color:var(--text-dim);transition:background .15s, border-color .15s, box-shadow .15s;}
+.ml-search:focus-within{background:var(--bg);border-color:var(--border);box-shadow:0 1px 6px rgb(0 0 0 / .25);}
+.ml-search .ml-i{width:18px;height:18px;}
+.ml-search input{flex:1;min-width:0;background:none !important;border:0 !important;box-shadow:none !important;color:var(--text);padding:11px 0 !important;outline:none;font-size:15px;}
+.ml-sf{background:none;border:0;color:var(--text-dim);width:34px;height:34px;border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
 .ml-sf.on{color:var(--accent);}
-.ml-sf:hover{background:var(--panel-2);color:var(--text);}
-.ml-list{grid-column:2;grid-row:2;border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--bg);}
-.ml-lh{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);}
-.ml-lh b{font-family:var(--font-head);font-weight:500;font-size:20px;text-transform:uppercase;letter-spacing:.3px;line-height:1;}
+.ml-sf:hover{background:rgb(var(--hi-rgb) / .09);color:var(--text);}
+.ml-list{grid-column:2;grid-row:2;border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--panel);border-radius:0 0 0 var(--ml-r);overflow:hidden;}
+.ml-lh{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);}
+.ml-lh b{font-family:var(--font-body);font-weight:700;font-size:16px;line-height:1;}
 .ml-lcount{font-size:12px;color:var(--text-dim);}
-.ml-pg{width:30px;height:28px;border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:var(--radius);cursor:pointer;font-size:18px;line-height:1;}
-.ml-pg:disabled{opacity:.35;cursor:default;}
+.ml-pg{width:32px;height:32px;border:0;background:none;color:var(--text);border-radius:50%;cursor:pointer;font-size:20px;line-height:1;}
+.ml-pg:hover:not(:disabled){background:rgb(var(--hi-rgb) / .09);}
+.ml-pg:disabled{opacity:.3;cursor:default;}
 .ml-filters{margin:8px 10px;}
 .ml-list .mail-err,.ml-list .mail-auto-on{margin:8px 10px 0;}
-.ml-rows{flex:1;overflow-y:auto;min-height:0;transition:opacity .15s;}
+.ml-rows{flex:1;overflow-y:auto;min-height:0;transition:opacity .15s;scrollbar-width:thin;}
 .ml-rows.loading{opacity:.45;pointer-events:none;}
-.ml-row{display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--border);color:var(--text-dim);font:inherit;padding:9px 12px 9px 14px;cursor:pointer;position:relative;}
-.ml-row:hover{background:rgb(var(--hi-rgb) / .03);}
-.ml-row.sel{background:rgb(var(--hi-rgb) / .08);box-shadow:inset 3px 0 0 var(--accent);}
-.ml-row.unread{color:var(--text);}
-.ml-row.unread::before{content:'';position:absolute;left:5px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--accent);}
-.ml-row.unread .ml-from,.ml-row.unread .ml-subj{font-weight:700;}
+.ml-row{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;border-bottom:1px solid var(--border);color:var(--text-dim);padding:10px 14px 10px 12px;cursor:pointer;position:relative;background:rgb(var(--hi-rgb) / .025);outline:none;}
+.ml-row.unread{background:none;color:var(--text);}
+.ml-row:hover{box-shadow:inset 1px 0 0 rgb(var(--hi-rgb) / .2), inset -1px 0 0 rgb(var(--hi-rgb) / .2), 0 1px 4px rgb(0 0 0 / .28);z-index:1;}
+.ml-row:focus-visible{box-shadow:inset 0 0 0 2px var(--accent);}
+.ml-row.sel{background:var(--ml-sel);}
+.ml-rav{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;background:hsl(var(--av,210) 42% 42%);margin-top:1px;letter-spacing:.3px;}
+.ml-rbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
 .ml-r1,.ml-r2{display:flex;align-items:center;gap:6px;min-width:0;}
-.ml-from{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;display:flex;align-items:center;gap:4px;}
+.ml-from{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;display:flex;align-items:center;gap:4px;}
+.ml-row.unread .ml-from,.ml-row.unread .ml-subj,.ml-row.unread .ml-date{font-weight:700;color:var(--text);}
 .ml-date{font-size:12px;color:var(--text-dim);flex:none;}
-.ml-subj{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;color:var(--text);}
-.ml-row:not(.unread) .ml-subj{color:var(--text);}
-.ml-ri{width:14px;height:14px;flex:none;}
+.ml-subj{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13.5px;color:var(--text-dim);}
+.ml-snip{font-size:12.5px;color:var(--text-faint,var(--text-dim));overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ml-ri{width:15px;height:15px;flex:none;}
 .ml-ans{color:var(--text-dim);display:inline-flex;}
+.ml-clip{color:var(--text-dim);display:inline-flex;}
+.ml-q{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;color:var(--text-dim);cursor:pointer;flex:none;}
+.ml-q:hover{background:rgb(var(--hi-rgb) / .12);color:var(--text);}
+.ml-qa{display:none;gap:0;margin:-6px -6px -6px 0;}
+.ml-row:hover .ml-qa{display:inline-flex;}
+.ml-row:hover .ml-date{display:none;}
+.ml-rstar{margin:-6px -6px -6px 0;opacity:0;}
+.ml-row:hover .ml-rstar,.ml-rstar.on{opacity:1;}
+.ml-rstar.on,.ml-pstar.on{color:#F2C744;}
+.ml-rstar.on .ml-ri,.ml-pstar.on .ml-i{fill:#F2C744;}
 .ml-star{color:#F2C744;display:inline-flex;}
 .ml-star .ml-ri{fill:#F2C744;}
-.ml-clip{color:var(--text-dim);display:inline-flex;}
-.ml-inf{font-size:11px;color:var(--text-dim);border:1px solid var(--border);border-radius:3px;padding:0 4px;}
+.ml-inf{font-size:11px;color:var(--text-dim);border:1px solid var(--border);border-radius:4px;padding:0 4px;}
 .ml-none,.ml-loading{padding:18px 14px;color:var(--text-dim);font-size:14px;}
-.ml-read{grid-column:3;grid-row:2;display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--bg);}
+.ml-read{grid-column:3;grid-row:2;display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--panel);border-radius:0 0 var(--ml-r) 0;overflow:hidden;}
 .ml-empty{margin:auto;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-faint);font-size:15px;}
 .ml-empty-i{width:64px;height:64px;stroke-width:1.2;}
-.ml-mh{padding:14px 20px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:10px;position:relative;}
-.ml-subject{margin:0;font-family:var(--font-body);font-size:20px;font-weight:700;line-height:1.25;text-transform:none;letter-spacing:0;overflow-wrap:anywhere;}
-.ml-mfrom{display:flex;align-items:center;gap:10px;}
-.ml-av{width:38px;height:38px;border-radius:50%;background:var(--panel-2);color:var(--text);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none;}
+.ml-mh{padding:18px 24px 14px;display:flex;flex-direction:column;gap:14px;position:relative;}
+.ml-subject{margin:0;font-family:var(--font-body);font-size:22px;font-weight:400;line-height:1.3;text-transform:none;letter-spacing:0;overflow-wrap:anywhere;padding-left:50px;}
+.ml-chip{display:inline-block;vertical-align:middle;font-size:12px;font-weight:500;line-height:1;padding:4px 8px;border-radius:5px;background:rgb(var(--hi-rgb) / .1);color:var(--text-dim);margin-left:6px;}
+.ml-mfrom{display:flex;align-items:flex-start;gap:12px;}
+.ml-av{width:40px;height:40px;border-radius:50%;background:hsl(var(--av,210) 42% 42%);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none;}
 .ml-mwho{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:14px;}
 .ml-mwho small{color:var(--text-dim);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;}
-.ml-mdate{font-size:12.5px;color:var(--text-dim);flex:none;align-self:flex-start;}
-.ml-atts{display:flex;flex-wrap:wrap;gap:6px;}
-.ml-att{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font:inherit;font-size:13px;padding:5px 9px;cursor:pointer;max-width:100%;}
-.ml-att span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;}
-.ml-att small{color:var(--text-dim);}
-.ml-att:hover{border-color:rgb(var(--hi-rgb) / .40);}
+.ml-mdate{font-size:12.5px;color:var(--text-dim);flex:none;align-self:flex-start;padding-top:10px;}
+.ml-macts{display:inline-flex;gap:2px;flex:none;}
+.ml-ib{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:0;border-radius:50%;background:none;color:var(--text-dim);cursor:pointer;}
+.ml-ib:hover{background:rgb(var(--hi-rgb) / .09);color:var(--text);}
+.ml-ib .ml-i{width:19px;height:19px;}
+.ml-atts{display:flex;flex-wrap:wrap;gap:10px;padding-left:52px;}
+.ml-att{display:inline-flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;padding:8px 14px 8px 8px;cursor:pointer;max-width:100%;width:220px;text-align:left;transition:border-color .12s, box-shadow .12s;}
+.ml-att:hover{border-color:rgb(var(--hi-rgb) / .40);box-shadow:0 1px 5px rgb(0 0 0 / .25);}
+.ml-ext{width:34px;height:34px;border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:.3px;color:#fff;background:#6B7280;}
+.ml-ext[data-ext="pdf"]{background:#D93025;}
+.ml-ext[data-ext="doc"],.ml-ext[data-ext="docx"]{background:#2B6CD4;}
+.ml-ext[data-ext="xls"],.ml-ext[data-ext="xlsx"],.ml-ext[data-ext="csv"]{background:#188038;}
+.ml-ext[data-ext="ppt"],.ml-ext[data-ext="pptx"]{background:#E37400;}
+.ml-ext[data-ext="jpg"],.ml-ext[data-ext="jpeg"],.ml-ext[data-ext="png"],.ml-ext[data-ext="gif"],.ml-ext[data-ext="webp"],.ml-ext[data-ext="heic"]{background:#8E44AD;}
+.ml-ext[data-ext="zip"],.ml-ext[data-ext="rar"],.ml-ext[data-ext="7z"]{background:#8D6E63;}
+.ml-an{display:flex;flex-direction:column;min-width:0;font-size:13px;}
+.ml-an span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ml-an small{color:var(--text-dim);font-size:11.5px;}
 .ml-frame{flex:1;min-height:0;width:100%;border:0;background:#fff;}
 .ml-read .mail-frame{height:auto !important;border-radius:0 !important;}
-.ml-text{flex:1;min-height:0;overflow:auto;margin:0;border-radius:0 !important;border:0 !important;max-height:none !important;background:var(--bg) !important;padding:16px 20px !important;}
-.ml-body-load{padding:24px 20px;color:var(--text-dim);display:flex;align-items:center;gap:10px;}
+.ml-text{flex:1;min-height:0;overflow:auto;margin:0;border-radius:0 !important;border:0 !important;max-height:none !important;background:none !important;padding:6px 24px 16px 76px !important;font-size:14px;}
+.ml-foot{display:flex;flex-wrap:wrap;gap:10px;padding:12px 24px 16px 76px;border-top:1px solid var(--border);}
+.ml-pill{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 20px 0 16px;border:1px solid var(--border);border-radius:999px;background:none;color:var(--text);font:inherit;font-size:14px;font-weight:500;cursor:pointer;}
+.ml-pill:hover{background:rgb(var(--hi-rgb) / .07);border-color:rgb(var(--hi-rgb) / .35);}
+.ml-pill .ml-i{width:17px;height:17px;}
+.ml-body-load{padding:24px 24px 24px 76px;color:var(--text-dim);display:flex;align-items:center;gap:10px;}
 .ml-only-phone{display:none !important;}
 .ml-mact{display:none;}
 @media (max-width:1250px) and (min-width:901px){
-  .ml{grid-template-columns:200px minmax(260px,340px) minmax(0,1fr);}
-  .ml-tb{min-width:40px;} .ml-tb span{display:none;}
-  .ml-search{width:200px;}
+  .ml{grid-template-columns:200px minmax(260px,350px) minmax(0,1fr);}
+  .ml-compose{margin-left:8px;padding:0 18px 0 14px;}
+  .ml-f{padding-left:16px;}
+  .ml-search{width:auto;flex:1;min-width:160px;}
+  .ml-tflex{display:none;}
+  .ml-subject,.ml-text,.ml-foot,.ml-body-load,.ml-atts{padding-left:24px !important;}
+  .ml-subject{padding-left:0 !important;}
 }
 @media (max-width:900px){
   main.mail-full{padding:0 !important;}
-  .ml{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);}
+  .ml{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);padding:0;}
   .ml-only-phone{display:inline-flex !important;}
-  .ml-side,.ml-list,.ml-read,.ml-bar{grid-column:1 !important;}
-  .ml-bar{grid-row:1;padding:4px 6px;}
-  .ml-tb{min-width:44px;height:44px;} .ml-tb span{display:none;}
+  .ml-side,.ml-list,.ml-read,.ml-bar{grid-column:1 !important;border-radius:0 !important;}
+  .ml-side{padding:12px 10px 0 0;background:var(--bg);}
+  .ml-bar{grid-row:1;padding:6px 8px;}
+  .ml-tb{width:42px;height:42px;}
   #mlReply,#mlReplyAll,#mlFwd,#mlDel,#mlMove,#mlMark,.ml-tsep{display:none !important;}
-  .ml-search{width:auto;flex:1;min-width:120px;}
+  .ml-search{width:auto;flex:1;min-width:120px;padding-left:12px;}
+  .ml-search input{padding:9px 0 !important;}
   .ml-tflex{display:none;}
   .ml-side,.ml-list,.ml-read{grid-row:2;display:none;}
+  .ml-list{border-right:0;}
   .ml-v-list .ml-list,.ml-v-folders .ml-side,.ml-v-read .ml-read{display:flex;}
   .ml-v-read{grid-template-rows:minmax(0,1fr);}
   .ml-v-read .ml-bar{display:none;}
   .ml-v-read .ml-read{grid-row:1;}
-  .ml-side{border-right:0;}
-  .ml-back{position:absolute;top:8px;left:6px;min-width:36px;height:36px;}
-  .ml-mh{padding:12px 14px 10px 48px;}
-  .ml-subject{font-size:17px;}
-  .ml-mdate{display:none;}
+  .ml-back{position:absolute;top:10px;left:6px;}
+  .ml-mh{padding:12px 14px 10px 50px;gap:10px;}
+  .ml-subject{font-size:18px;padding-left:0;}
+  .ml-mdate,.ml-macts .ml-ib[data-ma="reply"],.ml-foot{display:none !important;}
+  .ml-atts{padding-left:0;}
+  .ml-att{width:auto;}
+  .ml-text{padding:10px 14px 16px !important;}
+  .ml-body-load{padding:20px 14px;}
+  .ml-qa{display:none !important;}
+  .ml-row:hover .ml-date{display:inline;}
+  .ml-rstar{opacity:1;}
+  .ml-rstar:not(.on){display:none;}
   .ml-mact{display:flex !important;justify-content:space-around;border-top:1px solid var(--border);background:var(--panel);padding:2px 0;}
+  .ml-mact .ml-tb{width:auto;min-width:56px;height:50px;border-radius:var(--radius);flex-direction:column;gap:3px;}
   .ml-mact .ml-tb span{display:block;font-size:10.5px;}
-  .ml-mact .ml-tb{height:50px;}
 }
 /* ---------- Renginių lentelė: the page's own colours (dark and light).
    Column groups keep their meaning through a soft brand tint and a coloured
@@ -17741,7 +17790,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v264';
+const APP_VER = 'v265';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24394,6 +24443,8 @@ const ML_ICON = {
   clip:'<path d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"/>',
   gear:'<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/>',
   search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  mailopen:'<path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 .8-1.6l8-6a2 2 0 0 1 2.4 0l8 6Z"/><path d="m22 10-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10"/>',
   filter:'<path d="M22 3H2l8 9.46V19l4 2v-8.54z"/>',
 };
 const mlI = (k, cls)=>`<svg class="${cls||'ml-i'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ML_ICON[k]||ML_ICON.folder}</svg>`;
@@ -24434,7 +24485,7 @@ function mailPaneOn(){ return !!document.getElementById('mailShell') && window.i
 function mlRenderBar(){
   const bar = document.getElementById('mlBar'); if(!bar) return;
   const m = MAIL.open, dis = m ? '' : 'disabled';
-  const b = (id, icon, label, extra)=>`<button class="ml-tb" id="${id}" ${extra||''} title="${label}">${mlI(icon)}<span>${label}</span></button>`;
+  const b = (id, icon, label, extra)=>`<button class="ml-tb" id="${id}" ${extra||''} title="${label}" aria-label="${label}">${mlI(icon)}<span>${label}</span></button>`;
   bar.innerHTML = `
     <button class="ml-tb ml-only-phone" id="mlFoldersBtn" title="Aplankai">${mlI('menu')}<span>Aplankai</span></button>
     ${b('mlRefresh','refresh','Atnaujinti')}
@@ -24590,19 +24641,45 @@ async function renderMailCard(reload){
     ${MAIL.err ? `<div class="mail-err">${esc(MAIL.err)}</div>` : ''}
     ${(d.v||0) < MAIL_FN_NEED ? `<div class="mail-err">⚠ ${esc(MAIL_OLD_MSG)}</div>` : ''}
     ${d.autoOn ? '<button class="mail-auto-on" id="mlAutoOn">🌴 Įjungtas automatinis atsakymas — keisti</button>' : ''}
-    <div class="ml-rows">${items.map(m=>{ const f = m.folder || MAIL.folder, sentLike = f==='sent' || f==='drafts'; const sel = MAIL.open && MAIL.open.uid===m.uid && MAIL.open.folder===f;
-      return `<button class="ml-row ${m.seen?'':'unread'} ${sel?'sel':''}" data-uid="${m.uid}" data-folder="${esc(f)}">
-        <span class="ml-r1"><span class="ml-from">${m.answered ? `<span class="ml-ans" title="Atsakyta">${mlI('reply','ml-ri')}</span>` : ''}${esc(sentLike ? 'Kam: '+mailWho(m.to) : mailWho(m.from))}</span><span class="ml-date">${esc(mailDate(m.date))}</span></span>
-        <span class="ml-r2"><span class="ml-subj">${MAIL.results && f!==MAIL.folder ? `<small class="ml-inf">${esc(mlFolderName(f))}</small> ` : ''}${esc(m.subject||'(be temos)')}</span>${m.flagged ? `<span class="ml-star">${mlI('star','ml-ri')}</span>` : ''}${m.attachments ? `<span class="ml-clip">${mlI('clip','ml-ri')}</span>` : ''}</span>
-      </button>`; }).join('') || '<div class="ml-none">Laiškų nėra.</div>'}</div>`;
+    <div class="ml-rows">${items.map(m=>mlRowHtml(m)).join('') || '<div class="ml-none">Laiškų nėra.</div>'}</div>`;
   const pv = document.getElementById('mlPrev'); if(pv) pv.onclick = ()=>{ MAIL.page--; box.querySelector('.ml-rows').classList.add('loading'); renderMailCard(); };
   const nx = document.getElementById('mlNext'); if(nx) nx.onclick = ()=>{ MAIL.page++; box.querySelector('.ml-rows').classList.add('loading'); renderMailCard(); };
   const ao = document.getElementById('mlAutoOn'); if(ao) ao.onclick = ()=>mailSettings();
   if(d.sig!=null) MAIL.sig = d.sig;
   mailSearchBind();
   box.querySelectorAll('[data-uid]').forEach(b=>{
-    b.onclick = ()=>mailOpen(Number(b.dataset.uid), b, b.dataset.folder);
+    b.onclick = e=>{ const q = e.target.closest('[data-q]'); if(q){ e.stopPropagation(); mlQuick(q.dataset.q, Number(b.dataset.uid), b.dataset.folder); return; } mailOpen(Number(b.dataset.uid), b, b.dataset.folder); };
+    b.onkeydown = e=>{ if((e.key==='Enter' || e.key===' ') && e.target===b){ e.preventDefault(); b.click(); } };
   });
+}
+// one letter in the list (Gmail-like: a round initials badge, sender and date, subject, text preview, quick actions on hover)
+function mlAvHue(s){ let h = 2166136261; for(const ch of String(s||'').toLowerCase()) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return (h>>>0) % 360; }
+function mlIni(who){ return String(who.name || who.address || '?').replace(/["'„“]/g,'').trim().split(/[\s.@_-]+/).filter(Boolean).map(x=>x[0]).slice(0,2).join('').toUpperCase() || '?'; }
+function mlRowHtml(m){
+  const f = m.folder || MAIL.folder, sentLike = f==='sent' || f==='drafts';
+  const sel = MAIL.open && MAIL.open.uid===m.uid && MAIL.open.folder===f;
+  const who = (sentLike ? m.to : m.from || [])[0] || {};
+  const c = MAIL.cache.get(mlKey(f, m.uid));
+  const snip = c ? String(c.text || (c.html ? mailHtmlText(c.html) : '')).replace(/\s+/g,' ').trim().slice(0, 140) : '';
+  return `<div class="ml-row ${m.seen?'':'unread'} ${sel?'sel':''}" role="button" tabindex="0" data-uid="${m.uid}" data-folder="${esc(f)}">
+    <span class="ml-rav" style="--av:${mlAvHue(who.address||who.name)}">${esc(mlIni(who))}</span>
+    <span class="ml-rbody">
+      <span class="ml-r1"><span class="ml-from">${m.answered ? `<span class="ml-ans" title="Atsakyta">${mlI('reply','ml-ri')}</span>` : ''}${esc(sentLike ? 'Kam: '+mailWho(m.to) : mailWho(m.from))}</span>
+        ${m.attachments ? `<span class="ml-clip" title="Su priedais">${mlI('clip','ml-ri')}</span>` : ''}<span class="ml-date">${esc(mailDate(m.date))}</span>
+        <span class="ml-qa"><span class="ml-q" data-q="seen" title="${m.seen ? 'Pažymėti neskaitytu' : 'Pažymėti skaitytu'}">${mlI(m.seen ? 'mail' : 'mailopen','ml-ri')}</span><span class="ml-q" data-q="del" title="Pašalinti">${mlI('del','ml-ri')}</span></span></span>
+      <span class="ml-r2"><span class="ml-subj">${MAIL.results && f!==MAIL.folder ? `<small class="ml-inf">${esc(mlFolderName(f))}</small> ` : ''}${esc(m.subject||'(be temos)')}</span>
+        <span class="ml-q ml-rstar ${m.flagged?'on':''}" data-q="star" title="${m.flagged ? 'Nuimti žymą' : 'Pažymėti žyma'}">${mlI('star','ml-ri')}</span></span>
+      ${snip ? `<span class="ml-snip">${esc(snip)}</span>` : ''}
+    </span>
+  </div>`;
+}
+// the quick buttons on a list row work without opening the letter
+function mlQuick(what, uid, folder){
+  const it = ((MAIL.data||{}).items||[]).concat(MAIL.results ? MAIL.results.items : []).find(x=>x.uid===uid && (x.folder||MAIL.folder)===folder); if(!it) return;
+  const m = (MAIL.open && MAIL.open.uid===uid && MAIL.open.folder===folder) ? MAIL.open : Object.assign({}, it, { folder });
+  if(what==='star') mlStar(m, !it.flagged);
+  if(what==='seen') mlSeen(m, !it.seen);
+  if(what==='del') mlDelete(m);
 }
 // The mailbox could not be checked (the app's sign-in was refused, network…):
 // that is not "disconnected", so the password form is not offered here.
@@ -24732,24 +24809,27 @@ async function mailOpen(uid, row, fromFolder){
 }
 function mlHeadHtml(m, loading){
   const who = (m.from||[])[0] || {};
-  const ini = String(who.name || who.address || '?').trim().split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase();
   return `<div class="ml-mh">
     <button class="ml-tb ml-only-phone ml-back" id="mlBack" title="Atgal">${mlI('back')}</button>
-    <h2 class="ml-subject">${esc(m.subject||'(be temos)')}${m.flagged ? ` <span class="ml-star">${mlI('star','ml-ri')}</span>` : ''}</h2>
-    <div class="ml-mfrom"><span class="ml-av">${esc(ini)}</span>
+    <h2 class="ml-subject">${esc(m.subject||'(be temos)')} <span class="ml-chip">${esc(mlFolderName(m.folder||MAIL.folder))}</span></h2>
+    <div class="ml-mfrom"><span class="ml-av" style="--av:${mlAvHue(who.address||who.name)}">${esc(mlIni(who))}</span>
       <div class="ml-mwho"><b>${esc(who.name || who.address || '—')}</b>${who.name ? ` <small>&lt;${esc(who.address)}&gt;</small>` : ''}
         <small>Kam: ${esc(mailWho(m.to))}${(m.cc||[]).length ? ' · Kopija: '+esc(mailWho(m.cc)) : ''}</small></div>
-      <span class="ml-mdate">${esc(mailDate(m.date, true))}</span></div>
-    ${!loading && (m.attachments||[]).length ? `<div class="ml-atts">${m.attachments.map(a=>`<button class="ml-att" data-att="${a.index}">${mlI('clip','ml-ri')}<span>${esc(a.filename)}</span><small>${Math.max(1, Math.round((a.size||0)/1024))} KB</small></button>`).join('')}</div>` : ''}
+      <span class="ml-mdate">${esc(mailDate(m.date, true))}</span>
+      ${loading ? '' : `<span class="ml-macts"><button class="ml-ib ml-pstar ${m.flagged?'on':''}" data-ma="star" title="${m.flagged ? 'Nuimti žymą' : 'Pažymėti žyma'}">${mlI('star')}</button><button class="ml-ib" data-ma="reply" title="Atsakyti">${mlI('reply')}</button><button class="ml-ib" data-ma="more" title="Daugiau">${mlI('more')}</button></span>`}</div>
+    ${!loading && (m.attachments||[]).length ? `<div class="ml-atts">${m.attachments.map(a=>{ const ext = (String(a.filename||'').match(/\.([a-z0-9]{1,5})$/i)||[])[1]||'';
+      return `<button class="ml-att" data-att="${a.index}" title="Atsisiųsti"><span class="ml-ext" data-ext="${esc(ext.toLowerCase())}">${esc(ext.toUpperCase()||'•')}</span><span class="ml-an"><span>${esc(a.filename)}</span><small>${Math.max(1, Math.round((a.size||0)/1024))} KB</small></span></button>`; }).join('')}</div>` : ''}
   </div>`;
 }
 function mlShowMessage(m){
   const pane = document.getElementById('mailPane'); if(!pane) return;
   mlRenderBar();
+  const many = ((m.to||[]).length + (m.cc||[]).length) > 1;
   pane.innerHTML = mlHeadHtml(m) + (m.html ? '<iframe class="ml-frame mail-frame" sandbox="allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer"></iframe>' : `<pre class="ml-text mail-text">${esc(m.text||'')}</pre>`)
+    + `<div class="ml-foot"><button class="ml-pill" data-ma="reply">${mlI('reply')} Atsakyti</button>${many ? `<button class="ml-pill" data-ma="all">${mlI('replyall')} Atsakyti visiems</button>` : ''}<button class="ml-pill" data-ma="fwd">${mlI('forward')} Persiųsti</button></div>`
     + `<div class="ml-mact ml-only-phone">
         <button class="ml-tb" data-ma="reply">${mlI('reply')}<span>Atsakyti</span></button>
-        ${((m.to||[]).length + (m.cc||[]).length) > 1 ? `<button class="ml-tb" data-ma="all">${mlI('replyall')}<span>Visiems</span></button>` : ''}
+        ${many ? `<button class="ml-tb" data-ma="all">${mlI('replyall')}<span>Visiems</span></button>` : ''}
         <button class="ml-tb" data-ma="fwd">${mlI('forward')}<span>Persiųsti</span></button>
         <button class="ml-tb" data-ma="del">${mlI('del')}<span>Pašalinti</span></button>
         <button class="ml-tb" data-ma="more">${mlI('more')}<span>Daugiau</span></button>
@@ -24761,7 +24841,9 @@ function mlShowMessage(m){
       { html:'📁 Perkelti į…', fn:()=>mlMoveMenu(b) },
       { html:'✉ Pažymėti neskaitytu', fn:()=>mlSeen(m, false) },
       { html: m.flagged ? '☆ Nuimti žymą' : '⭐ Pažymėti žyma', fn:()=>mlStar(m, !m.flagged) },
+      { html:'🗑 Pašalinti', fn:()=>mlDelete(m) },
     ]);
+    else if(b.dataset.ma==='star') mlStar(m, !m.flagged);
     else mlAct(b.dataset.ma);
   });
   pane.querySelectorAll('[data-att]').forEach(b=>b.onclick = async ()=>{
@@ -24790,7 +24872,8 @@ function mlRemoveFromList(m){
   if(MAIL.data && MAIL.data.items) MAIL.data.items = MAIL.data.items.filter(x=>!(x.uid===m.uid && (x.folder||MAIL.folder)===m.folder));
   if(MAIL.results) MAIL.results.items = MAIL.results.items.filter(x=>!(x.uid===m.uid && (x.folder||MAIL.folder)===m.folder));
   MAIL.cache.delete(mlKey(m.folder, m.uid));
-  MAIL.open = null; mlEmptyPane(); mlSetView('list'); mlRenderBar(); renderMailCard(false);
+  if(!MAIL.open || (MAIL.open.uid===m.uid && MAIL.open.folder===m.folder)){ MAIL.open = null; mlEmptyPane(); mlSetView('list'); mlRenderBar(); }
+  renderMailCard(false);
 }
 async function mlDelete(m){
   const inTrash = m.folder==='trash';
@@ -24811,7 +24894,7 @@ async function mlSeen(m, seen){
   try{ await mailCall({ action:'seen', folder:m.folder, uid:m.uid, seen }); }catch(e){ toast(e.message); return; }
   const it = ((MAIL.data||{}).items||[]).concat(MAIL.results ? MAIL.results.items : []).find(x=>x.uid===m.uid && (x.folder||MAIL.folder)===m.folder);
   if(it && it.seen!==seen){ it.seen = seen; mlFolderCount(m.folder, seen ? -1 : 1); }
-  if(!seen){ MAIL.open = null; mlEmptyPane(); mlSetView('list'); mlRenderBar(); }
+  if(!seen && MAIL.open && MAIL.open.uid===m.uid && MAIL.open.folder===m.folder){ MAIL.open = null; mlEmptyPane(); mlSetView('list'); mlRenderBar(); }
   renderMailCard(false);
 }
 async function mlStar(m, on){
@@ -24819,7 +24902,8 @@ async function mlStar(m, on){
   m.flagged = on;
   const c = MAIL.cache.get(mlKey(m.folder, m.uid)); if(c) c.flagged = on;
   const it = ((MAIL.data||{}).items||[]).concat(MAIL.results ? MAIL.results.items : []).find(x=>x.uid===m.uid && (x.folder||MAIL.folder)===m.folder); if(it) it.flagged = on;
-  mlShowMessage(m); renderMailCard(false);
+  if(MAIL.open && MAIL.open.uid===m.uid && MAIL.open.folder===m.folder){ MAIL.open.flagged = on; mlShowMessage(MAIL.open); }
+  renderMailCard(false);
 }
 // keyboard on a computer: ↑ ↓ between letters, Delete to remove
 document.addEventListener('keydown', e=>{
@@ -32664,6 +32748,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 00:43', v:'v265', k:'new', t:'El. paštas: nauja išvaizda (kaip Gmail)', f:'Didelis „Rašyti laišką“ mygtukas, aplankai – apvalios juostelės, laiškų sąrašas ir laiškas – vienoje apvalioje kortelėje. Prie laiškų – spalvoti siuntėjų inicialai, teksto pradžia; užvedus pelę – greiti mygtukai (žyma ⭐, skaitytas / neskaitytas, pašalinti). Laiške – žyma ir „Atsakyti“ šalia datos, priedai kaip kortelės su failo tipu, apačioje „Atsakyti“ ir „Persiųsti“. Paieška – didelė apvali juosta.' },
   { d:'2026-10-04 00:21', v:'v264', k:'fix', t:'El. paštas: laiškai atsidaro iš karto', f:'Naujausių laiškų turinys dabar fone parsisiunčiamas ir laikomas programėlėje – paspaudus laišką jis atsidaro iš karto, nelaukiant pašto serverio (anksčiau laiškai kartais ilgai rodė „Kraunama“). Senesni laiškai skaitomi kaip anksčiau.' },
   { d:'2026-10-04 00:06', v:'v263', k:'fix', t:'Pradžia: plytelės nenusikerpa, kortelės skleidžiasi sklandžiai', f:'Užvedus pelę ant Ofiso, Sandėlio ir kt. plytelių jų padidėjimas ir švytėjimas nebenukerpamas. Dešinės pusės kortelės suskleidžiamos ir išskleidžiamos sklandžia animacija.' },
   { d:'2026-10-04 00:02', v:'v262', k:'chg', t:'Muzikos kortelė pašalinta', f:'Pradžios puslapyje nebeliko Muzikos kortelės (Spotify / YouTube grotuvo).' },
