@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-QR0qMJ/E3dzzpDmxqP2jxYwl/RI6qV7a+l/wtp6Jhos=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-FXcId6ui3okHqyEIAezDPuU/9BYQ5zyhph8aMq3sgew=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4158,7 +4158,7 @@ tr.xg-cancel .xg-entry:not(.vacant) .xg-person,tr.xg-cancel .xg-entry:not(.vacan
 .xg-rent input,table.xg .xg-rent input[type=text]{width:100%;min-width:0;font-size:12px !important;padding:3px 6px !important;border:1px solid var(--border) !important;border-radius:5px !important;background:var(--input) !important;}
 table.xg .xg-rent input[type=text].miss{border:1px solid #E5484D !important;background:color-mix(in srgb, #E5484D 14%, var(--input)) !important;}
 table.xg .xg-rent input[type=text].miss::placeholder{color:#E5484D !important;-webkit-text-fill-color:#E5484D !important;opacity:1;}
-.xg-rk{display:flex;gap:3px;flex-wrap:wrap;} .xg-rk button{flex:1;min-width:0;font:inherit;font-size:11px;padding:3px 4px;border-radius:5px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);cursor:pointer;white-space:nowrap;}
+.xg-rk{display:flex;gap:3px;flex-wrap:wrap;} .xg-rk button{flex:1 1 auto;min-width:fit-content;font:inherit;font-size:11px;padding:3px 6px;border-radius:5px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);cursor:pointer;white-space:nowrap;}
 .xg-rk.miss button{border-color:#E5484D;color:#E5484D;} .xg-rk button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink,#fff);font-weight:700;}
 #modalRoot.gp-modal{max-width:1000px;width:100%;}
 .gp-pop{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin-top:10px;}
@@ -15632,13 +15632,14 @@ setTimeout(()=>{ try{ ppDialFromUrl(); }catch(e){} }, 0);
 const RP = { sub:'veh', from:'', to:'', veh:'', utaBy:'veh', rentBy:'veh', open:'', q:'' };
 // the search word: every part keeps only the lines that have it
 function rpMatch(...parts){ if(!RP.q) return true; const h = normalizeText(parts.filter(x=>x!=null).join(' ')); return normalizeText(RP.q).split(' ').filter(Boolean).every(w=>h.includes(w)); }
-try{ const x = JSON.parse(localStorage.getItem('rpState')||'null'); if(x) Object.assign(RP, { sub:x.sub||'veh', from:x.from||'', to:x.to||'', veh:x.veh||'', utaBy:x.utaBy||'veh', rentBy:x.rentBy||'veh' }); }catch(e){}
-function rpSave(){ try{ localStorage.setItem('rpState', JSON.stringify({ sub:RP.sub, from:RP.from, to:RP.to, veh:RP.veh, utaBy:RP.utaBy, rentBy:RP.rentBy })); }catch(e){} }
+try{ const x = JSON.parse(localStorage.getItem('rpState')||'null'); if(x) Object.assign(RP, { sub:x.sub||'veh', from:x.from||'', to:x.to||'', veh:x.veh||'', utaBy:x.utaBy||'veh', rentBy:x.rentBy||'veh', free:x.free||'' }); }catch(e){}
+function rpSave(){ try{ localStorage.setItem('rpState', JSON.stringify({ sub:RP.sub, from:RP.from, to:RP.to, veh:RP.veh, utaBy:RP.utaBy, rentBy:RP.rentBy, free:RP.free||'' })); }catch(e){} }
 const RP_SUBS = [
   ['veh', '🔧 Transportas', ()=>canView('fleet')],
   ['rent', '🚚 Transporto nuoma', ()=>canView('events')],
   ['uta', '⛽ UTA', ()=>canView('fleet')],
   ['sub', '📦 Subnuoma', ()=>canView('newproj') || canView('projects')],
+  ['free', '💶 Freelance', ()=>canView('invoices') || isPlus()],
   ['loads', '📊 Krovimai', ()=>true]
 ];
 function rpPresets(){
@@ -15697,6 +15698,7 @@ async function rpDraw(){
     if(sub==='rent'){ await Promise.all([evLoad(), rvLoad()]); await rvSync(); if(!still()) return; return rpRentDraw(box, acts); }
     if(sub==='uta'){ await utaLoad(); if(!still()) return; return rpUtaDraw(box, acts); }
     if(sub==='sub'){ await npLoad(); if(!still()) return; return rpSubDraw(box, acts); }
+    if(sub==='free'){ if(!INV.loaded) await invLoad(); if(!TEAM.members || !TEAM.members.length) await teamLoadMembers().catch(()=>{}); if(!still()) return; return rpFreeDraw(box, acts); }
   }catch(e){ box.innerHTML = `<div class="card"><div class="mail-err">Nepavyko: ${esc(e.message||e)}</div></div>`; }
 }
 function rpXls(name, sheets){
@@ -15878,6 +15880,46 @@ function rpSubData(){
   });
   rows.sort((a,b)=>a.from.localeCompare(b.from));
   return { rows, groups:Object.values(sup).sort((a,b)=>a.name.localeCompare(b.name, 'lt')) };
+}
+/* Freelance: approved freelance invoices (Sąskaitos) in the period – how much each person cost */
+const RP_FREE_OK = ['approved','sent','queued','paid'];
+function rpFreeData(){
+  const rows = (INV.list||[]).filter(v=>v.kind==='freelance' && RP_FREE_OK.includes(v.status)).map(v=>{
+    const date = String(v.invoice_date || v.created_at || '').slice(0,10);
+    const person = String(v.supplier||'').trim() || (typeof tkName==='function' ? tkName(v.created_by) : '') || '—';
+    return { v, date, person, key:normalizeText(person), amount:v.amount!=null ? +v.amount : null };
+  }).filter(r=>r.date && r.date >= RP.from && r.date <= RP.to);
+  const people = [...new Map(rows.map(r=>[r.key, r.person])).entries()].sort((a,b)=>a[1].localeCompare(b[1], 'lt'));
+  let list = RP.free ? rows.filter(r=>r.key===RP.free) : rows;
+  if(RP.q) list = list.filter(r=>rpMatch(r.person, r.v.number, r.v.note, r.v.supplier, r.date, invMoney(r.amount)));
+  list.sort((a,b)=>a.date.localeCompare(b.date));
+  const g = new Map();
+  list.forEach(r=>{ if(!g.has(r.key)) g.set(r.key, { key:r.key, name:r.person, rows:[], sum:0, none:0 }); const x = g.get(r.key); x.rows.push(r); if(r.amount!=null) x.sum += r.amount; else x.none++; });
+  return { rows:list, people, groups:[...g.values()].sort((a,b)=>b.sum-a.sum || a.name.localeCompare(b.name, 'lt')) };
+}
+function rpFreeDraw(box, acts){
+  if(INV.err){ box.innerHTML = `<div class="card"><div class="mail-err">${esc(INV.err)}</div></div>`; return; }
+  const D = rpFreeData(), total = D.groups.reduce((s,g)=>s+g.sum, 0), st = k=>(INV_ST[k]||{}).t || k;
+  if(RP.free && !D.people.some(p=>p[0]===RP.free)) RP.free = '';
+  box.innerHTML = `<div class="card">
+    <div class="row" style="gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:8px;">
+      <label class="field" style="margin:0;min-width:240px;">Vardas, pavardė<select id="rpFreeP"><option value="">Visi (${D.people.length})</option>${D.people.map(([k,n])=>`<option value="${esc(k)}" ${RP.free===k ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></label>
+    </div>
+    <div class="uta-tot"><span>Žmonių: <b>${D.groups.length}</b></span><span>Sąskaitų: <b>${D.rows.length}</b></span><span>Iš viso: <b>${esc(invMoney(total)||'0,00 €')}</b></span></div>
+    ${D.rows.length ? `<div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Vardas, pavardė</th><th>Sąskaitų</th><th>Laikotarpis</th><th>Suma</th></tr></thead><tbody>
+      ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key || RP.q || RP.free ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b></td><td>${g.rows.length}</td>
+        <td>${esc(rpWhen(g.rows[0].date))}${g.rows.length > 1 ? ' – '+esc(rpWhen(g.rows[g.rows.length-1].date)) : ''}</td><td><b>${esc(invMoney(g.sum)||'—')}</b>${g.none ? `<small class="muted">${g.none} be sumos</small>` : ''}</td></tr>
+        ${RP.open===g.key || RP.q || RP.free ? `<tr class="uta-det"><td colspan="4"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Data</th><th>Nr.</th><th>Suma</th><th>Būsena</th><th>Pastaba</th><th></th></tr></thead><tbody>
+          ${g.rows.map(r=>`<tr><td>${esc(rpWhen(r.date))}</td><td>${esc(r.v.number||'—')}</td><td>${esc(invMoney(r.amount)||'—')}</td><td>${esc(st(r.v.status))}</td><td>${esc(r.v.note||'')}</td><td>${(r.v.files||[]).length ? `<button type="button" class="btn small" data-rpinv="${esc(r.v.id)}">Atidaryti</button>` : ''}</td></tr>`).join('')}</tbody></table></div></td></tr>` : ''}`).join('')}
+    </tbody></table></div>
+    <small class="muted">Imama iš Sąskaitos → Freelance: tik patvirtintos (taip pat išsiųstos, suvestos apmokėjimui, apmokėtos). Data – sąskaitos data, vardas – sąskaitos tiekėjas (jei neįrašytas – kas įkėlė).</small>`
+    : `<div class="empty-state">${RP.q || RP.free ? 'Pagal paiešką nieko nerasta.' : 'Šiuo laikotarpiu patvirtintų freelance sąskaitų nėra.'}</div>`}</div>`;
+  const sel = box.querySelector('#rpFreeP'); if(sel) sel.onchange = ()=>{ RP.free = sel.value; RP.open = ''; rpSave(); rpFreeDraw(box, acts); };
+  rpBindOpen(box, ()=>rpFreeDraw(box, acts));
+  box.querySelectorAll('[data-rpinv]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); const v = INV.list.find(x=>x.id===b.dataset.rpinv); if(v && typeof invView==='function') invView(v); else if(v){ setTab('invoices'); } });
+  if(D.rows.length) rpActBtn(acts, ()=>rpXls('freelance', [
+    ['Pagal žmogų', [['Vardas, pavardė','Sąskaitų','Suma €']].concat(D.groups.map(g=>[g.name, g.rows.length, Math.round(g.sum*100)/100]))],
+    ['Sąskaitos', [['Data','Vardas, pavardė','Nr.','Suma €','Būsena','Pastaba']].concat(D.rows.map(r=>[r.date, r.person, r.v.number||'', r.amount, st(r.v.status), r.v.note||'']))]]));
 }
 function rpSubDraw(box, acts){
   const D = rpSubData(), st = k=>(NP_STATUS.find(x=>x[0]===k)||[k,k])[1];
@@ -17166,7 +17208,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v228';
+const APP_VER = 'v229';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31774,6 +31816,8 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 22:05', v:'v229', k:'fix', t:'Nuomos tipo mygtukai telpa', f:'Renginio transporto nuomoje mygtukas „Mikroautobusas“ nebeišlenda už langelio ribų – jei netelpa, persikelia į kitą eilutę.' },
+  { d:'2026-10-03 22:00', v:'v229', k:'new', t:'Ataskaitos → Freelance', f:'Nauja Ataskaitų skiltis „Freelance“: iš Sąskaitos → Freelance imamos tik patvirtintos sąskaitos (taip pat išsiųstos, suvestos apmokėjimui, apmokėtos). Pasirenkamas laikotarpis ir vardas, pavardė – matosi, kiek kas kainavo: suma, sąskaitų skaičius, kiekviena sąskaita su data, nr. ir būsena. Galima atsisiųsti Excel.' },
   { d:'2026-10-03 21:45', v:'v228', k:'fix', t:'Nuomos laukai raudoni', f:'Renginio transporto nuomoje neįrašytas tiekėjas ir valst. nr. dabar aiškiai pažymėti raudonai (rėmelis, fonas ir tekstas), kaip ir tipo mygtukai.' },
   { d:'2026-10-03 21:30', v:'v227', k:'new', t:'Atšaukti renginiai ir žmonių dubliai', f:'Pažymėjus renginį „Atšauktas“ visa jo eilutė paraudonuoja, įrašyti žmonės tampa bordiniai, o prie pavadinimo atsiranda „Atbookinti / perkelti žmones“: pažymi žmones ir atbookini (pozicija lieka laisva) arba perkeli į kitą renginį (į tą patį stulpelį). Jei žmogus tomis pačiomis dienomis įrašytas ir kitame renginyje, prie jo vardo atsiranda oranžinis „!“ – paspaudus matosi, kur dar jis įrašytas, ir galima ten nueiti.' },
   { d:'2026-10-03 21:00', v:'v226', k:'new', t:'Renginio transportas: nuoma', f:'Renginio logistikos (transporto) stulpelyje pasirinkus „Nuoma“ atsiranda laukai: tiekėjas (pvz. Movie Wheels – siūlomi jau žinomi), valstybinis numeris ir privalomas tipas – Fūra, Būda arba Mikroautobusas. Kol tiekėjas, numeris ar tipas neįrašyti, jie pažymėti raudonai (išsaugoti galima). Kai renginys patvirtintas (žalias), įrašytas transportas pats atsiranda Transportas → Transporto nuoma, o Ataskaitose (Transporto nuoma) kaupiamas pagal datą su tiekėju ir kaina. Nepatvirtintų ir atšauktų renginių transportas į ataskaitą nepatenka.' },
