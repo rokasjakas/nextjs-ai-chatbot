@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-8qowILcq4Y+vzTpkU8wVmzhoh1AXhFweeXL13wdwy8Q=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-QR0qMJ/E3dzzpDmxqP2jxYwl/RI6qV7a+l/wtp6Jhos=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4155,9 +4155,9 @@ tr.xg-cancel .xg-entry:not(.vacant) .xg-person,tr.xg-cancel .xg-entry:not(.vacan
 .cp-list{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius,8px);max-height:46vh;overflow-y:auto;}
 .cp-r{display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:1px solid var(--border);cursor:pointer;} .cp-r b{font-weight:600;} .cp-r span{margin-left:auto;color:var(--text-dim);font-size:12px;}
 .xg-rent{display:flex;flex-direction:column;gap:3px;margin-top:3px;padding:4px;border-radius:6px;background:rgb(var(--hi-rgb) / .04);}
-.xg-rent input{width:100%;min-width:0;font-size:12px;padding:3px 6px !important;border:1px solid var(--border) !important;border-radius:5px !important;background:var(--input) !important;}
-.xg-rent input.miss{border-color:#E5484D !important;background:color-mix(in srgb, #E5484D 12%, var(--input)) !important;}
-.xg-rent input.miss::placeholder{color:#E5484D;}
+.xg-rent input,table.xg .xg-rent input[type=text]{width:100%;min-width:0;font-size:12px !important;padding:3px 6px !important;border:1px solid var(--border) !important;border-radius:5px !important;background:var(--input) !important;}
+table.xg .xg-rent input[type=text].miss{border:1px solid #E5484D !important;background:color-mix(in srgb, #E5484D 14%, var(--input)) !important;}
+table.xg .xg-rent input[type=text].miss::placeholder{color:#E5484D !important;-webkit-text-fill-color:#E5484D !important;opacity:1;}
 .xg-rk{display:flex;gap:3px;flex-wrap:wrap;} .xg-rk button{flex:1;min-width:0;font:inherit;font-size:11px;padding:3px 4px;border-radius:5px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);cursor:pointer;white-space:nowrap;}
 .xg-rk.miss button{border-color:#E5484D;color:#E5484D;} .xg-rk button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink,#fff);font-weight:700;}
 #modalRoot.gp-modal{max-width:1000px;width:100%;}
@@ -17166,7 +17166,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v227';
+const APP_VER = 'v228';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31774,6 +31774,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 21:45', v:'v228', k:'fix', t:'Nuomos laukai raudoni', f:'Renginio transporto nuomoje neįrašytas tiekėjas ir valst. nr. dabar aiškiai pažymėti raudonai (rėmelis, fonas ir tekstas), kaip ir tipo mygtukai.' },
   { d:'2026-10-03 21:30', v:'v227', k:'new', t:'Atšaukti renginiai ir žmonių dubliai', f:'Pažymėjus renginį „Atšauktas“ visa jo eilutė paraudonuoja, įrašyti žmonės tampa bordiniai, o prie pavadinimo atsiranda „Atbookinti / perkelti žmones“: pažymi žmones ir atbookini (pozicija lieka laisva) arba perkeli į kitą renginį (į tą patį stulpelį). Jei žmogus tomis pačiomis dienomis įrašytas ir kitame renginyje, prie jo vardo atsiranda oranžinis „!“ – paspaudus matosi, kur dar jis įrašytas, ir galima ten nueiti.' },
   { d:'2026-10-03 21:00', v:'v226', k:'new', t:'Renginio transportas: nuoma', f:'Renginio logistikos (transporto) stulpelyje pasirinkus „Nuoma“ atsiranda laukai: tiekėjas (pvz. Movie Wheels – siūlomi jau žinomi), valstybinis numeris ir privalomas tipas – Fūra, Būda arba Mikroautobusas. Kol tiekėjas, numeris ar tipas neįrašyti, jie pažymėti raudonai (išsaugoti galima). Kai renginys patvirtintas (žalias), įrašytas transportas pats atsiranda Transportas → Transporto nuoma, o Ataskaitose (Transporto nuoma) kaupiamas pagal datą su tiekėju ir kaina. Nepatvirtintų ir atšauktų renginių transportas į ataskaitą nepatenka.' },
   { d:'2026-10-03 20:30', v:'v225', k:'new', t:'Komandos stulpelių langas', f:'Renginyje paspaudus Daiktų rūšiavimo, Montavimų, Demontavimo, Budinčių ar Operatorių langelį (arba ⚙ mygtuką) atsidaro langas: diena ir laikas, kiek reikia A / L / V / Crew (budintiems – L / V / A, operatoriams – L/Operatorius, A/Operatorius, VJ) su − / +, pozicijų sąrašas su žmonėmis ir dešinėje technikų sąrašas. Pažymėjus „Rodyti tik laisvus“ rodomi tik tie, kuriems skambinta ir jie pasakė, kad tą dieną gali ar sutiko. Paspaudus žmogų jis įrašomas į laisvą poziciją. Jei pozicijų nėra – jas ar žmones galima įvesti pačiame lange.' },
