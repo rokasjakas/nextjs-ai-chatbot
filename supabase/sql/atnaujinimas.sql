@@ -5558,3 +5558,217 @@ create policy "create tasks" on public.tasks
 
 -- Supabase: read the list of columns again
 notify pgrst, 'reload schema';
+
+
+-- ============================================================
+-- Transportas: automobilį pašalinti iš parko galima tik su Admin+ patvirtinimu
+--  * kas redaguoja „Transportą“, siunčia prašymą (su priežastimi)
+--  * patvirtina ar atmeta kitas Admin+ narys (ne tas, kuris prašė)
+--  * serveris neleidžia išsaugoti parko be automobilio, kurio pašalinimas
+--    nepatvirtintas (net jei kas nors bandytų apeiti programėlę)
+-- Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
+-- ============================================================
+
+create table if not exists public.vehicle_removals (
+  id              uuid primary key default gen_random_uuid(),
+  vehicle_id      text not null,
+  vehicle_name    text not null default '',
+  plate           text,
+  reason          text not null default '',
+  status          text not null default 'pending' check (status in ('pending','approved','rejected','cancelled','done')),
+  requested_by    uuid not null default auth.uid(),
+  requested_name  text,
+  requested_at    timestamptz not null default now(),
+  decided_by      uuid,
+  decided_name    text,
+  decided_at      timestamptz,
+  decision_note   text,
+  task_id         uuid
+);
+create index if not exists vehicle_removals_vehicle on public.vehicle_removals (vehicle_id, status);
+-- one open request per vehicle
+create unique index if not exists vehicle_removals_open on public.vehicle_removals (vehicle_id) where status in ('pending','approved');
+
+alter table public.vehicle_removals enable row level security;
+drop policy if exists "vehicle removals view" on public.vehicle_removals;
+create policy "vehicle removals view" on public.vehicle_removals for select to authenticated using (public.can_view('fleet'));
+-- changes only through the functions below
+revoke all on public.vehicle_removals from anon, authenticated;
+grant select on public.vehicle_removals to authenticated;
+
+create or replace function public.vehicle_rm_name() returns text language sql stable security definer set search_path = public as $$
+  select coalesce(nullif(trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')), ''), nickname, split_part(email, '@', 1), 'Narys')
+    from public.profiles where id = auth.uid()
+$$;
+
+-- the request (anyone who edits „Transportas“)
+create or replace function public.vehicle_rm_request(vid text, vname text, vplate text, note text, tid uuid default null) returns public.vehicle_removals
+  language plpgsql security definer set search_path = public as $$
+declare r public.vehicle_removals;
+begin
+  if not public.can_edit('fleet') then raise exception 'Nėra teisės redaguoti transporto'; end if;
+  if coalesce(trim(note), '') = '' then raise exception 'Parašyk priežastį'; end if;
+  if exists (select 1 from public.vehicle_removals where vehicle_id = vid and status in ('pending','approved')) then
+    raise exception 'Šiam automobiliui prašymas jau išsiųstas';
+  end if;
+  insert into public.vehicle_removals (vehicle_id, vehicle_name, plate, reason, requested_name, task_id)
+    values (vid, left(coalesce(vname, ''), 200), left(vplate, 40), left(trim(note), 1000), public.vehicle_rm_name(), tid)
+    returning * into r;
+  return r;
+end $$;
+
+-- Admin+ decides – never on one's own request
+create or replace function public.vehicle_rm_decide(rid uuid, approve boolean, note text default null) returns public.vehicle_removals
+  language plpgsql security definer set search_path = public as $$
+declare r public.vehicle_removals;
+begin
+  if not public.is_plus() then raise exception 'Patvirtinti gali tik Admin+'; end if;
+  select * into r from public.vehicle_removals where id = rid for update;
+  if r.id is null or r.status <> 'pending' then raise exception 'Prašymas jau išspręstas'; end if;
+  if r.requested_by = auth.uid() then raise exception 'Savo prašymo patvirtinti negalima – tai daro kitas Admin+ narys'; end if;
+  update public.vehicle_removals set status = case when approve then 'approved' else 'rejected' end,
+    decided_by = auth.uid(), decided_name = public.vehicle_rm_name(), decided_at = now(), decision_note = nullif(trim(note), '')
+    where id = rid returning * into r;
+  return r;
+end $$;
+
+-- the one who asked (or Admin+) takes the request back
+create or replace function public.vehicle_rm_cancel(rid uuid) returns public.vehicle_removals
+  language plpgsql security definer set search_path = public as $$
+declare r public.vehicle_removals;
+begin
+  select * into r from public.vehicle_removals where id = rid for update;
+  if r.id is null or r.status not in ('pending','approved') then raise exception 'Prašymas jau išspręstas'; end if;
+  if r.requested_by <> auth.uid() and not public.is_plus() then raise exception 'Atšaukti gali tik prašęs arba Admin+'; end if;
+  update public.vehicle_removals set status = 'cancelled', decided_by = auth.uid(), decided_name = public.vehicle_rm_name(), decided_at = now()
+    where id = rid returning * into r;
+  return r;
+end $$;
+
+revoke all on function public.vehicle_rm_request(text, text, text, text, uuid) from public, anon;
+revoke all on function public.vehicle_rm_decide(uuid, boolean, text) from public, anon;
+revoke all on function public.vehicle_rm_cancel(uuid) from public, anon;
+grant execute on function public.vehicle_rm_request(text, text, text, text, uuid) to authenticated;
+grant execute on function public.vehicle_rm_decide(uuid, boolean, text) to authenticated;
+grant execute on function public.vehicle_rm_cancel(uuid) to authenticated;
+
+-- the guard: the fleet (app_state 'vehicles') may lose a vehicle only with an approved request
+create or replace function public.vehicles_guard() returns trigger
+  language plpgsql security definer set search_path = public as $$
+declare gone text[]; v text;
+begin
+  if auth.uid() is null then return coalesce(new, old); end if;          -- server jobs, SQL editor
+  if tg_op = 'DELETE' then
+    if old.key = 'vehicles' and jsonb_array_length(coalesce(old.data, '[]'::jsonb)) > 0 then
+      raise exception 'Automobilį pašalinti galima tik su Admin+ patvirtinimu';
+    end if;
+    return old;
+  end if;
+  if new.key <> 'vehicles' or tg_op <> 'UPDATE' then return new; end if;
+  gone := array(
+    select o->>'id' from jsonb_array_elements(case when jsonb_typeof(old.data) = 'array' then old.data else '[]'::jsonb end) o
+     where o->>'id' is not null
+       and not exists (select 1 from jsonb_array_elements(case when jsonb_typeof(new.data) = 'array' then new.data else '[]'::jsonb end) n where n->>'id' = o->>'id'));
+  foreach v in array gone loop
+    if not exists (select 1 from public.vehicle_removals where vehicle_id = v and status = 'approved') then
+      raise exception 'Automobilį pašalinti galima tik su Admin+ patvirtinimu';
+    end if;
+    update public.vehicle_removals set status = 'done' where vehicle_id = v and status = 'approved';
+  end loop;
+  return new;
+end $$;
+drop trigger if exists vehicles_guard on public.app_state;
+create trigger vehicles_guard before update or delete on public.app_state
+  for each row execute function public.vehicles_guard();
+
+-- Supabase: read the list of tables and functions again
+notify pgrst, 'reload schema';
+
+
+-- ============================================================
+-- Transportas → „UTA kortelės“
+--  * uta_cards   – kuro kortelės: numeris, kam priskirta (transportui
+--                  arba asmeniui), galiojimas, pastabos
+--  * uta_reports – įkeltos mėnesio ataskaitos (Excel / CSV iš UTA)
+--  * uta_tx      – ataskaitų eilutės: kada, kur, kas pilta, kiek, už kiek.
+--                  Tas pats pylimas iš dviejų ataskaitų įrašomas tik kartą (key).
+-- Mato visi, kas mato „Transportą“; keisti ir įkelti – kas jį redaguoja.
+-- Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
+-- ============================================================
+
+create table if not exists public.uta_cards (
+  id            uuid primary key default gen_random_uuid(),
+  card_no       text not null check (length(card_no) between 4 and 40),
+  title         text not null default '',
+  assign_kind   text not null default 'none' check (assign_kind in ('vehicle','person','none')),
+  vehicle_id    text,
+  vehicle_name  text,
+  person_id     uuid,
+  person_name   text,
+  valid_until   date,
+  note          text not null default '',
+  active        boolean not null default true,
+  created_by    uuid default auth.uid(),
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+-- the same card once (spaces and dashes aside)
+create unique index if not exists uta_cards_no on public.uta_cards (regexp_replace(card_no, '[^0-9A-Za-z]', '', 'g'));
+
+create table if not exists public.uta_reports (
+  id                uuid primary key default gen_random_uuid(),
+  month             date not null,
+  file_name         text not null default '',
+  rows              integer not null default 0,
+  uploaded_by       uuid default auth.uid(),
+  uploaded_by_name  text,
+  created_at        timestamptz not null default now()
+);
+
+create table if not exists public.uta_tx (
+  id            uuid primary key default gen_random_uuid(),
+  report_id     uuid references public.uta_reports(id) on delete cascade,
+  card_no       text not null default '',
+  card_id       uuid references public.uta_cards(id) on delete set null,
+  tx_at         timestamptz not null,
+  tx_date       date not null,
+  plate         text,
+  station       text,
+  country       text,
+  product       text,
+  quantity      numeric(12,3),
+  unit          text,
+  amount_net    numeric(12,2),
+  amount_gross  numeric(12,2),
+  currency      text,
+  mileage       integer,
+  driver        text,
+  key           text not null unique
+);
+create index if not exists uta_tx_date on public.uta_tx (tx_date);
+create index if not exists uta_tx_card on public.uta_tx (card_id, tx_date);
+
+alter table public.uta_cards enable row level security;
+alter table public.uta_reports enable row level security;
+alter table public.uta_tx enable row level security;
+
+drop policy if exists "uta cards view" on public.uta_cards;
+create policy "uta cards view" on public.uta_cards for select to authenticated using (public.can_view('fleet'));
+drop policy if exists "uta cards edit" on public.uta_cards;
+create policy "uta cards edit" on public.uta_cards for all to authenticated using (public.can_edit('fleet')) with check (public.can_edit('fleet'));
+
+drop policy if exists "uta reports view" on public.uta_reports;
+create policy "uta reports view" on public.uta_reports for select to authenticated using (public.can_view('fleet'));
+drop policy if exists "uta reports edit" on public.uta_reports;
+create policy "uta reports edit" on public.uta_reports for all to authenticated using (public.can_edit('fleet')) with check (public.can_edit('fleet'));
+
+drop policy if exists "uta tx view" on public.uta_tx;
+create policy "uta tx view" on public.uta_tx for select to authenticated using (public.can_view('fleet'));
+drop policy if exists "uta tx edit" on public.uta_tx;
+create policy "uta tx edit" on public.uta_tx for all to authenticated using (public.can_edit('fleet')) with check (public.can_edit('fleet'));
+
+revoke all on public.uta_cards, public.uta_reports, public.uta_tx from anon;
+grant select, insert, update, delete on public.uta_cards, public.uta_reports, public.uta_tx to authenticated;
+
+-- Supabase: read the list of tables again
+notify pgrst, 'reload schema';

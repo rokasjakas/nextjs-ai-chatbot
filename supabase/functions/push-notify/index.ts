@@ -151,7 +151,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 11;
+const PUSH_FN_VERSION = 12;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -1036,6 +1036,35 @@ async function onGear(uid: string, id: string, ev: string) {
   return await sendTo(await wantIds([...people], "gear"), { title, body, tag: "gear-" + g.id, url: `./?gear=${g.id}`, kind: "gear" });
 }
 
+// Transportas: removing a vehicle from the fleet needs an Admin+ approval – the request goes to every
+// other Admin+ (push + e-mail), the answer back to the one who asked
+type VehicleRm = { id: string; vehicle_id: string; vehicle_name: string; plate: string | null; reason: string; status: string; requested_by: string; requested_name: string | null; decided_by: string | null; decision_note: string | null };
+async function onVehicleRm(uid: string, id: string, ev: string) {
+  const [r] = await db<VehicleRm[]>(`vehicle_removals?select=id,vehicle_id,vehicle_name,plate,reason,status,requested_by,requested_name,decided_by,decision_note&id=eq.${encodeURIComponent(id)}`);
+  if (!r) return { error: "Prašymas nerastas" };
+  const what = r.vehicle_name + (r.plate ? " (" + r.plate + ")" : "");
+  const url = `./?vehicle=${encodeURIComponent(r.vehicle_id)}`;
+  if (ev === "request") {
+    if (r.status !== "pending" || r.requested_by !== uid) return { error: "Prašymo nėra" };
+    const plus = await wantIds((await plusIds()).filter((u) => u !== uid), "other");
+    if (!plus.length) return { sent: 0 };
+    const res = await sendTo(plus, { title: "🚐 Patvirtinti automobilio pašalinimą: " + what, body: (r.requested_name || "") + (r.reason ? " · " + r.reason.slice(0, 120) : ""), tag: "veh-rm-" + r.id, url, kind: "fleet" });
+    const aps = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=in.${inList(plus)}`);
+    const link = (Deno.env.get("APP_URL") || "https://app.eventsolutions.lt").replace(/\/$/, "") + "/?vehicle=" + encodeURIComponent(r.vehicle_id);
+    const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
+      <p><b>Prašoma patvirtinti automobilio pašalinimą iš parko</b></p>
+      <p>${esc(what)}</p>
+      <p>Prašo: ${esc(r.requested_name || "")}${r.reason ? `<br>Priežastis: ${esc(r.reason)}` : ""}</p>
+      <p><a href="${esc(link)}" style="display:inline-block;padding:10px 16px;background:#F35E7D;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;">Atidaryti ir patvirtinti</a></p>
+      <p style="color:#777;font-size:12px;margin-top:18px;">EventSolutions App · prašymas išsiųstas visiems Admin+ nariams; kol vienas nepatvirtins, automobilis lieka parke.</p></div>`;
+    const mailErr = await mailTo(aps.map((p) => p.email).filter(Boolean), "Patvirtinti automobilio pašalinimą: " + what.slice(0, 120), html);
+    return { ...res, ...(mailErr ? { mailErr } : {}) };
+  }
+  if (r.decided_by !== uid || !["approved", "rejected", "done"].includes(r.status) || r.requested_by === uid) return { error: "Tik patvirtinęs narys" };
+  const ok = r.status !== "rejected";
+  return await sendTo(await wantIds([r.requested_by], "other"), { title: (ok ? "Pašalinimas patvirtintas: " : "Pašalinimas atmestas: ") + what, body: r.decision_note ? r.decision_note.slice(0, 140) : "", tag: "veh-rm-" + r.id, url, kind: "fleet" });
+}
+
 // Naujas narys: someone registered and waits for access – every admin (Admin, Admin+, Super Admin)
 async function onNewUser(id: string) {
   const [u] = await db<(Profile & { created_at: string })[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs,created_at&id=eq.${encodeURIComponent(id)}`);
@@ -1173,6 +1202,7 @@ Deno.serve(async (req) => {
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
     if (body.kind === "leave") return json(await onLeave(uid, String(body.leave_id ?? ""), ["new", "decided", "cancelled"].includes(body.event) ? body.event : "new"));
     if (body.kind === "event") return json(await onEvent(uid, String(body.event_id ?? ""), Array.isArray(body.users) ? body.users : []));
+    if (body.kind === "vehicle_rm") return json(await onVehicleRm(uid, String(body.removal_id ?? ""), body.event === "request" ? "request" : "decided"));
     if (body.kind === "gear") return json(await onGear(uid, String(body.gear_id ?? ""), ["new", "fixed", "found", "wo_request", "wo_approved", "wo_rejected"].includes(body.event) ? body.event : "new"));
     if (body.kind === "message") return json(await onMessage(uid, String(body.message_id ?? "")));
     if (body.kind === "call") return json(await onCall(uid, String(body.call_id ?? "")));
