@@ -13,6 +13,8 @@
 //        null = not in R2 (an older file: sign it in Supabase)
 // POST {action:"remove", bucket, paths}       -> { removed }
 // POST {action:"list", bucket, prefix}        -> { names }        (one folder)
+// POST {action:"get", bucket, path}           -> the file itself (for PDFs made in the browser: no R2 CORS needed);
+//        404 { error:"not_found" } when it is not in R2 (an older file: download it from Supabase)
 // POST {action:"usage"}                       -> { bytes, files, folders } admins: how much R2 holds
 //
 // Secrets: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET
@@ -20,7 +22,7 @@
 import { sha256 } from "npm:@noble/hashes@1.4.0/sha256";
 import { hmac } from "npm:@noble/hashes@1.4.0/hmac";
 
-const VERSION = 5;
+const VERSION = 6;
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -236,6 +238,13 @@ Deno.serve(async (req) => {
     const c = await caller(req);
     if (!c) return json({ error: "Reikia prisijungti." }, 401);
     const body = await req.json().catch(() => ({}));
+    if (body.action === "get") {
+      const bucket = String(body.bucket ?? ""), path = String(body.path ?? "");
+      if (!(await allowed(c, bucket, path, "read", new Map()))) return json({ error: "Nėra teisės." }, 403);
+      const r = await fetch(r2Url("GET", bucket + "/" + path, 60)).catch(() => null);
+      if (!r || !r.ok) { await r?.body?.cancel().catch(() => {}); return json({ error: "not_found" }, 404); }
+      return new Response(r.body, { headers: { ...corsHeaders, "Content-Type": r.headers.get("content-type") || "application/octet-stream", "Cache-Control": "private, max-age=300" } });
+    }
     return json({ v: VERSION, ...(await handle(c, body)) });
   } catch (e) {
     if (e instanceof UserError) return json({ error: e.message }, 400);

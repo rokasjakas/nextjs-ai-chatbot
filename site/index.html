@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-HFwAPrGKSZxvc+ojONKSvX3Rq2stw8SiiRPhsztqqD4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-TC17BF54Q19XRFWQ8E5ZYL/SWleuwTQ872KFuHE/6R0=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -16438,7 +16438,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v203';
+const APP_VER = 'v204';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -21297,8 +21297,7 @@ function hvItemsRows(r){
   return String(r.items||'').split('\n').map(x=>x.trim()).filter(Boolean).map(l=>{ const m = l.match(/^(\d+(?:[.,]\d+)?)\s*(?:x|×|vnt\.?|kompl\.?)\s*(.+)$/i); return m ? { qty:m[1], name:m[2] } : { qty:'1', name:l }; });
 }
 async function hvPhotoData(paths){
-  const urls = await sbSignedUrls(EQ_BUCKET, paths);
-  return Promise.all(urls.map(async u=>{ if(!u) return ''; try{ const b = await (await fetch(u)).blob(); return await new Promise(res=>{ const fr = new FileReader(); fr.onload = ()=>res(fr.result); fr.onerror = ()=>res(''); fr.readAsDataURL(b); }); }catch(e){ return ''; } }));
+  return Promise.all(paths.map(async p=>{ if(!p) return ''; try{ const b = await stBlob(EQ_BUCKET, p); if(!b) return ''; return await new Promise(res=>{ const fr = new FileReader(); fr.onload = ()=>res(fr.result); fr.onerror = ()=>res(''); fr.readAsDataURL(b); }); }catch(e){ return ''; } }));
 }
 async function hvPages(r){
   const st = offerSettings();
@@ -25300,6 +25299,22 @@ function fsR2(){
   if(FS.r2!==null) return Promise.resolve(FS.r2);
   if(!FS.p) FS.p = fetch(FILES_FN(), { headers:{ apikey:SUPABASE_KEY } }).then(r=>r.ok ? r.json() : null).then(j=>(FS.r2 = !!(j && j.r2))).catch(()=>(FS.r2 = false));
   return FS.p;
+}
+// a stored file's contents (photos for a PDF made in the browser, attachments): from its link; when the
+// browser may not read it from there (R2 without CORS for this address) through the files function;
+// an older file from Supabase Storage
+async function stBlob(bucket, path){
+  const [u] = await sbSignedUrls(bucket, [path]);
+  if(u){ try{ const r = await fetch(u); if(r.ok) return await r.blob(); }catch(e){} }
+  if(await fsR2()){
+    try{
+      const { data } = await getSb().auth.getSession(), token = data && data.session ? data.session.access_token : '';
+      const res = await fetch(FILES_FN(), { method:'POST', headers:{ 'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+token }, body:JSON.stringify({ action:'get', bucket, path }) });
+      if(res.ok && !/json/i.test(res.headers.get('content-type')||'')) return await res.blob();
+    }catch(e){}
+  }
+  try{ const { data } = await getSb().storage.from(bucket).download(path); if(data) return data; }catch(e){}
+  return null;
 }
 async function fsCall(body){
   const { data } = await getSb().auth.getSession();
