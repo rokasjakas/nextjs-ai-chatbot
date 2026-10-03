@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-DRF9J0elJYF3evhe9cbF9DBP5HzDAQuHRNVGVnmGxjo=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-rZUxYyWHWJ4WuZ7aL67RfReU2r/bLL4M2NiGBOZumXo=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4201,6 +4201,25 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .xg-timepop .dp-twc{background:none !important;border:0 !important;padding:2px !important;font-size:11px !important;color:var(--text-dim);} .xg-timepop .tw-acts button{border:0;border-radius:0;padding:0;} .xg-timepop .tw-acts button + button{border-left:1px solid var(--border);}
 .dp-tw .tw-host.off .tw{opacity:.45;} .dp-tw .tw-i{font-size:14px;} .dp-twc{border:0;background:none;color:var(--text-dim);font:inherit;font-size:11px;cursor:pointer;padding:2px;text-align:right;} .dp-twc:hover{color:var(--accent);}
 </style>
+<style id="radCss">
+/* own corner roundness: windows that have their own fixed corners follow it too */
+body.rad-own .modal, body.rad-own .ui-ask-card, body.rad-own .combo-pop, body.rad-own .cal-pop, body.rad-own .ltd-pop, body.rad-own .op-pop, body.rad-own .help-pop,
+body.rad-own .call-panel, body.rad-own .call-box, body.rad-own .call-ring-card, body.rad-own .chat-toast, body.rad-own .pp-dial-in, body.rad-own .nm-panel, body.rad-own .sk-comp, body.rad-own .chat-shell{border-radius:var(--rad-win) !important;}
+body.rad-own .card, body.rad-own .home-tile, body.rad-own .stat-tile, body.rad-own .an-tile, body.rad-own .btn, body.rad-own .chip, body.rad-own input:not([type=checkbox]):not([type=radio]):not([type=range]), body.rad-own select, body.rad-own textarea{border-radius:var(--radius) !important;}
+.pf-rad-demo{display:inline-block;width:64px;height:40px;border:1px solid var(--accent);background:color-mix(in srgb, var(--accent) 15%, transparent);border-radius:var(--radius);}
+</style>
+<style id="hoverCss">
+/* home tiles: glow + grow under the mouse (only where there is a mouse) */
+@media (hover:hover){
+  body.hv-fx .home-tile{transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .2s, background .2s;will-change:transform;}
+  body.hv-fx .home-tile:hover{transform:scale(var(--hv-s,1.03)) !important;z-index:1;
+    box-shadow:0 0 calc(34px * var(--hv-g,.5)) calc(2px * var(--hv-g,.5)) color-mix(in srgb, var(--tc, var(--accent)) calc(var(--hv-g,.5) * 70%), transparent),
+               0 10px 30px rgb(0 0 0 / calc(var(--hv-g,.5) * .35)) !important;
+    border-color:color-mix(in srgb, var(--tc, var(--accent)) 60%, var(--border)) !important;}
+}
+.pf-hv-demo{padding:6px 4px 10px;}
+.pf-hv-tile{display:inline-flex !important;min-height:0 !important;padding:12px 16px !important;font-size:13px;cursor:default;}
+</style>
 <style id="glassCss">
 /* glass: the surface lets the background through (--gl-a = how much of the colour stays), blurred behind */
 body.gl-menu .rail, body.gl-menu .nm-panel, body.gl-menu .pageheader,
@@ -4212,7 +4231,11 @@ body.gl-cards .card, body.gl-cards .home-tile, body.gl-cards .stat-tile, body.gl
   box-shadow:inset 0 1px 0 rgb(255 255 255 / .08), 0 8px 32px rgb(0 0 0 / .22);
 }
 body.gl-cards .card .card{-webkit-backdrop-filter:none;backdrop-filter:none;}
-body.gl-win .modal-backdrop{-webkit-backdrop-filter:blur(calc(var(--gl-b,18px) / 3));backdrop-filter:blur(calc(var(--gl-b,18px) / 3));background:rgb(0 0 0 / .35);}
+/* pop-up windows: a deep shadow, and what is under them blurred 4× more */
+body.gl-win .modal, body.gl-win .combo-pop, body.gl-win .cal-pop, body.gl-win .ltd-pop, body.gl-win .op-pop, body.gl-win .ui-ask-card, body.gl-win .help-pop, body.gl-win .pp-dial-in, body.gl-win .call-ring-card{
+  -webkit-backdrop-filter:blur(calc(var(--gl-b,18px) * 4)) saturate(1.6); backdrop-filter:blur(calc(var(--gl-b,18px) * 4)) saturate(1.6);
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / .1), 0 24px 70px rgb(0 0 0 / .55), 0 6px 18px rgb(0 0 0 / .35) !important;}
+body.gl-win .modal-backdrop, body.gl-win .ui-ask{-webkit-backdrop-filter:blur(calc(var(--gl-b,18px) * 4));backdrop-filter:blur(calc(var(--gl-b,18px) * 4));background:rgb(0 0 0 / .3);}
 body.gl-menu .rail .rail-btn.active{box-shadow:inset 0 1px 0 rgb(255 255 255 / .15);}
 .pf-gl{margin-top:12px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius,8px);display:flex;flex-direction:column;gap:10px;}
 .pf-gl.on{border-color:var(--accent);}
@@ -16939,13 +16962,13 @@ function homeTileHtml(t){
   if(t.group){
     const title = k=>(HOME_TILES.find(x=>x.tab===k)||{}).title||k;
     const kids = byOrder(t.kids, prefGet('hgOrder_'+t.group), k=>k);
-    return `<button class="home-tile home-group" data-group="${t.group}" data-k="${t.group}">
+    return `<button class="home-tile home-group" data-group="${t.group}" data-k="${t.group}" style="--tc:${t.color}">
       <span class="ht-icon" style="background:${t.color}22;color:${t.color};">${t.icon}</span>
       <span class="ht-text"><span class="ht-title">${esc(t.title)}</span>
         <span class="ht-tools">${kids.map(k=>`<span>${esc(title(k))}</span>`).join('')}</span></span>
     </button>`;
   }
-  return `<button class="home-tile" data-go="${t.tab}" data-k="${t.tab}">
+  return `<button class="home-tile" data-go="${t.tab}" data-k="${t.tab}" style="--tc:${t.color||'var(--accent)'}">
     <span class="ht-icon" style="background:${t.color}22;color:${t.color};">${homeRailIcon(t.tab)}</span>
     <span class="ht-text"><span class="ht-title">${esc(t.title)}</span><span class="ht-stat">${homeTileStat(t.tab)}</span>
       <span class="ht-extra">${homeTileInfo(t.tab).map(l=>`<span>${l}</span>`).join('')}</span></span>
@@ -17397,7 +17420,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v240';
+const APP_VER = 'v241';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25945,7 +25968,18 @@ function bgPref(){ const p = prefGet('bgImg'); return p && typeof p==='object' ?
 /* glass: see-through, blurred menus / windows / cards (each member their own, Profilis → Išvaizda → Fonas) */
 const GLASS_DEF = { on:false, alpha:0.55, blur:18, menu:true, win:true, cards:true };
 function glassPref(){ const g = prefGet('glass'); return Object.assign({}, GLASS_DEF, g && typeof g==='object' ? g : {}); }
+/* home tiles under the mouse: a light glow and a little bigger (Profilis → Išvaizda) */
+const HOVER_DEF = { on:true, grow:0.03, glow:0.5 };
+function hoverPref(){ const g = prefGet('hoverFx'); return Object.assign({}, HOVER_DEF, g && typeof g==='object' ? g : {}); }
+/* corner roundness of windows, cards, buttons (each member their own); empty = the theme's own */
+function radPref(){ const v = prefGet('radius'); return v===null || v===undefined || v==='' || !isFinite(+v) ? null : Math.max(0, Math.min(28, +v)); }
+function radApply(v){ v = v===undefined ? radPref() : v; const b = document.body, r = document.documentElement;
+  if(v===null){ b.classList.remove('rad-own'); r.style.removeProperty('--radius'); r.style.removeProperty('--rad-win'); return; }
+  b.classList.add('rad-own'); r.style.setProperty('--radius', v+'px'); r.style.setProperty('--rad-win', Math.round(v*1.4)+'px'); }
+function hoverApply(x){ radApply(); x = x || hoverPref(); const r = document.documentElement;
+  document.body.classList.toggle('hv-fx', !!x.on); r.style.setProperty('--hv-s', String(1 + (+x.grow||0))); r.style.setProperty('--hv-g', String(+x.glow||0)); }
 function glassApply(g){
+  hoverApply();
   g = g || glassPref(); const b = document.body, r = document.documentElement;
   r.style.setProperty('--gl-a', Math.round(g.alpha*100)+'%'); r.style.setProperty('--gl-b', g.blur+'px');
   b.classList.toggle('gl-menu', !!(g.on && g.menu)); b.classList.toggle('gl-win', !!(g.on && g.win)); b.classList.toggle('gl-cards', !!(g.on && g.cards));
@@ -26001,14 +26035,36 @@ function glassUiHtml(){
       <label class="pf-bg-dim">Suliejimas (blur) <input type="range" id="pfGlB" min="0" max="40" step="1" value="${g.blur}"><b id="pfGlBv">${g.blur}px</b></label>
       <div class="pf-gl-where"><span>Kam taikyti:</span>${[['menu','Meniu ir viršutinė juosta'],['win','Langai, iššokantys meniu, kalendoriai'],['cards','Kortelės ir plytelės']].map(([k,l])=>`<label class="checkbox-row"><input type="checkbox" data-gl="${k}" ${g[k] ? 'checked' : ''}> ${l}</label>`).join('')}</div>
       ${bgPref() && bgPref().path ? '' : '<small class="muted">Patarimas: stiklas gražiausiai atrodo su savo fonu (aukščiau).</small>'}
-    </div>` : ''}</div>`;
+    </div>` : ''}</div>${hoverUiHtml()}`;
 }
+function hoverUiHtml(){
+  const x = hoverPref();
+  return `<div class="pf-gl ${x.on ? 'on' : ''}">
+    <label class="pf-gl-sw"><input type="checkbox" id="pfHvOn" ${x.on ? 'checked' : ''}><span class="pf-gl-t"><b>Plytelių efektas užvedus pelę</b><small>Pradžioje Ofisas, Sandėlis, Chatas ir kt. švelniai sušvyti ir padidėja</small></span></label>
+    ${x.on ? `<div class="pf-gl-c">
+      <label class="pf-bg-dim">Padidėjimas <input type="range" id="pfHvS" min="0" max="0.08" step="0.005" value="${x.grow}"><b id="pfHvSv">${Math.round(x.grow*1000)/10}%</b></label>
+      <label class="pf-bg-dim">Švytėjimas <input type="range" id="pfHvG" min="0" max="1" step="0.05" value="${x.glow}"><b id="pfHvGv">${Math.round(x.glow*100)}%</b></label>
+      <div class="pf-hv-demo"><span class="home-tile pf-hv-tile" style="--tc:var(--accent)">Užvesk pelę – pabandyk</span></div>
+    </div>` : ''}</div>
+  <div class="pf-gl on-rad">
+    <div class="pf-gl-t"><b>Langų kampai</b><small>Kiek apvalūs langai, kortelės, plytelės ir mygtukai</small></div>
+    <label class="pf-bg-dim">Apvalumas <input type="range" id="pfRad" min="0" max="28" step="1" value="${radPref()===null ? 4 : radPref()}"><b id="pfRadV">${radPref()===null ? 'tema' : radPref()+'px'}</b></label>
+    <div class="row" style="gap:6px;align-items:center;"><span class="pf-rad-demo"></span>${radPref()===null ? '' : '<button type="button" class="btn small" id="pfRadReset">Kaip temoje</button>'}</div>
+  </div>`;
+}
+function hoverSave(patch, redraw){ const x = Object.assign(hoverPref(), patch); prefSet('hoverFx', x); hoverApply(x); if(redraw) redraw(); }
 function glassSave(patch, redraw){ const g = Object.assign(glassPref(), patch); prefSet('glass', g); glassApply(g); if(redraw) redraw(); }
 function bgUiWire(redraw){
   const go = document.getElementById('pfGlOn'); if(go) go.onchange = ()=>glassSave({ on:go.checked }, redraw);
   const ga = document.getElementById('pfGlA'); if(ga){ const al = ()=>Math.round((1 - ga.value)*100)/100; ga.oninput = ()=>glassApply(Object.assign(glassPref(), { alpha:al() })); ga.onchange = ()=>glassSave({ alpha:al() }); }
   const gb = document.getElementById('pfGlB'); if(gb){ gb.oninput = ()=>{ glassApply(Object.assign(glassPref(), { blur:+gb.value })); const v = document.getElementById('pfGlBv'); if(v) v.textContent = gb.value+'px'; }; gb.onchange = ()=>glassSave({ blur:+gb.value }); }
   document.querySelectorAll('[data-gl]').forEach(c=>c.onchange = ()=>glassSave({ [c.dataset.gl]:c.checked }));
+  const rd = document.getElementById('pfRad'); if(rd){ rd.oninput = ()=>{ radApply(+rd.value); const v = document.getElementById('pfRadV'); if(v) v.textContent = rd.value+'px'; }; rd.onchange = ()=>{ prefSet('radius', +rd.value); radApply(); redraw(); }; }
+  const rr = document.getElementById('pfRadReset'); if(rr) rr.onclick = ()=>{ prefSet('radius', null); radApply(); redraw(); };
+  const ho = document.getElementById('pfHvOn'); if(ho) ho.onchange = ()=>hoverSave({ on:ho.checked }, redraw);
+  [['pfHvS','grow',v=>Math.round(v*1000)/10+'%'],['pfHvG','glow',v=>Math.round(v*100)+'%']].forEach(([id, k, f])=>{ const el = document.getElementById(id); if(!el) return;
+    el.oninput = ()=>{ hoverApply(Object.assign(hoverPref(), { [k]:+el.value })); const v = document.getElementById(id+'v'); if(v) v.textContent = f(+el.value); };
+    el.onchange = ()=>hoverSave({ [k]:+el.value }); });
   const f = document.getElementById('pfBgFile'); if(f) f.onchange = async ()=>{ const file = f.files && f.files[0]; f.value = ''; await bgUpload(file, document.getElementById('pfBgMsg')); redraw(); };
   const d = document.getElementById('pfBgDel'); if(d) d.onclick = ()=>{ const p = bgPref(); if(p && p.path) stFrom('avatars').remove([p.path]).catch(()=>{}); prefSet('bgImg', null); bgApply(); redraw(); };
   const r = document.getElementById('pfBgDim'); if(r){ r.oninput = ()=>document.documentElement.style.setProperty('--bg-dim', r.value);
@@ -32156,6 +32212,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 23:20', v:'v241', k:'new', t:'Švytėjimas užvedus pelę, stipresnis stiklas langams', f:'Pradžioje užvedus pelę ant Ofiso, Sandėlio, Chato ir kitų plytelių jos švelniai sušvyti savo spalva ir truputį padidėja, nuvedus – grįžta. Profilis → Išvaizda: efektą galima išjungti, nustatyti padidėjimą ir švytėjimą. Ten pat – nauja „Langų kampai“: kiek apvalūs langai, kortelės ir mygtukai. Stiklo režime iššokantys langai meta gilų šešėlį, o vaizdas po jais suliejamas 4 kartus stipriau.' },
   { d:'2026-10-04 22:50', v:'v240', k:'chg', t:'Telefone: Namai viduryje', f:'Telefono programėlės apatinėje juostoje viduryje visada yra apvalus mygtukas „Namai“ – vienu paspaudimu grįžti į pradžią. Šalia jo – tavo „Mano programos“ (dvi kairėje, viena dešinėje) ir „Meniu“.' },
   { d:'2026-10-04 22:20', v:'v239', k:'new', t:'Stiklo (glass) efektas', f:'Profilis → Išvaizda → Fonas: naujas jungiklis „Stiklas (glass)“. Įjungus meniu, langai, iššokantys meniu, kalendoriai ir kortelės tampa permatomi ir sulieti – pro juos matosi tavo fonas. Galima nustatyti permatomumą, suliejimo stiprumą ir pasirinkti, kam taikyti (meniu, langai, kortelės). Kiekvienas narys savo.' },
   { d:'2026-10-04 21:50', v:'v238', k:'fix', t:'Programa vėl atsidaro', f:'Pataisyta klaida, dėl kurios po v235 programa (ypač APK) kartais neatsidarydavo („This site can’t be reached“, ERR_FAILED). Jei taip nutiko – užtenka atidaryti programą dar kartą po kelių sekundžių.' },
