@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-hSfm8ydoXjhFzfNqmpyS2Xrj4h0s2TuEwMjNl5+3YT4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-zcb7d3Z7EMk3r2ygckAO2g6WGt6FSKZqQzPchAAq3Y0=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -2891,6 +2891,19 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .pp-dim{color:var(--text-faint);}
 .pp-btns{display:flex;gap:4px;}
 .pp-btns .icon-btn{width:34px;height:34px;border:1px solid var(--border);border-radius:var(--radius);}
+/* compact list: a clear line between people, small rows */
+.pp-row.pp-row-c{grid-template-columns:30px minmax(200px,2fr) minmax(130px,1fr) minmax(120px,.8fr) auto;gap:10px;padding:6px 14px;border-top:1px solid var(--border-2,var(--border));}
+.pp-row.pp-row-c.pp-norate{grid-template-columns:30px minmax(200px,2fr) minmax(120px,.8fr) auto;}
+.pp-rows .pp-row.pp-row-c:nth-child(even){background:rgb(var(--hi-rgb) / .025);}
+.pp-row.pp-row-c:hover{background:rgb(var(--hi-rgb) / .06);box-shadow:inset 3px 0 0 var(--accent);}
+.pp-row-c .pp-av{width:28px;height:28px;font-size:11.5px;}
+.pp-row-c .pp-who{flex-direction:row;flex-wrap:wrap;align-items:center;gap:2px 8px;}
+.pp-row-c .pp-who b{font-size:14px;white-space:nowrap;}
+.pp-row-c .pp-tags{margin:0;}
+.pp-row-c .pp-rt{font-weight:600;font-size:12.5px;} .pp-row-c .pp-rt.none{color:var(--text-faint);font-weight:400;font-style:italic;}
+.pp-row-c .pp-btns .icon-btn{width:30px;height:30px;}
+.pp-sec .pp-sec-h{border-bottom:2px solid var(--border-2,var(--border));padding:8px 14px;align-items:center;} .pp-sec .pp-sec-h h4{font-size:14px;} .pp-rows .pp-row.pp-row-c:first-child{border-top:0;}
+@media(max-width:900px){ .pp-row.pp-row-c{grid-template-columns:28px 1fr auto;} }
 .pp-day{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;padding:12px 16px;}
 .pp-day .field{margin:0;min-width:180px;}
 .pp-day-h{flex:1 1 100%;font-weight:700;font-size:13px;margin-bottom:-4px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
@@ -4070,6 +4083,11 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 @media (max-width:640px){ .gr-card{flex-wrap:wrap;} .gr-acts{flex-direction:row;width:100%;justify-content:flex-end;} .gr-form{grid-template-columns:1fr;} .gr-pi{flex-direction:column;align-items:flex-start;gap:1px;} .gr-states{grid-template-columns:1fr;} }
 </style>
 <style id="ldSimCss">
+/* project „Bendra“: on a wide screen four fields in a row instead of two wide ones */
+@media (min-width:1400px){
+  .np-grid .np-col:first-child .grid.cols-2{grid-template-columns:repeat(4,minmax(0,1fr));}
+  .np-grid .np-col:first-child .grid.cols-2 > [style*="grid-column:1/-1"]{grid-column:span 2 !important;}
+}
 .ld-sim{padding:10px 14px;margin-bottom:12px;}
 .ld-sim-row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;}
 .ld-sim-t{display:inline-flex;align-items:center;gap:8px;font-size:14px;} .ld-sim-t svg{width:20px;height:20px;color:var(--accent);}
@@ -16982,7 +17000,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v214';
+const APP_VER = 'v215';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -19494,19 +19512,18 @@ function ppRenderArchive(box){
   box.querySelectorAll('[data-pedit]').forEach(b=>b.onclick = e=>{ if(e.target.closest('[data-pact]')) return; ppContactModal(PP.contacts.find(c=>c.id===b.dataset.pedit)); });
   ppBindActions(box);
 }
+// one compact line per person: name, groups, rate / stafkė, phone – everything else opens on click
 function ppRowHtml(c){
-  const last = PP.calls.find(x=>x.contact_id===c.id);
-  return `<div class="pp-row" data-pedit="${esc(c.id)}" tabindex="0">
+  const r = ppRatesCan() ? (PPR.map[c.id] || {}) : null;
+  const rate = r ? [r.hourly!=null ? ppMoney(r.hourly)+'/val.' : '', r.daily!=null ? ppMoney(r.daily)+' stafkė' : ''].filter(Boolean).join(' · ') : '';
+  return `<div class="pp-row pp-row-c ${r ? '' : 'pp-norate'}" data-pedit="${esc(c.id)}" tabindex="0" title="Spausk – visa informacija">
     ${ppAvatar(c)}
-    <div class="pp-who"><b>${esc(ppName(c))}</b>${ppTagsHtml(c)}
-      ${ppRatesHtml(c)}
-      ${c.note ? `<small>${esc(c.note)}</small>` : ''}${last ? `<small class="pp-last">Paskutinis skambutis: ${esc(ppDayLabel(last.called_at))} ${esc(ppTime(last.called_at))} · ${esc((PP_OUT[last.outcome]||{}).label||'')}</small>` : ''}</div>
-    <div class="pp-c">${c.phone ? esc(c.phone) : '<span class="pp-dim">nėra tel.</span>'}</div>
-    <div class="pp-c pp-mail">${c.email ? esc(c.email) : '<span class="pp-dim">nėra el. pašto</span>'}</div>
-    <div class="pp-c pp-addr">${esc(c.address||'')}</div>
+    <div class="pp-who"><b>${esc(ppName(c))}</b>${ppTagsHtml(c)}</div>
+    ${r ? `<div class="pp-c pp-rt ${rate ? '' : 'none'}" title="Valandinis / stafkė – mato tik office, projektų vadovai ir admin">${rate ? esc(rate) : 'įkainis neįrašytas'}</div>` : ''}
+    <div class="pp-c pp-tel">${c.phone ? esc(c.phone) : '<span class="pp-dim">—</span>'}</div>
     <div class="pp-btns">
       <button type="button" class="icon-btn" data-pact="call" data-id="${esc(c.id)}" title="Skambinti" ${c.phone?'':'disabled'}>📞</button>
-      <button type="button" class="icon-btn" data-pact="mail" data-id="${esc(c.id)}" title="Rašyti laišką" ${c.email?'':'disabled'}>✉</button>
+      <button type="button" class="icon-btn" data-pact="mail" data-id="${esc(c.id)}" title="Rašyti laišką${c.email ? ': '+esc(c.email) : ''}" ${c.email?'':'disabled'}>✉</button>
     </div>
   </div>`;
 }
