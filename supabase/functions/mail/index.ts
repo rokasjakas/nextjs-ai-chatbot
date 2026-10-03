@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 12;
+const VERSION = 13;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -318,10 +318,15 @@ async function folders(a: Account) {
     const list = (await c.list({ statusQuery: { messages: true, unseen: true } })) as unknown as Box[];
     const p = [...pool.values()].find((x) => x.c === c); if (p) p.boxes = { at: Date.now(), list };
     const order = ["drafts", "sent", "junk", "trash", "archive"];
+    // two folders of one kind (e.g. „Junk“ and „Spam“): only the one the app opens is shown as that kind,
+    // the other keeps its own name (it was listed twice as „Brukalas“)
+    const pick: Record<string, string> = {};
+    for (const [k, sp] of Object.entries(SPECIAL)) { const hit = list.find((m) => m.specialUse === sp.use) ?? list.find((m) => sp.re.test(m.path)); if (hit) pick[k] = hit.path; }
     const rows = list
       .filter((b) => !b.flags?.has("\\Noselect") && !b.flags?.has("\\NonExistent"))
       .map((b) => {
-        const special = specialOf(b);
+        let special = specialOf(b);
+        if (special && special !== "inbox" && pick[special] && pick[special] !== b.path) special = "";
         const segs = b.path.split(b.delimiter || "/").length;
         return { path: b.path, name: special === "inbox" ? "INBOX" : b.name, special, level: special ? 0 : Math.max(0, segs - 1), unseen: b.status?.unseen ?? 0, total: b.status?.messages ?? 0 };
       });
