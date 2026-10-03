@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-c3qhS4uVk5ZPaaugVFrSU9uplwgI6e6XN3adcWFDRaY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-NnUVDvL5v1sqK6A1r9ULwOuPcu6shNGzcmiFkXbXHzw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4245,15 +4245,13 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .hs-item:hover .hs-fold, .hs-item.fold .hs-fold, .hs-fold:focus-visible{opacity:1;}
 .hs-fold:hover{color:var(--text);border-color:var(--accent);}
 @media (hover:none){ .hs-fold{opacity:.85;} }
-.hs-item[data-k="music"] .hs-fold{opacity:.75;}   /* the player covers the card – the handle stays visible */
 .home-side .hs-item{margin-bottom:4px;}
 /* what stays in the small version */
 .hs-item.fold[data-k="inv"] .inv-card > :not(.inv-h),
 .hs-item.fold[data-k="fb"] .fb-card > :not(.fb-card-h):not(.fb-foot),
 .hs-item.fold[data-k="cal"] .card > :not(.cal-head):not(.cal-up),
 .hs-item.fold[data-k="todo"] .card > :not(.cal-head),
-.hs-item.fold[data-k="ai"] .card > :not(.cal-head),
-.hs-item.fold[data-k="music"] .card > :not(.cal-head){display:none !important;}
+.hs-item.fold[data-k="ai"] .card > :not(.cal-head){display:none !important;}
 .hs-item.fold[data-k="fb"] .fb-card-h{margin-bottom:8px;}
 .hs-item.fold[data-k="cal"] .cal-up{margin-top:8px;}
 .hs-item.fold .card{padding-bottom:14px;}
@@ -4271,25 +4269,6 @@ body.gl-cards .hs-fold{background:color-mix(in srgb, var(--gl-base, var(--panel)
 .aic-in{display:flex;gap:6px;align-items:flex-end;} .aic-in textarea{flex:1;min-width:0;resize:none;min-height:34px;max-height:140px;font:inherit;font-size:13px;}
 .aic-in .btn svg{width:16px;height:16px;}
 .aic-note{display:block;margin-top:6px;font-size:11px;color:var(--text-faint);line-height:1.4;} .aic-note a{color:var(--accent);}
-.mus-src{display:inline-flex;gap:2px;padding:2px;border-radius:var(--radius,8px);background:var(--panel-2);border:1px solid var(--border);}
-.mus-src button{border:0;background:transparent;color:var(--text-dim);font:inherit;font-size:12px;font-weight:700;padding:4px 10px;border-radius:calc(var(--radius,8px) - 2px);cursor:pointer;}
-.mus-src button.on{background:var(--accent);color:var(--accent-ink,#fff);}
-.mus-link{display:flex;gap:6px;margin:8px 0;}
-.mus-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;} .mus-acts .btn svg{width:15px;height:15px;}
-.hs-item.fold[data-k="music"] .card > .mus-acts{display:none !important;} .mus-link input{flex:1;min-width:0;}
-.mus-slot{position:relative;border-radius:var(--radius,8px);overflow:hidden;background:var(--panel-2);}
-.mus-slot.spotify{height:352px;} .mus-slot.youtube{aspect-ratio:16/9;}
-.mus-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:12px;text-align:center;font-size:12.5px;color:var(--text-dim);}
-.mus-dock{position:fixed;z-index:70;border-radius:var(--radius,8px);overflow:hidden;background:#000;}
-.mus-dock .mus-frame{position:absolute;inset:0;} .mus-dock iframe{width:100%;height:100%;border:0;display:block;}
-.mus-dock .mus-dh{display:none;}
-.mus-dock.mini{right:16px;bottom:16px;width:320px;height:182px;box-shadow:0 12px 32px rgb(0 0 0 / .5);border:1px solid var(--border);}
-.mus-dock.mini[data-src="youtube"]{height:calc(180px + 30px);}
-.mus-dock.mini .mus-dh{display:flex;position:absolute;left:0;right:0;top:0;height:30px;z-index:1;align-items:center;gap:4px;padding:0 4px 0 10px;background:var(--panel);font-size:12px;}
-.mus-dock.mini .mus-dh b{flex:1;} .mus-dock.mini .mus-dh button{width:24px;height:24px;border:0;border-radius:6px;background:transparent;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.mus-dock.mini .mus-dh button:hover{background:rgb(var(--hi-rgb) / .1);color:var(--text);} .mus-dock.mini .mus-dh svg{width:15px;height:15px;}
-.mus-dock.mini .mus-frame{top:30px;}
-@media(max-width:760px){ .mus-dock.mini{right:8px;left:8px;width:auto;bottom:calc(72px + env(safe-area-inset-bottom,0px));} }
 </style>
 <style id="notesCss">
 .nt{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
@@ -10809,7 +10788,6 @@ function hsFoldToggle(k){
   const it = document.querySelector(`.home-side .hs-item[data-k="${k}"]`); if(!it) return;
   it.classList.toggle('fold', on);
   const b = it.querySelector('[data-hsfold]'); if(b){ b.innerHTML = slIcon(on ? 'dropdown' : 'dropup'); b.title = on ? 'Išskleisti' : 'Suskleisti'; b.setAttribute('aria-label', b.title); }
-  musicDockSync();
 }
 function aiCardRender(){
   const box = document.getElementById('homeAi'); if(!box) return;
@@ -10845,102 +10823,6 @@ async function aicSend(text){
   const t = document.getElementById('aicText'); if(t && !EV_TOUCH) t.focus();
 }
 
-/* ---------- Muzika (home card): Spotify or YouTube; the player lives outside the page, so it keeps playing on other pages (small, in the corner) ---------- */
-const MUS = { src:'', url:'', closed:false };
-function musPref(){ const p = prefGet('music'); return Object.assign({ src:'spotify', spotify:'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M', youtube:'' }, p && typeof p==='object' ? p : {}); }
-function musEmbed(src, link){
-  link = String(link||'').trim(); if(!link) return '';
-  if(src==='spotify'){ const m = link.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(playlist|album|track|artist|episode|show)\/([A-Za-z0-9]+)/) || link.match(/^spotify:(playlist|album|track|artist|episode|show):([A-Za-z0-9]+)$/);
-    return m ? 'https://open.spotify.com/embed/'+m[1]+'/'+m[2]+'?utm_source=generator&theme=0' : ''; }
-  const list = (link.match(/[?&]list=([A-Za-z0-9_-]+)/)||[])[1], vid = (link.match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/|\/live\/)([A-Za-z0-9_-]{11})/)||[])[1];
-  if(vid) return 'https://www.youtube-nocookie.com/embed/'+vid+'?rel=0&modestbranding=1'+(list ? '&list='+list : '');
-  if(list) return 'https://www.youtube-nocookie.com/embed/videoseries?list='+list+'&rel=0&modestbranding=1';
-  return '';
-}
-function musicCardRender(){
-  const box = document.getElementById('homeMusic'); if(!box) return;
-  const p = musPref(), url = musEmbed(p.src, p[p.src]);
-  box.innerHTML = `<div class="cal-head"><b style="display:inline-flex;align-items:center;gap:8px;">${slIcon('speaker')}Muzika</b><span style="flex:1"></span>
-      <span class="mus-src">${[['spotify','Spotify'],['youtube','YouTube']].map(([k,l])=>`<button type="button" data-mus="${k}" class="${p.src===k?'on':''}">${l}</button>`).join('')}</span></div>
-    <div class="mus-link"><input type="url" id="musUrl" placeholder="${p.src==='spotify' ? 'Spotify grojaraščio, albumo ar dainos nuoroda' : 'YouTube vaizdo įrašo ar grojaraščio nuoroda'}" value="${esc(p[p.src]||'')}"><button type="button" class="btn small" id="musGo">Groti</button></div>
-    <div class="mus-slot ${p.src}" id="musSlot">${url ? (MUS.closed ? '<div class="mus-empty"><span>Muzika groja atskirame lange.<br><button type="button" class="btn small" id="musBack" style="margin-top:8px;">Rodyti grotuvą čia</button></span></div>' : '') : `<div class="mus-empty">${p.src==='spotify' ? 'Įklijuok Spotify nuorodą (Bendrinti → Kopijuoti nuorodą).' : 'Įklijuok YouTube nuorodą.'}</div>`}</div>
-    <div class="mus-acts"><button type="button" class="btn small primary" id="musFull" title="Pilnas ${p.src==='spotify' ? 'Spotify' : 'YouTube'} grotuvas atskirame lange – visos dainos su tavo paskyra">${slIcon('openext')} Atidaryti pilną grotuvą</button><button type="button" class="btn small" id="musLogin">${slIcon('user')} Prisijungti prie ${p.src==='spotify' ? 'Spotify' : 'YouTube'}</button><button type="button" class="btn small" id="musReload" title="Perkrauti grotuvą (po prisijungimo)">${slIcon('refresh')} Perkrauti grotuvą</button></div>
-    <small class="aic-note">${p.src==='spotify'
-      ? 'Kortelės grotuvas be prisijungimo groja 30 s ištraukas. Visos dainos su tavo biblioteka – „Atidaryti pilną grotuvą“ (atskiras langas, groja kol naudojiesi programėle). Prisijungus ir uždarius prisijungimo langą kortelės grotuvas persikrauna.'
-      : 'Reklamų YouTube grotuve nebūna, jei esi prisijungęs prie YouTube Premium. Prisijungimo langas atsidaro programėlėje; jį uždarius grotuvas persikrauna.'}</small>`;
-  box.querySelectorAll('[data-mus]').forEach(b=>b.onclick = ()=>{ prefSet('music', Object.assign(musPref(), { src:b.dataset.mus })); MUS.closed = false; musicCardRender(); });
-  const go = ()=>{ const v = document.getElementById('musUrl').value.trim(), pp = musPref();
-    if(v && !musEmbed(pp.src, v)){ toast(pp.src==='spotify' ? 'Tai nepanašu į Spotify nuorodą.' : 'Tai nepanašu į YouTube nuorodą.'); return; }
-    pp[pp.src] = v; prefSet('music', pp); MUS.closed = false; musicCardRender(); };
-  document.getElementById('musGo').onclick = go;
-  document.getElementById('musLogin').onclick = ()=>musLogin(musPref().src);
-  document.getElementById('musFull').onclick = ()=>musOpenFull(musPref());
-  const back = document.getElementById('musBack'); if(back) back.onclick = ()=>{ MUS.closed = false; musicCardRender(); };
-  document.getElementById('musReload').onclick = ()=>{ musReload(); toast('Grotuvas perkrautas.'); };
-  document.getElementById('musUrl').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); go(); } });
-  if(url && !MUS.closed) musDockSet(p.src, url);
-  musicDockSync();
-}
-// sign in to Spotify / YouTube in a window of the app itself (the desktop app keeps it inside, sharing its sign-ins),
-// then the player is loaded again so it knows the person is signed in
-function musReload(){ const d = document.getElementById('musDock'); if(!d || !MUS.url) return; const url = MUS.url, src = MUS.src; MUS.url = ''; musDockSet(src, url); }
-function musLogin(src){
-  const url = src==='spotify' ? 'https://accounts.spotify.com/login?continue='+encodeURIComponent('https://open.spotify.com/')
-    : 'https://accounts.google.com/ServiceLogin?service=youtube&continue='+encodeURIComponent('https://www.youtube.com/');
-  const w = Math.min(520, screen.availWidth - 40), hgt = Math.min(760, screen.availHeight - 60);
-  const win = window.open(url, 'es-music-login', `popup,width=${w},height=${hgt},left=${Math.round((screen.availWidth - w)/2)},top=${Math.round((screen.availHeight - hgt)/2)}`);
-  if(!win){ toast('Naršyklė užblokavo langą – leisk iššokančius langus ir bandyk dar kartą.'); return; }
-  toast('Prisijunk atsidariusiame lange, tada jį uždaryk.');
-  clearInterval(MUS.loginT);
-  MUS.loginT = setInterval(()=>{ let closed = true; try{ closed = win.closed; }catch(e){}
-    if(closed){ clearInterval(MUS.loginT); musReload(); toast('Grotuvas perkrautas – jei prisijungei, grojamos visos dainos.'); } }, 600);
-}
-// the full Spotify / YouTube player in a window of its own (the desktop app keeps it inside, with its sign-ins)
-function musOpenFull(p){
-  const link = String(p[p.src]||'').trim();
-  let url;
-  if(p.src==='spotify'){ const m = link.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?((?:playlist|album|track|artist|episode|show)\/[A-Za-z0-9]+)/); url = 'https://open.spotify.com/'+(m ? m[1] : ''); }
-  else { const e = musEmbed('youtube', link), vid = (e.match(/\/embed\/([A-Za-z0-9_-]{11})/)||[])[1], list = (link.match(/[?&]list=([A-Za-z0-9_-]+)/)||[])[1];
-    url = vid ? 'https://www.youtube.com/watch?v='+vid+(list ? '&list='+list : '') : list ? 'https://www.youtube.com/playlist?list='+list : 'https://www.youtube.com/'; }
-  const w = Math.min(p.src==='spotify' ? 460 : 640, screen.availWidth - 40), hgt = Math.min(p.src==='spotify' ? 760 : 520, screen.availHeight - 60);
-  const win = window.open(url, 'es-music-'+p.src, `popup,width=${w},height=${hgt},left=${Math.max(0, screen.availWidth - w - 30)},top=${Math.max(0, screen.availHeight - hgt - 60)}`);
-  if(!win){ toast('Naršyklė užblokavo langą – leisk iššokančius langus ir bandyk dar kartą.'); return; }
-  try{ win.focus(); }catch(e){}
-  // the small player in the card would play over it – stop it
-  const d = document.getElementById('musDock'); MUS.closed = true; MUS.url = ''; if(d) d.remove();
-  if(document.getElementById('homeMusic')) musicCardRender();
-  toast('Pilnas grotuvas atidarytas atskirame lange.');
-}
-function musDockSet(src, url){
-  let d = document.getElementById('musDock');
-  if(!d){ d = document.createElement('div'); d.id = 'musDock'; d.className = 'mus-dock';
-    d.innerHTML = `<div class="mus-dh"><b></b><button type="button" data-md="home" title="Į pradžią">${slIcon('house')}</button><button type="button" data-md="x" title="Išjungti muziką">${slIcon('close')}</button></div><div class="mus-frame"></div>`;
-    d.querySelector('[data-md="home"]').onclick = ()=>setTab('home');
-    d.querySelector('[data-md="x"]').onclick = ()=>{ MUS.closed = true; MUS.url = ''; d.remove(); };
-    document.body.appendChild(d); }
-  if(MUS.url===url) return;
-  MUS.url = url; MUS.src = src; d.dataset.src = src;
-  d.querySelector('.mus-dh b').textContent = src==='spotify' ? 'Spotify' : 'YouTube';
-  d.querySelector('.mus-frame').innerHTML = `<iframe src="${esc(url)}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Muzika"></iframe>`;
-}
-// on the home page the player sits exactly over its card; elsewhere it is a small player in the corner
-function musicDockSync(){
-  const d = document.getElementById('musDock'); if(!d) return;
-  const slot = typeof currentTab!=='undefined' && currentTab==='home' ? document.getElementById('musSlot') : null;
-  if(slot && slot.offsetWidth){
-    const r = slot.getBoundingClientRect(), cont = (slot.closest('.home-side') || document.getElementById('main')).getBoundingClientRect();
-    const top = Math.max(r.top, cont.top, 0), bot = Math.min(r.bottom, cont.bottom, innerHeight);
-    d.classList.remove('mini'); d.classList.add('docked');
-    Object.assign(d.style, { left:r.left+'px', top:r.top+'px', width:r.width+'px', height:r.height+'px', right:'', bottom:'' });
-    d.style.clipPath = bot <= top ? 'inset(100%)' : `inset(${Math.max(0, top - r.top)}px 0 ${Math.max(0, r.bottom - bot)}px 0)`;
-  } else {
-    d.classList.remove('docked'); d.classList.add('mini'); d.style.clipPath = '';
-    Object.assign(d.style, { left:'', top:'', width:'', height:'' });
-  }
-}
-document.addEventListener('scroll', ()=>{ if(document.getElementById('musDock')) musicDockSync(); }, true);
-window.addEventListener('resize', ()=>{ if(document.getElementById('musDock')) musicDockSync(); });
-setInterval(()=>{ if(document.getElementById('musDock')) musicDockSync(); }, 700);
 function unoteLocalKey(key){ return 'unote:'+(teamMe()||'anon')+':'+key; }
 function unoteHtml(key, ph){
   return `<div class="unote" data-unotebox="${esc(key)}"><textarea class="unote-ta" data-unote="${esc(key)}" placeholder="${esc(ph||'Užrašai…')}" data-ro-ok spellcheck="true"></textarea><div class="unote-st" data-unotest="${esc(key)}"></div></div>`;
@@ -17846,7 +17728,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v261';
+const APP_VER = 'v262';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18779,7 +18661,7 @@ function renderHomeTab(){
     </div>
     <div class="home-tiles">${homeTileList().map(homeTileHtml).join('')}</div>
   </div>
-  ${side ? `<aside class="home-side">${byOrder((isPlus() ? ['inv'] : []).concat(['cal','fb','todo','ai','music']), (o=>Array.isArray(o) && isPlus() && !o.includes('inv') ? ['inv'].concat(o) : o)(prefGet('homeSide')), k=>k).map(k=>`<div class="hs-item${hsFolded(k) ? ' fold' : ''}" data-k="${k}"><span class="hs-grip" title="Tempk, kad sukeistum vietomis"></span><button type="button" class="hs-fold" data-hsfold="${k}" title="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}" aria-label="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}">${slIcon(hsFolded(k) ? 'dropdown' : 'dropup')}</button><div class="card${k==='fb'?' fb-card-wrap':k==='inv'?' inv-card-wrap':''}" id="${({cal:'homeCal',fb:'homeFb',todo:'homeTodo',inv:'homeInv',ai:'homeAi',music:'homeMusic'})[k]}"></div></div>`).join('')}</aside>` : ''}
+  ${side ? `<aside class="home-side">${byOrder((isPlus() ? ['inv'] : []).concat(['cal','fb','todo','ai']), (o=>Array.isArray(o) && isPlus() && !o.includes('inv') ? ['inv'].concat(o) : o)(prefGet('homeSide')), k=>k).map(k=>`<div class="hs-item${hsFolded(k) ? ' fold' : ''}" data-k="${k}"><span class="hs-grip" title="Tempk, kad sukeistum vietomis"></span><button type="button" class="hs-fold" data-hsfold="${k}" title="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}" aria-label="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}">${slIcon(hsFolded(k) ? 'dropdown' : 'dropup')}</button><div class="card${k==='fb'?' fb-card-wrap':k==='inv'?' inv-card-wrap':''}" id="${({cal:'homeCal',fb:'homeFb',todo:'homeTodo',inv:'homeInv',ai:'homeAi'})[k]}"></div></div>`).join('')}</aside>` : ''}
   </div>`;
   const editing = ()=>document.body.classList.contains('home-edit');
   makeSortable(document.querySelector('.home-tiles'), { item:'.home-tile', key:el=>el.dataset.k, editing, onDrop:keys=>prefSet('homeTiles', keys) });
@@ -18798,7 +18680,7 @@ function renderHomeTab(){
   }));
   document.querySelectorAll('.home-tile[data-group]').forEach(b=>b.addEventListener('click', ()=>homeGroupOpen(b.dataset.group, false, b)));
   stickyRender();
-  if(side){ aiCardRender(); musicCardRender(); }
+  if(side){ aiCardRender(); }
   if(side){ calRender(); todoRender(); calLoad(); fbCardRender(); invCard(); }
   document.getElementById('wxToggle').addEventListener('click', ()=>{
     wxOpen = !wxOpen;
@@ -32445,7 +32327,6 @@ let currentTab = 'home';
 function setTab(key){
   animApply();
   if(!BG.done && ACCESS.profile) bgApply();
-  setTimeout(musicDockSync, 0);
   if(!TABS[key] || !canView(key)) key = 'home';
   const same = key===currentTab && document.getElementById('main').children.length>0, y0 = window.scrollY;
   if(!same) keepReset();
@@ -32753,7 +32634,8 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
-  { d:'2026-10-03 23:59', v:'v261', k:'new', t:'Muzika: pilnas grotuvas lange', f:'Muzikos kortelėje – mygtukas „Atidaryti pilną grotuvą“: Spotify (ar YouTube) atsidaro atskirame mažame lange su pasirinktu grojaraščiu ir tavo paskyra – grojamos visos dainos, langas lieka atidarytas kol naudojiesi programėle. Kortelės grotuvas be Spotify leidimo groja tik ištraukas.' },
+  { d:'2026-10-04 00:02', v:'v262', k:'chg', t:'Muzikos kortelė pašalinta', f:'Pradžios puslapyje nebeliko Muzikos kortelės (Spotify / YouTube grotuvo).' },
+  { d:'2026-10-04 00:02', v:'v262', k:'chg', t:'Muzika: be atskiro grotuvo lango', f:'Pašalintas mygtukas „Atidaryti pilną grotuvą“ ir atskiras grotuvo langas – muzika groja kortelėje (ir mažame grotuve kampe kituose puslapiuose), kaip anksčiau.' },
   { d:'2026-10-03 23:56', v:'v260', k:'chg', t:'Pradžia nejuda, slenka tik dešinės kortelės', f:'Kompiuteryje pradžios puslapis visada stovi vietoje (užima ekrano aukštį), o dešinės pusės kortelės slenka atskirai – tik kai netelpa; apačioje paliktas tarpas, niekas nenusikerpa. Telefone – kaip buvo.' },
   { d:'2026-10-03 23:52', v:'v259', k:'fix', t:'Pradžia: viena slinkimo juosta', f:'Dešinės pusės kortelės pradžios puslapyje nebeturi atskiros slinkimo juostos – jos slenka kartu su puslapiu, apačia nebenusikerpa.' },
   { d:'2026-10-03 23:50', v:'v258', k:'fix', t:'Muzika: prisijungimas prie Spotify', f:'Mygtukas „Prisijungti prie Spotify / YouTube“ dabar atidaro prisijungimą programėlės lange (anksčiau – atskiroje naršyklėje, todėl grotuvas prisijungimo nematė). Uždarius langą grotuvas pats persikrauna; yra ir mygtukas „Perkrauti grotuvą“.' },
