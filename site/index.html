@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-W6mapJOE1cnkbkXQRXaKCIHDr+D+DxpwDTmBSMAI3+U=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-s9NkLjBYYMUnQSFksW/TGaD/HH+wkgVds1Umx2Aw7IE=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4118,6 +4118,23 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .help-pop{position:fixed;z-index:1200;max-width:340px;background:var(--panel);color:var(--text);border:1px solid var(--border-2,var(--border));border-radius:var(--radius,8px);box-shadow:0 14px 34px rgba(0,0,0,.4);padding:10px 12px;font-size:12.5px;line-height:1.45;}
 </style>
 <style id="evNewCss">
+td.xg-date.st-unconf{background:#F2C94C !important;color:#1d1a10 !important;} td.xg-date.st-unconf small,td.xg-date.st-unconf .xg-dend{color:#3b3210 !important;}
+td.xg-date.st-conf{background:#50AD97 !important;color:#06231c !important;} td.xg-date.st-conf small,td.xg-date.st-conf .xg-dend{color:#0d3a2f !important;}
+td.xg-date.st-cancel{background:#E5484D !important;color:#fff !important;} td.xg-date.st-cancel small,td.xg-date.st-cancel .xg-dend{color:#ffe3e3 !important;}
+tr.xg-today td.xg-date[class*="st-"]{box-shadow:inset 0 0 0 3px var(--text) !important;}
+tr:has(td.xg-date.st-cancel) .xg-title{text-decoration:line-through;opacity:.7;}
+.ev-stp{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.ev-stb{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius,8px);border:1px solid var(--border);background:var(--panel-2);color:var(--text);font:inherit;font-weight:600;cursor:pointer;}
+.ev-stb i{width:14px;height:14px;border-radius:4px;background:var(--c);} .ev-stb.on{border-color:var(--c);box-shadow:0 0 0 2px color-mix(in srgb, var(--c) 45%, transparent);background:color-mix(in srgb, var(--c) 18%, var(--panel-2));}
+.xg-mgr{display:flex;flex-direction:column;gap:2px;width:100%;min-height:100%;text-align:left;background:none;border:0;color:var(--text);font:inherit;font-size:12px;padding:5px 6px;cursor:pointer;}
+.xg-mgr:hover{background:rgb(var(--hi-rgb) / .06);} .xg-mgr i{font-style:normal;font-weight:700;color:var(--text-dim);} .xg-mgr em{color:var(--text-faint);font-style:normal;}
+main.ro-mode .xg-mgr{cursor:default;}
+.na-part{border:1px solid var(--border);border-radius:var(--radius,8px);padding:8px 10px;margin-bottom:8px;background:rgb(var(--hi-rgb) / .02);}
+.na-part-h{font-weight:700;font-size:13px;margin-bottom:6px;}
+.na-part-dt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;} .na-part-dt .field{margin:0;}
+.ev-ppl{display:flex;flex-direction:column;max-height:min(55vh,460px);overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius,8px);}
+.ev-ppi{display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:1px solid var(--border);cursor:pointer;} .ev-ppi:hover{background:rgb(var(--hi-rgb) / .05);}
+.ev-ppi b{font-weight:600;font-size:13.5px;} .ev-ppi small{margin-left:auto;color:var(--text-dim);font-size:11.5px;} .ev-ppi.had{opacity:.55;}
 table.xg thead th{color:var(--text) !important;font-size:11.5px !important;font-weight:800 !important;letter-spacing:.4px;}
 table.xg thead th small{color:var(--text-dim) !important;font-size:10px !important;font-weight:500 !important;}
 table.xg th,table.xg td{border-right:1px solid var(--xg-col, var(--border-2, #3a3a3a)) !important;}
@@ -4135,7 +4152,7 @@ body.xg-resizing,body.xg-resizing *{cursor:col-resize !important;user-select:non
 .na-duty{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;} .na-duty select{width:100%;}
 .na-mp{display:flex;flex-direction:column;gap:6px;} .na-mp input.hidden{display:none;}
 .na-loc{display:flex;gap:6px;align-items:stretch;} .na-loc input{flex:1;min-width:0;} .na-loc .btn{display:inline-flex;align-items:center;padding:0 10px;}
-.addr-sug{position:absolute;left:0;right:0;top:100%;z-index:50;margin-top:4px;background:var(--panel);border:1px solid var(--border-2,var(--border));border-radius:var(--radius,8px);box-shadow:0 12px 30px rgba(0,0,0,.35);max-height:300px;overflow-y:auto;padding:4px;}
+.addr-sug{position:fixed;z-index:7000;background:var(--panel);border:1px solid var(--border-2,var(--border));border-radius:var(--radius,8px);box-shadow:0 12px 30px rgba(0,0,0,.35);max-height:300px;overflow-y:auto;padding:4px;}
 .addr-sug.hidden{display:none;}
 .addr-it{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;color:var(--text);font:inherit;padding:7px 8px;border-radius:6px;cursor:pointer;}
 .addr-it:hover,.addr-it.on{background:var(--panel-2);} .addr-it svg{width:18px;height:18px;color:var(--text-dim);flex:none;}
@@ -17034,7 +17051,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v221';
+const APP_VER = 'v222';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18024,7 +18041,7 @@ function defaultEventOptions(){
     people: [],        // {name, phone, email}
     positions: ['A1','A2','A3','L1','L2','L3','L4','V1','V2','V3','V4','V5','A/OP','L/OP','V/OP','V/CREW','Elektr.'],
     suppliers: [],     // {name, address, contact}
-    crewTemplate: ['Daiktų rūšiavimas','Montavimas diena prieš','Montavimas renginio dieną','Demontavimas','Garsas','VJ','Šviesa','Budi renginyje'],
+    crewTemplate: ['Daiktų rūšiavimas','Montavimas diena prieš','Montavimas renginio dieną','Demontavimas','Budi renginyje','Operatoriai'],
     timeLabels: ['Sandėlyje','Išvažiuoti','Lokacijoje','Soundcheck','Repeticija','Paruošti iki','Pradžia','Pabaiga','Demontavimas'],
     workTitles: ['Sandėlio darbai','Servisas'],
     eventTypes: [],    // „Renginio tipas“ written before
@@ -18032,12 +18049,17 @@ function defaultEventOptions(){
     contactGroups: ['Šviesa','Garsas','Video','Operatoriai','Crew','Elektra','Vairuotojai','Kita'],
   };
 }
+const EV_AVL_COL = /^(garsas|vj|sviesa|video)$/;
 function evOpts(){
   if(!STATE.eventOptions) STATE.eventOptions = defaultEventOptions();
   const d = defaultEventOptions();
   Object.keys(d).forEach(k=>{ if(!Array.isArray(STATE.eventOptions[k])) STATE.eventOptions[k] = d[k]; });
   const ct = STATE.eventOptions.crewTemplate, ki = ct.indexOf('Daiktų krovimas');
   if(ki>=0 && !ct.includes('Daiktų rūšiavimas')) ct[ki] = 'Daiktų rūšiavimas';   // the sheet's name for it
+  // A / L / V go into the montage columns now – no separate Garsas / VJ / Šviesa columns (once)
+  if(!STATE.eventOptions.avlColsGone){ STATE.eventOptions.avlColsGone = true;
+    STATE.eventOptions.crewTemplate = ct.filter(t=>!EV_AVL_COL.test(normalizeText(t)));
+    if(!STATE.eventOptions.crewTemplate.some(t=>/operator/.test(normalizeText(t)))) STATE.eventOptions.crewTemplate.push('Operatoriai'); }
   return STATE.eventOptions;
 }
 
@@ -18264,7 +18286,7 @@ function evNew(date, kind){
     return { id:uid('ev'), kind:'work', date, title:o.workTitles[0]||'Sandėlio darbai', time:'', crew:[{id:uid('g'), title:'Žmonės', note:'', entries:[]}], logistics:[], notes:'', createdAt:new Date().toISOString() };
   }
   return {
-    id:uid('ev'), kind:'event', date, dateEnd:'', name:'', artist:'', needs:[], location:'', organizer:'', manager:'', projectId:null, autoChat:true,
+    id:uid('ev'), kind:'event', date, dateEnd:'', status:'unconf', name:'', artist:'', needs:[], location:'', organizer:'', manager:'', projectId:null, autoChat:true,
     times: o.timeLabels.map(label=>({label, time:''})),
     crew: o.crewTemplate.map(title=>({id:uid('g'), title, note:'', entries:[]})),
     logistics: [], notes:'', createdAt:new Date().toISOString()
@@ -18292,6 +18314,9 @@ function evPeopleDatalist(){
   let dp = document.getElementById('dl-positions');
   if(!dp){ dp = document.createElement('datalist'); dp.id = 'dl-positions'; document.body.appendChild(dp); }
   dp.innerHTML = evOpts().positions.map(p=>`<option value="${esc(p)}">`).join('');
+  let dor = document.getElementById('dl-evorgs');
+  if(!dor){ dor = document.createElement('datalist'); dor.id = 'dl-evorgs'; document.body.appendChild(dor); }
+  dor.innerHTML = evOrgList().map(t=>`<option value="${esc(t)}">`).join('');
   let dv = document.getElementById('dl-vehicles');
   if(!dv){ dv = document.createElement('datalist'); dv.id = 'dl-vehicles'; document.body.appendChild(dv); }
   dv.innerHTML = STATE.vehicles.map(v=>`<option value="${esc(v.name+(v.plate?' '+v.plate:''))}">`).join('') + ['Nuoma','Fura','Kurjeris'].map(x=>`<option value="${x}">`).join('');
@@ -18392,6 +18417,8 @@ function renderEventsTab(){
   document.getElementById('evGearPlan').onclick = ()=>gearPlan();
   document.getElementById('evImport').onclick = openEventImportModal;
   evZoomWire();
+  if(canView('people') && typeof ppLoad==='function' && !PP.loaded) ppLoad().then(()=>{ try{ evPeopleDatalist(); }catch(e){} }).catch(()=>{});
+  if(canView('venues') && !VEN.loaded) venLoad().catch(()=>{});
   const q = document.getElementById('evQ');
   q.addEventListener('input', ()=>{ EVQ.q = q.value; clearTimeout(evSearchTimer); evSearchTimer = setTimeout(renderEventList, 180); });
   document.getElementById('evFrom').addEventListener('change', e=>{ EVQ.from = e.target.value; renderEventList(); });
@@ -18427,7 +18454,8 @@ function evCellData(c){
   switch(c.cell){
     case 'name': return { name:ev.name||'', artist:ev.artist||'' };
     case 'needs': return { needs:clone(ev.needs||[]), needsNote:ev.needsNote||'' };
-    case 'location': case 'organizer': case 'manager': case 'notes': return { text: ev[c.cell]||'' };
+    case 'manager': return { text: ev.manager||'', office: ev.managerOffice, tech: ev.managerTech };
+    case 'location': case 'organizer': case 'notes': return { text: ev[c.cell]||'' };
     case 'times': return { times:clone(ev.times||[]) };
     case 'log': return { logistics:clone(ev.logistics||[]) };
     case 'crew': return { groups: clone((ev.crew||[]).filter(g=>evColKey(g.title)===c.col)) };
@@ -18449,7 +18477,8 @@ function evCellPaste(c, clip){
   switch(c.cell){
     case 'name': ev.name = d.name; ev.artist = d.artist; break;
     case 'needs': ev.needs = d.needs; ev.needsNote = d.needsNote; break;
-    case 'location': case 'organizer': case 'manager': case 'notes': ev[c.cell] = d.text; break;
+    case 'manager': ev.manager = d.text; ev.managerOffice = d.office!=null ? d.office : d.text; ev.managerTech = d.tech||''; break;
+    case 'location': case 'organizer': case 'notes': ev[c.cell] = d.text; break;
     case 'times': ev.times = d.times; break;
     case 'log': ev.logistics = d.logistics; break;
     case 'crew': {
@@ -18722,10 +18751,11 @@ function evAddNew(kind){
            <div class="field">Tech atsakingas${evMemberPick('na_mgrT')}</div>
          </div>
          <div class="na-crew">
-           <div class="na-crew-h">Pozicijos <small>kiek žmonių reikės – vėliau lentelėje priskirsi</small></div>
-           <div class="na-pos">${EV_NEW_POS.map(p=>`<label class="na-cnt"><span>${p.label}</span><span class="na-step"><button type="button" data-step="-1" aria-label="Mažiau">−</button><input type="number" min="0" max="30" value="0" id="na_pos_${p.k}" inputmode="numeric"><button type="button" data-step="1" aria-label="Daugiau">+</button></span></label>`).join('')}</div>
+           ${EV_NEW_PARTS.map(p=>`<div class="na-part"><div class="na-part-h">${p.label}</div>
+             <div class="na-part-dt"><label class="field">Data<input type="date" id="na_${p.k}_d"></label><label class="field">Laikas<input type="time" id="na_${p.k}_t"></label></div>
+             <div class="na-pos">${EV_NEW_POS.map(x=>`<label class="na-cnt"><span>${x.label}</span><span class="na-step"><button type="button" data-step="-1" aria-label="Mažiau">−</button><input type="number" min="0" max="30" value="0" id="na_${p.k}_${x.k}" inputmode="numeric"><button type="button" data-step="1" aria-label="Daugiau">+</button></span></label>`).join('')}</div></div>`).join('')}
            <div class="na-sub">Operatoriai <small>pažymėtos pozicijos atsiras renginyje – ten priskirsi vardus</small></div>
-           <div class="na-ops">${EV_NEW_OPS.map(o=>`<span class="na-op"><label class="checkbox-row"><input type="checkbox" data-op="${o}"> ${o[0]}/Operatorius</label><span class="na-step na-opstep" data-opstep="${o}"><button type="button" data-step="-1" aria-label="Mažiau" disabled>−</button><input type="number" min="1" max="30" value="1" data-opn="${o}" inputmode="numeric" disabled><button type="button" data-step="1" aria-label="Daugiau" disabled>+</button></span></span>`).join('')}</div>
+           <div class="na-ops">${EV_NEW_OPS.map(o=>`<span class="na-op"><label class="checkbox-row"><input type="checkbox" data-op="${o}"> ${EV_NEW_OPL[o]}</label><span class="na-step na-opstep" data-opstep="${o}"><button type="button" data-step="-1" aria-label="Mažiau" disabled>−</button><input type="number" min="1" max="30" value="1" data-opn="${o}" inputmode="numeric" disabled><button type="button" data-step="1" aria-label="Daugiau" disabled>+</button></span></span>`).join('')}</div>
            <div class="na-sub">Budintys <small>kiek budinčių reikės renginyje</small></div>
            <div class="na-duty">${EV_NEW_DUTY.map(([k, l])=>`<label class="na-cnt"><span>${l}</span><span class="na-step"><button type="button" data-step="-1" aria-label="Mažiau">−</button><input type="number" min="0" max="30" value="0" id="na_duty_${k}" inputmode="numeric"><button type="button" data-step="1" aria-label="Daugiau">+</button></span></label>`).join('')}</div>
          </div>`}
@@ -18767,6 +18797,80 @@ function evAddNew(kind){
   };
   setTimeout(()=>$('na_name').focus(), 50);
 }
+/* ---------- events sheet pop-ups: date + status, responsible people ---------- */
+// pick several people at once (from Žmonės, members and names used before)
+function evPeoplePop(ev, gi){
+  const g = ev.crew[gi], have = new Set((g.entries||[]).map(e=>normalizeText(e.person||'')).filter(Boolean));
+  evPeopleDatalist();
+  const names = [...(document.getElementById('dl-people')||{options:[]}).options].map(o=>({ n:o.value, l:o.label||'' })).filter(x=>x.n);
+  const pick = new Set();
+  openModal(`<h3 style="margin:0 0 6px;">${esc(g.title)} – ${esc(ev.name||'renginys')}</h3>
+    <input type="search" id="pp_q" placeholder="Ieškoti žmogaus…" autocomplete="off" style="width:100%;margin:4px 0 8px;">
+    <div class="ev-ppl" id="pp_l">${names.map((x,i)=>`<label class="ev-ppi ${have.has(normalizeText(x.n)) ? 'had' : ''}" data-i="${i}"><input type="checkbox" data-n="${esc(x.n)}" ${have.has(normalizeText(x.n)) ? 'checked disabled' : ''}><b>${esc(x.n)}</b>${x.l ? `<small>${esc(x.l)}</small>` : ''}</label>`).join('') || '<div class="section-sub">Žmonių sąrašas tuščias.</div>'}</div>
+    <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;align-items:center;"><button type="button" class="btn small" id="pp_own">+ Įrašyti ranka</button><span class="row" style="gap:8px;"><button type="button" class="btn" id="pp_x">Atšaukti</button><button type="button" class="btn primary" id="pp_ok">Pridėti</button></span></div>`);
+  const q = document.getElementById('pp_q'); setTimeout(()=>q.focus(), 30);
+  q.oninput = ()=>{ const s = normalizeText(q.value); document.querySelectorAll('#pp_l .ev-ppi').forEach(l=>{ l.hidden = !!s && !normalizeText(l.textContent).includes(s); }); };
+  document.querySelectorAll('#pp_l input:not(:disabled)').forEach(c=>c.onchange = ()=>{ if(c.checked) pick.add(c.dataset.n); else pick.delete(c.dataset.n); });
+  document.getElementById('pp_x').onclick = closeModal;
+  const add = list=>{ if(!list.length){ closeModal(); return; } evUndoPush(ev.id, JSON.stringify(ev));
+    g.entries = (g.entries||[]).filter(e=>e.pos || (e.person||'').trim());
+    list.forEach(n=>{ g.entries.push({ pos:'', person:n, status:'' }); evRememberPerson(n); }); closeModal(); evSave(ev); rerenderEventCard(ev); };
+  document.getElementById('pp_ok').onclick = ()=>add([...pick]);
+  document.getElementById('pp_own').onclick = ()=>{ evUndoPush(ev.id, JSON.stringify(ev)); g.entries.push({ pos:'', person:'', status:'' }); closeModal(); evSave(ev); rerenderEventCard(ev);
+    setTimeout(()=>{ const f = document.querySelector(`tr[data-ev="${ev.id}"] .xg-grp[data-g="${gi}"] .xg-entry:last-child .xg-person`); if(f) f.focus(); }, 30); };
+}
+function evMgrHtml(ev){
+  const o = (ev.managerOffice!=null || ev.managerTech!=null) ? ev.managerOffice||'' : (ev.manager||''), t = ev.managerTech||'';
+  return `<button type="button" class="xg-mgr" title="Spausk – pasirinkti Office ir Tech atsakingus"><span><i>Office:</i> ${o ? esc(o) : '<em>—</em>'}</span><span><i>Tech:</i> ${t ? esc(t) : '<em>—</em>'}</span></button>`;
+}
+function evMemberPickSet(id, v){
+  const w = document.querySelector('#modalRoot [data-mp="'+id+'"]'); if(!w) return;
+  const sel = w.querySelector('select'), inp = w.querySelector('input'); v = String(v||'').trim();
+  if(!v){ sel.value = ''; inp.value = ''; inp.classList.add('hidden'); return; }
+  const has = [...sel.options].some(o=>o.value===v);
+  sel.value = has ? v : '__own'; inp.value = v; inp.classList.toggle('hidden', has);
+}
+function evMgrPop(ev){
+  const before = JSON.stringify(ev);
+  const off = (ev.managerOffice!=null || ev.managerTech!=null) ? ev.managerOffice||'' : (ev.manager||'');
+  openModal(`<h3 style="margin:0 0 10px;">Atsakingi – ${esc(ev.name||'renginys')}</h3>
+    <div class="grid cols-2" style="gap:8px;"><div class="field">Office atsakingas${evMemberPick('mg_o')}</div><div class="field">Tech atsakingas${evMemberPick('mg_t')}</div></div>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:14px;"><button type="button" class="btn" id="mg_x">Atšaukti</button><button type="button" class="btn primary" id="mg_ok">Išsaugoti</button></div>`);
+  evMemberPickWire(); evMemberPickSet('mg_o', off); evMemberPickSet('mg_t', ev.managerTech||'');
+  document.getElementById('mg_x').onclick = closeModal;
+  document.getElementById('mg_ok').onclick = ()=>{
+    const v = id=>(document.getElementById(id).value||'').trim(), office = v('mg_o'), tech = v('mg_t');
+    evUndoPush(ev.id, before);
+    Object.assign(ev, { managerOffice:office, managerTech:tech, manager:[office, tech ? tech+' (tech)' : ''].filter(Boolean).join(', ') });
+    [office, tech].forEach(n=>{ if(n) evRememberPerson(n); });
+    closeModal(); evSave(ev); rerenderEventCard(ev);
+  };
+}
+function evDatePop(ev){
+  const before = JSON.stringify(ev); let st = ev.status || '';
+  openModal(`<h3 style="margin:0 0 10px;">${esc(ev.name||'Renginys')}</h3>
+    <div class="grid cols-2" style="gap:8px;"><label class="field">Data<input type="date" id="dp_d" value="${esc(ev.date||'')}"></label><label class="field">Iki (jei kelios dienos)<input type="date" id="dp_e" value="${esc(ev.dateEnd||'')}"></label></div>
+    <div class="field" style="margin-top:10px;">Renginio statusas<div class="ev-stp">${EV_ST.map(([k,l,c])=>`<button type="button" class="ev-stb ${st===k?'on':''}" data-st="${k}" style="--c:${c}"><i></i>${l}</button>`).join('')}</div></div>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:14px;"><button type="button" class="btn" id="dp_x">Atšaukti</button><button type="button" class="btn primary" id="dp_ok">Išsaugoti</button></div>`);
+  document.querySelectorAll('#modalRoot [data-st]').forEach(b=>b.onclick = ()=>{ st = b.dataset.st; document.querySelectorAll('#modalRoot [data-st]').forEach(x=>x.classList.toggle('on', x===b)); });
+  document.getElementById('dp_x').onclick = closeModal;
+  document.getElementById('dp_ok').onclick = ()=>{
+    const d = document.getElementById('dp_d').value, e = document.getElementById('dp_e').value;
+    if(!d){ toast('Pasirink datą.'); return; }
+    evUndoPush(ev.id, before);
+    const moved = d!==ev.date; Object.assign(ev, { date:d, dateEnd:e && e>d ? e : '', status:st });
+    closeModal(); evSave(ev);
+    if(moved && !evSearchActive() && evMonthKey(d)!==EV.month) toast('Perkelta į '+evMonthLabel(evMonthKey(d))+'.');
+    renderEventList();
+  };
+}
+// places for the address search: known venues and places written before
+function evLocLocal(q){
+  const n = normalizeText(q);
+  const venues = (VEN.list||[]).filter(v=>normalizeText(v.name+' '+(v.address||'')).includes(n)).slice(0, 5).map(v=>({ title:v.name, sub:v.address||'Erdvė', value:v.address ? v.name+', '+v.address : v.name, tag:'Erdvė' }));
+  const before = evUniq(EV.events.map(e=>e.location)).filter(x=>normalizeText(x).includes(n) && !venues.some(v=>normalizeText(v.value)===normalizeText(x))).slice(0, 4).map(x=>({ title:x, sub:'naudota anksčiau', value:x }));
+  return venues.concat(before);
+}
 /* the pop-up's helpers: remembered types / organizers, the address search, positions and people */
 // a registered member, or „✎ Įrašyti ranka…“ – then a text field for any name
 function evMemberNames(){ return [...new Set((TEAM.members||[]).filter(m=>!['pending','blocked'].includes(m.role)).map(teamName).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'lt')); }
@@ -18781,8 +18885,10 @@ function evMemberPickWire(){
     if(!(TEAM.members||[]).length && typeof teamLoadMembers==='function') teamLoadMembers().then(fill).catch(()=>{});
   });
 }
-const EV_NEW_POS = [{k:'A', label:'Garsas (A)'}, {k:'L', label:'Šviesa (L)'}, {k:'V', label:'Video (V)'}];
-const EV_NEW_OPS = ['L/OP', 'A/OP', 'V/OP'];
+const EV_NEW_POS = [{k:'A', label:'Garsas (A)'}, {k:'L', label:'Šviesa (L)'}, {k:'V', label:'Video (V)'}, {k:'C', label:'Crew'}];
+const EV_NEW_PARTS = [{k:'mp', label:'Montavimas prieš renginį', re:/montavimas.*pries/, title:'Montavimas diena prieš', off:-1}, {k:'md', label:'Montavimas renginio dieną', re:/montavimas.*renginio/, title:'Montavimas renginio dieną', off:0}, {k:'dm', label:'Demontavimas', re:/demontav/, title:'Demontavimas', off:0, end:true}];
+const EV_NEW_OPS = ['L/OP', 'A/OP', 'VJ'];
+const EV_NEW_OPL = { 'L/OP':'L/Operatorius', 'A/OP':'A/Operatorius', 'VJ':'VJ' };
 const EV_NEW_DUTY = [['L', 'Šviesa (L)'], ['V', 'Video (V)'], ['A', 'Garsas (A)']];
 function evUniq(list){ const seen = new Set(), out = []; list.forEach(x=>{ x = String(x||'').trim(); const k = normalizeText(x); if(x && !seen.has(k)){ seen.add(k); out.push(x); } }); return out; }
 function evTypeList(){ return evUniq(evOpts().eventTypes.concat(EV.events.map(e=>e.kind==='work' ? '' : e.artist))).slice(0, 200); }
@@ -18791,6 +18897,10 @@ function evMapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query='+
 function evNewWire(){
   const $ = id=>document.getElementById(id);
   evMemberPickWire();
+  const partDates = ()=>{ const d = $('na_date').value, e = $('na_end') && $('na_end').value; if(!d) return;
+    EV_NEW_PARTS.forEach(p=>{ const f = $('na_'+p.k+'_d'); if(!f || f.dataset.own) return; const x = new Date((p.end && e ? e : d)+'T12:00:00'); x.setDate(x.getDate() + p.off); f.value = calISO(x); }); };
+  EV_NEW_PARTS.forEach(p=>{ const f = $('na_'+p.k+'_d'); if(f) f.addEventListener('change', ()=>{ f.dataset.own = '1'; }); });
+  $('na_date').addEventListener('change', partDates); if($('na_end')) $('na_end').addEventListener('change', partDates); partDates();
   document.querySelectorAll('#modalRoot [data-op]').forEach(c=>c.onchange = ()=>{ const s = document.querySelector('#modalRoot [data-opstep="'+c.dataset.op+'"]'); if(s){ s.classList.toggle('off', !c.checked); s.querySelectorAll('button,input').forEach(x=>x.disabled = !c.checked); } });
   // organizer: already known or new (it will be remembered)
   const org = $('na_org'), hint = $('na_orgHint');
@@ -18803,12 +18913,7 @@ function evNewWire(){
   const setMap = ()=>{ map.href = evMapUrl(loc.value.trim() || 'Lietuva'); };
   setMap(); loc.addEventListener('input', setMap);
   if(canView('venues') && !VEN.loaded) venLoad().catch(()=>{});
-  addrSuggest(loc, q=>{
-    const n = normalizeText(q);
-    const venues = (VEN.list||[]).filter(v=>normalizeText(v.name+' '+(v.address||'')).includes(n)).slice(0, 5).map(v=>({ title:v.name, sub:v.address||'Erdvė', value:v.address ? v.name+', '+v.address : v.name, tag:'Erdvė' }));
-    const before = evUniq(EV.events.map(e=>e.location)).filter(x=>normalizeText(x).includes(n) && !venues.some(v=>normalizeText(v.value)===normalizeText(x))).slice(0, 4).map(x=>({ title:x, sub:'naudota anksčiau', value:x }));
-    return venues.concat(before);
-  }, setMap);
+  addrSuggest(loc, evLocLocal, setMap);
   // + / − for the positions
   document.querySelectorAll('#modalRoot .na-step button').forEach(b=>b.onclick = ()=>{ const i = b.parentElement.querySelector('input'); i.value = Math.max(+i.min||0, Math.min(30, (+i.value||0) + +b.dataset.step)); });
   // people chips
@@ -18830,11 +18935,17 @@ function evNewApply(ev, name){
   if(ev.artist && !o.eventTypes.some(x=>normalizeText(x)===normalizeText(ev.artist))) o.eventTypes.push(ev.artist);
   if(ev.organizer && !o.organizers.some(x=>normalizeText(x)===normalizeText(ev.organizer))) o.organizers.push(ev.organizer);
   [office, tech].forEach(n=>{ if(n) evRememberPerson(n); });
-  // positions: A1…, L1…, V1… in their own tables, Crew in „Crew“
   const group = (test, title)=>{ let g = ev.crew.find(x=>test(normalizeText(x.title))); if(!g){ g = {id:uid('g'), title, note:'', entries:[]}; ev.crew.push(g); } return g; };
-  const GRP = { A:[t=>/gars|audio/.test(t), 'Garsas'], L:[t=>/svies|sviec|apsviet/.test(t), 'Šviesa'], V:[t=>/video|vj|ekran|led/.test(t), 'VJ'], C:[t=>/^crew/.test(t), 'Crew'] };
-  EV_NEW_POS.forEach(p=>{ const n = Math.min(30, +val('na_pos_'+p.k)||0); if(!n) return; const g = group(...GRP[p.k]);
-    for(let i=1;i<=n;i++) g.entries.push({ pos:(p.k==='C' ? 'CREW' : p.k+i), person:'', status:'' }); });
+  // montage before / on the day / dismantling: „day, time“ and the A / L / V / Crew places in one column
+  const num = {};
+  EV_NEW_PARTS.forEach(p=>{
+    const d = val('na_'+p.k+'_d'), t = val('na_'+p.k+'_t');
+    const cnt = EV_NEW_POS.map(x=>[x.k, Math.min(30, +val('na_'+p.k+'_'+x.k)||0)]);
+    if(!d && !t && !cnt.some(c=>c[1])) return;
+    const g = group(x=>p.re.test(x), p.title);
+    if(d || t) g.note = [d ? (+d.slice(8,10))+'d.' : '', t].filter(Boolean).join(' ');
+    cnt.forEach(([k, n])=>{ for(let i=0;i<n;i++){ if(k==='C'){ g.entries.push({ pos:'CREW', person:'', status:'' }); continue; } num[k] = (num[k]||0) + 1; g.entries.push({ pos:k+num[k], person:'', status:'' }); } });
+  });
   const ops = [...document.querySelectorAll('#modalRoot [data-op]:checked')].flatMap(x=>{ const s = document.querySelector('#modalRoot [data-opn="'+x.dataset.op+'"]'); return Array.from({length:Math.min(30, Math.max(1, +(s && s.value)||1))}, ()=>x.dataset.op); });
   const duty = EV_NEW_DUTY.flatMap(([k])=>Array.from({length:Math.min(30, +val('na_duty_'+k)||0)}, ()=>k));
   // on duty: the chosen number of L / V / A places, names are added in the event
@@ -18847,10 +18958,11 @@ function evNewApply(ev, name){
 /* address search under a text field: own suggestions first, then real addresses
    from the map (OpenStreetMap / Photon – free, no key) */
 function addrSuggest(inp, local, picked){
-  const wrap = inp.parentElement; wrap.style.position = 'relative';
-  const box = document.createElement('div'); box.className = 'addr-sug hidden'; wrap.appendChild(box);
+  const box = document.createElement('div'); box.className = 'addr-sug hidden'; document.body.appendChild(box);
   let items = [], at = -1, timer = 0, seq = 0;
-  const draw = ()=>{ box.classList.toggle('hidden', !items.length);
+  const place = ()=>{ const r = inp.getBoundingClientRect(), w = Math.max(r.width, 280); box.style.width = w+'px'; box.style.left = Math.max(6, Math.min(r.left, innerWidth - w - 6))+'px';
+    const below = innerHeight - r.bottom; if(below < 220 && r.top > below){ box.style.top = ''; box.style.bottom = (innerHeight - r.top + 4)+'px'; } else { box.style.bottom = ''; box.style.top = (r.bottom + 4)+'px'; } };
+  const draw = ()=>{ if(!document.body.contains(inp)){ box.remove(); return; } box.classList.toggle('hidden', !items.length); if(items.length) place();
     box.innerHTML = items.map((x,i)=>`<button type="button" class="addr-it ${i===at?'on':''}" data-i="${i}">${slIcon(x.tag ? 'building' : x.osm ? 'place' : 'clock')}<span><b>${esc(x.title)}</b><small>${esc(x.sub||'')}</small></span>${x.tag ? `<i>${esc(x.tag)}</i>` : ''}</button>`).join(''); };
   const pick = i=>{ const x = items[i]; if(!x) return; inp.value = x.value; items = []; draw(); if(picked) picked(x); inp.dispatchEvent(new Event('input')); };
   box.addEventListener('mousedown', e=>{ const b = e.target.closest('[data-i]'); if(b){ e.preventDefault(); pick(+b.dataset.i); } });
@@ -18909,12 +19021,12 @@ function evCrewColumns(list){
   const cols = new Map();
   const add = (t, used)=>{ const k = evColKey(t); if(!k) return; if(!cols.has(k)) cols.set(k, {key:k, title:t, used:false}); if(used) cols.get(k).used = true; };
   evOpts().crewTemplate.forEach(t=>add(t, false));
-  list.forEach(ev=>{ if(ev.kind!=='work') (ev.crew||[]).forEach(g=>add(g.title, true)); });
+  list.forEach(ev=>{ if(ev.kind!=='work') (ev.crew||[]).forEach(g=>{ if(EV_AVL_COL.test(normalizeText(g.title)) && !(g.entries||[]).some(e=>(e.person||'').trim()) && !(g.note||'').trim()) return; add(g.title, true); }); });
   // same left-to-right order as in the events themselves (the sheet's order)
   const pos = new Map();
   list.forEach(ev=>{ if(ev.kind==='work') return; const n = (ev.crew||[]).length || 1; (ev.crew||[]).forEach((g,i)=>{ const k = evColKey(g.title), p = pos.get(k) || [0,0]; p[0] += i/n; p[1]++; pos.set(k, p); }); });
   const tpl = evOpts().crewTemplate.map(evColKey);
-  const rank = c=>{ const p = pos.get(c.key); return p ? p[0]/p[1] : (tpl.indexOf(c.key)+.5)/(tpl.length||1); };
+  const rank = c=>{ const ti = tpl.indexOf(c.key); if(ti>=0) return (ti+.5)/(tpl.length||1); const p = pos.get(c.key); return p ? p[0]/p[1] : 1; };
   const all = Array.from(cols.values()).sort((a,b)=>rank(a)-rank(b));
   const used = all.filter(c=>c.used);
   return used.length ? used : all;
@@ -19280,8 +19392,10 @@ function evNotesCellHtml(ev){
   return `<td class="xg-notes" data-cell="notes" tabindex="-1">${evTa('notes', ev.notes, 'pastabos…')}
     ${rs.map(r=>{ const st = RENTAL_STATUS.find(s=>s.v===r.status)||RENTAL_STATUS[0]; return `<div class="xg-rt"><span class="pill ${st.cls}">${st.label}</span> ${esc((r.items||'').split('\n')[0]||'—')}</div>`; }).join('')}</td>`;
 }
+const EV_ST = [['unconf','Nepatvirtintas','#F2C94C'], ['conf','Patvirtintas','#50AD97'], ['cancel','Atšauktas','#E5484D']];
 function evDateCellHtml(ev){
-  return `<td class="xg-c-date xg-date"><div class="xg-date-in">
+  const st = ev.kind==='work' ? '' : (EV_ST.find(s=>s[0]===ev.status)||[])[0];
+  return `<td class="xg-c-date xg-date${st ? ' st-'+st : ''}" ${st ? `title="${esc((EV_ST.find(s=>s[0]===st)||[])[1])} – spausk, kad keistum"` : ''}><div class="xg-date-in">
     <b>${esc(evShortDate(ev.date))}</b>${ev.dateEnd?`<span class="xg-dend">–${esc(evShortDate(ev.dateEnd))}</span>`:''}
     <small>${esc(evWeekdayShort(ev.date))}</small>
     <span class="xg-date-ico" aria-hidden="true">📅</span>
@@ -20986,8 +21100,8 @@ function evRowHtml(ev, cols){
       ${evTa('needsNote', ev.needsNote, 'detalės')}
     </td>
     <td class="xg-info" data-cell="location" tabindex="-1">${evTa('location', ev.location, 'vieta, adresas')}</td>
-    <td class="xg-info" data-cell="organizer" tabindex="-1">${evTa('organizer', ev.organizer, 'vardas, tel.')}</td>
-    <td class="xg-info" data-cell="manager" tabindex="-1">${evTa('manager', ev.manager, 'vadovas')}</td>
+    <td class="xg-info" data-cell="organizer" tabindex="-1"><textarea class="xg-ta" data-f="organizer" rows="1" data-combo="dl-evorgs" placeholder="vardas, tel.">${esc(ev.organizer||'')}</textarea></td>
+    <td class="xg-info" data-cell="manager" tabindex="-1">${evMgrHtml(ev)}</td>
     <td class="xg-info xg-tl" data-cell="times" tabindex="-1">${times.map((t,i)=>`<div class="xg-line"><input type="text" data-t="${i}" data-k="label" value="${esc(t.label)}" placeholder="…"></div>`).join('')}
       <div class="xg-adds"><button type="button" data-act="add-time">+ laikas</button></div></td>
     <td class="xg-tv" data-cell="times" tabindex="-1">${times.map((t,i)=>`<div class="xg-line${t.time?' has':''}"><input type="text" data-t="${i}" data-k="time" value="${esc(t.time)}" placeholder="–" ${EV_TOUCH ? 'inputmode="none"' : 'inputmode="numeric"'} autocomplete="off"><button type="button" class="xg-x" data-act="del-time" data-i="${i}" title="Pašalinti eilutę">×</button></div>`).join('')}</td>
@@ -21089,6 +21203,8 @@ function bindEventListEvents(){
   const list = document.getElementById('evList');
   list.addEventListener('focusin', e=>{
     const t = e.target; if(!t.matches('input, textarea') || t.classList.contains('xg-date-pick')) return;
+    if(t.dataset.f==='location' && !t._addr) { t._addr = true; addrSuggest(t, evLocLocal, x=>{ const ev = evFind(t); if(!ev) return; ev.location = x.value; evSave(ev);
+      const cur = document.querySelector('tr[data-ev="'+ev.id+'"] [data-f="location"]'); if(cur && cur!==t){ cur.value = x.value; evAutosize(cur); } }); }
     const ev = evFind(t); if(!ev) return;
     evUndoCommitFocus();
     EVU.focus = { id:ev.id, json:JSON.stringify(ev) };
@@ -21136,6 +21252,7 @@ function bindEventListEvents(){
       renderEventList(); return;
     }
     if(t.dataset.k==='person' || t.dataset.k==='driver' || t.dataset.f==='manager'){ evRememberPerson(t.value); }
+    if(t.dataset.f==='organizer'){ const v = t.value.trim(), o = evOpts(); if(v && !o.organizers.some(x=>normalizeText(x)===normalizeText(v))){ o.organizers.push(v); saveState(); } }
     if(t.dataset.k==='person') setTimeout(evRefreshWidths, 50);
   });
   list.addEventListener('click', e=>{
@@ -21143,6 +21260,12 @@ function bindEventListEvents(){
     if(tv){ if(!tv.readOnly) evTimePop(tv); return; }
     const dn = e.target.closest('.xg-note input, .xg-name input[data-f="time"]');
     if(dn){ if(!dn.readOnly) evDayTimePop(dn, evFind(dn)); return; }
+    // the date cell of an event: a pop-up with the date and the status
+    const dc0 = e.target.closest('td.xg-date'), dev0 = dc0 && evFind(dc0);
+    if(dc0 && dev0 && dev0.kind!=='work' && !dev0.handoverId && canEdit('events')){ evDatePop(dev0); return; }
+    // the responsible people
+    const mg = e.target.closest('.xg-mgr');
+    if(mg){ const mev = evFind(mg); if(mev && canEdit('events')) evMgrPop(mev); return; }
     // the date cell: one tap opens the calendar
     const dc = e.target.closest('td.xg-date');
     if(dc){
@@ -21158,6 +21281,7 @@ function bindEventListEvents(){
     if(!b || b.tagName==='SELECT') return;
     const ev = evFind(b);
     if(!ev) return;
+    if(b.dataset.act==='add-entry' && canEdit('events')){ const g = (ev.crew||[])[+b.dataset.g]; if(g && /rusiav/.test(normalizeText(g.title))){ evPeoplePop(ev, +b.dataset.g); return; } }
     const act = b.dataset.act, gi = b.dataset.g!==undefined ? +b.dataset.g : null, i = b.dataset.i!==undefined ? +b.dataset.i : null;
     if(act==='fold'){
       if(b.tagName==='TD' && e.target.closest('input')) return;   // the date picker in the date cell
@@ -31312,6 +31436,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 19:20', v:'v222', k:'new', t:'Renginiai: statusas, atsakingi, vieta, montavimai', f:'Datos stulpelis rodo renginio statusą: geltona – Nepatvirtintas (naujas renginys), žalia – Patvirtintas, raudona – Atšauktas; paspaudus atsidaro langas su data ir statusu. Renginio vietai – adresų paieška (Erdvės, anksčiau naudotos vietos, žemėlapis), organizatoriui – anksčiau įrašyti. Atsakingi rodomi „Office: …  Tech: …“, paspaudus pasirenkami iš narių arba įrašomi ranka. Daiktų rūšiavime „+ žmogus“ atidaro žmonių sąrašą. Kuriant renginį – trys skiltys: Montavimas prieš renginį, Montavimas renginio dieną ir Demontavimas su data, laiku ir A / L / V / Crew pozicijomis viename stulpelyje. Atskirų Garsas / VJ / Šviesa stulpelių nebėra, operatoriuose vietoje V/Operatorius – VJ.' },
   { d:'2026-10-03 18:45', v:'v221', k:'fix', t:'Matosi pažymėta data', f:'Kai pagrindinė spalva šviesi (pvz. balta), pažymėta data kalendoriuje ir kiti ženkliukai ant pagrindinės spalvos dabar rašomi tamsiai – tekstas visada matomas.' },
   { d:'2026-10-03 18:30', v:'v220', k:'chg', t:'Budintys: − / +', f:'Naujo renginio lange budinčių skaičius (Šviesa L, Video V, Garsas A) ir pažymėtų operatorių skaičius keičiami mygtukais − / + kaip ir pozicijos.' },
   { d:'2026-10-03 18:20', v:'v219', k:'chg', t:'Operatoriai: kiek', f:'Naujo renginio lange prie kiekvieno operatoriaus (L, A, V) pažymėjus varnelę pasirenkama, kiek tokių operatorių reikia (1–10) – tiek pozicijų atsiranda renginio grafoje „Operatoriai“.' },
