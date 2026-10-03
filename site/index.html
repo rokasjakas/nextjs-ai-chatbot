@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-fIJjq3T0ywjDqIxr41tme3E5Op02SX/SclyyeqG8/wQ=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-c3qhS4uVk5ZPaaugVFrSU9uplwgI6e6XN3adcWFDRaY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -10863,10 +10863,10 @@ function musicCardRender(){
   box.innerHTML = `<div class="cal-head"><b style="display:inline-flex;align-items:center;gap:8px;">${slIcon('speaker')}Muzika</b><span style="flex:1"></span>
       <span class="mus-src">${[['spotify','Spotify'],['youtube','YouTube']].map(([k,l])=>`<button type="button" data-mus="${k}" class="${p.src===k?'on':''}">${l}</button>`).join('')}</span></div>
     <div class="mus-link"><input type="url" id="musUrl" placeholder="${p.src==='spotify' ? 'Spotify grojaraščio, albumo ar dainos nuoroda' : 'YouTube vaizdo įrašo ar grojaraščio nuoroda'}" value="${esc(p[p.src]||'')}"><button type="button" class="btn small" id="musGo">Groti</button></div>
-    <div class="mus-slot ${p.src}" id="musSlot">${url ? '' : `<div class="mus-empty">${p.src==='spotify' ? 'Įklijuok Spotify nuorodą (Bendrinti → Kopijuoti nuorodą).' : 'Įklijuok YouTube nuorodą.'}</div>`}</div>
-    <div class="mus-acts"><button type="button" class="btn small" id="musLogin">${slIcon('user')} Prisijungti prie ${p.src==='spotify' ? 'Spotify' : 'YouTube'}</button><button type="button" class="btn small" id="musReload" title="Perkrauti grotuvą (po prisijungimo)">${slIcon('refresh')} Perkrauti grotuvą</button></div>
+    <div class="mus-slot ${p.src}" id="musSlot">${url ? (MUS.closed ? '<div class="mus-empty"><span>Muzika groja atskirame lange.<br><button type="button" class="btn small" id="musBack" style="margin-top:8px;">Rodyti grotuvą čia</button></span></div>' : '') : `<div class="mus-empty">${p.src==='spotify' ? 'Įklijuok Spotify nuorodą (Bendrinti → Kopijuoti nuorodą).' : 'Įklijuok YouTube nuorodą.'}</div>`}</div>
+    <div class="mus-acts"><button type="button" class="btn small primary" id="musFull" title="Pilnas ${p.src==='spotify' ? 'Spotify' : 'YouTube'} grotuvas atskirame lange – visos dainos su tavo paskyra">${slIcon('openext')} Atidaryti pilną grotuvą</button><button type="button" class="btn small" id="musLogin">${slIcon('user')} Prisijungti prie ${p.src==='spotify' ? 'Spotify' : 'YouTube'}</button><button type="button" class="btn small" id="musReload" title="Perkrauti grotuvą (po prisijungimo)">${slIcon('refresh')} Perkrauti grotuvą</button></div>
     <small class="aic-note">${p.src==='spotify'
-      ? 'Prisijungus prie savo Spotify paskyros grojamos visos dainos (be prisijungimo – 30 s ištraukos). Prisijungimo langas atsidaro programėlėje; jį uždarius grotuvas persikrauna.'
+      ? 'Kortelės grotuvas be prisijungimo groja 30 s ištraukas. Visos dainos su tavo biblioteka – „Atidaryti pilną grotuvą“ (atskiras langas, groja kol naudojiesi programėle). Prisijungus ir uždarius prisijungimo langą kortelės grotuvas persikrauna.'
       : 'Reklamų YouTube grotuve nebūna, jei esi prisijungęs prie YouTube Premium. Prisijungimo langas atsidaro programėlėje; jį uždarius grotuvas persikrauna.'}</small>`;
   box.querySelectorAll('[data-mus]').forEach(b=>b.onclick = ()=>{ prefSet('music', Object.assign(musPref(), { src:b.dataset.mus })); MUS.closed = false; musicCardRender(); });
   const go = ()=>{ const v = document.getElementById('musUrl').value.trim(), pp = musPref();
@@ -10874,6 +10874,8 @@ function musicCardRender(){
     pp[pp.src] = v; prefSet('music', pp); MUS.closed = false; musicCardRender(); };
   document.getElementById('musGo').onclick = go;
   document.getElementById('musLogin').onclick = ()=>musLogin(musPref().src);
+  document.getElementById('musFull').onclick = ()=>musOpenFull(musPref());
+  const back = document.getElementById('musBack'); if(back) back.onclick = ()=>{ MUS.closed = false; musicCardRender(); };
   document.getElementById('musReload').onclick = ()=>{ musReload(); toast('Grotuvas perkrautas.'); };
   document.getElementById('musUrl').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); go(); } });
   if(url && !MUS.closed) musDockSet(p.src, url);
@@ -10892,6 +10894,22 @@ function musLogin(src){
   clearInterval(MUS.loginT);
   MUS.loginT = setInterval(()=>{ let closed = true; try{ closed = win.closed; }catch(e){}
     if(closed){ clearInterval(MUS.loginT); musReload(); toast('Grotuvas perkrautas – jei prisijungei, grojamos visos dainos.'); } }, 600);
+}
+// the full Spotify / YouTube player in a window of its own (the desktop app keeps it inside, with its sign-ins)
+function musOpenFull(p){
+  const link = String(p[p.src]||'').trim();
+  let url;
+  if(p.src==='spotify'){ const m = link.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?((?:playlist|album|track|artist|episode|show)\/[A-Za-z0-9]+)/); url = 'https://open.spotify.com/'+(m ? m[1] : ''); }
+  else { const e = musEmbed('youtube', link), vid = (e.match(/\/embed\/([A-Za-z0-9_-]{11})/)||[])[1], list = (link.match(/[?&]list=([A-Za-z0-9_-]+)/)||[])[1];
+    url = vid ? 'https://www.youtube.com/watch?v='+vid+(list ? '&list='+list : '') : list ? 'https://www.youtube.com/playlist?list='+list : 'https://www.youtube.com/'; }
+  const w = Math.min(p.src==='spotify' ? 460 : 640, screen.availWidth - 40), hgt = Math.min(p.src==='spotify' ? 760 : 520, screen.availHeight - 60);
+  const win = window.open(url, 'es-music-'+p.src, `popup,width=${w},height=${hgt},left=${Math.max(0, screen.availWidth - w - 30)},top=${Math.max(0, screen.availHeight - hgt - 60)}`);
+  if(!win){ toast('Naršyklė užblokavo langą – leisk iššokančius langus ir bandyk dar kartą.'); return; }
+  try{ win.focus(); }catch(e){}
+  // the small player in the card would play over it – stop it
+  const d = document.getElementById('musDock'); MUS.closed = true; MUS.url = ''; if(d) d.remove();
+  if(document.getElementById('homeMusic')) musicCardRender();
+  toast('Pilnas grotuvas atidarytas atskirame lange.');
 }
 function musDockSet(src, url){
   let d = document.getElementById('musDock');
@@ -17828,7 +17846,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v260';
+const APP_VER = 'v261';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32735,6 +32753,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 23:59', v:'v261', k:'new', t:'Muzika: pilnas grotuvas lange', f:'Muzikos kortelėje – mygtukas „Atidaryti pilną grotuvą“: Spotify (ar YouTube) atsidaro atskirame mažame lange su pasirinktu grojaraščiu ir tavo paskyra – grojamos visos dainos, langas lieka atidarytas kol naudojiesi programėle. Kortelės grotuvas be Spotify leidimo groja tik ištraukas.' },
   { d:'2026-10-03 23:56', v:'v260', k:'chg', t:'Pradžia nejuda, slenka tik dešinės kortelės', f:'Kompiuteryje pradžios puslapis visada stovi vietoje (užima ekrano aukštį), o dešinės pusės kortelės slenka atskirai – tik kai netelpa; apačioje paliktas tarpas, niekas nenusikerpa. Telefone – kaip buvo.' },
   { d:'2026-10-03 23:52', v:'v259', k:'fix', t:'Pradžia: viena slinkimo juosta', f:'Dešinės pusės kortelės pradžios puslapyje nebeturi atskiros slinkimo juostos – jos slenka kartu su puslapiu, apačia nebenusikerpa.' },
   { d:'2026-10-03 23:50', v:'v258', k:'fix', t:'Muzika: prisijungimas prie Spotify', f:'Mygtukas „Prisijungti prie Spotify / YouTube“ dabar atidaro prisijungimą programėlės lange (anksčiau – atskiroje naršyklėje, todėl grotuvas prisijungimo nematė). Uždarius langą grotuvas pats persikrauna; yra ir mygtukas „Perkrauti grotuvą“.' },
