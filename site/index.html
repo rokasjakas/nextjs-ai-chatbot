@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-MFmQATq1wib9HlkoPLfsYuKcB4IVpNV/K31AKsv7oSk=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-tRj/3QqMqRfzpEzwcbX4+pZoJ0zXk4vhqwzSxXGUY+8=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4131,7 +4131,7 @@ body.xg-resizing,body.xg-resizing *{cursor:col-resize !important;user-select:non
 /* ---------- naujo renginio langas ---------- */
 .na-hint{display:block;font-size:11.5px;min-height:14px;margin-top:2px;color:var(--text-dim);} .na-hint.ok{color:var(--green,#50AD97);} .na-hint.new{color:var(--amber,#F2A93B);}
 .na-sub{font-weight:700;font-size:12.5px;margin:10px 0 4px;} .na-sub small{font-weight:400;color:var(--text-dim);margin-left:6px;}
-.na-ops{display:flex;flex-wrap:wrap;gap:6px 18px;} .na-op{margin:0;}
+.na-ops{display:flex;flex-wrap:wrap;gap:6px 18px;} .na-op{display:inline-flex;align-items:center;gap:8px;} .na-op .checkbox-row{margin:0;} .na-op select{width:64px;padding:4px 6px;} .na-op select:disabled{opacity:.4;}
 .na-duty{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;} .na-duty select{width:100%;}
 .na-mp{display:flex;flex-direction:column;gap:6px;} .na-mp input.hidden{display:none;}
 .na-loc{display:flex;gap:6px;align-items:stretch;} .na-loc input{flex:1;min-width:0;} .na-loc .btn{display:inline-flex;align-items:center;padding:0 10px;}
@@ -17034,7 +17034,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v218';
+const APP_VER = 'v219';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -18725,7 +18725,7 @@ function evAddNew(kind){
            <div class="na-crew-h">Pozicijos <small>kiek žmonių reikės – vėliau lentelėje priskirsi</small></div>
            <div class="na-pos">${EV_NEW_POS.map(p=>`<label class="na-cnt"><span>${p.label}</span><span class="na-step"><button type="button" data-step="-1" aria-label="Mažiau">−</button><input type="number" min="0" max="30" value="0" id="na_pos_${p.k}" inputmode="numeric"><button type="button" data-step="1" aria-label="Daugiau">+</button></span></label>`).join('')}</div>
            <div class="na-sub">Operatoriai <small>pažymėtos pozicijos atsiras renginyje – ten priskirsi vardus</small></div>
-           <div class="na-ops">${EV_NEW_OPS.map(o=>`<label class="checkbox-row na-op"><input type="checkbox" data-op="${o}"> ${o[0]}/Operatorius</label>`).join('')}</div>
+           <div class="na-ops">${EV_NEW_OPS.map(o=>`<span class="na-op"><label class="checkbox-row"><input type="checkbox" data-op="${o}"> ${o[0]}/Operatorius</label><select data-opn="${o}" disabled title="Kiek">${Array.from({length:10}, (_, n)=>`<option value="${n+1}">${n+1}</option>`).join('')}</select></span>`).join('')}</div>
            <div class="na-sub">Budintys <small>kiek budinčių reikės renginyje</small></div>
            <div class="na-duty">${EV_NEW_DUTY.map(([k, l])=>`<label class="na-cnt"><span>${l}</span><select id="na_duty_${k}">${Array.from({length:11}, (_, n)=>`<option value="${n}">${n}</option>`).join('')}</select></label>`).join('')}</div>
          </div>`}
@@ -18791,6 +18791,7 @@ function evMapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query='+
 function evNewWire(){
   const $ = id=>document.getElementById(id);
   evMemberPickWire();
+  document.querySelectorAll('#modalRoot [data-op]').forEach(c=>c.onchange = ()=>{ const s = document.querySelector('#modalRoot [data-opn="'+c.dataset.op+'"]'); if(s) s.disabled = !c.checked; });
   // organizer: already known or new (it will be remembered)
   const org = $('na_org'), hint = $('na_orgHint');
   const orgHint = ()=>{ const v = org.value.trim(); if(!v){ hint.textContent = ''; return; }
@@ -18834,7 +18835,7 @@ function evNewApply(ev, name){
   const GRP = { A:[t=>/gars|audio/.test(t), 'Garsas'], L:[t=>/svies|sviec|apsviet/.test(t), 'Šviesa'], V:[t=>/video|vj|ekran|led/.test(t), 'VJ'], C:[t=>/^crew/.test(t), 'Crew'] };
   EV_NEW_POS.forEach(p=>{ const n = Math.min(30, +val('na_pos_'+p.k)||0); if(!n) return; const g = group(...GRP[p.k]);
     for(let i=1;i<=n;i++) g.entries.push({ pos:(p.k==='C' ? 'CREW' : p.k+i), person:'', status:'' }); });
-  const ops = [...document.querySelectorAll('#modalRoot [data-op]:checked')].map(x=>x.dataset.op);
+  const ops = [...document.querySelectorAll('#modalRoot [data-op]:checked')].flatMap(x=>{ const s = document.querySelector('#modalRoot [data-opn="'+x.dataset.op+'"]'); return Array.from({length:Math.min(10, +(s && s.value)||1)}, ()=>x.dataset.op); });
   const duty = EV_NEW_DUTY.flatMap(([k])=>Array.from({length:Math.min(10, +val('na_duty_'+k)||0)}, ()=>k));
   // on duty: the chosen number of L / V / A places, names are added in the event
   if(duty.length){ const g = group(t=>/budi/.test(t), 'Budi renginyje'); duty.forEach(k=>g.entries.push({ pos:k, person:'', status:'' })); }
@@ -31311,6 +31312,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 18:20', v:'v219', k:'chg', t:'Operatoriai: kiek', f:'Naujo renginio lange prie kiekvieno operatoriaus (L, A, V) pažymėjus varnelę pasirenkama, kiek tokių operatorių reikia (1–10) – tiek pozicijų atsiranda renginio grafoje „Operatoriai“.' },
   { d:'2026-10-03 18:05', v:'v218', k:'chg', t:'Naujas renginys: operatoriai ir budintys', f:'Naujo renginio lange išimtas Crew skaičius. Operatoriai pažymimi varnelėmis – L/Operatorius, A/Operatorius, V/Operatorius: pažymėtos pozicijos atsiranda renginio grafoje „Operatoriai“, ten priskiriami vardai. Budintys: iš sąrašų pasirenkama, kiek reikia Šviesos (L), Video (V) ir Garso (A) budinčių – jie atsiranda grafoje „Budi renginyje“.' },
   { d:'2026-10-03 17:40', v:'v217', k:'fix', t:'Renginių lentelė: slinkimas, stulpelių plotis, aiškios ribos', f:'Visa lentelė slenka į kairę ir dešinę kartu – apačioje slankiklis (ir pelės ratukas su Shift). Stulpelio plotį galima keisti tempiant jo antraštės dešinį kraštą – plotis išsaugomas visiems ir keisti gali visi (dukart spustelėjus – automatinis plotis). Stulpelių pavadinimai ryškūs, stulpelių ribos aiškiai matomos. Naujame renginyje Office ir Tech atsakingas renkami iš registruotų narių arba įrašomi ranka.' },
   { d:'2026-10-03 17:05', v:'v216', k:'new', t:'Atnaujinimų sąrašas ir „?“ paaiškinimai', f:'Viršutinėje juostoje – „Atnaujinimai“: visi pakeitimai nuo 2026-09-22 su data, laiku ir trumpu aprašu; paspaudus atsidaro pilnas aprašymas. Ilgi paaiškinimai po antraštėmis pakeisti „?“ mygtukais – paspaudus parodomas visas paaiškinimas.' },
