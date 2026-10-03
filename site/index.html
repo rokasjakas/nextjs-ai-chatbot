@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-46vfBmmDAR/2JjfwFGyBuoJobOti7oS0VetkaQU8RPk=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-guEX7X7FxpQd2nMUOeg/NcathzLKn+Pbjw/cuKt6Y5k=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -358,6 +358,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .uta-prod{display:block;white-space:nowrap;}
 .uta-det > td{background:var(--bg-deep);padding:6px 8px 12px;} .uta-det .uta-t{font-size:12.5px;}
 .uta-range input[type=date]{width:auto;min-width:0;}
+.uta-dsum td{background:var(--panel-2);}
 .uta-tot{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0;font-size:14px;}
 .uta-reps{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
 .uta-rx{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:0 0 0 4px;font-size:12px;} .uta-rx:hover{color:var(--danger);}
@@ -5808,7 +5809,8 @@ function utaCardFor(no){
   }
   return null;
 }
-function utaVehByPlate(p){ const n = utaNorm(p); return n ? STATE.vehicles.find(v=>utaNorm(v.plate)===n) : null; }
+// the plate (or the name written on the card, e.g. „AUTO 1“) of a vehicle in the fleet
+function utaVehByPlate(p){ const n = utaNorm(p); return n ? STATE.vehicles.find(v=>utaNorm(v.plate)===n) || STATE.vehicles.find(v=>utaNorm(v.name)===n) : null; }
 // whom a line belongs to: the card's vehicle / person, else the plate in the report, else the card itself
 function utaOwner(t){
   const c = utaCardById(t.card_id) || utaCardFor(t.card_no);
@@ -5816,6 +5818,8 @@ function utaOwner(t){
   if(c && c.assign_kind==='person' && (c.person_id || c.person_name)){ const m = c.person_id && (TEAM.members||[]).find(x=>x.id===c.person_id); return { key:'p:'+(c.person_id || c.person_name), kind:'person', name: m ? teamName(m) : (c.person_name || 'Asmuo') }; }
   const v = utaVehByPlate(t.plate);
   if(v) return { key:'v:'+v.id, kind:'vehicle', vid:v.id, name:v.name+(v.plate ? ' · '+v.plate : '') };
+  // the vehicle as UTA names it (column „Transporto priemonė“: AUTO 1, KUE 833…)
+  if(t.plate) return { key:'l:'+utaNorm(t.plate), kind:'label', name:t.plate.trim() };
   const no = c ? c.card_no : t.card_no;
   return { key:'c:'+utaDigits(no), kind:'card', name:'Kortelė '+utaMask(no)+(c && c.title ? ' · '+c.title : '')+(t.plate ? ' · '+t.plate : ''), none:true };
 }
@@ -5830,7 +5834,7 @@ function utaGroups(list){
     const pk = (t.product||'—').trim(), p = x.prod[pk] = x.prod[pk] || { qty:0, unit:t.unit||(fuel ? 'l' : ''), n:0 };
     p.qty += +t.quantity||0; p.n++;
   });
-  return Object.values(g).sort((a,b)=>(a.none?1:0)-(b.none?1:0) || b.sum-a.sum);
+  return Object.values(g).sort((a,b)=>(a.none?1:0)-(b.none?1:0) || a.name.localeCompare(b.name, 'lt', { numeric:true, sensitivity:'base' }));
 }
 // a vehicle in the latest report month (for its tile and its window)
 function utaVehMonth(vid){
@@ -5883,19 +5887,20 @@ function utaDraw(){
       <div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">⛽ Pylimai</h2>
         <span class="row uta-range" style="gap:6px;flex-wrap:wrap;align-items:center;"><select id="utaPreset">${cur ? '' : '<option value="" selected>Pasirinktas laikotarpis</option>'}${pres.map(p=>`<option value="${p[1]}|${p[2]}" ${cur===p?'selected':''}>${esc(p[0])}</option>`).join('')}</select>
         <input type="date" id="utaFrom" value="${UTA.from}" title="Nuo"><span class="muted">–</span><input type="date" id="utaTo" value="${UTA.to}" title="Iki">
-        ${list && list.length ? '<button type="button" class="btn small" id="utaXls">⬇ Excel</button>' : ''}</span></div>
+        ${list && list.length ? `<button type="button" class="btn small" id="utaAll">${UTA.open==='*' ? 'Suskleisti' : 'Rodyti visus pylimus'}</button><button type="button" class="btn small" id="utaXls">⬇ Excel</button>` : ''}</span></div>
       ${UTA.txErr ? `<div class="mail-err">${esc(UTA.txErr)}</div>` : ''}
       ${!list ? '<div class="empty-state">Kraunama…</div>' : !list.length ? `<div class="empty-state">${esc(utaRangeLabel())}: įrašų nėra.${ed ? ' Įkelk to laikotarpio UTA ataskaitą.' : ''}</div>` : `
       <div class="uta-tot"><span>Pylimų: <b>${tot.fills}</b></span><span>Kuro: <b>${esc(utaQty(tot.fuel))}</b></span><span>Iš viso: <b>${esc(utaMoney(tot.sum))}</b></span></div>
       <div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Kam</th><th>Pylimų</th><th>Dienos</th><th>Kiekiai</th><th>Suma</th></tr></thead><tbody>
-      ${groups.map(g=>`<tr class="uta-g ${UTA.open===g.key ? 'on' : ''} ${g.none ? 'none' : ''}" data-utag="${esc(g.key)}"><td><b>${esc(g.name)}</b>${g.kind==='card' ? '' : `<small>${[...g.cards].map(esc).join(', ')}</small>`}</td>
+      ${groups.map(g=>`<tr class="uta-g ${UTA.open===g.key || UTA.open==='*' ? 'on' : ''} ${g.none ? 'none' : ''}" data-utag="${esc(g.key)}"><td><b>${esc(g.name)}</b>${g.kind==='card' ? '' : `<small>${[...g.cards].map(esc).join(', ')}</small>`}</td>
         <td>${g.fills}${g.other ? `<small>+ ${g.other} kt.</small>` : ''}</td>
         <td class="uta-days">${esc(utaDaysText(g.days))}</td>
         <td>${Object.entries(g.prod).map(([p,x])=>`<span class="uta-prod">${esc(p)}: <b>${fmt(x.qty,1)}${x.unit ? ' '+esc(x.unit) : ''}</b></span>`).join('')}</td>
         <td><b>${esc(utaMoney(g.sum))}</b></td></tr>
-        ${UTA.open===g.key ? `<tr class="uta-det"><td colspan="5"><table class="uta-t"><thead><tr><th>Data</th><th>Stotis</th><th>Produktas</th><th>Kiekis</th><th>Suma</th><th>Rida</th><th>Kortelė</th></tr></thead><tbody>
-          ${g.rows.map(t=>`<tr><td>${esc(utaWhen(t.tx_at))}</td><td>${esc(t.station||'')}${t.country ? ' <small>'+esc(t.country)+'</small>' : ''}</td><td>${esc(t.product||'')}</td><td>${t.quantity!=null ? fmt(+t.quantity,2)+(t.unit ? ' '+esc(t.unit) : '') : ''}</td><td>${esc(utaMoney(t.amount_gross!=null ? t.amount_gross : t.amount_net))}</td><td>${t.mileage!=null ? esc(vlKm(t.mileage)) : ''}</td><td>${esc(utaMask(t.card_no))}${t.plate ? ' <small>'+esc(t.plate)+'</small>' : ''}</td></tr>`).join('')}
-        </tbody></table></td></tr>` : ''}`).join('')}
+        ${UTA.open===g.key || UTA.open==='*' ? `<tr class="uta-det"><td colspan="5"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Data</th><th>Kur</th><th>Produktas</th><th>Kiekis</th><th>Kaina už vnt. su PVM</th><th>Be PVM</th><th>Su PVM</th><th>Rida</th><th>Kortelė</th></tr></thead><tbody>
+          ${g.rows.map(t=>{ const sum = t.amount_gross!=null ? +t.amount_gross : +t.amount_net; return `<tr><td>${esc(utaWhen(t.tx_at))}</td><td>${esc(t.station||'')}${t.country ? ' <small>'+esc(t.country)+'</small>' : ''}</td><td>${esc(t.product||'')}</td><td>${t.quantity!=null ? fmt(+t.quantity,2)+(t.unit ? ' '+esc(t.unit) : '') : ''}</td><td>${t.quantity ? esc(fmt(sum / +t.quantity, 3))+' €' : ''}</td><td>${esc(utaMoney(t.amount_net))}</td><td><b>${esc(utaMoney(sum))}</b></td><td>${t.mileage!=null ? esc(vlKm(t.mileage)) : ''}</td><td>${esc(utaMask(t.card_no))}${t.plate ? ' <small>'+esc(t.plate)+'</small>' : ''}</td></tr>`; }).join('')}
+          <tr class="uta-dsum"><td colspan="3"><b>Iš viso</b> · ${ltPlural(g.fills,'pylimas','pylimai','pylimų')}${g.other ? ' + '+g.other+' kt.' : ''}</td><td><b>${esc(utaQty(g.fuel))}</b></td><td>${g.fuel ? esc(fmt(g.rows.filter(utaIsFuel).reduce((a,t)=>a+(+(t.amount_gross!=null ? t.amount_gross : t.amount_net)||0), 0) / g.fuel, 3))+' €' : ''}</td><td>${esc(utaMoney(g.net))}</td><td><b>${esc(utaMoney(g.sum))}</b></td><td colspan="2"></td></tr>
+        </tbody></table></div></td></tr>` : ''}`).join('')}
       </tbody></table></div>
       ${groups.some(g=>g.none) && ed ? '<small class="muted">Pilkos eilutės – kortelė niekam nepriskirta. Priskirk ją viršuje (✎), ir pylimai atsiras prie automobilio ar žmogaus.</small>' : ''}`}
       ${reps.length ? `<div class="uta-reps">${reps.map(r=>`<span class="fl-chip">📄 ${esc(r.file_name||'ataskaita')} · ${r.rows} eil. · ${esc(r.uploaded_by_name||'')} ${esc(grWhen(r.created_at))}${ed ? ` <button type="button" class="uta-rx" data-utarx="${esc(r.id)}" title="Ištrinti šią ataskaitą ir jos eilutes">✕</button>` : ''}</span>`).join('')}</div>` : ''}
@@ -5909,6 +5914,7 @@ function utaDraw(){
   document.getElementById('utaTo').onchange = e=>setRange(UTA.from, e.target.value);
   box.querySelectorAll('[data-utag]').forEach(r=>r.onclick = ()=>{ UTA.open = UTA.open===r.dataset.utag ? '' : r.dataset.utag; utaDraw(); });
   const x = document.getElementById('utaXls'); if(x) x.onclick = ()=>utaExport(groups);
+  const all = document.getElementById('utaAll'); if(all) all.onclick = ()=>{ UTA.open = UTA.open==='*' ? '' : '*'; utaDraw(); };
   box.querySelectorAll('[data-utarx]').forEach(b=>b.onclick = async e=>{
     e.stopPropagation();
     const r = UTA.reports.find(z=>z.id===b.dataset.utarx); if(!r) return;
@@ -5918,7 +5924,7 @@ function utaDraw(){
     UTA.reports = UTA.reports.filter(z=>z.id!==r.id); UTA.tx = {}; await utaLoadRange(); if(utaLastMonth()) await utaLoadMonth(utaLastMonth()); utaDraw(); toast('Ataskaita ištrinta.');
   });
 }
-function utaWhen(iso){ const d = new Date(iso); if(isNaN(d)) return String(iso||''); return calISO(d).slice(5).replace('-','.')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function utaWhen(iso){ const d = new Date(iso); if(isNaN(d)) return String(iso||''); const t = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); return calISO(d).slice(5).replace('-','.')+(t==='00:00' ? '' : ' '+t); }
 function utaExport(groups){
   if(!window.XLSX){ toast('Excel biblioteka dar kraunasi – bandyk po akimirkos.'); return; }
   const rows = [];
@@ -6010,7 +6016,8 @@ const UTA_FIELDS = [
   ['gross', 'Suma su PVM', /brutto|gross|su pvm|incl|with vat|bendra suma|^total|^suma$|^amount$|^betrag$|^sum$|сумма/],
   ['currency', 'Valiuta', /wahrung|currency|valiuta|^curr|валют/],
   ['km', 'Rida', /kilometerstand|kilomet|odomet|mileage|^km|rida|пробег/],
-  ['driver', 'Vairuotojas', /fahrer|driver|vairuot|водител/]
+  ['driver', 'Vairuotojas', /fahrer|driver|vairuot|водител/],
+  ['receipt', 'Kvito nr.', /kvito|receipt|beleg|quittung|чек/]
 ];
 const utaHead = h=>String(h==null ? '' : h).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
 function utaDetect(head){
@@ -6062,12 +6069,35 @@ function utaRow(raw, txt, map){
   const km = utaNum(g('km'));
   return { card_no:card.replace(/\s+/g, ' '), plate:gt('plate') || null, tx_at:at.toISOString(), tx_date:dt.y+'-'+String(dt.m).padStart(2,'0')+'-'+String(dt.d).padStart(2,'0'),
     station:gt('station') || null, country:gt('country') || null, product:gt('product') || null, quantity:qty, unit:gt('unit') || null,
-    amount_net:net, amount_gross:gross, currency:gt('currency') || null, mileage: km!=null && km >= 0 && km < 10000000 ? Math.round(km) : null, driver:gt('driver') || null };
+    amount_net:net, amount_gross:gross, currency:gt('currency') || null, receipt:gt('receipt') || null, mileage: km!=null && km >= 0 && km < 10000000 ? Math.round(km) : null, driver:gt('driver') || null };
 }
 /* PDF: the text of every page with its place; the lines are rebuilt, the table header is found by its
    names and every value goes to the column standing above it. A report without such a header (lines
    grouped under „Kartennummer … / Kennzeichen …“) is read line by line: date, time, station, product,
    quantity, sum. */
+// UTA (UNION TANK) „PVM sąskaita“: one line per fill – Pos. | Produktas | Tiekimo vieta | Kvito numeris |
+// Transporto priemonė | Kortelės Nr. + Data | LTR | Kiekis | Vieneto kaina | Suma netto | PVM % | Rūšis | PVM | Suma brutto
+function utaPdfUnionTank(lines){
+  const text = lines.map(l=>l.items.map(i=>i.s).join(' ')).join('\n');
+  if(!/Transporto priemon/i.test(text) || !/Kvito numer/i.test(text) || !/Suma brutto/i.test(text)) return null;
+  const raw = [['Pos.','Produktas','Tiekimo vieta','Kvito nr.','Transporto priemonė','Kortelės nr.','Data','Vnt.','Kiekis','Vieneto kaina','Suma netto','PVM','Suma brutto','Valiuta']];
+  lines.forEach(l=>{
+    const it = l.items, cd = it.findIndex(i=>/^\d{3,6}\s+\d{2}\.\d{2}\.\d{4}$/.test(i.s));
+    if(cd < 0 || !/^\d{1,5}$/.test(it[0].s)) return;
+    const [, card, date] = it[cd].s.match(/^(\d{3,6})\s+(\d{2}\.\d{2}\.\d{4})$/);
+    // between the number and the card: product, station (the last piece before the receipt), receipt, vehicle
+    const mid = it.slice(1, cd), xr = mid.length >= 2 ? mid[mid.length-2].x : 0;
+    const veh = mid.length ? mid[mid.length-1].s : '', rec = mid.length >= 2 ? mid[mid.length-2].s : '';
+    const ps = mid.slice(0, -2), station = ps.length >= 2 ? ps[ps.length-1].s : '', product = (ps.length >= 2 ? ps.slice(0, -1) : ps).map(i=>i.s).join(' ');
+    const tail = it.slice(cd+1).map(i=>i.s), u = tail.findIndex(x=>/^[A-Z]{2,3}$/.test(x) && !/^(VO|RE|OS|RC|SP)$/.test(x));
+    const nums = tail.filter(x=>/^-?[\d.]+,\d+$/.test(x));
+    if(nums.length < 4 || !xr) return;
+    // Kiekis, Vieneto kaina, Suma netto, PVM %, PVM, Suma brutto
+    raw.push([it[0].s, product, station, rec, veh, card, date, u >= 0 ? tail[u] : '', nums[0], nums[1], nums[2], nums.length >= 6 ? nums[4] : '', nums[nums.length-1], 'EUR']);
+  });
+  if(raw.length < 2) return null;
+  return { raw, txt:raw, hi:0, map:{ product:1, station:2, receipt:3, plate:4, card:5, date:6, unit:7, qty:8, net:10, gross:12, currency:13 }, score:20 };
+}
 async function utaPdfTable(file){
   if(typeof pdfjsLib==='undefined') await loadScriptOnce('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js', ()=>typeof pdfjsLib!=='undefined');
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
@@ -6089,6 +6119,7 @@ async function utaPdfTable(file){
       else cells.push(Object.assign({}, it)); });
     l.cells = cells;
   });
+  const ut = utaPdfUnionTank(lines); if(ut) return ut;
   // the header: the line naming most of the columns we know (a two-line header is joined with the next one)
   let head = null;
   lines.forEach((l, i)=>{
@@ -6201,7 +6232,8 @@ async function utaImportRun(file, rows, month, fresh, addCards){
     // new cards (assigned to the vehicle whose plate is on their lines)
     if(addCards && fresh.length){
       const add = fresh.map(no=>{ const plates = [...new Set(rows.filter(r=>r.card_no===no && r.plate).map(r=>utaNorm(r.plate)))], v = plates.length===1 ? utaVehByPlate(plates[0]) : null;
-        return { card_no:no, title:'', active:true, assign_kind: v ? 'vehicle' : 'none', vehicle_id: v ? v.id : null, vehicle_name: v ? v.name+(v.plate ? ' · '+v.plate : '') : null, note:'Pridėta iš ataskaitos '+file.name.slice(0, 80) }; });
+        const labels = [...new Set(rows.filter(r=>r.card_no===no && r.plate).map(r=>r.plate.trim()))];
+        return { card_no:no, title: labels.length===1 ? labels[0].slice(0, 80) : '', active:true, assign_kind: v ? 'vehicle' : 'none', vehicle_id: v ? v.id : null, vehicle_name: v ? v.name+(v.plate ? ' · '+v.plate : '') : null, note:'Pridėta iš ataskaitos '+file.name.slice(0, 80) }; });
       const r = await sb.from('uta_cards').insert(add).select();
       if(r.error && !/duplicate/i.test(r.error.message)) throw new Error(r.error.message);
       if(r.data) UTA.cards.push(...r.data);
@@ -6211,9 +6243,9 @@ async function utaImportRun(file, rows, month, fresh, addCards){
     if(rep.error) throw new Error(rep.error.message);
     const seen = new Set(), list = [];
     rows.forEach(t=>{
-      const c = utaCardFor(t.card_no), key = [utaDigits(t.card_no) || utaNorm(t.plate), t.tx_at, String(t.product||'').toLowerCase(), t.quantity, t.amount_gross!=null ? t.amount_gross : t.amount_net].join('|');
+      const c = utaCardFor(t.card_no), key = [utaDigits(t.card_no) || utaNorm(t.plate), t.tx_at, String(t.product||'').toLowerCase(), t.quantity, t.amount_gross!=null ? t.amount_gross : t.amount_net, t.receipt || ''].join('|');
       if(seen.has(key)) return; seen.add(key);
-      list.push(Object.assign({}, t, { report_id:rep.data.id, card_id: c ? c.id : null, key }));
+      const row = Object.assign({}, t, { report_id:rep.data.id, card_id: c ? c.id : null, key }); delete row.receipt; list.push(row);
     });
     let added = 0;
     for(let i = 0; i < list.length; i += 400){
@@ -15869,7 +15901,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v195';
+const APP_VER = 'v196';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
