@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Jq+d+F8BkvXIEewAptAtZbbPvxSGpydHuLjJ7yI5DuY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-hSfm8ydoXjhFzfNqmpyS2Xrj4h0s2TuEwMjNl5+3YT4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3315,7 +3315,16 @@ input.np-subname:focus{border-color:var(--border);background:var(--input);}
 .np-groups{display:flex;flex-direction:column;gap:10px;}
 .np-groups .card + .card{margin-top:0;}
 .np-grp{padding:10px 12px !important;cursor:pointer;}
-.np-grp.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;cursor:default;}
+.np-grp.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset, inset 4px 0 0 var(--accent);background:color-mix(in srgb, var(--accent) 9%, var(--panel));cursor:default;}
+.np-gon{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 7px;border-radius:9px;background:var(--accent);color:var(--accent-ink,#fff);}
+.np-gtools{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--text-dim);}
+.np-gfold{display:flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:0;background:none;color:var(--text-dim);cursor:pointer;border-radius:6px;flex:none;} .np-gfold:hover{background:var(--panel-2);color:var(--text);} .np-gfold svg{width:20px;height:20px;}
+.np-grp.folded .np-irows,.np-grp.folded .np-gempty,.np-grp.folded .np-icustom{display:none !important;}
+.np-grp.folded,.np-grp.empty:not(.on){padding:5px 10px !important;}
+.np-grp.folded .np-gh select,.np-grp.folded .np-gper,.np-grp.empty:not(.on) .np-gh select,.np-grp.empty:not(.on) .np-gper,.np-grp.empty:not(.on) .np-gempty,.np-grp.empty:not(.on) .np-icustom{display:none !important;}
+.np-grp.empty .np-gw{font-style:italic;}
+.np-groups{gap:6px;} .np-grp.folded .np-gh,.np-grp.empty:not(.on) .np-gh{min-height:30px;} .np-grp.folded .np-gact .icon-btn,.np-grp.empty:not(.on) .np-gact .icon-btn{width:26px;height:26px;padding:0;}
+.np-grp.folded input.np-gname,.np-grp.empty:not(.on) input.np-gname{padding:1px 4px;}
 .np-gh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .np-gsel{background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 2px;}
 input.np-gname{font-weight:600;font-size:14px;background:transparent;border:1px solid transparent;color:var(--text);padding:3px 4px;min-width:120px;flex:1;}
@@ -4059,6 +4068,19 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 .gr-mem{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
 .gr-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;} .gr-gal img{width:100%;border-radius:8px;display:block;}
 @media (max-width:640px){ .gr-card{flex-wrap:wrap;} .gr-acts{flex-direction:row;width:100%;justify-content:flex-end;} .gr-form{grid-template-columns:1fr;} .gr-pi{flex-direction:column;align-items:flex-start;gap:1px;} .gr-states{grid-template-columns:1fr;} }
+</style>
+<style id="ldSimCss">
+.ld-sim{padding:10px 14px;margin-bottom:12px;}
+.ld-sim-row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;}
+.ld-sim-t{display:inline-flex;align-items:center;gap:8px;font-size:14px;} .ld-sim-t svg{width:20px;height:20px;color:var(--accent);}
+.ld-sim-f{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-dim);flex:1;min-width:240px;} .ld-sim-f select{flex:1;min-width:0;max-width:460px;}
+.ld-sim-m{display:inline-flex;gap:6px;flex-wrap:wrap;}
+.ld-cmp-h{font-size:12px;color:var(--text-dim);margin:10px 0 4px;}
+table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-dim);padding:4px 6px;border-bottom:1px solid var(--border);}
+.ld-cmp td{padding:6px;border-bottom:1px solid var(--border);vertical-align:middle;} .ld-cmp td small{display:block;font-size:11px;color:var(--text-dim);} .ld-cmp tr.bad td{opacity:.5;}
+.help-q{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--border-2,var(--border));background:var(--panel-2);color:var(--text-dim);font-size:12px;font-weight:700;cursor:pointer;padding:0;line-height:1;flex:none;vertical-align:middle;}
+.help-q:hover,.help-q.on{border-color:var(--accent);color:var(--accent);}
+.help-pop{position:fixed;z-index:1200;max-width:340px;background:var(--panel);color:var(--text);border:1px solid var(--border-2,var(--border));border-radius:var(--radius,8px);box-shadow:0 14px 34px rgba(0,0,0,.4);padding:10px 12px;font-size:12.5px;line-height:1.45;}
 </style>
 <style id="evNewCss">
 /* ---------- naujo renginio langas ---------- */
@@ -7087,7 +7109,7 @@ function docCardsBind(el){
    ============================================================ */
 let lastPackResult = null;
 let pdfPendingRows = null;
-let loadMode = 'fleet';       // 'fleet' | 'recommend'
+let loadMode = 'fleet';       // 'fleet' | 'rent' | 'recommend'
 let cargoFilter = { q:'', group:'' };
 let currentBinIndex = 0;
 let currentViewMode = '3d';   // '3d' | 'top' | 'side'
@@ -7117,7 +7139,9 @@ function renderLoadTab(){
     LD.pulled = null;
   }
   const proj = activeProject();
+  if(typeof NP!=='undefined' && !NP.loaded && canView('newproj')) npLoad().then(()=>{ if(currentTab==='load') ldSimBar(); }).catch(()=>{});
   const html = `
+  <div class="card ld-sim" id="ldSim"></div>
   <div class="load-shell">
     ${proj ? `<div class="card" style="grid-column:1/-1;background:var(--panel-2);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
       <span style="font-size:12.5px;"><b>📁 ${esc(proj.name)}</b><span style="color:var(--text-dim);"> — ${proj.loadDone ? `<b style="color:var(--ok)">krovimas baigtas ${esc(String(proj.loadDone.at||'').slice(0,16).replace('T',' '))}${proj.loadDone.by ? ' · '+esc(proj.loadDone.by) : ''}</b>` : 'kraunama šiam projektui'}</span></span>
@@ -7166,8 +7190,9 @@ function renderLoadTab(){
     <div class="card">
       <div class="row between"><h2 class="section-title" style="margin:0;">Reiso transportas</h2></div>
       <div class="row" style="margin:8px 0 10px;">
-        <label class="checkbox-row"><input type="radio" name="loadMode" value="fleet" ${loadMode==='fleet'?'checked':''}> Fiksuotas parkas</label>
-        <label class="checkbox-row"><input type="radio" name="loadMode" value="recommend" ${loadMode==='recommend'?'checked':''}> Rekomenduoti minimalų kiekį</label>
+        <label class="checkbox-row"><input type="radio" name="loadMode" value="fleet" ${loadMode==='fleet'?'checked':''}> Įmonės transportas</label>
+        <label class="checkbox-row"><input type="radio" name="loadMode" value="rent" ${loadMode==='rent'?'checked':''}> Nuomojamas</label>
+        <label class="checkbox-row"><input type="radio" name="loadMode" value="recommend" ${loadMode==='recommend'?'checked':''}> Transporto tipas (kiek reikės)</label>
       </div>
       <div id="fleetPickerWrap"></div>
     </div>
@@ -7201,6 +7226,7 @@ function renderLoadTab(){
   <div id="smallItemsWrap"></div>
   `;
   document.getElementById('main').innerHTML = html;
+  ldSimBar();
   bindLoadTabEvents();
   if(proj){
     document.getElementById('exitProjectBtn').addEventListener('click', ()=>{
@@ -7310,7 +7336,7 @@ function bindLoadTabEvents(){
   document.getElementById('cargoSearch').addEventListener('input', e=>{ cargoFilter.q=e.target.value; renderCargoList(); });
   document.getElementById('runPackBtn').addEventListener('click', runLoadPacking);
   document.querySelectorAll('input[name=loadMode]').forEach(r=>r.addEventListener('change', e=>{
-    loadMode = e.target.value; renderFleetPicker(); ldAutoPackSoon();
+    loadMode = e.target.value; renderFleetPicker(); ldSimBar(); ldAutoPackSoon();
   }));
   document.getElementById('viewModeToggle').querySelectorAll('button').forEach(b=>b.addEventListener('click', e=>{
     currentViewMode = e.target.getAttribute('data-m');
@@ -7798,6 +7824,64 @@ function renderSmallItemsInner(wrap){
 }
 
 /* ---------- fleet picker ---------- */
+/* ---------- Krovimas – tik simuliacija: projektas + transportas ---------- */
+// usual vehicle types for „kiek reikės“ (inner cargo space, cm / kg)
+const LD_TYPES = [
+  { key:'t_van',    name:'Mikroautobusas (L3H2)',  L:340, W:176, H:190, maxWeight:1200 },
+  { key:'t_box35',  name:'Būda iki 3,5 t',          L:420, W:205, H:220, maxWeight:1000 },
+  { key:'t_box75',  name:'Būda 7,5 t',              L:620, W:245, H:240, maxWeight:3000 },
+  { key:'t_truck12',name:'Sunkvežimis 12 t',        L:720, W:245, H:250, maxWeight:6000 },
+  { key:'t_semi',   name:'Fūra 13,6 m',             L:1360, W:245, H:270, maxWeight:24000 },
+];
+function ldRentVehicles(){
+  return (RV.list||[]).filter(r=>+r.length_cm>0 && +r.width_cm>0 && +r.height_cm>0).map(r=>({ id:'rv_'+r.id, name:[r.company, r.name, r.plate].filter(Boolean).join(' · ') || 'Nuomojamas',
+    L:+r.length_cm, W:+r.width_cm, H:+r.height_cm, floorW:+r.width_cm, archH:0, maxWeight:+r.max_kg || 3500, price:r.price_day!=null ? rvMoney(r.price_day) : '' }));
+}
+function ldRentOn(){ return new Set(Array.isArray(STATE.ldRent) ? STATE.ldRent : []); }
+function ldTypeList(){
+  const own = STATE.vehicles.map(v=>({ key:'inst_'+v.id, name:'Įmonės: '+v.name, L:v.L, W:v.W, H:v.H, maxWeight:v.maxWeight, floorW:v.floorW, archH:v.archH||0 }));
+  const rent = (RV.loaded ? ldRentVehicles() : []).map(v=>Object.assign({}, v, { key:'rent_'+v.id, name:'Nuoma: '+v.name }));
+  return LD_TYPES.map(t=>Object.assign({ floorW:t.W, archH:0 }, t)).concat(vehicleTemplates(), own, rent);
+}
+function ldSimBar(){
+  const box = document.getElementById('ldSim'); if(!box) return;
+  const rp = typeof ldRp==='function' ? ldRp() : null, today = calISO(new Date());
+  const projs = (typeof NP!=='undefined' ? NP.list : []).filter(p=>!p.is_template && npTotals(p.data).count > 0).map(p=>({ p, sp:npProjSpan(p.data) }))
+    .sort((a, b)=>{ const ae = a.sp && npIso(a.sp[1]).slice(0,10) < today, be = b.sp && npIso(b.sp[1]).slice(0,10) < today; if(ae!==be) return ae ? 1 : -1; return ((a.sp||[Infinity])[0] - (b.sp||[Infinity])[0]) * (ae ? -1 : 1); });
+  box.innerHTML = `<div class="ld-sim-row">
+      <span class="ld-sim-t">${slIcon('truck')}<b>Krovimo simuliacija</b><button type="button" class="help-q" data-help="Krovimas nėra privalomas – tai tik simuliacija. Pasirink projektą (arba sudėk laisvą sąrašą apačioje) ir transportą: įmonės, nuomojamą ar transporto tipą. Pamatysi, kiek ir kokio transporto reikės ir kaip viskas sutilps.">?</button></span>
+      <label class="ld-sim-f">Projektas<select id="ldSimProj" data-ro-ok><option value="">— laisvas sąrašas (be projekto) —</option>${projs.map(({p})=>`<option value="${esc(p.id)}" ${rp && rp.id===p.id ? 'selected' : ''}>${esc(p.data.name||'Be pavadinimo')}</option>`).join('')}</select></label>
+      <span class="ld-sim-m">${[['fleet','Įmonės transportas'],['rent','Nuomojamas'],['recommend','Transporto tipas']].map(([k,l])=>`<button type="button" class="chip ${loadMode===k?'active':''}" data-ldm="${k}">${l}</button>`).join('')}</span>
+    </div>`;
+  box.querySelector('#ldSimProj').onchange = async e=>{
+    if(!e.target.value){ STATE.activeProjectId = null; saveState(); setTab('load'); return; }
+    const p = NP.list.find(x=>x.id===e.target.value); if(p) await npGoLoad(p, 'load');
+  };
+  box.querySelectorAll('[data-ldm]').forEach(b=>b.onclick = ()=>{ loadMode = b.dataset.ldm;
+    document.querySelectorAll('input[name=loadMode]').forEach(r=>{ r.checked = r.value===loadMode; });
+    box.querySelectorAll('[data-ldm]').forEach(x=>x.classList.toggle('active', x===b));
+    renderFleetPicker(); ldAutoPackSoon(); });
+}
+// every type at once: how many of each would be needed for this list
+function ldCompareTypes(){
+  const out = document.getElementById('ldCmp'); if(!out) return;
+  const small = smallItemIds(), rows = curLoadList().filter(r=>r.qty>0 && !isSmallRow(r, small));
+  if(!rows.length){ out.innerHTML = '<div class="section-sub">Krovinio sąrašas tuščias.</div>'; return; }
+  const packRows = rows.map(r=>({ l:r.l,w:r.w,h:r.h,weight:r.weight,qty:r.qty,isTruss:r.isTruss,stackable:r.stackable,stackExceptionTruss:r.stackExceptionTruss,orientationLocked:r.orientationLocked,label:r.label,abbr:r.abbr,color:r.color,groupKey:r.groupKey,rowId:r.rowId }));
+  const vol = packRows.reduce((s,r)=>s + r.l*r.w*r.h*r.qty, 0), kg = packRows.reduce((s,r)=>s + r.weight*r.qty, 0);
+  out.innerHTML = '<div class="section-sub">Skaičiuojama…</div>';
+  setTimeout(()=>{
+    const res = ldTypeList().map(t=>{ let r; try{ r = runPacking(packRows, [], Object.assign({ id:'cmp_'+t.key }, t)); }catch(e){ r = null; }
+      const n = r ? r.bins.length : 0, left = r ? r.leftover.length : 1;
+      return { t, n, left, fill: n ? Math.round(vol / (n * t.L*t.W*t.H) * 100) : 0 }; })
+      .sort((a,b)=>(a.left>0) - (b.left>0) || a.n - b.n || a.t.L*a.t.W*a.t.H - b.t.L*b.t.W*b.t.H);
+    out.innerHTML = `<div class="ld-cmp-h">Krovinys: ${fmt(vol/1e6,1)} m³ · ${fmt(kg,0)} kg</div><table class="ld-cmp"><thead><tr><th>Transportas</th><th>Reikės</th><th>Užpildymas</th><th></th></tr></thead><tbody>${res.map(x=>`<tr class="${x.left ? 'bad' : ''}">
+      <td>${esc(x.t.name)}<small>${fmt(x.t.L,0)}×${fmt(x.t.W,0)}×${fmt(x.t.H,0)} cm · iki ${fmt(x.t.maxWeight,0)} kg</small></td>
+      <td><b>${x.left ? 'netelpa' : x.n+' vnt.'}</b></td><td>${x.left ? '—' : x.fill+' %'}</td>
+      <td><button type="button" class="btn small" data-ldpick="${esc(x.t.key)}" ${x.left ? 'disabled' : ''}>Rodyti</button></td></tr>`).join('')}</tbody></table>`;
+    out.querySelectorAll('[data-ldpick]').forEach(b=>b.onclick = ()=>{ const s = document.getElementById('recTypeSel'); if(s){ s.value = b.dataset.ldpick; STATE.ldRecType = s.value; saveState(); runLoadPacking(); } });
+  }, 30);
+}
 function renderFleetPicker(){
   const wrap = document.getElementById('fleetPickerWrap');
   if(loadMode==='fleet'){
@@ -7808,12 +7892,23 @@ function renderFleetPicker(){
       const v = STATE.vehicles.find(x=>x.id===e.target.getAttribute('data-id'));
       v.active = e.target.checked; saveState(); ldAutoPackSoon();
     }));
+  } else if(loadMode==='rent'){
+    if(!RV.loaded){ wrap.innerHTML = '<div class="empty-state">Kraunamas nuomojamas transportas…</div>'; rvLoad().then(()=>{ if(currentTab==='load' && loadMode==='rent'){ renderFleetPicker(); ldAutoPackSoon(); } }).catch(()=>{}); return; }
+    const all = ldRentVehicles(), on = ldRentOn();
+    if(!all.length){ wrap.innerHTML = `<div class="empty-state">${RV.err ? esc(RV.err) : 'Nuomojamo transporto su išmatavimais nėra. Įrašyk ilgį, plotį ir aukštį: Transportas → Transporto nuoma.'}</div>`; return; }
+    wrap.innerHTML = all.map(v=>`<label class="checkbox-row" style="margin-bottom:6px;"><input type="checkbox" class="rent-check" data-id="${esc(v.id)}" ${on.has(v.id)?'checked':''}> ${esc(v.name)} — ${fmt(v.L*v.W*v.H/1e6,1)} m³${v.maxWeight ? ', iki '+fmt(v.maxWeight,0)+' kg' : ''}${v.price ? ' · '+esc(v.price)+' / para' : ''}</label>`).join('');
+    wrap.querySelectorAll('.rent-check').forEach(cb=>cb.addEventListener('change', ()=>{
+      const s = ldRentOn(); if(cb.checked) s.add(cb.dataset.id); else s.delete(cb.dataset.id); STATE.ldRent = [...s]; saveState(); ldAutoPackSoon(); }));
   } else {
-    const tpls = vehicleTemplates().concat(STATE.vehicles.map(v=>({key:'inst_'+v.id, name:v.name, L:v.L,W:v.W,H:v.H,maxWeight:v.maxWeight,floorW:v.floorW,archH:v.archH||0})));
-    wrap.innerHTML = `<label class="field">Pasirink transporto tipą, kurio kiekį rekomenduosime
-      <select id="recTypeSel">${tpls.map(t=>`<option value="${t.key}">${esc(t.name)}</option>`).join('')}</select>
-    </label>`;
+    const tpls = ldTypeList();
+    wrap.innerHTML = `<label class="field">Transporto tipas – kiek tokių reikės
+      <select id="recTypeSel">${tpls.map(t=>`<option value="${esc(t.key)}" ${STATE.ldRecType===t.key?'selected':''}>${esc(t.name)}</option>`).join('')}</select>
+    </label>
+    <button type="button" class="btn small" id="ldCmpBtn" data-ro-ok>${slIcon('chart')} Palyginti visus tipus</button>
+    <div id="ldCmp"></div>`;
     wrap._tpls = tpls;
+    document.getElementById('recTypeSel').onchange = e=>{ STATE.ldRecType = e.target.value; saveState(); ldAutoPackSoon(); };
+    document.getElementById('ldCmpBtn').onclick = ldCompareTypes;
   }
 }
 
@@ -7832,13 +7927,14 @@ function runLoadPacking(opts){
     label:r.label, abbr:r.abbr, color:r.color, groupKey:r.groupKey, rowId:r.rowId
   }));
 
-  if(loadMode==='fleet'){
-    const fleet = STATE.vehicles.filter(v=>v.active!==false);
+  if(loadMode==='fleet' || loadMode==='rent'){
+    const fleet = loadMode==='rent' ? ldRentVehicles().filter(v=>ldRentOn().has(v.id)) : STATE.vehicles.filter(v=>v.active!==false);
     if(!fleet.length){ if(!silent) toast('Pažymėk bent vieną automobilį.'); return; }
     lastPackResult = runPacking(packRows, fleet, null);
   } else {
-    const sel = document.getElementById('recTypeSel').value;
-    const tpls = document.getElementById('fleetPickerWrap')._tpls || vehicleTemplates();
+    const selEl = document.getElementById('recTypeSel'); if(!selEl) return;
+    const sel = selEl.value;
+    const tpls = document.getElementById('fleetPickerWrap')._tpls || ldTypeList();
     const tpl = tpls.find(t=>t.key===sel);
     const vehObj = {id:'rec_'+sel, name:tpl.name, L:tpl.L,W:tpl.W,H:tpl.H,maxWeight:tpl.maxWeight};
     lastPackResult = runPacking(packRows, [], vehObj);
@@ -8079,7 +8175,7 @@ function ldState(){
 // Krovimas is calculated by itself: whenever the list, the vans or the mode change
 function ldPackSig(){
   const rec = document.getElementById('recTypeSel');
-  return [loadListSignature(curLoadList()), loadMode, loadMode==='fleet' ? STATE.vehicles.filter(v=>v.active!==false).map(v=>v.id).join(',') : (rec ? rec.value : '')].join('|');
+  return [loadListSignature(curLoadList()), loadMode, loadMode==='fleet' ? STATE.vehicles.filter(v=>v.active!==false).map(v=>v.id).join(',') : loadMode==='rent' ? [...ldRentOn()].join(',') : (rec ? rec.value : '')].join('|');
 }
 function ldAutoPack(){
   if(currentTab!=='load') return;
@@ -8379,7 +8475,7 @@ function restoreSavedLoadPlan(){
   packPlanDirty = false;
   if(!plan || !Array.isArray(plan.bins)) return;
   lastPackResult = JSON.parse(JSON.stringify({ bins: plan.bins, leftover: plan.leftover||[] }));
-  loadMode = plan.loadMode==='recommend' ? 'recommend' : 'fleet';
+  loadMode = ['recommend','rent'].includes(plan.loadMode) ? plan.loadMode : 'fleet';
   if(Array.isArray(plan.vehicleIds) && plan.vehicleIds.some(id=>STATE.vehicles.some(v=>v.id===id))){
     STATE.vehicles.forEach(v=>{ v.active = plan.vehicleIds.includes(v.id); });
   }
@@ -11690,6 +11786,9 @@ function npAddBundle(bid, qty){
   npLog(`${g.name}: +${qty} × rinkinys „${b.name}“`);
   npSoftSave(); npAfterAdd(r.id);
 }
+// folded equipment groups (remembered on this device)
+function npFoldGet(){ if(!NP.fold){ let a = []; try{ a = JSON.parse(localStorage.getItem('es-np-fold')||'[]'); }catch(e){} NP.fold = new Set(Array.isArray(a) ? a : []); } return NP.fold; }
+function npFoldSet(id, on){ const f = npFoldGet(); if(on) f.add(id); else f.delete(id); try{ localStorage.setItem('es-np-fold', JSON.stringify([...f].slice(-400))); }catch(e){} }
 function npGroups(idx){
   const box = document.getElementById('npGroups'); if(!box) return;
   const d = NP.cur.data, s = d.subs.find(x=>x.id===NP.sub), ed = npGearEd(), ro = ed ? '' : 'readonly', dis = ed ? '' : 'disabled';
@@ -11697,13 +11796,15 @@ function npGroups(idx){
   const subTimes = d.times.filter(t=>!t.sub || t.sub===s.id);
   // a reserved subproject (Laukiama / Patvirtinta / Paruošta / Vietoje): its equipment turns green
   const booked = NP_HOLD.has(s.status), LI = npLoadInfo(NP.cur);
-  box.innerHTML = groups.map(g=>{ const sp = npGroupSpan(d, g), on = g.id===NP.grp, t = npTotals({ groups:[g] });
-    return `<div class="card np-grp ${on?'on':''}" data-gid="${npE(g.id)}">
-      <div class="np-gh"><button class="np-gsel" data-ro-ok data-gpick="${npE(g.id)}" title="Pridėti daiktus į šią grupę">${on?'●':'○'}</button>
+  const fold = npFoldGet(), allFolded = groups.length && groups.every(g=>fold.has(g.id));
+  box.innerHTML = (groups.length > 1 ? `<div class="np-gtools"><span>${ltPlural(groups.length,'grupė','grupės','grupių')}</span><button type="button" class="btn small" data-ro-ok id="npFoldAll">${slIcon(allFolded ? 'unfoldmore' : 'unfoldless')} ${allFolded ? 'Išskleisti visas' : 'Suskleisti visas'}</button></div>` : '')
+   + groups.map(g=>{ const sp = npGroupSpan(d, g), on = g.id===NP.grp, t = npTotals({ groups:[g] }), empty = !g.items.length, folded = fold.has(g.id);
+    return `<div class="card np-grp ${on?'on':''} ${empty?'empty':''} ${folded?'folded':''}" data-gid="${npE(g.id)}">
+      <div class="np-gh"><button type="button" class="np-gfold" data-ro-ok data-gfold="${npE(g.id)}" title="${folded ? 'Išskleisti' : 'Suskleisti'}">${slIcon(folded ? 'dropright' : 'dropdown')}</button><button class="np-gsel" data-ro-ok data-gpick="${npE(g.id)}" title="Pridėti daiktus į šią grupę">${on?'●':'○'}</button>
         <input type="text" class="np-gname" data-gname="${npE(g.id)}" value="${npE(g.name)}" ${ro}>
         <select data-gtime="${npE(g.id)}" title="Laikotarpis" ${dis}><option value="">Subprojekto laikas</option>${subTimes.map(x=>`<option value="${npE(x.id)}" ${g.time===x.id?'selected':''}>${npE(x.name)}${x.sub?'':' (pagr.)'}</option>`).join('')}</select>
         <small class="np-gper">📅 ${npE(npSpanText(sp))}</small>
-        <small class="np-gw">${fmt(t.count,0)} vnt. · ${fmt(t.weight,0)} kg</small>
+        ${on ? '<span class="np-gon">Pasirinkta</span>' : ''}<small class="np-gw">${empty ? 'tuščia' : fmt(t.count,0)+' vnt. · '+fmt(t.weight,0)+' kg'}</small>
         ${ed ? `<span class="np-gact"><button class="icon-btn" data-gup="${npE(g.id)}" title="Aukštyn">▲</button><button class="icon-btn" data-gdown="${npE(g.id)}" title="Žemyn">▼</button><button class="icon-btn" data-gdel="${npE(g.id)}" title="Ištrinti grupę">✕</button></span>` : ''}</div>
       ${g.items.length ? `<div class="np-irows"><div class="np-ir np-ih"><span>Daiktas</span><span>Kiekis</span><span title="Kiek sandėlyje lieka šiuo laikotarpiu">Liko</span><span>Pastaba</span><span></span></div>${npOrdered(g).map(r=>{
         const it = r.item!=null && r.item!=='' ? getItem(r.item) : null, rp = npRowPrio(d, g, r), fr = it ? npFree(r.item, sp, idx, null, rp) : null;
@@ -11721,8 +11822,10 @@ function npGroups(idx){
     </div>`; }).join('') + (ed ? `<button class="btn small" id="npGAdd">+ Įrangos grupė</button>` : '');
   const G = id=>d.groups.find(g=>g.id===id), R = id=>{ for(const g of d.groups){ const r = g.items.find(x=>x.id===id); if(r) return [g, r]; } return []; };
   const soft = ()=>{ if(!npEditGate()) return; NP.dirty = true; NP.savedMsg = 'Saugoma…'; clearTimeout(NP.saveT); NP.saveT = setTimeout(npSave, 700); npSavedShow(); };
-  box.querySelectorAll('[data-gpick]').forEach(b=>b.onclick = ()=>{ NP.grp = b.dataset.gpick; npRender(); });
-  box.querySelectorAll('.np-grp').forEach(c=>c.addEventListener('click', e=>{ if(NP.grp!==c.dataset.gid && !e.target.closest('button,input,select')){ NP.grp = c.dataset.gid; npRender(); } }));
+  box.querySelectorAll('[data-gpick]').forEach(b=>b.onclick = ()=>{ NP.grp = b.dataset.gpick; npFoldSet(b.dataset.gpick, false); npRender(); });
+  box.querySelectorAll('[data-gfold]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); npFoldSet(b.dataset.gfold, !npFoldGet().has(b.dataset.gfold)); npGroups(idx); });
+  const fa = box.querySelector('#npFoldAll'); if(fa) fa.onclick = ()=>{ groups.forEach(g=>npFoldSet(g.id, !allFolded)); npGroups(idx); };
+  box.querySelectorAll('.np-grp').forEach(c=>c.addEventListener('click', e=>{ if(NP.grp!==c.dataset.gid && !e.target.closest('button,input,select')){ NP.grp = c.dataset.gid; npFoldSet(c.dataset.gid, false); npRender(); } }));
   box.querySelectorAll('[data-gname]').forEach(el=>el.oninput = ()=>{ G(el.dataset.gname).name = el.value; soft(); });
   box.querySelectorAll('[data-gtime]').forEach(el=>el.onchange = ()=>{ G(el.dataset.gtime).time = el.value; npTouch(true); });
   box.querySelectorAll('[data-gdel]').forEach(b=>b.onclick = async ()=>{ const g = G(b.dataset.gdel); if(g.items.length && !(await uiConfirm(`Ištrinti grupę „${g.name}“ su ${g.items.length} eil.?`))) return; d.groups = d.groups.filter(x=>x!==g); npLog('Ištrinta grupė „'+g.name+'“'); npTouch(true); });
@@ -16879,7 +16982,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v213';
+const APP_VER = 'v214';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31108,6 +31211,19 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
   try{ themeInit(); }catch(e){}
   try{ uiApply(); }catch(e){}
 })();
+/* „?“ next to a title: the explanation opens on click (instead of long texts under everything) */
+document.addEventListener('click', e=>{
+  const old = document.querySelector('.help-pop');
+  const b = e.target.closest && e.target.closest('[data-help]');
+  if(old){ const was = old._for; old.remove(); document.querySelectorAll('.help-q.on').forEach(x=>x.classList.remove('on')); if(was===b) return; }
+  if(!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const p = document.createElement('div'); p.className = 'help-pop'; p.textContent = b.dataset.help; p._for = b; document.body.appendChild(p); b.classList.add('on');
+  const r = b.getBoundingClientRect(), w = p.offsetWidth, hh = p.offsetHeight;
+  p.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width/2 - w/2))+'px';
+  p.style.top = (r.bottom + hh + 10 > innerHeight ? Math.max(8, r.top - hh - 6) : r.bottom + 6)+'px';
+}, true);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ const p = document.querySelector('.help-pop'); if(p){ p.remove(); document.querySelectorAll('.help-q.on').forEach(x=>x.classList.remove('on')); } } });
 /* emoji used as icons in text („📍 Vilnius“, „✉ el. paštas“ …) become the
    same line icons; people's own chat messages keep their emoji */
 const EI_MAP = {'🧮':'calc','📍':'pin','📞':'phone','☎':'phone','📱':'mobile','📲':'mobile','📅':'calendar','🗓':'calendar',
