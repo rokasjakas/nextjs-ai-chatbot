@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-SxZstFiLZzx3aCpHRdTG3l9q5713wHEhkEhZawaan+M=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-n3tzEs3CHpm8w7XHfdNVLXspoQc/5qkktu28SC4YnkI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4227,16 +4227,18 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .nt-stk{font-size:13px;}
 main.has-stickies{position:relative;}
 .nt-layer{position:absolute;inset:0;pointer-events:none;z-index:30;}
-.nt-sticky{position:absolute;width:230px;max-width:calc(100% - 16px);pointer-events:auto;background:#FFE88A;color:#2A2410;border-radius:4px 4px 4px 14px;
-  box-shadow:0 10px 28px rgb(0 0 0 / .35), 0 2px 6px rgb(0 0 0 / .2);padding:0 0 10px;font-size:13px;transform:rotate(-.6deg);transition:box-shadow .15s, transform .15s;}
-.nt-sticky.drag{transform:rotate(0) scale(1.03);box-shadow:0 18px 40px rgb(0 0 0 / .45);}
-.nt-sh{display:flex;align-items:center;gap:6px;padding:7px 8px 4px 12px;cursor:grab;touch-action:none;background:rgb(0 0 0 / .06);border-radius:4px 4px 0 0;}
+.nt-sticky{position:absolute;width:240px;max-width:calc(100% - 16px);pointer-events:auto;background:var(--panel);color:var(--text);
+  border:1px solid var(--border);border-top:3px solid #F2C94C;border-radius:var(--radius,8px);box-shadow:0 10px 28px rgb(0 0 0 / .3);padding:0 0 10px;font-size:13px;transition:box-shadow .15s, transform .15s;}
+.nt-sticky.drag{transform:scale(1.02);box-shadow:0 18px 40px rgb(0 0 0 / .45);}
+body.gl-cards .nt-sticky{background:color-mix(in srgb, var(--gl-base, var(--panel)) var(--gl-a,55%), transparent);border-color:rgb(var(--hi-rgb) / .14);border-top-color:#F2C94C;
+  -webkit-backdrop-filter:blur(var(--gl-b,18px)) saturate(1.5);backdrop-filter:blur(var(--gl-b,18px)) saturate(1.5);box-shadow:inset 0 1px 0 rgb(255 255 255 / .08), 0 8px 32px rgb(0 0 0 / .3);}
+.nt-sh{display:flex;align-items:center;gap:6px;padding:8px 6px 4px 12px;cursor:grab;touch-action:none;}
 .nt-sticky.drag .nt-sh{cursor:grabbing;}
-.nt-sh b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13.5px;}
-.nt-sh span{display:flex;gap:2px;} .nt-sh button{width:24px;height:24px;border:0;border-radius:6px;background:transparent;color:#5a4d1c;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.nt-sh button:hover{background:rgb(0 0 0 / .1);color:#2A2410;} .nt-sh button svg{width:15px;height:15px;}
-.nt-sd{display:block;padding:0 12px;color:#7a6a2a;font-size:11.5px;}
-.nt-sb{padding:6px 12px 0;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;line-height:1.4;}
+.nt-sh b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:700;color:var(--text);}
+.nt-sh span{display:flex;gap:2px;} .nt-sh button{width:26px;height:26px;border:0;border-radius:var(--radius,6px);background:transparent;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.nt-sh button:hover{background:rgb(var(--hi-rgb) / .08);color:var(--text);} .nt-sh button svg{width:16px;height:16px;}
+.nt-sd{display:block;padding:0 12px;color:var(--text-dim);font-size:11.5px;}
+.nt-sb{padding:6px 12px 0;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;line-height:1.45;color:var(--text);scrollbar-width:thin;}
 </style>
 <style id="glassAllCss">
 /* glass everywhere: inside the page, windows and menus every grey box / field / line becomes darker glass with a light edge.
@@ -17613,7 +17615,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v251';
+const APP_VER = 'v252';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32415,6 +32417,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 22:57', v:'v252', k:'chg', t:'Sticky note kaip puslapio kortelė', f:'Prisegti užrašai pradžios puslapyje dabar atrodo kaip kitos kortelės – ta pati spalva, apvadas, kampai, šriftai (su stiklo efektu, jei jis įjungtas). Geltona juostelė viršuje rodo, kad tai prisegtas užrašas.' },
   { d:'2026-10-03 22:54', v:'v251', k:'new', t:'Notes: atskiri užrašai ir sticky notes', f:'Užduotys → Notes: „+ Naujas užrašas“ – pavadinimas, data ir užrašas, išsaugoma paspaudus „Saugoti“. Užrašų sąrašas, paspaudus – redaguoti arba ištrinti. Pažymėjus „Prisegti pagrindiniame lange“ užrašas tampa geltonu sticky note pradžios puslapyje – jį galima tempti į bet kurią vietą (vieta įsimenama), redaguoti ir atsegti. Ankstesnis užrašas tapo pirmuoju sąraše. Užrašus mato tik tu.' },
   { d:'2026-10-03 22:50', v:'v250', k:'fix', t:'Atnaujinimų laikai', f:'Atnaujinimų sąraše laikai dabar tikri – kada pakeitimas iš tikrųjų buvo išleistas (Lietuvos laiku).' },
   { d:'2026-10-03 22:45', v:'v249', k:'fix', t:'Pasiūlymo redaktorius: meniu ir šoninė juosta vietoje', f:'Slenkant pasiūlymą žemyn viršutinis meniu lieka vietoje ir yra nepermatomas – po juo palindusi pasiūlymo dalis nebesimato. Dešinė juosta (Suma, Likutis, Komentarai) laikosi iškart po meniu ir nebepasislepia.' },
