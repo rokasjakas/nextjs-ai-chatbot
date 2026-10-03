@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-NnUVDvL5v1sqK6A1r9ULwOuPcu6shNGzcmiFkXbXHzw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-T0Qny/aZUl1HtTmtnZ4HJloG2wDcy6mb6djHwlpBgoQ=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -1584,8 +1584,9 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
   main:has(> .home-layout.with-side){flex:none;min-height:0;height:calc(100vh - var(--head-h,54px));height:calc(100dvh - var(--head-h,54px));padding-bottom:0 !important;display:flex;flex-direction:column;overflow:hidden;}
   main:has(> .home-layout.with-side) > .home-layout{flex:1;min-height:0;grid-template-rows:minmax(0,1fr);align-items:stretch;}
   main:has(> .home-layout.with-side) > .home-layout > *{min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;padding-bottom:22px;}
-  main:has(> .home-layout.with-side) > .home-layout > .home-side{padding-right:6px;margin-right:-6px;padding-top:2px;}
-  main:has(> .home-layout.with-side) > .home-layout > :first-child{padding-right:4px;margin-right:-4px;padding-top:2px;}
+  main:has(> .home-layout.with-side) > .home-layout > .home-side{padding:4px 8px 22px;margin:-4px -8px 0;}
+  /* the tiles grow and glow under the mouse: room for it inside the scrolling column, so nothing is cut */
+  main:has(> .home-layout.with-side) > .home-layout > :first-child{padding:20px 22px 30px;margin:-20px -22px 0;}
 }
 .home-side{display:flex;flex-direction:column;gap:14px;min-width:0;}
 .home-side .card{padding:14px;}
@@ -4241,7 +4242,7 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 /* right-side home cards: a handle at the bottom folds a card to its small version */
 .hs-fold{position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);z-index:3;width:38px;height:18px;padding:0;border-radius:9px;border:1px solid var(--border);background:var(--panel);color:var(--text-dim);
   display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.0;transition:opacity .15s, color .15s, border-color .15s;}
-.hs-fold svg{width:18px;height:18px;}
+.hs-fold svg{width:18px;height:18px;transition:transform .32s cubic-bezier(.4,0,.2,1);}
 .hs-item:hover .hs-fold, .hs-item.fold .hs-fold, .hs-fold:focus-visible{opacity:1;}
 .hs-fold:hover{color:var(--text);border-color:var(--accent);}
 @media (hover:none){ .hs-fold{opacity:.85;} }
@@ -10786,7 +10787,19 @@ function hsFoldToggle(k){
   const f = (Array.isArray(prefGet('homeFold')) ? prefGet('homeFold') : []).filter(x=>x!==k), on = !hsFolded(k);
   if(on) f.push(k); prefSet('homeFold', f);
   const it = document.querySelector(`.home-side .hs-item[data-k="${k}"]`); if(!it) return;
+  const card = it.querySelector('.card'), h0 = card ? card.offsetHeight : 0;
+  const was = card ? new Set([...card.querySelectorAll('*')].filter(e=>e.offsetParent!==null)) : null;
   it.classList.toggle('fold', on);
+  if(card && card.animate && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)){
+    const h1 = card.offsetHeight, ease = 'cubic-bezier(.4,0,.2,1)', dur = 320;
+    (card._fold || []).forEach(a=>{ try{ a.cancel(); }catch(e){} });
+    card.style.overflow = 'hidden';
+    const anims = [card.animate([{ height:h0+'px' }, { height:h1+'px' }], { duration:dur, easing:ease })];
+    // what appears fades in a little later
+    if(!on) [...card.children].forEach(c=>{ if(![...was].includes(c) && c.offsetParent!==null) anims.push(c.animate([{ opacity:0, transform:'translateY(-6px)' }, { opacity:1, transform:'none' }], { duration:dur, delay:60, easing:ease, fill:'backwards' })); });
+    card._fold = anims;
+    anims[0].finished.then(()=>{ card.style.overflow = ''; card._fold = null; }, ()=>{});
+  }
   const b = it.querySelector('[data-hsfold]'); if(b){ b.innerHTML = slIcon(on ? 'dropdown' : 'dropup'); b.title = on ? 'Išskleisti' : 'Suskleisti'; b.setAttribute('aria-label', b.title); }
 }
 function aiCardRender(){
@@ -17728,7 +17741,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v262';
+const APP_VER = 'v263';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32634,6 +32647,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 00:06', v:'v263', k:'fix', t:'Pradžia: plytelės nenusikerpa, kortelės skleidžiasi sklandžiai', f:'Užvedus pelę ant Ofiso, Sandėlio ir kt. plytelių jų padidėjimas ir švytėjimas nebenukerpamas. Dešinės pusės kortelės suskleidžiamos ir išskleidžiamos sklandžia animacija.' },
   { d:'2026-10-04 00:02', v:'v262', k:'chg', t:'Muzikos kortelė pašalinta', f:'Pradžios puslapyje nebeliko Muzikos kortelės (Spotify / YouTube grotuvo).' },
   { d:'2026-10-04 00:02', v:'v262', k:'chg', t:'Muzika: be atskiro grotuvo lango', f:'Pašalintas mygtukas „Atidaryti pilną grotuvą“ ir atskiras grotuvo langas – muzika groja kortelėje (ir mažame grotuve kampe kituose puslapiuose), kaip anksčiau.' },
   { d:'2026-10-03 23:56', v:'v260', k:'chg', t:'Pradžia nejuda, slenka tik dešinės kortelės', f:'Kompiuteryje pradžios puslapis visada stovi vietoje (užima ekrano aukštį), o dešinės pusės kortelės slenka atskirai – tik kai netelpa; apačioje paliktas tarpas, niekas nenusikerpa. Telefone – kaip buvo.' },
