@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-Zyzt3RP1L004Lx1qr0bElSCOoreMG3wSDWR2r/MgFLI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-yTeY02nurBVlFW4xorRM5M8hrNQb8mRhAaGO9e7Kzi4=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-YLH+s3JtWWdUZ4ypgUEXstR0gmX2IFJp3yaWEkJzqi4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -362,6 +362,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .rp-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
 .rp-bar .field{margin:0;min-width:150px;} .rp-bar input[type=date]{min-width:0;}
 .rp-bar .rp-q{flex:1;min-width:200px;}
+.rv-off{opacity:.55;}
 .rp-acts{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;}
 .uta-dsum td{background:var(--panel-2);}
 .uta-tot{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0;font-size:14px;}
@@ -5436,9 +5437,13 @@ function docStatus(dateStr, leadDays){
 
 function renderFleetTab(){
   const tpls = vehicleTemplates();
-  const subs = `<div class="viewmode-toggle fl-subs"><button type="button" data-fsub="cars" class="${FLEET.sub==='cars'?'active':''}">🚐 Automobiliai</button><button type="button" data-fsub="uta" class="${FLEET.sub==='uta'?'active':''}">⛽ UTA kortelės</button></div>`;
+  const subs = `<div class="viewmode-toggle fl-subs"><button type="button" data-fsub="cars" class="${FLEET.sub==='cars'?'active':''}">🚐 Automobiliai</button><button type="button" data-fsub="rent" class="${FLEET.sub==='rent'?'active':''}">🚚 Transporto nuoma</button><button type="button" data-fsub="uta" class="${FLEET.sub==='uta'?'active':''}">⛽ UTA kortelės</button></div>`;
   const bindSubs = ()=>document.querySelectorAll('[data-fsub]').forEach(b=>b.onclick = ()=>{ FLEET.sub = b.dataset.fsub; try{ localStorage.setItem('fleetSub', FLEET.sub); }catch(e){} renderFleetTab(); });
   if(!FLEET.rmLoaded) fleetRmLoad().then(()=>{ if(currentTab==='fleet') fleetRmRefresh(); });
+  if(FLEET.sub==='rent'){
+    document.getElementById('main').innerHTML = `<div class="tabpanel">${subs}<div id="rvBox"><div class="empty-state">Kraunama…</div></div></div>`;
+    bindSubs(); rvRender(); return;
+  }
   if(FLEET.sub==='uta'){
     document.getElementById('main').innerHTML = `<div class="tabpanel">${subs}<div id="utaBox"><div class="empty-state">Kraunama…</div></div></div>`;
     bindSubs(); utaRender(); return;
@@ -5521,7 +5526,7 @@ async function saveFleet(){
    state (documents, mileage, open problems, removal waiting). A click opens the
    full card (dimensions, documents and reminders, services) in its own window. */
 const FLEET = { sub:'cars', open:null, rm:[], rmLoaded:false, rmErr:'', rmCh:null };
-try{ FLEET.sub = localStorage.getItem('fleetSub')==='uta' ? 'uta' : 'cars'; }catch(e){}
+try{ const x = localStorage.getItem('fleetSub'); FLEET.sub = ['uta','rent'].includes(x) ? x : 'cars'; }catch(e){}
 const FLEET_DOCS = { insurance:'Draudimas', inspection:'Tech. apžiūra', roadPermit:'Kelių mokestis' };
 // the document that needs attention first: expired / missing, then the nearest end
 function fleetDocShort(v){
@@ -5736,6 +5741,120 @@ function fleetFromUrl(){
   const go = (n)=>{ if(STATE.vehicles.some(v=>v.id===id)) fleetOpen(id); else if(n < 20) setTimeout(()=>go(n+1), 500); };
   go(0);
 }
+/* ---------- Transportas → Transporto nuoma ----------
+   Nuomojamas transportas (mikroautobusai ir fūros): įmonė, transportas,
+   išmatavimai, paros kaina, kontaktai. Ataskaitos → Transporto nuoma prie
+   kiekvieno nuomoto (pagal valst. nr. arba vardą, pvz. „Fura Alius“) prideda
+   kainą ir kontaktus. */
+const RV = { loaded:false, loading:null, err:'', list:[] };
+const RV_KINDS = [['van','🚐 Mikroautobusai','Mikroautobusas'], ['truck','🚛 Fūros','Fūra']];
+async function rvLoad(force){
+  if(RV.loaded && !force) return;
+  if(RV.loading) return RV.loading;
+  const sb = getSb(); if(!sb){ RV.loaded = true; return; }
+  RV.loading = (async ()=>{
+    const r = await sb.from('rent_vehicles').select('*').order('company').order('name');
+    if(r.error) RV.err = /does not exist|relation|schema cache/i.test(r.error.message) ? 'Nuomojamo transporto lentelės dar nėra – Supabase paleisk supabase/sql/rent_vehicles.sql.' : r.error.message;
+    else { RV.list = r.data||[]; RV.err = ''; }
+    RV.loaded = true; RV.loading = null;
+  })();
+  return RV.loading;
+}
+const rvMoney = n=>n==null || n==='' || isNaN(n) ? '' : Number(n).toLocaleString('lt-LT', { minimumFractionDigits:0, maximumFractionDigits:2 })+' €';
+function rvDims(r){
+  const d = [r.length_cm, r.width_cm, r.height_cm].map(x=>x!=null && x!=='' ? +x : null);
+  const vol = d.every(x=>x) ? d[0]*d[1]*d[2]/1e6 : null;
+  return [d.some(x=>x) ? d.map(x=>x ? fmt(x,0) : '?').join('×')+' cm' : '', vol ? fmt(vol,1)+' m³' : '', r.max_kg ? 'iki '+fmt(+r.max_kg,0)+' kg' : ''].filter(Boolean).join(' · ');
+}
+async function rvRender(){
+  const box = document.getElementById('rvBox'); if(!box) return;
+  await rvLoad(); if(!document.getElementById('rvBox')) return;
+  rvDraw();
+}
+function rvDraw(){
+  const box = document.getElementById('rvBox'); if(!box) return;
+  const ed = canEdit('fleet');
+  if(RV.err){ box.innerHTML = `<div class="card"><div class="mail-err">${esc(RV.err)}</div></div>`; return; }
+  box.innerHTML = RV_KINDS.map(([k, title])=>{ const list = RV.list.filter(r=>r.kind===k);
+    return `<div class="card"><div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">${title}</h2>${ed ? `<button type="button" class="btn small primary" data-rvnew="${k}">+ Pridėti transportą</button>` : ''}</div>
+      ${list.length ? `<div class="fl-grid" style="margin-top:10px;">${list.map(r=>`<button type="button" class="fl-tile ${r.active===false ? 'rv-off' : ''}" data-rved="${esc(r.id)}">
+        <span class="fl-tile-h"><b>${esc(r.company || 'Įmonė neįrašyta')}</b>${r.plate ? `<span class="fl-plate">${esc(r.plate)}</span>` : ''}</span>
+        <span class="fl-tile-m">${esc([r.name, rvDims(r)].filter(Boolean).join(' · ') || '—')}</span>
+        <span class="fl-tile-s">${r.price_day!=null ? `<span class="fl-chip ok">💶 ${esc(rvMoney(r.price_day))} / para</span>` : ''}${r.contact_name || r.phone ? `<span class="fl-chip">📞 ${esc([r.contact_name, r.phone].filter(Boolean).join(' · '))}</span>` : ''}${r.aliases ? `<span class="fl-chip">✍ ${esc(r.aliases)}</span>` : ''}${r.active===false ? '<span class="fl-chip">nebenaudojamas</span>' : ''}</span>
+      </button>`).join('')}</div>` : `<div class="empty-state">${k==='van' ? 'Mikroautobusų' : 'Fūrų'} dar nėra.</div>`}</div>`; }).join('')
+    + '<p class="section-sub">Ataskaitos → Transporto nuoma prie nuomoto transporto prideda kainą ir kontaktus: pagal valstybinį numerį arba pagal tai, kaip jis rašomas renginiuose (pvz. „Fura Alius“ – įrašyk „Alius“).</p>';
+  box.querySelectorAll('[data-rvnew]').forEach(b=>b.onclick = ()=>rvForm(null, b.dataset.rvnew));
+  box.querySelectorAll('[data-rved]').forEach(b=>b.onclick = ()=>rvForm(RV.list.find(x=>x.id===b.dataset.rved)));
+}
+function rvForm(r, kind){
+  const isNew = !r, ed = canEdit('fleet');
+  r = r || { kind:kind||'van', company:'', name:'', plate:'', aliases:'', length_cm:null, width_cm:null, height_cm:null, max_kg:null, price_day:null, price_note:'', contact_name:'', phone:'', email:'', note:'', active:true };
+  const v = x=>x==null ? '' : esc(String(x));
+  openModal(`<h3>${isNew ? 'Naujas nuomojamas transportas' : esc(r.company || 'Nuomojamas transportas')}</h3>
+    <div class="viewmode-toggle" id="rvKind" style="width:max-content;margin-bottom:10px;">${RV_KINDS.map(([k, , one])=>`<button type="button" data-k="${k}" class="${r.kind===k ? 'active' : ''}">${one}</button>`).join('')}</div>
+    <div class="grid cols-2">
+      <label class="field">Įmonė<input type="text" id="rvCompany" value="${v(r.company)}" placeholder="pvz. UAB Pervežimai"></label>
+      <label class="field">Transportas<input type="text" id="rvName" value="${v(r.name)}" placeholder="pvz. Mercedes Sprinter / Volvo FH 13,6 m"></label>
+      <label class="field">Valst. nr.<input type="text" id="rvPlate" value="${v(r.plate)}" placeholder="ABC 123"></label>
+      <label class="field">Kaip rašoma renginiuose<input type="text" id="rvAliases" value="${v(r.aliases)}" placeholder="pvz. Alius, Areko fura"></label>
+    </div>
+    <div class="grid cols-3" style="margin-top:8px;">
+      <label class="field">Ilgis (cm)<input type="text" inputmode="decimal" id="rvL" value="${v(r.length_cm)}"></label>
+      <label class="field">Plotis (cm)<input type="text" inputmode="decimal" id="rvW" value="${v(r.width_cm)}"></label>
+      <label class="field">Aukštis (cm)<input type="text" inputmode="decimal" id="rvH" value="${v(r.height_cm)}"></label>
+      <label class="field">Keliamoji galia (kg)<input type="text" inputmode="decimal" id="rvKg" value="${v(r.max_kg)}"></label>
+      <label class="field">Paros nuomos kaina (€)<input type="text" inputmode="decimal" id="rvPrice" value="${v(r.price_day)}"></label>
+      <label class="field">Kainos pastaba<input type="text" id="rvPriceNote" value="${v(r.price_note)}" placeholder="pvz. + 0,45 €/km, be PVM"></label>
+    </div>
+    <div class="grid cols-3" style="margin-top:8px;">
+      <label class="field">Kontaktinis asmuo<input type="text" id="rvContact" value="${v(r.contact_name)}"></label>
+      <label class="field">Telefonas<input type="tel" id="rvPhone" value="${v(r.phone)}"></label>
+      <label class="field">El. paštas<input type="email" id="rvEmail" value="${v(r.email)}"></label>
+    </div>
+    <label class="field" style="margin-top:8px;">Pastabos<textarea id="rvNote" rows="2">${v(r.note)}</textarea></label>
+    <label class="checkbox-row" style="margin-top:6px;"><input type="checkbox" id="rvActive" ${r.active!==false ? 'checked' : ''}> Naudojamas</label>
+    ${!isNew && (r.phone || r.email) ? `<div class="row" style="gap:6px;margin-top:8px;">${r.phone ? `<a class="btn small" href="tel:${esc(String(r.phone).replace(/\s+/g,''))}">📞 Skambinti</a>` : ''}${r.email ? `<a class="btn small" href="mailto:${esc(r.email)}">✉ Rašyti</a>` : ''}</div>` : ''}
+    <div class="row" style="justify-content:space-between;gap:8px;margin-top:14px;">${!isNew && ed ? '<button type="button" class="btn danger small" id="rvDel">Ištrinti</button>' : '<span></span>'}
+      <span class="row" style="gap:8px;"><button type="button" class="btn" id="rvX">${ed ? 'Atšaukti' : 'Uždaryti'}</button>${ed ? '<button type="button" class="btn primary" id="rvSave">Išsaugoti</button>' : ''}</span></div>`);
+  let k = r.kind;
+  document.querySelectorAll('#rvKind [data-k]').forEach(b=>b.onclick = ()=>{ k = b.dataset.k; document.querySelectorAll('#rvKind [data-k]').forEach(x=>x.classList.toggle('active', x===b)); });
+  if(!ed) document.querySelectorAll('#modalRoot input, #modalRoot textarea').forEach(x=>x.disabled = true);
+  document.getElementById('rvX').onclick = ()=>closeModal();
+  const del = document.getElementById('rvDel'); if(del) del.onclick = async ()=>{
+    if(!(await uiConfirm('Ištrinti „'+(r.company || r.name || 'transportą')+'“?'))) return;
+    const res = await getSb().from('rent_vehicles').delete().eq('id', r.id);
+    if(res.error){ toast('Nepavyko: '+res.error.message); return; }
+    RV.list = RV.list.filter(x=>x.id!==r.id); closeModal(); rvDraw(); toast('Ištrinta.');
+  };
+  const sv = document.getElementById('rvSave'); if(sv) sv.onclick = async ()=>{
+    const val = id=>document.getElementById(id).value.trim(), num = id=>{ const x = val(id).replace(',', '.'); return x==='' ? null : (isFinite(+x) ? +x : null); };
+    const row = { kind:k, company:val('rvCompany'), name:val('rvName'), plate:val('rvPlate').toUpperCase() || null, aliases:val('rvAliases'),
+      length_cm:num('rvL'), width_cm:num('rvW'), height_cm:num('rvH'), max_kg:num('rvKg'), price_day:num('rvPrice'), price_note:val('rvPriceNote'),
+      contact_name:val('rvContact'), phone:val('rvPhone'), email:val('rvEmail'), note:document.getElementById('rvNote').value.trim(), active:document.getElementById('rvActive').checked, updated_at:new Date().toISOString() };
+    if(!row.company && !row.name){ toast('Įrašyk įmonę arba transportą.'); document.getElementById('rvCompany').focus(); return; }
+    sv.disabled = true;
+    const res = isNew ? await getSb().from('rent_vehicles').insert(row).select().single() : await getSb().from('rent_vehicles').update(row).eq('id', r.id).select().single();
+    sv.disabled = false;
+    if(res.error){ toast('Nepavyko: '+(/does not exist|relation|schema cache/i.test(res.error.message) ? 'Supabase paleisk rent_vehicles.sql.' : res.error.message), 5000); return; }
+    if(isNew) RV.list.push(res.data); else Object.assign(r, res.data);
+    RV.list.sort((a,b)=>String(a.company).localeCompare(String(b.company), 'lt') || String(a.name).localeCompare(String(b.name), 'lt'));
+    closeModal(); rvDraw(); toast('✓ Išsaugota.');
+  };
+}
+// the rental vehicle of a summary line: the same plate, or a truck whose company / contact / „kaip rašoma“ has that name
+function rvStems(r){
+  const parts = [r.aliases, r.contact_name, String(r.company||'').replace(/\b(UAB|MB|IĮ|AB|VšĮ|UAB\.)\b/gi, ' ')].join(',').split(',');
+  const out = new Set();
+  parts.forEach(p=>{ const ws = rpWords(p).filter(w=>!RP_FURA.test(w) && !RP_NOISE.test(w) && /[a-ząčęėįšųūž]/i.test(w)); if(ws.length){ out.add(ws.map(rpStem).join(' ')); ws.forEach(w=>out.add(rpStem(w))); } const m = p.match(RP_PLATE); if(m) out.add('#'+(m[2]+m[3]).toUpperCase()); });
+  return out;
+}
+function rvFor(key){
+  if(!RV.list.length || !key) return null;
+  if(key.startsWith('p:')){ const pl = key.slice(2); return RV.list.find(r=>utaNorm(r.plate)===pl) || RV.list.find(r=>rvStems(r).has('#'+pl)) || null; }
+  if(key.startsWith('f:')){ const st = key.slice(2); if(!st) return null; return RV.list.find(r=>r.kind==='truck' && rvStems(r).has(st)) || RV.list.find(r=>rvStems(r).has(st)) || null; }
+  return null;
+}
+
 /* ---------- Transportas → UTA kortelės ----------
    Kuro kortelės (kam priskirtos: transportui ar asmeniui) ir mėnesio
    ataskaitos iš UTA (Excel / CSV): kiek kartų pilta, kuriomis dienomis, kiek
@@ -14774,7 +14893,7 @@ async function rpDraw(){
         document.getElementById('rpXls').onclick = vlReportXls; document.getElementById('rpPrint').onclick = vlReportPrint; }
       return;
     }
-    if(sub==='rent'){ await evLoad(); if(!still()) return; return rpRentDraw(box, acts); }
+    if(sub==='rent'){ await Promise.all([evLoad(), rvLoad()]); if(!still()) return; return rpRentDraw(box, acts); }
     if(sub==='uta'){ await utaLoad(); if(!still()) return; return rpUtaDraw(box, acts); }
     if(sub==='sub'){ await npLoad(); if(!still()) return; return rpSubDraw(box, acts); }
   }catch(e){ box.innerHTML = `<div class="card"><div class="mail-err">Nepavyko: ${esc(e.message||e)}</div></div>`; }
@@ -14787,7 +14906,7 @@ function rpXls(name, sheets){
 }
 function rpActBtn(acts, fn){ if(!acts) return; acts.innerHTML = `<button type="button" class="btn small" id="rpXls">${slIcon('download')} Excel</button>`; document.getElementById('rpXls').onclick = fn; }
 // a group line that opens its rows (the same look as the UTA table)
-function rpBindOpen(box, redraw){ box.querySelectorAll('[data-rpo]').forEach(r=>r.onclick = ()=>{ RP.open = RP.open===r.dataset.rpo ? '' : r.dataset.rpo; redraw(); }); }
+function rpBindOpen(box, redraw){ box.querySelectorAll('[data-rpo]').forEach(r=>r.onclick = e=>{ if(e.target.closest('a')) return; RP.open = RP.open===r.dataset.rpo ? '' : r.dataset.rpo; redraw(); }); }
 
 /* ---------- Transporto nuoma: renginių logistika ----------
    Kiekviena renginio transporto eilutė (diena, automobilis, vairuotojas).
@@ -14872,18 +14991,27 @@ function rpRentData(){
 }
 function rpRentDraw(box, acts){
   const D = rpRentData(), evs = new Set(D.rows.map(r=>r.evId));
+  // the rental's price and contacts (Transportas → Transporto nuoma); the cost: days × price per day
+  D.groups.forEach(g=>{ g.rv = rvFor(g.key); g.cost = g.rv && g.rv.price_day!=null ? g.days.size * +g.rv.price_day : null; });
+  const cost = D.groups.reduce((s,g)=>s+(g.cost||0), 0), unknown = D.groups.filter(g=>!g.rv).length;
+  const contact = r=>[r.contact_name, r.phone ? `<a href="tel:${esc(String(r.phone).replace(/\s+/g,''))}">${esc(r.phone)}</a>` : '', r.email ? `<a href="mailto:${esc(r.email)}">${esc(r.email)}</a>` : ''].filter(Boolean).join(' · ');
   box.innerHTML = `<div class="card">
-    <div class="uta-tot"><span>Nuomotas transportas: <b>${D.rows.length}</b> kart.</span><span>Renginių: <b>${evs.size}</b></span><span>Skirtingų: <b>${D.groups.length}</b></span></div>
-    ${D.rows.length ? `<div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Transportas</th><th>Kartų</th><th>Renginių</th><th>Dienos</th></tr></thead><tbody>
-      ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key || RP.q ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b></td><td>${g.rows.length}</td><td>${g.evs.size}</td><td class="uta-days">${esc([...g.days].sort().map(d=>RP.from.slice(0,4)===RP.to.slice(0,4) ? d.slice(5).replace('-','.') : rpWhen(d)).join(', '))}</td></tr>
-        ${RP.open===g.key || RP.q ? `<tr class="uta-det"><td colspan="4"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Data</th><th>Renginys</th><th>Vieta</th><th>Įrašyta</th><th>Vairuotojas</th></tr></thead><tbody>
+    <div class="uta-tot"><span>Nuomotas transportas: <b>${D.rows.length}</b> kart.</span><span>Renginių: <b>${evs.size}</b></span><span>Skirtingų: <b>${D.groups.length}</b></span>${cost ? `<span>Nuomos kaina: <b>${esc(rvMoney(cost))}</b></span>` : ''}</div>
+    ${D.rows.length ? `<div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Transportas</th><th>Įmonė, kontaktai</th><th>Kartų</th><th>Dienos</th><th>Kaina parai</th><th>Suma</th></tr></thead><tbody>
+      ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key || RP.q ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b>${g.rv ? `<small>${esc([(RV_KINDS.find(k=>k[0]===g.rv.kind)||[])[2], g.rv.name, g.rv.plate].filter(Boolean).join(' · '))}</small>` : ''}</td>
+        <td>${g.rv ? `<b>${esc(g.rv.company||'')}</b><small>${contact(g.rv)}</small>` : '<span class="muted">neįrašyta</span>'}</td>
+        <td>${g.rows.length}<small>${ltPlural(g.evs.size,'renginys','renginiai','renginių')}</small></td>
+        <td class="uta-days">${esc([...g.days].sort().map(d=>RP.from.slice(0,4)===RP.to.slice(0,4) ? d.slice(5).replace('-','.') : rpWhen(d)).join(', '))}<small>${ltPlural(g.days.size,'diena','dienos','dienų')}</small></td>
+        <td>${g.rv && g.rv.price_day!=null ? esc(rvMoney(g.rv.price_day))+(g.rv.price_note ? `<small>${esc(g.rv.price_note)}</small>` : '') : '—'}</td>
+        <td>${g.cost!=null ? '<b>'+esc(rvMoney(g.cost))+'</b>' : '—'}</td></tr>
+        ${RP.open===g.key || RP.q ? `<tr class="uta-det"><td colspan="6"><div class="uta-tw"><table class="uta-t"><thead><tr><th>Data</th><th>Renginys</th><th>Vieta</th><th>Įrašyta</th><th>Vairuotojas</th></tr></thead><tbody>
           ${g.rows.map(r=>`<tr><td>${esc(rpWhen(r.date))}</td><td>${esc(r.ev)}</td><td>${esc(r.loc)}</td><td>${esc(r.car)}</td><td>${esc(r.driver)}</td></tr>`).join('')}</tbody></table></div></td></tr>` : ''}`).join('')}
     </tbody></table></div>
-    <small class="muted">Imama iš renginių skilties „Transportas“. Įtraukiami valstybiniai numeriai (pvz. ABC123 ar ABC 123), kurių nėra įmonės transporto sąraše, ir furos (pvz. „Areko fura“) – sujungiamos pagal savininko vardą (Fura Alius, 7,5m fura Alius, Aliaus fura ir tiesiog „Alius“).</small>`
+    <small class="muted">Imama iš renginių skilties „Transportas“. Įtraukiami valstybiniai numeriai (pvz. ABC123 ar ABC 123), kurių nėra įmonės transporto sąraše, ir furos (pvz. „Areko fura“) – sujungiamos pagal savininko vardą (Fura Alius, 7,5m fura Alius, Aliaus fura ir tiesiog „Alius“). Kaina ir kontaktai – iš Transportas → Transporto nuoma${unknown ? ` (${unknown} dar neįrašyti)` : ''}; suma = dienų skaičius × paros kaina.</small>`
     : `<div class="empty-state">${RP.q ? 'Pagal „'+esc(RP.q)+'“ nieko nerasta.' : 'Šiuo laikotarpiu renginiuose nuomoto transporto nėra.'}</div>`}</div>`;
   rpBindOpen(box, ()=>rpRentDraw(box, acts));
   if(D.rows.length) rpActBtn(acts, ()=>rpXls('transporto_nuoma', [
-    ['Suvestinė', [['Transportas','Kartų','Renginių','Dienos']].concat(D.groups.map(g=>[g.name, g.rows.length, g.evs.size, [...g.days].sort().join(', ')]))],
+    ['Suvestinė', [['Transportas','Rūšis','Įmonė','Kontaktinis asmuo','Telefonas','El. paštas','Kartų','Renginių','Dienų','Dienos','Kaina parai (€)','Suma (€)']].concat(D.groups.map(g=>[g.name, g.rv ? (RV_KINDS.find(k=>k[0]===g.rv.kind)||[])[2] : '', g.rv ? g.rv.company : '', g.rv ? g.rv.contact_name : '', g.rv ? g.rv.phone : '', g.rv ? g.rv.email : '', g.rows.length, g.evs.size, g.days.size, [...g.days].sort().join(', '), g.rv && g.rv.price_day!=null ? +g.rv.price_day : '', g.cost!=null ? Math.round(g.cost*100)/100 : '']))],
     ['Visi', [['Data','Transportas','Įrašyta','Renginys','Vieta','Vairuotojas']].concat(D.rows.map(r=>[r.date, r.kname, r.car, r.ev, r.loc, r.driver]))]]));
 }
 
@@ -16157,7 +16285,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v200';
+const APP_VER = 'v201';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
