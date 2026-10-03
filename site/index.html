@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-FXcId6ui3okHqyEIAezDPuU/9BYQ5zyhph8aMq3sgew=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-hnX2ROPvnETud8opsvyScwHDNmNnP1qWD9gv2HVGRw8=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -2872,6 +2872,25 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 /* ---------- Žmonės ---------- */
 .pp-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .pp-subs button{padding:7px 16px;}
+.pp-tabs{display:inline-flex;gap:4px;padding:4px;border-radius:calc(var(--radius,8px) + 4px);background:var(--panel-2);border:1px solid var(--border);}
+.pp-tabs button{display:inline-flex;align-items:center;gap:8px;padding:9px 18px !important;border:0;border-radius:var(--radius,8px);background:transparent;color:var(--text-dim);font:inherit;font-size:14px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;}
+.pp-tabs button svg{width:18px;height:18px;} .pp-tabs button:hover{color:var(--text);background:rgb(var(--hi-rgb) / .06);}
+.pp-tabs button.active{background:var(--accent);color:var(--accent-ink,#fff);box-shadow:0 2px 8px rgb(0 0 0 / .25);}
+.pp-st-back{background:color-mix(in srgb, #F2A93B 22%, transparent);color:#F2A93B;}
+.pp-busy{padding:12px 14px;}
+.pp-bh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;} .pp-bh > b{font-size:18px;min-width:150px;text-align:center;text-transform:capitalize;}
+.pp-bk{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;}
+.pp-bkb{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:16px;border:1px solid var(--border);background:var(--panel-2);color:var(--text-dim);font:inherit;font-size:12px;cursor:pointer;opacity:.6;}
+.pp-bkb i{width:10px;height:10px;border-radius:50%;background:var(--c);} .pp-bkb.on{opacity:1;color:var(--text);border-color:var(--c);} .pp-bkb b{color:var(--text);}
+.pp-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;}
+.pp-cw{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--text-dim);text-align:center;padding:2px 0;}
+.pp-cd{min-height:calc((100vh - 330px) / 6);min-height:max(110px, calc((100vh - 330px) / 6));border:1px solid var(--border);border-radius:var(--radius,8px);background:var(--panel);padding:4px;display:flex;flex-direction:column;gap:3px;min-width:0;overflow:hidden;}
+.pp-cd.out{opacity:.45;} .pp-cd.past{background:var(--bg);} .pp-cd.today{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}
+.pp-cdn{display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:13px;padding:0 2px;} .pp-cdn small{font-size:10.5px;font-weight:700;color:var(--text-dim);}
+.pp-cdl{display:flex;flex-direction:column;gap:2px;overflow-y:auto;scrollbar-width:thin;}
+.pp-ci{display:flex;align-items:center;gap:5px;width:100%;text-align:left;border:0;border-radius:5px;padding:2px 5px;background:color-mix(in srgb, var(--c) 18%, transparent);color:var(--text);font:inherit;font-size:11.5px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pp-ci i{flex:none;width:7px;height:7px;border-radius:50%;background:var(--c);} .pp-ci:hover{background:color-mix(in srgb, var(--c) 34%, transparent);}
+@media(max-width:760px){ .pp-cd{min-height:70px;} .pp-ci{font-size:10px;padding:1px 3px;} .pp-tabs button{padding:8px 10px !important;font-size:12px;} }
 .pp-search{flex:1;min-width:200px;}
 .pp-actions{display:flex;gap:8px;}
 .pp-groups,.pp-show{margin:12px 0 8px;}
@@ -17208,7 +17227,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v229';
+const APP_VER = 'v230';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -19854,8 +19873,9 @@ const PP_OUT = {
   placiau:     { label:'Kita',         cls:'pp-st-more' },
   neatsiliepe: { label:'Neatsiliepė',  cls:'pp-st-none' },
   gali:        { label:'Gali',         cls:'pp-st-can' },      // free on another day than asked
+  perskambinti:{ label:'Perskambinti', cls:'pp-st-back' },     // asked to be called again about the day
 };
-const PP_MARKS = ['sutiko','atsisake','negali','neatsiliepe','placiau'];
+const PP_MARKS = ['sutiko','atsisake','negali','neatsiliepe','perskambinti','placiau'];
 const ppG = g=>g==='Vaizdas' ? 'Video' : g;
 function ppGroups(){
   const o = evOpts();
@@ -20001,9 +20021,8 @@ function renderPeopleTab(){
   document.getElementById('main').innerHTML = `
   <div class="tabpanel pp">
     <div class="ev-toolbar card pp-bar">
-      <div class="viewmode-toggle pp-subs">
-        <button type="button" data-psub="archive" class="${PP.sub==='archive'?'active':''}">Archyvas</button>
-        <button type="button" data-psub="booking" class="${PP.sub==='booking'?'active':''}">Bookingas</button>
+      <div class="pp-tabs pp-subs" role="tablist">
+        ${[['archive','Archyvas','folder'],['booking','Bookingas','phone'],['busy','Užimtumas','calendar']].map(([k,l,ic])=>`<button type="button" role="tab" data-psub="${k}" class="${PP.sub===k?'active':''}">${slIcon(ic)}<span>${l}</span></button>`).join('')}
       </div>
       <div class="ev-search pp-search"><input type="search" id="ppQ" placeholder="Ieškoti: vardas, telefonas, el. paštas, grupė…" value="${esc(PP.q)}" autocomplete="off"></div>
       <div class="pp-actions">
@@ -20053,12 +20072,47 @@ function ppRank(list, g){
 function ppRenderBody(){
   const box = document.getElementById('ppBody'); if(!box) return;
   if(PP.error){ box.innerHTML = `<div class="card"><div class="empty-state">${esc(PP.error)}</div></div>`; return; }
-  if(PP.sub==='booking') ppRenderBooking(box); else ppRenderArchive(box);
+  if(PP.sub==='booking') ppRenderBooking(box); else if(PP.sub==='busy') ppRenderBusy(box); else ppRenderArchive(box);
   if(ppRatesCan() && PPR.err) box.insertAdjacentHTML('afterbegin', `<div class="card" style="color:var(--danger);border-color:var(--danger);font-size:13px;">${esc(PPR.err)}</div>`);
   box.querySelectorAll('[data-pgroup]').forEach(b=>b.onclick = ()=>{ PP.group = b.dataset.pgroup; ppRenderBody(); });
 }
 function ppAvatar(c){ const n = ppName(c).split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase(); return `<span class="pp-av">${esc(n||'?')}</span>`; }
 
+/* ---------- Užimtumas: a big month calendar – who said they are free, who agreed, whom to call back ---------- */
+const PP_BUSY_KINDS = [['gali','Laisvas – gali dirbti','#6AB0F3'], ['sutiko','Sutiko – užbookintas','#50AD97'], ['perskambinti','Perskambinti, pasitikslinti','#F2A93B']];
+function ppBusyKind(r){ if(r.outcome==='placiau' && /perskamb/i.test(r.note||'')) return 'perskambinti'; return PP_BUSY_KINDS.some(k=>k[0]===r.outcome) ? r.outcome : ''; }
+function ppRenderBusy(box){
+  if(!PP.busyM){ const n = new Date(); PP.busyM = n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0'); }
+  if(!PP.busyOn) PP.busyOn = new Set(PP_BUSY_KINDS.map(k=>k[0]));
+  const [y, m] = PP.busyM.split('-').map(Number), first = new Date(y, m-1, 1), start = new Date(first); start.setDate(1 - ((first.getDay()+6)%7));
+  const days = Array.from({length:42}, (_, i)=>{ const d = new Date(start); d.setDate(start.getDate()+i); return calISO(d); });
+  const inMonth = d=>+d.slice(5,7)===m, today = ppToday();
+  // the newest answer of each person for each day
+  const by = {}, seen = new Set();
+  (PP.calls||[]).forEach(r=>{ if(!r.for_date || r.outcome==='calling' || r.for_date < days[0] || r.for_date > days[41]) return;
+    const k = r.contact_id+'|'+r.for_date; if(seen.has(k)) return; seen.add(k);   // PP.calls: newest first
+    const kind = ppBusyKind(r); if(!kind || !PP.busyOn.has(kind)) return;
+    const c = PP.contacts.find(x=>x.id===r.contact_id); if(!c || !ppMatches(c) || !ppInGroup(c)) return;
+    (by[r.for_date] = by[r.for_date] || []).push({ c, kind, r }); });
+  const rank = k=>PP_BUSY_KINDS.findIndex(x=>x[0]===k);
+  const cnt = k=>Object.values(by).reduce((s, l)=>s + l.filter(x=>x.kind===k).length, 0);
+  const all = PP.contacts.filter(ppMatches);
+  box.innerHTML = `${ppGroupChips(all)}
+    <div class="card pp-busy">
+      <div class="pp-bh"><button type="button" class="icon-btn" data-bm="-1" aria-label="Ankstesnis mėnuo">‹</button><b>${esc(LTD_MON[m-1]+' '+y)}</b><button type="button" class="icon-btn" data-bm="1" aria-label="Kitas mėnuo">›</button><button type="button" class="btn small" data-bm="0">Šis mėnuo</button>
+        <span class="pp-bk">${PP_BUSY_KINDS.map(([k,l,c])=>`<button type="button" class="pp-bkb ${PP.busyOn.has(k)?'on':''}" data-bk="${k}" style="--c:${c}"><i></i>${l} <b>${cnt(k)}</b></button>`).join('')}</span></div>
+      <div class="pp-cal">${['Pr','An','Tr','Kt','Pn','Št','Sk'].map(x=>`<div class="pp-cw">${x}</div>`).join('')}
+        ${days.map(d=>{ const l = (by[d]||[]).sort((a,b)=>rank(a.kind)-rank(b.kind) || ppName(a.c).localeCompare(ppName(b.c), 'lt'));
+          return `<div class="pp-cd ${inMonth(d)?'':'out'} ${d===today?'today':''} ${d<today?'past':''}"><div class="pp-cdn">${+d.slice(8)}${l.length ? `<small>${l.length}</small>` : ''}</div>
+            <div class="pp-cdl">${l.map(x=>`<button type="button" class="pp-ci" data-ci="${esc(x.c.id)}" style="--c:${(PP_BUSY_KINDS.find(k=>k[0]===x.kind)||[])[2]}" title="${esc(ppName(x.c)+' · '+(PP_OUT[x.kind]||{label:x.kind}).label+((x.c.groups||[]).length ? ' · '+x.c.groups.join(', ') : '')+(x.r.note ? ' · '+x.r.note : '')+(x.r.caller_name ? ' · pažymėjo '+x.r.caller_name : ''))}"><i></i>${esc(ppName(x.c))}</button>`).join('')}</div></div>`; }).join('')}
+      </div>
+      <small class="muted">Rodoma naujausia kiekvieno žmogaus žyma tai dienai (Bookingas → skambutis → „Kuo baigėsi“). Spausk žmogų – jo kortelė ir skambinimas.</small>
+    </div>`;
+  box.querySelectorAll('[data-bm]').forEach(b=>b.onclick = ()=>{ const n = +b.dataset.bm; if(!n){ const t = new Date(); PP.busyM = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0'); }
+    else { const t = new Date(y, m-1+n, 1); PP.busyM = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0'); } ppRenderBody(); });
+  box.querySelectorAll('[data-bk]').forEach(b=>b.onclick = ()=>{ const k = b.dataset.bk; if(PP.busyOn.has(k)) PP.busyOn.delete(k); else PP.busyOn.add(k); ppRenderBody(); });
+  box.querySelectorAll('[data-ci]').forEach(b=>b.onclick = ()=>{ const c = PP.contacts.find(x=>x.id===b.dataset.ci); if(c) ppContactModal(c); });
+}
 /* ---------- Archyvas ---------- */
 function ppRenderArchive(box){
   const all = PP.contacts.filter(ppMatches);
@@ -20489,6 +20543,7 @@ function ppMarkPanel(box, c, o){
     let res = t ? await sb.from('contact_calls').update({ outcome, note:note||null }).eq('id', t.id).select().single()
       : await sb.from('contact_calls').insert({ contact_id:c.id, for_date:d, event_id:ppEventFor(d), outcome, note:note||null, caller_name:teamName(ACCESS.profile) }).select().single();
     if(res.error && outcome==='gali' && /check constraint|violates/i.test(res.error.message)) return put(d, 'placiau', 'Gali šią dieną'+(note?' · '+note:''));   // before people4.sql
+    if(res.error && outcome==='perskambinti' && /check constraint|violates/i.test(res.error.message)) return put(d, 'placiau', 'Perskambinti'+(note?' · '+note:''));   // before people5.sql
     if(res.error){ toast(/check constraint|violates/i.test(res.error.message) ? 'Nauja žyma dar neįjungta – paleisk people2.sql / people4.sql (Supabase → SQL Editor).' : 'Nepavyko išsaugoti: '+res.error.message); return false; }
     if(t){ const i = PP.calls.findIndex(x=>x.id===t.id); if(i>=0) PP.calls[i] = res.data || Object.assign(PP.calls[i], { outcome, note }); }
     else PP.calls.unshift(res.data);
@@ -31816,6 +31871,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 22:30', v:'v230', k:'new', t:'Žmonės: Užimtumas', f:'Žmonių puslapyje aiškūs skirtukai ARCHYVAS / BOOKINGAS / UŽIMTUMAS. Užimtume – didelis mėnesio kalendorius per visą plotį: kiekvienoje dienoje matosi, kas pasakė, kad yra laisvas (gali dirbti), kas sutiko ir kam reikia perskambinti ir pasitikslinti. Skambučio žymose atsirado nauja „Perskambinti“. Galima filtruoti pagal grupę, paiešką ir žymos rūšį, paspaudus žmogų atsidaro jo kortelė.' },
   { d:'2026-10-03 22:05', v:'v229', k:'fix', t:'Nuomos tipo mygtukai telpa', f:'Renginio transporto nuomoje mygtukas „Mikroautobusas“ nebeišlenda už langelio ribų – jei netelpa, persikelia į kitą eilutę.' },
   { d:'2026-10-03 22:00', v:'v229', k:'new', t:'Ataskaitos → Freelance', f:'Nauja Ataskaitų skiltis „Freelance“: iš Sąskaitos → Freelance imamos tik patvirtintos sąskaitos (taip pat išsiųstos, suvestos apmokėjimui, apmokėtos). Pasirenkamas laikotarpis ir vardas, pavardė – matosi, kiek kas kainavo: suma, sąskaitų skaičius, kiekviena sąskaita su data, nr. ir būsena. Galima atsisiųsti Excel.' },
   { d:'2026-10-03 21:45', v:'v228', k:'fix', t:'Nuomos laukai raudoni', f:'Renginio transporto nuomoje neįrašytas tiekėjas ir valst. nr. dabar aiškiai pažymėti raudonai (rėmelis, fonas ir tekstas), kaip ir tipo mygtukai.' },
