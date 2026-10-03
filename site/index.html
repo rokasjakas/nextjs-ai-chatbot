@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-gz/BSY51uhOHEXwh0b3mhOgs1k0KM9iT8f9ebQ1LIQs=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-1UZcgr5O/gOy6tDx5u2pl2q0ijf04m9MMMOjgqcbzrs=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-683vRwBLR4Mr8vQIn7WkZWW2qY0Ij8MagE0CQ1JR/P8=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -2413,6 +2413,10 @@ main.chat-full .sk{border:0;border-top:1px solid var(--border);border-radius:0;m
 .dc-grid.has-screen .dc-tile:not(.screen){min-height:0;}
 .dc-grid.has-screen .dc-tile:not(.screen) .tm-av{width:52px !important;height:52px !important;font-size:20px !important;}
 .dc-grid.has-screen .dc-tile:not(.screen) .dc-name{left:4px;bottom:4px;font-size:11px;padding:2px 6px;}
+.dc-grid.sq{grid-auto-rows:var(--dc-s);justify-content:center;align-content:center;}
+.dc-grid.sq .dc-tile{width:var(--dc-s);height:var(--dc-s);min-height:0;}
+.dc-grid.sq .dc-av .tm-av{width:clamp(40px, calc(var(--dc-s) * .42), 140px) !important;height:clamp(40px, calc(var(--dc-s) * .42), 140px) !important;font-size:clamp(15px, calc(var(--dc-s) * .16), 52px) !important;}
+.dc-grid.sq .dc-name{left:6px;bottom:6px;max-width:calc(100% - 12px);}
 .dc-tile{position:relative;border-radius:12px;overflow:hidden;background:#1b1b1f;border:2px solid transparent;display:flex;align-items:center;justify-content:center;min-height:96px;transition:border-color .15s;}
 .dc-tile.speaking{border-color:var(--accent,#F35E7D);box-shadow:0 0 0 3px rgba(243,94,125,.25);}
 .dc-tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;background:#000;}
@@ -17240,7 +17244,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v232';
+const APP_VER = 'v233';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -28631,6 +28635,23 @@ function dcMount(host, co, audioCall){
     t.querySelector('.dc-mute').innerHTML = !screen && !track(p.tracks.audio) ? ico.mic(false) : '';
     return t;
   }
+  // square tiles, as big as fit side by side in the room there is (phone or computer, any count)
+  function fit(){
+    const n = grid.children.length;
+    if(!n || grid.classList.contains('has-screen')){ grid.classList.remove('sq'); grid.style.gridTemplateColumns = ''; grid.style.removeProperty('--dc-s'); return; }
+    const cs = getComputedStyle(grid), gap = parseFloat(cs.columnGap)||8;
+    const W = grid.clientWidth - (parseFloat(cs.paddingLeft)||0) - (parseFloat(cs.paddingRight)||0), H = grid.clientHeight - (parseFloat(cs.paddingTop)||0) - (parseFloat(cs.paddingBottom)||0);
+    if(W <= 0 || H <= 0) return;
+    let best = 0, bc = 1;
+    const side = c=>{ const r = Math.ceil(n/c); return Math.min((W - gap*(c-1))/c, (H - gap*(r-1))/r); };
+    for(let c = 1; c <= n; c++){ const s = side(c); if(s > best){ best = s; bc = c; } }
+    // all in one row (side by side) when the tiles stay nearly as big
+    if(bc < n && side(n) >= best*.75){ best = side(n); bc = n; }
+    const s = Math.floor(Math.max(best, Math.min(110, (W - gap)/2)));   // very many people: keep them readable and scroll
+    const cols = Math.max(1, Math.min(bc, Math.floor((W + gap)/(s + gap)) || 1));
+    grid.classList.add('sq'); grid.style.gridTemplateColumns = `repeat(${cols}, ${s}px)`; grid.style.setProperty('--dc-s', s+'px');
+  }
+  if(typeof ResizeObserver==='function'){ const ro = new ResizeObserver(()=>fit()); ro.observe(grid); }
   function render(){
     if(!TEAM.live || TEAM.live.frame!==co) return;
     const ps = co.participants(), keep = new Set(), screens = [], people = [];
@@ -28649,6 +28670,7 @@ function dcMount(host, co, audioCall){
     order.forEach((t, i)=>{ if(grid.children[i]!==t) grid.insertBefore(t, grid.children[i] || null); });
     const n = order.length; grid.dataset.n = n > 9 ? 'many' : String(n);
     grid.classList.toggle('has-screen', order.some(t=>t.classList.contains('screen')));
+    fit();
     const remoteScreen = Object.values(ps).some(p=>!p.local && track(p.tracks.screenVideo));
     if(remoteScreen !== !!co._remoteScreen){ co._remoteScreen = remoteScreen; setTimeout(()=>callScreenMode(remoteScreen), 0); }
     const me = ps.local;
@@ -31937,6 +31959,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-03 23:40', v:'v233', k:'fix', t:'Skambučio langeliai kvadratiniai', f:'Vaizdo skambutyje kiekvienas dalyvis dabar rodomas kvadratiniame langelyje, langeliai dedami šalia vienas kito ir sutalpinami į ekraną (telefone ir kompiuteryje). Veidas nebenukerpamas kaip plačiame horizontaliame lange; išjungus kamerą rodoma nuotrauka arba vardo ir pavardės pirmosios raidės.' },
   { d:'2026-10-03 23:10', v:'v232', k:'new', t:'Savas fonas ir Ofiso / Sandėlio plytelės', f:'Pagrindiniame puslapyje Ofiso ir Sandėlio plytelėse vietoje atsitiktinės informacijos mažomis raidėmis rodomi tos grupės įrankiai (narys pats susidėliotos tvarkos). Profilis → Išvaizda → Fonas: kiekvienas narys gali įkelti savo paveikslėlį visam puslapiui ir nustatyti patamsinimą – kiti narių fonų nemato.' },
   { d:'2026-10-03 22:50', v:'v231', k:'fix', t:'Skambinti per telefoną – pasenusi registracija', f:'Mygtukas pervadintas į „Skambinti“. Jei telefono pranešimų registracija sukurta su senu raktu („VAPID public key mismatch“), ji dabar automatiškai pašalinama ir parodomas aiškus paaiškinimas: telefone atidaryti programėlę – ji užsiregistruoja iš naujo. Reikia įdiegti atnaujintą push-notify funkciją.' },
   { d:'2026-10-03 22:30', v:'v230', k:'new', t:'Žmonės: Užimtumas', f:'Žmonių puslapyje aiškūs skirtukai ARCHYVAS / BOOKINGAS / UŽIMTUMAS. Užimtume – didelis mėnesio kalendorius per visą plotį: kiekvienoje dienoje matosi, kas pasakė, kad yra laisvas (gali dirbti), kas sutiko ir kam reikia perskambinti ir pasitikslinti. Skambučio žymose atsirado nauja „Perskambinti“. Galima filtruoti pagal grupę, paiešką ir žymos rūšį, paspaudus žmogų atsidaro jo kortelė.' },
