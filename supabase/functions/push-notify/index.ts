@@ -13,6 +13,7 @@
 //      member of the conversation gets a ringing notification with
 //      "Priimti" / "Atmesti" (muted chats ring too; quiet hours do not).
 // POST {"kind":"test"}                   -> the caller's own devices
+// pg_cron "cron" mode (every 5 min) also reminds every hour of an open Team Tracker shift (tracker.sql)
 // POST {"kind":"event","event_id","users":[…]}  people just written into an
 //      event's crew: each one who really is in it now is told (Renginiai)
 // POST {"mode":"new-user","user_id"}  header x-cron-secret (from user-access):
@@ -151,7 +152,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 13;
+const PUSH_FN_VERSION = 14;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -901,6 +902,25 @@ async function taskReminders() {
   }
   return { fn: PUSH_FN_VERSION, checked: tasks.length, sent: out };
 }
+// Team Tracker: every hour of an open shift the app account that started it is reminded that the tracker runs
+const TT_KIND: Record<string, string> = { warehouse: "Sandėlis", driving: "Vairavimas", standby: "Budėjimas", setup: "Montažas", teardown: "Demontažas", operator: "Operatorius", break: "Pertrauka" };
+type OpenShift = { id: string; member_id: string; started_by: string | null; started_at: string; reminded_at: string | null; tracker_members: { name: string } | null; time_entries: { kind: string; ended_at: string | null }[] };
+async function trackerReminders() {
+  const now = Date.now();
+  const open = await db<OpenShift[]>(`time_shifts?select=id,member_id,started_by,started_at,reminded_at,tracker_members(name),time_entries(kind,ended_at)&ended_at=is.null`);
+  const out: unknown[] = [];
+  for (const s of open) {
+    const from = Date.parse(s.reminded_at ?? s.started_at);
+    if (!s.started_by || now - from < 59 * 60000) continue;
+    const mins = Math.floor((now - Date.parse(s.started_at)) / 60000);
+    const cur = s.time_entries.find((e) => !e.ended_at);
+    const body = `${s.tracker_members?.name ?? ""}: dirbama ${Math.floor(mins / 60)} val. ${mins % 60} min.${cur ? " Dabar – " + (TT_KIND[cur.kind] ?? cur.kind) + "." : ""} Nepamiršk baigti darbo.`;
+    const r = await sendTo([s.started_by], { title: "Team Tracker aktyvus", body, tag: "tracker-" + s.id, url: "./?tracker=1", kind: "tracker" }, 3600);
+    await db(`time_shifts?id=eq.${s.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ reminded_at: new Date(now).toISOString() }) });
+    out.push({ shift: s.id, sent: r.sent });
+  }
+  return { open: open.length, sent: out };
+}
 // the people who want notifications about a topic (Profilis → Pranešimai)
 async function wantIds(ids: string[], kind: "tasks" | "events" | "gear" | "leave" | "other"): Promise<string[]> {
   if (!ids.length) return [];
@@ -1175,9 +1195,10 @@ Deno.serve(async (req) => {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       const tr = await taskReminders();
-      let ir: unknown = null;
+      let ir: unknown = null, tt: unknown = null;
       try { ir = await invoiceReminders(); } catch (e) { ir = { error: String(e) }; }   // before invoices.sql the table is missing
-      return json({ ...tr, inv: ir });
+      try { tt = await trackerReminders(); } catch (e) { tt = { error: String(e) }; }   // before tracker.sql the tables are missing
+      return json({ ...tr, inv: ir, tracker: tt });
     }
     // a new member signed up (called by user-access with the cron secret): every admin is told
     if (body?.mode === "new-user") {

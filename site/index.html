@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-VQ8oe0h4m6rmM1giSZ2+jk4Fh/Spfbd6O7eU0eAC+4Y=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-yh2knneYnmeI4qraPA/9XxwySAR7dKE/RkrA6hAphwg=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -2907,6 +2907,107 @@ main.buy-full{padding:0;max-width:none;}
   .pb-foot{gap:6px 14px;padding:7px 12px;}
   .pb-foot .pb-pt,.pb-foot .pb-tot:nth-last-child(3){display:none;}
 }
+/* ---------- Team Tracker ---------- */
+.tt{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+.tt-empty{padding:40px;text-align:center;color:var(--text-dim);}
+.tt-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.tt-top .btn .sl{width:16px;height:16px;vertical-align:-3px;}
+.tt-count{display:flex;align-items:baseline;gap:10px;padding:10px 18px;border-radius:14px;background:var(--panel);border:1px solid var(--border);}
+.tt-count-n{font-size:30px;font-weight:700;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;}
+.tt-count span:last-child{color:var(--text-dim);font-size:14px;}
+.tt-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px;align-items:start;}
+.tt-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0;}
+.tt-h{display:flex;align-items:center;gap:8px;margin:0;font-family:var(--font-body);font-size:16px;font-weight:700;text-transform:none;letter-spacing:0;}
+.tt-h .sl{width:20px;height:20px;color:var(--accent);}
+.tt-h3{margin:6px 0 0;font-size:14px;font-weight:700;color:var(--text-dim);font-family:var(--font-body);text-transform:none;letter-spacing:0;}
+.tt-none{color:var(--text-dim);font-size:14px;padding:6px 0;}
+.tt-who{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.tt-who div{display:flex;flex-direction:column;line-height:1.25;}
+.tt-who small{color:var(--text-dim);font-size:12px;}
+.tt-who select{max-width:160px;}
+.tt-av{width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--accent-ink,#fff);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;}
+.tt-demo{align-self:flex-start;display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:5px;background:rgb(var(--hi-rgb) / .1);color:var(--text-dim);vertical-align:2px;}
+.tt-kinds{display:grid;grid-template-columns:repeat(auto-fill, minmax(112px, 1fr));gap:8px;}
+.tt-kind{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px 10px;border:1.5px solid var(--border);border-radius:14px;background:none;color:var(--text);font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:border-color .12s, background .12s, transform .12s;}
+.tt-kind .sl{width:26px;height:26px;color:var(--tc);}
+.tt-kind:hover:not(:disabled){border-color:var(--tc);transform:translateY(-1px);}
+.tt-kind.on{border-color:var(--tc);background:color-mix(in srgb, var(--tc) 22%, transparent);box-shadow:0 0 0 1px var(--tc) inset;}
+.tt-kind:disabled{opacity:.6;cursor:default;}
+.tt-go,.tt-stop{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:58px;border:0;border-radius:16px;font:inherit;font-size:18px;font-weight:700;cursor:pointer;color:#fff;transition:filter .12s, transform .12s;}
+.tt-go{background:var(--tc);box-shadow:0 6px 20px color-mix(in srgb, var(--tc) 45%, transparent);}
+.tt-go small{font-size:13px;font-weight:600;opacity:.85;}
+.tt-go .sl,.tt-stop .sl{width:24px;height:24px;}
+.tt-go:hover,.tt-stop:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.tt-go:disabled{opacity:.6;}
+.tt-stop{background:#D9483B;box-shadow:0 6px 20px rgb(217 72 59 / .35);}
+.tt-forgot{align-self:center;border:0;background:none;color:var(--text-dim);font:inherit;font-size:12.5px;text-decoration:underline;cursor:pointer;}
+.tt-run{border-radius:16px;padding:16px 18px;background:linear-gradient(135deg, color-mix(in srgb, var(--tc) 30%, transparent), color-mix(in srgb, var(--tc) 8%, transparent));border:1.5px solid color-mix(in srgb, var(--tc) 60%, transparent);display:flex;flex-direction:column;gap:4px;}
+.tt-run-top{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);font-weight:600;}
+.tt-livedot,.tt-dot{width:9px;height:9px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 0 rgb(229 72 77 / .6);animation:ttPulse 1.6s infinite;flex:none;}
+@keyframes ttPulse{0%{box-shadow:0 0 0 0 rgb(229 72 77 / .55);}70%{box-shadow:0 0 0 8px rgb(229 72 77 / 0);}100%{box-shadow:0 0 0 0 rgb(229 72 77 / 0);}}
+.tt-total{font-size:46px;font-weight:600;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:.5px;}
+.tt-run-sub{font-size:13px;color:var(--text-dim);}
+.tt-curk{display:flex;align-items:center;gap:8px;margin-top:8px;padding:8px 12px;border-radius:12px;background:rgb(var(--hi-rgb) / .08);}
+.tt-curk .sl{width:22px;height:22px;color:var(--tc);}
+.tt-curk span{flex:1;font-weight:700;}
+.tt-curk b{font-variant-numeric:tabular-nums;font-size:16px;}
+.tt-stack{display:flex;height:12px;border-radius:999px;overflow:hidden;background:rgb(var(--hi-rgb) / .08);gap:2px;}
+.tt-stack.sm{height:8px;flex:1;min-width:60px;}
+.tt-bys{display:flex;flex-direction:column;gap:6px;}
+.tt-by{display:grid;grid-template-columns:22px 104px minmax(0,1fr) auto;align-items:center;gap:8px;font-size:13.5px;}
+.tt-by-i .sl{width:18px;height:18px;color:var(--tc);display:block;}
+.tt-by-bar{height:8px;border-radius:999px;background:rgb(var(--hi-rgb) / .07);overflow:hidden;}
+.tt-by-bar i{display:block;height:100%;background:var(--tc);border-radius:999px;}
+.tt-by b{font-variant-numeric:tabular-nums;white-space:nowrap;}
+.tt-segs{display:flex;flex-direction:column;gap:4px;}
+.tt-seg{display:grid;grid-template-columns:20px minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:rgb(var(--hi-rgb) / .04);border-left:3px solid var(--tc);font-size:13px;}
+.tt-seg.live{background:color-mix(in srgb, var(--tc) 14%, transparent);}
+.tt-seg-i .sl{width:16px;height:16px;color:var(--tc);display:block;}
+.tt-seg-t{color:var(--text-dim);font-variant-numeric:tabular-nums;}
+.tt-seg b{font-variant-numeric:tabular-nums;min-width:74px;text-align:right;}
+.tt-last{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:14px;background:rgb(var(--hi-rgb) / .04);border:1px solid var(--border);}
+.tt-last-h{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13.5px;}
+.tt-last-h span{color:var(--text-dim);}
+.tt-big2,.tt-big3{display:flex;gap:10px;flex-wrap:wrap;}
+.tt-big2>div,.tt-big3>div{flex:1;min-width:110px;display:flex;flex-direction:column;padding:10px 12px;border-radius:12px;background:rgb(var(--hi-rgb) / .05);}
+.tt-big2 small,.tt-big3 small{color:var(--text-dim);font-size:12px;}
+.tt-big2 b,.tt-big3 b{font-size:20px;font-variant-numeric:tabular-nums;}
+.tt-big3>div:first-child{background:color-mix(in srgb, var(--accent) 16%, transparent);}
+.tt-login{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:8px;align-items:end;}
+.tt-login .field{margin:0;}
+.tt-rep-h{display:flex;align-items:center;gap:8px;}
+.tt-rep-h .tt-h{flex:1;}
+.tt-rep-h .btn .sl{width:15px;height:15px;vertical-align:-3px;}
+.tt-delbtn{color:var(--danger,#E05050);}
+.tt-filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+.tt-filters select{min-width:180px;}
+.tt-pers{display:flex;flex-wrap:wrap;gap:4px;}
+.tt-per{border:1px solid var(--border);background:none;color:var(--text-dim);border-radius:999px;padding:5px 12px;font:inherit;font-size:12.5px;cursor:pointer;}
+.tt-per:hover{color:var(--text);}
+.tt-per.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink,#fff);font-weight:600;}
+.tt-custom{display:flex;align-items:center;gap:6px;}
+.tt-range{color:var(--text-dim);width:100%;}
+.tt-shifts{display:flex;flex-direction:column;gap:6px;}
+.tt-shift{border:1px solid var(--border);border-radius:12px;background:rgb(var(--hi-rgb) / .02);}
+.tt-shift summary{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;list-style:none;font-size:13.5px;}
+.tt-shift summary::-webkit-details-marker{display:none;}
+.tt-sh-d{font-weight:700;min-width:84px;text-transform:capitalize;}
+.tt-sh-t{color:var(--text-dim);font-variant-numeric:tabular-nums;min-width:96px;}
+.tt-shift summary b{font-variant-numeric:tabular-nums;min-width:84px;text-align:right;}
+.tt-shift[open] summary{border-bottom:1px solid var(--border);}
+.tt-shift .tt-segs{padding:8px;}
+.tt-pill{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border-radius:999px;border:1.5px solid var(--tc);background:color-mix(in srgb, var(--tc) 18%, transparent);color:var(--text);font:inherit;font-size:13px;cursor:pointer;align-self:center;}
+.tt-pill b{font-variant-numeric:tabular-nums;}
+.tt-pill-k{color:var(--text-dim);}
+@media (max-width:980px){ .tt-grid{grid-template-columns:1fr;} }
+@media (max-width:560px){
+  .tt-login{grid-template-columns:1fr;}
+  .tt-total{font-size:40px;}
+  .tt-kinds{grid-template-columns:repeat(3, 1fr);}
+  .tt-by{grid-template-columns:20px 90px minmax(0,1fr) auto;font-size:12.5px;}
+  .tt-pill .tt-pill-k{display:none;}
+  .tt-sh-t{display:none;}
+}
 /* ---------- Renginių lentelė: the page's own colours (dark and light).
    Column groups keep their meaning through a soft brand tint and a coloured
    stripe on the header; people's statuses keep their colours. ---------- */
@@ -4925,6 +5026,9 @@ body.ev-full-on{overflow:hidden;}
     <button class="rail-btn" data-mobile="more" data-tab="chat" data-label="Chatas"><span class="rail-tip">Chatas</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/></svg>
     </button>
+    <button class="rail-btn" data-mobile="more" data-tab="tracker" data-label="Team Tracker"><span class="rail-tip" data-short="Tracker">Team Tracker</span>
+      <svg viewBox="0 0 24 24"></svg>
+    </button>
     <button class="rail-btn" data-mobile="more" data-tab="buy" data-label="Pirkiniai"><span class="rail-tip">Pirkiniai</span>
       <svg viewBox="0 0 24 24"></svg>
     </button>
@@ -5029,7 +5133,7 @@ SL.shopbag = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0
   const RAIL = { home:'house', events:'calendar', projects:'folder', load:'cart', rentals:'pickup', handovers:'handover', inventory:'warehouse',
     rules:'package', fleet:'truck', stats:'chart', chat:'chat', members:'users', people:'card', jobs:'tasks', offers:'receipt',
     venues:'building', admin:'shield', profile:'user', gear:'alert', newproj:'addbox', sort:'sorting', stocktake:'checklist', works:'build',
-    games:'games', mail:'mail', invoices:'invoice', buy:'shopbag' };
+    games:'games', mail:'mail', invoices:'invoice', buy:'shopbag', tracker:'clock' };
   document.querySelectorAll('.rail-btn').forEach(b=>{
     const k = b.id==='railMore' ? 'dots' : RAIL[b.dataset.tab], s = b.querySelector('svg');
     if(k && s && SL[k]) s.outerHTML = slIcon(k);
@@ -10626,7 +10730,7 @@ function accessLevel(sec){
   const p = (ACCESS.perms[ACCESS.role]||{})[sec];
   return p || 'none';
 }
-const TEAM_TABS = ['members','profile','games'];    // everyone approved; chat follows the permission table
+const TEAM_TABS = ['members','profile','games','tracker'];    // everyone approved; chat follows the permission table
 // tabs kept in the code but not shown for now (their data still works in the background)
 const HIDDEN_TABS = new Set(['projects']);
 function canView(tab){
@@ -16030,7 +16134,7 @@ function deskOpen(url){
   if(chat) swMsg({ type:'open-chat', chat, thread:sp.get('thread') });
   if(meeting) swMsg({ type:'open-meeting', id:meeting });
   if(call) swMsg({ type:'open-call', call });
-  if(['task','gear','event','invoice','feedback','leave','admin'].some(k=>sp.get(k))) swMsg({ type:'open-url', url:u.href });
+  if(['task','gear','event','invoice','feedback','leave','admin','tracker'].some(k=>sp.get(k))) swMsg({ type:'open-url', url:u.href });
 }
 /* ---------- iPhone programa (ios/, TestFlight) ----------
    Programa įdeda window.esIOS { token, push, post() }. Įrenginio raktą (Apple
@@ -16889,6 +16993,7 @@ const HOME_TILES = [
   {tab:'games', title:'Games', color:'#9775FA', desc:'Retro žaidimai, rekordų lentelė ir žaidimai su kolegomis.'},
   {tab:'members', title:'Nariai', color:'#50AD97', desc:'Komandos nariai, kas prisijungęs, kontaktai.'},
   {tab:'chat', title:'Chatas', color:'#4E9BC9', desc:'Bendras chatas, asmeninės ir grupinės žinutės.'},
+  {tab:'tracker', title:'Team Tracker', color:'#50AD97', desc:'Darbo laikas: pradėk, keisk veiklą (sandėlis, vairavimas, montažas…), baik – ir matyk, kiek pradirbta.'},
   {tab:'buy', title:'Pirkiniai', color:'#E8590C', desc:'Ko reikia nupirkti: VIDEO, LIGHT, AUDIO, bendri daiktai – kainos, nuorodos, svarba.'},
   {tab:'mail', title:'El. paštas', color:'#E0B04E', desc:'Tavo @eventsolutions.lt laiškai: skaityk ir atsakyk čia.'},
   {tab:'people', title:'Žmonės', color:'#50AD97', desc:'Kontaktų archyvas ir žmonių bookingas: skambučiai, kas sutiko, kas negali.'},
@@ -17958,7 +18063,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v268';
+const APP_VER = 'v269';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -19089,6 +19194,7 @@ function evFromUrl(){
 // a notification tapped while the app is open (task, gear, event, invoice, feedback)
 function appOpenFromUrl(url){
   try{ const u = new URL(url, location.href); history.replaceState(null, '', location.pathname + u.search); }catch(e){ return; }
+  try{ ttFromUrl(); }catch(e){}
   try{ tkFromUrl(); }catch(e){} try{ grFromUrl(); }catch(e){} try{ fleetFromUrl(); }catch(e){} try{ evFromUrl(); }catch(e){} try{ invFromUrl(); }catch(e){} try{ fbFromUrl(); }catch(e){} try{ lvFromUrl(); }catch(e){} try{ admFromUrl(); }catch(e){}
 }
 /* ---------- renginio kanalas chate ----------
@@ -24094,6 +24200,7 @@ async function teamStart(){
   }catch(e){}
   if(canView('chat')){ await teamLoadConvs(); notifyOpenFromUrl(); notifyRefreshDevice(); }
   mailPoll();
+  try{ ttInit(); }catch(e){}
   calLive(); calOpenFromUrl(); meetReturnFromUrl();
   if(currentTab==='home' || currentTab==='chat'){ calRender(); todoRender(); }   // member names are known now
   // a new member is asked to fill in the profile once
@@ -33382,6 +33489,349 @@ function pbFromSheet(R){
   return { rows };
 }
 
+/* ============================================================
+   TAB: Team Tracker — work time, like Connecteam's time clock.
+   Members of the tracker have their own name + PIN (several can work from one
+   phone); everyone sees only how many are registered. A member signs in with
+   the PIN (this device then keeps a sign-in key, not the PIN), starts work with
+   an activity, switches activity any time (the previous one is saved with its
+   time) and finishes work: the shift's total and the time of every activity are
+   shown. A member's hours for a period are seen after signing in (an admin sees
+   anyone's). Every hour of an open shift a push notification reminds that the
+   tracker runs (push-notify). Data: supabase/sql/tracker.sql (tt_* functions).
+   ============================================================ */
+const TT_KINDS = [
+  { k:'warehouse', t:'Sandėlis',    c:'#4E9BC9', i:'warehouse' },
+  { k:'driving',   t:'Vairavimas',  c:'#F2A93B', i:'truck' },
+  { k:'standby',   t:'Budėjimas',   c:'#9775FA', i:'clock' },
+  { k:'setup',     t:'Montažas',    c:'#50AD97', i:'build' },
+  { k:'teardown',  t:'Demontažas',  c:'#E07A5F', i:'package' },
+  { k:'operator',  t:'Operatorius', c:'#F35E7D', i:'video' },
+  { k:'break',     t:'Pertrauka',   c:'#8A939E', i:'moon' },
+];
+const TT_K = Object.fromEntries(TT_KINDS.map(x=>[x.k, x]));
+const TT_PERIODS = [['today','Šiandien'],['week','Ši savaitė'],['lweek','Praėjusi savaitė'],['month','Šis mėnuo'],['lmonth','Praėjęs mėnuo'],['custom','Pasirinkti']];
+var TT = { members:null, err:'', dev:null, state:null, period:'week', from:'', to:'', view:null, report:null, repErr:'', pick:null, tick:0, poll:0, hourSeen:{} };
+
+// sign-in keys kept on this device: { cur, tokens:{ memberId: token } }
+function ttDev(){ if(!TT.dev){ try{ TT.dev = JSON.parse(localStorage.getItem('ttAuth')||'null'); }catch(e){} if(!TT.dev || typeof TT.dev!=='object') TT.dev = { cur:null, tokens:{} }; TT.dev.tokens = TT.dev.tokens || {}; } return TT.dev; }
+function ttDevSave(){ try{ localStorage.setItem('ttAuth', JSON.stringify(TT.dev)); }catch(e){} }
+const ttTok = m=>ttDev().tokens[m] || null;
+const ttName = m=>((TT.members||[]).find(x=>x.id===m)||{}).name || '';
+async function ttRpc(fn, args){
+  const sb = getSb(); if(!sb) throw new Error('Nėra ryšio.');
+  const { data, error } = await sb.rpc(fn, args||{});
+  if(error) throw new Error(/does not exist|schema cache|Could not find/i.test(error.message) ? 'Team Tracker dar neįjungtas: Supabase → SQL Editor → paleisk supabase/sql/tracker.sql.' : error.message);
+  if(data && data.error){ const e = new Error(data.error); e.auth = !!data.auth; throw e; }
+  return data;
+}
+// a sign-in key that no longer works (member deleted, signed out elsewhere) is forgotten
+function ttForget(m){ const d = ttDev(); delete d.tokens[m]; if(d.cur===m) d.cur = Object.keys(d.tokens)[0] || null; ttDevSave(); if(TT.state && TT.state.member && TT.state.member.id===m) TT.state = null; }
+
+/* ---------- time ---------- */
+const ttMs = e=>Math.max(0, (e.ended_at ? Date.parse(e.ended_at) : Date.now()) - Date.parse(e.started_at));
+function ttHm(ms){ const m = Math.round(ms/60000), h = Math.floor(m/60); return h ? `${h} val. ${String(m%60).padStart(2,'0')} min` : `${m} min`; }
+function ttClock(ms){ const s = Math.floor(ms/1000); return Math.floor(s/3600)+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+const ttTime = iso=>new Date(iso).toLocaleTimeString('lt-LT', { hour:'2-digit', minute:'2-digit' });
+const ttDay = iso=>new Date(iso).toLocaleDateString('lt-LT', { weekday:'short', month:'2-digit', day:'2-digit' });
+// time of each activity (clipped to a period), the total without breaks, and the breaks
+function ttSum(entries, from, to){
+  const by = {}; let work = 0, brk = 0;
+  (entries||[]).forEach(e=>{
+    let a = Date.parse(e.started_at), z = e.ended_at ? Date.parse(e.ended_at) : Date.now();
+    if(from!=null){ a = Math.max(a, from); z = Math.min(z, to); }
+    const ms = Math.max(0, z - a); if(!ms) return;
+    by[e.kind] = (by[e.kind]||0) + ms;
+    if(e.kind==='break') brk += ms; else work += ms;
+  });
+  return { by, work, brk };
+}
+function ttRange(){
+  const now = new Date(), d0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const mon = new Date(d0); mon.setDate(d0.getDate() - ((d0.getDay()+6)%7));
+  const add = (d, n)=>{ const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+  switch(TT.period){
+    case 'today': return [d0, add(d0, 1)];
+    case 'week': return [mon, add(mon, 7)];
+    case 'lweek': return [add(mon, -7), mon];
+    case 'month': return [new Date(d0.getFullYear(), d0.getMonth(), 1), new Date(d0.getFullYear(), d0.getMonth()+1, 1)];
+    case 'lmonth': return [new Date(d0.getFullYear(), d0.getMonth()-1, 1), new Date(d0.getFullYear(), d0.getMonth(), 1)];
+    default: {
+      const f = TT.from ? new Date(TT.from+'T00:00') : add(d0, -6), t = TT.to ? add(new Date(TT.to+'T00:00'), 1) : add(d0, 1);
+      return [f, t > f ? t : add(f, 1)];
+    }
+  }
+}
+
+/* ---------- data ---------- */
+async function ttLoadMembers(){
+  try{ TT.members = await ttRpc('tt_members'); TT.err = ''; }
+  catch(e){ TT.err = e.message; TT.members = TT.members || []; }
+  // keys of members that were deleted are forgotten
+  const ids = new Set(TT.members.map(m=>m.id)); if(!TT.err) Object.keys(ttDev().tokens).forEach(m=>{ if(!ids.has(m)) ttForget(m); });
+}
+async function ttLoadState(){
+  const m = ttDev().cur; if(!m){ TT.state = null; return; }
+  try{ TT.state = await ttRpc('tt_state', { m, p_token:ttTok(m) }); }
+  catch(e){ if(e.auth){ ttForget(m); toast('Team Tracker: prisijunk iš naujo.'); } else TT.err = e.message; }
+}
+async function ttLoadReport(){
+  const m = TT.view; TT.report = null; TT.repErr = '';
+  if(!m) return;
+  const [f, t] = ttRange();
+  try{ TT.report = await ttRpc('tt_report', { m, p_token:ttTok(m), p_from:f.toISOString(), p_to:t.toISOString() }); }
+  catch(e){ TT.repErr = e.auth ? 'pin' : e.message; }
+}
+// any page: the running shift of this device's member is shown in the header (and refreshed every minute)
+async function ttInit(){
+  if(!ttDev().cur) { ttPill(); return; }
+  await ttLoadState(); ttPill();
+  clearInterval(TT.poll);
+  TT.poll = setInterval(async ()=>{ if(document.visibilityState!=='visible' || !ttDev().cur) return; await ttLoadState(); ttPill(); if(currentTab==='tracker') ttRenderClock(); }, 60000);
+  if(new URLSearchParams(location.search).get('tracker')){ history.replaceState(null, '', location.pathname); setTab('tracker'); }
+}
+function ttFromUrl(){ if(new URLSearchParams(location.search).get('tracker')){ history.replaceState(null, '', location.pathname); setTab('tracker'); } }
+function ttPill(){
+  let el = document.getElementById('ttPill');
+  const s = TT.state && TT.state.shift;
+  if(!s){ if(el) el.remove(); return; }
+  if(!el){ const at = document.getElementById('teamHead'); if(!at) return; el = document.createElement('button'); el.id = 'ttPill'; el.type = 'button'; el.className = 'tt-pill'; el.title = 'Team Tracker – darbas vyksta'; el.onclick = ()=>setTab('tracker'); at.parentNode.insertBefore(el, at); }
+  const cur = s.entries.find(e=>!e.ended_at), k = TT_K[cur && cur.kind] || TT_KINDS[0], total = ttMs(s);
+  el.style.setProperty('--tc', k.c);
+  el.innerHTML = `<span class="tt-dot"></span><b>${esc(ttClock(total).replace(/:\d\d$/, ''))}</b><span class="tt-pill-k">${esc(k.t)}</span>`;
+  // a reminder every full hour while the app is open (the push notification comes too)
+  const h = Math.floor(total/3600000), key = s.id+'|'+h, first = !TT.hourSeen[s.id];
+  if(!TT.hourSeen[key]){ TT.hourSeen[key] = 1; TT.hourSeen[s.id] = 1; if(h >= 1 && !first) toast(`⏱ Team Tracker aktyvus: ${ttHm(total)} (${k.t}).`, 6000); }
+}
+
+/* ---------- page ---------- */
+async function renderTrackerTab(){
+  const main = document.getElementById('main');
+  main.innerHTML = `<div class="tt" id="ttShell"><div class="tt-empty">Kraunama…</div></div>`;
+  ttDev();
+  await ttLoadMembers();
+  if(currentTab!=='tracker') return;
+  if(TT.view && !(TT.members||[]).some(m=>m.id===TT.view)) TT.view = null;
+  if(!TT.view) TT.view = ttDev().cur || null;
+  await Promise.all([ttLoadState(), ttLoadReport()]);
+  if(currentTab!=='tracker') return;
+  ttRender();
+  clearInterval(TT.tick);
+  TT.tick = setInterval(()=>{ if(currentTab!=='tracker'){ clearInterval(TT.tick); return; } ttRenderClock(); }, 1000);
+}
+function ttRender(){
+  const sh = document.getElementById('ttShell'); if(!sh) return;
+  const n = (TT.members||[]).length;
+  sh.innerHTML = `
+    <div class="tt-top">
+      <div class="tt-count"><span class="tt-count-n">${n}</span><span>${n===1 ? 'narys užregistruotas' : (n%10>=2 && n%10<=9 && !(n%100>=12 && n%100<=19)) ? 'nariai užregistruoti' : 'narių užregistruota'}</span></div>
+      <span style="flex:1"></span>
+      <button class="btn" id="ttReg">${slIcon('plus')} Registruoti narį</button>
+    </div>
+    ${TT.err ? `<div class="mail-err">${esc(TT.err)}</div>` : ''}
+    <div class="tt-grid">
+      <section class="tt-card tt-clockcard" id="ttClock"></section>
+      <section class="tt-card tt-repcard" id="ttRep"></section>
+    </div>`;
+  document.getElementById('ttReg').onclick = ttRegister;
+  ttRenderClock(true); ttRenderReport();
+}
+const ttKindBtns = (cur, attr)=>`<div class="tt-kinds">${TT_KINDS.map(k=>`<button class="tt-kind ${cur===k.k?'on':''}" ${attr}="${k.k}" style="--tc:${k.c}">${slIcon(k.i)}<span>${k.t}</span></button>`).join('')}</div>`;
+function ttBars(by, total){
+  const ks = TT_KINDS.filter(k=>by[k.k]);
+  if(!ks.length) return '<div class="tt-none">Laiko dar nėra.</div>';
+  return `<div class="tt-stack">${ks.map(k=>`<span style="flex:${by[k.k]};background:${k.c}" title="${esc(k.t)}: ${esc(ttHm(by[k.k]))}"></span>`).join('')}</div>
+    <div class="tt-bys">${ks.map(k=>`<div class="tt-by" style="--tc:${k.c}"><span class="tt-by-i">${slIcon(k.i)}</span><span class="tt-by-n">${esc(k.t)}</span><span class="tt-by-bar"><i style="width:${Math.max(2, Math.round(by[k.k]/Math.max(1, total)*100))}%"></i></span><b>${esc(ttHm(by[k.k]))}</b></div>`).join('')}</div>`;
+}
+function ttSegs(entries){
+  return `<div class="tt-segs">${entries.slice().reverse().map(e=>{ const k = TT_K[e.kind] || TT_KINDS[0];
+    return `<div class="tt-seg ${e.ended_at?'':'live'}" style="--tc:${k.c}"><span class="tt-seg-i">${slIcon(k.i)}</span><span class="tt-seg-n">${esc(k.t)}</span><span class="tt-seg-t">${esc(ttTime(e.started_at))} – ${e.ended_at ? esc(ttTime(e.ended_at)) : 'dabar'}</span><b>${esc(ttHm(ttMs(e)))}</b></div>`; }).join('')}</div>`;
+}
+// the left card: sign in / start / switch / finish (refreshed every second while working)
+function ttRenderClock(full){
+  const box = document.getElementById('ttClock'); if(!box) return;
+  const d = ttDev(), st = TT.state, me = d.cur && st && st.member;
+  const s = st && st.shift;
+  if(!full && s){   // only the running numbers
+    const t = box.querySelector('[data-tt="total"]'), c = box.querySelector('[data-tt="cur"]'), cur = s.entries.find(e=>!e.ended_at);
+    if(t) t.textContent = ttClock(ttMs(s)); if(c && cur) c.textContent = ttClock(ttMs(cur));
+    const sm = ttSum(s.entries); const w = box.querySelector('[data-tt="work"]'); if(w) w.textContent = ttHm(sm.work);
+    if(Date.now() % 30000 < 1000){ const b = box.querySelector('.tt-live-bars'); if(b) b.innerHTML = ttBars(sm.by, sm.work + sm.brk); }
+    ttPill(); return;
+  }
+  if(!full) return;
+  const others = Object.keys(d.tokens).filter(m=>m!==d.cur && ttName(m));
+  const who = me ? `<div class="tt-who"><span class="tt-av">${esc(String(me.name||'?').split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase())}</span><div><b>${esc(me.name)}</b>${me.demo ? ' <small class="tt-demo">demo</small>' : ''}<small>Prisijungta šiame įrenginyje</small></div>
+      <span style="flex:1"></span>${others.length ? `<select id="ttSwitchMember" title="Kitas šio įrenginio narys"><option value="">Keisti narį…</option>${others.map(m=>`<option value="${esc(m)}">${esc(ttName(m))}</option>`).join('')}</select>` : ''}
+      <button class="btn small" id="ttOut">Atsijungti</button></div>` : '';
+  if(!me){
+    box.innerHTML = `<h2 class="tt-h">${slIcon('clock')} Pradėti darbą</h2>
+      <div class="section-sub" style="margin:0 0 12px;">Pasirink save ir įvesk savo PIN kodą. Pirmą kartą – „Registruoti narį“.</div>
+      ${ttLoginForm('ttL', '')}`;
+    ttLoginWire('ttL', m=>{ TT.view = m; renderTrackerTab(); });
+    return;
+  }
+  if(!s){
+    const last = st.last, sm = last ? ttSum(last.entries) : null;
+    const pick = TT.pick || (last && last.entries.length ? last.entries[last.entries.length-1].kind : 'warehouse');
+    box.innerHTML = `${who}
+      <h2 class="tt-h">Ką pradedi daryti?</h2>
+      ${ttKindBtns(pick, 'data-pick')}
+      <button class="tt-go" id="ttStart" style="--tc:${TT_K[pick].c}">${slIcon('play')}<span>Pradėti darbą</span><small>${esc(TT_K[pick].t)}</small></button>
+      ${last ? `<div class="tt-last"><div class="tt-last-h"><b>Paskutinė pamaina</b><span>${esc(ttDay(last.started_at))} · ${esc(ttTime(last.started_at))} – ${esc(ttTime(last.ended_at))}</span></div>
+        <div class="tt-big2"><div><small>Pradirbta</small><b>${esc(ttHm(sm.work))}</b></div>${sm.brk ? `<div><small>Pertraukos</small><b>${esc(ttHm(sm.brk))}</b></div>` : ''}</div>
+        ${ttBars(sm.by, sm.work + sm.brk)}</div>` : ''}`;
+    box.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ TT.pick = b.dataset.pick; ttRenderClock(true); });
+    document.getElementById('ttStart').onclick = async e=>{
+      e.currentTarget.disabled = true;
+      try{ TT.state = await ttRpc('tt_start', { m:d.cur, p_token:ttTok(d.cur), p_kind:pick }); TT.pick = null; toast('▶ Darbas pradėtas: '+TT_K[pick].t+'.'); }
+      catch(err){ if(err.auth) ttForget(d.cur); toast(err.message); }
+      ttPill(); ttRenderClock(true); if(TT.view===d.cur){ await ttLoadReport(); ttRenderReport(); }
+    };
+  } else {
+    const cur = s.entries.find(e=>!e.ended_at) || s.entries[s.entries.length-1], k = TT_K[cur.kind] || TT_KINDS[0], sm = ttSum(s.entries);
+    box.innerHTML = `${who}
+      <div class="tt-run" style="--tc:${k.c}">
+        <div class="tt-run-top"><span class="tt-livedot"></span>Darbas vyksta nuo ${esc(ttTime(s.started_at))}</div>
+        <div class="tt-total" data-tt="total">${esc(ttClock(ttMs(s)))}</div>
+        <div class="tt-run-sub">Pradirbta be pertraukų: <b data-tt="work">${esc(ttHm(sm.work))}</b></div>
+        <div class="tt-curk">${slIcon(k.i)}<span>${esc(k.t)}</span><b data-tt="cur">${esc(ttClock(ttMs(cur)))}</b></div>
+      </div>
+      <h2 class="tt-h">Pakeisti veiklą</h2>
+      ${ttKindBtns(cur.kind, 'data-sw')}
+      <div class="tt-live-bars">${ttBars(sm.by, sm.work + sm.brk)}</div>
+      ${ttSegs(s.entries)}
+      <button class="tt-stop" id="ttStop">${slIcon('close')}<span>Baigti darbą</span></button>
+      <button class="tt-forgot" id="ttForgot">Pamiršau baigti – nurodyti pabaigos laiką</button>`;
+    box.querySelectorAll('[data-sw]').forEach(b=>b.onclick = async ()=>{
+      if(b.dataset.sw===cur.kind) return;
+      box.querySelectorAll('[data-sw]').forEach(x=>x.disabled = true);
+      try{ TT.state = await ttRpc('tt_switch', { m:d.cur, p_token:ttTok(d.cur), p_kind:b.dataset.sw }); toast(`↻ ${k.t} išsaugota (${ttHm(ttMs(cur))}). Dabar – ${TT_K[b.dataset.sw].t}.`); }
+      catch(err){ if(err.auth) ttForget(d.cur); toast(err.message); }
+      ttPill(); ttRenderClock(true);
+    });
+    const stop = async at=>{
+      try{ TT.state = await ttRpc('tt_stop', { m:d.cur, p_token:ttTok(d.cur), p_at:at || null }); }
+      catch(err){ if(err.auth) ttForget(d.cur); toast(err.message); return; }
+      const l = TT.state.last, sm2 = l ? ttSum(l.entries) : null;
+      toast(sm2 ? `■ Darbas baigtas: pradirbta ${ttHm(sm2.work)}.` : '■ Darbas baigtas.', 6000);
+      ttPill(); ttRenderClock(true); if(TT.view===d.cur){ await ttLoadReport(); ttRenderReport(); }
+    };
+    document.getElementById('ttStop').onclick = async ()=>{ if(await uiConfirm(`Baigti darbą? Pradirbta ${ttHm(ttSum(s.entries).work)}.`, { yes:'Baigti darbą', danger:false })) stop(); };
+    document.getElementById('ttForgot').onclick = async ()=>{
+      const def = ttTime(new Date().toISOString());
+      const v = await uiPrompt(`Kada baigei darbą? (šiandien, VV:MM, ne anksčiau nei ${ttTime(cur.started_at)})`, def, { yes:'Baigti' });
+      if(v==null) return;
+      const m = /^(\d{1,2})[:.](\d{2})$/.exec(v.trim()); if(!m){ toast('Įrašyk laiką, pvz. 17:30.'); return; }
+      const t = new Date(); t.setHours(+m[1], +m[2], 0, 0); if(t > new Date()) t.setDate(t.getDate()-1);
+      stop(t.toISOString());
+    };
+  }
+  const out = document.getElementById('ttOut');
+  if(out) out.onclick = async ()=>{ const m = d.cur; try{ await ttRpc('tt_logout', { m, p_token:ttTok(m) }); }catch(e){} ttForget(m); TT.state = null; await ttLoadState(); ttPill(); ttRenderClock(true); ttRenderReport(); };
+  const swm = document.getElementById('ttSwitchMember');
+  if(swm) swm.onchange = async ()=>{ if(!swm.value) return; d.cur = swm.value; ttDevSave(); TT.view = d.cur; await Promise.all([ttLoadState(), ttLoadReport()]); ttPill(); ttRenderClock(true); ttRenderReport(); };
+}
+function ttLoginForm(p, preset){
+  const ms = TT.members || [];
+  return `<div class="tt-login">
+    <label class="field">Narys<select id="${p}M">${preset ? '' : '<option value="">— pasirink —</option>'}${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===preset?'selected':''}>${esc(m.name)}${m.demo?' (demo, PIN 0000)':''}</option>`).join('')}</select></label>
+    <label class="field">PIN kodas<input type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" id="${p}P" placeholder="••••"></label>
+    <button class="btn primary" id="${p}Go">Prisijungti</button></div>`;
+}
+function ttLoginWire(p, done){
+  const go = document.getElementById(p+'Go'), pin = document.getElementById(p+'P'), sel = document.getElementById(p+'M');
+  const run = async ()=>{
+    const m = sel.value; if(!m){ toast('Pasirink narį.'); return; }
+    if(!/^\d{4,8}$/.test(pin.value)){ toast('PIN – 4–8 skaitmenys.'); return; }
+    go.disabled = true;
+    try{ const r = await ttRpc('tt_login', { m, p_pin:pin.value }); const d = ttDev(); d.tokens[m] = r.token; d.cur = m; ttDevSave(); TT.state = r.state; toast('Prisijungta: '+r.state.member.name+'.'); ttPill(); done(m); }
+    catch(e){ toast(e.message); go.disabled = false; pin.select(); }
+  };
+  go.onclick = run;
+  pin.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); run(); } });
+}
+function ttRegister(){
+  openModal(`<h3>Registruoti Team Tracker narį</h3>
+    <div class="section-sub" style="margin:0 0 10px;">Kiekvienas narys turi savo PIN kodą – juo prisijungia bet kuriame įrenginyje. PIN niekam nerodomas.</div>
+    <label class="field">Vardas ir pavardė<input type="text" id="ttRName" maxlength="60" placeholder="pvz. Jonas Jonaitis"></label>
+    <div class="grid cols-2" style="gap:10px;">
+      <label class="field">PIN kodas (4–8 skaitmenys)<input type="password" inputmode="numeric" maxlength="8" id="ttRPin"></label>
+      <label class="field">Pakartok PIN<input type="password" inputmode="numeric" maxlength="8" id="ttRPin2"></label>
+    </div>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button class="btn" id="ttRNo">Atšaukti</button><button class="btn primary" id="ttRGo">Registruoti ir prisijungti</button></div>`);
+  setTimeout(()=>document.getElementById('ttRName').focus(), 30);
+  document.getElementById('ttRNo').onclick = ()=>closeModal();
+  document.getElementById('ttRGo').onclick = async ()=>{
+    const name = document.getElementById('ttRName').value.trim(), p1 = document.getElementById('ttRPin').value, p2 = document.getElementById('ttRPin2').value;
+    if(name.length < 2){ toast('Įrašyk vardą ir pavardę.'); return; }
+    if(!/^\d{4,8}$/.test(p1)){ toast('PIN – 4–8 skaitmenys.'); return; }
+    if(p1!==p2){ toast('PIN kodai nesutampa.'); return; }
+    const b = document.getElementById('ttRGo'); b.disabled = true;
+    try{ const r = await ttRpc('tt_register', { p_name:name, p_pin:p1 }); const d = ttDev(); d.tokens[r.state.member.id] = r.token; d.cur = r.state.member.id; ttDevSave(); TT.state = r.state; TT.view = d.cur; closeModal(); toast('Narys užregistruotas.'); renderTrackerTab(); }
+    catch(e){ toast(e.message); b.disabled = false; }
+  };
+}
+// the right card: a member's hours for a period
+function ttRenderReport(){
+  const box = document.getElementById('ttRep'); if(!box) return;
+  const ms = TT.members || [], m = TT.view, admin = ACCESS.role==='admin' || isSuper();
+  const [f, t] = ttRange();
+  let body = '';
+  if(!m) body = `<div class="tt-none">Pasirink narį – matysi, kiek jis pradirbo per pasirinktą laikotarpį.</div>`;
+  else if(TT.repErr==='pin') body = `<div class="tt-pinask"><div class="section-sub" style="margin:0 0 8px;">„${esc(ttName(m))}“ laiką mato tik pats narys – prisijunk jo PIN kodu.</div>${ttLoginForm('ttV', m)}</div>`;
+  else if(TT.repErr) body = `<div class="mail-err">${esc(TT.repErr)}</div>`;
+  else if(TT.report){
+    const shifts = TT.report.shifts || [];
+    const all = ttSum(shifts.flatMap(s=>s.entries), +f, +t);
+    const days = new Set(shifts.map(s=>new Date(s.started_at).toDateString())).size;
+    body = `<div class="tt-big3">
+        <div><small>Pradirbta</small><b>${esc(ttHm(all.work))}</b></div>
+        <div><small>Pertraukos</small><b>${esc(ttHm(all.brk))}</b></div>
+        <div><small>Darbo dienų</small><b>${days}</b></div>
+        <div><small>Vid. per dieną</small><b>${esc(days ? ttHm(all.work/days) : '–')}</b></div>
+      </div>
+      ${ttBars(all.by, all.work + all.brk)}
+      <h3 class="tt-h3">Pamainos</h3>
+      <div class="tt-shifts">${shifts.map(s=>{ const sm = ttSum(s.entries);
+        return `<details class="tt-shift"><summary><span class="tt-sh-d">${esc(ttDay(s.started_at))}</span><span class="tt-sh-t">${esc(ttTime(s.started_at))} – ${s.ended_at ? esc(ttTime(s.ended_at)) : '<i>vyksta</i>'}</span>
+          <span class="tt-stack sm">${TT_KINDS.filter(k=>sm.by[k.k]).map(k=>`<span style="flex:${sm.by[k.k]};background:${k.c}"></span>`).join('')}</span><b>${esc(ttHm(sm.work))}</b></summary>
+          ${ttSegs(s.entries)}</details>`; }).join('') || '<div class="tt-none">Šiuo laikotarpiu pamainų nėra.</div>'}</div>`;
+  }
+  const mine = m && (ttTok(m) || admin);
+  box.innerHTML = `<div class="tt-rep-h"><h2 class="tt-h">${slIcon('chart')} Pradirbtas laikas</h2>
+      ${m && TT.report && !TT.repErr ? `<button class="btn small" id="ttXls" title="Atsisiųsti Excel">${slIcon('download')} Excel</button>` : ''}
+      ${mine ? `<button class="btn small tt-delbtn" id="ttDel" title="Ištrinti narį su visu jo laiku">${slIcon('bin')}</button>` : ''}</div>
+    <div class="tt-filters">
+      <select id="ttView"><option value="">— narys —</option>${ms.map(x=>`<option value="${esc(x.id)}" ${x.id===m?'selected':''}>${esc(x.name)}${x.demo?' (demo)':''}</option>`).join('')}</select>
+      <div class="tt-pers">${TT_PERIODS.map(([k,l])=>`<button class="tt-per ${TT.period===k?'on':''}" data-per="${k}">${l}</button>`).join('')}</div>
+      ${TT.period==='custom' ? `<div class="tt-custom"><input type="date" id="ttFrom" value="${esc(TT.from)}"><span>–</span><input type="date" id="ttTo" value="${esc(TT.to)}"></div>` : ''}
+      <small class="tt-range">${esc(f.toLocaleDateString('lt-LT'))} – ${esc(new Date(+t - 1).toLocaleDateString('lt-LT'))}</small>
+    </div>
+    ${body}`;
+  const reload = async ()=>{ await ttLoadReport(); ttRenderReport(); };
+  document.getElementById('ttView').onchange = e=>{ TT.view = e.target.value || null; reload(); };
+  box.querySelectorAll('[data-per]').forEach(b=>b.onclick = ()=>{ TT.period = b.dataset.per; reload(); });
+  const fr = document.getElementById('ttFrom'), to = document.getElementById('ttTo');
+  if(fr) fr.onchange = ()=>{ TT.from = fr.value; reload(); };
+  if(to) to.onchange = ()=>{ TT.to = to.value; reload(); };
+  if(document.getElementById('ttVGo')) ttLoginWire('ttV', async mm=>{ TT.view = mm; await ttLoadReport(); ttRenderClock(true); ttRenderReport(); });
+  const del = document.getElementById('ttDel');
+  if(del) del.onclick = async ()=>{
+    if(!(await uiConfirm(`Ištrinti narį „${ttName(m)}“ su visomis jo pamainomis?`))) return;
+    try{ await ttRpc('tt_delete', { m, p_token:ttTok(m), p_pin:null }); }catch(e){ toast(e.message); return; }
+    ttForget(m); TT.view = ttDev().cur; toast('Narys ištrintas.'); renderTrackerTab(); ttPill();
+  };
+  const xls = document.getElementById('ttXls');
+  if(xls) xls.onclick = ()=>libNeed('xlsx').then(ok=>{
+    if(!ok){ toast('Nepavyko įkelti Excel įrankio.'); return; }
+    const rows = [];
+    (TT.report.shifts||[]).slice().reverse().forEach(s=>s.entries.forEach(e=>rows.push({ 'Data':new Date(e.started_at).toLocaleDateString('lt-LT'), 'Veikla':(TT_K[e.kind]||{}).t||e.kind, 'Nuo':ttTime(e.started_at), 'Iki':e.ended_at ? ttTime(e.ended_at) : 'vyksta', 'Valandos':Math.round(ttMs(e)/36e3)/100 })));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Laikas');
+    XLSX.writeFile(wb, `Team Tracker - ${ttName(m)} ${f.toLocaleDateString('lt-LT')}–${new Date(+t-1).toLocaleDateString('lt-LT')}.xlsx`);
+  });
+}
+
 const TABS = {
   home: renderHomeTab,
   events: renderEventsTab,
@@ -33394,6 +33844,7 @@ const TABS = {
   stocktake: renderStocktakeTab,
   works: renderWorksTab,
   buy: renderBuyTab,
+  tracker: renderTrackerTab,
   games: renderGamesTab,
   gear: renderGearTab,
   invoices: renderInvoicesTab,
@@ -33724,6 +34175,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 10:33', v:'v269', k:'new', t:'Team Tracker – darbo laiko apskaita', f:'Naujas puslapis „Team Tracker“ (Pradžioje ir meniu), kaip Connecteam laikrodis. Kiekvienas narys užsiregistruoja su savo PIN kodu ir prisijungia atskirai (viename telefone gali dirbti keli). Pradėdamas darbą pasirenki veiklą – sandėlis, vairavimas, budėjimas, montažas, demontažas, operatorius, pertrauka – ir gali ją keisti bet kada: ankstesnė išsaugoma su savo laiku, nauja skaičiuojama iš naujo. Baigus matosi bendras pradirbtas laikas ir kiek skirta kiekvienai veiklai. Viršuje rodomas vykstantis darbas, kas valandą ateina priminimas, kad Team Tracker aktyvus. Visiems matoma tik kiek narių užregistruota; nario valandas pagal laikotarpį (šiandien, savaitė, mėnuo, pasirinkti) matai prisijungęs jo PIN, galima atsisiųsti Excel ir ištrinti narį. Pridėtas „Demo darbuotojas“ (PIN 0000).' },
   { d:'2026-10-04 10:08', v:'v268', k:'new', t:'Pirkiniai: „Nupirkta“, nuorodos, ryškesni skyriai', f:'Prie kiekvienos eilutės – mygtukas „Nupirkta“: eilutė nukeliauja į apačią, papilkėja ir pažymima, kas ir kada nupirko (paspaudus dar kartą – grąžinama į viršų); nupirktų suma rodoma atskirai. Stulpelyje „Nuoroda“ – mygtukas „Pridėti nuorodą“, pridėta nuoroda atsidaro naujame lange (✎ – pakeisti). Skyrių juostos – stiklo efektu su ryškiu apvadu ir paryškintu tekstu (šviesiame režime – atvirkščiai). Nauja eilutė („+ Eilutė“) atsiranda pačiame viršuje.' },
   { d:'2026-10-04 09:59', v:'v267', k:'chg', t:'Šriftas – Barlow', f:'Visa programėlė rodoma Barlow šriftu (Thin, ExtraLight, Light, Regular, Medium) vietoj Questrial.' },
   { d:'2026-10-04 02:35', v:'v266', k:'new', t:'Pirkiniai, tamsūs laiškai ir naujas šriftas', f:'Naujas puslapis „Pirkiniai“ (Pradžioje ir meniu): skiltys kaip Excel lapai VIDEO, LIGHT JONO NEW, AUDIO 2026, BENDRI DAIKTAI – visos su „Audio 2026“ stulpeliais (Įranga, Kaina, Kaina be PVM, Bendra kaina be PVM, Vienetai, Nuoroda, Komentarai, Reikalingumas) ir skyriais su sumomis. Langeliuose veikia Excel formulės (=B4*E4, SUM, MULTIPLY, ROUND, IF, SUMIF…), eilutes galima įterpti, perkelti, ištrinti – formulės pasitaiso pačios; Shift + spustelėjimas rodo pažymėtų langelių sumą. Skiltį galima sukurti, pervadinti, padaryti viešą ar „tik man“, importuoti lapus iš Excel failo ir atsisiųsti kaip Excel su formulėmis. El. pašte tamsiame režime laiškai rodomi tamsiu fonu su šviesiu tekstu (⋯ → Originalios laiško spalvos), dingo dvigubas „Brukalas“. Visa programėlė – Questrial šriftu.' },

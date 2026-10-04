@@ -5,7 +5,7 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v268';
+const CACHE = 'es-app-v269';
 const SHELL = ['./manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png', './fonts/Barlow-Regular.woff2', './fonts/Barlow-Medium.woff2'];
 
 // Cloudflare Pages redirects /index.html to /: a redirected response can't answer a page load (the browser shows
@@ -113,7 +113,7 @@ self.addEventListener('notificationclick', e=>{
   e.waitUntil(self.clients.matchAll({type:'window', includeUncontrolled:true}).then(list=>{
     const c = list.find(x=>x.url.startsWith(self.registration.scope));
     if(c){ if(chat) c.postMessage({type:'open-chat', chat, thread}); if(meeting) c.postMessage({type:'open-meeting', id:meeting}); if(call) c.postMessage({type:'open-call', call});
-      if(['task','gear','event','invoice','feedback','leave','admin'].some(k=>sp.get(k))) c.postMessage({type:'open-url', url});
+      if(['task','gear','event','invoice','feedback','leave','admin','tracker'].some(k=>sp.get(k))) c.postMessage({type:'open-url', url});
       return c.focus(); }
     return self.clients.openWindow(url);
   }));
