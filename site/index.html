@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-zyKRi7n2X+y9GcQLw7YuBb0zKySsoGzKSpUsFlaNR1w=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-85w3BlbYOqqo7ToyefDOgW5w0mCEFdByqtXcnWQXHwY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -18766,7 +18766,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v306';
+const APP_VER = 'v307';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25012,7 +25012,7 @@ async function mailCall(body, retried){
   const token = await fnToken(retried);
   let res;
   const ctl = new AbortController(), slow = ['send','attachment'].includes(body.action);
-  const timer = setTimeout(()=>ctl.abort(), slow ? 150000 : body.action==='read' ? 75000 : 50000);
+  const timer = setTimeout(()=>ctl.abort(), slow ? 150000 : body.action==='read' ? 45000 : 50000);
   try{ res = await fetch(MAIL_FN(), { method:'POST', headers:{'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+token}, body:JSON.stringify(body), signal:ctl.signal }); }
   catch(e){ throw new Error(e && e.name==='AbortError' ? 'Pašto serveris per ilgai neatsako. Pabandyk dar kartą.' : 'Pašto funkcija nepasiekiama (ar įdiegta „mail“ funkcija?).'); }
   finally{ clearTimeout(timer); }
@@ -25775,11 +25775,14 @@ async function mlFromDb(folder, uid){
     return data && data.data && data.data.uid ? Object.assign({}, data.data, { _db:true }) : null;
   }catch(e){ return null; }
 }
-function mlReadOne(folder, uid, req){
-  const run = (MAIL.readChain || Promise.resolve()).then(async ()=>{
-    if(req!==MAIL.openReq) return null;
-    const hit = MAIL.cache.get(mlKey(folder, uid)); if(hit) return hit;
-    const kept = await mlFromDb(folder, uid); if(kept) return kept;
+async function mlReadOne(folder, uid, req){
+  // a letter kept in the database opens at once – it never waits behind another letter being read from the mail server
+  const hit = MAIL.cache.get(mlKey(folder, uid)); if(hit) return hit;
+  const kept = await mlFromDb(folder, uid); if(kept) return kept;
+  if(req!==MAIL.openReq) return null;
+  // from the mail server one at a time; but a read that hangs (a big newsletter) holds the next one at most 6 s
+  const before = MAIL.readChain || Promise.resolve();
+  const run = Promise.race([before, new Promise(r=>setTimeout(r, 6000))]).then(()=>{
     if(req!==MAIL.openReq) return null;
     return mailCall({ action:'read', folder, uid });
   });
@@ -25819,7 +25822,13 @@ async function mailOpen(uid, row, fromFolder){
     MAIL.open = null; mlRenderBar();
     const pane = document.getElementById('mailPane');
     if(pane && item) pane.innerHTML = mlHeadHtml(Object.assign({ cc:[], attachments:[] }, item), true) + '<div class="ml-body ml-body-load"><span class="eq-spin"></span> Atidaromas laiškas…</div>';
-    else if(pane) pane.innerHTML = '<div class="ml-body ml-body-load"><span class="eq-spin"></span> Atidaromas laiškas…</div>';
+    else if(pane) pane.innerHTML = '<div class="ml-mh"><button class="ml-tb ml-only-phone ml-back" id="mlBack" title="Atgal">'+mlI('back')+'</button></div><div class="ml-body ml-body-load"><span class="eq-spin"></span> Atidaromas laiškas…</div>';
+    // back to the list works while the letter is still loading (the late answer is then ignored)
+    const back = document.getElementById('mlBack'); if(back) back.onclick = ()=>{ MAIL.openReq++; MAIL.open = null; mlSetView('list'); mlRenderBar(); };
+    // a letter that takes long: say so, with a way to try again
+    setTimeout(()=>{ if(req!==MAIL.openReq || MAIL.open) return; const ld = document.querySelector('#mailPane .ml-body-load'); if(!ld) return;
+      ld.innerHTML = '<span class="eq-spin"></span> Laiškas kraunasi ilgiau nei įprastai – pašto serveris lėtai atsako (dažnai taip būna su dideliais naujienlaiškiais).<br><br><button class="btn small" id="mlSlowRetry">Bandyti dar kartą</button> <a class="btn small" href="https://roundcube.serveriai.lt/" target="_blank" rel="noopener">🌐 Atidaryti Roundcube</a>';
+      const b = document.getElementById('mlSlowRetry'); if(b) b.onclick = ()=>mailOpen(uid, row, fromFolder); }, 9000);
   }
   let m = cached;
   try{
@@ -35353,6 +35362,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 22:05', v:'v307', k:'fix', t:'El. paštas: laiškai nebeužstringa, „Atgal“ veikia kraunant', f:'„←“ (atgal į sąrašą) dabar veikia ir kol laiškas dar kraunasi. Vienas lėtai iš pašto serverio kraunamas laiškas (dažnai – didelis naujienlaiškis) nebeužlaiko kitų: kiti atsidaro (iš duomenų bazės – iškart, iš serverio – ne vėliau kaip po ~6 s). Jei laiškas kraunasi ilgiau nei 9 s – parodoma „Bandyti dar kartą“ ir „Atidaryti Roundcube“. Pašto funkcija (v14): naujausių laiškų išsaugojimas nebesustoja ties vienu nepavykusiu laišku, todėl daugiau laiškų atsidaro iškart.' },
   { d:'2026-10-04 21:55', v:'v306', k:'fix', t:'Telefone puslapiai nebeslankioja į šonus', f:'Ataskaitose telefone skirtukų juosta (Transportas, Transporto nuoma, UTA, Subnuoma, Freelance, Krovimai) buvo platesnė už ekraną, todėl visas puslapis slankiodavo kairėn-dešinėn. Dabar tokios skirtukų juostos slenkamos atskirai, o puslapis niekada netampa platesnis už ekraną. Patikrinti visi puslapiai ir jų skirtukai (52 vaizdai) – taip pat pataisyta Admin animacijos greičio eilutė.' },
   { d:'2026-10-04 21:47', v:'v305', k:'fix', t:'Paleidimo klaida pašalinta', f:'Rasta ir pašalinta tikroji lėto paleidimo priežastis: paleidžiant programa sutvarkydavo senus išsaugotus duomenis ir juos įrašydama tikrindavo teises – tos kodo dalies dar nebuvo paruoštos, todėl paleidimas nutrūkdavo (TEAM_TABS) ir programa turėdavo persikrauti (anksčiau – po 15 s). Dabar paleidimas vyksta iš karto, be perkrovimo.' },
   { d:'2026-10-04 21:43', v:'v304', k:'fix', t:'Paleidimas: klaida – persikrauna iškart', f:'Paleidimo ataskaita parodė, kad telefone pirmo paleidimo metu programos kode įvyksta klaida (po perkrovimo jos nebėra). Dabar tokiu atveju programa persikrauna iškart (~0,5 s), o ne laukia. Ataskaitoje (Super Admin) dabar matoma ir pati klaida su vieta – pagal ją bus pašalinta priežastis.' },

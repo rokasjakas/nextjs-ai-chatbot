@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 13;
+const VERSION = 14;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -418,6 +418,7 @@ async function idxGone(user: string, folder: string, uid: number) {
 // Opening a letter then needs no mail server at all; letters not kept there are read live as before.
 const BODY_MAX_JSON = 1_500_000, BODY_PER_RUN = 15, BODY_MS = 12_000, BODY_KEEP = 60;
 let bodiesOk = true;     // the table may not exist yet (sql/mail_bodies.sql not run): then nothing is kept
+const bodySkip = new Map<string, number>();   // letters whose text could not be kept: not tried again for a while
 async function bodySave(user: string, folder: string, uid: number, data: unknown) {
   if (!bodiesOk) return;
   const json = JSON.stringify(data);
@@ -446,12 +447,19 @@ async function bodyPrefetch(c: ImapFlow, user: string, folder: string, present: 
   // the ones that dropped out of the newest are let go (the database keeps only the newest letters)
   const keep = new Set(newest);
   await bodyDelete(user, folder, [...hset].filter((u) => !keep.has(u)));
-  let done = 0;
+  let done = 0, failed = 0;
   for (const uid of newest) {
     if (done >= BODY_PER_RUN || Date.now() - t0 > BODY_MS) break;
     if (hset.has(uid)) continue;
-    try { await bodySave(user, folder, uid, await readOn(c, folder, uid, true, true, { s: "" })); done++; }
-    catch (e) { console.error(`mail_bodies ${folder}/${uid}`, (e as Error).message); break; }   // a slow server: leave the rest for the next run
+    if ((bodySkip.get(`${user}/${folder}/${uid}`) ?? 0) > Date.now()) continue;
+    try { await bodySave(user, folder, uid, await readOn(c, folder, uid, true, true, { s: "" })); done++; failed = 0; }
+    catch (e) {
+      // one letter that fails (a big newsletter) no longer stops the others: it is tried again only after an hour;
+      // two failures in a row mean the connection itself is in trouble – the rest on the next run
+      console.error(`mail_bodies ${folder}/${uid}`, (e as Error).message);
+      bodySkip.set(`${user}/${folder}/${uid}`, Date.now() + 3600_000);
+      if (++failed >= 2) break;
+    }
   }
   return done;
 }
