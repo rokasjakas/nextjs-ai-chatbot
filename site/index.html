@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-B1TelYp8veivW87HxqY4hStuOjfzAh1vbQdhNkR0LvI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-zIKXNIw98C9xTc4ZdKCxp8t2/n18HVhEvM6ytOl9py0=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4907,6 +4907,17 @@ body.has-bg{background:linear-gradient(rgb(0 0 0 / var(--bg-dim,.55)), rgb(0 0 0
 body.has-bg .shell,body.has-bg .shell-main,body.has-bg main,body.has-bg .app-shell{background:transparent !important;}
 body.has-bg:not(.gl-menu) .pageheader,body.has-bg:not(.gl-menu) .topbar{background:color-mix(in srgb, var(--bg) 78%, transparent) !important;backdrop-filter:blur(8px);}
 .pf-bg{display:flex;gap:12px;align-items:flex-start;}
+html.ht-mono .home-tile .ht-icon{color:var(--text) !important;background:color-mix(in srgb, var(--text) 9%, transparent) !important;}
+html.ht-acc .home-tile .ht-icon{color:var(--accent) !important;background:color-mix(in srgb, var(--accent) 14%, transparent) !important;}
+html.ht-nobg .home-tile .ht-icon{background:none !important;}
+html.ht-mono .home-tile{--tc:var(--text-dim) !important;} html.ht-acc .home-tile{--tc:var(--accent) !important;}
+.pf-ico{margin-top:10px;}
+.pf-seg{display:inline-flex;border:1px solid var(--border);border-radius:999px;overflow:hidden;flex-wrap:wrap;}
+.pf-seg button{border:0;background:none;color:var(--text-dim);font:inherit;font-size:12.5px;padding:5px 12px;cursor:pointer;}
+.pf-seg button.on{background:var(--accent);color:var(--accent-ink,#fff);font-weight:700;}
+.pf-ico-demo{display:flex;gap:10px;flex-wrap:wrap;}
+.pf-ico-demo .pf-ico-t{padding:0;min-height:0;border:0;background:none !important;box-shadow:none !important;pointer-events:none;width:64px !important;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;} .pf-ico-demo .pf-ico-t small{font-size:10.5px;color:var(--text-dim);}
+.pf-ico-demo .ht-icon{width:48px !important;height:48px !important;border-radius:12px !important;} .pf-ico-demo .ht-icon svg{width:26px !important;height:26px !important;}
 #bgLayer{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#000;}
 #bgLayer video,#bgLayer canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 #bgLayer::after{content:'';position:absolute;inset:0;background:rgb(0 0 0 / var(--bg-dim,.55));}
@@ -10998,6 +11009,8 @@ function uiApply(p){
     if(uiLum(acc)>=0){ r.style.setProperty('--v2-accent', acc); r.style.setProperty('--v2-accent-ink', uiLum(acc)>.4 ? '#0C1B2A' : '#FFFFFF'); }
     if(uiLum(p.rail)>=0){ r.style.setProperty('--v2-rail', p.rail); r.style.setProperty('--v2-rail-ink', uiLum(p.rail)>.4 ? '#1D2229' : '#E8E8E8'); }
   } else r.removeAttribute('data-ui');
+  // home page icons: in colour (default), all one colour, and with / without the tinted square behind them
+  r.classList.toggle('ht-mono', p.ico==='mono'); r.classList.toggle('ht-acc', p.ico==='accent'); r.classList.toggle('ht-nobg', p.icoBg===false);
   uiFoldInit();
 }
 function uiSet(patch){
@@ -18665,7 +18678,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v292';
+const APP_VER = 'v293';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27737,8 +27750,15 @@ function pfUiDraw(){
       <div class="pf-ui-row"><span>Pagrindinė spalva</span>${UI_ACCENTS.map(([c, n])=>`<button type="button" class="pf-sw ${p.accent===c ? 'on' : ''}" data-uiacc="${c}" title="${n}" style="background:${c}"></button>`).join('')}<input type="color" id="pfUiAcc" value="${acc}" title="Kita spalva"></div>
       <div class="pf-ui-row"><span>Šoninis meniu</span>${UI_RAILS.map(([c, n])=>`<button type="button" class="pf-sw ${p.rail===c ? 'on' : ''}" data-uirail="${c}" title="${n}" style="background:${c || (dark ? '#1E1E1E' : '#FFFFFF')}">${c ? '' : '<small style="font-size:9px;">A</small>'}</button>`).join('')}<input type="color" id="pfUiRail" value="${rail}" title="Kita spalva"></div>
       <button type="button" class="btn small" id="pfUiReset" style="align-self:flex-start;">Atstatyti spalvas</button>
-    </div>` : ''}${bgUiHtml()}`;
+    </div>` : ''}
+    <div class="pf-ui-cols pf-ico">
+      <div class="pf-ui-row"><span>Pradžios ikonos</span><div class="pf-seg">${[['','Spalvotos'],['mono','Vienos spalvos'],['accent','Pagrindinės spalvos']].map(([k, t])=>`<button type="button" class="${(p.ico||'')===k ? 'on' : ''}" data-uiico="${k}">${t}</button>`).join('')}</div></div>
+      <div class="pf-ui-row"><span>Fonas aplink ikoną</span><div class="pf-seg"><button type="button" class="${p.icoBg!==false ? 'on' : ''}" data-uiicobg="1">Rodyti</button><button type="button" class="${p.icoBg===false ? 'on' : ''}" data-uiicobg="0">Be fono</button></div></div>
+      <div class="pf-ico-demo">${homeTileList().slice(0, 6).map(t=>`<span class="home-tile pf-ico-t" title="${esc(t.title)}"><span class="ht-icon" style="background:${t.color}22;color:${t.color};">${t.group ? t.icon : homeRailIcon(t.tab)}</span><small>${esc(t.title)}</small></span>`).join('')}</div>
+    </div>${bgUiHtml()}`;
   bgUiWire(pfUiDraw);
+  box.querySelectorAll('[data-uiico]').forEach(b=>b.onclick = ()=>{ uiSet({ ico:b.dataset.uiico }); pfUiDraw(); });
+  box.querySelectorAll('[data-uiicobg]').forEach(b=>b.onclick = ()=>{ uiSet({ icoBg:b.dataset.uiicobg==='1' }); pfUiDraw(); });
   box.querySelectorAll('[data-uiv]').forEach(b=>b.onclick = ()=>{ uiSet({ v:b.dataset.uiv }); pfUiDraw(); });
   box.querySelectorAll('[data-uiacc]').forEach(b=>b.onclick = ()=>{ uiSet({ accent:b.dataset.uiacc }); pfUiDraw(); });
   box.querySelectorAll('[data-uirail]').forEach(b=>b.onclick = ()=>{ uiSet({ rail:b.dataset.uirail }); pfUiDraw(); });
@@ -35176,6 +35196,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 20:23', v:'v293', k:'new', t:'Pradžios ikonos – vienos spalvos, be fono', f:'Profilis → Išvaizda → Dizainas: „Pradžios ikonos“ – Spalvotos, Vienos spalvos arba Pagrindinės spalvos, ir „Fonas aplink ikoną“ – Rodyti arba Be fono. Taikoma pradžios plytelėms (Ofisas, Sandėlis, Ataskaitos, Games, Nariai, Chatas ir kt.), peržiūra matosi iškart. Kiekvienas narys renkasi sau.' },
   { d:'2026-10-04 19:42', v:'v292', k:'new', t:'Judantis fonas: gyvi fonai ir savo video', f:'Profilis → Išvaizda → Fonas: „Gyvas fonas“ – 6 programos piešiami judantys fonai (Šiaurės pašvaistė, Žvaigždės, Tinklas, Bangos, Šviesos burbulai, Matrica) su spalvos, greičio ir patamsinimo pasirinkimu. „Mano paveikslėlis / video“ – dabar galima įkelti ir trumpą video (MP4 / WebM, iki 30 MB), kuris groja fone be garso ratu, kaip Wallpaper Engine. Fonas sustoja, kai programa paslėpta, video išsaugomas naršyklėje, kad nebūtų siunčiamas kaskart. Gražiausiai atrodo su įjungtu „Stiklu“. Matai tik tu.' },
   { d:'2026-10-04 19:18', v:'v291', k:'new', t:'Transportas: remonto laikotarpis ir draudimas kortelėje', f:'Atidarius automobilį ir pažymėjus „Išvežtas remontui“ galima pasirinkti laikotarpį – nuo kada iki kada bus tvarkomas (ir pastabą, kur). Kortelėje rodoma „Remonte 10.04–10.12“. Automobilių kortelėse greta vinjetės ir tech. apžiūros dabar visada rodomas ir draudimas; kortelė paraudonuoja, jei kuris nors iš jų baigiasi, baigėsi arba neįvestas.' },
   { d:'2026-10-04 19:14', v:'v290', k:'new', t:'Transportas: vinjetė, tech. apžiūra ir remontas kortelėje', f:'Automobilio kortelėje vietoj pylimų rodoma vinjetė ir tech. apžiūra (iki kada galioja). Kortelė visa paraudonuoja, jei vinjetė ar tech. apžiūra baigiasi (artėja pabaiga), jau baigėsi arba neįvesta, ir kai automobilis pažymėtas „Išvežtas remontui“. Šį žymėjimą (su pastaba, kur / iki kada) rasi atidarius automobilį. Draudimas kortelėje parodomas tik kai baigiasi.' },
