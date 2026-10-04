@@ -5,7 +5,8 @@
 --    tik man (visible = 'private') – mato ir keičia tik sukūręs
 --  * viešumą ir pavadinimą keičia tik savininkas (ar administratorius)
 --  * „Pasiūlymai“ (purchase_proposals): kiekvienas narys pasiūlo, ką pirkti – mato visi;
---    sąrašus (purchase_lists) mato ir tvarko tik Admin, Office ir Projektų vadovai – jie
+--    sąrašus (purchase_lists) mato ir tvarko tik Admin, Office ir Projektų vadovai (net savo
+--    sukurtų sąrašų narys su kitu lygiu nemato) – jie
 --    pasiūlymą priima (įkelia į sąrašą) arba atmeta
 -- Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
 -- ============================================================
@@ -61,17 +62,17 @@ grant execute on function public.buy_manager() to authenticated;
 alter table public.purchase_lists enable row level security;
 drop policy if exists "purchase lists view" on public.purchase_lists;
 create policy "purchase lists view" on public.purchase_lists for select to authenticated
-  using (owner = auth.uid() or (visible = 'public' and public.buy_manager()));
+  using (public.buy_manager() and (owner = auth.uid() or visible = 'public'));
 drop policy if exists "purchase lists add" on public.purchase_lists;
 create policy "purchase lists add" on public.purchase_lists for insert to authenticated
   with check (owner = auth.uid() and public.buy_manager());
 drop policy if exists "purchase lists change" on public.purchase_lists;
 create policy "purchase lists change" on public.purchase_lists for update to authenticated
-  using (owner = auth.uid() or (visible = 'public' and public.buy_manager()))
-  with check (owner = auth.uid() or (visible = 'public' and public.buy_manager()));
+  using (public.buy_manager() and (owner = auth.uid() or visible = 'public'))
+  with check (public.buy_manager() and (owner = auth.uid() or visible = 'public'));
 drop policy if exists "purchase lists delete" on public.purchase_lists;
 create policy "purchase lists delete" on public.purchase_lists for delete to authenticated
-  using (owner = auth.uid() or public.is_admin());
+  using (public.buy_manager() and (owner = auth.uid() or public.is_admin()));
 revoke all on public.purchase_lists from anon;
 grant select, insert, update, delete on public.purchase_lists to authenticated;
 
