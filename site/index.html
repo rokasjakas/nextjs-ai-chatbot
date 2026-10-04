@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-cdy6dHtyknVCKAYmQmqgW+F43/hjTrxr/dCOyR1gjOk=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-nW7QZi5suKMHJlWh1JN6pmlTEW/TQY9HRww5+ESXhZI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4928,8 +4928,12 @@ html.ht-mono .home-tile{--tc:var(--text-dim) !important;} html.ht-acc .home-tile
 .pf-ico-demo{display:flex;gap:10px;flex-wrap:wrap;}
 .pf-ico-demo .pf-ico-t{padding:0;min-height:0;border:0;background:none !important;box-shadow:none !important;pointer-events:none;width:64px !important;min-height:0 !important;height:auto !important;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;} .pf-ico-demo .pf-ico-t small{font-size:10.5px;color:var(--text-dim);}
 .pf-ico-demo .ht-icon{width:48px !important;height:48px !important;border-radius:12px !important;} .pf-ico-demo .ht-icon svg{width:26px !important;height:26px !important;}
-#bgLayer{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#000 var(--bg-img, none) center / cover no-repeat;}
-#bgLayer video{opacity:0;transition:opacity .6s ease;} #bgLayer video.on{opacity:1;}
+#bgLayer{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#000;}
+/* while the video loads: its small still frame, blurred (so its low quality does not show); the video then comes in sharp, slowly */
+#bgLayer::before{content:'';position:absolute;inset:-60px;background:var(--bg-img, none) center / cover no-repeat;filter:blur(28px) saturate(1.15);transform:scale(1.06);}
+#bgLayer video{opacity:0;filter:blur(28px);transform:scale(1.06);transition:opacity .9s ease, filter 2.2s cubic-bezier(.3,0,.2,1), transform 2.2s cubic-bezier(.3,0,.2,1);}
+#bgLayer video.on{opacity:1;filter:blur(0);transform:none;}
+@media (prefers-reduced-motion: reduce){ #bgLayer video{transition:opacity .3s ease;} }
 #bgLayer video,#bgLayer canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 #bgLayer::after{content:'';position:absolute;inset:0;background:rgb(0 0 0 / var(--bg-dim,.55));}
 :root[data-theme="light"] #bgLayer::after{background:rgb(255 255 255 / var(--bg-dim,.55));}
@@ -18712,7 +18716,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v298';
+const APP_VER = 'v299';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35264,6 +35268,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 21:01', v:'v299', k:'chg', t:'Video fonas: sulietas kadras, kol kraunasi', f:'Kol video fonas kraunasi, jo kadras rodomas sulietas (blur) – nesimato prastos kokybės. Pasileidus video, suliejimas lėtai (~2 s) nuimamas ir video tampa ryškus. Taip pat ir grįžus į programą iš fono.' },
   { d:'2026-10-04 20:56', v:'v298', k:'fix', t:'Programa telefone atsidaro iškart', f:'Telefonas fone esančią programą dažnai uždaro, o atidarius ji ilgai rodydavo „Jungiamasi…“ – laukdavo, kol per internetą atsinaujins prisijungimas. Dabar programa atsidaro iškart su šiame įrenginyje išsaugotu prisijungimu (bandyme su lėtu ryšiu – 0,3 s vietoj 5 s), o prisijungimas atsinaujina fone; jei jis nebegalioja – parodomas prisijungimo langas. Video fonas, programai būnant fone, atlaisvina atmintį, todėl telefonas ją rečiau uždarys. Taip pat: „⋯“ meniu viršuje dešinėje su stiklo efektu nebėra permatomas – tekstas gerai matomas.' },
   { d:'2026-10-04 20:47', v:'v297', k:'fix', t:'Stiklas: suliejimas visuose puslapiuose', f:'Patikrinti visi puslapiai (ir jų skirtukai) kompiuteryje ir telefone: suliejimas (blur) pridėtas ten, kur jo trūko – Team Tracker langai (Pradėti darbą, Pradirbtas laikas), Pirkinių pasiūlymai ir sąrašai, Krovimo krovinio sąrašas ir 3D vaizdas, Narių kortelės, chato šoninė juosta telefone.' },
   { d:'2026-10-04 20:40', v:'v296', k:'fix', t:'Stiklas: chato ir el. pašto langai su suliejimu', f:'Įjungus „Stiklą“ su savo ar judančiu fonu, chato kanalų sąrašas ir žinučių langas (bei el. pašto laiškų sąrašas ir skaitymo langas) dabar irgi sulieti (blur), kaip kortelės – fonas pro juos nebesimato ryškiai.' },
