@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-nW7QZi5suKMHJlWh1JN6pmlTEW/TQY9HRww5+ESXhZI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-jYB9jvDSSPdCHcN1nue+zTDV7rL5d9g/KTBoOY9crNY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -18716,7 +18716,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v299';
+const APP_VER = 'v300';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35038,6 +35038,14 @@ function importBackup(file){
   reader.readAsText(file);
 }
 
+// where the member was when the app went to the background (kept 12 h)
+function resumeSave(){
+  try{ localStorage.setItem('esResume:'+(teamMe()||''), JSON.stringify({ t:Date.now(), tab:currentTab, y:Math.round(window.scrollY||0),
+    chat: currentTab==='chat' && typeof TEAM!=='undefined' ? (TEAM.open || null) : null })); }catch(e){}
+}
+function resumeGet(){
+  try{ const r = JSON.parse(localStorage.getItem('esResume:'+(teamMe()||''))||'null'); return r && Date.now() - r.t < 12*3600*1000 ? r : null; }catch(e){ return null; }
+}
 function initApp(){
   document.querySelectorAll('.rail-btn[data-tab]').forEach(b=>{
     b.addEventListener('click', ()=>{
@@ -35117,9 +35125,15 @@ document.getElementById('fbHdr').addEventListener('click', ()=>{ if(fbAdmin() &&
   window.addEventListener('beforeunload', e=>{
     if(cloudState==='pending' || cloudState==='saving'){ e.preventDefault(); e.returnValue = ''; }
   });
-  // after a reload (computer or phone) stay on the page that was open
-  const lastTab = (()=>{ try{ return sessionStorage.getItem('esTab'); }catch(e){ return null; } })();
+  // after a reload (computer or phone) stay on the page that was open; a phone that closed the app in the
+  // background opens it where it was left (page, place on it, open conversation) – as if it was never closed
+  const res = resumeGet();
+  const lastTab = (()=>{ try{ return sessionStorage.getItem('esTab'); }catch(e){ return null; } })() || (res && res.tab);
+  if(res && res.chat && lastTab==='chat' && typeof TEAM!=='undefined'){ TEAM.open = res.chat; TEAM.thread = null; }
   setTab(lastTab && TABS[lastTab] ? lastTab : 'home');
+  if(res && res.y && res.tab===currentTab){ const y = res.y; [60, 500, 1500].forEach(ms=>setTimeout(()=>{ if(currentTab===res.tab && Math.abs(window.scrollY - y) > 40 && window.scrollY < 40) window.scrollTo({ top:y }); }, ms)); }
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) resumeSave(); });
+  window.addEventListener('pagehide', resumeSave);
   pullSharedState();
   // events and rentals feed the home tiles too
   evLoad().then(()=>{ if(currentTab==='home' && !document.getElementById('modalBackdrop')) renderHomeTab(); });
@@ -35268,6 +35282,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 21:04', v:'v300', k:'chg', t:'Telefone programa tęsiasi ten, kur palikai', f:'Telefonas fone esančią programą kartais uždaro. Dabar ją vėl atidarius atkuriamas tas pats puslapis, vieta jame (kiek buvo paslinkta) ir atidarytas chato pokalbis – lyg programa būtų nebuvusi uždaryta (galioja 12 val.). Kartu su v298 greitu paleidimu tai atrodo kaip tęsimas, o ne krovimas iš naujo.' },
   { d:'2026-10-04 21:01', v:'v299', k:'chg', t:'Video fonas: sulietas kadras, kol kraunasi', f:'Kol video fonas kraunasi, jo kadras rodomas sulietas (blur) – nesimato prastos kokybės. Pasileidus video, suliejimas lėtai (~2 s) nuimamas ir video tampa ryškus. Taip pat ir grįžus į programą iš fono.' },
   { d:'2026-10-04 20:56', v:'v298', k:'fix', t:'Programa telefone atsidaro iškart', f:'Telefonas fone esančią programą dažnai uždaro, o atidarius ji ilgai rodydavo „Jungiamasi…“ – laukdavo, kol per internetą atsinaujins prisijungimas. Dabar programa atsidaro iškart su šiame įrenginyje išsaugotu prisijungimu (bandyme su lėtu ryšiu – 0,3 s vietoj 5 s), o prisijungimas atsinaujina fone; jei jis nebegalioja – parodomas prisijungimo langas. Video fonas, programai būnant fone, atlaisvina atmintį, todėl telefonas ją rečiau uždarys. Taip pat: „⋯“ meniu viršuje dešinėje su stiklo efektu nebėra permatomas – tekstas gerai matomas.' },
   { d:'2026-10-04 20:47', v:'v297', k:'fix', t:'Stiklas: suliejimas visuose puslapiuose', f:'Patikrinti visi puslapiai (ir jų skirtukai) kompiuteryje ir telefone: suliejimas (blur) pridėtas ten, kur jo trūko – Team Tracker langai (Pradėti darbą, Pradirbtas laikas), Pirkinių pasiūlymai ir sąrašai, Krovimo krovinio sąrašas ir 3D vaizdas, Narių kortelės, chato šoninė juosta telefone.' },
