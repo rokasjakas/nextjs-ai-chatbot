@@ -14,6 +14,7 @@
 //      "Priimti" / "Atmesti" (muted chats ring too; quiet hours do not).
 // POST {"kind":"test"}                   -> the caller's own devices
 // pg_cron "cron" mode (every 5 min) also reminds every hour of an open Team Tracker shift (tracker.sql)
+// POST {"kind":"tracker-pin","member_id"} -> Team Tracker „Pamiršau PIN“: a 1-hour link to the member's account e-mail
 // POST {"kind":"event","event_id","users":[…]}  people just written into an
 //      event's crew: each one who really is in it now is told (Renginiai)
 // POST {"mode":"new-user","user_id"}  header x-cron-secret (from user-access):
@@ -152,7 +153,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 14;
+const PUSH_FN_VERSION = 15;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -921,6 +922,31 @@ async function trackerReminders() {
   }
   return { open: open.length, sent: out };
 }
+// Team Tracker „Pamiršau PIN“: a one-time link (1 hour) to the e-mail of the member's own account
+async function onTrackerPin(memberId: string) {
+  if (!/^[0-9a-f-]{36}$/i.test(memberId)) return { error: "Nėra nario." };
+  const [m] = await db<{ id: string; name: string; user_id: string | null; reset_sent_at: string | null }[]>(`tracker_members?select=id,name,user_id,reset_sent_at&id=eq.${memberId}`);
+  if (!m) return { error: "Tokio nario nėra." };
+  if (!m.user_id) return { error: "Šis narys nesusietas su paskyra – PIN pakeisti gali administratorius (ištrinti ir užregistruoti iš naujo)." };
+  if (m.reset_sent_at && Date.now() - Date.parse(m.reset_sent_at) < 2 * 60000) return { error: "Nuoroda ką tik išsiųsta – patikrink el. paštą (ir šlamšto aplanką)." };
+  const [p] = await db<{ email: string }[]>(`profiles?select=email&id=eq.${m.user_id}`);
+  if (!p?.email) return { error: "Paskyra neturi el. pašto." };
+  const raw = crypto.getRandomValues(new Uint8Array(24));
+  const token = [...raw].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const hash = [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(token)))].map((b) => b.toString(16).padStart(2, "0")).join("");
+  await db(`tracker_pin_resets`, { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ token_hash: hash, member_id: m.id, expires_at: new Date(Date.now() + 3600000).toISOString() }) });
+  const link = `${APP()}/?ttpin=${token}`;
+  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
+    <p>Sveiki, ${esc(m.name)},</p><p>gavome prašymą pakeisti tavo <b>Team Tracker</b> PIN kodą.</p>
+    <p><a href="${link}" style="display:inline-block;background:#50AD97;color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:bold;">Pakeisti PIN kodą</a></p>
+    <p style="color:#555;">Nuoroda galioja 1 valandą ir veikia vieną kartą. Jei PIN keisti neprašei – tiesiog ignoruok šį laišką.</p>
+    <p style="color:#777;font-size:12px;margin-top:18px;">EventSolutions App · Team Tracker</p></div>`;
+  const err = await mailTo([p.email], "Team Tracker: PIN kodo keitimas", html);
+  if (err) return { error: "Laiško išsiųsti nepavyko: " + err };
+  await db(`tracker_members?id=eq.${m.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ reset_sent_at: new Date().toISOString() }) });
+  const [u, d] = p.email.split("@");
+  return { ok: true, to: (u.length > 2 ? u.slice(0, 2) + "•••" : u[0] + "•••") + "@" + d };
+}
 // the people who want notifications about a topic (Profilis → Pranešimai)
 async function wantIds(ids: string[], kind: "tasks" | "events" | "gear" | "leave" | "other"): Promise<string[]> {
   if (!ids.length) return [];
@@ -1222,6 +1248,7 @@ Deno.serve(async (req) => {
     }
     const uid = await caller(req);
     if (!uid) return json({ error: "Reikia prisijungti." }, 401);
+    if (body.kind === "tracker-pin") return json(await onTrackerPin(String(body.member_id ?? "")));
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : "decided"));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));

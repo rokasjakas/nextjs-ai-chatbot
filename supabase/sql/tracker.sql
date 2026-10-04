@@ -6,8 +6,12 @@
 --  * time_shifts     – pamaina: nuo „Pradėti darbą“ iki „Baigti darbą“
 --  * time_entries    – pamainos dalys: sandėlis, vairavimas, budėjimas, montažas,
 --                      demontažas, operatorius, pertrauka
---  * visiems matoma tik narių sąrašas (kiek užregistruota); nario laikas – tik
---    prisijungus jo PIN (administratoriui – be PIN)
+--  * narys susietas su programėlės paskyra: viena paskyra – vienas narys (registruojasi vieną kartą)
+--  * visiems matoma tik narių sąrašas (kiek užregistruota). Nario laiką mato pats narys
+--    (savo paskyra arba prisijungęs jo PIN); Admin, Office ir Projektų vadovai – visų narių
+--    (be PIN); Tech, Freelance, Runner – tik savo
+--  * pamiršus PIN: į paskyros el. paštą siunčiama nuoroda (galioja 1 val.) – ją siunčia
+--    funkcija push-notify (RESEND_API_KEY), PIN pakeičiamas per tt_pin_reset
 --  * viskas tik per funkcijas tt_* (lentelių tiesiogiai neskaito niekas);
 --    5 neteisingi PIN – 5 min. palaukti
 --  * kas valandą priminimą „Team Tracker aktyvus“ siunčia push-notify (jau veikiantis
@@ -28,6 +32,20 @@ create table if not exists public.tracker_members (
   created_at    timestamptz not null default now()
 );
 create unique index if not exists tracker_members_name on public.tracker_members (lower(name));
+alter table public.tracker_members add column if not exists user_id uuid references auth.users(id) on delete set null;
+alter table public.tracker_members add column if not exists reset_sent_at timestamptz;
+create unique index if not exists tracker_members_user on public.tracker_members (user_id) where user_id is not null;
+
+-- „Pamiršau PIN“: vienkartinės nuorodos (galioja 1 val.)
+create table if not exists public.tracker_pin_resets (
+  token_hash  text primary key,
+  member_id   uuid not null references public.tracker_members(id) on delete cascade,
+  expires_at  timestamptz not null default now() + interval '1 hour',
+  used_at     timestamptz,
+  created_at  timestamptz not null default now()
+);
+alter table public.tracker_pin_resets enable row level security;
+revoke all on public.tracker_pin_resets from anon, authenticated;
 
 create table if not exists public.tracker_tokens (
   token_hash  text primary key,
@@ -65,7 +83,12 @@ alter table public.time_entries enable row level security;
 revoke all on public.tracker_members, public.tracker_tokens, public.time_shifts, public.time_entries from anon, authenticated;
 
 -- ---------- pagalbinės ----------
--- PIN or the device's sign-in key (token); null = allowed. Admin may pass nothing (to look and delete).
+-- who may see every member's time: Admin, Office, Projektų vadovas (Tech, Freelance, Runner – only their own)
+create or replace function public.tt_manager() returns boolean
+  language sql stable security definer set search_path = public as $$
+  select coalesce(public.my_role() in ('admin','office','pm'), false)
+$$;
+-- PIN or the device's sign-in key (token); null = allowed. A manager / the member's own account may pass nothing (to look).
 create or replace function public.tt_auth(m uuid, p_pin text, p_token text, admin_ok boolean) returns text
   language plpgsql security definer set search_path = public, extensions as $$
 declare r public.tracker_members;
@@ -75,7 +98,8 @@ begin
   if r.id is null then return 'Tokio nario nėra.'; end if;
   if p_token is not null and exists (select 1 from public.tracker_tokens where member_id = m and token_hash = encode(digest(p_token, 'sha256'), 'hex')) then return null; end if;
   if p_pin is null then
-    if admin_ok and public.is_admin() then return null; end if;
+    -- looking at the time (admin_ok): the member's own account, or Admin / Office / Projektų vadovas
+    if admin_ok and (r.user_id = auth.uid() or public.tt_manager()) then return null; end if;
     return 'Prisijunk savo PIN kodu.';
   end if;
   if r.locked_until is not null and r.locked_until > now() then return 'Per daug neteisingų bandymų – palauk kelias minutes.'; end if;
@@ -106,7 +130,7 @@ $$;
 -- ---------- visiems: narių sąrašas (kiek užregistruota) ----------
 create or replace function public.tt_members() returns jsonb
   language sql stable security definer set search_path = public as $$
-  select case when public.is_approved() then coalesce((select jsonb_agg(jsonb_build_object('id', id, 'name', name, 'demo', demo, 'created_at', created_at) order by demo, lower(name)) from public.tracker_members), '[]'::jsonb) else '[]'::jsonb end
+  select case when public.is_approved() then coalesce((select jsonb_agg(jsonb_build_object('id', id, 'name', name, 'demo', demo, 'created_at', created_at, 'mine', user_id = auth.uid(), 'mail', user_id is not null) order by demo, lower(name)) from public.tracker_members), '[]'::jsonb) else '[]'::jsonb end
 $$;
 
 create or replace function public.tt_register(p_name text, p_pin text) returns jsonb
@@ -116,8 +140,9 @@ begin
   if auth.uid() is null or not public.is_approved() then return jsonb_build_object('error', 'Reikia prisijungti prie programėlės.'); end if;
   if length(nm) < 2 or length(nm) > 60 then return jsonb_build_object('error', 'Įrašyk vardą ir pavardę.'); end if;
   if coalesce(p_pin, '') !~ '^[0-9]{4,8}$' then return jsonb_build_object('error', 'PIN – 4–8 skaitmenys.'); end if;
+  if exists (select 1 from public.tracker_members where user_id = auth.uid()) then return jsonb_build_object('error', 'Tu jau užregistruotas Team Tracker – prisijunk savo PIN (pamiršus – „Pamiršau PIN“).'); end if;
   if exists (select 1 from public.tracker_members where lower(name) = lower(nm)) then return jsonb_build_object('error', 'Toks narys jau užregistruotas.'); end if;
-  insert into public.tracker_members (name, pin_hash) values (nm, crypt(p_pin, gen_salt('bf'))) returning id into mid;
+  insert into public.tracker_members (name, pin_hash, user_id) values (nm, crypt(p_pin, gen_salt('bf')), auth.uid()) returning id into mid;
   tok := encode(gen_random_bytes(24), 'hex');
   insert into public.tracker_tokens (token_hash, member_id) values (encode(digest(tok, 'sha256'), 'hex'), mid);
   return jsonb_build_object('token', tok, 'state', public.tt_state_of(mid));
@@ -130,6 +155,9 @@ declare err text; tok text;
 begin
   err := public.tt_auth(m, coalesce(p_pin, ''), null, false);
   if err is not null then return jsonb_build_object('error', err); end if;
+  -- a member registered before accounts were linked: tied to the first account that signs in with the PIN
+  update public.tracker_members set user_id = auth.uid()
+   where id = m and user_id is null and not demo and not exists (select 1 from public.tracker_members where user_id = auth.uid());
   tok := encode(gen_random_bytes(24), 'hex');
   insert into public.tracker_tokens (token_hash, member_id) values (encode(digest(tok, 'sha256'), 'hex'), m);
   return jsonb_build_object('token', tok, 'state', public.tt_state_of(m));
@@ -207,18 +235,37 @@ begin
        where s.member_id = m and s.started_at < p_to and coalesce(s.ended_at, now()) > p_from), '[]'::jsonb));
 end $$;
 
--- nario ištrynimas su visu jo laiku: pats narys (PIN / raktu) arba administratorius
+-- nario ištrynimas su visu jo laiku: pats narys (savo paskyra / PIN / raktu) arba administratorius
 create or replace function public.tt_delete(m uuid, p_token text, p_pin text) returns jsonb
   language plpgsql security definer set search_path = public, extensions as $$
 declare err text;
 begin
-  err := public.tt_auth(m, p_pin, p_token, true);
+  if public.is_admin() or exists (select 1 from public.tracker_members where id = m and user_id = auth.uid()) then err := null;
+  else err := public.tt_auth(m, p_pin, p_token, false); end if;
   if err is not null then return jsonb_build_object('error', err); end if;
   delete from public.tracker_members where id = m;
   return jsonb_build_object('ok', true);
 end $$;
 
-revoke all on function public.tt_auth(uuid, text, text, boolean), public.tt_shift_json(uuid), public.tt_state_of(uuid) from public, anon, authenticated;
+-- naujas PIN pagal nuorodą iš laiško (veikia ir neprisijungus prie programėlės; nuoroda vienkartinė, 1 val.)
+create or replace function public.tt_pin_reset(p_token text, p_pin text) returns jsonb
+  language plpgsql security definer set search_path = public, extensions as $$
+declare r public.tracker_pin_resets; nm text;
+begin
+  select * into r from public.tracker_pin_resets where token_hash = encode(digest(coalesce(p_token, ''), 'sha256'), 'hex');
+  if r.token_hash is null or r.used_at is not null then return jsonb_build_object('error', 'Nuoroda neteisinga arba jau panaudota.'); end if;
+  if r.expires_at < now() then return jsonb_build_object('error', 'Nuoroda nebegalioja (galiojo 1 val.) – paprašyk naujos.'); end if;
+  if p_pin is null then select name into nm from public.tracker_members where id = r.member_id; return jsonb_build_object('name', nm); end if;
+  if p_pin !~ '^[0-9]{4,8}$' then return jsonb_build_object('error', 'PIN – 4–8 skaitmenys.'); end if;
+  update public.tracker_members set pin_hash = crypt(p_pin, gen_salt('bf')), fails = 0, locked_until = null where id = r.member_id returning name into nm;
+  update public.tracker_pin_resets set used_at = now() where member_id = r.member_id and used_at is null;
+  delete from public.tracker_tokens where member_id = r.member_id;   -- every device signs in again with the new PIN
+  return jsonb_build_object('ok', true, 'name', nm);
+end $$;
+revoke all on function public.tt_pin_reset(text, text) from public;
+grant execute on function public.tt_pin_reset(text, text) to anon, authenticated;
+
+revoke all on function public.tt_auth(uuid, text, text, boolean), public.tt_shift_json(uuid), public.tt_state_of(uuid), public.tt_manager() from public, anon, authenticated;
 revoke all on function public.tt_members(), public.tt_register(text, text), public.tt_login(uuid, text), public.tt_logout(uuid, text),
   public.tt_state(uuid, text), public.tt_start(uuid, text, text), public.tt_switch(uuid, text, text), public.tt_stop(uuid, text, timestamptz),
   public.tt_report(uuid, text, timestamptz, timestamptz), public.tt_delete(uuid, text, text) from public, anon;

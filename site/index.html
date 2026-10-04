@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-odXEwDHAvyRo3a845tM8q79jQgPHcPVl94ULy4fgQY4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-tRnMlaeB9V9zIdeWNAhJxzKol4IoUDYZm4J9vPgH1kI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -2956,6 +2956,9 @@ main.buy-full{padding:0;max-width:none;}
 .tt-go:hover,.tt-stop:hover{filter:brightness(1.08);transform:translateY(-1px);}
 .tt-go:disabled{opacity:.6;}
 .tt-stop{background:#D9483B;box-shadow:0 6px 20px rgb(217 72 59 / .35);}
+.tt-forgotpin{grid-column:1/-1;justify-self:start;padding:0;margin-top:-2px;}
+.tt-pinpage{max-width:420px;margin:40px auto;display:flex;flex-direction:column;gap:12px;}
+.tt-pinpage .field{margin:0;}
 .tt-forgot{align-self:center;border:0;background:none;color:var(--text-dim);font:inherit;font-size:12.5px;text-decoration:underline;cursor:pointer;}
 .tt-run{border-radius:16px;padding:16px 18px;background:linear-gradient(135deg, color-mix(in srgb, var(--tc) 30%, transparent), color-mix(in srgb, var(--tc) 8%, transparent));border:1.5px solid color-mix(in srgb, var(--tc) 60%, transparent);display:flex;flex-direction:column;gap:4px;}
 .tt-run-top{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);font-weight:600;}
@@ -4614,6 +4617,7 @@ body.gl-cards .hs-fold{background:color-mix(in srgb, var(--gl-base, var(--panel)
 .nt-stk{font-size:13px;}
 main.has-stickies{position:relative;}
 .nt-layer{position:absolute;inset:0;pointer-events:none;z-index:30;}
+@media (max-width:760px){ #ntStickies{display:none !important;} }   /* phones: the notes open from „Notes“ in the bottom bar */
 /* phone „Notes“: the notes over the blurred page, above everything but the bottom bar */
 .nt-ov{position:fixed;left:0;right:0;top:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:900;overflow-y:auto;overscroll-behavior:contain;
   background:rgb(0 0 0 / .38);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);animation:fadeIn .18s ease-out;}
@@ -10673,6 +10677,12 @@ function initAuthAndRouting(){
     renderInvoiceReply(invResp, params.get('a')||'');
     return;
   }
+  const ttPinTok = params.get('ttpin');
+  if(ttPinTok){
+    document.getElementById('guestView').classList.remove('hidden');
+    renderTtPinReset(ttPinTok);
+    return;
+  }
   const pollVote = params.get('balsuoti'), pollRes = params.get('rezultatai'), pollEd = params.get('balsavimai');
   if(pollVote || pollRes || pollEd){
     document.getElementById('guestView').classList.remove('hidden');
@@ -15926,6 +15936,34 @@ function pollResFit(){
   st.style.transform = `scale(${s})`; st.parentNode.style.width = Math.round(d.w*s)+'px'; st.parentNode.style.height = Math.round(d.h*s)+'px';
 }
 // the page the e-mail's buttons open (no sign-in)
+// Team Tracker: a new PIN from the e-mail link (works without signing in to the app; the link is one-time, 1 hour)
+async function renderTtPinReset(token){
+  const el = document.getElementById('guestView');
+  const shell = inner=>{ el.innerHTML = `<div class="guest-shell"><div class="card tt-pinpage"><div class="inv-pub-h">EVENT SOLUTIONS · TEAM TRACKER</div>${inner}</div></div>`; };
+  const call = async pin=>{
+    const r = await fetch(SUPABASE_URL.replace(/\/$/,'')+'/rest/v1/rpc/tt_pin_reset', { method:'POST', headers:{ 'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY }, body:JSON.stringify({ p_token:token, p_pin:pin }) });
+    const j = await r.json().catch(()=>({})); if(!r.ok) throw new Error(j.message || 'Nepavyko ('+r.status+').'); if(j && j.error) throw new Error(j.error); return j;
+  };
+  const home = '<a class="btn" href="'+location.pathname+'">Atidaryti programėlę</a>';
+  shell('<div class="empty-state">Tikrinama nuoroda…</div>');
+  let info; try{ info = await call(null); }catch(e){ shell(`<h2 class="section-title" style="margin:0;">PIN kodo keitimas</h2><div class="mail-err">${esc(e.message)}</div>${home}`); return; }
+  shell(`<h2 class="section-title" style="margin:0;">Naujas PIN kodas</h2><div class="section-sub" style="margin:0;">${esc(info.name||'')} – įrašyk naują PIN (4–8 skaitmenys). Po pakeitimo visuose įrenginiuose reikės prisijungti nauju PIN.</div>
+    <label class="field">Naujas PIN<input type="password" inputmode="numeric" maxlength="8" id="ttNP1" autocomplete="new-password"></label>
+    <label class="field">Pakartok PIN<input type="password" inputmode="numeric" maxlength="8" id="ttNP2" autocomplete="new-password"></label>
+    <button class="btn primary" id="ttNPGo">Pakeisti PIN</button>`);
+  const p1 = document.getElementById('ttNP1'); p1.focus();
+  const go = async ()=>{
+    const a = p1.value, b = document.getElementById('ttNP2').value;
+    if(!/^\d{4,8}$/.test(a)){ toast('PIN – 4–8 skaitmenys.'); return; }
+    if(a!==b){ toast('PIN kodai nesutampa.'); return; }
+    const btn = document.getElementById('ttNPGo'); btn.disabled = true;
+    try{ const r = await call(a); history.replaceState(null, '', location.pathname);
+      shell(`<h2 class="section-title" style="margin:0;">✓ PIN pakeistas</h2><div class="section-sub" style="margin:0;">${esc(r.name||'')} – prisijunk Team Tracker nauju PIN kodu.</div>${home}`); }
+    catch(e){ toast(e.message); btn.disabled = false; }
+  };
+  document.getElementById('ttNPGo').onclick = go;
+  document.getElementById('ttNP2').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); go(); } });
+}
 async function renderInvoiceReply(token, a){
   const el = document.getElementById('guestView');
   const shell = inner=>{ el.innerHTML = `<div class="guest-shell inv-pub"><div class="card">${inner}</div></div>`; };
@@ -18153,7 +18191,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v270';
+const APP_VER = 'v271';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -33653,6 +33691,10 @@ var TT = { members:null, err:'', dev:null, state:null, period:'week', from:'', t
 function ttDev(){ if(!TT.dev){ try{ TT.dev = JSON.parse(localStorage.getItem('ttAuth')||'null'); }catch(e){} if(!TT.dev || typeof TT.dev!=='object') TT.dev = { cur:null, tokens:{} }; TT.dev.tokens = TT.dev.tokens || {}; } return TT.dev; }
 function ttDevSave(){ try{ localStorage.setItem('ttAuth', JSON.stringify(TT.dev)); }catch(e){} }
 const ttTok = m=>ttDev().tokens[m] || null;
+// Admin, Office and Projektų vadovai see every member's time; the others only their own (and the demo)
+const ttManager = ()=>['admin','office','pm'].includes(ACCESS.role) || isSuper();
+const ttMine = ()=>(TT.members||[]).find(m=>m.mine) || null;
+const ttViewable = ()=>(TT.members||[]).filter(m=>ttManager() || m.mine || m.demo || ttTok(m.id));
 const ttName = m=>((TT.members||[]).find(x=>x.id===m)||{}).name || '';
 async function ttRpc(fn, args){
   const sb = getSb(); if(!sb) throw new Error('Nėra ryšio.');
@@ -33748,7 +33790,8 @@ async function renderTrackerTab(){
   await ttLoadMembers();
   if(currentTab!=='tracker') return;
   if(TT.view && !(TT.members||[]).some(m=>m.id===TT.view)) TT.view = null;
-  if(!TT.view) TT.view = ttDev().cur || null;
+  if(TT.view && !ttViewable().some(m=>m.id===TT.view)) TT.view = null;
+  if(!TT.view) TT.view = ttDev().cur || (ttMine()||{}).id || null;
   await Promise.all([ttLoadState(), ttLoadReport()]);
   if(currentTab!=='tracker') return;
   ttRender();
@@ -33762,14 +33805,14 @@ function ttRender(){
     <div class="tt-top">
       <div class="tt-count"><span class="tt-count-n">${n}</span><span>${n===1 ? 'narys užregistruotas' : (n%10>=2 && n%10<=9 && !(n%100>=12 && n%100<=19)) ? 'nariai užregistruoti' : 'narių užregistruota'}</span></div>
       <span style="flex:1"></span>
-      <button class="btn" id="ttReg">${slIcon('plus')} Registruoti narį</button>
+      ${ttMine() ? '' : `<button class="btn" id="ttReg">${slIcon('plus')} Registruotis</button>`}
     </div>
     ${TT.err ? `<div class="mail-err">${esc(TT.err)}</div>` : ''}
     <div class="tt-grid">
       <section class="tt-card tt-clockcard" id="ttClock"></section>
       <section class="tt-card tt-repcard" id="ttRep"></section>
     </div>`;
-  document.getElementById('ttReg').onclick = ttRegister;
+  const rg = document.getElementById('ttReg'); if(rg) rg.onclick = ttRegister;
   ttRenderClock(true); ttRenderReport();
 }
 const ttKindBtns = (cur, attr)=>`<div class="tt-kinds">${TT_KINDS.map(k=>`<button class="tt-kind ${cur===k.k?'on':''}" ${attr}="${k.k}" style="--tc:${k.c}">${slIcon(k.i)}<span>${k.t}</span></button>`).join('')}</div>`;
@@ -33871,9 +33914,10 @@ function ttRenderClock(full){
 function ttLoginForm(p, preset){
   const ms = TT.members || [];
   return `<div class="tt-login">
-    <label class="field">Narys<select id="${p}M">${preset ? '' : '<option value="">— pasirink —</option>'}${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===preset?'selected':''}>${esc(m.name)}${m.demo?' (demo, PIN 0000)':''}</option>`).join('')}</select></label>
+    ${(()=>{ if(!preset && ttMine()) preset = ttMine().id; return ''; })()}<label class="field">Narys<select id="${p}M">${preset ? '' : '<option value="">— pasirink —</option>'}${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===preset?'selected':''}>${esc(m.name)}${m.demo?' (demo, PIN 0000)':''}</option>`).join('')}</select></label>
     <label class="field">PIN kodas<input type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" id="${p}P" placeholder="••••"></label>
-    <button class="btn primary" id="${p}Go">Prisijungti</button></div>`;
+    <button class="btn primary" id="${p}Go">Prisijungti</button>
+    <button type="button" class="tt-forgot tt-forgotpin" id="${p}F">Pamiršau PIN kodą</button></div>`;
 }
 function ttLoginWire(p, done){
   const go = document.getElementById(p+'Go'), pin = document.getElementById(p+'P'), sel = document.getElementById(p+'M');
@@ -33886,11 +33930,23 @@ function ttLoginWire(p, done){
   };
   go.onclick = run;
   pin.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); run(); } });
+  const fg = document.getElementById(p+'F');
+  if(fg) fg.onclick = async ()=>{
+    const m = sel.value; if(!m){ toast('Pasirink narį.'); return; }
+    const mm = (TT.members||[]).find(x=>x.id===m) || {};
+    if(mm.demo){ toast('Demo darbuotojo PIN – 0000.'); return; }
+    if(!(await uiConfirm(`Išsiųsti „${mm.name}“ nuorodą PIN kodui pakeisti? Ji ateis į to nario paskyros el. paštą ir galios 1 valandą.`, { yes:'Siųsti nuorodą', danger:false }))) return;
+    fg.disabled = true;
+    const r = await notifyCall({ kind:'tracker-pin', member_id:m });
+    fg.disabled = false;
+    if(r && r.ok) toast('📧 Nuoroda išsiųsta į '+r.to+'. Ji galioja 1 valandą.', 7000);
+    else toast((r && r.error) || ((window.NOTIFY_LAST||{}).error) || 'Nepavyko išsiųsti nuorodos.', 7000);
+  };
 }
 function ttRegister(){
-  openModal(`<h3>Registruoti Team Tracker narį</h3>
-    <div class="section-sub" style="margin:0 0 10px;">Kiekvienas narys turi savo PIN kodą – juo prisijungia bet kuriame įrenginyje. PIN niekam nerodomas.</div>
-    <label class="field">Vardas ir pavardė<input type="text" id="ttRName" maxlength="60" placeholder="pvz. Jonas Jonaitis"></label>
+  openModal(`<h3>Registracija Team Tracker</h3>
+    <div class="section-sub" style="margin:0 0 10px;">Registruojiesi vieną kartą – narys susiejamas su tavo paskyra (${esc((ACCESS.profile||{}).email||'')}). Savo PIN kodu prisijungsi bet kuriame įrenginyje; pamiršus PIN, nuoroda jam pakeisti ateis į šį el. paštą.</div>
+    <label class="field">Vardas ir pavardė<input type="text" id="ttRName" maxlength="60" placeholder="pvz. Jonas Jonaitis" value="${esc([(ACCESS.profile||{}).first_name, (ACCESS.profile||{}).last_name].filter(Boolean).join(' '))}"></label>
     <div class="grid cols-2" style="gap:10px;">
       <label class="field">PIN kodas (4–8 skaitmenys)<input type="password" inputmode="numeric" maxlength="8" id="ttRPin"></label>
       <label class="field">Pakartok PIN<input type="password" inputmode="numeric" maxlength="8" id="ttRPin2"></label>
@@ -33911,10 +33967,10 @@ function ttRegister(){
 // the right card: a member's hours for a period
 function ttRenderReport(){
   const box = document.getElementById('ttRep'); if(!box) return;
-  const ms = TT.members || [], m = TT.view, admin = ACCESS.role==='admin' || isSuper();
+  const ms = ttViewable(), m = TT.view, admin = ACCESS.role==='admin' || isSuper();
   const [f, t] = ttRange();
   let body = '';
-  if(!m) body = `<div class="tt-none">Pasirink narį – matysi, kiek jis pradirbo per pasirinktą laikotarpį.</div>`;
+  if(!m) body = `<div class="tt-none">${ttManager() ? 'Pasirink narį – matysi, kiek jis pradirbo per pasirinktą laikotarpį.' : ttMine() ? 'Pasirink save – matysi, kiek pradirbai per pasirinktą laikotarpį.' : 'Užsiregistruok – matysi savo pradirbtą laiką. Kitų narių laiką mato tik administracija.'}</div>`;
   else if(TT.repErr==='pin') body = `<div class="tt-pinask"><div class="section-sub" style="margin:0 0 8px;">„${esc(ttName(m))}“ laiką mato tik pats narys – prisijunk jo PIN kodu.</div>${ttLoginForm('ttV', m)}</div>`;
   else if(TT.repErr) body = `<div class="mail-err">${esc(TT.repErr)}</div>`;
   else if(TT.report){
@@ -33934,7 +33990,7 @@ function ttRenderReport(){
           <span class="tt-stack sm">${TT_KINDS.filter(k=>sm.by[k.k]).map(k=>`<span style="flex:${sm.by[k.k]};background:${k.c}"></span>`).join('')}</span><b>${esc(ttHm(sm.work))}</b></summary>
           ${ttSegs(s.entries)}</details>`; }).join('') || '<div class="tt-none">Šiuo laikotarpiu pamainų nėra.</div>'}</div>`;
   }
-  const mine = m && (ttTok(m) || admin);
+  const mine = m && (ttTok(m) || admin || ((TT.members||[]).find(x=>x.id===m)||{}).mine);
   box.innerHTML = `<div class="tt-rep-h"><h2 class="tt-h">${slIcon('chart')} Pradirbtas laikas</h2>
       ${m && TT.report && !TT.repErr ? `<button class="btn small" id="ttXls" title="Atsisiųsti Excel">${slIcon('download')} Excel</button>` : ''}
       ${mine ? `<button class="btn small tt-delbtn" id="ttDel" title="Ištrinti narį su visu jo laiku">${slIcon('bin')}</button>` : ''}</div>
@@ -34312,6 +34368,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 10:49', v:'v271', k:'new', t:'Team Tracker: teisės, viena registracija, „Pamiršau PIN“', f:'Tech, Freelance ir Runner nariai Team Tracker mato tik savo pradirbtą laiką (ir demo), Admin, Office ir Projektų vadovai – visų narių, be PIN. Registruojamasi vieną kartą – narys susiejamas su tavo paskyra. Pamiršus PIN – „Pamiršau PIN kodą“: į paskyros el. paštą ateina nuoroda (galioja 1 valandą, vienkartinė), kurioje įrašai naują PIN. Telefone sticky notes pagrindiniame lange nebesirodo – jie atsidaro per „Notes“.' },
   { d:'2026-10-04 10:45', v:'v270', k:'new', t:'Tamsūs išskleidžiami sąrašai ir „Notes“ telefone', f:'Visi išskleidžiami sąrašai (pvz. nario pasirinkimas Team Tracker) kompiuteryje dabar atsidaro tamsūs, su stiklo efektu ir baltu tekstu, vietoj pilko sistemos sąrašo (veikia ir rodyklės, Enter, Esc). Telefone apatinėje juostoje šalia „Meniu“ – mygtukas „Notes“: atsidaro visi tavo užrašai ir sticky notes ant užblurinto fono, viršuje galima iškart parašyti ir išsaugoti naują užrašą, paspaudus užrašą – redaguoti; dar kartą paspaudus „Notes“ viskas pradingsta. Juostoje dabar: dvi tavo programos, Namai, Notes, Meniu.' },
   { d:'2026-10-04 10:33', v:'v269', k:'new', t:'Team Tracker – darbo laiko apskaita', f:'Naujas puslapis „Team Tracker“ (Pradžioje ir meniu), kaip Connecteam laikrodis. Kiekvienas narys užsiregistruoja su savo PIN kodu ir prisijungia atskirai (viename telefone gali dirbti keli). Pradėdamas darbą pasirenki veiklą – sandėlis, vairavimas, budėjimas, montažas, demontažas, operatorius, pertrauka – ir gali ją keisti bet kada: ankstesnė išsaugoma su savo laiku, nauja skaičiuojama iš naujo. Baigus matosi bendras pradirbtas laikas ir kiek skirta kiekvienai veiklai. Viršuje rodomas vykstantis darbas, kas valandą ateina priminimas, kad Team Tracker aktyvus. Visiems matoma tik kiek narių užregistruota; nario valandas pagal laikotarpį (šiandien, savaitė, mėnuo, pasirinkti) matai prisijungęs jo PIN, galima atsisiųsti Excel ir ištrinti narį. Pridėtas „Demo darbuotojas“ (PIN 0000).' },
   { d:'2026-10-04 10:08', v:'v268', k:'new', t:'Pirkiniai: „Nupirkta“, nuorodos, ryškesni skyriai', f:'Prie kiekvienos eilutės – mygtukas „Nupirkta“: eilutė nukeliauja į apačią, papilkėja ir pažymima, kas ir kada nupirko (paspaudus dar kartą – grąžinama į viršų); nupirktų suma rodoma atskirai. Stulpelyje „Nuoroda“ – mygtukas „Pridėti nuorodą“, pridėta nuoroda atsidaro naujame lange (✎ – pakeisti). Skyrių juostos – stiklo efektu su ryškiu apvadu ir paryškintu tekstu (šviesiame režime – atvirkščiai). Nauja eilutė („+ Eilutė“) atsiranda pačiame viršuje.' },
