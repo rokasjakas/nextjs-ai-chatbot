@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-gevqBYjkE63kcW+LmIuQRQE1jxEgL/EZUzwoB9rPg9w=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-xIatSjXql34Dvz3D3XwbaNLShoYp8T7zg83BlTEZ8EA=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4735,6 +4735,14 @@ main.has-stickies{position:relative;}
 .sf-free small{color:var(--text-dim);font-size:11.5px;}
 .sf-truss{font-size:13px;margin:0;}
 .sf-note{color:var(--text-dim);font-size:12px;line-height:1.4;}
+.sf-wrap.sf-off .sf-3d{opacity:.5;}
+.sf-apply{flex-direction:column;align-items:stretch;gap:6px;} .sf-apply .sf-seg{display:flex;} .sf-apply .sf-seg button{flex:1;}
+.rm-sf{margin-top:16px;padding:12px;border:1px solid var(--border);border-radius:14px;}
+.rm-sf.need{border-color:#E05050;box-shadow:0 0 0 3px color-mix(in srgb, #E05050 25%, transparent);}
+.rm-sf-h{display:flex;align-items:center;gap:8px;font-size:14px;}
+.rm-sf-req{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#E05050;}
+.rm-sf-st{margin-left:auto;font-size:12.5px;font-weight:700;} .rm-sf-st.ok{color:#50AD97;} .rm-sf-st.no{color:#E05050;}
+.rm-sf .sf-3d{height:300px;}
 @media (max-width:640px){ .sf-wrap{grid-template-columns:1fr;} .sf-3d{height:280px;} }
 .inv-foldbtn{width:28px;height:28px;border:0;border-radius:8px;background:none;color:var(--text-dim);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
 .inv-foldbtn:hover{background:rgb(var(--hi-rgb) / .08);color:var(--text);}
@@ -5545,7 +5553,16 @@ function boxOrientations(box){
 // may something be loaded on the item in this position? (Įranga → „Kraunama ant“: the faces marked in 3D)
 const STACK_PAIRS = { h:['top','bottom'], l:['front','back'], w:['left','right'] };
 // the faces marked in Įranga, taken from the item itself (so later changes count in old load lists too)
-function ldRowFaces(r){ if(r.kind!=='item' || !r.refId) return null; const it = getItem(r.refId); return it && it.topFaces ? it.topFaces : null; }
+function ldRowFaces(r){
+  if(r.kind==='case'){ const v = ldRowRule(r); return v && v.topFaces ? v.topFaces : null; }
+  if(r.kind!=='item' || !r.refId) return null; const it = getItem(r.refId); return it && it.topFaces ? it.topFaces : null; }
+// Pakavimas → the variant's own „Kraunama ant“ (required there); taken live, so old load lists follow later changes
+function ldRowRule(r){ if(r.kind!=='case' || !r.ruleId) return null; const v = (STATE.rules||[]).find(x=>x.id===r.ruleId); return v && v.stackSet ? v : null; }
+function ldRowStack(r){
+  const v = ldRowRule(r);
+  if(!v) return { stackable:r.stackable, stackExceptionTruss:r.stackExceptionTruss, orientationLocked:r.orientationLocked };
+  return { stackable:v.stackable!==false, stackExceptionTruss:!!v.stackExceptionTruss, orientationLocked:!!v.orientationLocked };
+}
 function boxTopOk(box, up){
   if(!box.topFaces) return box.stackable!==false;
   return STACK_PAIRS[up||'h'].some(f=>box.topFaces[f]);
@@ -6157,8 +6174,10 @@ function stackFacesOf(it){
   if(it.topFaces) return Object.assign({}, it.topFaces);
   const on = it.stackable!==false; const f = {}; SF_FACES.forEach(([k])=>{ f[k] = on; }); return f;
 }
-function stackFacesSummary(it){
-  if(it.stackFree) return { t:'Nedaro įtakos', cls:'all' };
+function stackFacesSummary(it, isRule){
+  if(it.stackFree) return { t:'Netaikoma', cls:'all' };
+  if(isRule && !it.stackSet) return { t:'⚠ Nenustatyta', cls:'none' };
+  if(!isRule && !it.topFaces && it.stackable!==false && !it.stackExceptionTruss && !it.orientationLocked) return { t:'Netaikoma', cls:'all' };
   const f = stackFacesOf(it), on = SF_FACES.filter(([k])=>f[k]);
   const truss = it.stackExceptionTruss ? ' · santvaros' : '';
   if(on.length===6) return { t:'Visos plokštumos'+truss, cls:'all' };
@@ -6166,54 +6185,72 @@ function stackFacesSummary(it){
   if(on.length===1) return { t:on[0][1]+truss, cls:'some' };
   return { t:on.length+' plokštumos'+truss, cls:'some' };
 }
+// the editor itself (3D + face list + Vartyti + santvaros [+ Taikyti / Netaikyti]); used by Įranga (a popup, optional)
+// and by Pakavimas (inside the variant form, required). st = { faces, truss, rot, free, touched }
+function stackFacesEditor(host, st, o){
+  const can = o.can, opt = !!o.optional;
+  host.innerHTML = `<div class="sf-wrap"><div class="sf-3d"><div class="sf-load">Kraunamas 3D…</div></div>
+      <div class="sf-side">${opt ? `<div class="sf-rot sf-apply"><span>Krovimo taisyklė</span><div class="sf-seg"><button type="button" data-apply="1" ${can?'':'disabled'}>Taikyti</button><button type="button" data-apply="0" ${can?'':'disabled'}>Netaikyti</button></div></div>` : ''}
+        <div class="sf-faces"></div>
+        <div class="sf-quick">${can ? `<button type="button" class="btn small" data-q="all">✓ Galima ant visų kraštinių</button><button type="button" class="btn small" data-q="top">Tik viršus</button><button type="button" class="btn small" data-q="none">✕ Niekur</button>` : ''}</div>
+        <div class="sf-rot"><span>Vartyti</span><div class="sf-seg"><button type="button" data-rot="1" ${can?'':'disabled'}>Galima</button><button type="button" data-rot="0" ${can?'':'disabled'}>Negalima</button></div></div>
+        <label class="checkbox-row sf-truss"><input type="checkbox" class="sf-tr" ${st.truss?'checked':''} ${can?'':'disabled'}> Santvaras (truss) galima dėti visada</label>
+        ${opt ? `<small class="sf-note sf-offnote">Netaikoma – <b>nedaro įtakos</b>: ant daikto galima dėti bet ką, ant bet kurios pusės, ir vartyti kaip patogu.</small>` : ''}
+        <small class="sf-note">${o.note || 'Krovimo planas ant šio daikto dės kitus tik tada, kai į viršų atsukta žalia plokštuma. Jei vartyti negalima – daiktas visada stovi viršumi į viršų; jei galima – parenkama tinkama padėtis.'}</small>
+      </div></div>`;
+  const q = sel=>host.querySelector(sel), qa = sel=>host.querySelectorAll(sel);
+  let view = null, dead = false;
+  const paint = ()=>{
+    const free = opt && st.free, box = q('.sf-faces');
+    qa('[data-apply]').forEach(b=>b.classList.toggle('on', (b.dataset.apply==='1')===!free));
+    qa('[data-rot]').forEach(b=>{ b.classList.toggle('on', (b.dataset.rot==='1')===st.rot); b.disabled = !can || free; });
+    q('.sf-quick').classList.toggle('dis', free); box.classList.toggle('dis', free);
+    q('.sf-tr').disabled = !can || free; q('.sf-wrap').classList.toggle('sf-off', free);
+    const on = q('.sf-offnote'); if(on) on.style.display = free ? '' : 'none';
+    box.innerHTML = SF_FACES.map(([k,t])=>`<button type="button" class="sf-face ${st.faces[k]?'on':'off'}" data-face="${k}" ${can && !free?'':'disabled'}><span class="sf-dot"></span>${t}<small>${st.faces[k] ? 'galima' : 'negalima'}</small></button>`).join('');
+    box.querySelectorAll('[data-face]').forEach(b=>b.onclick = ()=>{ st.faces[b.dataset.face] = !st.faces[b.dataset.face]; st.touched = true; paint(); });
+    if(view) view.paint();
+    if(o.onChange) o.onChange();
+  };
+  const set = v=>{ SF_FACES.forEach(([k])=>{ st.faces[k] = typeof v==='function' ? v(k) : v; }); st.touched = true; paint(); };
+  qa('[data-q]').forEach(b=>b.onclick = ()=>set(b.dataset.q==='all' ? true : b.dataset.q==='top' ? (k=>k==='top') : false));
+  q('.sf-tr').onchange = e=>{ st.truss = e.target.checked; st.touched = true; paint(); };
+  qa('[data-rot]').forEach(b=>b.onclick = ()=>{ st.rot = b.dataset.rot==='1'; st.touched = true; paint(); });
+  qa('[data-apply]').forEach(b=>b.onclick = ()=>{ st.free = b.dataset.apply!=='1'; st.touched = true; if(st.free){ SF_FACES.forEach(([k])=>{ st.faces[k] = true; }); st.rot = true; } paint(); });
+  paint();
+  const dims = ()=>{ const d = o.dims(); return d.L && d.W && d.H ? d : { L:50, W:50, H:50 }; };
+  let shown = '';
+  const build = ()=>{
+    if(dead || typeof THREE==='undefined') return;
+    const d = dims(), key = d.L+'x'+d.W+'x'+d.H; if(key===shown && view) return; shown = key;
+    const el = q('.sf-3d'); if(!el) return;
+    if(view) view.dispose();
+    view = stackFaces3d(el, d.L, d.H, d.W, st.faces, k=>{ if(!can || (opt && st.free)) return; st.faces[k] = !st.faces[k]; st.touched = true; paint(); });
+  };
+  libNeed('three').then(ok=>{ if(dead) return; if(!ok){ const el = q('.sf-3d'); if(el) el.innerHTML = '<div class="sf-load">3D vaizdo nepavyko įkelti – plokštumas pažymėk sąraše.</div>'; return; } build(); paint(); });
+  return { paint, rebuild:build, dispose:()=>{ dead = true; if(view) view.dispose(); view = null; } };
+}
+function stackFacesState(o){ return { faces:stackFacesOf(o), truss:!!o.stackExceptionTruss, rot:!o.orientationLocked, free:!!o.stackFree, touched:false }; }
+function stackFacesPatch(st, opt){
+  if(opt && st.free) return { topFaces:null, stackable:true, stackExceptionTruss:false, orientationLocked:false, stackFree:true };
+  return { topFaces:Object.assign({}, st.faces), stackable:SF_FACES.some(([k])=>st.faces[k]), stackExceptionTruss:st.truss, orientationLocked:!st.rot, stackFree:false };
+}
+// Įranga: optional – „Netaikyti“ means it does not matter
 async function stackFacesOpen(id){
   const it = getItem(id); if(!it) return;
   const can = canEdit('inventory');
-  const faces = stackFacesOf(it); let truss = !!it.stackExceptionTruss, rot = !it.orientationLocked, free = !!it.stackFree;
   const L = +it.L||0, W = +it.W||0, H = +it.H||0, noDims = !(L && W && H);
+  const st = stackFacesState(it);
+  if(!it.topFaces && it.stackable!==false && !it.stackExceptionTruss && !it.orientationLocked) st.free = true;
   openModal(`<h3 style="margin:0 0 4px;">Kraunama ant – ${esc(it.name)}</h3>
-    <div class="section-sub" style="margin:0 0 10px;">${noDims ? '⚠ Matmenys neįvesti – rodoma kaip kubas. ' : `${L} × ${W} × ${H} cm (I × P × A). `}Spustelėk plokštumą: <b style="color:#50AD97">žalia</b> – ant jos galima krauti, <b style="color:#E05050">raudona</b> – negalima. Tempk, kad pasuktum.</div>
-    <div class="sf-wrap"><div class="sf-3d" id="sf3d"><div class="sf-load">Kraunamas 3D…</div></div>
-      <div class="sf-side"><div class="sf-faces" id="sfFaces"></div>
-        <div class="sf-quick" id="sfQuick">${can ? `<button type="button" class="btn small" id="sfAll">✓ Galima ant visų kraštinių</button><button type="button" class="btn small" id="sfTop">Tik viršus</button><button type="button" class="btn small" id="sfNone">✕ Niekur</button>` : ''}</div>
-        <div class="sf-rot"><span>Vartyti</span><div class="sf-seg"><button type="button" data-rot="1" ${can?'':'disabled'}>Galima</button><button type="button" data-rot="0" ${can?'':'disabled'}>Negalima</button></div></div>
-        <label class="checkbox-row sf-truss"><input type="checkbox" id="sfTruss" ${truss?'checked':''} ${can?'':'disabled'}> Santvaras (truss) galima dėti visada</label>
-        <label class="checkbox-row sf-free"><input type="checkbox" id="sfFree" ${free?'checked':''} ${can?'':'disabled'}> <span><b>Nedaro įtakos</b><small>ant daikto galima dėti bet ką, ant bet kurios pusės, ir vartyti kaip patogu</small></span></label>
-        <small class="sf-note">Krovimo planas ant šio daikto dės kitus tik tada, kai į viršų atsukta žalia plokštuma. Jei vartyti negalima – daiktas visada stovi viršumi į viršų (kaip „Fiksuota pusė“ lentelėje); jei galima – parenkama tinkama padėtis.</small>
-      </div></div>
+    <div class="section-sub" style="margin:0 0 10px;">${noDims ? '⚠ Matmenys neįvesti – rodoma kaip kubas. ' : `${L} × ${W} × ${H} cm (I × P × A). `}Neprivaloma: pasirink <b>Taikyti</b> ir spustelėk plokštumą – <b style="color:#50AD97">žalia</b> – ant jos galima krauti, <b style="color:#E05050">raudona</b> – negalima. Tempk, kad pasuktum.</div>
+    <div id="sfEd"></div>
     <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button class="btn" id="sfNo">${can ? 'Atšaukti' : 'Uždaryti'}</button>${can ? '<button class="btn primary" id="sfSave">Išsaugoti</button>' : ''}</div>`);
-  let view = null;
-  const paint = ()=>{
-    const box = document.getElementById('sfFaces'); if(!box) return;
-    document.querySelectorAll('[data-rot]').forEach(b=>{ b.classList.toggle('on', (b.dataset.rot==='1')===rot); b.disabled = !can || free; });
-    const q = document.getElementById('sfQuick'); if(q) q.classList.toggle('dis', free);
-    const tr = document.getElementById('sfTruss'); if(tr) tr.disabled = !can || free;
-    box.classList.toggle('dis', free);
-    box.innerHTML = SF_FACES.map(([k,t])=>`<button type="button" class="sf-face ${faces[k]?'on':'off'}" data-face="${k}" ${can && !free?'':'disabled'}><span class="sf-dot"></span>${t}<small>${faces[k] ? 'galima' : 'negalima'}</small></button>`).join('');
-    box.querySelectorAll('[data-face]').forEach(b=>b.onclick = ()=>{ faces[b.dataset.face] = !faces[b.dataset.face]; paint(); });
-    if(view) view.paint();
-  };
-  const set = v=>{ SF_FACES.forEach(([k])=>{ faces[k] = typeof v==='function' ? v(k) : v; }); paint(); };
-  const $ = id=>document.getElementById(id);
-  if($('sfAll')) $('sfAll').onclick = ()=>set(true);
-  if($('sfTop')) $('sfTop').onclick = ()=>set(k=>k==='top');
-  if($('sfNone')) $('sfNone').onclick = ()=>set(false);
-  $('sfTruss').onchange = e=>{ truss = e.target.checked; };
-  document.querySelectorAll('[data-rot]').forEach(b=>b.onclick = ()=>{ rot = b.dataset.rot==='1'; paint(); });
-  $('sfFree').onchange = e=>{ free = e.target.checked; if(free){ set(true); rot = true; } paint(); };
-  const close = ()=>{ if(view) view.dispose(); view = null; closeModal(); };
-  $('sfNo').onclick = close;
-  if($('sfSave')) $('sfSave').onclick = ()=>{
-    const any = SF_FACES.some(([k])=>faces[k]);
-    updateItem(id, free ? { topFaces:null, stackable:true, stackExceptionTruss:false, orientationLocked:false, stackFree:true }
-      : { topFaces:Object.assign({}, faces), stackable:any, stackExceptionTruss:truss, orientationLocked:!rot, stackFree:false });
-    close(); refreshInv(); toast('Išsaugota: '+stackFacesSummary(getItem(id)).t+'.');
-  };
-  paint();
-  if(!(await libNeed('three'))){ const el = $('sf3d'); if(el) el.innerHTML = '<div class="sf-load">3D vaizdo nepavyko įkelti – plokštumas pažymėk sąraše dešinėje.</div>'; return; }
-  const host = $('sf3d'); if(!host) return;
-  view = stackFaces3d(host, noDims ? 50 : L, noDims ? 50 : H, noDims ? 50 : W, faces, k=>{ if(!can || free) return; faces[k] = !faces[k]; paint(); });
-  paint();
+  const ed = stackFacesEditor(document.getElementById('sfEd'), st, { can, optional:true, dims:()=>({ L, W, H }) });
+  const close = ()=>{ ed.dispose(); closeModal(); };
+  document.getElementById('sfNo').onclick = close;
+  const sv = document.getElementById('sfSave');
+  if(sv) sv.onclick = ()=>{ updateItem(id, stackFacesPatch(st, true)); close(); refreshInv(); toast('Išsaugota: '+stackFacesSummary(getItem(id)).t+'.'); };
 }
 function stackFaces3d(host, L, H, W, faces, onPick){
   host.innerHTML = '';
@@ -6563,7 +6600,7 @@ function renderRulesTab(){
         <table>
           <thead><tr>
             <th>Daiktas</th><th>Vnt./dėžė</th><th>Dėžės pavadinimas</th><th>Santr.</th>
-            <th>I×P×A (cm)</th><th>Dėžės svoris (kg)</th><th>Bendras svoris pilnai dėžei</th><th></th>
+            <th>I×P×A (cm)</th><th>Kraunama ant</th><th>Dėžės svoris (kg)</th><th>Bendras svoris pilnai dėžei</th><th></th>
           </tr></thead>
           <tbody id="rulesTbody"></tbody>
         </table>
@@ -6578,7 +6615,7 @@ function renderRulesTab(){
 function renderRulesRows(){
   const tbody = document.getElementById('rulesTbody');
   if(!STATE.rules.length){
-    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Kol kas nėra pakavimo variantų. Paspausk „+ Naujas pakavimo variantas“.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">Kol kas nėra pakavimo variantų. Paspausk „+ Naujas pakavimo variantas“.</td></tr>`;
     return;
   }
   tbody.innerHTML = STATE.rules.map(r=>{
@@ -6590,6 +6627,7 @@ function renderRulesRows(){
       <td>${esc(r.caseName)}</td>
       <td><span class="badge" style="background:${GROUP_COLOR[it?it.group:'kita']}">${esc(r.abbr)}</span></td>
       <td>${fmt(r.L,0)}×${fmt(r.W,0)}×${fmt(r.H,0)}</td>
+      <td><button type="button" class="btn small sf-btn ${stackFacesSummary(r, true).cls}" data-sfr title="Atidaryti: ant kurių dėžės plokštumų galima krauti (būtina)">${slIcon('package')}<span>${esc(stackFacesSummary(r, true).t)}</span></button></td>
       <td>${fmt(r.weight,1)}</td>
       <td>${fmt(totalW,1)} kg</td>
       <td><button class="icon-btn edit-rule">✎</button><button class="icon-btn del-rule">✕</button></td>
@@ -6599,6 +6637,10 @@ function renderRulesRows(){
     const id = e.target.closest('tr').getAttribute('data-id');
     openRuleModal(STATE.rules.find(r=>r.id===id));
   }));
+  tbody.querySelectorAll('[data-sfr]').forEach(b=>b.addEventListener('click', e=>{
+    const id = e.target.closest('tr').getAttribute('data-id');
+    openRuleModal(STATE.rules.find(r=>r.id===id), true);
+  }));
   tbody.querySelectorAll('.del-rule').forEach(b=>b.addEventListener('click', e=>{
     const id = e.target.closest('tr').getAttribute('data-id');
     STATE.rules = STATE.rules.filter(r=>r.id!==id);
@@ -6606,7 +6648,7 @@ function renderRulesRows(){
   }));
 }
 
-function openRuleModal(existing){
+function openRuleModal(existing, toStack){
   const items = allItems().slice().sort((a,b)=>a.name.localeCompare(b.name,'lt'));
   const isEdit = !!existing;
   const initialItem = existing ? getItem(existing.itemId) : null;
@@ -6624,6 +6666,11 @@ function openRuleModal(existing){
       <label class="field">Plotis (cm)<input type="number" id="rm_W" value="${existing?existing.W:40}"></label>
       <label class="field">Aukštis (cm)<input type="number" id="rm_H" value="${existing?existing.H:40}"></label>
     </div>
+    <div class="rm-sf" id="rm_sfBox">
+      <div class="rm-sf-h"><b>Kraunama ant</b> <span class="rm-sf-req">būtina</span><span class="rm-sf-st" id="rm_sfSt"></span></div>
+      <div class="section-sub" style="margin:2px 0 8px;">Spustelėk dėžės plokštumą: <b style="color:#50AD97">žalia</b> – ant jos galima krauti, <b style="color:#E05050">raudona</b> – negalima. Nustatyk, ar dėžę galima vartyti. Tempk, kad pasuktum.</div>
+      <div id="rm_sf"></div>
+    </div>
     <div class="row" style="margin-top:16px;justify-content:flex-end;">
       <button class="btn" id="rm_cancel">Atšaukti</button>
       <button class="btn primary" id="rm_save">${isEdit?'Išsaugoti':'Pridėti'}</button>
@@ -6633,10 +6680,23 @@ function openRuleModal(existing){
   registerItemSearch(rmItemInput, items.map(it=>({id:it.id, label:it.name})), {
     selectedId: initialItem ? initialItem.id : ''
   });
-  document.getElementById('rm_cancel').onclick = closeModal;
+  // „Kraunama ant“ – required for every variant (a fresh one starts unset: pick at least one face or ✕ Niekur)
+  const sfSt = existing && existing.stackSet ? stackFacesState(existing) : { faces:{ front:false, back:false, top:false, bottom:false, right:false, left:false }, truss:false, rot:true, free:false, touched:false };
+  const sfDone = ()=>!!(existing && existing.stackSet) || sfSt.touched;
+  const sfStat = ()=>{ const el = document.getElementById('rm_sfSt'); if(!el) return;
+    const ok = sfDone(); el.textContent = ok ? '✓ '+stackFacesSummary(Object.assign({ stackSet:true }, stackFacesPatch(sfSt)), true).t : 'nenustatyta';
+    el.className = 'rm-sf-st '+(ok ? 'ok' : 'no'); if(ok){ const b = document.getElementById('rm_sfBox'); if(b) b.classList.remove('need'); } };
+  const dimsNow = ()=>({ L:parseFloat(document.getElementById('rm_L').value)||0, W:parseFloat(document.getElementById('rm_W').value)||0, H:parseFloat(document.getElementById('rm_H').value)||0 });
+  const sfEd = stackFacesEditor(document.getElementById('rm_sf'), sfSt, { can:true, dims:dimsNow, onChange:sfStat,
+    note:'Krovimo planas ant šios dėžės dės kitus tik tada, kai į viršų atsukta žalia plokštuma. Jei vartyti negalima – dėžė visada stovi viršumi į viršų.' });
+  ['rm_L','rm_W','rm_H'].forEach(k=>document.getElementById(k).addEventListener('input', ()=>sfEd.rebuild()));
+  sfStat();
+  if(toStack) setTimeout(()=>{ const b = document.getElementById('rm_sfBox'); if(b) b.scrollIntoView({ block:'start', behavior:'smooth' }); }, 60);
+  document.getElementById('rm_cancel').onclick = ()=>{ sfEd.dispose(); closeModal(); };
   document.getElementById('rm_save').onclick = ()=>{
     const itemId = rmItemInput.dataset.selectedId;
     if(!itemId){ toast('Pasirink daiktą iš sąrašo.'); return; }
+    if(!sfDone()){ toast('Nustatyk „Kraunama ant“ – ant kurių dėžės plokštumų galima krauti (būtina).'); const b = document.getElementById('rm_sfBox'); if(b){ b.classList.add('need'); b.scrollIntoView({ block:'center', behavior:'smooth' }); } return; }
     const data = {
       itemId: itemId,
       unitsPerCase: parseInt(document.getElementById('rm_units').value)||1,
@@ -6647,9 +6707,11 @@ function openRuleModal(existing){
       W: parseFloat(document.getElementById('rm_W').value)||1,
       H: parseFloat(document.getElementById('rm_H').value)||1,
     };
+    Object.assign(data, stackFacesPatch(sfSt), { stackSet:true });
+    delete data.stackFree;
     if(isEdit){ Object.assign(existing, data); }
     else { data.id = uid('rule'); STATE.rules.push(data); }
-    saveState(); closeModal(); renderRulesRows(); toast('Išsaugota.');
+    sfEd.dispose(); saveState(); closeModal(); renderRulesRows(); toast('Išsaugota.');
   };
 }
 /* ============================================================
@@ -8136,7 +8198,8 @@ function makeCaseRow(item, variant, cases){
     rowId: uid('lrow'), kind:'case', refId:item.id, ruleId:variant.id, label:item.name+' — '+variant.caseName,
     abbr:variant.abbr, groupKey:item.group, qty:cases, l:variant.L,w:variant.W,h:variant.H,
     weight: variant.weight + item.weight*variant.unitsPerCase,
-    isTruss:!!item.isTruss, orientationLocked:false, stackable:item.stackable!==false, stackExceptionTruss:!!item.stackExceptionTruss,
+    isTruss:!!item.isTruss, orientationLocked:variant.stackSet ? !!variant.orientationLocked : false,
+    stackable:variant.stackSet ? variant.stackable!==false : item.stackable!==false, stackExceptionTruss:variant.stackSet ? !!variant.stackExceptionTruss : !!item.stackExceptionTruss,
     color: GROUP_COLOR[item.group]
   };
 }
@@ -8883,7 +8946,7 @@ function ldCompareTypes(){
   const out = document.getElementById('ldCmp'); if(!out) return;
   const small = smallItemIds(), rows = curLoadList().filter(r=>r.qty>0 && !isSmallRow(r, small));
   if(!rows.length){ out.innerHTML = '<div class="section-sub">Krovinio sąrašas tuščias.</div>'; return; }
-  const packRows = rows.map(r=>({ topFaces:ldRowFaces(r), l:r.l,w:r.w,h:r.h,weight:r.weight,qty:r.qty,isTruss:r.isTruss,stackable:r.stackable,stackExceptionTruss:r.stackExceptionTruss,orientationLocked:r.orientationLocked,label:r.label,abbr:r.abbr,color:r.color,groupKey:r.groupKey,rowId:r.rowId }));
+  const packRows = rows.map(r=>Object.assign({ topFaces:ldRowFaces(r), l:r.l,w:r.w,h:r.h,weight:r.weight,qty:r.qty,isTruss:r.isTruss,label:r.label,abbr:r.abbr,color:r.color,groupKey:r.groupKey,rowId:r.rowId }, ldRowStack(r)));
   const vol = packRows.reduce((s,r)=>s + r.l*r.w*r.h*r.qty, 0), kg = packRows.reduce((s,r)=>s + r.weight*r.qty, 0);
   out.innerHTML = '<div class="section-sub">Skaičiuojama…</div>';
   setTimeout(()=>{
@@ -8937,12 +9000,11 @@ function runLoadPacking(opts){
   const unboxed = unboxedSmallRows();
   if(!rows.length){ if(!silent) toast(unboxed.length ? 'Sudėk mažus daiktus ir kabelius į dėžes (apačioje), kad jie patektų į krovimą.' : 'Krovinio sąrašas tuščias.'); return; }
   if(unboxed.length && !silent) toast(unboxed.length+' maži daiktai / kabeliai dar nesudėti į dėžes — jie neįtraukti į krovimą.');
-  const packRows = rows.map(r=>({
+  const packRows = rows.map(r=>Object.assign({
     topFaces:ldRowFaces(r),
-    l:r.l,w:r.w,h:r.h,weight:r.weight,qty:r.qty,isTruss:r.isTruss,stackable:r.stackable,
-    stackExceptionTruss:r.stackExceptionTruss, orientationLocked:r.orientationLocked,
+    l:r.l,w:r.w,h:r.h,weight:r.weight,qty:r.qty,isTruss:r.isTruss,
     label:r.label, abbr:r.abbr, color:r.color, groupKey:r.groupKey, rowId:r.rowId
-  }));
+  }, ldRowStack(r)));
 
   if(loadMode==='fleet' || loadMode==='rent'){
     const fleet = loadMode==='rent' ? ldRentVehicles().filter(v=>ldRentOn().has(v.id)) : STATE.vehicles.filter(v=>v.active!==false);
@@ -18520,7 +18582,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v286';
+const APP_VER = 'v287';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -34846,6 +34908,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 12:50', v:'v287', k:'new', t:'Pakavimas: „Kraunama ant“ – būtina', f:'Kiekvienam pakavimo variantui (dėžei / flight case) dabar būtina nustatyti „Kraunama ant“: formoje yra 3D dėžė pagal įvestus matmenis – pažymi, ant kurių plokštumų galima krauti, ar dėžę galima vartyti ir ar santvaras galima dėti visada. Be to variantas neišsaugomas; seni variantai lentelėje pažymėti „Nenustatyta“. Krovimo planas dėžėms naudoja šiuos nustatymus. Įrangoje tai lieka neprivaloma: „Taikyti“ arba „Netaikyti“ (nedaro įtakos).' },
   { d:'2026-10-04 12:40', v:'v286', k:'new', t:'Įranga: „Kraunama ant“ 3D lange', f:'Paspaudus „Kraunama ant“ atsidaro 3D daiktas pagal įvestus matmenis: spustelėjus plokštumą ji tampa žalia (ant jos galima krauti) arba raudona (negalima), daiktą galima pasukti tempiant. Mygtukai „Galima ant visų kraštinių“, „Tik viršus“, „Niekur“, pasirinkimas „Vartyti: galima / negalima“, „Santvaras galima dėti visada“ ir „Nedaro įtakos“ (bet kas, ant bet kurios pusės, vartyti kaip patogu). Krovimo planas tai naudoja: ant daikto deda kitus tik tada, kai į viršų atsukta leidžiama plokštuma.' },
   { d:'2026-10-04 12:33', v:'v285', k:'chg', t:'Įranga: švaresnis sąrašas', f:'Įrangos puslapyje nebeliko statistikos kortelių ir „Masinio keitimo“. Grupių, gamintojų ir pogrupių filtrai suskleidžiami ir išskleidžiami (rodyklė prie „Sandėlio sąrašas“, sklandžiai kaip pradžios kortelės; suskleidus matosi, koks filtras įjungtas). Slenkant lentelę jos antraštė (Kategorija, Gamintojas, Pavadinimas…) lieka viršuje ir paryškinta.' },
   { d:'2026-10-04 12:12', v:'v284', k:'chg', t:'Sandėlio poskyriai pervadinti', f:'Sandėlio grupėje poskyris „Sandėlis“ dabar vadinasi „Įranga“, o „Įranga“ – „Įrangos gedimai / pažeidimai“.' },
