@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-FYD/W0ybqFgMiqhXrBpgXur+UfcHjafH9D1bmpz2s+M=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-B1TelYp8veivW87HxqY4hStuOjfzAh1vbQdhNkR0LvI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4907,6 +4907,23 @@ body.has-bg{background:linear-gradient(rgb(0 0 0 / var(--bg-dim,.55)), rgb(0 0 0
 body.has-bg .shell,body.has-bg .shell-main,body.has-bg main,body.has-bg .app-shell{background:transparent !important;}
 body.has-bg:not(.gl-menu) .pageheader,body.has-bg:not(.gl-menu) .topbar{background:color-mix(in srgb, var(--bg) 78%, transparent) !important;backdrop-filter:blur(8px);}
 .pf-bg{display:flex;gap:12px;align-items:flex-start;}
+#bgLayer{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#000;}
+#bgLayer video,#bgLayer canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+#bgLayer::after{content:'';position:absolute;inset:0;background:rgb(0 0 0 / var(--bg-dim,.55));}
+:root[data-theme="light"] #bgLayer::after{background:rgb(255 255 255 / var(--bg-dim,.55));}
+body.has-bg.bg-layer, :root[data-theme="light"] body.has-bg.bg-layer{background:transparent !important;}
+.pf-bg-tabs{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--border);border-radius:999px;margin:0 0 10px;flex-wrap:wrap;}
+.pf-bg-tabs button{border:0;background:none;color:var(--text-dim);font:inherit;font-size:12.5px;padding:6px 12px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.pf-bg-tabs button.on{background:var(--accent);color:var(--accent-ink,#fff);font-weight:700;}
+.pf-bg-tabs .sl{width:14px;height:14px;}
+.pf-bg-live{display:flex;flex-direction:column;gap:10px;}
+.pf-live-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;}
+.pf-live{display:flex;flex-direction:column;gap:6px;padding:6px;border:1.5px solid var(--border);border-radius:12px;background:none;color:var(--text);font:inherit;font-size:12px;cursor:pointer;text-align:left;}
+.pf-live span{height:54px;border-radius:8px;display:block;background-size:cover;}
+.pf-live:hover{border-color:var(--accent);} .pf-live.on{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);}
+.pf-live-hues{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-dim);}
+.pf-hue{width:24px;height:24px;border-radius:50%;border:2px solid transparent;cursor:pointer;color:#fff;font-size:10px;font-weight:700;padding:0;}
+.pf-hue.on{border-color:var(--text);box-shadow:0 0 0 2px var(--panel) inset;}
 .pf-bg-prev{flex:none;width:120px;height:72px;border-radius:var(--radius,8px);border:1px dashed var(--border-2,var(--border));background:var(--panel-2) center / cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--text-faint);}
 .pf-bg-prev.has{border-style:solid;}
 .pf-bg-c{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1;} .pf-bg-dim{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);} .pf-bg-dim input{flex:1;accent-color:var(--accent);}
@@ -18648,7 +18665,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v291';
+const APP_VER = 'v292';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27439,46 +27456,221 @@ function glassApply(g){
   r.style.setProperty('--gl-a', Math.round(g.alpha*100)+'%'); r.style.setProperty('--gl-b', g.blur+'px');
   b.classList.toggle('gl-menu', !!(g.on && g.menu)); b.classList.toggle('gl-win', !!(g.on && g.win)); b.classList.toggle('gl-cards', !!(g.on && g.cards));
 }
+// the kind of background: 'img' (own picture), 'video' (own looping video), 'live' (drawn by the app)
+function bgKind(p){ p = p===undefined ? bgPref() : p; if(!p) return ''; if(p.kind==='live') return p.live ? 'live' : ''; if(!p.path) return ''; return p.kind==='video' ? 'video' : 'img'; }
+const bgCalm = ()=>!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+// the file is kept in the browser cache, so a video is not downloaded again on every visit
+async function bgBlob(path){
+  const key = 'https://es-bg.local/'+encodeURIComponent(path);
+  let cache = null; try{ cache = await caches.open('es-bg-v1'); const hit = await cache.match(key); if(hit) return await hit.blob(); }catch(e){ cache = null; }
+  const blob = await stBlob('avatars', path); if(!blob) return null;
+  if(cache){ try{ (await cache.keys()).forEach(k=>cache.delete(k)); await cache.put(key, new Response(blob, { headers:{ 'Content-Type':blob.type||'application/octet-stream' } })); }catch(e){} }
+  return blob;
+}
+function bgLayer(){
+  let el = document.getElementById('bgLayer');
+  if(!el){ el = document.createElement('div'); el.id = 'bgLayer'; el.setAttribute('aria-hidden', 'true'); document.body.prepend(el); }
+  return el;
+}
+function bgLayerOff(){ bgLiveStop(); const el = document.getElementById('bgLayer'); if(el) el.remove(); document.body.classList.remove('bg-layer'); }
 async function bgApply(){
   BG.done = true; glassApply();
-  const p = bgPref(), root = document.documentElement;
+  const p = bgPref(), root = document.documentElement, kind = bgKind(p);
   root.style.setProperty('--bg-dim', String(p && p.dim!=null ? p.dim : 0.55));
-  if(!p || !p.path){ document.body.classList.remove('has-bg'); root.style.removeProperty('--bg-img'); if(BG.url){ try{ URL.revokeObjectURL(BG.url); }catch(e){} } BG.url = ''; BG.path = ''; return; }
-  if(BG.path===p.path && BG.url){ document.body.classList.add('has-bg'); return; }
+  if(kind!=='live') bgLiveStop();
+  if(!kind){ document.body.classList.remove('has-bg'); bgLayerOff(); root.style.removeProperty('--bg-img'); if(BG.url){ try{ URL.revokeObjectURL(BG.url); }catch(e){} } BG.url = ''; BG.path = ''; return; }
+  if(kind==='live'){
+    root.style.removeProperty('--bg-img');
+    const l = bgLayer(); if(!l.querySelector('canvas')){ l.innerHTML = '<canvas></canvas>'; }
+    document.body.classList.add('has-bg', 'bg-layer'); bgLiveStart(p); return;
+  }
   try{
-    const blob = await stBlob('avatars', p.path); if(!blob) return;
-    if(BG.url){ try{ URL.revokeObjectURL(BG.url); }catch(e){} }
-    BG.url = URL.createObjectURL(blob); BG.path = p.path;
-    root.style.setProperty('--bg-img', `url("${BG.url}")`);
-    document.body.classList.add('has-bg');
+    if(!(BG.path===p.path && BG.url)){
+      const blob = await bgBlob(p.path); if(!blob) return;
+      if(BG.url){ try{ URL.revokeObjectURL(BG.url); }catch(e){} }
+      BG.url = URL.createObjectURL(blob); BG.path = p.path;
+    }
+    if(bgKind()!==kind) return;   // changed while loading
+    if(kind==='img'){ bgLayerOff(); root.style.setProperty('--bg-img', `url("${BG.url}")`); document.body.classList.add('has-bg'); return; }
+    root.style.removeProperty('--bg-img');
+    const l = bgLayer(); let v = l.querySelector('video');
+    if(!v){ l.innerHTML = '<video muted loop playsinline preload="auto"></video>'; v = l.querySelector('video'); v.muted = true; }
+    if(v.dataset.src!==BG.url){ v.src = BG.url; v.dataset.src = BG.url; }
+    document.body.classList.add('has-bg', 'bg-layer');
+    bgVideoPlay();
   }catch(e){}
 }
+function bgVideoPlay(){
+  const v = document.querySelector('#bgLayer video'); if(!v) return;
+  if(document.hidden || bgCalm()){ v.pause(); return; }
+  const r = v.play(); if(r && r.catch) r.catch(()=>{});
+}
+document.addEventListener('visibilitychange', ()=>{ bgVideoPlay(); if(BGL.p){ if(document.hidden) bgLiveStop(true); else bgLiveStart(BGL.p); } });
+
+/* ---------- live backgrounds: drawn by the app on one canvas (like Wallpaper Engine, but light) ----------
+   ~30 frames a second, paused while the tab is hidden; with „reduce motion“ only one still frame. */
+const BG_LIVE = [
+  ['aurora','Šiaurės pašvaistė','linear-gradient(135deg,#0b1a3a,#1f8a70 45%,#6a3fd1)'],
+  ['stars','Žvaigždės','radial-gradient(circle at 30% 40%,#fff 0 1px,transparent 2px),radial-gradient(circle at 70% 70%,#fff 0 1px,transparent 2px),linear-gradient(#070b1a,#151b3a)'],
+  ['plexus','Tinklas','linear-gradient(135deg,#0d1424,#13304d)'],
+  ['waves','Bangos','linear-gradient(#0b1530 40%,#1d4f8f 70%,#2aa3c9)'],
+  ['bokeh','Šviesos burbulai','radial-gradient(circle at 25% 60%,#f3a64a88 0 10px,transparent 12px),radial-gradient(circle at 70% 35%,#e0508088 0 14px,transparent 16px),linear-gradient(#1a1020,#2a1630)'],
+  ['matrix','Matrica','linear-gradient(#020a04,#03200d)'],
+];
+const BG_HUES = [['', 'Pagal temą'], ['200','Mėlyna'], ['160','Žalsva'], ['270','Violetinė'], ['330','Rožinė'], ['30','Oranžinė']];
+const BGL = { raf:0, p:null, st:null, cv:null, last:0, t:0 };
+function bgHue(p){
+  if(p && p.hue!=null && p.hue!=='') return +p.hue;
+  const acc = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6AB0F3';
+  const m = acc.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i); if(!m) return 210;
+  const [r, g, b] = m.slice(1).map(x=>parseInt(x, 16)/255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  if(!d) return 210;
+  const h = mx===r ? ((g-b)/d) % 6 : mx===g ? (b-r)/d + 2 : (r-g)/d + 4; return Math.round((h*60 + 360) % 360);
+}
+function bgLiveStop(keep){ cancelAnimationFrame(BGL.raf); BGL.raf = 0; if(!keep){ BGL.p = null; BGL.st = null; } }
+function bgLiveStart(p){
+  const cv = document.querySelector('#bgLayer canvas'); if(!cv) return;
+  const same = BGL.p && BGL.p.live===p.live && BGL.cv===cv && BGL.st;
+  BGL.p = p; BGL.cv = cv; cancelAnimationFrame(BGL.raf);
+  const size = ()=>{ const lo = ['aurora','bokeh'].includes(p.live), k = lo ? 0.25 : Math.min(1.5, window.devicePixelRatio||1);
+    const w = Math.max(1, Math.round(innerWidth*k)), h = Math.max(1, Math.round(innerHeight*k));
+    if(cv.width!==w || cv.height!==h){ cv.width = w; cv.height = h; BGL.st = null; } return k; };
+  if(!same) BGL.st = null;
+  const step = now=>{
+    if(!BGL.p) return;
+    const k = size(), ctx = cv.getContext('2d'), dt = Math.min(0.1, (now - (BGL.last||now))/1000); BGL.last = now;
+    const sp = Math.max(0.1, Math.min(3, +(BGL.p.speed||1)));
+    BGL.t += dt*sp;
+    const fx = BG_FX[BGL.p.live]; if(!fx) return;
+    if(!BGL.st) BGL.st = fx.init(cv.width, cv.height, k);
+    fx.draw(ctx, cv.width, cv.height, BGL.t, BGL.st, bgHue(BGL.p), k, dt*sp);
+    if(bgCalm() || document.hidden) return;
+    BGL.raf = requestAnimationFrame(t=>{ if(t - now < 30){ BGL.raf = requestAnimationFrame(step); return; } step(t); });
+  };
+  BGL.last = 0; step(performance.now());
+}
+window.addEventListener('resize', ()=>{ if(BGL.p && bgCalm()) bgLiveStart(BGL.p); });
+const bgRnd = (a, b)=>a + Math.random()*(b - a);
+const BG_FX = {
+  aurora:{
+    init:(w, h)=>({ b:Array.from({ length:5 }, (_, i)=>({ x:bgRnd(0, w), y:bgRnd(0, h*0.7), r:bgRnd(.35, .7)*Math.max(w, h), o:i*1.3, dh:[0, 40, -50, 120, 70][i] })) }),
+    draw:(c, w, h, t, st, hue)=>{
+      c.globalCompositeOperation = 'source-over'; c.fillStyle = `hsl(${hue} 60% 6%)`; c.fillRect(0, 0, w, h);
+      c.globalCompositeOperation = 'lighter';
+      st.b.forEach((b, i)=>{
+        const x = b.x + Math.sin(t*.13 + b.o)*w*.25, y = b.y + Math.cos(t*.11 + b.o*1.7)*h*.18;
+        const g = c.createRadialGradient(x, y, 0, x, y, b.r);
+        g.addColorStop(0, `hsla(${(hue + b.dh + Math.sin(t*.05 + i)*20 + 360) % 360} 80% 55% / .55)`); g.addColorStop(1, 'hsla(0 0% 0% / 0)');
+        c.fillStyle = g; c.fillRect(0, 0, w, h);
+      });
+      c.globalCompositeOperation = 'source-over';
+    }
+  },
+  stars:{
+    init:(w, h, k)=>({ s:Array.from({ length:Math.round(w*h/(5200*k*k)) }, ()=>({ x:bgRnd(0, w), y:bgRnd(0, h), z:bgRnd(.2, 1), p:bgRnd(0, 6.3) })), sh:null }),
+    draw:(c, w, h, t, st, hue, k, dt)=>{
+      const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, `hsl(${hue} 55% 5%)`); g.addColorStop(1, `hsl(${(hue+30)%360} 50% 12%)`);
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+      st.s.forEach(s=>{
+        s.x -= dt*12*s.z*k; if(s.x < -2) s.x = w + 2;
+        const a = .35 + .65*Math.abs(Math.sin(t*.8*s.z + s.p));
+        c.fillStyle = `hsla(${hue} 30% 92% / ${a*s.z})`; c.beginPath(); c.arc(s.x, s.y, s.z*1.3*k, 0, 6.29); c.fill();
+      });
+      if(!st.sh && Math.random() < dt*.08) st.sh = { x:bgRnd(w*.2, w), y:bgRnd(0, h*.4), l:0 };
+      if(st.sh){ const q = st.sh; q.l += dt;
+        const x = q.x - q.l*420*k, y = q.y + q.l*170*k, gr = c.createLinearGradient(x, y, x + 90*k, y - 36*k);
+        gr.addColorStop(0, 'rgba(255,255,255,.9)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+        c.strokeStyle = gr; c.lineWidth = 1.6*k; c.beginPath(); c.moveTo(x, y); c.lineTo(x + 90*k, y - 36*k); c.stroke();
+        if(q.l > 1.2) st.sh = null; }
+    }
+  },
+  plexus:{
+    init:(w, h, k)=>({ p:Array.from({ length:Math.min(90, Math.round(w*h/(16000*k*k))) }, ()=>({ x:bgRnd(0, w), y:bgRnd(0, h), vx:bgRnd(-1, 1), vy:bgRnd(-1, 1) })) }),
+    draw:(c, w, h, t, st, hue, k, dt)=>{
+      c.fillStyle = `hsl(${hue} 45% 7%)`; c.fillRect(0, 0, w, h);
+      const R = 130*k;
+      st.p.forEach(a=>{ a.x += a.vx*dt*18*k; a.y += a.vy*dt*18*k; if(a.x<0||a.x>w) a.vx *= -1; if(a.y<0||a.y>h) a.vy *= -1; });
+      c.lineWidth = k;
+      for(let i=0;i<st.p.length;i++){ const a = st.p[i];
+        for(let j=i+1;j<st.p.length;j++){ const b = st.p[j], dx = a.x-b.x, dy = a.y-b.y, d = dx*dx+dy*dy; if(d < R*R){ c.strokeStyle = `hsla(${hue} 85% 68% / ${(1 - Math.sqrt(d)/R)*.75})`; c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke(); } }
+        c.fillStyle = `hsla(${hue} 95% 78% / 1)`; c.beginPath(); c.arc(a.x, a.y, 2.4*k, 0, 6.29); c.fill(); }
+    }
+  },
+  waves:{
+    init:()=>({}),
+    draw:(c, w, h, t, st, hue)=>{
+      const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, `hsl(${hue} 50% 6%)`); g.addColorStop(1, `hsl(${hue} 55% 16%)`);
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+      for(let i=0;i<5;i++){
+        const base = h*(.55 + i*.09), amp = h*(.035 + i*.008), f = (1.4 + i*.35)/w*6.283, ph = t*(.35 + i*.12) + i*1.7;
+        c.beginPath(); c.moveTo(0, h);
+        for(let x=0;x<=w;x+=Math.max(4, w/160)) c.lineTo(x, base + Math.sin(x*f + ph)*amp + Math.sin(x*f*.43 - ph*.7)*amp*.6);
+        c.lineTo(w, h); c.closePath(); c.fillStyle = `hsla(${(hue + i*12)%360} 70% ${30 + i*7}% / .32)`; c.fill();
+      }
+    }
+  },
+  bokeh:{
+    init:(w, h)=>({ b:Array.from({ length:26 }, ()=>({ x:bgRnd(0, w), y:bgRnd(0, h), r:bgRnd(.02, .07)*Math.max(w, h), v:bgRnd(.4, 1), dh:bgRnd(-40, 60), p:bgRnd(0, 6) })) }),
+    draw:(c, w, h, t, st, hue, k, dt)=>{
+      c.fillStyle = `hsl(${hue} 40% 6%)`; c.fillRect(0, 0, w, h);
+      c.globalCompositeOperation = 'lighter';
+      st.b.forEach(b=>{ b.y -= b.v*dt*6; if(b.y < -b.r) { b.y = h + b.r; b.x = bgRnd(0, w); }
+        const x = b.x + Math.sin(t*.3 + b.p)*b.r*.6, g = c.createRadialGradient(x, b.y, 0, x, b.y, b.r);
+        g.addColorStop(0, `hsla(${(hue + b.dh + 360)%360} 85% 62% / .45)`); g.addColorStop(.7, `hsla(${(hue + b.dh + 360)%360} 85% 55% / .18)`); g.addColorStop(1, 'hsla(0 0% 0% / 0)');
+        c.fillStyle = g; c.beginPath(); c.arc(x, b.y, b.r, 0, 6.29); c.fill(); });
+      c.globalCompositeOperation = 'source-over';
+    }
+  },
+  matrix:{
+    init:(w, h, k)=>{ const fs = Math.round(16*k), n = Math.ceil(w/fs); return { fs, d:Array.from({ length:n }, ()=>bgRnd(-h/fs, 0)), acc:0 }; },
+    draw:(c, w, h, t, st, hue, k, dt)=>{
+      st.acc += dt; if(st.acc < .06 && st.drawn) return; st.acc = 0; st.drawn = true;
+      c.fillStyle = 'rgba(0,0,0,.12)'; c.fillRect(0, 0, w, h);
+      c.font = st.fs+'px monospace'; const ch = 'アイウエオカキクケコサシスセソ0123456789ABCDEF';
+      st.d.forEach((y, i)=>{ c.fillStyle = `hsla(${hue} 90% ${Math.random() < .05 ? 85 : 55}% / .9)`; c.fillText(ch[Math.floor(Math.random()*ch.length)], i*st.fs, y*st.fs);
+        st.d[i] = y*st.fs > h && Math.random() > .975 ? 0 : y + 1; });
+    }
+  },
+};
 async function bgUpload(file, msg){
-  if(!file || !/^image\//.test(file.type)){ toast('Pasirink paveikslėlį.'); return; }
+  const vid = !!file && /^video\/(mp4|webm|quicktime)$/.test(file.type);
+  if(!file || !(vid || /^image\//.test(file.type))){ toast('Pasirink paveikslėlį arba video (MP4, WebM).'); return; }
+  if(vid && file.size > 30*1024*1024){ toast('Video per didelis – iki 30 MB (užtenka 10–30 s klipo).', 6000); return; }
   try{
-    if(msg) msg.textContent = 'Įkeliama…';
-    const { blob } = await venShrink(file);
-    const path = teamMe()+'/bg-'+uid('b')+'.jpg';
-    const { error } = await stFrom('avatars').upload(path, blob, { contentType:'image/jpeg', upsert:false });
+    if(msg) msg.textContent = vid ? 'Įkeliamas video… ('+Math.round(file.size/1048576)+' MB)' : 'Įkeliama…';
+    let blob = file, ext = 'jpg', type = 'image/jpeg';
+    if(vid){ ext = file.type==='video/webm' ? 'webm' : 'mp4'; type = file.type==='video/quicktime' ? 'video/mp4' : file.type; }
+    else blob = (await venShrink(file)).blob;
+    const path = teamMe()+'/bg-'+uid('b')+'.'+ext;
+    const { error } = await stFrom('avatars').upload(path, blob, { contentType:type, upsert:false });
     if(error) throw new Error(error.message);
     const old = bgPref();
-    prefSet('bgImg', { path, dim: old && old.dim!=null ? old.dim : 0.55 });
+    prefSet('bgImg', Object.assign({}, old||{}, { kind:vid ? 'video' : 'img', path, dim: old && old.dim!=null ? old.dim : 0.55 }));
     if(old && old.path) stFrom('avatars').remove([old.path]).catch(()=>{});
     BG.path = ''; await bgApply();
     if(msg) msg.textContent = ''; toast('Fonas pakeistas.');
   }catch(e){ if(msg) msg.textContent = 'Nepavyko: '+(e.message||e); }
 }
 function bgUiHtml(){
-  const p = bgPref();
+  const p = bgPref(), kind = bgKind(p), mode = BG.mode || (kind==='live' ? 'live' : 'file');
+  const isVid = p && p.path && p.kind==='video';
   return `<div class="section-title" style="font-size:14px;margin:14px 0 4px;">Fonas</div>
-    <div class="pf-bg">
-      <span class="pf-bg-prev ${p && p.path ? 'has' : ''}" style="${p && p.path && BG.url ? `background-image:url('${BG.url}')` : ''}">${p && p.path ? '' : '<small>be fono</small>'}</span>
+    <div class="pf-bg-tabs"><button type="button" data-bgm="file" class="${mode==='file' ? 'on' : ''}">${slIcon('image')} Mano paveikslėlis / video</button><button type="button" data-bgm="live" class="${mode==='live' ? 'on' : ''}">✨ Gyvas fonas</button></div>
+    ${mode==='live' ? `<div class="pf-bg-live">
+      <div class="pf-live-grid">${BG_LIVE.map(([k, t, css])=>`<button type="button" class="pf-live ${kind==='live' && p.live===k ? 'on' : ''}" data-live="${k}"><span style="background:${css}"></span><b>${t}</b></button>`).join('')}</div>
+      ${kind==='live' ? `<div class="pf-live-hues"><span>Spalva</span>${BG_HUES.map(([h, t])=>`<button type="button" class="pf-hue ${String(p.hue==null ? '' : p.hue)===h ? 'on' : ''}" data-hue="${h}" title="${t}" style="${h ? `background:hsl(${h} 75% 55%)` : 'background:var(--accent)'}">${h ? '' : 'A'}</button>`).join('')}</div>
+      <label class="pf-bg-dim">Greitis <input type="range" id="pfBgSp" min="0.2" max="2.5" step="0.1" value="${p.speed||1}"><b id="pfBgSpV">${Math.round((p.speed||1)*10)/10}×</b></label>
+      <label class="pf-bg-dim">Patamsinimas <input type="range" id="pfBgDim" min="0" max="0.9" step="0.05" value="${p.dim!=null ? p.dim : 0.55}"></label>
+      <div class="row" style="gap:6px;"><button type="button" class="btn small" id="pfLiveOff">Išjungti gyvą foną</button></div>` : '<small class="muted">Pasirink – fonas iškart pasikeis. Jis judės lėtai ir sustos, kai programa paslėpta.</small>'}
+      ${bgCalm() ? '<small class="muted">⚠ Įrenginyje įjungta „mažiau judesio“ – fonas rodomas nejudantis.</small>' : ''}
+    </div>` : `<div class="pf-bg">
+      <span class="pf-bg-prev ${p && p.path ? 'has' : ''}" style="${p && p.path && BG.url && !isVid ? `background-image:url('${BG.url}')` : ''}">${p && p.path ? (isVid ? '<small>▶ video</small>' : '') : '<small>be fono</small>'}</span>
       <div class="pf-bg-c">
-        <div class="row" style="gap:6px;flex-wrap:wrap;"><label class="btn small" style="cursor:pointer;">${slIcon('image')} ${p && p.path ? 'Keisti foną' : 'Įkelti foną'}<input type="file" id="pfBgFile" accept="image/*" hidden></label>${p && p.path ? '<button type="button" class="btn small" id="pfBgDel">Pašalinti</button>' : ''}</div>
-        ${p && p.path ? `<label class="pf-bg-dim">Patamsinimas <input type="range" id="pfBgDim" min="0.1" max="0.9" step="0.05" value="${p.dim!=null ? p.dim : 0.55}"></label>` : ''}
-        <small class="muted" id="pfBgMsg">Matai tik tu – kiekvienas narys gali turėti savo foną.</small>
+        <div class="row" style="gap:6px;flex-wrap:wrap;"><label class="btn small" style="cursor:pointer;">${slIcon('image')} ${p && p.path ? 'Keisti foną' : 'Įkelti foną'}<input type="file" id="pfBgFile" accept="image/*,video/mp4,video/webm,video/quicktime" hidden></label>${p && p.path && kind!=='img' && kind!=='video' ? '<button type="button" class="btn small" id="pfBgUse">Naudoti šį failą</button>' : ''}${p && p.path ? '<button type="button" class="btn small" id="pfBgDel">Pašalinti</button>' : ''}</div>
+        ${kind==='img' || kind==='video' ? `<label class="pf-bg-dim">Patamsinimas <input type="range" id="pfBgDim" min="0.1" max="0.9" step="0.05" value="${p.dim!=null ? p.dim : 0.55}"></label>` : ''}
+        <small class="muted" id="pfBgMsg">Paveikslėlis arba trumpas video (MP4 / WebM, iki 30 MB – groja be garso, ratu, kaip Wallpaper Engine). Matai tik tu.</small>
       </div>
-    </div>
+    </div>`}
     ${glassUiHtml()}`;
 }
 function glassUiHtml(){
@@ -27520,8 +27712,15 @@ function bgUiWire(redraw){
   [['pfHvS','grow',v=>Math.round(v*1000)/10+'%'],['pfHvG','glow',v=>Math.round(v*100)+'%']].forEach(([id, k, f])=>{ const el = document.getElementById(id); if(!el) return;
     el.oninput = ()=>{ hoverApply(Object.assign(hoverPref(), { [k]:+el.value })); const v = document.getElementById(id+'v'); if(v) v.textContent = f(+el.value); };
     el.onchange = ()=>hoverSave({ [k]:+el.value }); });
-  const f = document.getElementById('pfBgFile'); if(f) f.onchange = async ()=>{ const file = f.files && f.files[0]; f.value = ''; await bgUpload(file, document.getElementById('pfBgMsg')); redraw(); };
-  const d = document.getElementById('pfBgDel'); if(d) d.onclick = ()=>{ const p = bgPref(); if(p && p.path) stFrom('avatars').remove([p.path]).catch(()=>{}); prefSet('bgImg', null); bgApply(); redraw(); };
+  const f = document.getElementById('pfBgFile'); if(f) f.onchange = async ()=>{ const file = f.files && f.files[0]; f.value = ''; BG.mode = 'file'; await bgUpload(file, document.getElementById('pfBgMsg')); redraw(); };
+  const d = document.getElementById('pfBgDel'); if(d) d.onclick = ()=>{ const p = bgPref(); if(p && p.path) stFrom('avatars').remove([p.path]).catch(()=>{}); prefSet('bgImg', p && p.kind==='live' ? Object.assign({}, p, { path:'' }) : null); bgApply(); redraw(); };
+  const bgSave = (patch, re)=>{ prefSet('bgImg', Object.assign({}, bgPref()||{ dim:0.55 }, patch)); bgApply(); if(re) redraw(); };
+  document.querySelectorAll('[data-bgm]').forEach(b=>b.onclick = ()=>{ BG.mode = b.dataset.bgm; redraw(); });
+  document.querySelectorAll('[data-live]').forEach(b=>b.onclick = ()=>bgSave({ kind:'live', live:b.dataset.live }, true));
+  document.querySelectorAll('[data-hue]').forEach(b=>b.onclick = ()=>bgSave({ hue:b.dataset.hue }, true));
+  const sp = document.getElementById('pfBgSp'); if(sp){ sp.oninput = ()=>{ if(BGL.p) BGL.p = Object.assign({}, BGL.p, { speed:+sp.value }); const v = document.getElementById('pfBgSpV'); if(v) v.textContent = sp.value+'×'; }; sp.onchange = ()=>bgSave({ speed:+sp.value }); }
+  const lo = document.getElementById('pfLiveOff'); if(lo) lo.onclick = ()=>{ const p = bgPref()||{}; bgSave({ kind:p.path ? (/\.(mp4|webm)$/.test(p.path) ? 'video' : 'img') : '', live:'' }, true); };
+  const use = document.getElementById('pfBgUse'); if(use) use.onclick = ()=>{ const p = bgPref()||{}; bgSave({ kind:/\.(mp4|webm)$/.test(p.path||'') ? 'video' : 'img' }, true); };
   const r = document.getElementById('pfBgDim'); if(r){ r.oninput = ()=>document.documentElement.style.setProperty('--bg-dim', r.value);
     r.onchange = ()=>{ const p = bgPref(); if(p) prefSet('bgImg', Object.assign({}, p, { dim:+r.value })); }; }
 }
@@ -34977,6 +35176,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 19:42', v:'v292', k:'new', t:'Judantis fonas: gyvi fonai ir savo video', f:'Profilis → Išvaizda → Fonas: „Gyvas fonas“ – 6 programos piešiami judantys fonai (Šiaurės pašvaistė, Žvaigždės, Tinklas, Bangos, Šviesos burbulai, Matrica) su spalvos, greičio ir patamsinimo pasirinkimu. „Mano paveikslėlis / video“ – dabar galima įkelti ir trumpą video (MP4 / WebM, iki 30 MB), kuris groja fone be garso ratu, kaip Wallpaper Engine. Fonas sustoja, kai programa paslėpta, video išsaugomas naršyklėje, kad nebūtų siunčiamas kaskart. Gražiausiai atrodo su įjungtu „Stiklu“. Matai tik tu.' },
   { d:'2026-10-04 19:18', v:'v291', k:'new', t:'Transportas: remonto laikotarpis ir draudimas kortelėje', f:'Atidarius automobilį ir pažymėjus „Išvežtas remontui“ galima pasirinkti laikotarpį – nuo kada iki kada bus tvarkomas (ir pastabą, kur). Kortelėje rodoma „Remonte 10.04–10.12“. Automobilių kortelėse greta vinjetės ir tech. apžiūros dabar visada rodomas ir draudimas; kortelė paraudonuoja, jei kuris nors iš jų baigiasi, baigėsi arba neįvestas.' },
   { d:'2026-10-04 19:14', v:'v290', k:'new', t:'Transportas: vinjetė, tech. apžiūra ir remontas kortelėje', f:'Automobilio kortelėje vietoj pylimų rodoma vinjetė ir tech. apžiūra (iki kada galioja). Kortelė visa paraudonuoja, jei vinjetė ar tech. apžiūra baigiasi (artėja pabaiga), jau baigėsi arba neįvesta, ir kai automobilis pažymėtas „Išvežtas remontui“. Šį žymėjimą (su pastaba, kur / iki kada) rasi atidarius automobilį. Draudimas kortelėje parodomas tik kai baigiasi.' },
   { d:'2026-10-04 19:08', v:'v289', k:'chg', t:'AI asistentas – be aprašymų', f:'Pradžios kortelėje „AI asistentas“ nebeliko pavyzdžių ir ilgo įspėjimo teksto – lieka tik pavadinimas ir klausimo laukelis (įspėjimas matomas užvedus pelę ant laukelio).' },
