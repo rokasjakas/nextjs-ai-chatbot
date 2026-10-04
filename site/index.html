@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-iAIoovQrcgneIGxZ2efYyxGeo7r+73v0FAqgYjVzSFg=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-B/VMC2PN56KJQtdy1TCcxz3ovDXpKMqMFd7tnZvQDpU=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -357,6 +357,11 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .fl-tile{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;color:var(--text);font:inherit;transition:border-color .15s, transform .15s;}
 .fl-tile:hover{border-color:var(--accent);transform:translateY(-1px);}
 .fl-tile.rm{border-color:color-mix(in srgb, var(--danger) 60%, var(--border));}
+.fl-tile.alarm{border-color:color-mix(in srgb, var(--danger) 75%, transparent);background:color-mix(in srgb, var(--danger) 16%, var(--panel));box-shadow:0 0 0 1px color-mix(in srgb, var(--danger) 35%, transparent) inset;}
+.fl-tile.alarm .fl-chip.danger, .fl-tile.alarm .fl-chip.warn{background:color-mix(in srgb, var(--danger) 18%, transparent);}
+.veh-repair{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:10px 0 0;padding:10px 12px;border:1px solid var(--border);border-radius:12px;width:100%;}
+.veh-repair .checkbox-row{margin:0;} .veh-repair input[type=text]{flex:1;min-width:160px;}
+.veh-repair.on{border-color:color-mix(in srgb, var(--danger) 60%, transparent);background:color-mix(in srgb, var(--danger) 10%, transparent);}
 .fl-tile-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;} .fl-tile-h b{font-size:15px;}
 .fl-plate{font-family:monospace;font-size:12px;letter-spacing:1px;padding:2px 6px;border:1px solid var(--border-2);border-radius:5px;background:var(--panel-2);}
 .fl-tile-m{font-size:12px;color:var(--text-dim);}
@@ -6866,20 +6871,29 @@ function fleetDocShort(v){
   const next = st.slice().sort((a,b)=>a.days-b.days)[0];
   return { level:'ok', text:'Dokumentai galioja · '+FLEET_DOCS[next.d].toLowerCase()+' iki '+String(v.docs[next.d]).slice(5).replace('-', '.') };
 }
+// the tile shows the vignette (kelių mokestis) and the technical inspection; a tile turns red when one of them
+// ends soon / has ended, or when the vehicle is away for repair
+function fleetDocChip(v, d, name){
+  const st = docStatus(v.docs && v.docs[d], docLead(v, d));
+  const t = st.level==='none' ? name+(name==='Draudimas' ? ' neįvestas' : ' neįvesta') : st.level==='danger' ? name+' baigėsi' : st.level==='warn' ? (st.days===0 ? name+' baigiasi šiandien' : name+' – liko '+st.days+' d.') : name+' iki '+String(v.docs[d]).slice(5).replace('-', '.');
+  return { level:st.level, html:`<span class="fl-chip ${st.level==='none' ? 'danger' : st.level}">${slIcon('file')} ${esc(t)}</span>` };
+}
 function fleetModel(v){ const t = vehicleTemplates().find(x=>x.key===v.templateKey); return t && t.name!==v.name ? t.name : ''; }
 function fleetRmOf(vid){ return FLEET.rm.find(r=>r.vehicle_id===vid && (r.status==='pending' || r.status==='approved')) || null; }
 function fleetTileHtml(v){
-  const doc = fleetDocShort(v), km = VL.loaded ? vlLastKm(v.id) : null, rm = fleetRmOf(v.id);
+  const km = VL.loaded ? vlLastKm(v.id) : null, rm = fleetRmOf(v.id);
   const open = VL.loaded ? vlOf(v.id).filter(x=>x.kind==='problem' && x.status==='open') : [];
-  const stop = open.some(x=>x.severity==='stop'), uta = typeof utaVehMonth==='function' ? utaVehMonth(v.id) : null, model = fleetModel(v);
-  return `<button type="button" class="fl-tile ${rm ? 'rm' : ''}" data-vopen="${esc(v.id)}">
+  const stop = open.some(x=>x.severity==='stop'), model = fleetModel(v);
+  const vin = fleetDocChip(v, 'roadPermit', 'Vinjetė'), ta = fleetDocChip(v, 'inspection', 'Tech. apžiūra'), ins = fleetDocChip(v, 'insurance', 'Draudimas');
+  const repair = !!(v.repair && v.repair.on), alarm = repair || [vin, ta].some(x=>x.level!=='ok');
+  return `<button type="button" class="fl-tile ${rm ? 'rm' : ''} ${alarm ? 'alarm' : ''}" data-vopen="${esc(v.id)}">
     <span class="fl-tile-h"><b>${esc(v.name || 'Automobilis')}</b>${v.plate ? `<span class="fl-plate">${esc(v.plate)}</span>` : ''}</span>
     <span class="fl-tile-m">${model ? esc(model)+' · ' : ''}${fmt(v.L*v.W*v.H/1e6,1)} m³ · iki ${fmt(v.maxWeight,0)} kg</span>
     <span class="fl-tile-s">
-      <span class="fl-chip ${doc.level}">${slIcon('file')} ${esc(doc.text)}</span>
+      ${repair ? `<span class="fl-chip danger">🔧 Išvežtas remontui${v.repair.note ? ' · '+esc(v.repair.note) : ''}</span>` : ''}
+      ${vin.html}${ta.html}${ins.level==='warn' || ins.level==='danger' ? ins.html : ''}
       ${km!=null ? `<span class="fl-chip">${slIcon('truck')} ${esc(vlKm(km))}</span>` : ''}
       ${open.length ? `<span class="fl-chip ${stop ? 'danger' : 'warn'}">${slIcon('alert')} ${stop ? 'Negalima važiuoti' : ltPlural(open.length,'problema','problemos','problemų')}</span>` : ''}
-      ${uta && uta.n ? `<span class="fl-chip">⛽ ${ltPlural(uta.n,'pylimas','pylimai','pylimų')} · ${esc(utaQty(uta.qty))}</span>` : ''}
       ${rm ? `<span class="fl-chip danger">🗑 ${rm.status==='approved' ? 'Pašalinimas patvirtintas' : 'Laukia pašalinimo patvirtinimo'}</span>` : ''}
     </span>
   </button>`;
@@ -6946,6 +6960,11 @@ function fleetPopRender(force){
           <label class="field">Aukštis (cm)<input type="number" class="veh-H" value="${v.H}"></label>
         </div>
       </div>
+      <div class="veh-repair ${v.repair && v.repair.on ? 'on' : ''}">
+        <label class="checkbox-row"><input type="checkbox" class="veh-rep" ${v.repair && v.repair.on ? 'checked' : ''}> <b>🔧 Išvežtas remontui</b></label>
+        <input type="text" class="veh-repnote" value="${esc((v.repair && v.repair.note) || '')}" placeholder="kur / iki kada (nebūtina)" ${v.repair && v.repair.on ? '' : 'hidden'}>
+        ${v.repair && v.repair.on && v.repair.since ? `<small class="muted">nuo ${esc(String(v.repair.since).slice(0,10).replace(/-/g,'.'))}</small>` : ''}
+      </div>
       <div class="veh-docs" data-docslot="${esc(v.id)}"></div>
       ${vlStripHtml(v)}
     </div>`;
@@ -6962,6 +6981,12 @@ function fleetPopRender(force){
   };
   bind('.veh-name','name',false); bind('.veh-plate','plate',false);
   ['.veh-name','.veh-plate'].forEach(sel=>card.querySelector(sel).addEventListener('change', ()=>{ updateDocCardHeader(v); scheduleReminderSync(); }));
+  const repSave = ()=>{ saveState(); pushSharedState().then(ok=>{ if(!ok) setFleetSaveStatus('error'); }); };
+  card.querySelector('.veh-rep').addEventListener('change', e=>{
+    v.repair = e.target.checked ? { on:true, note:(v.repair && v.repair.note) || '', since:new Date().toISOString() } : { on:false, note:'' };
+    repSave(); fleetPopRender(true); toast(e.target.checked ? 'Pažymėta: išvežtas remontui.' : 'Grąžintas iš remonto.');
+  });
+  card.querySelector('.veh-repnote').addEventListener('change', e=>{ v.repair = Object.assign({ on:true }, v.repair, { note:e.target.value.trim().slice(0, 80) }); repSave(); });
   bind('.veh-maxw','maxWeight',true); bind('.veh-L','L',true); bind('.veh-W','W',true); bind('.veh-H','H',true);
   if(typeof utaVehBox==='function') utaVehBox(v); else document.getElementById('vehUta').innerHTML = '';
   fleetRmBox(v);
@@ -8108,7 +8133,7 @@ function docCardHtml(v){ return [v].map(v=>{
           <label class="field doc-lead">Priminti likus (d.)<input type="number" min="0" class="lead-f" data-doc="inspection" value="${docLead(v,'inspection')}"></label>
         </div>
         <div class="doc-box">
-          <div class="field">Kelių mokestis galioja iki
+          <div class="field">Vinjetė (kelių mokestis) galioja iki
             <div class="email-add-row">
               <input type="date" class="doc-f" data-f="roadPermit" value="${v.docs.roadPermit||''}" style="min-width:0;">
               <button type="button" class="btn small check-vignette" style="white-space:nowrap;" title="Atidaryti keliumokestis.lt patikrinimą (valst. nr. nukopijuojamas)">🔎 Tikrinti</button>
@@ -18618,7 +18643,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v289';
+const APP_VER = 'v290';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -34947,6 +34972,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 19:14', v:'v290', k:'new', t:'Transportas: vinjetė, tech. apžiūra ir remontas kortelėje', f:'Automobilio kortelėje vietoj pylimų rodoma vinjetė ir tech. apžiūra (iki kada galioja). Kortelė visa paraudonuoja, jei vinjetė ar tech. apžiūra baigiasi (artėja pabaiga), jau baigėsi arba neįvesta, ir kai automobilis pažymėtas „Išvežtas remontui“. Šį žymėjimą (su pastaba, kur / iki kada) rasi atidarius automobilį. Draudimas kortelėje parodomas tik kai baigiasi.' },
   { d:'2026-10-04 19:08', v:'v289', k:'chg', t:'AI asistentas – be aprašymų', f:'Pradžios kortelėje „AI asistentas“ nebeliko pavyzdžių ir ilgo įspėjimo teksto – lieka tik pavadinimas ir klausimo laukelis (įspėjimas matomas užvedus pelę ant laukelio).' },
   { d:'2026-10-04 13:18', v:'v288', k:'fix', t:'Greitesnis ir sklandesnis puslapis', f:'Patikrinti visi puslapiai ir langai. Pašalinta priežastis, dėl kurios kiekvienas pakeitimas ekrane priversdavo perskaičiuoti visą puslapį – dabar viskas reaguoja kelis kartus greičiau. Įranga atsidaro ~8 kartus greičiau (ilgas sąrašas piešiamas dalimis, puslapis nebeužstringa). Escape uždaro atidarytą langą (neišsaugoti laukai lieka kaip juodraštis) ir „Įrangos planą“. Telefone: puslapio pavadinimas antraštėje vėl matomas, dviejų stulpelių formos (Pakavimas, Transporto modelis ir kt.) nebeišlenda už krašto. Team Tracker nebeužstringa ties „Kraunama…“, jei serveris grąžina tuščią narių sąrašą.' },
   { d:'2026-10-04 12:50', v:'v287', k:'new', t:'Pakavimas: „Kraunama ant“ – būtina', f:'Kiekvienam pakavimo variantui (dėžei / flight case) dabar būtina nustatyti „Kraunama ant“: formoje yra 3D dėžė pagal įvestus matmenis – pažymi, ant kurių plokštumų galima krauti, ar dėžę galima vartyti ir ar santvaras galima dėti visada. Be to variantas neišsaugomas; seni variantai lentelėje pažymėti „Nenustatyta“. Krovimo planas dėžėms naudoja šiuos nustatymus. Įrangoje tai lieka neprivaloma: „Taikyti“ arba „Netaikyti“ (nedaro įtakos).' },
