@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-F5AVcsXeexFqP1Po8UpxG0R0eHLnXaR39zSwc9kc3qA=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-zyKRi7n2X+y9GcQLw7YuBb0zKySsoGzKSpUsFlaNR1w=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4095,7 +4095,7 @@ button.np-subtag{background:none;border:none;cursor:pointer;padding:0;font:inher
   .np-tot{grid-template-columns:repeat(2,1fr);}
 }
 .np-ic{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:rgb(131 218 203 / .16);color:#83DACB;margin-bottom:14px;} .np-ic svg{width:32px;height:32px;}
-.anim-row{display:flex;align-items:center;gap:10px;margin:12px 0 8px;font-size:12px;color:var(--text-dim);}
+.anim-row{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin:12px 0 8px;font-size:12px;color:var(--text-dim);} .anim-row input[type=range]{flex:1;min-width:120px;}
 .anim-row input{flex:1;accent-color:var(--accent);} .anim-row b{min-width:150px;text-align:right;color:var(--text);font-size:13px;}
 .fb-lb{position:fixed;inset:0;z-index:4000;background:rgb(0 0 0 / .82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;flex-direction:column;animation:fadeIn var(--t-in) ease-out;}
 .fb-lb.anim-out{animation:fadeOut var(--t-out) ease-in forwards;}
@@ -4914,6 +4914,15 @@ body.has-bg{background:linear-gradient(rgb(0 0 0 / var(--bg-dim,.55)), rgb(0 0 0
 body.has-bg .shell,body.has-bg .shell-main,body.has-bg main,body.has-bg .app-shell{background:transparent !important;}
 body.has-bg:not(.gl-menu) .pageheader,body.has-bg:not(.gl-menu) .topbar{background:color-mix(in srgb, var(--bg) 78%, transparent) !important;backdrop-filter:blur(8px);}
 .pf-bg{display:flex;gap:12px;align-items:flex-start;}
+/* phones: a row of tabs that does not fit scrolls sideways by itself (it made the whole page wider and slide left-right) */
+@media (max-width:700px){
+  .viewmode-toggle{max-width:100%;overflow-x:auto !important;overflow-y:hidden !important;flex-wrap:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .viewmode-toggle::-webkit-scrollbar{display:none;}
+  .viewmode-toggle > button{flex:none;white-space:nowrap;}
+  /* nothing may make the page wider than the screen */
+  html, body{overflow-x:clip;}
+  #main{max-width:100vw;}
+}
 html.ht-mono .home-tile .ht-icon{color:var(--text) !important;background:color-mix(in srgb, var(--text) 9%, transparent) !important;}
 html.ht-acc .home-tile .ht-icon{color:var(--accent) !important;background:color-mix(in srgb, var(--accent) 14%, transparent) !important;}
 html.ht-nobg .home-tile .ht-icon{background:none !important;}
@@ -18757,7 +18766,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v305';
+const APP_VER = 'v306';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35344,6 +35353,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 21:55', v:'v306', k:'fix', t:'Telefone puslapiai nebeslankioja į šonus', f:'Ataskaitose telefone skirtukų juosta (Transportas, Transporto nuoma, UTA, Subnuoma, Freelance, Krovimai) buvo platesnė už ekraną, todėl visas puslapis slankiodavo kairėn-dešinėn. Dabar tokios skirtukų juostos slenkamos atskirai, o puslapis niekada netampa platesnis už ekraną. Patikrinti visi puslapiai ir jų skirtukai (52 vaizdai) – taip pat pataisyta Admin animacijos greičio eilutė.' },
   { d:'2026-10-04 21:47', v:'v305', k:'fix', t:'Paleidimo klaida pašalinta', f:'Rasta ir pašalinta tikroji lėto paleidimo priežastis: paleidžiant programa sutvarkydavo senus išsaugotus duomenis ir juos įrašydama tikrindavo teises – tos kodo dalies dar nebuvo paruoštos, todėl paleidimas nutrūkdavo (TEAM_TABS) ir programa turėdavo persikrauti (anksčiau – po 15 s). Dabar paleidimas vyksta iš karto, be perkrovimo.' },
   { d:'2026-10-04 21:43', v:'v304', k:'fix', t:'Paleidimas: klaida – persikrauna iškart', f:'Paleidimo ataskaita parodė, kad telefone pirmo paleidimo metu programos kode įvyksta klaida (po perkrovimo jos nebėra). Dabar tokiu atveju programa persikrauna iškart (~0,5 s), o ne laukia. Ataskaitoje (Super Admin) dabar matoma ir pati klaida su vieta – pagal ją bus pašalinta priežastis.' },
   { d:'2026-10-04 21:34', v:'v303', k:'fix', t:'Užstrigęs paleidimas – 4 s vietoj 15 s', f:'Jei programos paleidimas užstringa (pastebėta telefone ir Windows programoje – po perkrovimo atsidaro iškart), programa tai pastebi per ~4 s nuo puslapio gavimo ir persikrauna pati (anksčiau laukdavo 15 s). Super Admin kitą kartą pamato trumpą „Paleidimo ataskaitą“ – ties kuriuo žingsniu užstrigo, kad būtų galima pašalinti pačią priežastį.' },
