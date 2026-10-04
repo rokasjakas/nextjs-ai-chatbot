@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-lRs762y5nRc/BwESsPY9/OThc9nxCHb6am4PmY7vkHo=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-4GL0JdY4wkZlH0CTkEnFo4WEpcyQaepvLBrBo/Y7ugM=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -2775,6 +2775,67 @@ main.mail-full{padding:0;max-width:none;}
 }
 /* ---------- Pirkiniai: skiltys kairėje, lentelė kaip Excel „Audio 2026“ ---------- */
 main.buy-full{padding:0;max-width:none;}
+.pbw{display:flex;flex-direction:column;height:calc(100vh - var(--head-h,56px));min-height:420px;}
+.pbw>.pb{flex:1;min-height:0;height:auto;}
+.pbw>.bq{flex:1;min-height:0;overflow-y:auto;padding:4px 16px 20px;}
+.pb-tabs{display:flex;gap:6px;padding:10px 16px 6px;flex:none;}
+.pb-tab{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border:1px solid var(--border);border-radius:999px;background:none;color:var(--text-dim);font:inherit;font-size:14px;font-weight:600;cursor:pointer;}
+.pb-tab .sl{width:17px;height:17px;}
+.pb-tab:hover{color:var(--text);}
+.pb-tab.on{background:color-mix(in srgb, var(--accent) 20%, transparent);border-color:color-mix(in srgb, var(--accent) 55%, transparent);color:var(--text);}
+.pb-tab-n:empty{display:none;}
+.pb-tab-n{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--accent);color:var(--accent-ink,#fff);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;}
+.bq-cols{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:14px;align-items:start;max-width:1400px;margin:0 auto;}
+.bq-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;min-width:0;}
+.bq-left{position:sticky;top:0;}
+.bq-fh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:15px;}
+.bq-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 10px;}
+.bq-grid input,.bq-grid select,.bq-grid textarea{width:100%;box-sizing:border-box;min-width:0;}
+.bq-grid .field{margin:0;}
+.bq-wide{grid-column:1/-1;}
+.bq-fb{display:flex;align-items:center;gap:10px;margin-top:12px;}
+.bq-fb .btn{margin-left:auto;}
+.bq-fb .btn .sl{width:15px;height:15px;vertical-align:-2px;}
+.bq-sum{font-weight:700;font-variant-numeric:tabular-nums;}
+.bq-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.bq-top input{flex:1;min-width:140px;}
+.bq-chips{display:flex;gap:4px;flex-wrap:wrap;}
+.bq-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:none;color:var(--text-dim);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;}
+.bq-chip span{font-size:11px;font-weight:700;opacity:.8;}
+.bq-chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink,#fff);}
+.bq-list{display:flex;flex-direction:column;gap:8px;}
+.bq-item{border:1px solid var(--border);border-radius:14px;padding:11px 13px;display:flex;flex-direction:column;gap:5px;background:rgb(var(--hi-rgb) / .02);border-left:4px solid #F2A93B;}
+.bq-item.ok{border-left-color:var(--ok,#50AD97);}
+.bq-item.no{border-left-color:#8A939E;opacity:.75;}
+.bq-i1{display:flex;align-items:center;gap:8px;}
+.bq-name{flex:1;min-width:0;font-size:15px;}
+.bq-prio{width:22px;height:22px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex:none;background:#4E9BC9;}
+.bq-prio.p1{background:#E05050;} .bq-prio.p2{background:#F2A93B;}
+.bq-st{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;}
+.bq-st.wait{background:color-mix(in srgb, #F2A93B 22%, transparent);}
+.bq-st.ok{background:color-mix(in srgb, var(--ok,#50AD97) 26%, transparent);}
+.bq-st.no{background:rgb(var(--hi-rgb) / .1);color:var(--text-dim);}
+.bq-i2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px;color:var(--text-dim);}
+.bq-i2 b{color:var(--text);font-variant-numeric:tabular-nums;}
+.bq-cat{font-size:11.5px;padding:2px 8px;border-radius:6px;background:rgb(var(--hi-rgb) / .08);}
+.bq-link{display:inline-flex;align-items:center;gap:5px;color:color-mix(in srgb, var(--accent) 75%, var(--text));text-decoration:none;min-width:0;max-width:260px;}
+.bq-link span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bq-link .sl{width:14px;height:14px;flex:none;}
+.bq-link:hover span{text-decoration:underline;}
+.bq-note{font-size:13.5px;white-space:pre-wrap;}
+.bq-dec{font-size:12.5px;color:var(--text-dim);font-style:italic;}
+.bq-i3{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.bq-i3 small{flex:1;color:var(--text-dim);}
+.bq-acts{display:flex;gap:6px;flex-wrap:wrap;}
+.bq-acts .btn .sl{width:14px;height:14px;vertical-align:-2px;}
+@media (max-width:900px){
+  .pbw{height:calc(100vh - var(--head-h,56px) - 76px - env(safe-area-inset-bottom,0px));}
+  .pbw>.pb{height:auto;}
+  .pb-tabs{padding:8px 10px 4px;}
+  .bq-cols{grid-template-columns:1fr;}
+  .bq-left{position:static;}
+  .pbw>.bq{padding:4px 10px 20px;}
+}
 .pb{--pb-r:16px;--pb-sel:color-mix(in srgb, var(--accent) 20%, transparent);display:grid;grid-template-columns:230px minmax(0,1fr);gap:0;height:calc(100vh - var(--head-h,56px));min-height:420px;padding:10px 12px 12px 0;background:var(--bg);}
 .pb-side{display:flex;flex-direction:column;gap:12px;min-height:0;padding:2px 12px 0 0;}
 .pb-new{align-self:flex-start;margin-left:10px;display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px 0 16px;border:0;border-radius:var(--pb-r);background:var(--pb-sel);color:var(--text);font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;box-shadow:0 1px 3px rgb(0 0 0 / .18);transition:box-shadow .15s, background .15s;}
@@ -4589,7 +4650,24 @@ table.ld-cmp{width:100%;border-collapse:collapse;font-size:13px;} .ld-cmp th{tex
 .hs-item.fold[data-k="fb"] .fb-card > :not(.fb-card-h):not(.fb-foot),
 .hs-item.fold[data-k="cal"] .card > :not(.cal-head):not(.cal-up),
 .hs-item.fold[data-k="todo"] .card > :not(.cal-head),
-.hs-item.fold[data-k="ai"] .card > :not(.cal-head){display:none !important;}
+.hs-item.fold[data-k="ai"] .card > :not(.cal-head),
+.hs-item.fold[data-k="ntf"] .card > :not(.cal-head){display:none !important;}
+/* „Pranešimai“: short rows – what, from whom, when; a tap opens the place */
+.ntf-list{display:flex;flex-direction:column;gap:2px;margin-top:8px;}
+.ntf-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;padding:7px 8px;border:0;border-radius:10px;background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer;position:relative;}
+.ntf-row:hover{background:rgb(var(--hi-rgb) / .06);}
+.ntf-ic{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--nc) 22%, transparent);color:var(--nc);}
+.ntf-ic .sl{width:16px;height:16px;}
+.ntf-tx{display:flex;flex-direction:column;min-width:0;line-height:1.3;}
+.ntf-t{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ntf-b{font-size:12px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ntf-when{font-size:11.5px;color:var(--text-dim);white-space:nowrap;align-self:start;margin-top:2px;}
+.ntf-row.new .ntf-t{font-weight:700;}
+.ntf-row.new::before{content:'';position:absolute;left:1px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:var(--accent);}
+.ntf-n{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--accent);color:var(--accent-ink,#fff);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;}
+.ntf-cnt{font-size:11px;font-weight:700;color:var(--text-dim);margin-left:4px;}
+.ntf-more{margin-top:6px;width:100%;}
+.ntf-none{color:var(--text-dim);font-size:13px;padding:8px 2px 2px;}
 .hs-item.fold[data-k="fb"] .fb-card-h{margin-bottom:8px;}
 .hs-item.fold[data-k="cal"] .cal-up{margin-top:8px;}
 .hs-item.fold .card{padding-bottom:14px;}
@@ -5384,6 +5462,8 @@ function vehicleTemplates(){
   ];
 }
 
+// only administrators add vehicles to the fleet (each time asked „Ar tikrai?“)
+function fleetCanAdd(){ return ACCESS.role==='admin' || isSuper(); }
 function addVehicleFromTemplate(key){
   const tpl = vehicleTemplates().find(t=>t.key===key);
   if(!tpl) return;
@@ -6471,10 +6551,10 @@ function renderFleetTab(){
         <div class="row" style="gap:8px;"><span class="fleet-save-status" style="font-size:12px;"></span><button class="btn primary small fleet-save">💾 Išsaugoti</button></div>
       </div>
       <p class="section-sub">Pridėk realius krovinių skyrius iš šablonų arba rankiniu būdu. Talpos skaičiavimas naudoja skyriaus vidaus matmenis (I×P×A); ratų arkų juosta rodoma kaip vaizdinė nuoroda apačioje.</p>
-      <div class="row">
+      ${fleetCanAdd() ? `<div class="row">
         ${tpls.map(t=>`<button class="btn small add-tpl" data-key="${t.key}">+ ${esc(t.name)}</button>`).join('')}
         <button class="btn small" id="addCustomVeh">+ Kitas modelis (rankiniu būdu)</button>
-      </div>
+      </div>` : '<div class="section-sub" style="margin:4px 0 0;">Automobilius į parką prideda tik administratorius.</div>'}
       <details class="veh-docs-help"><summary>Dokumentai ir priminimai</summary><p class="section-sub" style="margin:6px 0 0;">Draudimas / tech. apžiūra / kelių mokestis. Kai iki pabaigos lieka nurodytas dienų skaičius ar mažiau, serveris siunčia priminimą visiems automobilio el. paštams — pasirinktomis valandomis (Lietuvos laiku), kas nurodytą dienų skaičių, kol įrašysi naują datą. „✉ Siųsti dabar“ išsiunčia priminimą iš karto.</p></details>
       <div id="reminderSyncStatus" style="font-size:12px;margin:6px 0 0;"></div>
     </div>
@@ -6486,11 +6566,13 @@ function renderFleetTab(){
 
   </div>`;
   document.getElementById('main').innerHTML = html;
-  document.querySelectorAll('.add-tpl').forEach(b=>b.addEventListener('click', e=>{
-    addVehicleFromTemplate(e.target.getAttribute('data-key'));
+  document.querySelectorAll('.add-tpl').forEach(b=>b.addEventListener('click', async e=>{
+    const key = e.currentTarget.getAttribute('data-key'), tpl = vehicleTemplates().find(t=>t.key===key);
+    if(!fleetCanAdd() || !tpl || !(await uiConfirm(`Ar tikrai pridėti „${tpl.name}“ į automobilių parką?`, { yes:'Pridėti', danger:false }))) return;
+    addVehicleFromTemplate(key);
     renderFleetList(); scheduleReminderSync(); toast('Pridėta į parką.'); fleetOpen(STATE.vehicles[STATE.vehicles.length-1].id);
   }));
-  document.getElementById('addCustomVeh').addEventListener('click', openCustomVehicleModal);
+  const acv = document.getElementById('addCustomVeh'); if(acv) acv.addEventListener('click', openCustomVehicleModal);
   bindSubs();
   renderFleetList();
   if(!UTA.loaded) utaLoad().then(()=>{ if(currentTab==='fleet' && document.getElementById('fleetCompact')) renderFleetList(); });
@@ -7569,8 +7651,9 @@ function openCustomVehicleModal(){
     </div>
   `);
   document.getElementById('cv_cancel').onclick = closeModal;
-  document.getElementById('cv_save').onclick = ()=>{
+  document.getElementById('cv_save').onclick = async ()=>{
     const name = document.getElementById('cv_name').value.trim()||'Naujas automobilis';
+    if(!fleetCanAdd() || !(await uiConfirm(`Ar tikrai pridėti „${name}“ į automobilių parką?`, { yes:'Pridėti', danger:false }))) return;
     STATE.vehicles.push({
       id: uid('veh'), templateKey:'custom', name,
       L: parseFloat(document.getElementById('cv_L').value)||300,
@@ -10774,7 +10857,7 @@ const ACCESS_ROLES = [
 ];
 const ACCESS_SECTIONS = [
   ['events','Renginiai'], ['rentals','Paėmimai'], ['handovers','Išdavimai'], ['projects','Senieji projektai (Rentman, paslėpta)'], ['newproj','Projektai'], ['jobs','Pasiūlymų PDF'], ['offers','Pasiūlymų kūrimas'], ['invoices','Sąskaitos'], ['load','Krovimas'],
-  ['inventory','Sandėlis'], ['rules','Pakavimas'], ['fleet','Transportas'], ['stats','Ataskaitos'], ['venues','Erdvės'], ['chat','Chatas'], ['mail','El. paštas'], ['people','Žmonės'], ['buy','Pirkiniai'],
+  ['inventory','Sandėlis'], ['rules','Pakavimas'], ['fleet','Transportas'], ['stats','Ataskaitos'], ['venues','Erdvės'], ['chat','Chatas'], ['mail','El. paštas'], ['people','Žmonės'],
 ];
 // same defaults as sql/user_roles.sql
 const ACCESS_DEFAULTS = {
@@ -10791,7 +10874,7 @@ function accessLevel(sec){
   const p = (ACCESS.perms[ACCESS.role]||{})[sec];
   return p || 'none';
 }
-const TEAM_TABS = ['members','profile','games','tracker'];    // everyone approved; chat follows the permission table
+const TEAM_TABS = ['members','profile','games','tracker','buy'];    // everyone approved; chat follows the permission table
 // tabs kept in the code but not shown for now (their data still works in the background)
 const HIDDEN_TABS = new Set(['projects']);
 function canView(tab){
@@ -11199,6 +11282,78 @@ function ntOvDraw(ov, edit){
   box.querySelectorAll('[data-ntov]').forEach(b=>b.onclick = ()=>{ const n = NOTES.list.find(x=>x.id===b.dataset.ntov); if(n) ntOvDraw(ov, n); });
 }
 window.addEventListener('resize', ()=>{ if(ntOvOpen() && window.innerWidth > 760) ntOvClose(); });
+/* ---------- Pradžia → „Pranešimai“: kas susiję su manimi (įrašo push-notify, user_notifications.sql) ----------
+   Žinutės iš to paties pokalbio sujungiamos į vieną eilutę; paspaudus atsidaro vieta:
+   chatas ir kanalas, susitikimas kalendoriuje, renginys, užduotis, sąskaita, įranga… */
+const NTF = { list:null, err:'', all:false, timer:0 };
+async function ntfLoad(){
+  const sb = getSb(), me = teamMe(); if(!sb || !me) return;
+  const { data, error } = await sb.from('user_notifications').select('id,tag,kind,title,body,url,created_at,read_at').eq('user_id', me).order('created_at', { ascending:false }).limit(60);
+  if(error){ NTF.err = /does not exist|schema cache|relation/i.test(error.message) ? 'sql' : error.message; NTF.list = []; return; }
+  NTF.err = ''; NTF.list = data || [];
+  clearInterval(NTF.timer); NTF.timer = setInterval(()=>{ if(currentTab==='home' && document.visibilityState==='visible') ntfLoad().then(ntfCardRender); }, 60000);
+}
+function ntfWhat(n){
+  let sp; try{ sp = new URL(n.url||'./', location.href).searchParams; }catch(e){ sp = new URLSearchParams(); }
+  const k = sp.get('chat') ? 'chat' : sp.get('call') ? 'call' : sp.get('meeting') ? 'meeting' : sp.get('event') ? 'event' : sp.get('task') ? 'task' : sp.get('invoice') ? 'invoice'
+    : sp.get('gear') ? 'gear' : sp.get('leave') ? 'leave' : sp.get('feedback') ? 'feedback' : sp.get('vehicle') ? 'fleet' : sp.get('admin') ? 'admin' : (n.kind || 'other');
+  const map = { chat:['chat','#4E9BC9'], call:['phone','#50AD97'], meeting:['calendar','#9775FA'], event:['party','#F35E7D'], task:['tasks','#F2A93B'], invoice:['invoice','#F2A93B'],
+    gear:['alert','#E8590C'], leave:['clock','#50AD97'], feedback:['bell','#E07A5F'], fleet:['truck','#50AD97'], admin:['users','#E05050'], other:['bell','#8A939E'] };
+  const [ic, c] = map[k] || map.other;
+  return { k, ic, c, sp };
+}
+function ntfAgo(iso){
+  const t = Date.parse(iso), m = Math.round((Date.now() - t)/60000);
+  if(m < 1) return 'ką tik'; if(m < 60) return m+' min'; if(m < 24*60) return Math.round(m/60)+' val.';
+  const d = new Date(t), y = new Date(); y.setDate(y.getDate()-1);
+  if(d.toDateString()===y.toDateString()) return 'vakar';
+  return d.toLocaleDateString('lt-LT', { month:'2-digit', day:'2-digit' });
+}
+// messages of one chat make one row (the newest, with the count of unread)
+function ntfRows(){
+  const out = [], byChat = new Map();
+  (NTF.list||[]).forEach(n=>{ const w = ntfWhat(n);
+    if(w.k==='chat'){ const key = w.sp.get('chat')+'|'+(w.sp.get('thread')||''); const g = byChat.get(key);
+      if(g){ g.ids.push(n.id); if(!n.read_at) g.unread++; return; }
+      const r = Object.assign({}, n, { w, ids:[n.id], unread:n.read_at ? 0 : 1 }); byChat.set(key, r); out.push(r); return; }
+    out.push(Object.assign({}, n, { w, ids:[n.id], unread:n.read_at ? 0 : 1 }));
+  });
+  return out;
+}
+function ntfCardRender(){
+  const box = document.getElementById('homeNtf'); if(!box) return;
+  const rows = ntfRows(), unread = (NTF.list||[]).filter(n=>!n.read_at).length, shown = NTF.all ? rows : rows.slice(0, 6);
+  box.innerHTML = `<div class="cal-head"><b style="display:inline-flex;align-items:center;gap:8px;">${slIcon('bell')}Pranešimai</b>${unread ? `<span class="ntf-n">${unread > 99 ? '99+' : unread}</span>` : ''}<span style="flex:1"></span>
+      ${unread ? '<button type="button" class="btn small" id="ntfAll" title="Pažymėti visus perskaitytais">✓ Visi</button>' : ''}</div>
+    ${NTF.list==null ? '<div class="ntf-none">Kraunama…</div>'
+      : NTF.err==='sql' ? '<div class="ntf-none">Pranešimų kortelė dar neįjungta: Supabase → SQL Editor → paleisk supabase/sql/user_notifications.sql ir iš naujo įdiek push-notify.</div>'
+      : NTF.err ? `<div class="ntf-none">${esc(NTF.err)}</div>`
+      : !rows.length ? '<div class="ntf-none">Naujų pranešimų nėra. Čia matysi žinutes, kvietimus į kalendorių, renginius, užduotis ir kt.</div>'
+      : `<div class="ntf-list">${shown.map((r, i)=>`<button type="button" class="ntf-row ${r.unread ? 'new' : ''}" data-ntf="${i}" title="${esc(r.title)}${r.body ? ' – '+esc(r.body) : ''}">
+          <span class="ntf-ic" style="--nc:${r.w.c}">${slIcon(r.w.ic)}</span>
+          <span class="ntf-tx"><span class="ntf-t">${esc(r.title)}${r.unread > 1 ? `<span class="ntf-cnt">+${r.unread-1}</span>` : ''}</span>${r.body ? `<span class="ntf-b">${esc(r.body)}</span>` : ''}</span>
+          <span class="ntf-when">${esc(ntfAgo(r.created_at))}</span></button>`).join('')}</div>
+        ${rows.length > 6 ? `<button type="button" class="btn small ntf-more" id="ntfMore">${NTF.all ? 'Rodyti mažiau' : 'Rodyti visus ('+rows.length+')'}</button>` : ''}`}`;
+  box.querySelectorAll('[data-ntf]').forEach(b=>b.onclick = ()=>ntfOpen(shown[+b.dataset.ntf]));
+  const more = document.getElementById('ntfMore'); if(more) more.onclick = ()=>{ NTF.all = !NTF.all; ntfCardRender(); };
+  const all = document.getElementById('ntfAll'); if(all) all.onclick = ()=>ntfRead((NTF.list||[]).filter(n=>!n.read_at).map(n=>n.id));
+}
+async function ntfRead(ids){
+  if(!ids.length) return;
+  const now = new Date().toISOString();
+  (NTF.list||[]).forEach(n=>{ if(ids.includes(n.id) && !n.read_at) n.read_at = now; });
+  ntfCardRender();
+  try{ await getSb().from('user_notifications').update({ read_at:now }).in('id', ids); }catch(e){}
+}
+function ntfOpen(r){
+  if(!r) return;
+  ntfRead(r.ids);
+  const sp = r.w.sp;
+  if(r.w.k==='chat'){ swMsg({ type:'open-chat', chat:sp.get('chat'), thread:sp.get('thread') }); return; }
+  if(r.w.k==='call'){ swMsg({ type:'open-call', call:sp.get('call') }); return; }
+  if(r.w.k==='meeting'){ try{ calOpenMeeting(sp.get('meeting')); }catch(e){} return; }
+  if([...sp.keys()].length) appOpenFromUrl(r.url);
+}
 /* ---------- AI asistentas (home card): everyday questions to Claude through the ai-chat function, answer streamed in ---------- */
 const AIC = { msgs:null, busy:false };
 function aicKey(){ return 'aiChat:'+(teamMe()||''); }
@@ -18218,7 +18373,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v276';
+const APP_VER = 'v277';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -19151,7 +19306,7 @@ function renderHomeTab(){
     </div>
     <div class="home-tiles">${homeTileList().map(homeTileHtml).join('')}</div>
   </div>
-  ${side ? `<aside class="home-side">${byOrder((isPlus() ? ['inv'] : []).concat(['cal','fb','todo','ai']), (o=>Array.isArray(o) && isPlus() && !o.includes('inv') ? ['inv'].concat(o) : o)(prefGet('homeSide')), k=>k).map(k=>`<div class="hs-item${hsFolded(k) ? ' fold' : ''}" data-k="${k}"><span class="hs-grip" title="Tempk, kad sukeistum vietomis"></span><button type="button" class="hs-fold" data-hsfold="${k}" title="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}" aria-label="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}">${slIcon(hsFolded(k) ? 'dropdown' : 'dropup')}</button><div class="card${k==='fb'?' fb-card-wrap':k==='inv'?' inv-card-wrap':''}" id="${({cal:'homeCal',fb:'homeFb',todo:'homeTodo',inv:'homeInv',ai:'homeAi'})[k]}"></div></div>`).join('')}</aside>` : ''}
+  ${side ? `<aside class="home-side">${byOrder(['ntf'].concat(isPlus() ? ['inv'] : []).concat(['cal','fb','todo','ai']), (o=>Array.isArray(o) && !o.includes('ntf') ? ['ntf'].concat(o) : o)((o=>Array.isArray(o) && isPlus() && !o.includes('inv') ? ['inv'].concat(o) : o)(prefGet('homeSide'))), k=>k).map(k=>`<div class="hs-item${hsFolded(k) ? ' fold' : ''}" data-k="${k}"><span class="hs-grip" title="Tempk, kad sukeistum vietomis"></span><button type="button" class="hs-fold" data-hsfold="${k}" title="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}" aria-label="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}">${slIcon(hsFolded(k) ? 'dropdown' : 'dropup')}</button><div class="card${k==='fb'?' fb-card-wrap':k==='inv'?' inv-card-wrap':''}" id="${({cal:'homeCal',fb:'homeFb',todo:'homeTodo',inv:'homeInv',ai:'homeAi',ntf:'homeNtf'})[k]}"></div></div>`).join('')}</aside>` : ''}
   </div>`;
   const editing = ()=>document.body.classList.contains('home-edit');
   makeSortable(document.querySelector('.home-tiles'), { item:'.home-tile', key:el=>el.dataset.k, editing, onDrop:keys=>prefSet('homeTiles', keys) });
@@ -19170,7 +19325,7 @@ function renderHomeTab(){
   }));
   document.querySelectorAll('.home-tile[data-group]').forEach(b=>b.addEventListener('click', ()=>homeGroupOpen(b.dataset.group, false, b)));
   stickyRender();
-  if(side){ aiCardRender(); }
+  if(side){ aiCardRender(); ntfCardRender(); ntfLoad().then(ntfCardRender); }
   if(side){ calRender(); todoRender(); calLoad(); fbCardRender(); invCard(); }
   document.getElementById('wxToggle').addEventListener('click', ()=>{
     wxOpen = !wxOpen;
@@ -32914,7 +33069,7 @@ const pbId = ()=>Math.random().toString(36).slice(2, 10);
 const pbMe = ()=>{ const p = ACCESS.profile || {}; return [p.first_name, p.last_name].filter(Boolean).join(' ') || p.email || ''; };
 const pbCur = ()=>(PB.lists||[]).find(l=>l.id===PB.cur) || null;
 const pbMine = l=>!!l && l.owner===teamMe();
-const pbCanEdit = l=>!!l && (pbMine(l) || (l.visible==='public' && canEdit('buy')));
+const pbCanEdit = l=>!!l && (pbMine(l) || (l.visible==='public' && pbManager()));
 const pbTitles = l=>PB_L.map((c,i)=>((l && l.cols)||[])[i] || PB_TITLES[i]);
 
 /* ---------- formulas ---------- */
@@ -33158,7 +33313,7 @@ function pbEdit(l, row, c, v){
 }
 // other members' changes appear without reloading (checked every 20 s while the page is open)
 async function pbPoll(){
-  if(currentTab!=='buy' || document.hidden || PB.dirty.size || PB.saving || PB.focus) return;
+  if(currentTab!=='buy' || PB.mode!=='lists' || document.hidden || PB.dirty.size || PB.saving || PB.focus) return;
   const { data, error } = await getSb().from('purchase_lists').select('id, updated_at');
   if(error || !data) return;
   const have = new Map((PB.lists||[]).map(l=>[l.id, l.updated_at]));
@@ -33169,9 +33324,147 @@ async function pbPoll(){
 }
 
 /* ---------- page ---------- */
+/* ---------- Pasiūlymai ---------- */
+const BQ = { list:null, err:'', filter:'new', q:'', edit:null };
+const BQ_CATS = ['VIDEO','LIGHT','AUDIO','Bendri daiktai','Kita'];
+const bqMoney = v=>v==null || v==='' || isNaN(+v) ? '' : (+v).toLocaleString('lt-LT', { minimumFractionDigits:2, maximumFractionDigits:2 })+' €';
+async function bqLoad(){
+  const sb = getSb(); if(!sb) return;
+  const { data, error } = await sb.from('purchase_proposals').select('*').order('created_at', { ascending:false });
+  if(error){ BQ.err = /does not exist|schema cache|relation/i.test(error.message) ? 'Pasiūlymų lentelė dar nesukurta: Supabase → SQL Editor → paleisk supabase/sql/purchases.sql.' : error.message; BQ.list = BQ.list || []; return; }
+  BQ.err = ''; BQ.list = data || [];
+}
+function bqFormHtml(x){
+  x = x || {};
+  return `<div class="bq-form" id="bqForm">
+    <div class="bq-fh"><b>${x.id ? 'Redaguoti pasiūlymą' : 'Naujas pasiūlymas'}</b>${x.id ? '<button type="button" class="btn small" id="bqCancel">Atšaukti</button>' : ''}</div>
+    <div class="bq-grid">
+      <label class="field bq-wide">Ką pirkti<input type="text" id="bqName" maxlength="200" value="${esc(x.name||'')}" placeholder="pvz. Shure SM58 mikrofonas"></label>
+      <label class="field">Kiekis<input type="number" id="bqQty" min="0" step="1" value="${esc(x.qty!=null ? x.qty : 1)}"></label>
+      <label class="field">Kaina vnt. (€ su PVM)<input type="number" id="bqPrice" min="0" step="0.01" value="${esc(x.price!=null ? x.price : '')}" placeholder="0,00"></label>
+      <label class="field bq-wide">Nuoroda<input type="url" id="bqLink" maxlength="1000" value="${esc(x.link||'')}" placeholder="https://…"></label>
+      <label class="field">Skiltis<select id="bqCat">${BQ_CATS.map(c=>`<option ${(x.category||'')===c?'selected':''}>${esc(c)}</option>`).join('')}</select></label>
+      <label class="field">Svarba<select id="bqPrio">${[[1,'1 – svarbu'],[2,'2 – gali palaukti'],[3,'3 – ateičiai']].map(([v,t])=>`<option value="${v}" ${(x.prio||2)==v?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="field bq-wide">Kam reikia / komentaras<textarea id="bqNote" rows="2" maxlength="1000" placeholder="pvz. sugedo du, reikia renginiui 10-20">${esc(x.note||'')}</textarea></label>
+    </div>
+    <div class="bq-fb"><span class="bq-sum" id="bqSum"></span><button type="button" class="btn primary" id="bqSave">${slIcon('send')} ${x.id ? 'Išsaugoti' : 'Pateikti pasiūlymą'}</button></div>
+  </div>`;
+}
+function bqRender(){
+  const box = document.getElementById('bqShell'); if(!box) return;
+  if(!BQ.list){ box.innerHTML = '<div class="pb-empty">Kraunama…</div>'; bqLoad().then(()=>{ if(currentTab==='buy' && PB.mode==='prop') bqRender(); }); return; }
+  const me = teamMe(), mgr = pbManager();
+  const all = BQ.list, cnt = k=>all.filter(x=>k==='all' || x.status===k).length;
+  const q = BQ.q.trim().toLowerCase();
+  const rows = all.filter(x=>(BQ.filter==='all' || x.status===BQ.filter) && (!q || [x.name, x.note, x.created_by_name, x.category].join(' ').toLowerCase().includes(q)));
+  const nb = document.getElementById('pbPropN'); if(nb) nb.textContent = cnt('new') ? cnt('new') : '';
+  const st = { new:['Laukia','wait'], accepted:['Priimta','ok'], rejected:['Atmesta','no'] };
+  box.innerHTML = `
+    ${BQ.err ? `<div class="mail-err">${esc(BQ.err)}</div>` : ''}
+    <div class="bq-cols">
+      <section class="bq-card bq-left">${bqFormHtml(BQ.edit)}</section>
+      <section class="bq-card bq-right">
+        <div class="bq-top">
+          <div class="bq-chips">${[['new','Laukia'],['accepted','Priimti'],['rejected','Atmesti'],['all','Visi']].map(([k,t])=>`<button class="bq-chip ${BQ.filter===k?'on':''}" data-bqf="${k}">${t}<span>${cnt(k)}</span></button>`).join('')}</div>
+          <input type="search" id="bqQ" placeholder="Ieškoti…" value="${esc(BQ.q)}">
+        </div>
+        <div class="bq-list">${rows.map(x=>{ const tot = (+x.price||0)*(+x.qty||0), mine = x.created_by===me, [stT, stC] = st[x.status] || st.new;
+          return `<div class="bq-item ${stC}" data-bq="${esc(x.id)}">
+            <div class="bq-i1"><span class="bq-prio p${x.prio||2}" title="Svarba ${x.prio||2}">${x.prio||2}</span><b class="bq-name">${esc(x.name)}</b><span class="bq-st ${stC}">${stT}${x.status==='accepted' && x.list_name ? ' → '+esc(x.list_name) : ''}</span></div>
+            <div class="bq-i2"><span>${esc(String(x.qty!=null ? x.qty : ''))} vnt.</span>${x.price!=null ? `<span>× ${esc(bqMoney(x.price))}</span><b>= ${esc(bqMoney(tot))}</b>` : ''}${x.category ? `<span class="bq-cat">${esc(x.category)}</span>` : ''}
+              ${x.link ? `<a class="bq-link" href="${esc(pbHref(x.link))}" target="_blank" rel="noopener noreferrer">${slIcon('link')}<span>${esc(pbShortUrl(String(x.link).trim()))}</span></a>` : ''}</div>
+            ${x.note ? `<div class="bq-note">${esc(x.note)}</div>` : ''}
+            ${x.decision_note ? `<div class="bq-dec">${esc(x.decided_by_name||'')}: ${esc(x.decision_note)}</div>` : ''}
+            <div class="bq-i3"><small>${esc(x.created_by_name||'')} · ${esc(new Date(x.created_at).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }))}${x.decided_at ? ' · '+(x.status==='accepted'?'priėmė ':'atmetė ')+esc(x.decided_by_name||'') : ''}</small>
+              <span class="bq-acts">${x.status==='new' && mine ? `<button class="btn small" data-bqedit="${esc(x.id)}">Redaguoti</button><button class="btn small" data-bqdel="${esc(x.id)}">Ištrinti</button>` : ''}
+                ${mgr && x.status==='new' ? `<button class="btn small" data-bqno="${esc(x.id)}">Atmesti</button><button class="btn small primary" data-bqyes="${esc(x.id)}">${slIcon('check')} Priimti</button>` : ''}
+                ${mgr && x.status!=='new' ? `<button class="btn small" data-bqback="${esc(x.id)}" title="Grąžinti į „Laukia“">↩</button>` : ''}</span></div>
+          </div>`; }).join('') || `<div class="pb-empty" style="margin:30px auto;">${BQ.filter==='new' ? 'Laukiančių pasiūlymų nėra.' : 'Nieko nerasta.'}</div>`}</div>
+      </section>
+    </div>`;
+  bqWire(box);
+}
+function bqWire(box){
+  const $ = id=>document.getElementById(id);
+  const sum = ()=>{ const q = +$('bqQty').value||0, p = +$('bqPrice').value||0; $('bqSum').textContent = p ? `Iš viso: ${bqMoney(q*p)}` : ''; };
+  ['bqQty','bqPrice'].forEach(id=>$(id).addEventListener('input', sum)); sum();
+  const cancel = $('bqCancel'); if(cancel) cancel.onclick = ()=>{ BQ.edit = null; bqRender(); };
+  $('bqSave').onclick = async ()=>{
+    const v = { name:$('bqName').value.trim(), qty:$('bqQty').value==='' ? null : +$('bqQty').value, price:$('bqPrice').value==='' ? null : +$('bqPrice').value,
+      link:$('bqLink').value.trim(), category:$('bqCat').value, prio:+$('bqPrio').value||2, note:$('bqNote').value.trim() };
+    if(!v.name){ toast('Įrašyk, ką pirkti.'); $('bqName').focus(); return; }
+    if(v.link && !/^[a-z]+:\/\//i.test(v.link)) v.link = 'https://'+v.link;
+    const b = $('bqSave'); b.disabled = true;
+    const sb = getSb();
+    const r = BQ.edit ? await sb.from('purchase_proposals').update(v).eq('id', BQ.edit.id).select().single()
+      : await sb.from('purchase_proposals').insert(Object.assign(v, { created_by:teamMe(), created_by_name:pbMe(), status:'new' })).select().single();
+    if(r.error){ toast(r.error.message); b.disabled = false; return; }
+    if(BQ.edit){ Object.assign(BQ.edit, r.data); toast('Pasiūlymas pakeistas.'); } else { BQ.list.unshift(r.data); toast('Pasiūlymas pateiktas – jį mato visa komanda.'); }
+    BQ.edit = null; BQ.filter = BQ.filter==='all' ? 'all' : 'new'; bqRender();
+  };
+  box.querySelectorAll('[data-bqf]').forEach(b=>b.onclick = ()=>{ BQ.filter = b.dataset.bqf; bqRender(); });
+  const q = $('bqQ'); q.addEventListener('input', ()=>{ BQ.q = q.value; clearTimeout(BQ.qt); BQ.qt = setTimeout(()=>{ bqRender(); const n = $('bqQ'); n.focus(); n.setSelectionRange(n.value.length, n.value.length); }, 250); });
+  const find = id=>BQ.list.find(x=>x.id===id);
+  box.querySelectorAll('[data-bqedit]').forEach(b=>b.onclick = ()=>{ BQ.edit = find(b.dataset.bqedit); bqRender(); $('bqName').focus(); window.scrollTo({ top:0, behavior:'smooth' }); });
+  box.querySelectorAll('[data-bqdel]').forEach(b=>b.onclick = async ()=>{ const x = find(b.dataset.bqdel); if(!x || !(await uiConfirm('Ištrinti pasiūlymą „'+x.name+'“?'))) return;
+    const { error } = await getSb().from('purchase_proposals').delete().eq('id', x.id); if(error){ toast(error.message); return; } BQ.list = BQ.list.filter(y=>y.id!==x.id); bqRender(); });
+  const decide = async (x, patch)=>{ const { data, error } = await getSb().from('purchase_proposals').update(Object.assign({ decided_by_name:pbMe(), decided_at:new Date().toISOString() }, patch)).eq('id', x.id).select().single();
+    if(error){ toast(error.message); return false; } Object.assign(x, data); bqRender(); return true; };
+  box.querySelectorAll('[data-bqno]').forEach(b=>b.onclick = async ()=>{ const x = find(b.dataset.bqno); const note = await uiPrompt('Kodėl atmetama? (nebūtina)', '', { yes:'Atmesti' }); if(note==null) return; decide(x, { status:'rejected', decision_note:note.trim() || null }); });
+  box.querySelectorAll('[data-bqback]').forEach(b=>b.onclick = ()=>{ const x = find(b.dataset.bqback); decide(x, { status:'new', decided_by_name:null, decided_at:null, decision_note:null, list_id:null, list_name:null }); });
+  box.querySelectorAll('[data-bqyes]').forEach(b=>b.onclick = ()=>bqAccept(find(b.dataset.bqyes)));
+}
+// accepting: the suggestion becomes a row of a list (into the chosen section), and is marked „Priimta → list“
+async function bqAccept(x){
+  if(!x) return;
+  if(!PB.lists) await pbLoad();
+  const lists = (PB.lists||[]).filter(l=>pbCanEdit(l));
+  if(!lists.length){ toast('Nėra sąrašų, į kuriuos galėtum įkelti – sukurk skiltį „Sąrašai“ dalyje.'); return; }
+  const guess = lists.find(l=>new RegExp('^'+String(x.category||'').split(' ')[0], 'i').test(l.name)) || lists[0];
+  const secs = l=>(l.rows||[]).map((r,i)=>r.sec ? { i, name:r.c && r.c.A || 'Skyrius' } : null).filter(Boolean);
+  const secOpts = l=>`<option value="top">Sąrašo viršuje</option>${secs(l).map(s=>`<option value="${s.i}">${esc(s.name)}</option>`).join('')}`;
+  openModal(`<h3>Priimti pasiūlymą</h3>
+    <div class="section-sub" style="margin:0 0 10px;"><b>${esc(x.name)}</b> · ${esc(String(x.qty??''))} vnt.${x.price!=null ? ' × '+esc(bqMoney(x.price)) : ''} · pasiūlė ${esc(x.created_by_name||'')}</div>
+    <label class="field">Į kurį sąrašą<select id="ppaList">${lists.map(l=>`<option value="${esc(l.id)}" ${l===guess?'selected':''}>${esc(l.name)}</option>`).join('')}</select></label>
+    <label class="field">Į kurį skyrių<select id="ppaSec">${secOpts(guess)}</select></label>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button class="btn" id="ppaNo">Atšaukti</button><button class="btn primary" id="ppaGo">${slIcon('check')} Priimti ir įkelti</button></div>`);
+  const ls = document.getElementById('ppaList'), ss = document.getElementById('ppaSec');
+  ls.onchange = ()=>{ ss.innerHTML = secOpts(lists.find(l=>l.id===ls.value)); };
+  document.getElementById('ppaNo').onclick = ()=>closeModal();
+  document.getElementById('ppaGo').onclick = async ()=>{
+    const l = lists.find(y=>y.id===ls.value); if(!l) return;
+    // the new row goes to the end of the chosen section (or the top), never among the bought ones
+    let at = 0;
+    if(ss.value!=='top'){ const si = +ss.value; at = si + 1; while(at < l.rows.length && !l.rows[at].sec && !l.rows[at].bought) at++; }
+    pbRemap(l, r=>r >= at+1 ? r+1 : r);
+    const n = at + 1, c = { A:x.name, C:`=B${n}/1.21`, D:`=C${n}*E${n}` };
+    if(x.price!=null) c.B = String(x.price); if(x.qty!=null) c.E = String(x.qty); if(x.link) c.F = x.link;
+    c.G = [x.note, 'Pasiūlė '+(x.created_by_name||'')].filter(Boolean).join(' · '); if(x.prio) c.H = String(x.prio);
+    l.rows.splice(at, 0, { id:pbId(), c, from:x.id });
+    pbTouch(l, true); await pbSave();
+    if(PB.dirty.has(l.id)){ toast('Sąrašas neišsaugotas – bandyk dar kartą.'); return; }
+    closeModal();
+    if(await (async ()=>{ const { data, error } = await getSb().from('purchase_proposals').update({ status:'accepted', decided_by_name:pbMe(), decided_at:new Date().toISOString(), list_id:l.id, list_name:l.name }).eq('id', x.id).select().single(); if(error){ toast(error.message); return false; } Object.assign(x, data); return true; })())
+      toast(`✓ Priimta ir įkelta į „${l.name}“.`);
+    bqRender();
+  };
+}
+// two parts: „Pasiūlymai“ (every member suggests what to buy, everyone sees them) and
+// „Sąrašai“ (VIDEO / AUDIO / LIGHT / Bendri – only Office, Admin and Projektų vadovai); an accepted
+// suggestion is put into a list and marked „Priimta“
+const pbManager = ()=>['admin','office','pm'].includes(ACCESS.role) || isSuper();
 function renderBuyTab(){
   const main = document.getElementById('main');
-  if(!document.getElementById('pbShell')) main.innerHTML = `<div class="pb" id="pbShell"><aside class="pb-side" id="pbSide"></aside><section class="pb-main" id="pbMain"></section></div>`;
+  if(!pbManager()) PB.mode = 'prop'; else if(!PB.mode){ try{ PB.mode = localStorage.getItem('pbMode') || 'prop'; }catch(e){ PB.mode = 'prop'; } }
+  if(!document.getElementById('pbw') || document.getElementById('pbw').dataset.mode!==PB.mode){
+    main.innerHTML = `<div class="pbw" id="pbw" data-mode="${PB.mode}">
+      <div class="pb-tabs"><button class="pb-tab ${PB.mode==='prop'?'on':''}" data-pbmode="prop">${slIcon('chat')} Pasiūlymai<span class="pb-tab-n" id="pbPropN"></span></button>
+        ${pbManager() ? `<button class="pb-tab ${PB.mode==='lists'?'on':''}" data-pbmode="lists">${slIcon('shopbag')} Sąrašai</button>` : ''}</div>
+      ${PB.mode==='prop' ? '<div class="bq" id="bqShell"></div>' : '<div class="pb" id="pbShell"><aside class="pb-side" id="pbSide"></aside><section class="pb-main" id="pbMain"></section></div>'}
+    </div>`;
+    main.querySelectorAll('[data-pbmode]').forEach(b=>b.onclick = ()=>{ if(PB.mode===b.dataset.pbmode) return; PB.mode = b.dataset.pbmode; try{ localStorage.setItem('pbMode', PB.mode); }catch(e){} renderBuyTab(); });
+  }
+  if(PB.mode==='prop'){ bqRender(); return; }
   if(!PB.lists){ document.getElementById('pbMain').innerHTML = '<div class="pb-empty">Kraunama…</div>'; pbLoad().then(()=>{ if(currentTab==='buy') renderBuyTab(); }); return; }
   clearInterval(PB.poll); PB.poll = setInterval(pbPoll, 20000);
   pbRenderSide(); pbRenderMain();
@@ -33545,7 +33838,7 @@ async function pbCreate(name, visible, rows, cols){
   PB.lists.push(data); return data;
 }
 function pbNewList(e, copyOf){
-  const canPub = canEdit('buy');
+  const canPub = pbManager();
   openModal(`<h3>${copyOf ? 'Kopijuoti skiltį' : 'Nauja pirkinių skiltis'}</h3>
     <label class="field">Pavadinimas<input type="text" id="pbNName" value="${copyOf ? esc(copyOf.name+' (kopija)') : ''}" placeholder="pvz. VIDEO 2026" maxlength="80"></label>
     <div class="pb-visch">
@@ -33601,7 +33894,7 @@ function pbImportPick(){
     const sheets = wb.SheetNames.map(n=>({ n, rows:pbSheetRows(wb.Sheets[n]) })).map(s=>Object.assign(s, { lst:pbFromSheet(s.rows) })).filter(s=>s.lst && s.lst.rows.length);
     if(!sheets.length){ toast('Faile neradau lapų su pirkinių lentele (stulpelis „Įranga“ ar „Aprašas“).'); return; }
     const want = /^(video|light jono new|audio 2026|bendri daiktai)$/i;
-    const canPub = canEdit('buy');
+    const canPub = pbManager();
     openModal(`<h3>Importuoti iš Excel</h3>
       <div class="section-sub" style="margin:0 0 8px;">Pažymėk lapus – kiekvienas taps atskira skiltimi (stulpeliai kaip „Audio 2026“, formulės išlieka).</div>
       <div class="pb-implist">${sheets.map((s, k)=>`<label class="checkbox-row"><input type="checkbox" data-sh="${k}" ${want.test(s.n.trim()) ? 'checked' : ''}> <b>${esc(s.n)}</b> <small style="color:var(--text-dim);">${ltPlural(s.lst.rows.filter(x=>!x.sec).length,'eilutė','eilutės','eilučių')}${s.lst.rows.some(x=>x.sec) ? ', '+ltPlural(s.lst.rows.filter(x=>x.sec).length,'skyrius','skyriai','skyrių') : ''}</small></label>`).join('')}</div>
@@ -34406,6 +34699,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 11:25', v:'v277', k:'new', t:'Pirkinių pasiūlymai, pranešimų kortelė, automobiliai tik adminams', f:'Pirkiniai dabar iš dviejų dalių: „Pasiūlymai“ – kiekvienas narys įrašo, ką pirkti (kiekis, kaina, nuoroda, skiltis, svarba), visi mato visų pasiūlymus; „Sąrašai“ (VIDEO / AUDIO / LIGHT / Bendri) – tik Office, Admin ir Projektų vadovams. Pasiūlymą priėmus jis įkeliamas į pasirinktą sąrašą ir skyrių ir pažymimas „Priimta“, galima ir atmesti su priežastimi. Pradžios puslapyje dešinėje – kortelė „Pranešimai“: žinutės, kvietimai į kalendorių, renginiai, užduotys, sąskaitos ir kt.; paspaudus atsidaro chatas ir kanalas, susitikimas kalendoriuje, renginys ir t. t. Transporte automobilį į parką pridėti gali tik administratorius, ir kaskart klausiama „Ar tikrai?“.' },
   { d:'2026-10-04 11:04', v:'v276', k:'fix', t:'Team Tracker: seni nariai susiejami su paskyra', f:'Narys, užsiregistravęs prieš susiejimą su paskyromis, automatiškai susiejamas su tavo paskyra, jei vardas ir pavardė sutampa – tada veikia „Pamiršau PIN“ ir dingsta „Registruotis“.' },
   { d:'2026-10-04 11:01', v:'v275', k:'fix', t:'„Pamiršau PIN“: parodo, kur stringa', f:'Jei serveris užstringa, po 12 s parašoma, ties kuriuo žingsniu (duomenų bazė ar laiško siuntimas), vietoj „Serveris neatsako“.' },
   { d:'2026-10-04 11:00', v:'v274', k:'new', t:'Admin: laiškų patikra', f:'Admin skiltyje – kortelė „Laiškų patikra“: išsiunčia bandomąjį laišką į tavo el. paštą tuo pačiu keliu kaip priminimai ir „Pamiršau PIN“, ir parodo tikslų atsakymą (ar nustatytas Resend raktas, koks siuntėjas, ką atsakė Resend) bei ką pataisyti.' },

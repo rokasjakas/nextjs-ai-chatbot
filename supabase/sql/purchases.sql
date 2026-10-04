@@ -4,6 +4,9 @@
 --  * vieša (visible = 'public') – mato visi, kam leista „Pirkiniai“, keisti gali kas juos redaguoja;
 --    tik man (visible = 'private') – mato ir keičia tik sukūręs
 --  * viešumą ir pavadinimą keičia tik savininkas (ar administratorius)
+--  * „Pasiūlymai“ (purchase_proposals): kiekvienas narys pasiūlo, ką pirkti – mato visi;
+--    sąrašus (purchase_lists) mato ir tvarko tik Admin, Office ir Projektų vadovai – jie
+--    pasiūlymą priima (įkelia į sąrašą) arba atmeta
 -- Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
 -- ============================================================
 
@@ -48,22 +51,66 @@ drop trigger if exists purchase_lists_guard on public.purchase_lists;
 create trigger purchase_lists_guard before insert or update on public.purchase_lists
   for each row execute function public.purchase_lists_guard();
 
+-- who keeps the lists: Admin, Office, Projektų vadovai
+create or replace function public.buy_manager() returns boolean
+  language sql stable security definer set search_path = public as $$
+  select coalesce(public.my_role() in ('admin','office','pm'), false)
+$$;
+grant execute on function public.buy_manager() to authenticated;
+
 alter table public.purchase_lists enable row level security;
 drop policy if exists "purchase lists view" on public.purchase_lists;
 create policy "purchase lists view" on public.purchase_lists for select to authenticated
-  using (owner = auth.uid() or (visible = 'public' and public.can_view('buy')));
+  using (owner = auth.uid() or (visible = 'public' and public.buy_manager()));
 drop policy if exists "purchase lists add" on public.purchase_lists;
 create policy "purchase lists add" on public.purchase_lists for insert to authenticated
-  with check (owner = auth.uid() and (public.can_edit('buy') or (visible = 'private' and public.can_view('buy'))));
+  with check (owner = auth.uid() and public.buy_manager());
 drop policy if exists "purchase lists change" on public.purchase_lists;
 create policy "purchase lists change" on public.purchase_lists for update to authenticated
-  using (owner = auth.uid() or (visible = 'public' and public.can_edit('buy')))
-  with check (owner = auth.uid() or (visible = 'public' and public.can_edit('buy')));
+  using (owner = auth.uid() or (visible = 'public' and public.buy_manager()))
+  with check (owner = auth.uid() or (visible = 'public' and public.buy_manager()));
 drop policy if exists "purchase lists delete" on public.purchase_lists;
 create policy "purchase lists delete" on public.purchase_lists for delete to authenticated
   using (owner = auth.uid() or public.is_admin());
 revoke all on public.purchase_lists from anon;
 grant select, insert, update, delete on public.purchase_lists to authenticated;
+
+-- ---------- Pasiūlymai ----------
+create table if not exists public.purchase_proposals (
+  id               uuid primary key default gen_random_uuid(),
+  name             text not null,
+  qty              numeric,
+  price            numeric,
+  link             text,
+  category         text,
+  prio             integer not null default 2,
+  note             text,
+  status           text not null default 'new' check (status in ('new','accepted','rejected')),
+  list_id          uuid references public.purchase_lists(id) on delete set null,
+  list_name        text,
+  decision_note    text,
+  decided_by_name  text,
+  decided_at       timestamptz,
+  created_by       uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  created_by_name  text,
+  created_at       timestamptz not null default now()
+);
+create index if not exists purchase_proposals_time on public.purchase_proposals (created_at desc);
+alter table public.purchase_proposals enable row level security;
+drop policy if exists "proposals view" on public.purchase_proposals;
+create policy "proposals view" on public.purchase_proposals for select to authenticated using (public.is_approved());
+drop policy if exists "proposals add" on public.purchase_proposals;
+create policy "proposals add" on public.purchase_proposals for insert to authenticated
+  with check (public.is_approved() and created_by = auth.uid() and status = 'new');
+drop policy if exists "proposals change" on public.purchase_proposals;
+create policy "proposals change" on public.purchase_proposals for update to authenticated
+  using (public.buy_manager() or (created_by = auth.uid() and status = 'new'))
+  with check (public.buy_manager() or (created_by = auth.uid() and status = 'new'));
+drop policy if exists "proposals delete" on public.purchase_proposals;
+create policy "proposals delete" on public.purchase_proposals for delete to authenticated
+  using (public.is_admin() or (created_by = auth.uid() and status = 'new'));
+revoke all on public.purchase_proposals from anon;
+grant select, insert, update, delete on public.purchase_proposals to authenticated;
 
 -- Supabase: read the list of tables again
 notify pgrst, 'reload schema';

@@ -155,7 +155,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 17;
+const PUSH_FN_VERSION = 18;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -243,8 +243,17 @@ async function pushOne(s: Sub, payload: Payload, ttl: number) {
   await res.body?.cancel().catch(() => {});
 }
 
+// every notice about a member is also kept for the home card „Pranešimai“ (user_notifications.sql);
+// not the test, the „call this person“ and the hourly Team Tracker reminders
+async function logNotes(userIds: string[], p: Payload) {
+  if (p.tag === "test" || ["dial", "tracker"].includes(p.kind ?? "")) return;
+  const now = new Date().toISOString();
+  const rows = [...new Set(userIds)].map((u) => ({ user_id: u, tag: p.tag || "n-" + now, kind: p.kind ?? null, title: (p.title || "").slice(0, 300), body: (p.body || "").slice(0, 600), url: p.url || "./", created_at: now, read_at: null }));
+  await db(`user_notifications?on_conflict=user_id,tag`, { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(rows) });
+}
 async function sendTo(userIds: string[], payload: Payload, ttl = 86400, except = ""): Promise<{ sent: number; gone: number; devices?: number; stale?: number; failed?: string[] }> {
   if (!userIds.length) return { sent: 0, gone: 0 };
+  try { await logNotes(userIds, payload); } catch (e) { console.error("notes", (e as Error).message); }   // before user_notifications.sql the table is missing
   let subs = await db<Sub[]>(`push_subscriptions?select=*&user_id=in.${inList(userIds)}`);
   const devices = subs.length;
   if (except) subs = subs.filter((s) => s.endpoint !== except);
@@ -1254,6 +1263,7 @@ Deno.serve(async (req) => {
       let ir: unknown = null, tt: unknown = null;
       try { ir = await invoiceReminders(); } catch (e) { ir = { error: String(e) }; }   // before invoices.sql the table is missing
       try { tt = await trackerReminders(); } catch (e) { tt = { error: String(e) }; }   // before tracker.sql the tables are missing
+      if (new Date().getUTCMinutes() < 5) await db(`user_notifications?created_at=lt.${new Date(Date.now() - 30 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
       return json({ ...tr, inv: ir, tracker: tt });
     }
     // a new member signed up (called by user-access with the cron secret): every admin is told
