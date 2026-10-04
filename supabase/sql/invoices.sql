@@ -85,7 +85,7 @@ alter table public.role_permissions add constraint role_permissions_section_chec
   check (section in ('events','rentals','projects','load','inventory','rules','fleet','stats','venues','chat','mail','offers','jobs','handovers','people','newproj','invoices'));
 insert into public.role_permissions (role, section, can_view, can_edit) values
   ('pm','invoices',true,true), ('office','invoices',true,true), ('tech','invoices',true,true),
-  ('freelance','invoices',true,true), ('runner','invoices',false,false)
+  ('freelance','invoices',true,true), ('runner','invoices',true,true)
 on conflict (role, section) do nothing;
 
 create table if not exists public.invoices (
