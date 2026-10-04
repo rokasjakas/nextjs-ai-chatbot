@@ -5,7 +5,7 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v301';
+const CACHE = 'es-app-v302';
 const SHELL = ['./vendor/supabase-2.117.2.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png', './fonts/Barlow-Regular.woff2', './fonts/Barlow-Medium.woff2'];
 
 // Cloudflare Pages redirects /index.html to /: a redirected response can't answer a page load (the browser shows
@@ -27,6 +27,12 @@ self.addEventListener('fetch', e=>{
   const req = e.request;
   if(req.method!=='GET') return;
   const url = new URL(req.url);
+  // an older copy of the page still asks the CDN for the database library (on some phones that request hung
+  // and held the start ~15 s): answer it with the same file kept here
+  if(url.href==='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js'){
+    e.respondWith(caches.match('./vendor/supabase-2.117.2.js').then(hit=>hit ? plain(hit) : fetch(req)).catch(()=>fetch(req)));
+    return;
+  }
   if(url.origin!==self.location.origin) return;           // Supabase, CDN, fonts: straight to the network
   if(/\.(apk|exe|part\d+)$|\/EventSolutions-Setup\.json$/i.test(url.pathname)) return;   // app downloads: never cached (and never stored as index.html)
   // other pages (the voting page …): from the network, the saved copy only offline

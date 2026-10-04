@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-YdTjkqMswlwAgE7RRMvIiMzbBpMTpWvBzDxYNMDWFCw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-0CIthsupj33pJTPtswUr13a5F75FEyDWUo5fitL3yX4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -18717,7 +18717,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v301';
+const APP_VER = 'v302';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35284,6 +35284,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 21:30', v:'v302', k:'fix', t:'Greitas paleidimas ir senai kopijai', f:'Telefone išlikusi senos versijos kopija (Chrome jos neištrina net perdiegus APK) vis dar siųsdavosi biblioteką iš CDN ir laukdavo ~15 s. Dabar programos foninis darbuotojas (service worker) tą užklausą atsako iš telefono atminties – greitai atsidaro ir sena kopija, kol pereinama į naują.' },
   { d:'2026-10-04 21:22', v:'v301', k:'fix', t:'Programa atsidaro iškart (be 15 s laukimo)', f:'Rasta, kodėl programa telefone, naršyklėje ir kompiuterio programoje ilgai rodydavo „Jungiamasi… Kraunama programa“ (~15 s): paleidžiant ji siųsdavosi duomenų bazės biblioteką iš svetimo serverio (jsDelivr CDN), ta užklausa pakibdavo, ir tik po 15 s programa persikraudavo. Dabar biblioteka laikoma pačioje svetainėje ir programos atmintyje – paleidimas nebepriklauso nuo svetimo serverio (bandyme su užblokuotu CDN – 0,24 s).' },
   { d:'2026-10-04 21:04', v:'v300', k:'chg', t:'Telefone programa tęsiasi ten, kur palikai', f:'Telefonas fone esančią programą kartais uždaro. Dabar ją vėl atidarius atkuriamas tas pats puslapis, vieta jame (kiek buvo paslinkta) ir atidarytas chato pokalbis – lyg programa būtų nebuvusi uždaryta (galioja 12 val.). Kartu su v298 greitu paleidimu tai atrodo kaip tęsimas, o ne krovimas iš naujo.' },
   { d:'2026-10-04 21:01', v:'v299', k:'chg', t:'Video fonas: sulietas kadras, kol kraunasi', f:'Kol video fonas kraunasi, jo kadras rodomas sulietas (blur) – nesimato prastos kokybės. Pasileidus video, suliejimas lėtai (~2 s) nuimamas ir video tampa ryškus. Taip pat ir grįžus į programą iš fono.' },
