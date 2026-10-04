@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-B/VMC2PN56KJQtdy1TCcxz3ovDXpKMqMFd7tnZvQDpU=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-FYD/W0ybqFgMiqhXrBpgXur+UfcHjafH9D1bmpz2s+M=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -361,6 +361,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .fl-tile.alarm .fl-chip.danger, .fl-tile.alarm .fl-chip.warn{background:color-mix(in srgb, var(--danger) 18%, transparent);}
 .veh-repair{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:10px 0 0;padding:10px 12px;border:1px solid var(--border);border-radius:12px;width:100%;}
 .veh-repair .checkbox-row{margin:0;} .veh-repair input[type=text]{flex:1;min-width:160px;}
+.veh-rep-dates{display:inline-flex;gap:8px;flex-wrap:wrap;} .veh-rep-dates label{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-dim);} .veh-rep-dates input{width:auto;}
 .veh-repair.on{border-color:color-mix(in srgb, var(--danger) 60%, transparent);background:color-mix(in srgb, var(--danger) 10%, transparent);}
 .fl-tile-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;} .fl-tile-h b{font-size:15px;}
 .fl-plate{font-family:monospace;font-size:12px;letter-spacing:1px;padding:2px 6px;border:1px solid var(--border-2);border-radius:5px;background:var(--panel-2);}
@@ -6878,6 +6879,7 @@ function fleetDocChip(v, d, name){
   const t = st.level==='none' ? name+(name==='Draudimas' ? ' neįvestas' : ' neįvesta') : st.level==='danger' ? name+' baigėsi' : st.level==='warn' ? (st.days===0 ? name+' baigiasi šiandien' : name+' – liko '+st.days+' d.') : name+' iki '+String(v.docs[d]).slice(5).replace('-', '.');
   return { level:st.level, html:`<span class="fl-chip ${st.level==='none' ? 'danger' : st.level}">${slIcon('file')} ${esc(t)}</span>` };
 }
+function fleetRepPeriod(r){ const f = x=>String(x).slice(5).replace('-', '.'); return r.from || r.to ? ' '+(r.from ? f(r.from) : '…')+'–'+(r.to ? f(r.to) : '…') : ''; }
 function fleetModel(v){ const t = vehicleTemplates().find(x=>x.key===v.templateKey); return t && t.name!==v.name ? t.name : ''; }
 function fleetRmOf(vid){ return FLEET.rm.find(r=>r.vehicle_id===vid && (r.status==='pending' || r.status==='approved')) || null; }
 function fleetTileHtml(v){
@@ -6885,13 +6887,13 @@ function fleetTileHtml(v){
   const open = VL.loaded ? vlOf(v.id).filter(x=>x.kind==='problem' && x.status==='open') : [];
   const stop = open.some(x=>x.severity==='stop'), model = fleetModel(v);
   const vin = fleetDocChip(v, 'roadPermit', 'Vinjetė'), ta = fleetDocChip(v, 'inspection', 'Tech. apžiūra'), ins = fleetDocChip(v, 'insurance', 'Draudimas');
-  const repair = !!(v.repair && v.repair.on), alarm = repair || [vin, ta].some(x=>x.level!=='ok');
+  const repair = !!(v.repair && v.repair.on), alarm = repair || [vin, ta, ins].some(x=>x.level!=='ok');
   return `<button type="button" class="fl-tile ${rm ? 'rm' : ''} ${alarm ? 'alarm' : ''}" data-vopen="${esc(v.id)}">
     <span class="fl-tile-h"><b>${esc(v.name || 'Automobilis')}</b>${v.plate ? `<span class="fl-plate">${esc(v.plate)}</span>` : ''}</span>
     <span class="fl-tile-m">${model ? esc(model)+' · ' : ''}${fmt(v.L*v.W*v.H/1e6,1)} m³ · iki ${fmt(v.maxWeight,0)} kg</span>
     <span class="fl-tile-s">
-      ${repair ? `<span class="fl-chip danger">🔧 Išvežtas remontui${v.repair.note ? ' · '+esc(v.repair.note) : ''}</span>` : ''}
-      ${vin.html}${ta.html}${ins.level==='warn' || ins.level==='danger' ? ins.html : ''}
+      ${repair ? `<span class="fl-chip danger">🔧 Remonte${fleetRepPeriod(v.repair)}${v.repair.note ? ' · '+esc(v.repair.note) : ''}</span>` : ''}
+      ${vin.html}${ta.html}${ins.html}
       ${km!=null ? `<span class="fl-chip">${slIcon('truck')} ${esc(vlKm(km))}</span>` : ''}
       ${open.length ? `<span class="fl-chip ${stop ? 'danger' : 'warn'}">${slIcon('alert')} ${stop ? 'Negalima važiuoti' : ltPlural(open.length,'problema','problemos','problemų')}</span>` : ''}
       ${rm ? `<span class="fl-chip danger">🗑 ${rm.status==='approved' ? 'Pašalinimas patvirtintas' : 'Laukia pašalinimo patvirtinimo'}</span>` : ''}
@@ -6962,8 +6964,8 @@ function fleetPopRender(force){
       </div>
       <div class="veh-repair ${v.repair && v.repair.on ? 'on' : ''}">
         <label class="checkbox-row"><input type="checkbox" class="veh-rep" ${v.repair && v.repair.on ? 'checked' : ''}> <b>🔧 Išvežtas remontui</b></label>
-        <input type="text" class="veh-repnote" value="${esc((v.repair && v.repair.note) || '')}" placeholder="kur / iki kada (nebūtina)" ${v.repair && v.repair.on ? '' : 'hidden'}>
-        ${v.repair && v.repair.on && v.repair.since ? `<small class="muted">nuo ${esc(String(v.repair.since).slice(0,10).replace(/-/g,'.'))}</small>` : ''}
+        ${v.repair && v.repair.on ? `<span class="veh-rep-dates"><label>Nuo<input type="date" class="veh-repfrom" value="${esc(v.repair.from||'')}"></label><label>Iki<input type="date" class="veh-repto" value="${esc(v.repair.to||'')}" min="${esc(v.repair.from||'')}"></label></span>
+        <input type="text" class="veh-repnote" value="${esc(v.repair.note || '')}" placeholder="kur tvarkomas (nebūtina)">` : ''}
       </div>
       <div class="veh-docs" data-docslot="${esc(v.id)}"></div>
       ${vlStripHtml(v)}
@@ -6983,10 +6985,13 @@ function fleetPopRender(force){
   ['.veh-name','.veh-plate'].forEach(sel=>card.querySelector(sel).addEventListener('change', ()=>{ updateDocCardHeader(v); scheduleReminderSync(); }));
   const repSave = ()=>{ saveState(); pushSharedState().then(ok=>{ if(!ok) setFleetSaveStatus('error'); }); };
   card.querySelector('.veh-rep').addEventListener('change', e=>{
-    v.repair = e.target.checked ? { on:true, note:(v.repair && v.repair.note) || '', since:new Date().toISOString() } : { on:false, note:'' };
+    v.repair = e.target.checked ? { on:true, note:(v.repair && v.repair.note) || '', from:new Date().toLocaleDateString('sv-SE'), to:'' } : { on:false, note:'' };
     repSave(); fleetPopRender(true); toast(e.target.checked ? 'Pažymėta: išvežtas remontui.' : 'Grąžintas iš remonto.');
   });
-  card.querySelector('.veh-repnote').addEventListener('change', e=>{ v.repair = Object.assign({ on:true }, v.repair, { note:e.target.value.trim().slice(0, 80) }); repSave(); });
+  const rq = sel=>card.querySelector(sel);
+  if(rq('.veh-repnote')) rq('.veh-repnote').addEventListener('change', e=>{ v.repair = Object.assign({ on:true }, v.repair, { note:e.target.value.trim().slice(0, 80) }); repSave(); });
+  if(rq('.veh-repfrom')) rq('.veh-repfrom').addEventListener('change', e=>{ v.repair = Object.assign({ on:true }, v.repair, { from:e.target.value }); if(v.repair.to && v.repair.from && v.repair.to < v.repair.from) v.repair.to = v.repair.from; repSave(); fleetPopRender(true); });
+  if(rq('.veh-repto')) rq('.veh-repto').addEventListener('change', e=>{ v.repair = Object.assign({ on:true }, v.repair, { to:e.target.value }); repSave(); });
   bind('.veh-maxw','maxWeight',true); bind('.veh-L','L',true); bind('.veh-W','W',true); bind('.veh-H','H',true);
   if(typeof utaVehBox==='function') utaVehBox(v); else document.getElementById('vehUta').innerHTML = '';
   fleetRmBox(v);
@@ -18643,7 +18648,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v290';
+const APP_VER = 'v291';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -34972,6 +34977,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 19:18', v:'v291', k:'new', t:'Transportas: remonto laikotarpis ir draudimas kortelėje', f:'Atidarius automobilį ir pažymėjus „Išvežtas remontui“ galima pasirinkti laikotarpį – nuo kada iki kada bus tvarkomas (ir pastabą, kur). Kortelėje rodoma „Remonte 10.04–10.12“. Automobilių kortelėse greta vinjetės ir tech. apžiūros dabar visada rodomas ir draudimas; kortelė paraudonuoja, jei kuris nors iš jų baigiasi, baigėsi arba neįvestas.' },
   { d:'2026-10-04 19:14', v:'v290', k:'new', t:'Transportas: vinjetė, tech. apžiūra ir remontas kortelėje', f:'Automobilio kortelėje vietoj pylimų rodoma vinjetė ir tech. apžiūra (iki kada galioja). Kortelė visa paraudonuoja, jei vinjetė ar tech. apžiūra baigiasi (artėja pabaiga), jau baigėsi arba neįvesta, ir kai automobilis pažymėtas „Išvežtas remontui“. Šį žymėjimą (su pastaba, kur / iki kada) rasi atidarius automobilį. Draudimas kortelėje parodomas tik kai baigiasi.' },
   { d:'2026-10-04 19:08', v:'v289', k:'chg', t:'AI asistentas – be aprašymų', f:'Pradžios kortelėje „AI asistentas“ nebeliko pavyzdžių ir ilgo įspėjimo teksto – lieka tik pavadinimas ir klausimo laukelis (įspėjimas matomas užvedus pelę ant laukelio).' },
   { d:'2026-10-04 13:18', v:'v288', k:'fix', t:'Greitesnis ir sklandesnis puslapis', f:'Patikrinti visi puslapiai ir langai. Pašalinta priežastis, dėl kurios kiekvienas pakeitimas ekrane priversdavo perskaičiuoti visą puslapį – dabar viskas reaguoja kelis kartus greičiau. Įranga atsidaro ~8 kartus greičiau (ilgas sąrašas piešiamas dalimis, puslapis nebeužstringa). Escape uždaro atidarytą langą (neišsaugoti laukai lieka kaip juodraštis) ir „Įrangos planą“. Telefone: puslapio pavadinimas antraštėje vėl matomas, dviejų stulpelių formos (Pakavimas, Transporto modelis ir kt.) nebeišlenda už krašto. Team Tracker nebeužstringa ties „Kraunama…“, jei serveris grąžina tuščią narių sąrašą.' },
