@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-jYB9jvDSSPdCHcN1nue+zTDV7rL5d9g/KTBoOY9crNY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-YdTjkqMswlwAgE7RRMvIiMzbBpMTpWvBzDxYNMDWFCw=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -5357,7 +5357,8 @@ body.ev-full-on{overflow:hidden;}
   (()=>{ const l = document.getElementById('appFonts'); if(!l) return; const on = ()=>{ l.media = 'all'; }; if(l.sheet) on(); else { l.addEventListener('load', on); l.addEventListener('error', on); } })();
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
+<!-- the sign-in / database library from this site (kept by the app's service worker): a slow or stuck CDN on a phone held the whole start for ~15 s -->
+<script src="vendor/supabase-2.117.2.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok"></script>
 
 <script>
 /* ---------- Streamline icons ----------
@@ -15255,7 +15256,7 @@ function pollAsset(ref){
 // the public pages must open at once, also on a slow phone connection:
 // nothing may keep them waiting – every wait has a time limit
 const pollTimeout = (p, ms, fb)=>Promise.race([Promise.resolve(p).catch(()=>fb), new Promise(r=>setTimeout(()=>r(fb), ms))]);
-const POLL_SB_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js';
+const POLL_SB_JS = 'vendor/supabase-2.117.2.js';
 // the database library came late (or not at all): wait for it, then load it again
 async function pollSbReady(){
   for(let i = 0; i < 60 && !getSb(); i++){
@@ -18716,7 +18717,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v300';
+const APP_VER = 'v301';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26154,6 +26155,7 @@ async function offerPages(d, mode){
 document.addEventListener('change', e=>{ if(e.target && e.target.id==='recTypeSel' && typeof ldAutoPackSoon==='function') ldAutoPackSoon(); });
 // pinned third-party files: the browser refuses them if the CDN copy was changed (Subresource Integrity)
 const SRI = {
+  'vendor/supabase-2.117.2.js': 'sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js': 'sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok',
   'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js': 'sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e',
   'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js': 'sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu',
@@ -35282,6 +35284,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 21:22', v:'v301', k:'fix', t:'Programa atsidaro iškart (be 15 s laukimo)', f:'Rasta, kodėl programa telefone, naršyklėje ir kompiuterio programoje ilgai rodydavo „Jungiamasi… Kraunama programa“ (~15 s): paleidžiant ji siųsdavosi duomenų bazės biblioteką iš svetimo serverio (jsDelivr CDN), ta užklausa pakibdavo, ir tik po 15 s programa persikraudavo. Dabar biblioteka laikoma pačioje svetainėje ir programos atmintyje – paleidimas nebepriklauso nuo svetimo serverio (bandyme su užblokuotu CDN – 0,24 s).' },
   { d:'2026-10-04 21:04', v:'v300', k:'chg', t:'Telefone programa tęsiasi ten, kur palikai', f:'Telefonas fone esančią programą kartais uždaro. Dabar ją vėl atidarius atkuriamas tas pats puslapis, vieta jame (kiek buvo paslinkta) ir atidarytas chato pokalbis – lyg programa būtų nebuvusi uždaryta (galioja 12 val.). Kartu su v298 greitu paleidimu tai atrodo kaip tęsimas, o ne krovimas iš naujo.' },
   { d:'2026-10-04 21:01', v:'v299', k:'chg', t:'Video fonas: sulietas kadras, kol kraunasi', f:'Kol video fonas kraunasi, jo kadras rodomas sulietas (blur) – nesimato prastos kokybės. Pasileidus video, suliejimas lėtai (~2 s) nuimamas ir video tampa ryškus. Taip pat ir grįžus į programą iš fono.' },
   { d:'2026-10-04 20:56', v:'v298', k:'fix', t:'Programa telefone atsidaro iškart', f:'Telefonas fone esančią programą dažnai uždaro, o atidarius ji ilgai rodydavo „Jungiamasi…“ – laukdavo, kol per internetą atsinaujins prisijungimas. Dabar programa atsidaro iškart su šiame įrenginyje išsaugotu prisijungimu (bandyme su lėtu ryšiu – 0,3 s vietoj 5 s), o prisijungimas atsinaujina fone; jei jis nebegalioja – parodomas prisijungimo langas. Video fonas, programai būnant fone, atlaisvina atmintį, todėl telefonas ją rečiau uždarys. Taip pat: „⋯“ meniu viršuje dešinėje su stiklo efektu nebėra permatomas – tekstas gerai matomas.' },
