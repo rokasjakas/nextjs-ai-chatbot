@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-xIatSjXql34Dvz3D3XwbaNLShoYp8T7zg83BlTEZ8EA=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-oYM1/hXMEvt2SHUScMbMHxGeOaxAAG8YTxRKGBTgiTI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -241,6 +241,8 @@ main{flex:1;padding:20px 24px 60px;max-width:none;width:100%;margin:0 auto;}
 .grid.cols-3{grid-template-columns:repeat(3,1fr);}
 .grid.cols-4{grid-template-columns:repeat(4,1fr);}
 @media (max-width:900px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr;}}
+/* one column on phones: a field spanning „1/3“ must not bring back a second (too wide) column */
+@media (max-width:900px){ .grid.cols-2 > [style*="grid-column"], .grid.cols-3 > [style*="grid-column"], .grid.cols-4 > [style*="grid-column"]{grid-column:1/-1 !important;} .grid > *{min-width:0;} }
 
 h2.section-title{font-size:14.5px;font-weight:600;margin:0 0 4px;letter-spacing:.2px;}
 .section-sub{color:var(--text-dim);font-size:12.5px;margin:0 0 14px;}
@@ -1606,12 +1608,12 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 /* wide screens: the home page stays in place (exactly the screen's height); only the cards on the right scroll,
    on their own, when they don't fit – with room at the bottom so nothing is cut off. The tiles do the same if needed. */
 @media (min-width:1100px){
-  main:has(> .home-layout.with-side){flex:none;min-height:0;height:calc(100vh - var(--head-h,54px));height:calc(100dvh - var(--head-h,54px));padding-bottom:0 !important;display:flex;flex-direction:column;overflow:hidden;}
-  main:has(> .home-layout.with-side) > .home-layout{flex:1;min-height:0;grid-template-rows:minmax(0,1fr);align-items:stretch;}
-  main:has(> .home-layout.with-side) > .home-layout > *{min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;padding-bottom:22px;}
-  main:has(> .home-layout.with-side) > .home-layout > .home-side{padding:4px 8px 22px;margin:-4px -8px 0;}
+  main.home-split{flex:none;min-height:0;height:calc(100vh - var(--head-h,54px));height:calc(100dvh - var(--head-h,54px));padding-bottom:0 !important;display:flex;flex-direction:column;overflow:hidden;}
+  main.home-split > .home-layout{flex:1;min-height:0;grid-template-rows:minmax(0,1fr);align-items:stretch;}
+  main.home-split > .home-layout > *{min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;padding-bottom:22px;}
+  main.home-split > .home-layout > .home-side{padding:4px 8px 22px;margin:-4px -8px 0;}
   /* the tiles grow and glow under the mouse: room for it inside the scrolling column, so nothing is cut */
-  main:has(> .home-layout.with-side) > .home-layout > :first-child{padding:20px 22px 30px;margin:-20px -22px 0;}
+  main.home-split > .home-layout > :first-child{padding:20px 22px 30px;margin:-20px -22px 0;}
 }
 .home-side{display:flex;flex-direction:column;gap:14px;min-width:0;}
 .home-side .card{padding:14px;}
@@ -3514,6 +3516,12 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 @keyframes fbPulse{0%{box-shadow:0 0 0 0 rgb(242 169 59 / .5)}70%{box-shadow:0 0 0 9px rgb(242 169 59 / 0)}100%{box-shadow:0 0 0 0 rgb(242 169 59 / 0)}}
 @media (max-width:760px){ .fb-hdr-t{display:none;} .btn.fb-hdr{padding-left:9px;padding-right:9px;} }
 @media (max-width:430px){ .topbar-right{gap:4px !important;} .btn.fb-hdr{padding-left:7px;padding-right:7px;} #pageTitle{font-size:26px !important;} }
+/* phones: the page name must stay readable next to the header buttons (the chat is in the bottom bar anyway) */
+@media (max-width:430px){
+  #pageTitle{font-size:21px !important;min-width:0;}
+  .pageheader .topbar-right > .btn, .pageheader .topbar-right > .icon-btn{min-width:32px;height:32px;padding-left:6px !important;padding-right:6px !important;}
+  #teamHead .tm-head-chat{display:none;}
+}
 .card.fb-card-wrap{padding:0 !important;overflow:hidden;border:1.5px solid #F2A93B88;background:linear-gradient(160deg,rgb(242 169 59 / .16),rgb(243 94 125 / .1) 60%,transparent);}
 .fb-card{padding:14px;}
 .fb-card-h{display:flex;gap:10px;align-items:flex-start;}
@@ -6228,7 +6236,9 @@ function stackFacesEditor(host, st, o){
     view = stackFaces3d(el, d.L, d.H, d.W, st.faces, k=>{ if(!can || (opt && st.free)) return; st.faces[k] = !st.faces[k]; st.touched = true; paint(); });
   };
   libNeed('three').then(ok=>{ if(dead) return; if(!ok){ const el = q('.sf-3d'); if(el) el.innerHTML = '<div class="sf-load">3D vaizdo nepavyko įkelti – plokštumas pažymėk sąraše.</div>'; return; } build(); paint(); });
-  return { paint, rebuild:build, dispose:()=>{ dead = true; if(view) view.dispose(); view = null; } };
+  const api = { paint, rebuild:build, dispose:()=>{ dead = true; if(view) view.dispose(); view = null; } };
+  if(host.closest('#modalRoot')) modalOnClose(api.dispose);
+  return api;
 }
 function stackFacesState(o){ return { faces:stackFacesOf(o), truss:!!o.stackExceptionTruss, rot:!o.orientationLocked, free:!!o.stackFree, touched:false }; }
 function stackFacesPatch(st, opt){
@@ -6435,10 +6445,12 @@ function renderInvFolderChips(){
 function renderInvRows(){
   const rows = filteredInvItems();
   const tbody = document.getElementById('invTbody');
-  if(!rows.length){ tbody.innerHTML = `<tr><td colspan="${ipCan()?16:15}" class="empty-state">Nieko nerasta pagal filtrą.</td></tr>`; return; }
+  if(!rows.length){ ++INV_RT; tbody.innerHTML = `<tr><td colspan="${ipCan()?16:15}" class="empty-state">Nieko nerasta pagal filtrą.</td></tr>`; return; }
   const dl = document.getElementById('invBrandList'); if(dl) dl.innerHTML = invBrandList().sort((a,b)=>a.localeCompare(b,'lt')).map(b=>`<option value="${esc(b)}">`).join('');
-  let lastHead = '';
-  tbody.innerHTML = rows.map(it=>{
+  // big lists are drawn in parts (the first rows at once, the rest right after), so the page opens without a freeze
+  const tok = ++INV_RT;
+  let lastHead = '', i = 0;
+  const rowHtml = it=>{
     const col = GROUP_COLOR[it.group]||'#666';
     const br = invBrand(it), accT = invAccText(it), hk = it.group+'|'+br;
     const head = hk!==lastHead ? `<tr class="inv-bhead"><td colspan="${ipCan()?16:15}" style="border-left-color:${col}"><b>${esc(GROUP_LABEL[it.group]||'')}</b>${br ? ' · '+esc(br) : ' · <span class="muted">be gamintojo</span>'}</td></tr>` : '';
@@ -6469,8 +6481,19 @@ function renderInvRows(){
       <td><button class="btn small inv-accbtn ${invAcc(it).length?'has':''}" data-acc="${esc(String(it.id))}" data-ro-ok title="${esc(invAcc(it).map(a=>{ const x = getItem(a.id); return (x?x.name:'?')+' × '+a.qty; }).join('\n') || 'Pridėti priedų')}">${invAcc(it).length ? '🔗 '+invAcc(it).length : '+ priedai'}</button></td>
       <td>${it.isCustom?`<button class="icon-btn del-custom" title="Ištrinti">✕</button>`:''}</td>
     </tr>`; })();
-  }).join('');
-
+  };
+  const part = first=>{
+    if(tok!==INV_RT || !tbody.isConnected) return;
+    const n = first ? 40 : 60, tpl = document.createElement('template');
+    tpl.innerHTML = rows.slice(i, i+n).map(rowHtml).join(''); i += n;
+    invBindRows(tpl.content);
+    if(first) tbody.replaceChildren(tpl.content); else tbody.appendChild(tpl.content);
+    if(i < rows.length) (window.requestIdleCallback ? requestIdleCallback(()=>part(false), { timeout:120 }) : setTimeout(()=>part(false), 16));
+  };
+  part(true);
+}
+let INV_RT = 0;
+function invBindRows(tbody){
   tbody.querySelectorAll('[data-price]').forEach(el=>el.addEventListener('change', ()=>ipSet(el.dataset.price, el.value, el)));
   tbody.querySelectorAll('[data-acc]').forEach(b=>b.addEventListener('click', ()=>invAccModal(b.dataset.acc)));
   tbody.querySelectorAll('[data-sf]').forEach(b=>b.addEventListener('click', ()=>stackFacesOpen(b.dataset.sf)));
@@ -10305,7 +10328,7 @@ function registerItemSearch(inputEl, options, opts){
     if(e.key==='ArrowDown'){ e.preventDefault(); idx=Math.min(items.length-1, idx+1); items.forEach(x=>x.classList.remove('hl')); if(items[idx]){ items[idx].classList.add('hl'); items[idx].scrollIntoView({block:'nearest'}); } }
     else if(e.key==='ArrowUp'){ e.preventDefault(); idx=Math.max(0, idx-1); items.forEach(x=>x.classList.remove('hl')); if(items[idx]){ items[idx].classList.add('hl'); items[idx].scrollIntoView({block:'nearest'}); } }
     else if(e.key==='Enter'){ e.preventDefault(); if(items[idx]) items[idx].dispatchEvent(new Event('mousedown')); }
-    else if(e.key==='Escape'){ hideIsearch(); inputEl.blur(); }
+    else if(e.key==='Escape'){ e.preventDefault(); hideIsearch(); inputEl.blur(); }
   });
 }
 
@@ -11321,6 +11344,15 @@ function navMenuRender(){
   panel.scrollTop = top;
 }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && document.body.classList.contains('nav-open')) navMenuToggle(false); });
+// Escape closes the open dialog, like a click beside it (unsaved fields are kept as a draft); inner pickers handle it first
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Escape' || e.defaultPrevented || e.isComposing) return;
+  const bd = document.getElementById('modalBackdrop');
+  if(!bd){ const g = document.querySelector('#gpPop #gpClose'); if(g){ e.preventDefault(); g.click(); } return; }
+  if(bd.classList.contains('closing')) return;
+  if([...document.querySelectorAll('.ui-ask, .combo-pop, .sel-pop, .help-pop, #calPop')].some(x=>x.getClientRects().length)) return;
+  e.preventDefault(); closeModal();
+});
 
 /* ---------- Skaičiuotuvas ir Kalendorius (viršutinė juosta) ----------
    Small floating windows: they stay above everything (also above an open
@@ -17478,7 +17510,11 @@ function fadeAway(el){
   ghost.addEventListener('animationend', e=>{ if(e.target===ghost) kill(); });
   setTimeout(kill, 600*animK() + 50);
 }
+// things a dialog started (a 3D view…) are let go when the dialog closes, whichever way it is closed
+const MODAL_CLEAN = [];
+function modalOnClose(f){ MODAL_CLEAN.push(f); }
 function closeModal(instant){
+  MODAL_CLEAN.splice(0).forEach(f=>{ try{ f(); }catch(e){} });
   const bd = document.getElementById('modalBackdrop');
   if(bd){ if(instant===true) bd.remove(); else fadeAway(bd); }
   setTimeout(()=>{ if(!document.getElementById('modalBackdrop')) for(const k of [...KEEP.pos.keys()]) if(k.startsWith('modal:')) KEEP.pos.delete(k); }, 1500);
@@ -18582,7 +18618,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v287';
+const APP_VER = 'v288';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -19502,6 +19538,8 @@ function gearPlan(start){
 
 function renderHomeTab(){
   const side = calEnabled();
+  // a class, not main:has(…) – :has on <main> together with the other :has rules made every change re-style the whole page
+  document.getElementById('main').classList.toggle('home-split', !!side);
   document.getElementById('main').innerHTML = `
   <div class="home-layout ${side?'with-side':''}">
   <div class="home-shell">
@@ -20695,7 +20733,7 @@ function addrSuggest(inp, local, picked){
     if(e.key==='ArrowDown'){ e.preventDefault(); at = (at+1) % items.length; draw(); }
     else if(e.key==='ArrowUp'){ e.preventDefault(); at = (at-1+items.length) % items.length; draw(); }
     else if(e.key==='Enter' && at>=0){ e.preventDefault(); pick(at); }
-    else if(e.key==='Escape'){ items = []; draw(); } });
+    else if(e.key==='Escape'){ if(items.length) e.preventDefault(); items = []; draw(); } });
   inp.addEventListener('blur', ()=>setTimeout(()=>{ items = []; draw(); }, 150));
   inp.addEventListener('input', e=>{ if(!e.isTrusted) return;
     const q = inp.value.trim(); clearTimeout(timer); at = -1;
@@ -24182,7 +24220,7 @@ document.addEventListener('keydown', e=>{
   if(e.key==='ArrowDown'){ e.preventDefault(); comboMove(1); }
   else if(e.key==='ArrowUp'){ e.preventDefault(); comboMove(-1); }
   else if(e.key==='Enter' && comboIdx>=0){ e.preventDefault(); const o = comboEl.querySelectorAll('.combo-opt')[comboIdx]; if(o) comboPick(o.dataset.v); }
-  else if(e.key==='Escape'){ comboClose(); }
+  else if(e.key==='Escape'){ e.preventDefault(); comboClose(); }
 });
 window.addEventListener('scroll', comboPlace, true);
 window.addEventListener('resize', comboPlace);
@@ -24368,7 +24406,7 @@ function venLightbox(v, start){
   box.addEventListener('touchstart', e=>{ x0 = e.touches[0].clientX; }, {passive:true});
   box.addEventListener('touchend', e=>{ if(x0===null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if(Math.abs(dx)>50 && photos.length>1){ i = (i + (dx<0?1:-1) + photos.length) % photos.length; show(); } });
   const onKey = e=>{ if(!document.body.contains(box)){ document.removeEventListener('keydown', onKey); return; }
-    if(e.key==='Escape') fadeAway(box); else if(e.key==='ArrowRight'){ i=(i+1)%photos.length; show(); } else if(e.key==='ArrowLeft'){ i=(i-1+photos.length)%photos.length; show(); } };
+    if(e.key==='Escape'){ e.preventDefault(); fadeAway(box); } else if(e.key==='ArrowRight'){ i=(i+1)%photos.length; show(); } else if(e.key==='ArrowLeft'){ i=(i-1+photos.length)%photos.length; show(); } };
   document.addEventListener('keydown', onKey);
   document.body.appendChild(box); show();
 }
@@ -34274,7 +34312,7 @@ function ttRange(){
 async function ttLoadMembers(){
   // a member registered before members were tied to accounts is tied to this account (same first and last name)
   if(!TT.claimed){ TT.claimed = true; try{ const c = await ttRpc('tt_claim'); if(c && c.linked) toast('Team Tracker narys susietas su tavo paskyra.'); }catch(e){} }
-  try{ TT.members = await ttRpc('tt_members'); TT.err = ''; }
+  try{ TT.members = (await ttRpc('tt_members')) || []; TT.err = ''; }
   catch(e){ TT.err = e.message; TT.members = TT.members || []; }
   // keys of members that were deleted are forgotten
   const ids = new Set(TT.members.map(m=>m.id)); if(!TT.err) Object.keys(ttDev().tokens).forEach(m=>{ if(!ids.has(m)) ttForget(m); });
@@ -34619,6 +34657,7 @@ function setTab(key){
   document.getElementById('main').classList.toggle('chat-full', key==='chat'); if(key!=='events') document.body.classList.remove('ev-full-on');
   document.getElementById('main').classList.toggle('mail-full', key==='mail');
   document.getElementById('main').classList.toggle('buy-full', key==='buy');
+  if(key!=='home') document.getElementById('main').classList.remove('home-split');
   if(key!=='offers') ofClosePop();
   document.getElementById('main').classList.toggle('fit-screen', key==='events');
   if(key!=='newproj' && typeof npLockRelease==='function') npLockRelease();   // leaving Projektai frees the subproject
@@ -34908,6 +34947,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 13:18', v:'v288', k:'fix', t:'Greitesnis ir sklandesnis puslapis', f:'Patikrinti visi puslapiai ir langai. Pašalinta priežastis, dėl kurios kiekvienas pakeitimas ekrane priversdavo perskaičiuoti visą puslapį – dabar viskas reaguoja kelis kartus greičiau. Įranga atsidaro ~8 kartus greičiau (ilgas sąrašas piešiamas dalimis, puslapis nebeužstringa). Escape uždaro atidarytą langą (neišsaugoti laukai lieka kaip juodraštis) ir „Įrangos planą“. Telefone: puslapio pavadinimas antraštėje vėl matomas, dviejų stulpelių formos (Pakavimas, Transporto modelis ir kt.) nebeišlenda už krašto. Team Tracker nebeužstringa ties „Kraunama…“, jei serveris grąžina tuščią narių sąrašą.' },
   { d:'2026-10-04 12:50', v:'v287', k:'new', t:'Pakavimas: „Kraunama ant“ – būtina', f:'Kiekvienam pakavimo variantui (dėžei / flight case) dabar būtina nustatyti „Kraunama ant“: formoje yra 3D dėžė pagal įvestus matmenis – pažymi, ant kurių plokštumų galima krauti, ar dėžę galima vartyti ir ar santvaras galima dėti visada. Be to variantas neišsaugomas; seni variantai lentelėje pažymėti „Nenustatyta“. Krovimo planas dėžėms naudoja šiuos nustatymus. Įrangoje tai lieka neprivaloma: „Taikyti“ arba „Netaikyti“ (nedaro įtakos).' },
   { d:'2026-10-04 12:40', v:'v286', k:'new', t:'Įranga: „Kraunama ant“ 3D lange', f:'Paspaudus „Kraunama ant“ atsidaro 3D daiktas pagal įvestus matmenis: spustelėjus plokštumą ji tampa žalia (ant jos galima krauti) arba raudona (negalima), daiktą galima pasukti tempiant. Mygtukai „Galima ant visų kraštinių“, „Tik viršus“, „Niekur“, pasirinkimas „Vartyti: galima / negalima“, „Santvaras galima dėti visada“ ir „Nedaro įtakos“ (bet kas, ant bet kurios pusės, vartyti kaip patogu). Krovimo planas tai naudoja: ant daikto deda kitus tik tada, kai į viršų atsukta leidžiama plokštuma.' },
   { d:'2026-10-04 12:33', v:'v285', k:'chg', t:'Įranga: švaresnis sąrašas', f:'Įrangos puslapyje nebeliko statistikos kortelių ir „Masinio keitimo“. Grupių, gamintojų ir pogrupių filtrai suskleidžiami ir išskleidžiami (rodyklė prie „Sandėlio sąrašas“, sklandžiai kaip pradžios kortelės; suskleidus matosi, koks filtras įjungtas). Slenkant lentelę jos antraštė (Kategorija, Gamintojas, Pavadinimas…) lieka viršuje ir paryškinta.' },
