@@ -262,6 +262,19 @@ begin
   delete from public.tracker_tokens where member_id = r.member_id;   -- every device signs in again with the new PIN
   return jsonb_build_object('ok', true, 'name', nm);
 end $$;
+-- administratorius nustato nariui naują PIN (kai laiškas neateina ar narys be paskyros)
+create or replace function public.tt_set_pin(m uuid, p_pin text) returns jsonb
+  language plpgsql security definer set search_path = public, extensions as $$
+begin
+  if not public.is_admin() then return jsonb_build_object('error', 'PIN keisti gali tik administratorius.'); end if;
+  if coalesce(p_pin, '') !~ '^[0-9]{4,8}$' then return jsonb_build_object('error', 'PIN – 4–8 skaitmenys.'); end if;
+  update public.tracker_members set pin_hash = crypt(p_pin, gen_salt('bf')), fails = 0, locked_until = null where id = m and not demo;
+  if not found then return jsonb_build_object('error', 'Tokio nario nėra.'); end if;
+  delete from public.tracker_tokens where member_id = m;
+  return jsonb_build_object('ok', true);
+end $$;
+revoke all on function public.tt_set_pin(uuid, text) from public, anon;
+grant execute on function public.tt_set_pin(uuid, text) to authenticated;
 revoke all on function public.tt_pin_reset(text, text) from public;
 grant execute on function public.tt_pin_reset(text, text) to anon, authenticated;
 

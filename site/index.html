@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-vvpIs/oRKfeLxstgnN/lWZlLecksXsWdyLvCeRkgR38=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-nj7n3cK8225gqEy1qkjLK2k+yebUXNXl9Cpsow2aeI0=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -2957,6 +2957,10 @@ main.buy-full{padding:0;max-width:none;}
 .tt-go:disabled{opacity:.6;}
 .tt-stop{background:#D9483B;box-shadow:0 6px 20px rgb(217 72 59 / .35);}
 .tt-forgotpin{grid-column:1/-1;justify-self:start;padding:0;margin-top:-2px;}
+.tt-fpst{grid-column:1/-1;font-size:13px;color:var(--text-dim);}
+.tt-fpst:empty{display:none;}
+.tt-fpst.ok{color:var(--ok,#50AD97);}
+.tt-fpst.bad{color:var(--danger,#E05050);}
 .tt-pinpage{max-width:420px;margin:40px auto;display:flex;flex-direction:column;gap:12px;}
 .tt-pinpage .field{margin:0;}
 .tt-forgot{align-self:center;border:0;background:none;color:var(--text-dim);font:inherit;font-size:12.5px;text-decoration:underline;cursor:pointer;}
@@ -18191,7 +18195,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v272';
+const APP_VER = 'v273';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -33917,7 +33921,7 @@ function ttLoginForm(p, preset){
     ${(()=>{ if(!preset && ttMine()) preset = ttMine().id; return ''; })()}<label class="field">Narys<select id="${p}M">${preset ? '' : '<option value="">— pasirink —</option>'}${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===preset?'selected':''}>${esc(m.name)}${m.demo?' (demo, PIN 0000)':''}</option>`).join('')}</select></label>
     <label class="field">PIN kodas<input type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" id="${p}P" placeholder="••••"></label>
     <button class="btn primary" id="${p}Go">Prisijungti</button>
-    <button type="button" class="tt-forgot tt-forgotpin" id="${p}F">Pamiršau PIN kodą</button></div>`;
+    <button type="button" class="tt-forgot tt-forgotpin" id="${p}F">Pamiršau PIN kodą</button><div class="tt-fpst" id="${p}FS" aria-live="polite"></div></div>`;
 }
 function ttLoginWire(p, done){
   const go = document.getElementById(p+'Go'), pin = document.getElementById(p+'P'), sel = document.getElementById(p+'M');
@@ -33936,12 +33940,13 @@ function ttLoginWire(p, done){
     const mm = (TT.members||[]).find(x=>x.id===m) || {};
     if(mm.demo){ toast('Demo darbuotojo PIN – 0000.'); return; }
     if(!(await uiConfirm(`Išsiųsti „${mm.name}“ nuorodą PIN kodui pakeisti? Ji ateis į to nario paskyros el. paštą ir galios 1 valandą.`, { yes:'Siųsti nuorodą', danger:false }))) return;
-    fg.disabled = true;
-    const r = await notifyCall({ kind:'tracker-pin', member_id:m });
+    const st = document.getElementById(p+'FS'), show = (t, bad)=>{ if(st){ st.textContent = t; st.className = 'tt-fpst '+(bad ? 'bad' : 'ok'); } toast(t, 9000); };
+    fg.disabled = true; if(st){ st.textContent = 'Siunčiama…'; st.className = 'tt-fpst'; }
+    const r = await Promise.race([notifyCall({ kind:'tracker-pin', member_id:m }), new Promise(res=>setTimeout(()=>res({ error:'Serveris neatsako (20 s). Patikrink internetą ir bandyk dar kartą.' }), 20000))]);
     fg.disabled = false;
-    if(r && r.ok) toast('📧 Nuoroda išsiųsta į '+r.to+'. Ji galioja 1 valandą.', 7000);
-    else { const er = (r && r.error) || ((window.NOTIFY_LAST||{}).error) || '';
-      toast(/unknown kind/i.test(er) ? 'PIN keitimo laiškai dar neįjungti: Supabase → Edge Functions → push-notify → iš naujo įdiegti (Deploy). Kol kas PIN gali pakeisti administratorius.' : (er || 'Nepavyko išsiųsti nuorodos.'), 9000); }
+    if(r && r.ok) show('📧 Nuoroda išsiųsta į '+r.to+'. Ji galioja 1 valandą (patikrink ir „Spam“).');
+    else { const nl = window.NOTIFY_LAST || {}, er = (r && r.error) || nl.error || (nl.status ? 'Klaida '+nl.status : '');
+      show(/unknown kind/i.test(er) ? 'PIN keitimo laiškai dar neįjungti: Supabase → Edge Functions → push-notify → Code → Deploy updates.' : (er || 'Nepavyko išsiųsti nuorodos.'), true); }
   };
 }
 function ttRegister(){
@@ -33994,6 +33999,7 @@ function ttRenderReport(){
   const mine = m && (ttTok(m) || admin || ((TT.members||[]).find(x=>x.id===m)||{}).mine);
   box.innerHTML = `<div class="tt-rep-h"><h2 class="tt-h">${slIcon('chart')} Pradirbtas laikas</h2>
       ${m && TT.report && !TT.repErr ? `<button class="btn small" id="ttXls" title="Atsisiųsti Excel">${slIcon('download')} Excel</button>` : ''}
+      ${m && admin && !((ms.find(x=>x.id===m)||{}).demo) ? `<button class="btn small" id="ttSetPin" title="Nustatyti nariui naują PIN kodą">PIN</button>` : ''}
       ${mine ? `<button class="btn small tt-delbtn" id="ttDel" title="Ištrinti narį su visu jo laiku">${slIcon('bin')}</button>` : ''}</div>
     <div class="tt-filters">
       <select id="ttView"><option value="">— narys —</option>${ms.map(x=>`<option value="${esc(x.id)}" ${x.id===m?'selected':''}>${esc(x.name)}${x.demo?' (demo)':''}</option>`).join('')}</select>
@@ -34009,6 +34015,12 @@ function ttRenderReport(){
   if(fr) fr.onchange = ()=>{ TT.from = fr.value; reload(); };
   if(to) to.onchange = ()=>{ TT.to = to.value; reload(); };
   if(document.getElementById('ttVGo')) ttLoginWire('ttV', async mm=>{ TT.view = mm; await ttLoadReport(); ttRenderClock(true); ttRenderReport(); });
+  const sp = document.getElementById('ttSetPin');
+  if(sp) sp.onclick = async ()=>{
+    const v = await uiPrompt(`Naujas „${ttName(m)}“ PIN kodas (4–8 skaitmenys). Visuose įrenginiuose reikės prisijungti iš naujo.`, '', { yes:'Nustatyti' });
+    if(v==null) return; if(!/^\d{4,8}$/.test(v.trim())){ toast('PIN – 4–8 skaitmenys.'); return; }
+    try{ await ttRpc('tt_set_pin', { m, p_pin:v.trim() }); toast('PIN pakeistas.'); }catch(e){ toast(e.message); }
+  };
   const del = document.getElementById('ttDel');
   if(del) del.onclick = async ()=>{
     if(!(await uiConfirm(`Ištrinti narį „${ttName(m)}“ su visomis jo pamainomis?`))) return;
@@ -34369,6 +34381,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 10:58', v:'v273', k:'fix', t:'Team Tracker: „Pamiršau PIN“ rodo, kas vyksta', f:'Paspaudus „Siųsti nuorodą“ po mygtuku matosi „Siunčiama…“, o paskui – kur išsiųsta arba kokia klaida (laukiama ne ilgiau 20 s). Administratorius „Pradirbtas laikas“ kortelėje gali nariui nustatyti naują PIN (mygtukas „PIN“).' },
   { d:'2026-10-04 10:52', v:'v272', k:'fix', t:'Team Tracker: aiškus pranešimas „Pamiršau PIN“', f:'Jei serveryje dar neįdiegta nauja pranešimų funkcija, vietoj „Unknown kind“ parašoma, ką reikia padaryti.' },
   { d:'2026-10-04 10:49', v:'v271', k:'new', t:'Team Tracker: teisės, viena registracija, „Pamiršau PIN“', f:'Tech, Freelance ir Runner nariai Team Tracker mato tik savo pradirbtą laiką (ir demo), Admin, Office ir Projektų vadovai – visų narių, be PIN. Registruojamasi vieną kartą – narys susiejamas su tavo paskyra. Pamiršus PIN – „Pamiršau PIN kodą“: į paskyros el. paštą ateina nuoroda (galioja 1 valandą, vienkartinė), kurioje įrašai naują PIN. Telefone sticky notes pagrindiniame lange nebesirodo – jie atsidaro per „Notes“.' },
   { d:'2026-10-04 10:45', v:'v270', k:'new', t:'Tamsūs išskleidžiami sąrašai ir „Notes“ telefone', f:'Visi išskleidžiami sąrašai (pvz. nario pasirinkimas Team Tracker) kompiuteryje dabar atsidaro tamsūs, su stiklo efektu ir baltu tekstu, vietoj pilko sistemos sąrašo (veikia ir rodyklės, Enter, Esc). Telefone apatinėje juostoje šalia „Meniu“ – mygtukas „Notes“: atsidaro visi tavo užrašai ir sticky notes ant užblurinto fono, viršuje galima iškart parašyti ir išsaugoti naują užrašą, paspaudus užrašą – redaguoti; dar kartą paspaudus „Notes“ viskas pradingsta. Juostoje dabar: dvi tavo programos, Namai, Notes, Meniu.' },
