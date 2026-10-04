@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-tmI7luPcKZx6NzSqXv+X8GPu6lwCmBkC31Giacn4DcY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-XFqgUGxuuNooKJFCw9aUvChUo8EBATWdCvITJuXU0/I=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -10868,7 +10868,7 @@ const ACCESS_DEFAULTS = {
   office:    {buy:'edit', invoices:'edit', newproj:'view', people:'edit', jobs:'view', chat:'edit', mail:'edit', events:'edit', rentals:'edit', handovers:'edit', fleet:'edit', venues:'edit', projects:'view', load:'view', inventory:'view', rules:'view', stats:'view'},
   tech:      {buy:'edit', invoices:'edit', newproj:'view', jobs:'view', chat:'edit', rentals:'edit', handovers:'edit', load:'edit', inventory:'edit', rules:'edit', fleet:'edit', events:'view', projects:'view', venues:'view'},
   freelance: {invoices:'edit', chat:'edit', events:'view', rentals:'view', projects:'view', load:'view', venues:'view'},
-  runner:    {chat:'edit', rentals:'edit'},
+  runner:    {chat:'edit', rentals:'edit', invoices:'edit'},
 };
 var ACCESS = { role:null, profile:null, perms:{}, fallback:false };
 
@@ -18376,7 +18376,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v279';
+const APP_VER = 'v280';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -34702,6 +34702,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 11:41', v:'v280', k:'chg', t:'Runner: sąskaitų įkėlimas', f:'Runner nariai, kaip ir Tech bei Freelance, gali įkelti savo sąskaitas ir mato tik savo įkeltas.' },
   { d:'2026-10-04 11:37', v:'v279', k:'chg', t:'Tech: Transporte – tik automobiliai, be Ataskaitų', f:'Tech nariai Transporto skiltyje mato tik automobilius (Transporto nuoma ir UTA kortelės – tik Admin, Office ir Projektų vadovams) ir nemato „Ataskaitų“.' },
   { d:'2026-10-04 11:34', v:'v278', k:'fix', t:'Pirkinių sąrašai – tik Admin, Office ir Projektų vadovams', f:'Tech ir kiti lygiai sąrašų (VIDEO / AUDIO / LIGHT / Bendri) nebemato net tų, kuriuos patys kūrė – jiems lieka tik „Pasiūlymai“. Super Admin, persijungęs į kitą lygį, mato tai, ką mato tas lygis.' },
   { d:'2026-10-04 11:25', v:'v277', k:'new', t:'Pirkinių pasiūlymai, pranešimų kortelė, automobiliai tik adminams', f:'Pirkiniai dabar iš dviejų dalių: „Pasiūlymai“ – kiekvienas narys įrašo, ką pirkti (kiekis, kaina, nuoroda, skiltis, svarba), visi mato visų pasiūlymus; „Sąrašai“ (VIDEO / AUDIO / LIGHT / Bendri) – tik Office, Admin ir Projektų vadovams. Pasiūlymą priėmus jis įkeliamas į pasirinktą sąrašą ir skyrių ir pažymimas „Priimta“, galima ir atmesti su priežastimi. Pradžios puslapyje dešinėje – kortelė „Pranešimai“: žinutės, kvietimai į kalendorių, renginiai, užduotys, sąskaitos ir kt.; paspaudus atsidaro chatas ir kanalas, susitikimas kalendoriuje, renginys ir t. t. Transporte automobilį į parką pridėti gali tik administratorius, ir kaskart klausiama „Ar tikrai?“.' },
