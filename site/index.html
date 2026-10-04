@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-nyeH8wyXP95aMNOfAuApHWG+M6QcHCoDVgYP9Q50H+o=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-tmI7luPcKZx6NzSqXv+X8GPu6lwCmBkC31Giacn4DcY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -6529,9 +6529,12 @@ function docStatus(dateStr, leadDays){
   return {level:'ok', label:'Galioja', days};
 }
 
+// Transporto nuoma and UTA kortelės: only Admin, Office, Projektų vadovai (Tech sees only the vehicles)
+const fleetAllSubs = ()=>['admin','office','pm'].includes(ACCESS.role);
 function renderFleetTab(){
   const tpls = vehicleTemplates();
-  const subs = `<div class="viewmode-toggle fl-subs"><button type="button" data-fsub="cars" class="${FLEET.sub==='cars'?'active':''}">🚐 Automobiliai</button><button type="button" data-fsub="rent" class="${FLEET.sub==='rent'?'active':''}">🚚 Transporto nuoma</button><button type="button" data-fsub="uta" class="${FLEET.sub==='uta'?'active':''}">⛽ UTA kortelės</button></div>`;
+  if(!fleetAllSubs()) FLEET.sub = 'cars';
+  const subs = !fleetAllSubs() ? '' : `<div class="viewmode-toggle fl-subs"><button type="button" data-fsub="cars" class="${FLEET.sub==='cars'?'active':''}">🚐 Automobiliai</button><button type="button" data-fsub="rent" class="${FLEET.sub==='rent'?'active':''}">🚚 Transporto nuoma</button><button type="button" data-fsub="uta" class="${FLEET.sub==='uta'?'active':''}">⛽ UTA kortelės</button></div>`;
   const bindSubs = ()=>document.querySelectorAll('[data-fsub]').forEach(b=>b.onclick = ()=>{ FLEET.sub = b.dataset.fsub; try{ localStorage.setItem('fleetSub', FLEET.sub); }catch(e){} renderFleetTab(); });
   if(!FLEET.rmLoaded) fleetRmLoad().then(()=>{ if(currentTab==='fleet') fleetRmRefresh(); });
   if(FLEET.sub==='rent'){
@@ -7209,7 +7212,7 @@ function utaVehMonth(vid){
 }
 function utaVehBox(v){
   const box = document.getElementById('vehUta'); if(!box) return;
-  if(UTA.err || !UTA.loaded){ box.innerHTML = ''; return; }
+  if(UTA.err || !UTA.loaded || !fleetAllSubs()){ box.innerHTML = ''; return; }
   const cards = UTA.cards.filter(c=>c.assign_kind==='vehicle' && c.vehicle_id===v.id), s = utaVehMonth(v.id);
   box.innerHTML = `<div class="card uta-veh"><div class="row between" style="align-items:center;"><b>⛽ UTA kuras</b><button type="button" class="btn small" id="vehUtaGo">Atidaryti UTA →</button></div>
     <div class="uta-veh-r">${cards.length ? cards.map(c=>`<span class="fl-chip">💳 ${esc(utaMask(c.card_no))}</span>`).join('') : '<span class="muted">Kortelė nepriskirta</span>'}
@@ -10863,7 +10866,7 @@ const ACCESS_SECTIONS = [
 const ACCESS_DEFAULTS = {
   pm:        {buy:'edit', invoices:'edit', newproj:'edit', people:'edit', offers:'edit', jobs:'edit', events:'edit', rentals:'edit', handovers:'edit', projects:'edit', venues:'edit', chat:'edit', mail:'edit', fleet:'view', inventory:'view', load:'view', rules:'view', stats:'view'},
   office:    {buy:'edit', invoices:'edit', newproj:'view', people:'edit', jobs:'view', chat:'edit', mail:'edit', events:'edit', rentals:'edit', handovers:'edit', fleet:'edit', venues:'edit', projects:'view', load:'view', inventory:'view', rules:'view', stats:'view'},
-  tech:      {buy:'edit', invoices:'edit', newproj:'view', jobs:'view', chat:'edit', rentals:'edit', handovers:'edit', load:'edit', inventory:'edit', rules:'edit', fleet:'edit', events:'view', projects:'view', stats:'view', venues:'view'},
+  tech:      {buy:'edit', invoices:'edit', newproj:'view', jobs:'view', chat:'edit', rentals:'edit', handovers:'edit', load:'edit', inventory:'edit', rules:'edit', fleet:'edit', events:'view', projects:'view', venues:'view'},
   freelance: {invoices:'edit', chat:'edit', events:'view', rentals:'view', projects:'view', load:'view', venues:'view'},
   runner:    {chat:'edit', rentals:'edit'},
 };
@@ -18373,7 +18376,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v278';
+const APP_VER = 'v279';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -34699,6 +34702,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 11:37', v:'v279', k:'chg', t:'Tech: Transporte – tik automobiliai, be Ataskaitų', f:'Tech nariai Transporto skiltyje mato tik automobilius (Transporto nuoma ir UTA kortelės – tik Admin, Office ir Projektų vadovams) ir nemato „Ataskaitų“.' },
   { d:'2026-10-04 11:34', v:'v278', k:'fix', t:'Pirkinių sąrašai – tik Admin, Office ir Projektų vadovams', f:'Tech ir kiti lygiai sąrašų (VIDEO / AUDIO / LIGHT / Bendri) nebemato net tų, kuriuos patys kūrė – jiems lieka tik „Pasiūlymai“. Super Admin, persijungęs į kitą lygį, mato tai, ką mato tas lygis.' },
   { d:'2026-10-04 11:25', v:'v277', k:'new', t:'Pirkinių pasiūlymai, pranešimų kortelė, automobiliai tik adminams', f:'Pirkiniai dabar iš dviejų dalių: „Pasiūlymai“ – kiekvienas narys įrašo, ką pirkti (kiekis, kaina, nuoroda, skiltis, svarba), visi mato visų pasiūlymus; „Sąrašai“ (VIDEO / AUDIO / LIGHT / Bendri) – tik Office, Admin ir Projektų vadovams. Pasiūlymą priėmus jis įkeliamas į pasirinktą sąrašą ir skyrių ir pažymimas „Priimta“, galima ir atmesti su priežastimi. Pradžios puslapyje dešinėje – kortelė „Pranešimai“: žinutės, kvietimai į kalendorių, renginiai, užduotys, sąskaitos ir kt.; paspaudus atsidaro chatas ir kanalas, susitikimas kalendoriuje, renginys ir t. t. Transporte automobilį į parką pridėti gali tik administratorius, ir kaskart klausiama „Ar tikrai?“.' },
   { d:'2026-10-04 11:04', v:'v276', k:'fix', t:'Team Tracker: seni nariai susiejami su paskyra', f:'Narys, užsiregistravęs prieš susiejimą su paskyromis, automatiškai susiejamas su tavo paskyra, jei vardas ir pavardė sutampa – tada veikia „Pamiršau PIN“ ir dingsta „Registruotis“.' },
