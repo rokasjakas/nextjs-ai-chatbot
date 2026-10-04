@@ -14,6 +14,7 @@
 //      "Priimti" / "Atmesti" (muted chats ring too; quiet hours do not).
 // POST {"kind":"test"}                   -> the caller's own devices
 // pg_cron "cron" mode (every 5 min) also reminds every hour of an open Team Tracker shift (tracker.sql)
+// POST {"kind":"mail-test"} -> Admin: a test e-mail to the caller, with Resend's answer
 // POST {"kind":"tracker-pin","member_id"} -> Team Tracker „Pamiršau PIN“: a 1-hour link to the member's account e-mail
 // POST {"kind":"event","event_id","users":[…]}  people just written into an
 //      event's crew: each one who really is in it now is told (Renginiai)
@@ -153,7 +154,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 15;
+const PUSH_FN_VERSION = 16;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -947,6 +948,20 @@ async function onTrackerPin(memberId: string) {
   const [u, d] = p.email.split("@");
   return { ok: true, to: (u.length > 2 ? u.slice(0, 2) + "•••" : u[0] + "•••") + "@" + d };
 }
+// Admin → „Laiškų patikra“: a test e-mail to the caller, with Resend's exact answer
+async function onMailTest(uid: string) {
+  const [p] = await db<{ email: string; role: string }[]>(`profiles?select=email,role&id=eq.${uid}`);
+  if (!p || p.role !== "admin") return { error: "Tik administratoriui." };
+  const key = Deno.env.get("RESEND_API_KEY") ?? "", from = Deno.env.get("REMINDER_FROM") || "Event Solutions <onboarding@resend.dev>";
+  const out: Record<string, unknown> = { to: p.email, from, key: key ? "nustatytas (" + key.slice(0, 5) + "…)" : "NENUSTATYTAS", fn: PUSH_FN_VERSION };
+  if (!key) return { ...out, ok: false, error: "Supabase → Edge Functions → Secrets: nėra RESEND_API_KEY." };
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from, to: [p.email], subject: "EventSolutions App: laiškų patikra", html: `<div style="font-family:Arial,sans-serif;font-size:14px;">✓ Laiškai iš programėlės veikia (${new Date().toISOString()}).</div>` }),
+  });
+  const text = (await res.text()).slice(0, 400);
+  return { ...out, ok: res.ok, status: res.status, resend: text };
+}
 // the people who want notifications about a topic (Profilis → Pranešimai)
 async function wantIds(ids: string[], kind: "tasks" | "events" | "gear" | "leave" | "other"): Promise<string[]> {
   if (!ids.length) return [];
@@ -1248,6 +1263,7 @@ Deno.serve(async (req) => {
     }
     const uid = await caller(req);
     if (!uid) return json({ error: "Reikia prisijungti." }, 401);
+    if (body.kind === "mail-test") return json(await onMailTest(uid));
     if (body.kind === "tracker-pin") return json(await onTrackerPin(String(body.member_id ?? "")));
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : "decided"));
