@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-qL8q0ieodFVl/cxGWCNbKMqfaTK1EMh5mfmSeOMTC04=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-2CONKL1esPpveYONqW4U1ORwvXjl6ocNeqtoPwE+XXg=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4921,7 +4921,8 @@ html.ht-mono .home-tile{--tc:var(--text-dim) !important;} html.ht-acc .home-tile
 .pf-ico-demo{display:flex;gap:10px;flex-wrap:wrap;}
 .pf-ico-demo .pf-ico-t{padding:0;min-height:0;border:0;background:none !important;box-shadow:none !important;pointer-events:none;width:64px !important;min-height:0 !important;height:auto !important;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;} .pf-ico-demo .pf-ico-t small{font-size:10.5px;color:var(--text-dim);}
 .pf-ico-demo .ht-icon{width:48px !important;height:48px !important;border-radius:12px !important;} .pf-ico-demo .ht-icon svg{width:26px !important;height:26px !important;}
-#bgLayer{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#000;}
+#bgLayer{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#000 var(--bg-img, none) center / cover no-repeat;}
+#bgLayer video{opacity:0;transition:opacity .6s ease;} #bgLayer video.on{opacity:1;}
 #bgLayer video,#bgLayer canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 #bgLayer::after{content:'';position:absolute;inset:0;background:rgb(0 0 0 / var(--bg-dim,.55));}
 :root[data-theme="light"] #bgLayer::after{background:rgb(255 255 255 / var(--bg-dim,.55));}
@@ -10834,8 +10835,11 @@ async function onAuthed(session){
   if(kept){
     ACCESS.profile = kept.prof; ACCESS.role = kept.prof.role; ACCESS.fallback = false; accApplyPerms(kept.rows);
     const before = JSON.stringify([kept.prof.role, kept.prof.level, ACCESS.perms]);
+    const prefsBefore = JSON.stringify((kept.prof && kept.prof.notify_prefs) || {});
     loadAccess(session).then(st=>{
       if(st!=='ok'){ location.reload(); return; }
+      // the kept copy may be older than the member's settings (a background chosen on another device): apply the fresh ones
+      if(JSON.stringify(ACCESS.profile.notify_prefs || {})!==prefsBefore){ BG.done = false; try{ bgApply(); }catch(e){} }
       if(JSON.stringify([ACCESS.profile.role, ACCESS.profile.level, ACCESS.perms])!==before){ try{ applyAccessToNav(); if(typeof currentTab!=='undefined' && currentTab) setTab(canView(currentTab) ? currentTab : 'home'); }catch(e){} }
     }).catch(()=>{});
     state = 'ok';
@@ -18131,6 +18135,7 @@ function prefSet(k, v){
   try{ localStorage.setItem(k+':'+(teamMe()||''), JSON.stringify(v)); }catch(e){}
   if(!ACCESS.profile) return;
   const p = Object.assign({}, ACCESS.profile.notify_prefs||{}, { [k]:v }); ACCESS.profile.notify_prefs = p;
+  try{ const c = JSON.parse(localStorage.getItem(ACC_CACHE)||'null'); if(c && c.prof && c.id===teamMe()){ c.prof.notify_prefs = p; localStorage.setItem(ACC_CACHE, JSON.stringify(c)); } }catch(e){}
   clearTimeout(prefSaveT); prefSaveT = setTimeout(()=>{ const sb = getSb(); if(sb && teamMe()) sb.from('profiles').update({ notify_prefs:ACCESS.profile.notify_prefs }).eq('id', teamMe()).then(()=>{}); }, 600);
 }
 const byOrder = (list, order, key)=>{ if(!Array.isArray(order)) return list; const at = k=>{ const i = order.indexOf(k); return i<0 ? 1e3 : i; }; return list.map((x,i)=>[x,i]).sort((a,b)=>at(key(a[0]))-at(key(b[0])) || a[1]-b[1]).map(x=>x[0]); };
@@ -18682,7 +18687,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v294';
+const APP_VER = 'v295';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27477,10 +27482,13 @@ function glassApply(g){
 function bgKind(p){ p = p===undefined ? bgPref() : p; if(!p) return ''; if(p.kind==='live') return p.live ? 'live' : ''; if(!p.path) return ''; return p.kind==='video' ? 'video' : 'img'; }
 const bgCalm = ()=>!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 // the file is kept in the browser cache, so a video is not downloaded again on every visit
-async function bgBlob(path){
+async function bgBlob(path, later){
   const key = 'https://es-bg.local/'+encodeURIComponent(path);
   let cache = null; try{ cache = await caches.open('es-bg-v1'); const hit = await cache.match(key); if(hit) return await hit.blob(); }catch(e){ cache = null; }
-  const blob = await stBlob('avatars', path); if(!blob) return null;
+  // not on this device yet: the app's own data first, the (big) video right after
+  if(later) await new Promise(r=>setTimeout(r, 1500));
+  if(!getSb() || !teamMe()) return null;
+  const blob = await stBlob('avatars', path); if(!blob || !blob.size) return null;
   if(cache){ try{ (await cache.keys()).forEach(k=>cache.delete(k)); await cache.put(key, new Response(blob, { headers:{ 'Content-Type':blob.type||'application/octet-stream' } })); }catch(e){} }
   return blob;
 }
@@ -27488,6 +27496,22 @@ function bgLayer(){
   let el = document.getElementById('bgLayer');
   if(!el){ el = document.createElement('div'); el.id = 'bgLayer'; el.setAttribute('aria-hidden', 'true'); document.body.prepend(el); }
   return el;
+}
+// a still frame of the video is kept on the device, so it shows at once while the video loads
+function bgPosterGet(path){ try{ const d = JSON.parse(localStorage.getItem('bgPoster')||'null'); return d && d.path===path ? d.img : ''; }catch(e){ return ''; } }
+function bgPosterSave(v, path){
+  if(bgPosterGet(path)) return;
+  setTimeout(()=>{ try{
+    if(!v.videoWidth) return;
+    const w = Math.min(640, v.videoWidth), h = Math.round(w*v.videoHeight/v.videoWidth), c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(v, 0, 0, w, h);
+    localStorage.setItem('bgPoster', JSON.stringify({ path, img:c.toDataURL('image/jpeg', 0.72) }));
+  }catch(e){} }, 400);
+}
+// the file could not be fetched (just after start, offline…): try again a little later
+function bgRetry(){
+  BG.tries = (BG.tries||0) + 1; if(BG.tries > 6) return;
+  clearTimeout(BG.retryT); BG.retryT = setTimeout(()=>{ if(bgKind()==='img' || bgKind()==='video') bgApply(); }, [2, 5, 10, 20, 40, 60][BG.tries-1]*1000);
 }
 function bgLayerOff(){ bgLiveStop(); const el = document.getElementById('bgLayer'); if(el) el.remove(); document.body.classList.remove('bg-layer'); }
 async function bgApply(){
@@ -27503,16 +27527,21 @@ async function bgApply(){
   }
   try{
     if(!(BG.path===p.path && BG.url)){
-      const blob = await bgBlob(p.path); if(!blob) return;
+      const poster = kind==='video' ? bgPosterGet(p.path) : '';
+      if(poster){ root.style.setProperty('--bg-img', `url("${poster}")`); bgLayer(); document.body.classList.add('has-bg', 'bg-layer'); }
+      const blob = await bgBlob(p.path, kind==='video');
+      if(!blob){ bgRetry(); return; }
+      BG.tries = 0;
       if(BG.url){ try{ URL.revokeObjectURL(BG.url); }catch(e){} }
       BG.url = URL.createObjectURL(blob); BG.path = p.path;
     }
     if(bgKind()!==kind) return;   // changed while loading
     if(kind==='img'){ bgLayerOff(); root.style.setProperty('--bg-img', `url("${BG.url}")`); document.body.classList.add('has-bg'); return; }
-    root.style.removeProperty('--bg-img');
+    const poster = bgPosterGet(p.path);
+    if(poster) root.style.setProperty('--bg-img', `url("${poster}")`); else root.style.removeProperty('--bg-img');
     const l = bgLayer(); let v = l.querySelector('video');
-    if(!v){ l.innerHTML = '<video muted loop playsinline preload="auto"></video>'; v = l.querySelector('video'); v.muted = true; }
-    if(v.dataset.src!==BG.url){ v.src = BG.url; v.dataset.src = BG.url; }
+    if(!v){ l.innerHTML = '<video muted loop playsinline autoplay preload="auto"></video>'; v = l.querySelector('video'); v.muted = true; v.defaultMuted = true; }
+    if(v.dataset.src!==BG.url){ v.classList.remove('on'); v.onplaying = ()=>{ v.classList.add('on'); bgPosterSave(v, p.path); }; v.src = BG.url; v.dataset.src = BG.url; }
     document.body.classList.add('has-bg', 'bg-layer');
     bgVideoPlay();
   }catch(e){}
@@ -35203,6 +35232,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 20:35', v:'v295', k:'fix', t:'Video fonas išlieka ir kraunasi greičiau', f:'Ištaisyta: iš naujo atidarius programą (naršyklėje, telefone ar kompiuteryje) video fonas dingdavo ir jį reikėdavo įkelti iš naujo – programa paleidžiant naudodavo seną išsaugotą profilio kopiją. Dabar nustatymai pritaikomi iš naujo, kai tik atsisiunčia naujausias profilis, o nepavykus parsiųsti failo bandoma dar kartą. Greitis: video saugomas įrenginio atmintyje (parsiunčiamas tik pirmą kartą), iškart rodomas sustabdytas jo kadras, o pirmą kartą video pradedamas siųsti tik užsikrovus programos duomenims.' },
   { d:'2026-10-04 20:27', v:'v294', k:'new', t:'Pradžios ikonos – sava spalva', f:'Profilis → Išvaizda → Dizainas → Pradžios ikonos: naujas pasirinkimas „Sava spalva“ – pasirink iš spalvų arba bet kokią spalvą paletėje; ikonos (ir švytėjimas užvedus pelę) bus tos spalvos. Galima derinti su „Be fono“.' },
   { d:'2026-10-04 20:23', v:'v293', k:'new', t:'Pradžios ikonos – vienos spalvos, be fono', f:'Profilis → Išvaizda → Dizainas: „Pradžios ikonos“ – Spalvotos, Vienos spalvos arba Pagrindinės spalvos, ir „Fonas aplink ikoną“ – Rodyti arba Be fono. Taikoma pradžios plytelėms (Ofisas, Sandėlis, Ataskaitos, Games, Nariai, Chatas ir kt.), peržiūra matosi iškart. Kiekvienas narys renkasi sau.' },
   { d:'2026-10-04 19:42', v:'v292', k:'new', t:'Judantis fonas: gyvi fonai ir savo video', f:'Profilis → Išvaizda → Fonas: „Gyvas fonas“ – 6 programos piešiami judantys fonai (Šiaurės pašvaistė, Žvaigždės, Tinklas, Bangos, Šviesos burbulai, Matrica) su spalvos, greičio ir patamsinimo pasirinkimu. „Mano paveikslėlis / video“ – dabar galima įkelti ir trumpą video (MP4 / WebM, iki 30 MB), kuris groja fone be garso ratu, kaip Wallpaper Engine. Fonas sustoja, kai programa paslėpta, video išsaugomas naršyklėje, kad nebūtų siunčiamas kaskart. Gražiausiai atrodo su įjungtu „Stiklu“. Matai tik tu.' },
