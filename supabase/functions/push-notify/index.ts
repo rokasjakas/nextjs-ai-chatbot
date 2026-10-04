@@ -99,6 +99,7 @@ function env(name: string): string {
 async function db<T = unknown>(path: string, init: RequestInit = {}): Promise<T> {
   const key = env("SUPABASE_SERVICE_ROLE_KEY");
   const res = await fetch(`${env("SUPABASE_URL")}/rest/v1/${path}`, {
+    signal: AbortSignal.timeout(12000),
     ...init,
     headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", ...(init.headers ?? {}) },
   });
@@ -154,7 +155,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 16;
+const PUSH_FN_VERSION = 17;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -865,6 +866,7 @@ async function mailTo(to: string[], subject: string, html: string): Promise<stri
   const key = Deno.env.get("RESEND_API_KEY");
   if (!key || !to.length) return key ? "" : "RESEND_API_KEY nenustatytas";
   const res = await fetch("https://api.resend.com/emails", {
+    signal: AbortSignal.timeout(12000),
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({ from: Deno.env.get("REMINDER_FROM") || "Event Solutions <onboarding@resend.dev>", to, subject, html }),
@@ -926,12 +928,23 @@ async function trackerReminders() {
 // Team Tracker „Pamiršau PIN“: a one-time link (1 hour) to the e-mail of the member's own account
 async function onTrackerPin(memberId: string) {
   if (!/^[0-9a-f-]{36}$/i.test(memberId)) return { error: "Nėra nario." };
+  let step = "duomenų bazė (tracker_members)";
+  try {
+    return await trackerPinSteps(memberId, (s) => { step = s; });
+  } catch (e) {
+    const m = e instanceof Error ? e.message : String(e);
+    return { error: `Sustojo ties: ${step}. ${/timed? ?out|TimeoutError|aborted/i.test(m) ? "Neatsakė per 12 s." : m.slice(0, 200)}` };
+  }
+}
+async function trackerPinSteps(memberId: string, at: (s: string) => void) {
   const [m] = await db<{ id: string; name: string; user_id: string | null; reset_sent_at: string | null }[]>(`tracker_members?select=id,name,user_id,reset_sent_at&id=eq.${memberId}`);
   if (!m) return { error: "Tokio nario nėra." };
   if (!m.user_id) return { error: "Šis narys nesusietas su paskyra – PIN pakeisti gali administratorius (ištrinti ir užregistruoti iš naujo)." };
   if (m.reset_sent_at && Date.now() - Date.parse(m.reset_sent_at) < 2 * 60000) return { error: "Nuoroda ką tik išsiųsta – patikrink el. paštą (ir šlamšto aplanką)." };
+  at("duomenų bazė (profiles)");
   const [p] = await db<{ email: string }[]>(`profiles?select=email&id=eq.${m.user_id}`);
   if (!p?.email) return { error: "Paskyra neturi el. pašto." };
+  at("duomenų bazė (tracker_pin_resets – ar paleistas tracker.sql?)");
   const raw = crypto.getRandomValues(new Uint8Array(24));
   const token = [...raw].map((b) => b.toString(16).padStart(2, "0")).join("");
   const hash = [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(token)))].map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -942,6 +955,7 @@ async function onTrackerPin(memberId: string) {
     <p><a href="${link}" style="display:inline-block;background:#50AD97;color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:bold;">Pakeisti PIN kodą</a></p>
     <p style="color:#555;">Nuoroda galioja 1 valandą ir veikia vieną kartą. Jei PIN keisti neprašei – tiesiog ignoruok šį laišką.</p>
     <p style="color:#777;font-size:12px;margin-top:18px;">EventSolutions App · Team Tracker</p></div>`;
+  at("laiško siuntimas (Resend)");
   const err = await mailTo([p.email], "Team Tracker: PIN kodo keitimas", html);
   if (err) return { error: "Laiško išsiųsti nepavyko: " + err };
   await db(`tracker_members?id=eq.${m.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ reset_sent_at: new Date().toISOString() }) });
@@ -956,6 +970,7 @@ async function onMailTest(uid: string) {
   const out: Record<string, unknown> = { to: p.email, from, key: key ? "nustatytas (" + key.slice(0, 5) + "…)" : "NENUSTATYTAS", fn: PUSH_FN_VERSION };
   if (!key) return { ...out, ok: false, error: "Supabase → Edge Functions → Secrets: nėra RESEND_API_KEY." };
   const res = await fetch("https://api.resend.com/emails", {
+    signal: AbortSignal.timeout(12000),
     method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({ from, to: [p.email], subject: "EventSolutions App: laiškų patikra", html: `<div style="font-family:Arial,sans-serif;font-size:14px;">✓ Laiškai iš programėlės veikia (${new Date().toISOString()}).</div>` }),
   });

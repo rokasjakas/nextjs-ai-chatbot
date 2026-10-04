@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-abdzcS5B1Xk5Hhkbqsu9e2+L4AVmHYe2vWEzqEioTh0=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-3ekqYCIqx+KqnpaRiRo1qKoErR+6Db+2y7RV/UGS5bI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -13886,7 +13886,7 @@ function renderAdminTab(){
   document.getElementById('admMailGo').onclick = async e=>{
     const b = e.currentTarget, out = document.getElementById('admMailOut');
     b.disabled = true; out.innerHTML = '<div class="section-sub">Siunčiama…</div>';
-    const r = await Promise.race([notifyCall({ kind:'mail-test' }), new Promise(res=>setTimeout(()=>res({ error:'Serveris neatsako per 20 s.' }), 20000))]);
+    const r = await Promise.race([notifyCall({ kind:'mail-test' }), new Promise(res=>setTimeout(()=>res({ error:'Serveris neatsako per 45 s.' }), 45000))]);
     b.disabled = false;
     const nl = window.NOTIFY_LAST || {};
     if(!r){ out.innerHTML = `<div class="mail-err">Funkcija push-notify atsakė klaida ${esc(String(nl.status||''))}: ${esc(nl.error||'')}</div>`; return; }
@@ -18218,7 +18218,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v274';
+const APP_VER = 'v275';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -33965,7 +33965,7 @@ function ttLoginWire(p, done){
     if(!(await uiConfirm(`Išsiųsti „${mm.name}“ nuorodą PIN kodui pakeisti? Ji ateis į to nario paskyros el. paštą ir galios 1 valandą.`, { yes:'Siųsti nuorodą', danger:false }))) return;
     const st = document.getElementById(p+'FS'), show = (t, bad)=>{ if(st){ st.textContent = t; st.className = 'tt-fpst '+(bad ? 'bad' : 'ok'); } toast(t, 9000); };
     fg.disabled = true; if(st){ st.textContent = 'Siunčiama…'; st.className = 'tt-fpst'; }
-    const r = await Promise.race([notifyCall({ kind:'tracker-pin', member_id:m }), new Promise(res=>setTimeout(()=>res({ error:'Serveris neatsako (20 s). Patikrink internetą ir bandyk dar kartą.' }), 20000))]);
+    const r = await Promise.race([notifyCall({ kind:'tracker-pin', member_id:m }), new Promise(res=>setTimeout(()=>res({ error:'Serveris neatsako (45 s): Supabase → Edge Functions → push-notify → Logs parodys, kur stringa.' }), 45000))]);
     fg.disabled = false;
     if(r && r.ok) show('📧 Nuoroda išsiųsta į '+r.to+'. Ji galioja 1 valandą (patikrink ir „Spam“).');
     else { const nl = window.NOTIFY_LAST || {}, er = (r && r.error) || nl.error || (nl.status ? 'Klaida '+nl.status : '');
@@ -34404,8 +34404,9 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 11:01', v:'v275', k:'fix', t:'„Pamiršau PIN“: parodo, kur stringa', f:'Jei serveris užstringa, po 12 s parašoma, ties kuriuo žingsniu (duomenų bazė ar laiško siuntimas), vietoj „Serveris neatsako“.' },
   { d:'2026-10-04 11:00', v:'v274', k:'new', t:'Admin: laiškų patikra', f:'Admin skiltyje – kortelė „Laiškų patikra“: išsiunčia bandomąjį laišką į tavo el. paštą tuo pačiu keliu kaip priminimai ir „Pamiršau PIN“, ir parodo tikslų atsakymą (ar nustatytas Resend raktas, koks siuntėjas, ką atsakė Resend) bei ką pataisyti.' },
-  { d:'2026-10-04 10:58', v:'v273', k:'fix', t:'Team Tracker: „Pamiršau PIN“ rodo, kas vyksta', f:'Paspaudus „Siųsti nuorodą“ po mygtuku matosi „Siunčiama…“, o paskui – kur išsiųsta arba kokia klaida (laukiama ne ilgiau 20 s). Administratorius „Pradirbtas laikas“ kortelėje gali nariui nustatyti naują PIN (mygtukas „PIN“).' },
+  { d:'2026-10-04 10:58', v:'v273', k:'fix', t:'Team Tracker: „Pamiršau PIN“ rodo, kas vyksta', f:'Paspaudus „Siųsti nuorodą“ po mygtuku matosi „Siunčiama…“, o paskui – kur išsiųsta arba kokia klaida (laukiama ne ilgiau 45 s). Administratorius „Pradirbtas laikas“ kortelėje gali nariui nustatyti naują PIN (mygtukas „PIN“).' },
   { d:'2026-10-04 10:52', v:'v272', k:'fix', t:'Team Tracker: aiškus pranešimas „Pamiršau PIN“', f:'Jei serveryje dar neįdiegta nauja pranešimų funkcija, vietoj „Unknown kind“ parašoma, ką reikia padaryti.' },
   { d:'2026-10-04 10:49', v:'v271', k:'new', t:'Team Tracker: teisės, viena registracija, „Pamiršau PIN“', f:'Tech, Freelance ir Runner nariai Team Tracker mato tik savo pradirbtą laiką (ir demo), Admin, Office ir Projektų vadovai – visų narių, be PIN. Registruojamasi vieną kartą – narys susiejamas su tavo paskyra. Pamiršus PIN – „Pamiršau PIN kodą“: į paskyros el. paštą ateina nuoroda (galioja 1 valandą, vienkartinė), kurioje įrašai naują PIN. Telefone sticky notes pagrindiniame lange nebesirodo – jie atsidaro per „Notes“.' },
   { d:'2026-10-04 10:45', v:'v270', k:'new', t:'Tamsūs išskleidžiami sąrašai ir „Notes“ telefone', f:'Visi išskleidžiami sąrašai (pvz. nario pasirinkimas Team Tracker) kompiuteryje dabar atsidaro tamsūs, su stiklo efektu ir baltu tekstu, vietoj pilko sistemos sąrašo (veikia ir rodyklės, Enter, Esc). Telefone apatinėje juostoje šalia „Meniu“ – mygtukas „Notes“: atsidaro visi tavo užrašai ir sticky notes ant užblurinto fono, viršuje galima iškart parašyti ir išsaugoti naują užrašą, paspaudus užrašą – redaguoti; dar kartą paspaudus „Notes“ viskas pradingsta. Juostoje dabar: dvi tavo programos, Namai, Notes, Meniu.' },
