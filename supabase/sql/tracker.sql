@@ -262,6 +262,24 @@ begin
   delete from public.tracker_tokens where member_id = r.member_id;   -- every device signs in again with the new PIN
   return jsonb_build_object('ok', true, 'name', nm);
 end $$;
+-- narys, užregistruotas prieš susiejimą su paskyromis, susiejamas su paskyra, kurios vardas ir pavardė sutampa
+-- (tik jei ta paskyra dar neturi nario ir toks narys vienas)
+create or replace function public.tt_claim() returns jsonb
+  language plpgsql security definer set search_path = public as $$
+declare nm text; mid uuid; n int;
+begin
+  if auth.uid() is null or not public.is_approved() then return jsonb_build_object('linked', false); end if;
+  if exists (select 1 from public.tracker_members where user_id = auth.uid()) then return jsonb_build_object('linked', false); end if;
+  select lower(btrim(coalesce(first_name,'')||' '||coalesce(last_name,''))) into nm from public.profiles where id = auth.uid();
+  if coalesce(nm, '') = '' then return jsonb_build_object('linked', false); end if;
+  select count(*), min(id::text)::uuid into n, mid from public.tracker_members where user_id is null and not demo and lower(btrim(name)) = nm;
+  if n <> 1 then return jsonb_build_object('linked', false); end if;
+  update public.tracker_members set user_id = auth.uid() where id = mid and user_id is null;
+  return jsonb_build_object('linked', true, 'id', mid);
+end $$;
+revoke all on function public.tt_claim() from public, anon;
+grant execute on function public.tt_claim() to authenticated;
+
 -- administratorius nustato nariui naują PIN (kai laiškas neateina ar narys be paskyros)
 create or replace function public.tt_set_pin(m uuid, p_pin text) returns jsonb
   language plpgsql security definer set search_path = public, extensions as $$
