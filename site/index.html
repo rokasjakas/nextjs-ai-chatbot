@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-yh2knneYnmeI4qraPA/9XxwySAR7dKE/RkrA6hAphwg=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-odXEwDHAvyRo3a845tM8q79jQgPHcPVl94ULy4fgQY4=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -959,6 +959,22 @@ input[data-combo],textarea[data-combo]{
 .combo-opt.danger{color:var(--danger);}
 .combo-sep{height:1px;background:var(--panel-3);margin:3px 0;}
 @media (hover:none){ .combo-opt{padding:11px 14px;} }
+/* drop-down lists: on a computer the app's own list (dark / glass, light text) opens instead of the grey system one;
+   phones keep their own picker, with dark options */
+.sel-pop{display:block;z-index:7000;min-width:160px;max-width:min(460px, calc(100vw - 12px));padding:4px;border-radius:12px;}
+.sel-pop .combo-opt{border-radius:8px;padding:8px 12px 8px 30px;position:relative;}
+.sel-pop .combo-opt.sel::before{content:'';position:absolute;left:11px;top:50%;width:6px;height:10px;margin-top:-7px;border:solid var(--accent);border-width:0 2px 2px 0;transform:rotate(45deg);}
+.sel-pop .combo-opt.dis{opacity:.4;pointer-events:none;}
+.sel-pop .sel-grp{padding:8px 12px 4px;font-size:11.5px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px;}
+.sel-pop .combo-opt.ind{padding-left:40px;}
+.sel-pop .combo-opt.ind.sel::before{left:21px;}
+html body .combo-pop.sel-pop{background:rgb(20 22 27 / .82) !important;-webkit-backdrop-filter:blur(18px) saturate(1.5) !important;backdrop-filter:blur(18px) saturate(1.5) !important;
+  border:1px solid rgb(255 255 255 / .22) !important;box-shadow:0 14px 40px rgb(0 0 0 / .55), inset 0 1px 0 rgb(255 255 255 / .10) !important;color:#F2F2F2 !important;}
+html body .combo-pop.sel-pop .combo-opt:hover,html body .combo-pop.sel-pop .combo-opt.hl{background:rgb(255 255 255 / .10);}
+:root[data-theme="light"] body .combo-pop.sel-pop{background:rgb(255 255 255 / .84) !important;border-color:rgb(0 0 0 / .14) !important;color:#111 !important;box-shadow:0 14px 40px rgb(0 0 0 / .18), inset 0 1px 0 rgb(255 255 255 / .8) !important;}
+:root[data-theme="light"] body .combo-pop.sel-pop .combo-opt:hover,:root[data-theme="light"] body .combo-pop.sel-pop .combo-opt.hl{background:rgb(0 0 0 / .06);}
+select option,select optgroup{background-color:#1F2125;color:#EDEDED;}
+:root[data-theme="light"] select option,:root[data-theme="light"] select optgroup{background-color:#FFFFFF;color:#111111;}
 button.linklike{background:none;border:0;padding:0;color:var(--accent);font:inherit;cursor:pointer;text-decoration:underline;}
 
 /* ---------- search bars ---------- */
@@ -4598,6 +4614,30 @@ body.gl-cards .hs-fold{background:color-mix(in srgb, var(--gl-base, var(--panel)
 .nt-stk{font-size:13px;}
 main.has-stickies{position:relative;}
 .nt-layer{position:absolute;inset:0;pointer-events:none;z-index:30;}
+/* phone „Notes“: the notes over the blurred page, above everything but the bottom bar */
+.nt-ov{position:fixed;left:0;right:0;top:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:900;overflow-y:auto;overscroll-behavior:contain;
+  background:rgb(0 0 0 / .38);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);animation:fadeIn .18s ease-out;}
+.nt-ov.out{opacity:0;transition:opacity .18s;}
+:root[data-theme="light"] .nt-ov{background:rgb(255 255 255 / .35);}
+.nt-ov-in{display:flex;flex-direction:column;gap:12px;padding:14px 14px 24px;max-width:560px;margin:0 auto;}
+.nt-ov-card{background:color-mix(in srgb, var(--panel) 82%, transparent);border:1px solid rgb(var(--hi-rgb) / .22);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 30px rgb(0 0 0 / .35);}
+.nt-ov-card h3{margin:0;font-size:16px;}
+.nt-ov-quick input,.nt-ov-quick textarea{width:100%;}
+.nt-ov-qb{display:flex;align-items:center;gap:8px;}
+.nt-ov-qb .checkbox-row{margin:0;font-size:13px;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.nt-ov-qb .btn .sl{width:14px;height:14px;vertical-align:-2px;}
+.nt-ov-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.nt-ov-note{display:flex;flex-direction:column;gap:4px;text-align:left;min-height:96px;padding:12px;border-radius:14px;border:1px solid rgb(var(--hi-rgb) / .2);
+  background:color-mix(in srgb, var(--panel) 80%, transparent);color:var(--text);font:inherit;cursor:pointer;box-shadow:0 6px 18px rgb(0 0 0 / .3);animation:popIn .22s var(--ease-out, ease-out) both;}
+.nt-ov-note.sticky{border-color:color-mix(in srgb, var(--accent) 60%, transparent);box-shadow:0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent) inset, 0 6px 18px rgb(0 0 0 / .3);}
+.nt-ov-h{display:flex;align-items:flex-start;gap:6px;}
+.nt-ov-h b{flex:1;font-size:14px;line-height:1.25;}
+.nt-ov-h .sl{width:15px;height:15px;color:var(--accent);flex:none;}
+.nt-ov-note small{color:var(--text-dim);font-size:11.5px;}
+.nt-ov-b{font-size:13px;color:var(--text);opacity:.9;white-space:pre-wrap;overflow:hidden;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;line-height:1.4;}
+.nt-ov-none{grid-column:1/-1;text-align:center;color:var(--text-dim);padding:20px;}
+#railNotes.active{background:var(--accent) !important;color:var(--accent-ink,#fff) !important;}
+#railNotes.active svg,#railNotes.active .rail-tip{color:inherit !important;}
 .nt-sticky{position:absolute;width:240px;max-width:calc(100% - 16px);pointer-events:auto;background:var(--panel);color:var(--text);
   border:1px solid var(--border);border-top:3px solid #F2C94C;border-radius:var(--radius,8px);box-shadow:0 10px 28px rgb(0 0 0 / .3);padding:0 0 10px;font-size:13px;transition:box-shadow .15s, transform .15s;}
 .nt-sticky.drag{transform:scale(1.02);box-shadow:0 18px 40px rgb(0 0 0 / .45);}
@@ -5058,6 +5098,9 @@ body.ev-full-on{overflow:hidden;}
     </button>
     <button class="rail-btn rail-profile" data-mobile="more" data-tab="profile" data-label="Mano profilis"><span class="rail-tip">Profilis</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5c.9-3.8 3.9-6.2 7.5-6.2s6.6 2.4 7.5 6.2"/></svg>
+    </button>
+    <button class="rail-btn more-only" id="railNotes" type="button" data-label="Notes" aria-label="Užrašai ir sticky notes" aria-expanded="false"><span class="rail-tip">Notes</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4"/></svg>
     </button>
     <button class="rail-btn more-only" id="railMore" data-label="Meniu" aria-label="Meniu: visos programos"><span class="rail-tip">Meniu</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
@@ -10838,12 +10881,13 @@ function navApplyFavs(){
   const favs = navFavs();
   document.body.classList.add('rail-fav');
   // phone bar: Namai always in the middle, two of the member's apps on its left, one (and Meniu) on its right
-  const mob = favs.filter(t=>t!=='home').slice(0, 3);
+  const mob = favs.filter(t=>t!=='home').slice(0, 2);   // two apps | Namai | Notes, Meniu
   navTabs().forEach(t=>{ const i = favs.indexOf(t.tab), m = mob.indexOf(t.tab);
     t.btn.classList.toggle('fav', i>=0); t.btn.classList.toggle('fav-m', m>=0 || t.tab==='home'); t.btn.style.order = i>=0 ? i : 100;
     t.btn.style.setProperty('--mo', t.tab==='home' ? 2 : m>=0 ? (m < 2 ? m : m+1) : 100); });
   const prof = document.querySelector('.rail-btn[data-tab="profile"]'); if(prof) prof.style.order = 200;
   const more = document.getElementById('railMore'); if(more) more.style.order = 300;
+  const nb = document.getElementById('railNotes'); if(nb) nb.style.order = 290;
 }
 // „Visos programos“ starts folded every time the menu opens; a tap on the heading unfolds it
 let navAllOpen = false;
@@ -11091,6 +11135,52 @@ async function stickyRender(){
     });
   });
 }
+/* ---------- telefone: „Notes“ apatinėje juostoje – visi užrašai ir sticky notes ant užblurinto fono ----------
+   Viršuje – greitas naujas užrašas; paspaudus užrašą – redaguoti; vėl paspaudus „Notes“ viskas pradingsta. */
+function ntOvOpen(){ return !!document.getElementById('ntOverlay'); }
+function ntOvClose(){
+  const ov = document.getElementById('ntOverlay'); if(!ov) return;
+  ov.classList.add('out'); setTimeout(()=>ov.remove(), 180);
+  const b = document.getElementById('railNotes'); if(b){ b.classList.remove('active'); b.setAttribute('aria-expanded', 'false'); }
+}
+async function ntOvToggle(){
+  if(ntOvOpen()){ ntOvClose(); return; }
+  try{ navMenuToggle(false); }catch(e){}
+  const ov = document.createElement('div'); ov.id = 'ntOverlay'; ov.className = 'nt-ov';
+  ov.innerHTML = '<div class="nt-ov-in"><div class="section-sub">Kraunama…</div></div>';
+  document.body.appendChild(ov);
+  const b = document.getElementById('railNotes'); if(b){ b.classList.add('active'); b.setAttribute('aria-expanded', 'true'); }
+  ov.addEventListener('click', e=>{ if(e.target===ov) ntOvClose(); });
+  await notesLoad(); if(!ov.isConnected) return;
+  ntOvDraw(ov);
+}
+function ntOvDraw(ov, edit){
+  const box = ov.querySelector('.nt-ov-in');
+  if(edit){
+    box.innerHTML = `<div class="nt-ov-card nt-ov-edit"><h3>${edit.id ? 'Užrašas' : 'Naujas užrašas'}</h3>${notesFormHtml(edit)}</div>`;
+    notesFormWire(box, edit, ch=>{ ntOvDraw(ov); if(ch){ stickyRender(); const nb = document.getElementById('ntBox'); if(nb) notesMount(nb); } });
+    return;
+  }
+  const l = NOTES.list.slice().sort((a,b)=>(b.sticky?1:0)-(a.sticky?1:0) || String(b.date||'').localeCompare(String(a.date||'')) || String(b.at||'').localeCompare(String(a.at||'')));
+  box.innerHTML = `<div class="nt-ov-card nt-ov-quick">
+      <input type="text" id="ntqTitle" placeholder="Naujas užrašas – pavadinimas" autocomplete="off">
+      <textarea id="ntqBody" rows="3" placeholder="Tekstas…"></textarea>
+      <div class="nt-ov-qb"><label class="checkbox-row"><input type="checkbox" id="ntqSticky"> Sticky note</label><span style="flex:1"></span><button type="button" class="btn primary small" id="ntqSave">${slIcon('check')} Išsaugoti</button></div>
+    </div>
+    <div class="nt-ov-list">${l.map(n=>`<button type="button" class="nt-ov-note ${n.sticky ? 'sticky' : ''}" data-ntov="${esc(n.id)}">
+        <span class="nt-ov-h"><b>${esc(n.title||'Be pavadinimo')}</b>${n.sticky ? slIcon('pin') : ''}</span><small>${esc(notesDate(n.date))}</small>
+        ${n.body ? `<span class="nt-ov-b">${esc(n.body)}</span>` : ''}</button>`).join('') || '<div class="nt-ov-none">Užrašų dar nėra – parašyk pirmą viršuje.</div>'}</div>`;
+  const q = s=>box.querySelector(s);
+  q('#ntqSave').onclick = ()=>{
+    const title = q('#ntqTitle').value.trim(), body = q('#ntqBody').value;
+    if(!title && !body.trim()){ toast('Įrašyk pavadinimą arba tekstą.'); return; }
+    NOTES.list.unshift({ id:uid('n'), title:title || 'Be pavadinimo', date:calISO(new Date()), body, sticky:q('#ntqSticky').checked, at:new Date().toISOString() });
+    notesSave(); toast('Užrašas išsaugotas.'); ntOvDraw(ov); stickyRender();
+    const nb = document.getElementById('ntBox'); if(nb) notesMount(nb);
+  };
+  box.querySelectorAll('[data-ntov]').forEach(b=>b.onclick = ()=>{ const n = NOTES.list.find(x=>x.id===b.dataset.ntov); if(n) ntOvDraw(ov, n); });
+}
+window.addEventListener('resize', ()=>{ if(ntOvOpen() && window.innerWidth > 760) ntOvClose(); });
 /* ---------- AI asistentas (home card): everyday questions to Claude through the ai-chat function, answer streamed in ---------- */
 const AIC = { msgs:null, busy:false };
 function aicKey(){ return 'aiChat:'+(teamMe()||''); }
@@ -18063,7 +18153,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v269';
+const APP_VER = 'v270';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -22386,6 +22476,52 @@ function evPopMenu(anchor, items){
   m.addEventListener('click', e=>{ const o = e.target.closest('[data-i]'); if(!o) return; const it = items[+o.dataset.i]; evPopClose(); if(it && it.fn) it.fn(); });
   setTimeout(()=>document.addEventListener('pointerdown', evPopOutside, true), 0);
 }
+// the app's own list for <select> (computer mouse); keys: ↑ ↓ Enter Esc
+let SEL_POP = null;
+function selPopClose(){ if(!SEL_POP) return; SEL_POP.m.remove(); document.removeEventListener('pointerdown', SEL_POP.out, true); document.removeEventListener('keydown', SEL_POP.key, true); window.removeEventListener('resize', selPopClose); SEL_POP = null; }
+function selPopOpen(s){
+  selPopClose(); evPopClose();
+  const m = document.createElement('div'); m.className = 'combo-pop sel-pop';
+  const opts = [];
+  const add = (o, ind)=>{ if(o.hidden) return; const i = opts.push(o) - 1;
+    m.insertAdjacentHTML('beforeend', `<div class="combo-opt ${o.selected?'sel':''} ${o.disabled?'dis':''} ${ind?'ind':''}" data-si="${i}">${esc(o.textContent)}</div>`); };
+  Array.from(s.children).forEach(ch=>{ if(ch.tagName==='OPTGROUP'){ m.insertAdjacentHTML('beforeend', `<div class="sel-grp">${esc(ch.label)}</div>`); Array.from(ch.children).forEach(o=>add(o, true)); } else if(ch.tagName==='OPTION') add(ch); });
+  if(!opts.length) return;
+  document.body.appendChild(m);
+  const r = s.getBoundingClientRect(), vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  m.style.minWidth = Math.max(160, r.width)+'px';
+  const below = vh - r.bottom - 10, above = r.top - 10, down = below >= 220 || below >= above;
+  m.style.maxHeight = Math.max(120, Math.min(420, down ? below : above))+'px';
+  const w = m.offsetWidth, h = m.offsetHeight;
+  m.style.left = Math.max(6, Math.min(r.left, window.innerWidth - w - 6))+'px';
+  m.style.top = (down ? r.bottom + 4 : r.top - h - 4)+'px';
+  const cur = m.querySelector('.sel'); if(cur) cur.scrollIntoView({ block:'nearest' });
+  const pick = i=>{ const o = opts[i]; selPopClose(); if(!o || o.disabled) return; s.focus();
+    if(s.value!==o.value || !o.selected){ s.value = o.value; s.dispatchEvent(new Event('input', { bubbles:true })); s.dispatchEvent(new Event('change', { bubbles:true })); } };
+  m.addEventListener('click', e=>{ const o = e.target.closest('[data-si]'); if(o) pick(+o.dataset.si); });
+  m.addEventListener('mousemove', e=>{ const o = e.target.closest('[data-si]'); if(o && !o.classList.contains('hl')){ m.querySelectorAll('.hl').forEach(x=>x.classList.remove('hl')); o.classList.add('hl'); } });
+  const out = e=>{ if(!m.contains(e.target)){ if(e.target===s || s.contains(e.target)) SEL_POP.again = true; selPopClose(); } };
+  const key = e=>{
+    const rows = Array.from(m.querySelectorAll('[data-si]:not(.dis)')); let i = rows.findIndex(x=>x.classList.contains('hl')); if(i<0) i = rows.findIndex(x=>x.classList.contains('sel'));
+    if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); selPopClose(); s.focus(); }
+    else if(e.key==='ArrowDown' || e.key==='ArrowUp'){ e.preventDefault(); e.stopPropagation(); const n = rows[Math.max(0, Math.min(rows.length-1, i + (e.key==='ArrowDown' ? 1 : -1)))]; if(n){ rows.forEach(x=>x.classList.remove('hl')); n.classList.add('hl'); n.scrollIntoView({ block:'nearest' }); } }
+    else if(e.key==='Enter' || e.key===' '){ e.preventDefault(); e.stopPropagation(); const o = rows[i]; if(o) pick(+o.dataset.si); }
+    else if(e.key==='Tab') selPopClose();
+  };
+  SEL_POP = { m, s, out, key };
+  setTimeout(()=>{ if(SEL_POP && SEL_POP.m===m){ document.addEventListener('pointerdown', out, true); document.addEventListener('keydown', key, true); window.addEventListener('resize', selPopClose); } }, 0);
+}
+let SEL_SKIP = null;
+document.addEventListener('pointerdown', e=>{ if(SEL_POP && (e.target===SEL_POP.s)) SEL_SKIP = SEL_POP.s; }, true);
+document.addEventListener('mousedown', e=>{
+  const s = e.target && e.target.closest ? e.target.closest('select') : null;
+  if(!s || e.button!==0 || s.multiple || s.size > 1 || s.disabled || s.dataset.native!=null || !matchMedia('(pointer:fine)').matches) return;
+  e.preventDefault();
+  if(SEL_SKIP===s){ SEL_SKIP = null; s.focus(); return; }   // a second click on the same list closes it
+  SEL_SKIP = null; s.focus(); selPopOpen(s);
+});
+// the keyboard still works on the closed list; Alt+↓ / F4 open the app's list
+document.addEventListener('keydown', e=>{ const s = e.target; if(s && s.tagName==='SELECT' && !SEL_POP && ((e.altKey && e.key==='ArrowDown') || e.key==='F4') && matchMedia('(pointer:fine)').matches){ e.preventDefault(); selPopOpen(s); } });
 function evPopOutside(e){ const m = document.getElementById('xgPop'); if(m && !m.contains(e.target)) evPopClose(); }
 function evPopClose(){ const m = document.getElementById('xgPop'); if(m) m.remove(); document.removeEventListener('pointerdown', evPopOutside, true); }
 
@@ -34000,7 +34136,8 @@ document.getElementById('fbHdr').addEventListener('click', ()=>{ if(fbAdmin() &&
   document.getElementById('saveAllBtn').addEventListener('click', saveEverythingNow);
   document.getElementById('installBtn').addEventListener('click', pwaInstall);
   // phones: the less used sections open from "Daugiau" in the bottom bar
-  document.getElementById('railMore').addEventListener('click', e=>{ e.stopPropagation(); navMenuToggle(); });
+  document.getElementById('railMore').addEventListener('click', e=>{ e.stopPropagation(); ntOvClose(); navMenuToggle(); });
+  document.getElementById('railNotes').addEventListener('click', e=>{ e.stopPropagation(); ntOvToggle(); });
   document.getElementById('railToggle').addEventListener('click', e=>{ e.stopPropagation(); navMenuToggle(); });
   document.addEventListener('click', e=>{
     const sheet = document.getElementById('railMoreSheet');
@@ -34175,6 +34312,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 10:45', v:'v270', k:'new', t:'Tamsūs išskleidžiami sąrašai ir „Notes“ telefone', f:'Visi išskleidžiami sąrašai (pvz. nario pasirinkimas Team Tracker) kompiuteryje dabar atsidaro tamsūs, su stiklo efektu ir baltu tekstu, vietoj pilko sistemos sąrašo (veikia ir rodyklės, Enter, Esc). Telefone apatinėje juostoje šalia „Meniu“ – mygtukas „Notes“: atsidaro visi tavo užrašai ir sticky notes ant užblurinto fono, viršuje galima iškart parašyti ir išsaugoti naują užrašą, paspaudus užrašą – redaguoti; dar kartą paspaudus „Notes“ viskas pradingsta. Juostoje dabar: dvi tavo programos, Namai, Notes, Meniu.' },
   { d:'2026-10-04 10:33', v:'v269', k:'new', t:'Team Tracker – darbo laiko apskaita', f:'Naujas puslapis „Team Tracker“ (Pradžioje ir meniu), kaip Connecteam laikrodis. Kiekvienas narys užsiregistruoja su savo PIN kodu ir prisijungia atskirai (viename telefone gali dirbti keli). Pradėdamas darbą pasirenki veiklą – sandėlis, vairavimas, budėjimas, montažas, demontažas, operatorius, pertrauka – ir gali ją keisti bet kada: ankstesnė išsaugoma su savo laiku, nauja skaičiuojama iš naujo. Baigus matosi bendras pradirbtas laikas ir kiek skirta kiekvienai veiklai. Viršuje rodomas vykstantis darbas, kas valandą ateina priminimas, kad Team Tracker aktyvus. Visiems matoma tik kiek narių užregistruota; nario valandas pagal laikotarpį (šiandien, savaitė, mėnuo, pasirinkti) matai prisijungęs jo PIN, galima atsisiųsti Excel ir ištrinti narį. Pridėtas „Demo darbuotojas“ (PIN 0000).' },
   { d:'2026-10-04 10:08', v:'v268', k:'new', t:'Pirkiniai: „Nupirkta“, nuorodos, ryškesni skyriai', f:'Prie kiekvienos eilutės – mygtukas „Nupirkta“: eilutė nukeliauja į apačią, papilkėja ir pažymima, kas ir kada nupirko (paspaudus dar kartą – grąžinama į viršų); nupirktų suma rodoma atskirai. Stulpelyje „Nuoroda“ – mygtukas „Pridėti nuorodą“, pridėta nuoroda atsidaro naujame lange (✎ – pakeisti). Skyrių juostos – stiklo efektu su ryškiu apvadu ir paryškintu tekstu (šviesiame režime – atvirkščiai). Nauja eilutė („+ Eilutė“) atsiranda pačiame viršuje.' },
   { d:'2026-10-04 09:59', v:'v267', k:'chg', t:'Šriftas – Barlow', f:'Visa programėlė rodoma Barlow šriftu (Thin, ExtraLight, Light, Regular, Medium) vietoj Questrial.' },
