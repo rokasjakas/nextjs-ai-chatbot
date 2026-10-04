@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-tRnMlaeB9V9zIdeWNAhJxzKol4IoUDYZm4J9vPgH1kI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-+FZ1F42YOjasyA8eGrTXNIiD+08EdVL9FTdUbK0ENBQ=' 'sha256-vvpIs/oRKfeLxstgnN/lWZlLecksXsWdyLvCeRkgR38=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -18191,7 +18191,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v271';
+const APP_VER = 'v272';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -33845,7 +33845,7 @@ function ttRenderClock(full){
       <button class="btn small" id="ttOut">Atsijungti</button></div>` : '';
   if(!me){
     box.innerHTML = `<h2 class="tt-h">${slIcon('clock')} Pradėti darbą</h2>
-      <div class="section-sub" style="margin:0 0 12px;">Pasirink save ir įvesk savo PIN kodą. Pirmą kartą – „Registruoti narį“.</div>
+      <div class="section-sub" style="margin:0 0 12px;">Pasirink save ir įvesk savo PIN kodą. Pirmą kartą – „Registruotis“.</div>
       ${ttLoginForm('ttL', '')}`;
     ttLoginWire('ttL', m=>{ TT.view = m; renderTrackerTab(); });
     return;
@@ -33940,7 +33940,8 @@ function ttLoginWire(p, done){
     const r = await notifyCall({ kind:'tracker-pin', member_id:m });
     fg.disabled = false;
     if(r && r.ok) toast('📧 Nuoroda išsiųsta į '+r.to+'. Ji galioja 1 valandą.', 7000);
-    else toast((r && r.error) || ((window.NOTIFY_LAST||{}).error) || 'Nepavyko išsiųsti nuorodos.', 7000);
+    else { const er = (r && r.error) || ((window.NOTIFY_LAST||{}).error) || '';
+      toast(/unknown kind/i.test(er) ? 'PIN keitimo laiškai dar neįjungti: Supabase → Edge Functions → push-notify → iš naujo įdiegti (Deploy). Kol kas PIN gali pakeisti administratorius.' : (er || 'Nepavyko išsiųsti nuorodos.'), 9000); }
   };
 }
 function ttRegister(){
@@ -34368,6 +34369,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-04 10:52', v:'v272', k:'fix', t:'Team Tracker: aiškus pranešimas „Pamiršau PIN“', f:'Jei serveryje dar neįdiegta nauja pranešimų funkcija, vietoj „Unknown kind“ parašoma, ką reikia padaryti.' },
   { d:'2026-10-04 10:49', v:'v271', k:'new', t:'Team Tracker: teisės, viena registracija, „Pamiršau PIN“', f:'Tech, Freelance ir Runner nariai Team Tracker mato tik savo pradirbtą laiką (ir demo), Admin, Office ir Projektų vadovai – visų narių, be PIN. Registruojamasi vieną kartą – narys susiejamas su tavo paskyra. Pamiršus PIN – „Pamiršau PIN kodą“: į paskyros el. paštą ateina nuoroda (galioja 1 valandą, vienkartinė), kurioje įrašai naują PIN. Telefone sticky notes pagrindiniame lange nebesirodo – jie atsidaro per „Notes“.' },
   { d:'2026-10-04 10:45', v:'v270', k:'new', t:'Tamsūs išskleidžiami sąrašai ir „Notes“ telefone', f:'Visi išskleidžiami sąrašai (pvz. nario pasirinkimas Team Tracker) kompiuteryje dabar atsidaro tamsūs, su stiklo efektu ir baltu tekstu, vietoj pilko sistemos sąrašo (veikia ir rodyklės, Enter, Esc). Telefone apatinėje juostoje šalia „Meniu“ – mygtukas „Notes“: atsidaro visi tavo užrašai ir sticky notes ant užblurinto fono, viršuje galima iškart parašyti ir išsaugoti naują užrašą, paspaudus užrašą – redaguoti; dar kartą paspaudus „Notes“ viskas pradingsta. Juostoje dabar: dvi tavo programos, Namai, Notes, Meniu.' },
   { d:'2026-10-04 10:33', v:'v269', k:'new', t:'Team Tracker – darbo laiko apskaita', f:'Naujas puslapis „Team Tracker“ (Pradžioje ir meniu), kaip Connecteam laikrodis. Kiekvienas narys užsiregistruoja su savo PIN kodu ir prisijungia atskirai (viename telefone gali dirbti keli). Pradėdamas darbą pasirenki veiklą – sandėlis, vairavimas, budėjimas, montažas, demontažas, operatorius, pertrauka – ir gali ją keisti bet kada: ankstesnė išsaugoma su savo laiku, nauja skaičiuojama iš naujo. Baigus matosi bendras pradirbtas laikas ir kiek skirta kiekvienai veiklai. Viršuje rodomas vykstantis darbas, kas valandą ateina priminimas, kad Team Tracker aktyvus. Visiems matoma tik kiek narių užregistruota; nario valandas pagal laikotarpį (šiandien, savaitė, mėnuo, pasirinkti) matai prisijungęs jo PIN, galima atsisiųsti Excel ir ištrinti narį. Pridėtas „Demo darbuotojas“ (PIN 0000).' },
