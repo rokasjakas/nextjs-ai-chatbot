@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-YXe7A/bgNGfW/FQsxjdCDBEswH3YsqHt0SC0DLk6K9I=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-WWNSTXScd2iVYBLwmjGo7maoLJDClCIOqV9K7c1+Xzg=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4885,7 +4885,8 @@ body.rad-own .card, body.rad-own .home-tile, body.rad-own .stat-tile, body.rad-o
 /* home tiles: glow + grow under the mouse (only where there is a mouse) */
 @media (hover:hover){
   body.hv-fx .home-tile{transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .2s, background .2s;will-change:transform;}
-  body.hv-fx .home-tile:hover{transform:scale(var(--hv-s,1.03)) !important;z-index:1;
+  /* not while tiles are being dragged: the grown tile would be pulled back from under the finger / mouse */
+  body.hv-fx .home-tile:hover:not(.sort-drag):not(.sorting *){transform:scale(var(--hv-s,1.03)) !important;z-index:1;
     box-shadow:0 0 calc(34px * var(--hv-g,.5)) calc(2px * var(--hv-g,.5)) color-mix(in srgb, var(--tc, var(--accent)) calc(var(--hv-g,.5) * 70%), transparent),
                0 10px 30px rgb(0 0 0 / calc(var(--hv-g,.5) * .35)) !important;
     border-color:color-mix(in srgb, var(--tc, var(--accent)) 60%, var(--border)) !important;}
@@ -5004,6 +5005,15 @@ html.ht-nobg .home-tile .ht-icon{background:none !important;}
 html.ht-own .home-tile .ht-icon{color:var(--ht-ico) !important;background:color-mix(in srgb, var(--ht-ico) 16%, transparent) !important;}
 html.ht-own.ht-nobg .home-tile .ht-icon{background:none !important;}
 html.ht-own .home-tile{--tc:var(--ht-ico) !important;}
+/* Mano erdvė: the section buttons follow the same icon colours */
+html.ht-mono .pf-nav-b{--pf-c:var(--text-dim) !important;} html.ht-mono .pf-nav-i{color:var(--text) !important;background:color-mix(in srgb, var(--text) 9%, transparent) !important;}
+html.ht-acc .pf-nav-b{--pf-c:var(--accent) !important;}
+html.ht-own .pf-nav-b{--pf-c:var(--ht-ico) !important;}
+html.ht-nobg .pf-nav-i{background:none !important;}
+html.ht-mono .pf-uta-ic{color:var(--text) !important;background:color-mix(in srgb, var(--text) 9%, transparent) !important;}
+html.ht-acc .pf-uta-ic{color:var(--accent) !important;background:color-mix(in srgb, var(--accent) 14%, transparent) !important;}
+html.ht-own .pf-uta-ic{color:var(--ht-ico) !important;background:color-mix(in srgb, var(--ht-ico) 16%, transparent) !important;}
+html.ht-nobg .pf-uta-ic{background:none !important;}
 html.ht-mono .home-tile{--tc:var(--text-dim) !important;} html.ht-acc .home-tile{--tc:var(--accent) !important;}
 .pf-ico{margin-top:10px;}
 .pf-seg{display:inline-flex;border:1px solid var(--border);border-radius:999px;overflow:hidden;flex-wrap:wrap;}
@@ -18299,16 +18309,19 @@ function makeSortable(box, o){
     const slide = fn=>{
       const others = items().filter(n=>n!==el), pos = new Map(others.map(n=>{ const r = n.getBoundingClientRect(); return [n, [r.left, r.top]]; }));
       fn();
-      others.forEach(n=>{ const r = n.getBoundingClientRect(), [l, t] = pos.get(n), dx = l - r.left, dy = t - r.top; if(!dx && !dy) return;
+      const z = zoom();
+      others.forEach(n=>{ const r = n.getBoundingClientRect(), [l, t] = pos.get(n), dx = (l - r.left)/z, dy = (t - r.top)/z; if(!dx && !dy) return;
         n.style.transition = 'none'; n.style.transform = `translate(${dx}px,${dy}px)`; n.offsetHeight;
         n.style.transition = `transform ${.22*animK()}s cubic-bezier(.2,.8,.2,1)`; n.style.transform = ''; });
     };
     // where an item really sits in the grid (not where it is sliding right now)
+    // (the box can be zoomed – Dydis: its own pixels are then bigger or smaller than the screen's)
+    const zoom = ()=>{ const w = box.offsetWidth; return w ? box.getBoundingClientRect().width / w : 1; };
     const lay = n=>{
-      const bx = box.getBoundingClientRect(); let l, t;
-      if(n.offsetParent===box){ l = bx.left + box.clientLeft + n.offsetLeft; t = bx.top + box.clientTop + n.offsetTop; }
-      else { l = bx.left + n.offsetLeft - box.offsetLeft; t = bx.top + n.offsetTop - box.offsetTop; }
-      return { left:l, top:t, right:l + n.offsetWidth, bottom:t + n.offsetHeight };
+      const r = n.getBoundingClientRect(), z = zoom(); let dx = 0, dy = 0;
+      const tf = getComputedStyle(n).transform;
+      if(tf && tf!=='none'){ try{ const m = new DOMMatrixReadOnly(tf); dx = m.e*z; dy = m.f*z; }catch(err){} }
+      return { left:r.left - dx, top:r.top - dy, right:r.right - dx, bottom:r.bottom - dy };
     };
     const place = ()=>{
       el.style.transform = '';
@@ -18318,8 +18331,8 @@ function makeSortable(box, o){
         slide(()=>box.insertBefore(el, a < b ? hit.nextSibling : hit));
         last = hit;
       } else if(!hit) last = null;
-      const r = el.getBoundingClientRect();
-      el.style.transform = `translate(${lx - gx - r.left}px,${ly - gy - r.top}px) scale(1.03)`;
+      const r = el.getBoundingClientRect(), z = zoom();
+      el.style.transform = `translate(${(lx - gx - r.left)/z}px,${(ly - gy - r.top)/z}px) scale(1.03)`;
     };
     const tick = ()=>{ if(!started) return; const d = ly < 60 ? -12 : ly > innerHeight - 60 ? 12 : 0; if(d){ scrollBy(0, d); place(); } raf = requestAnimationFrame(tick); };
     const begin = ()=>{
@@ -18918,7 +18931,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v315';
+const APP_VER = 'v316';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35912,6 +35925,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 17:20', v:'v316', k:'fix', t:'Plytelių tempimas be šokinėjimo; Mano erdvė – Išvaizdos spalvos', f:'Pagrindiniame puslapyje tempiant plyteles (Mano erdvė, Ofisas ir kt.) jos nebešokinėja ir nemirga: tempiama plytelė laikosi po pele, o užvedimo (padidėjimo) efektas tempimo metu išjungiamas. Tempimas veikia ir pakeitus plytelių dydį. Mano erdvė: grafų ir UTA kortelių ikonos klauso Išvaizda → Pradžios ikonos nustatymų (viena spalva, akcento ar sava spalva, be fono).' },
   { d:'2026-10-05 17:12', v:'v315', k:'new', t:'Mano erdvė (buvęs Profilis)', f:'Profilis pervadintas į „Mano erdvė“ ir atsirado pagrindiniame puslapyje kaip plytelė. Viršuje – grafos: Apie mane (vardas, nuotrauka, kontaktai, paskyra), UTA (tau priskirta kortelė ir bendros kortelės su PIN kodais – PIN rodomas paspaudus akutę), Išvaizda, Prašymai, Parsisiųsti (programėlės) ir Pranešimai. Paspaudus grafą rodoma tik jos informacija. Transportas → UTA kortelės: kortelei galima įrašyti PIN ir pažymėti „Bendra kortelė“. Reikia paleisti supabase/sql/uta_pins.sql.' },
   { d:'2026-10-05 16:56', v:'v314', k:'new', t:'Dydis: iki 30%', f:'Lange „Dydis“ plyteles, dešinės korteles ir meniu dabar galima sumažinti iki 30% (anksčiau iki 70%). Telefone sumažintos plytelės rikiuojasi po 3–5 eilėje. Telefono apatinis meniu nemažėja daugiau nei iki 60%, kad mygtukus būtų galima paspausti. Pataisyta: telefone sumažinus meniu, dalis jo mygtukų nebeišeina už ekrano.' },
   { d:'2026-10-05 16:54', v:'v313', k:'new', t:'Dydis: ir dešinės kortelės', f:'Lange „Dydis“ (viršutiniame meniu) atsirado eilutė „Dešinės kortelės“: − / + mažina arba didina pagrindinio puslapio dešinės pusės korteles (Pranešimai, Sąskaitos, kalendorius ir kt.) nuo 70% iki 130% – kartu siaurėja ar platėja ir pats stulpelis.' },
