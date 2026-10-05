@@ -67,6 +67,7 @@ create table if not exists public.bolt_trips (
   trip_on       date,
   person_name   text not null default '',
   phone         text,
+  vehicle_cat   text,
   person_id     uuid,
   from_addr     text not null default '',
   to_addr       text not null default '',
@@ -78,6 +79,7 @@ create table if not exists public.bolt_trips (
   checked_name  text,
   checked_at    timestamptz
 );
+alter table public.bolt_trips add column if not exists vehicle_cat text;   -- Vehicle category group (a table made before)
 create index if not exists bolt_trips_report on public.bolt_trips (report_id);
 create index if not exists bolt_trips_person on public.bolt_trips (person_id, trip_on);
 create index if not exists bolt_trips_on on public.bolt_trips (trip_on);
