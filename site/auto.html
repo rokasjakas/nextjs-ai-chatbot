@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-b5xbzyRU0mBH3TKyndJxuRMwTnjLpHuOkX5SPpOY8Nc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-aMPuf92tJMDItwPfsVLLu+ItENSEh6RjOXXYl4YPy8c=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Automobilis · Event Solutions</title>
@@ -102,7 +102,7 @@ function draw(){
   document.title = (v.name || 'Automobilis') + (v.plate ? ' · '+v.plate : '');
   document.getElementById('app').innerHTML = `
     <div class="card"><h1>${esc(v.name || 'Automobilis')}</h1>${v.plate ? `<span class="plate">${esc(v.plate)}</span>` : ''}</div>
-    ${rp ? `<div class="card rep">🔧 Automobilis remonte${v.repair.to ? ' iki '+day(v.repair.to) : ''}${v.repair.note ? ' · '+esc(v.repair.note) : ''}</div>` : ''}
+    ${rp ? `<div class="card rep"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M705-128 447-388q-23 8-46 13t-47 5q-97 0-165-67.5T121-602q0-31 8-60.5t23-55.5l145 145 92-86-149-149q26-15 55-23.5t59-8.5q99 0 168.5 69.5T592-602q0 24-5 47t-13 46l259 258q11 11 11 26.5T833-198l-76 70q-11 11-26 11t-26-11Z"/></svg> Automobilis remonte${v.repair.to ? ' iki '+day(v.repair.to) : ''}${v.repair.note ? ' · '+esc(v.repair.note) : ''}</div>` : ''}
     <div class="card"><h2>Svarbiausia</h2>
       ${v.km!=null ? `<div class="kv"><span>Rida</span><b>${num(v.km)} km</b></div>` : ''}
       ${v.hours!=null ? `<div class="kv"><span>Moto valandos</span><b>${num(v.hours, 1)}</b></div>` : ''}
@@ -113,7 +113,7 @@ function draw(){
     </div>
     ${(v.problems||[]).length ? `<div class="card"><h2>Žinomos problemos</h2>${v.problems.map(p=>`<div class="prob ${p.severity==='stop' ? 'stop' : ''}">${esc(p.title)}<small>${day(p.date)} · ${SEV[p.severity]||''}</small></div>`).join('')}</div>` : ''}
     <div class="card" id="repCard">
-      <h2>⚠ Registruoti problemą</h2>
+      <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="m40-120 440-760 440 760H40Zm465.5-125.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Z"/></svg> Registruoti problemą</h2>
       ${v.me ? `<div class="me">Registruoji kaip <b>${esc(v.me)}</b> (įmonės narys)</div>` : `<label for="rpName">Kas registruoja: vardas ir pavardė</label><input type="text" id="rpName" autocomplete="name" placeholder="pvz. Jonas Jonaitis">`}
       <label for="rpText">Kas pastebėta</label><textarea id="rpText" placeholder="pvz. Dega variklio lemputė, barška priekiniai stabdžiai…"></textarea>
       <label>Kaip skubu</label>
@@ -129,8 +129,8 @@ function draw(){
 function drawPh(){
   const box = document.getElementById('phs'); if(!box) return;
   box.innerHTML = PH.map((p,i)=>`<div class="ph"><img src="${p.url}" alt=""><button type="button" data-x="${i}" aria-label="Pašalinti">✕</button></div>`).join('')
-    + (PH.length < 6 ? '<label class="addph"><input type="file" accept="image/*" capture="environment" hidden data-ph><span>📷</span>Fotografuoti</label>'
-                     + '<label class="addph"><input type="file" accept="image/*" multiple hidden data-ph><span>🖼</span>Iš galerijos</label>' : '');
+    + (PH.length < 6 ? '<label class="addph"><input type="file" accept="image/*" capture="environment" hidden data-ph><span><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M480-267q72 0 121-49t49-121q0-73-49-121.5T480-607q-73 0-121.5 48.5T310-437q0 72 48.5 121T480-267Zm0-60q-48 0-79-31.5T370-437q0-48 31-79t79-31q47 0 78.5 31t31.5 79q0 47-31.5 78.5T480-327ZM140-120q-24 0-42-18t-18-42v-513q0-23 18-41.5t42-18.5h147l73-87h240l73 87h147q23 0 41.5 18.5T880-693v513q0 24-18.5 42T820-120H140Z"/></svg></span>Fotografuoti</label>'
+                     + '<label class="addph"><input type="file" accept="image/*" multiple hidden data-ph><span><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm56-157h489L578-473 446-302l-93-127-117 152Z"/></svg></span>Iš galerijos</label>' : '');
   box.querySelectorAll('[data-x]').forEach(b=>b.onclick = ()=>{ URL.revokeObjectURL(PH[+b.dataset.x].url); PH.splice(+b.dataset.x, 1); drawPh(); });
   box.querySelectorAll('[data-ph]').forEach(inp=>inp.onchange = async ()=>{ for(const f of [...inp.files].slice(0, 6 - PH.length)){ try{ const blob = await shrink(f); PH.push({ blob, url:URL.createObjectURL(blob) }); }catch(e){} } drawPh(); });
 }
@@ -159,7 +159,7 @@ async function send(){
     b.textContent = 'Siunčiama…';
     await rpc('vehicle_public_report', { p_token:T, p_name:name, p_text:text, p_severity:(document.querySelector('input[name="sev"]:checked')||{}).value || 'soon', p_files:paths });
     PH = [];
-    document.getElementById('repCard').innerHTML = `<div class="done"><div class="big">✅</div><h2>Problema užregistruota</h2><p class="muted">Ačiū! Atsakingas asmuo gavo pranešimą${paths.length ? ' su nuotraukomis' : ''}.</p><button class="btn ghost" id="rpMore">Registruoti dar vieną</button></div>`;
+    document.getElementById('repCard').innerHTML = `<div class="done"><div class="big" style="color:var(--ok)"><svg viewBox="0 0 24 24" width="52" height="52" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/></svg></div><h2>Problema užregistruota</h2><p class="muted">Ačiū! Atsakingas asmuo gavo pranešimą${paths.length ? ' su nuotraukomis' : ''}.</p><button class="btn ghost" id="rpMore">Registruoti dar vieną</button></div>`;
     document.getElementById('rpMore').onclick = ()=>draw();
   }catch(e){ b.disabled = false; b.textContent = 'Registruoti problemą'; err('Nepavyko: '+e.message); }
 }
