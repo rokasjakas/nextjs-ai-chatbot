@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-SSjrr6DwWonxZbQdgsZkKvFmpQE6QbgIbe2bwgYdj5E=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-ZPvEn6DWuUU4BfD25klm4rCa2o7upeY/muaDXMn4vkk=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19055,7 +19055,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v329';
+const APP_VER = 'v330';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -36471,15 +36471,15 @@ async function boltSumDraw(body, acts){
   const rows = Object.entries(groups).map(([name, list])=>Object.assign({ name, list }, boltSums(list))).sort((a, b)=>b.sum - a.sum);
   const tot = boltSums(trips);
   body.innerHTML = `<div class="card"><h2 class="section-title">Suvestinė · ${esc(rpWhen(RP.from))} – ${esc(rpWhen(RP.to))}</h2>
-    <div class="cln-stats"><div><small>Kelionių</small><b>${tot.n}</b></div><div><small>Iš viso</small><b>${expMoney(tot.sum)}</b></div><div class="bw"><small>Darbo</small><b>${tot.wn} · ${expMoney(tot.ws)}</b></div><div class="bp"><small>Asmeninės – išskaičiuoti</small><b>${tot.pn} · ${expMoney(tot.ps)}</b></div></div>
-    ${rows.length ? `<div class="table-wrap"><table class="bolt-tbl"><thead><tr><th>Vardas</th><th>Kelionių</th><th>Kainavo</th><th>Darbo</th><th>Asmeninės</th><th>Išskaičiuoti</th></tr></thead><tbody>
-      ${rows.map(r=>`<tr class="bolt-g ${BOLT.open===r.name ? 'on' : ''}" data-bog="${esc(r.name)}"><td><b>${esc(r.name)}</b></td><td>${r.n}</td><td><b>${expMoney(r.sum)}</b></td><td>${r.wn} · ${expMoney(r.ws)}</td><td>${r.pn} · ${expMoney(r.ps)}</td><td><b class="${r.ps ? 'bolt-ded' : ''}">${expMoney(r.ps)}</b></td></tr>
-        ${BOLT.open===r.name ? `<tr class="bolt-sub"><td colspan="6">${r.list.map(t=>boltTripHtml(t, false)).join('')}</td></tr>` : ''}`).join('')}
+    <div class="cln-stats"><div><small>Kelionių</small><b>${tot.n}</b></div><div><small>Iš viso</small><b>${expMoney(tot.sum)}</b></div><div class="bw"><small>Darbo</small><b>${tot.wn} · ${expMoney(tot.ws)}</b></div><div class="bp"><small>Asmeninės${isPlus() ? ' – išskaičiuoti' : ''}</small><b>${tot.pn} · ${expMoney(tot.ps)}</b></div></div>
+    ${rows.length ? `<div class="table-wrap"><table class="bolt-tbl"><thead><tr><th>Vardas</th><th>Kelionių</th><th>Kainavo</th><th>Darbo</th><th>Asmeninės</th>${isPlus() ? '<th>Išskaičiuoti</th>' : ''}</tr></thead><tbody>
+      ${rows.map(r=>`<tr class="bolt-g ${BOLT.open===r.name ? 'on' : ''}" data-bog="${esc(r.name)}"><td><b>${esc(r.name)}</b></td><td>${r.n}</td><td><b>${expMoney(r.sum)}</b></td><td>${r.wn} · ${expMoney(r.ws)}</td><td>${r.pn} · ${expMoney(r.ps)}</td>${isPlus() ? `<td><b class="${r.ps ? 'bolt-ded' : ''}">${expMoney(r.ps)}</b></td>` : ''}</tr>
+        ${BOLT.open===r.name ? `<tr class="bolt-sub"><td colspan="${isPlus() ? 6 : 5}">${r.list.map(t=>boltTripHtml(t, false)).join('')}</td></tr>` : ''}`).join('')}
       </tbody></table></div>` : '<div class="empty-state">Šiuo laikotarpiu kelionių nėra.</div>'}</div>`;
   body.querySelectorAll('[data-bog]').forEach(tr=>tr.onclick = ()=>{ BOLT.open = BOLT.open===tr.dataset.bog ? '' : tr.dataset.bog; boltSumDraw(body, acts); });
   if(acts){ acts.innerHTML = `<button type="button" class="btn small" id="rpXls">${slIcon('download')} Excel</button><button type="button" class="btn small primary" id="boPdf">${slIcon('print')} PDF ataskaita</button>`;
     document.getElementById('boPdf').onclick = ()=>boltPdf(rows, tot);
-    document.getElementById('rpXls').onclick = ()=>rpXls('Bolt', [['Suvestinė', [['Vardas', 'Kelionių', 'Iš viso €', 'Darbo kelionių', 'Darbo €', 'Asmeninių', 'Asmeninės €', 'Išskaičiuoti €']].concat(rows.map(r=>[r.name, r.n, +r.sum.toFixed(2), r.wn, +r.ws.toFixed(2), r.pn, +r.ps.toFixed(2), +r.ps.toFixed(2)]))],
+    document.getElementById('rpXls').onclick = ()=>rpXls('Bolt', [['Suvestinė', [['Vardas', 'Kelionių', 'Iš viso €', 'Darbo kelionių', 'Darbo €', 'Asmeninių', 'Asmeninės €'].concat(isPlus() ? ['Išskaičiuoti €'] : [])].concat(rows.map(r=>[r.name, r.n, +r.sum.toFixed(2), r.wn, +r.ws.toFixed(2), r.pn, +r.ps.toFixed(2)].concat(isPlus() ? [+r.ps.toFixed(2)] : [])))],
     ['Kelionės', [['Mėnuo / data', 'Vardas', 'Kategorija', 'Iš', 'Į', 'Kaina €', 'Kelionės priežastis', 'Tipas']].concat(trips.map(t=>[t.trip_at ? t.trip_on : String(t.trip_on||'').slice(0,7), boltWho(t), t.vehicle_cat||'', t.from_addr, t.to_addr, t.amount!=null ? +t.amount : '', t.note, BOLT_KIND[t.kind].t]))]]); }
 }
 function boltTripHtml(t, edit){
@@ -36569,20 +36569,20 @@ function boltRulesDraw(body){
 // the full report to print / save as PDF: per person, the personal trips and what to deduct
 function boltPdf(rows, tot){
   const w = window.open('', '_blank'); if(!w){ toast('Leisk iššokančius langus.'); return; }
-  const e = esc, m = n=>expMoney(n), when = t=>t.trip_at ? utaWhen(t.trip_at) : (t.vehicle_cat || utaMonthName(String(t.trip_on||'').slice(0,7)));
+  const plus = isPlus(), e = esc, m = n=>expMoney(n), when = t=>t.trip_at ? utaWhen(t.trip_at) : (t.vehicle_cat || utaMonthName(String(t.trip_on||'').slice(0,7)));
   w.document.write(`<!doctype html><meta charset="utf-8"><title>Bolt ${e(RP.from)} – ${e(RP.to)}</title><style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#111;margin:24px;font-size:12px;} h1{font-size:20px;margin:0 0 2px;} h2{font-size:15px;margin:22px 0 6px;page-break-after:avoid;}
     .sub{color:#555;margin-bottom:14px;} table{width:100%;border-collapse:collapse;margin-top:6px;} th,td{border-bottom:1px solid #ddd;padding:5px 6px;text-align:left;vertical-align:top;} th{background:#f2f2f2;font-size:11px;}
     td.n,th.n{text-align:right;white-space:nowrap;} .ded{font-weight:700;color:#b00020;} .tot td{font-weight:700;border-top:2px solid #111;} .p{page-break-inside:avoid;} small{color:#666;}
     @media print{ body{margin:10mm;} }</style>
     <h1>Bolt kelionių ataskaita</h1><div class="sub">Laikotarpis: ${e(rpWhen(RP.from))} – ${e(rpWhen(RP.to))} · Sudaryta ${e(keyWhen(new Date().toISOString()))} · ${e(teamName(ACCESS.profile))}</div>
-    <table><thead><tr><th>Vardas</th><th class="n">Kelionių</th><th class="n">Iš viso</th><th class="n">Darbo</th><th class="n">Asmeninės</th><th class="n">Išskaičiuoti</th></tr></thead><tbody>
-    ${rows.map(r=>`<tr><td>${e(r.name)}</td><td class="n">${r.n}</td><td class="n">${m(r.sum)}</td><td class="n">${r.wn} · ${m(r.ws)}</td><td class="n">${r.pn} · ${m(r.ps)}</td><td class="n ${r.ps ? 'ded' : ''}">${m(r.ps)}</td></tr>`).join('')}
-    <tr class="tot"><td>Iš viso</td><td class="n">${tot.n}</td><td class="n">${m(tot.sum)}</td><td class="n">${tot.wn} · ${m(tot.ws)}</td><td class="n">${tot.pn} · ${m(tot.ps)}</td><td class="n ded">${m(tot.ps)}</td></tr></tbody></table>
-    ${rows.filter(r=>r.pn).map(r=>`<div class="p"><h2>${e(r.name)} – asmeninės kelionės, išskaičiuoti ${m(r.ps)}</h2>
+    <table><thead><tr><th>Vardas</th><th class="n">Kelionių</th><th class="n">Iš viso</th><th class="n">Darbo</th><th class="n">Asmeninės</th>${plus ? '<th class="n">Išskaičiuoti</th>' : ''}</tr></thead><tbody>
+    ${rows.map(r=>`<tr><td>${e(r.name)}</td><td class="n">${r.n}</td><td class="n">${m(r.sum)}</td><td class="n">${r.wn} · ${m(r.ws)}</td><td class="n">${r.pn} · ${m(r.ps)}</td>${plus ? `<td class="n ${r.ps ? 'ded' : ''}">${m(r.ps)}</td>` : ''}</tr>`).join('')}
+    <tr class="tot"><td>Iš viso</td><td class="n">${tot.n}</td><td class="n">${m(tot.sum)}</td><td class="n">${tot.wn} · ${m(tot.ws)}</td><td class="n">${tot.pn} · ${m(tot.ps)}</td>${plus ? `<td class="n ded">${m(tot.ps)}</td>` : ''}</tr></tbody></table>
+    ${rows.filter(r=>r.pn).map(r=>`<div class="p"><h2>${e(r.name)} – asmeninės kelionės${plus ? ', išskaičiuoti '+m(r.ps) : ' ('+m(r.ps)+')'}</h2>
       <table><thead><tr><th>Data / kategorija</th><th>Iš</th><th>Į</th><th>Kelionės priežastis</th><th class="n">Kaina</th></tr></thead><tbody>
       ${r.list.filter(t=>t.kind==='personal').map(t=>`<tr><td>${e(when(t))}</td><td>${e(t.from_addr)}</td><td>${e(t.to_addr)}</td><td>${e(t.note || '—')}${t.kind_manual ? ' <small>(pakeista ranka)</small>' : ''}</td><td class="n">${m(+t.amount||0)}</td></tr>`).join('')}
-      <tr class="tot"><td colspan="4">Išskaičiuoti</td><td class="n ded">${m(r.ps)}</td></tr></tbody></table></div>`).join('')}
+      <tr class="tot"><td colspan="4">${plus ? 'Išskaičiuoti' : 'Iš viso asmeninių'}</td><td class="n ${plus ? 'ded' : ''}">${m(r.ps)}</td></tr></tbody></table></div>`).join('')}
     ${rows.some(r=>r.wn) ? `<h2>Darbo kelionės</h2><table><thead><tr><th>Vardas</th><th>Data / kategorija</th><th>Iš → Į</th><th>Kelionės priežastis</th><th class="n">Kaina</th></tr></thead><tbody>
       ${rows.flatMap(r=>r.list.filter(t=>t.kind==='work').map(t=>`<tr><td>${e(r.name)}</td><td>${e(when(t))}</td><td>${e(t.from_addr)} → ${e(t.to_addr)}</td><td>${e(t.note)}</td><td class="n">${m(+t.amount||0)}</td></tr>`)).join('')}</tbody></table>` : ''}`);
   w.document.close(); setTimeout(()=>{ w.focus(); w.print(); }, 300);
@@ -37074,6 +37074,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 19:30', v:'v330', k:'chg', t:'Bolt: „Išskaičiuoti“ – tik Admin+', f:'Kiek išskaičiuoti už asmenines Bolt keliones rodoma tik Admin+ nariams – suvestinėje, Excel ir PDF ataskaitoje. Office ir kiti mato kelionių skaičių, sumas ir darbo / asmeninių kelionių suskirstymą, bet be išskaičiavimų.' },
   { d:'2026-10-05 19:25', v:'v329', k:'chg', t:'Bolt: imami tik reikalingi Excel stulpeliai', f:'Iš įkelto Bolt Excel failo imami tik šie stulpeliai: Date, User name, Vehicle category group, Trip reason, From, To, Total cost of ride (kiti, pvz. telefonas, ignoruojami). Trip reason – kelionės priežastis, pagal kurią skirstoma į darbo ir asmenines; automobilio kategorija rodoma prie kiekvienos kelionės, Excel ir PDF ataskaitoje. Eilutė „Total“ neįskaičiuojama. Jei office_bolt.sql jau paleistas – paleisk supabase/sql/office_bolt3.sql.' },
   { d:'2026-10-05 19:18', v:'v328', k:'new', t:'Bolt / Wolt: mėnuo nustatomas automatiškai; tikrinime – visos kelionės', f:'Įkeliant Bolt ar Wolt dokumentą mėnuo nebereikia rinktis – jis nustatomas automatiškai pagal kelionių / užsakymų datas, dokumento laikotarpį ar datas (pvz. „2026-09-01 – 2026-09-30“, „September 2026“, „2026 m. rugsėjo“) arba failo pavadinimą; parodoma, koks mėnuo atpažintas. Jei nepavyksta – paklausiama. Bolt „Tikrinime“ pagal nutylėjimą rodomos visos mėnesio kelionės, sugrupuotos pagal žmogų (su sumomis), ir kiekvieną galima perjungti „Darbo / Asmeninė“; vardo pasirinkimas – filtras.' },
   { d:'2026-10-05 19:14', v:'v327', k:'fix', t:'Bolt / Wolt: failas išsaugomas ir be saugyklos teisių', f:'Jei failų saugykla neleidžia įkelti Bolt ar Wolt dokumento, jis išsaugomas duomenų bazėje (iki 8 MB) ir vis tiek atsisiunčiamas iš sąrašo. Jei nepavyksta ir tai – atsidaro langas su diagnostika: tavo lygis serveryje, ar yra teisė įkelti, lentelės, saugykla ir jos teisės, ir ką daryti. Reikia paleisti supabase/sql/office_bolt2.sql.' },
