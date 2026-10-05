@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-vARVRzaTUYhNmhfJ8xVt53POsCq09aF3eYvtRhgzIYQ=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-hweDMePSBhr3sZFhD3KGuYhul+YjoBIYSJShhJGoi7k=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19052,7 +19052,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v325';
+const APP_VER = 'v326';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -36163,7 +36163,10 @@ document.addEventListener('click', async e=>{
 /* ---------- Ataskaitos → Ofiso valymas (supabase/sql/office_bolt.sql) ---------- */
 const CLN = { list:null, err:'' };
 const clnCan = ()=>['admin','office','pm'].includes(ACCESS.role);
-const clnSqlErr = e=>/does not exist|schema cache|relation/i.test(e.message||'') ? 'Lentelės dar nėra – paleisk supabase/sql/office_bolt.sql.' : (e.message||String(e));
+const clnSqlErr = e=>{ const m = (e && (e.message || e.error)) || String(e);
+  return /does not exist|schema cache|relation/i.test(m) ? 'Lentelės dar nėra – paleisk supabase/sql/office_bolt.sql.'
+    : /bucket not found/i.test(m) ? 'Failų saugyklos „bolt-files“ dar nėra – paleisk supabase/sql/office_bolt.sql.'
+    : /row-level security|violates|unauthorized|not allowed|403/i.test(m) ? 'Serveris neleidžia (teisės): įkelti gali tik Admin ir Office – patikrink, ar paleistas supabase/sql/office_bolt.sql. ('+m+')' : m; };
 async function clnLoad(){
   const r = await getSb().from('office_cleanings').select('*').order('done_on', { ascending:false, nullsFirst:true }).order('ordered_on', { ascending:false }).limit(3000);
   CLN.err = r.error ? clnSqlErr(r.error) : ''; CLN.list = r.data || [];
@@ -36280,7 +36283,7 @@ async function rpPdfRows(file){
   return rows;
 }
 async function rpFileRows(file){
-  if(/\.pdf$/i.test(file.name)) return rpPdfRows(file);
+  if(/\.pdf$/i.test(file.name) || /pdf/i.test(file.type||'')) return rpPdfRows(file);
   if(!(await libNeed('xlsx'))) throw new Error('Excel biblioteka neįsikėlė – patikrink ryšį.');
   const wb = /\.csv$/i.test(file.name) ? XLSX.read(await file.text(), { type:'string', raw:true }) : XLSX.read(await file.arrayBuffer(), { type:'array' });
   return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header:1, raw:true, defval:'' });
@@ -36318,7 +36321,8 @@ function boltMember(name, phone){
 async function rpBoltDraw(box, acts){
   if(!TEAM.members || !TEAM.members.length) await teamLoadMembers().catch(()=>{});
   const sb = getSb(), adm = boltAdmin();
-  if(!adm){ return boltMineDraw(box, RP.from, RP.to); }
+  if(!adm){ await boltMineDraw(box, RP.from, RP.to);
+    box.insertAdjacentHTML('afterbegin', `<div class="card section-sub" style="margin-bottom:12px;">🔒 Bolt dokumentus įkelti ir visų kelionių suvestinę matyti gali tik Admin ir Office${isSuper && isSuper() ? ' (dabar žiūri kaip „'+esc(roleLabel(ACCESS.role, accLevel()))+'“ – perjunk į Super Admin)' : ''}. Čia – tik tavo kelionės.</div>`); return; }
   const rr = await sb.from('bolt_reports').select('*').order('month', { ascending:false }).order('created_at', { ascending:false });
   if(rr.error){ box.innerHTML = `<div class="card"><div class="mail-err">${esc(clnSqlErr(rr.error))}</div></div>`; return; }
   BOLT.reports = rr.data || []; await boltRulesLoad();
@@ -36326,7 +36330,7 @@ async function rpBoltDraw(box, acts){
   box.innerHTML = `<div class="card bolt-up"><h2 class="section-title">Įkelti Bolt mėnesio dokumentą</h2>
       <div class="bolt-up-row">
         <label class="field">Mėnuo<input type="month" id="boMonth" value="${lm}"></label>
-        <label class="btn primary bolt-file">${slIcon('upload')} Pasirinkti failą (Excel, CSV, PDF…)<input type="file" id="boFile" accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.png,.jpg,.jpeg" hidden></label>
+        <label class="btn primary bolt-file">${slIcon('upload')} Pasirinkti failą (Excel, CSV, PDF…)<input type="file" id="boFile" hidden></label>
       </div>
       <small class="muted">Iš Excel / CSV kelionės nuskaitomos automatiškai (data, vardas, telefonas, iš kur, į kur, kaina, pastaba). PDF ar kitas dokumentas išsaugomas kaip failas.</small>
       ${BOLT.reports.length ? `<div class="bolt-reps">${BOLT.reports.slice(0, 24).map(r=>`<div class="bolt-rep"><b>${esc(utaMonthName(r.month))}</b><span>${esc(r.file_name||'')}</span><small class="muted">${r.trips ? ltPlural(r.trips,'kelionė','kelionės','kelionių') : 'tik failas'} · ${esc(r.uploaded_name||'')} · ${esc(keyWhen(r.created_at))}</small>
@@ -36349,8 +36353,9 @@ async function rpBoltDraw(box, acts){
 }
 async function boltUpload(file, month){
   let rows = [];
+  if(!/\.(xlsx|xls|xlsm|csv|pdf|doc|docx|png|jpe?g|heic|txt)$/i.test(file.name) && !/sheet|excel|csv|pdf/i.test(file.type||'')){ toast('Šio failo tipo („'+file.name+'“) nuskaityti negalima – įkelk Excel, CSV arba PDF.', 7000); return; }
   await boltRulesLoad();
-  if(/\.(xlsx|xls|csv|pdf)$/i.test(file.name)){
+  if(/\.(xlsx|xls|xlsm|csv|pdf)$/i.test(file.name) || /sheet|excel|csv/i.test(file.type||'')){
     try{ const p = boltParse(await rpFileRows(file));
       if(p.err && !/\.pdf$/i.test(file.name)){ toast(p.err, 7000); return; }
       rows = p.rows || []; if(p.err) toast('PDF išsaugotas, bet kelionių lentelės jame nerasta.', 6000); }
@@ -36360,9 +36365,9 @@ async function boltUpload(file, month){
   toast('Įkeliama…');
   const ext = (file.name.match(/\.([a-z0-9]{2,5})$/i)||[])[1] || 'bin', path = 'bolt/'+month+'/'+id+'.'+ext.toLowerCase();
   const up = await stFrom('bolt-files').upload(path, file, { contentType:file.type || 'application/octet-stream', upsert:false });
-  if(up.error){ toast('Failo įkelti nepavyko: '+clnSqlErr(up.error), 6000); return; }
-  const r = await sb.from('bolt_reports').insert({ id, month, file_name:file.name, file_path:path, file_type:file.type || ext, trips:rows.length, uploaded_name:teamName(ACCESS.profile) });
-  if(r.error){ stFrom('bolt-files').remove([path]).catch(()=>{}); toast('Nepavyko: '+clnSqlErr(r.error), 6000); return; }
+  if(up.error){ if(!rows.length){ toast('Failo įkelti nepavyko: '+clnSqlErr(up.error), 9000); return; } toast('Failas neišsaugotas ('+clnSqlErr(up.error)+'), bet kelionės įrašomos.', 9000); }
+  const r = await sb.from('bolt_reports').insert({ id, month, file_name:file.name, file_path:up.error ? null : path, file_type:file.type || ext, trips:rows.length, uploaded_name:teamName(ACCESS.profile) });
+  if(r.error){ if(!up.error) stFrom('bolt-files').remove([path]).catch(()=>{}); toast('Nepavyko: '+clnSqlErr(r.error), 9000); return; }
   if(rows.length){
     const add = rows.map(x=>{ const m = boltMember(x.person_name, x.phone); return Object.assign({ report_id:id, person_id:m ? m.id : null }, x); });
     for(let i = 0; i < add.length; i += 500){ const w = await sb.from('bolt_trips').insert(add.slice(i, i+500)); if(w.error){ toast('Kelionių įrašyti nepavyko: '+w.error.message, 6000); break; } }
@@ -36538,7 +36543,7 @@ async function rpWoltDraw(box, acts){
   box.innerHTML = `<div class="card bolt-up"><h2 class="section-title">Įkelti Wolt mėnesio suvestinę</h2>
       <div class="bolt-up-row">
         <label class="field">Mėnuo<input type="month" id="woMonth" value="${lm}"></label>
-        <label class="btn primary bolt-file">${slIcon('upload')} Pasirinkti failą (PDF, Excel, CSV…)<input type="file" id="woFile" accept=".pdf,.xlsx,.xls,.csv,.doc,.docx,.png,.jpg,.jpeg" hidden></label>
+        <label class="btn primary bolt-file">${slIcon('upload')} Pasirinkti failą (PDF, Excel, CSV…)<input type="file" id="woFile" hidden></label>
       </div>
       <small class="muted">Iš dokumento su užsakymų lentele nuskaitomi užsakymai (data, kas, restoranas, suma). Jei lentelės nėra – mėnesio sumą ir užsakymų skaičių įrašyk ranka (pieštukas).</small>
       ${reps.length ? `<div class="bolt-reps">${reps.slice(0, 24).map(r=>`<div class="bolt-rep"><b>${esc(utaMonthName(r.month))}</b><span>${esc(r.file_name||'')}</span><small class="muted">${r.orders ? ltPlural(r.orders,'užsakymas','užsakymai','užsakymų') : 'užsakymų nėra'} · ${r.total!=null ? expMoney(+r.total) : 'suma neįrašyta'} · ${esc(r.uploaded_name||'')}</small>
@@ -36587,10 +36592,10 @@ async function woltUpload(file, month){
   const ext = (file.name.match(/\.([a-z0-9]{2,5})$/i)||[])[1] || 'bin', path = 'wolt/'+month+'/'+id+'.'+ext.toLowerCase();
   toast('Įkeliama…');
   const up = await stFrom('bolt-files').upload(path, file, { contentType:file.type || 'application/octet-stream', upsert:false });
-  if(up.error){ toast('Failo įkelti nepavyko: '+clnSqlErr(up.error), 6000); return; }
+  if(up.error){ if(!rows.length){ toast('Failo įkelti nepavyko: '+clnSqlErr(up.error), 9000); return; } toast('Failas neišsaugotas ('+clnSqlErr(up.error)+'), bet užsakymai įrašomi.', 9000); }
   const total = rows.length ? Math.round(rows.reduce((s, o)=>s + (+o.amount||0), 0)*100)/100 : null;
-  const r = await sb.from('wolt_reports').insert({ id, month, file_name:file.name, file_path:path, file_type:file.type || ext, orders:rows.length, total, uploaded_name:teamName(ACCESS.profile) }).select().single();
-  if(r.error){ stFrom('bolt-files').remove([path]).catch(()=>{}); toast('Nepavyko: '+clnSqlErr(r.error), 6000); return; }
+  const r = await sb.from('wolt_reports').insert({ id, month, file_name:file.name, file_path:up.error ? null : path, file_type:file.type || ext, orders:rows.length, total, uploaded_name:teamName(ACCESS.profile) }).select().single();
+  if(r.error){ if(!up.error) stFrom('bolt-files').remove([path]).catch(()=>{}); toast('Nepavyko: '+clnSqlErr(r.error), 9000); return; }
   if(rows.length){ for(let i = 0; i < rows.length; i += 500){ const w = await sb.from('wolt_orders').insert(rows.slice(i, i+500).map(o=>Object.assign({ report_id:id }, o))); if(w.error){ toast('Užsakymų įrašyti nepavyko: '+w.error.message, 6000); break; } } }
   toast(rows.length ? `✓ Įkelta: ${ltPlural(rows.length,'užsakymas','užsakymai','užsakymų')}, ${expMoney(total)}.` : '✓ Dokumentas išsaugotas – įrašyk mėnesio sumą.', 6000);
   rpDraw();
@@ -36980,6 +36985,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 19:11', v:'v326', k:'fix', t:'Bolt / Wolt: Excel failo įkėlimas', f:'Bolt ir Wolt skiltyse failo pasirinkimas nebėra ribojamas plėtiniais (telefone Excel failai būdavo pilki ir jų nebuvo galima pasirinkti) – tipas patikrinamas po pasirinkimo. Jei serveris neleidžia išsaugoti paties failo, kelionės / užsakymai vis tiek įrašomi, o klaida parodoma aiškiai (pvz. „paleisk office_bolt.sql“ arba „įkelti gali tik Admin ir Office“). Kas nėra Admin ar Office, Bolt skiltyje mato paaiškinimą, kodėl negali įkelti.' },
   { d:'2026-10-05 19:05', v:'v325', k:'new', t:'Ataskaitos: Ofiso valymas, Bolt, Wolt', f:'🧹 Ofiso valymas: įrašai – kada užsakyta valytoja, kada atliktas valymas, kaina, valytoja / įmonė, pastabos; ataskaita pasirinktam laikotarpiui (kiek valymų, kiek kainavo, vidurkis, pagal mėnesius, Excel). 🚕 Bolt: kas mėnesį įkeliamas Bolt dokumentas (Excel, CSV, PDF); kelionės nuskaitomos automatiškai. Suvestinė pasirinktam laikotarpiui pagal vardą – kelionių, kainavo, darbo, asmeninės ir kiek išskaičiuoti; PDF ataskaita su asmeninėmis kelionėmis ir išskaičiavimais. Tikrinimas – mėnesio ataskaita pagal vardą: be pastabos, „P“ ar „asmeninė“ – asmeninė, su tikslu – darbo; galima pakeisti ranka. Taisyklės – savi žodžiai / frazės asmeninėms ir darbo kelionėms. Visas keliones mato tik Admin ir Office; narys mato tik savo (Ataskaitose ir Išlaidų puslapyje). 🍔 Wolt: kas mėnesį įkeliama suvestinė (PDF, Excel, CSV); mėnesio ir pasirinkto laikotarpio suvestinė – kiek išleista, pagal žmogų ir restoraną (jei dokumentas be lentelės – suma įrašoma ranka). Reikia paleisti supabase/sql/office_bolt.sql.' },
   { d:'2026-10-05 18:07', v:'v324', k:'chg', t:'Transportas: QR kodas matosi automobilio kortelėje', f:'Atidarius automobilį Transporte, jo QR kodas rodomas iš karto kortelės viršuje (dešinėje). Paspaudus jį – atsisiųsti PNG, spausdinti lipduką, kopijuoti nuorodą. Kiekvienam automobiliui priskiriamas vienas QR kodas, kuris niekada nesikeičia (mygtuko „Naujas kodas“ nebėra, pakeisti ar ištrinti kodo neleidžia ir serveris). Jei vehicle_qr.sql jau paleistas – paleisk supabase/sql/vehicle_qr2.sql.' },
   { d:'2026-10-05 18:05', v:'v323', k:'chg', t:'Chatas: užrakinti kanalai – apačioje', f:'Chato kanalų sąraše užrakinti (privatūs) kanalai, pvz. #automobiliai ir #sandėlio-raktas, visada rodomi apačioje – po bendru ir atvirais kanalais. Kiekvienoje grupėje kanalai išrikiuoti pagal abėcėlę.' },
