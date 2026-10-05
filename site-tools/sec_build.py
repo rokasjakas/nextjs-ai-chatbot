@@ -3,7 +3,7 @@
  * hashes every inline <script> (sha256) → Content-Security-Policy without 'unsafe-inline' for scripts
  * writes the CSP as <meta> into index.html (works on any host) and
  * writes site/_headers for Cloudflare Pages (CSP + frame-ancestors + other security headers).
-Usage: python3 site-tools/sec_build.py site/index.html site/_headers [site/balsuoti.html …]
+Usage: python3 site-tools/sec_build.py site/index.html site/_headers [site/balsuoti.html site/auto.html …]
 (the other pages get the same CSP; their inline scripts are hashed too)"""
 import re, sys, hashlib, base64
 src, headers_out, extra = sys.argv[1], sys.argv[2], sys.argv[3:]
@@ -57,6 +57,10 @@ open(headers_out, 'w').write(f"""/*
 /balsuoti
   Cache-Control: no-cache
 /balsuoti.html
+  Cache-Control: no-cache
+/auto
+  Cache-Control: no-cache
+/auto.html
   Cache-Control: no-cache
 /.well-known/assetlinks.json
   Content-Type: application/json
