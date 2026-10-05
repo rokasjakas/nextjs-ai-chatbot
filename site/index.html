@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-xcSVkLBEQvvpQXn8PpJjrCTfcNrasDQvJOvB3fRZy2w=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-drbkXmy6DpqU7TkTK1MXxMC1qC8lewzojbibrofJr0g=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3494,6 +3494,19 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 @media(max-width:640px){ .pp-bar{align-items:stretch !important;} .pp-bar > *{flex:1 1 100%;width:100% !important;max-width:none !important;margin:0 !important;} .pp-search input{width:100%;} .pp-subs{display:grid;grid-template-columns:1fr 1fr;} .pp-actions{display:grid;grid-template-columns:auto 1fr;} .pp-day .field{flex:1 1 100%;} .pp-sum{margin-left:0;} .pp-form .lm-row{grid-template-columns:1fr;gap:0;} .pp-cards{grid-template-columns:1fr;} }
 .nt-diag{white-space:pre-wrap;font-size:11.5px;margin:10px 0 0;padding:8px;background:var(--bg-deep);border-radius:var(--radius);color:var(--text-dim);}
 .pf-page{max-width:none;}
+/* Transportas: tepalas, profilaktika, istorija */
+.vl-oil.warn{color:#E0A030;} .vl-oil.danger{color:var(--danger);}
+.vl-cond{font-weight:700;} .vl-cond.ok{color:#2F9E73;} .vl-cond.soon{color:#E0A030;} .vl-cond.stop{color:var(--danger);}
+.vl-fluids{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px;}
+.vl-fluid{display:grid;grid-template-columns:1fr auto;gap:4px;align-items:center;font-size:12px;}
+.vl-fluid span{grid-column:1/-1;color:var(--text-dim);}
+.vl-fluid select{width:auto;}
+.vl-oilbox{border:1px dashed var(--border);border-radius:10px;padding:10px;}
+.vl-line.chk{border-left:3px solid #4E9BC9;}
+.vl-inhist{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);}
+.vl-inhist-h{display:flex;align-items:center;gap:6px;font-weight:600;margin-bottom:6px;}
+.vl-inhist-h svg{width:16px;height:16px;}
+@media(max-width:640px){ .vl-fluids{grid-template-columns:1fr;} }
 /* Ofisas → Raktai */
 .key-subs{margin-bottom:14px;width:max-content;max-width:100%;}
 .key-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px;}
@@ -7149,6 +7162,8 @@ function fleetTileHtml(v){
       ${repair ? `<span class="fl-chip danger">🔧 Remonte${fleetRepPeriod(v.repair)}${v.repair.note ? ' · '+esc(v.repair.note) : ''}</span>` : ''}
       ${vin.html}${ta.html}${ins.html}
       ${km!=null ? `<span class="fl-chip">${slIcon('truck')} ${esc(vlKm(km))}</span>` : ''}
+      ${VL.loaded && vlLastHours(v.id)!=null ? `<span class="fl-chip">${slIcon('clock')} ${esc(vlHrs(vlLastHours(v.id)))}</span>` : ''}
+      ${(()=>{ const o = VL.loaded ? vlOilDue(v.id) : null; return o && o.level!=='ok' ? `<span class="fl-chip ${o.level}">🛢 Tepalo keitimas – ${esc(o.why)}</span>` : ''; })()}
       ${open.length ? `<span class="fl-chip ${stop ? 'danger' : 'warn'}">${slIcon('alert')} ${stop ? 'Negalima važiuoti' : ltPlural(open.length,'problema','problemos','problemų')}</span>` : ''}
       ${rm ? `<span class="fl-chip danger">🗑 ${rm.status==='approved' ? 'Pašalinimas patvirtintas' : 'Laukia pašalinimo patvirtinimo'}</span>` : ''}
     </span>
@@ -18978,7 +18993,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v319';
+const APP_VER = 'v320';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -33607,7 +33622,8 @@ function calxBind(root, after){
    ============================================================ */
 const VL = { list:[], loaded:false, loading:null, err:'', ch:null, up:null };
 const VL_BUCKET = 'fleet-files';
-const VL_CATS = ['Techninis aptarnavimas','Remontas','Padangos','Techninė apžiūra','Kėbulas','Elektra','Plovimas / valymas','Kita'];
+const VL_OIL = 'Tepalo keitimas';
+const VL_CATS = [VL_OIL, 'Techninis aptarnavimas','Remontas','Padangos','Techninė apžiūra','Kėbulas','Elektra','Plovimas / valymas','Kita'];
 const VL_SEV = { low:{ label:'Galima važiuoti', cls:'low' }, soon:{ label:'Reikia greitai sutvarkyti', cls:'soon' }, stop:{ label:'Negalima važiuoti', cls:'stop' } };
 function vlCanService(){ return canEdit('fleet'); }
 function vlVeh(id){ return (STATE.vehicles||[]).find(v=>v.id===id); }
@@ -33615,6 +33631,24 @@ function vlVehName(id, rec){ const v = vlVeh(id); return v ? (v.name||'Automobil
 function vlMoney(n){ return n==null || n==='' ? '' : fmt(+n, 2)+' €'; }
 function vlFiles(n){ const t = n%10, h = n%100; return n+' '+(t===1 && h!==11 ? 'failas' : t>=2 && t<=9 && (h<12 || h>19) ? 'failai' : 'failų'); }
 function vlKm(n){ return n==null || n==='' ? '' : fmt(+n, 0)+' km'; }
+function vlHrs(n){ return n==null || n==='' ? '' : fmt(+n, (+n)%1 ? 1 : 0)+' mval.'; }
+const VL_FLUIDS = [['washer','Langų skystis'],['oil','Tepalas'],['antifreeze','Antifrizas']];
+const VL_COND = { good:{ label:'Gera', cls:'ok' }, fair:{ label:'Patenkinama', cls:'soon' }, bad:{ label:'Bloga', cls:'stop' } };
+const vlIsOil = x=>x && x.kind==='service' && x.category===VL_OIL;
+function vlKindLabel(x){ return x.kind==='check' ? 'Profilaktika' : vlIsOil(x) ? VL_OIL : x.kind==='service' ? 'Tvarkymas' : 'Problema'; }
+function vlFluidTxt(f){ return f && f.v!=null && f.v!=='' ? fmt(+f.v, (+f.v)%1 ? 2 : 0)+' '+(f.u||'ml') : ''; }
+function vlFluidsTxt(x){ const f = (x.data||{}).fluids||{}; return VL_FLUIDS.map(([k,l])=>vlFluidTxt(f[k]) ? l.toLowerCase()+' '+vlFluidTxt(f[k]) : '').filter(Boolean).join(', '); }
+function vlLastHours(vid){ let m = null; VL.list.forEach(x=>{ if(x.vehicle_id===vid && x.engine_hours!=null && (m==null || +x.engine_hours > m)) m = +x.engine_hours; }); return m; }
+// the last oil change and when the next one is due (by km, engine hours or date)
+function vlOilDue(vid){
+  const o = vlOf(vid).find(vlIsOil); if(!o) return null;
+  const d = (o.data||{}).oil || {}, km = vlLastKm(vid), hrs = vlLastHours(vid), today = calISO(new Date());
+  let level = 'ok', why = [];
+  if(d.next_km!=null && km!=null){ const left = +d.next_km - km; if(left <= 0){ level = 'danger'; why.push('viršyta '+fmt(-left,0)+' km'); } else if(left <= 1000){ level = 'warn'; why.push('liko '+fmt(left,0)+' km'); } }
+  if(d.next_hours!=null && hrs!=null){ const left = +d.next_hours - hrs; if(left <= 0){ level = 'danger'; why.push('viršyta '+fmt(-left,0)+' mval.'); } else if(left <= 20 && level!=='danger'){ level = 'warn'; why.push('liko '+fmt(left,0)+' mval.'); } }
+  if(d.next_date){ const days = Math.round((new Date(d.next_date) - new Date(today))/864e5); if(days < 0){ level = 'danger'; why.push('terminas praėjo'); } else if(days <= 30 && level!=='danger'){ level = 'warn'; why.push('liko '+days+' d.'); } }
+  return { rec:o, d, level, why:why.join(', ') };
+}
 async function vlLoad(force){
   if(VL.loaded && !force) return;
   if(VL.loading) return VL.loading;
@@ -33654,13 +33688,23 @@ function vlStripHtml(v){
     <div class="vl-sum">
       <span>${slIcon('cog')} Paskutinis tvarkymas: ${last ? `<b>${esc(grWhen(last.log_date))}</b> · ${esc(last.title||last.category||'')}${last.mileage!=null ? ' · '+esc(vlKm(last.mileage)) : ''}` : '<span class="muted">nėra įrašų</span>'}</span>
       ${vlLastKm(v.id)!=null ? `<span>${slIcon('truck')} Rida: <b>${esc(vlKm(vlLastKm(v.id)))}</b></span>` : ''}
+      ${vlLastHours(v.id)!=null ? `<span>${slIcon('clock')} Moto valandos: <b>${esc(vlHrs(vlLastHours(v.id)))}</b></span>` : ''}
+      ${(()=>{ const o = vlOilDue(v.id); if(!o) return `<span class="muted">🛢 Tepalo keitimas neregistruotas</span>`;
+        const nx = [o.d.next_km!=null ? 'ties '+vlKm(o.d.next_km) : '', o.d.next_hours!=null ? 'ties '+vlHrs(o.d.next_hours) : '', o.d.next_date ? 'iki '+grWhen(o.d.next_date) : ''].filter(Boolean).join(' / ');
+        return `<span class="vl-oil ${o.level}">🛢 Tepalas keistas: <b>${esc(grWhen(o.rec.log_date))}</b>${o.rec.mileage!=null ? ' · '+esc(vlKm(o.rec.mileage)) : ''}${nx ? ' · kitas '+esc(nx) : ''}${o.why ? ' · <b>'+esc(o.why)+'</b>' : ''}</span>`; })()}
+      ${(()=>{ const c = recs.find(x=>x.kind==='check'); if(!c) return ''; const cd = VL_COND[(c.data||{}).condition];
+        return `<span>🧪 Profilaktika: <b>${esc(grWhen(c.log_date))}</b>${cd ? ` · būklė <span class="vl-cond ${cd.cls}">${esc(cd.label)}</span>` : ''}</span>`; })()}
       <span class="vl-open ${worst}">${slIcon('alert')} ${open.length ? `Atviros problemos: <b>${open.length}</b>${worst==='stop' ? ' · NEGALIMA VAŽIUOTI' : ''}` : 'Problemų nėra'}</span>
     </div>
     ${open.length ? `<div class="vl-probs">${open.slice(0,3).map(p=>`<button type="button" class="vl-prob ${(VL_SEV[p.severity]||{}).cls||''}" data-vlopen="${esc(p.id)}">${esc(p.title)}<small>${esc(grWhen(p.log_date))}</small></button>`).join('')}${open.length>3 ? `<span class="muted">+${open.length-3}</span>` : ''}</div>` : ''}
     <div class="vl-btns">
-      ${vlCanService() ? `<button type="button" class="btn small primary" data-vlnew="service">${slIcon('cog')} Registruoti tvarkymą</button>` : ''}
+      ${vlCanService() ? `<button type="button" class="btn small primary" data-vlnew="service">${slIcon('cog')} Registruoti tvarkymą</button><button type="button" class="btn small" data-vlnew="oil">🛢 Tepalo keitimas</button>` : ''}
+      <button type="button" class="btn small" data-vlnew="check">🧪 Profilaktika</button>
       <button type="button" class="btn small" data-vlnew="problem">${slIcon('alert')} Pranešti problemą</button>
-      <button type="button" class="btn small" data-vlhist>${slIcon('files')} Istorija (${recs.length})</button>
+      <button type="button" class="btn small" data-vlhist>${slIcon('files')} Visa istorija (${recs.length})</button>
+    </div>
+    <div class="vl-inhist"><div class="vl-inhist-h">${slIcon('files')} Istorija <small class="muted">– kas, kada ir ką įrašė</small></div>
+      ${recs.length ? `<div class="vl-hl">${recs.slice(0, 8).map(x=>vlLineHtml(x)).join('')}</div>${recs.length > 8 ? `<button type="button" class="btn small" data-vlhist style="margin-top:6px;">Rodyti visus ${recs.length} įrašus</button>` : ''}` : '<div class="muted" style="padding:6px 0;">Įrašų dar nėra.</div>'}
     </div>
   </div>`;
 }
@@ -33668,7 +33712,8 @@ function vlBindStrips(){
   document.querySelectorAll('.vl-strip[data-vid]').forEach(el=>{
     const v = ()=>vlVeh(el.dataset.vid);
     el.querySelectorAll('[data-vlnew]').forEach(b=>b.onclick = ()=>vlForm(b.dataset.vlnew, v(), null));
-    const h = el.querySelector('[data-vlhist]'); if(h) h.onclick = ()=>vlHistory(v());
+    el.querySelectorAll('[data-vlhist]').forEach(h=>h.onclick = ()=>vlHistory(v()));
+    el.querySelectorAll('[data-vlline]').forEach(b=>b.onclick = ()=>vlView(VL.list.find(x=>x.id===b.dataset.vlline)));
     el.querySelectorAll('[data-vlopen]').forEach(b=>b.onclick = ()=>vlView(VL.list.find(x=>x.id===b.dataset.vlopen)));
   });
 }
@@ -33688,24 +33733,37 @@ function vlTopHtml(){
 // new / edit
 function vlForm(kind, v, rec){
   if(!v && rec) v = vlVeh(rec.vehicle_id);
-  const isNew = !rec, svc = kind==='service';
+  const oilNew = kind==='oil'; if(oilNew) kind = 'service';
+  const isNew = !rec, svc = kind==='service', chk = kind==='check';
   const vid = v ? v.id : rec.vehicle_id;
-  const d = rec ? JSON.parse(JSON.stringify(rec)) : { id:(crypto.randomUUID ? crypto.randomUUID() : 'vl'+Date.now()), kind, vehicle_id:vid, log_date:calISO(new Date()), files:[], severity:'soon', status: svc ? 'done' : 'open' };
-  d.files = d.files || [];
+  const d = rec ? JSON.parse(JSON.stringify(rec)) : { id:(crypto.randomUUID ? crypto.randomUUID() : 'vl'+Date.now()), kind, vehicle_id:vid, log_date:calISO(new Date()), files:[], severity:'soon', status: svc || chk ? 'done' : 'open' };
+  d.files = d.files || []; d.data = d.data || {};
+  if(oilNew){ d.category = VL_OIL; d.title = VL_OIL; }
+  const oil = d.data.oil || {}, fl = d.data.fluids || {}, lastH = vlLastHours(vid);
   const openProbs = svc ? VL.list.filter(x=>x.vehicle_id===vid && x.kind==='problem' && (x.status==='open' || x.fixed_by===d.id)) : [];
   const lastKm = vlLastKm(vid);
-  openModal(`<h3>${svc ? (isNew ? 'Registruoti tvarkymą' : 'Tvarkymas') : (isNew ? 'Pranešti problemą' : 'Problema')}</h3>
+  openModal(`<h3>${chk ? 'Profilaktika' : svc ? (d.category===VL_OIL ? VL_OIL : isNew ? 'Registruoti tvarkymą' : 'Tvarkymas') : (isNew ? 'Pranešti problemą' : 'Problema')}</h3>
     <div class="section-sub" style="margin:-4px 0 10px;">${slIcon('truck')} ${esc(vlVehName(vid, rec))}</div>
     <div class="vl-form">
       <label class="field">Data<input type="date" id="vlDate" value="${esc(String(d.log_date).slice(0,10))}"></label>
       <label class="field">Rida (km)<input type="number" id="vlKm" min="0" step="1" inputmode="numeric" value="${d.mileage!=null ? esc(String(d.mileage)) : ''}" placeholder="${lastKm!=null ? 'paskutinė '+fmt(lastKm,0) : 'pvz. 123456'}"></label>
-      ${svc ? `<label class="field">Kategorija<select id="vlCat">${VL_CATS.map(c=>`<option ${d.category===c?'selected':''}>${esc(c)}</option>`).join('')}</select></label>
+      <label class="field">Moto valandos<input type="number" id="vlHrs" min="0" step="0.1" inputmode="decimal" value="${d.engine_hours!=null ? esc(String(+d.engine_hours)) : ''}" placeholder="${lastH!=null ? 'paskutinės '+fmt(lastH,0) : 'nebūtina'}"></label>
+      ${chk ? `<div class="field vl-wide">Skysčiai (kiek papildyta / patikrinta)<div class="vl-fluids">${VL_FLUIDS.map(([k,l])=>`<label class="vl-fluid"><span>${esc(l)}</span><input type="number" min="0" step="any" inputmode="decimal" data-flv="${k}" value="${fl[k] && fl[k].v!=null ? esc(String(fl[k].v)) : ''}" placeholder="0"><select data-flu="${k}"><option value="ml" ${(fl[k]||{}).u!=='l'?'selected':''}>ml</option><option value="l" ${(fl[k]||{}).u==='l'?'selected':''}>l</option></select></label>`).join('')}</div></div>
+        <div class="field vl-wide">Bendra būklė<div class="vl-sevs">${Object.entries(VL_COND).map(([k,c])=>`<label class="vl-sev ${c.cls==='ok'?'low':c.cls}"><input type="radio" name="vlCond" value="${k}" ${(d.data.condition||'good')===k?'checked':''}> ${esc(c.label)}</label>`).join('')}</div></div>`
+      : svc ? `<label class="field">Kategorija<select id="vlCat">${VL_CATS.map(c=>`<option ${d.category===c?'selected':''}>${esc(c)}</option>`).join('')}</select></label>
         <label class="field">Kaina (€, su PVM)<input type="number" id="vlCost" min="0" step="0.01" inputmode="decimal" value="${d.cost!=null ? esc(String(+d.cost)) : ''}"></label>
         <label class="field vl-wide">Kas atlikta<input type="text" id="vlTitle" value="${esc(d.title||'')}" placeholder="pvz. Tepalų ir filtrų keitimas"></label>
         <label class="field vl-wide">Servisas / kas tvarkė<input type="text" id="vlPlace" value="${esc(d.place||'')}" placeholder="pvz. UAB Autoservisas, Vilnius"></label>`
       : `<label class="field vl-wide">Kas pastebėta<input type="text" id="vlTitle" value="${esc(d.title||'')}" placeholder="pvz. Barška priekiniai stabdžiai"></label>
         <div class="field vl-wide">Kaip skubu<div class="vl-sevs">${Object.entries(VL_SEV).map(([k,s])=>`<label class="vl-sev ${s.cls}"><input type="radio" name="vlSev" value="${k}" ${d.severity===k?'checked':''}> ${esc(s.label)}</label>`).join('')}</div></div>`}
-      <label class="field vl-wide">${svc ? 'Pastabos' : 'Aprašymas'}<textarea id="vlDesc" rows="3" placeholder="${svc ? 'ką dar reikia žinoti, garantija, kitas tvarkymas…' : 'kada pastebėta, kaip pasireiškia…'}">${esc(d.description||'')}</textarea></label>
+      ${svc ? `<div class="vl-wide vl-oilbox" id="vlOilBox" ${d.category===VL_OIL ? '' : 'hidden'}><div class="vl-form">
+        <label class="field">Tepalas (rūšis)<input type="text" id="vlOilType" value="${esc(oil.type||'')}" placeholder="pvz. 5W-30 Castrol"></label>
+        <label class="field">Kiekis (l)<input type="number" id="vlOilL" min="0" step="0.1" inputmode="decimal" value="${oil.liters!=null ? esc(String(oil.liters)) : ''}"></label>
+        <label class="field">Kitas keitimas ties (km)<input type="number" id="vlOilNextKm" min="0" step="1" inputmode="numeric" value="${oil.next_km!=null ? esc(String(oil.next_km)) : ''}" placeholder="pvz. rida + 15 000"></label>
+        <label class="field">arba ties (moto val.)<input type="number" id="vlOilNextH" min="0" step="1" inputmode="numeric" value="${oil.next_hours!=null ? esc(String(oil.next_hours)) : ''}" placeholder="nebūtina"></label>
+        <label class="field">arba iki (data)<input type="date" id="vlOilNextD" value="${esc(oil.next_date||'')}"></label>
+      </div></div>` : ''}
+      <label class="field vl-wide">${svc || chk ? 'Pastabos' : 'Aprašymas'}<textarea id="vlDesc" rows="3" placeholder="${chk ? 'bendra būklė: padangos, šviesos, kėbulas, švara…' : svc ? 'ką dar reikia žinoti, garantija, kitas tvarkymas…' : 'kada pastebėta, kaip pasireiškia…'}">${esc(d.description||'')}</textarea></label>
       ${svc && openProbs.length ? `<div class="field vl-wide">Šiuo tvarkymu išspręstos problemos<div class="vl-fixes">${openProbs.map(p=>`<label class="pp-chk"><input type="checkbox" data-vlfix="${esc(p.id)}" ${p.fixed_by===d.id?'checked':''}> ${esc(p.title)} <small class="muted">${esc(grWhen(p.log_date))}</small></label>`).join('')}</div></div>` : ''}
       <div class="field vl-wide">${svc ? 'Sąskaitos ir nuotraukos (PDF, nuotraukos)' : 'Nuotraukos'}<div class="vl-files" id="vlFiles"></div></div>
     </div>
@@ -33737,6 +33795,11 @@ function vlForm(kind, v, rec){
       VL.up = null; drawFiles(); };
   };
   drawFiles();
+  const cat = document.getElementById('vlCat');
+  if(cat) cat.onchange = ()=>{ document.getElementById('vlOilBox').hidden = cat.value!==VL_OIL; const t = document.getElementById('vlTitle'); if(cat.value===VL_OIL && !t.value.trim()) t.value = VL_OIL; };
+  // the next change: 15 000 km after this one, when the km is typed
+  const kmIn = document.getElementById('vlKm'), nk = document.getElementById('vlOilNextKm');
+  if(nk) kmIn.addEventListener('change', ()=>{ if(!nk.value && cat.value===VL_OIL && +kmIn.value > 0) nk.value = Math.round(+kmIn.value + 15000); });
   document.getElementById('vlX').onclick = ()=>closeModal();
   const del = document.getElementById('vlDel');
   if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti šį įrašą kartu su failais?'))) return;
@@ -33746,18 +33809,30 @@ function vlForm(kind, v, rec){
     closeModal(); vlRefresh(); toast('Ištrinta.'); };
   document.getElementById('vlSave').onclick = async ()=>{
     if(VL.up){ toast('Palauk, kol įsikels failai.'); return; }
-    const title = document.getElementById('vlTitle').value.trim();
+    const title = chk ? 'Profilaktika' : document.getElementById('vlTitle').value.trim();
     if(!title){ toast(svc ? 'Parašyk, kas atlikta.' : 'Parašyk, kas pastebėta.'); document.getElementById('vlTitle').focus(); return; }
     const kmV = document.getElementById('vlKm').value.trim(), km = kmV==='' ? null : Math.round(+kmV);
     if(kmV!=='' && !(km>=0)){ toast('Neteisinga rida.'); return; }
+    const hV = document.getElementById('vlHrs').value.trim().replace(',', '.'), hrs = hV==='' ? null : Math.round(+hV*10)/10;
+    if(hV!=='' && !(hrs>=0)){ toast('Neteisingos moto valandos.'); return; }
+    const isOil = svc && document.getElementById('vlCat').value===VL_OIL;
+    if(isOil && km==null && hrs==null){ toast('Įrašyk ridą (arba moto valandas) – nuo jos skaičiuojamas kitas keitimas.'); document.getElementById('vlKm').focus(); return; }
+    const num = id=>{ const x = String(document.getElementById(id).value).trim().replace(',', '.'); return x==='' || !(+x>=0) ? null : +x; };
+    const data = Object.assign({}, d.data);
+    if(isOil) data.oil = { type:document.getElementById('vlOilType').value.trim(), liters:num('vlOilL'), next_km:num('vlOilNextKm'), next_hours:num('vlOilNextH'), next_date:document.getElementById('vlOilNextD').value || null };
+    else delete data.oil;
+    if(chk){ const f = {}; VL_FLUIDS.forEach(([k])=>{ const x = String(document.querySelector(`[data-flv="${k}"]`).value).trim().replace(',', '.'); if(x!=='' && +x>=0) f[k] = { v:+x, u:document.querySelector(`[data-flu="${k}"]`).value }; });
+      data.fluids = f; data.condition = (document.querySelector('input[name="vlCond"]:checked')||{}).value || 'good'; }
     const v2 = vlVeh(vid);
-    const row = { id:d.id, vehicle_id:vid, vehicle_name: v2 ? vlVehName(vid) : (d.vehicle_name||null), kind, log_date:document.getElementById('vlDate').value || calISO(new Date()), mileage:km,
+    const row = { id:d.id, vehicle_id:vid, vehicle_name: v2 ? vlVehName(vid) : (d.vehicle_name||null), kind, log_date:document.getElementById('vlDate').value || calISO(new Date()), mileage:km, engine_hours:hrs, data,
       title, description:document.getElementById('vlDesc').value.trim(), files:d.files };
     if(svc){ const cv = String(document.getElementById('vlCost').value).trim().replace(',', '.');
       if(cv!=='' && !(+cv>=0)){ toast('Neteisinga kaina.'); return; }
       Object.assign(row, { category:document.getElementById('vlCat').value, place:document.getElementById('vlPlace').value.trim() || null, cost: cv==='' ? null : Math.round(+cv*100)/100, status:'done' }); }
+    else if(chk) row.status = 'done';
     else Object.assign(row, { severity:(document.querySelector('input[name="vlSev"]:checked')||{}).value || 'soon' });
-    if(isNew && !svc) row.status = 'open';
+    if(isNew && !svc && !chk) row.status = 'open';
+    if(isNew) row.created_by_name = teamName(ACCESS.profile);
     const btn = document.getElementById('vlSave'); btn.disabled = true;
     const sb = getSb();
     const r = isNew ? await sb.from('vehicle_logs').insert(row).select().single() : await sb.from('vehicle_logs').update(row).eq('id', rec.id).select().single();
@@ -33772,7 +33847,7 @@ function vlForm(kind, v, rec){
       if(!u.error) Object.assign(p, u.data);
     } }
     closeModal(); vlRefresh();
-    toast(isNew ? (svc ? '✓ Tvarkymas užregistruotas.' : '✓ Problema užregistruota.') : '✓ Išsaugota.');
+    toast(isNew ? (chk ? '✓ Profilaktika užregistruota.' : isOil ? '✓ Tepalo keitimas užregistruotas.' : svc ? '✓ Tvarkymas užregistruotas.' : '✓ Problema užregistruota.') : '✓ Išsaugota.');
   };
 }
 // one record: everything, files viewed right here (pictures), PDFs open in a new tab
@@ -33780,27 +33855,31 @@ async function vlView(r){
   if(!r) return;
   const svc = r.kind==='service', sev = VL_SEV[r.severity] || {};
   const fixer = r.fixed_by ? VL.list.find(x=>x.id===r.fixed_by) : null, fixedHere = svc ? VL.list.filter(x=>x.fixed_by===r.id) : [];
-  const canEditIt = vlCanService() || (r.kind==='problem' && r.created_by===teamMe());
+  const canEditIt = vlCanService() || (['problem','check'].includes(r.kind) && r.created_by===teamMe());
+  const chk = r.kind==='check', dd = r.data || {}, oil = dd.oil || null, cond = VL_COND[dd.condition];
   const row = (k, v)=>v ? `<div class="grd-k">${esc(k)}</div><div class="grd-v">${v}</div>` : '';
   const imgs = (r.files||[]).filter(f=>/^image\//.test(f.type||'')), docs = (r.files||[]).filter(f=>!/^image\//.test(f.type||''));
   openModal(`<div class="grd">
     <div class="grd-top"><div><h3>${esc(r.title||'')}</h3>
-      <div class="gr-h">${svc ? `<span class="gr-st ok">${slIcon('cog')} Tvarkymas</span>` : `<span class="gr-st ${sev.cls==='stop'?'broken':sev.cls==='low'?'usable':'lost'}">${slIcon('alert')} ${esc(sev.label||'Problema')}</span>${r.status==='fixed' ? `<span class="gr-st ok">${slIcon('checkbadge')} Sutvarkyta</span>` : ''}`}</div></div>
+      <div class="gr-h">${chk ? `<span class="gr-st ok">🧪 Profilaktika</span>${cond ? `<span class="gr-st ${cond.cls==='ok'?'ok':cond.cls==='stop'?'broken':'lost'}">Būklė: ${esc(cond.label)}</span>` : ''}` : svc ? `<span class="gr-st ok">${vlIsOil(r) ? '🛢 '+VL_OIL : slIcon('cog')+' Tvarkymas'}</span>` : `<span class="gr-st ${sev.cls==='stop'?'broken':sev.cls==='low'?'usable':'lost'}">${slIcon('alert')} ${esc(sev.label||'Problema')}</span>${r.status==='fixed' ? `<span class="gr-st ok">${slIcon('checkbadge')} Sutvarkyta</span>` : ''}`}</div></div>
       <button type="button" class="icon-btn" id="vlvX" aria-label="Uždaryti">✕</button></div>
     ${imgs.length ? `<div class="vl-gal">${imgs.map((f,i)=>`<button type="button" class="vl-gi" data-vlgi="${i}"><img data-bucket="${VL_BUCKET}" data-path="${esc(f.path)}" alt=""></button>`).join('')}</div>` : ''}
     <div class="grd-grid">
       ${row('Automobilis', esc(vlVehName(r.vehicle_id, r)))}
       ${row('Data', esc(grWhen(r.log_date)))}
       ${row('Rida', r.mileage!=null ? esc(vlKm(r.mileage)) : '')}
+      ${row('Moto valandos', r.engine_hours!=null ? esc(vlHrs(r.engine_hours)) : '')}
+      ${chk ? VL_FLUIDS.map(([k,l])=>row(l, esc(vlFluidTxt((dd.fluids||{})[k])))).join('') : ''}
+      ${oil ? row('Tepalas', esc([oil.type, oil.liters!=null ? fmt(oil.liters,1)+' l' : ''].filter(Boolean).join(' · '))) + row('Kitas keitimas', esc([oil.next_km!=null ? 'ties '+vlKm(oil.next_km) : '', oil.next_hours!=null ? 'ties '+vlHrs(oil.next_hours) : '', oil.next_date ? 'iki '+grWhen(oil.next_date) : ''].filter(Boolean).join(' / '))) : ''}
       ${svc ? row('Kategorija', esc(r.category||'')) + row('Servisas', esc(r.place||'')) + row('Kaina', r.cost!=null ? `<b>${esc(vlMoney(r.cost))}</b>` : '') : ''}
-      ${row(svc ? 'Pastabos' : 'Aprašymas', r.description ? `<span class="grd-pre">${esc(r.description)}</span>` : '')}
+      ${row(svc || chk ? 'Pastabos' : 'Aprašymas', r.description ? `<span class="grd-pre">${esc(r.description)}</span>` : '')}
       ${fixedHere.length ? row('Išspręstos problemos', fixedHere.map(p=>esc(p.title)).join(', ')) : ''}
       ${fixer ? row('Sutvarkyta', `${esc(grWhen(r.fixed_at || fixer.log_date))} · <button type="button" class="grd-link" data-vlgo="${esc(fixer.id)}">${esc(fixer.title)}</button>`) : ''}
       ${docs.length ? row(svc ? 'Sąskaitos' : 'Failai', docs.map((f,i)=>`<button type="button" class="grd-link" data-vldoc="${i}">${slIcon('file')} ${esc(f.name||'failas')}</button>`).join('<br>')) : ''}
       ${row('Įrašė', esc(r.created_by_name||'') + ` <span class="muted">· ${esc(grWhen(r.created_at))}</span>`)}
     </div>
     <div class="grd-acts">
-      ${!svc && r.status==='open' && vlCanService() ? `<button type="button" class="btn small primary" id="vlvFix">${slIcon('cog')} Registruoti sutvarkymą</button>` : ''}
+      ${r.kind==='problem' && r.status==='open' && vlCanService() ? `<button type="button" class="btn small primary" id="vlvFix">${slIcon('cog')} Registruoti sutvarkymą</button>` : ''}
       ${canEditIt ? `<button type="button" class="xg-more" id="vlvEdit" title="Redaguoti">${slIcon('pencil')}</button>` : ''}
     </div></div>`);
   const root = document.getElementById('modalRoot'); root.classList.add('grd-modal');
@@ -33827,7 +33906,7 @@ async function vlView(r){
 function vlHistory(v){
   if(!v) return;
   openModal(`<div class="row between" style="align-items:center;"><h3 style="margin:0;">${esc(vlVehName(v.id))}</h3><button type="button" class="icon-btn" id="vlhX">✕</button></div>
-    <div class="gr-show" style="margin:8px 0;" id="vlhF">${[['all','Visi'],['service','Tvarkymai'],['problem','Problemos'],['open','Atviros problemos']].map(([k,l],i)=>`<button type="button" class="chip small-chip ${i?'':'active'}" data-vlhf="${k}">${l}</button>`).join('')}</div>
+    <div class="gr-show" style="margin:8px 0;" id="vlhF">${[['all','Visi'],['service','Tvarkymai'],['oil','Tepalo keitimai'],['check','Profilaktika'],['problem','Problemos'],['open','Atviros problemos']].map(([k,l],i)=>`<button type="button" class="chip small-chip ${i?'':'active'}" data-vlhf="${k}">${l}</button>`).join('')}</div>
     <div id="vlHist" data-vid="${esc(v.id)}" data-f="all"></div>`);
   document.getElementById('modalRoot').classList.add('grd-modal');
   document.getElementById('vlhX').onclick = ()=>closeModal();
@@ -33837,16 +33916,21 @@ function vlHistory(v){
 function vlHistoryBody(vid){
   const box = document.getElementById('vlHist'); if(!box) return;
   const f = box.dataset.f || 'all';
-  const list = vlOf(vid).filter(x=>f==='all' || (f==='open' ? x.kind==='problem' && x.status==='open' : x.kind===f));
+  const list = vlOf(vid).filter(x=>f==='all' || (f==='open' ? x.kind==='problem' && x.status==='open' : f==='oil' ? vlIsOil(x) : x.kind===f));
   const cost = list.filter(x=>x.kind==='service').reduce((a,x)=>a+(+x.cost||0), 0);
   box.innerHTML = list.length ? `<div class="vl-hl">${list.map(x=>vlLineHtml(x)).join('')}</div>${cost ? `<div class="vl-tot">Iš viso tvarkymams: <b>${esc(vlMoney(cost))}</b></div>` : ''}` : '<div class="muted" style="padding:10px 0;">Įrašų nėra.</div>';
   box.querySelectorAll('[data-vlline]').forEach(b=>b.onclick = ()=>vlView(VL.list.find(x=>x.id===b.dataset.vlline)));
 }
 function vlLineHtml(x, withCar){
   const svc = x.kind==='service', sev = VL_SEV[x.severity] || {};
+  if(x.kind==='check'){ const cd = VL_COND[(x.data||{}).condition];
+    return `<button type="button" class="vl-line chk" data-vlline="${esc(x.id)}">
+    <span class="vl-d">${esc(grWhen(x.log_date))}</span>
+    <span class="vl-t"><b>🧪 Profilaktika${cd ? ` · <span class="vl-cond ${cd.cls}">${esc(cd.label)}</span>` : ''}</b><small>${withCar ? esc(vlVehName(x.vehicle_id, x))+' · ' : ''}${esc(vlFluidsTxt(x) || 'skysčiai neįrašyti')}${x.mileage!=null ? ' · '+esc(vlKm(x.mileage)) : ''}${x.engine_hours!=null ? ' · '+esc(vlHrs(x.engine_hours)) : ''}${x.created_by_name ? ' · '+esc(x.created_by_name) : ''}</small></span>
+    <span class="vl-c"></span></button>`; }
   return `<button type="button" class="vl-line ${svc ? 'svc' : 'prob '+(x.status==='fixed' ? 'fixed' : sev.cls||'')}" data-vlline="${esc(x.id)}">
     <span class="vl-d">${esc(grWhen(x.log_date))}</span>
-    <span class="vl-t"><b>${esc(x.title)}</b><small>${withCar ? esc(vlVehName(x.vehicle_id, x))+' · ' : ''}${svc ? esc(x.category||'')+(x.place ? ' · '+esc(x.place) : '') : esc(sev.label||'')+(x.status==='fixed' ? ' · sutvarkyta' : '')}${x.mileage!=null ? ' · '+esc(vlKm(x.mileage)) : ''}${(x.files||[]).length ? ' · '+vlFiles(x.files.length) : ''}</small></span>
+    <span class="vl-t"><b>${esc(x.title)}</b><small>${withCar ? esc(vlVehName(x.vehicle_id, x))+' · ' : ''}${svc ? (vlIsOil(x) ? esc([((x.data||{}).oil||{}).type, ((x.data||{}).oil||{}).liters!=null ? fmt(x.data.oil.liters,1)+' l' : ''].filter(Boolean).join(' ') || VL_OIL) : esc(x.category||''))+(x.place ? ' · '+esc(x.place) : '') : esc(sev.label||'')+(x.status==='fixed' ? ' · sutvarkyta' : '')}${x.mileage!=null ? ' · '+esc(vlKm(x.mileage)) : ''}${x.engine_hours!=null ? ' · '+esc(vlHrs(x.engine_hours)) : ''}${(x.files||[]).length ? ' · '+vlFiles(x.files.length) : ''}${x.created_by_name ? ' · '+esc(x.created_by_name) : ''}</small></span>
     <span class="vl-c">${svc && x.cost!=null ? esc(vlMoney(x.cost)) : svc ? '' : x.status==='fixed' ? slIcon('checkbadge') : slIcon('alert')}</span>
   </button>`;
 }
@@ -33920,7 +34004,7 @@ function vlReportXls(){
   const sum = [['Automobilis','Tvarkymai','Išlaidos (€)','Problemos','Atviros dabar','Rida nuo','Rida iki']].concat(D.rows.map(r=>[r.name, r.svc.length, Math.round(r.cost*100)/100, r.prob.length, r.openNow.length, r.kmFrom, r.kmTo]))
     .concat([['Iš viso', D.rows.reduce((s,r)=>s+r.svc.length,0), Math.round(D.total*100)/100, D.rows.reduce((s,r)=>s+r.prob.length,0), D.rows.reduce((s,r)=>s+r.openNow.length,0)]]);
   const all = [['Data','Automobilis','Tipas','Kategorija / skubumas','Aprašymas','Pastabos','Servisas','Rida (km)','Kaina (€)','Būsena','Failai','Įrašė']].concat(D.list.map(x=>[
-    String(x.log_date).slice(0,10), vlVehName(x.vehicle_id, x), x.kind==='service' ? 'Tvarkymas' : 'Problema', x.kind==='service' ? (x.category||'') : ((VL_SEV[x.severity]||{}).label||''),
+    String(x.log_date).slice(0,10), vlVehName(x.vehicle_id, x), vlKindLabel(x), x.kind==='service' ? (x.category||'') : x.kind==='check' ? (((VL_COND[(x.data||{}).condition]||{}).label||'')+(vlFluidsTxt(x) ? ' · '+vlFluidsTxt(x) : '')) : ((VL_SEV[x.severity]||{}).label||''),
     x.title, x.description||'', x.place||'', x.mileage, x.cost!=null ? +x.cost : null, x.kind==='service' ? '' : (x.status==='fixed' ? 'Sutvarkyta' : 'Atvira'), (x.files||[]).map(f=>f.name).join(', '), x.created_by_name||'']));
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sum), 'Suvestinė');
@@ -33940,7 +34024,7 @@ function vlReportPrint(){
     </tbody><tfoot><tr><td>Iš viso</td><td>${D.rows.reduce((s,r)=>s+r.svc.length,0)}</td><td class="r">${e(vlMoney(D.total))}</td><td>${D.rows.reduce((s,r)=>s+r.prob.length,0)}</td><td>${D.rows.reduce((s,r)=>s+r.openNow.length,0)}</td><td></td></tr></tfoot></table>
     <h2 style="font-size:14px;">Įrašai</h2>
     <table><thead><tr><th>Data</th><th>Automobilis</th><th>Tipas</th><th>Aprašymas</th><th>Rida</th><th class="r">Kaina</th></tr></thead><tbody>
-    ${D.list.map(x=>`<tr><td>${e(grWhen(x.log_date))}</td><td>${e(vlVehName(x.vehicle_id, x))}</td><td>${x.kind==='service' ? 'Tvarkymas'+(x.category ? '<br><small>'+e(x.category)+'</small>' : '') : 'Problema<br><small>'+e((VL_SEV[x.severity]||{}).label||'')+(x.status==='fixed' ? ' · sutvarkyta' : '')+'</small>'}</td>
+    ${D.list.map(x=>`<tr><td>${e(grWhen(x.log_date))}</td><td>${e(vlVehName(x.vehicle_id, x))}</td><td>${x.kind==='check' ? 'Profilaktika<br><small>'+e(((VL_COND[(x.data||{}).condition]||{}).label||'')+(vlFluidsTxt(x) ? ' · '+vlFluidsTxt(x) : ''))+'</small>' : x.kind==='service' ? 'Tvarkymas'+(x.category ? '<br><small>'+e(x.category)+'</small>' : '') : 'Problema<br><small>'+e((VL_SEV[x.severity]||{}).label||'')+(x.status==='fixed' ? ' · sutvarkyta' : '')+'</small>'}</td>
       <td><b>${e(x.title)}</b>${x.description ? '<br>'+e(x.description) : ''}${x.place ? '<br><small>'+e(x.place)+'</small>' : ''}</td><td>${x.mileage!=null ? e(vlKm(x.mileage)) : ''}</td><td class="r">${x.cost!=null ? e(vlMoney(x.cost)) : ''}</td></tr>`).join('') || '<tr><td colspan="6">Įrašų nėra.</td></tr>'}
     </tbody></table></body></html>`);
   w.document.close();
@@ -36295,6 +36379,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 17:51', v:'v320', k:'new', t:'Transportas: tepalo keitimas, moto valandos, profilaktika, istorija', f:'Automobilio kortelėje nauji mygtukai. 🛢 Tepalo keitimas: data, rida, moto valandos, tepalo rūšis ir kiekis, kitas keitimas (ties km – siūloma +15 000 km, ties moto val. arba iki datos); kortelėje ir plytelėje įspėjama, kai liko mažiau nei 1000 km / 30 d. ar terminas praėjo. 🧪 Profilaktika: rida, moto valandos, kiek papildyta langų skysčio, tepalo ir antifrizo (ml arba l), bendra būklė (gera / patenkinama / bloga), pastabos ir nuotraukos – registruoti gali visi, kas mato Transportą. Moto valandas galima įrašyti prie bet kurio įrašo. Kortelės apačioje – Istorija: visi įrašai su data ir kas pildė (paspaudus – visa informacija). Reikia paleisti supabase/sql/vehicle_logs2.sql.' },
   { d:'2026-10-05 17:45', v:'v319', k:'chg', t:'Signalizacija: laikinam kodui – vardas, pavardė', f:'Generuojant laikiną signalizacijos kodą dabar privaloma įrašyti vardą ir pavardę, o el. paštas – nebūtinas (jei įrašytas, kodą galima išsiųsti „✉ Siųsti“). Vardas rodomas sąraše, archyve ir paieškoje. Jei alarm.sql jau buvo paleistas – paleisk supabase/sql/alarm_name.sql.' },
   { d:'2026-10-05 17:42', v:'v318', k:'new', t:'Naujas puslapis: Signalizacija (Ofisas)', f:'Ofise atsirado „Signalizacija“. Darbuotojų kodai: kiekvieno darbuotojo signalizacijos kodas (paslėptas, parodomas akute) – mato ir keičia tik Admin ir Office. Laikinas kodas: sugeneruojamas atsitiktinis 4 skaitmenų kodas, priskiriamas el. paštas ir nurodoma, iki kada galioja (greiti mygtukai 3 val. – 30 d.); kodą galima išsiųsti el. paštu. Pasibaigus galiojimui kodas paraudonuoja – jį būtina ištrinti arba pakeisti (pakeitus sugeneruojamas naujas kodas tam pačiam el. paštui). Ištrinti ir pakeisti kodai nukeliauja į Archyvą. Reikia paleisti supabase/sql/alarm.sql.' },
   { d:'2026-10-05 17:33', v:'v317', k:'new', t:'Naujas puslapis: Raktai (Ofisas)', f:'Ofise atsirado „Raktai“ su trimis skiltimis. Sandėlio raktas: mygtukas „Generuoti naują kodą“ sukuria atsitiktinį 4 skaitmenų kodą (užregistruojama data ir kas užsakė keitimą); įvedus jį į spyną, paspausk „Kodas ant spynos pakeistas“ – naujas kodas su data įdedamas į chato kanalą #sandėlio-raktas (kanalas sukuriamas pats, į jį įtraukiami visi, kas mato Raktus). Rodoma ir kodų istorija. Išduoti raktai: kam, kada ir kas išdavė; kol negrąžintas – šviesiai geltonas, paspaudus „Grąžintas“ pažaliuoja ir nukeliauja į Archyvą. Archyvas: visi grąžinti raktai su paieška. Kas mato ir keičia Raktus – Admin → teisės. Reikia paleisti supabase/sql/keys.sql.' },
