@@ -19,6 +19,7 @@ create table if not exists public.expenses (
   route         text not null default '',
   reason        text not null default '',
   liters        numeric(10,2),
+  km            numeric(10,1),
   amount        numeric(12,2),
   paid          text not null default 'own' check (paid in ('uta','own')),
   uta_tx_id     uuid references public.uta_tx(id) on delete set null,
@@ -32,6 +33,8 @@ create table if not exists public.expenses (
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );
+-- kilometres driven (added later: also for a table made before)
+alter table public.expenses add column if not exists km numeric(10,1);
 create index if not exists expenses_user_date on public.expenses (user_id, spent_on);
 create index if not exists expenses_date on public.expenses (spent_on);
 

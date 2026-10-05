@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-fuVPRgQyuC2NosOGFAroMCoi6iX9nd7Qlfw9+NgAhXA=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QXQvFqNAgseq+q0ZEdXyulyBHMKQsMsdS4yDc6Fuhjc=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4952,7 +4952,7 @@ body.has-bg:not(.gl-menu) .pageheader,body.has-bg:not(.gl-menu) .topbar{backgrou
 .exp-recs{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;}
 .exp-rec{border:1px solid var(--border);background:none;color:var(--text);font:inherit;font-size:11.5px;border-radius:999px;padding:2px 9px;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .exp-norec{font-size:11.5px;color:var(--danger);font-weight:600;} .exp-note{color:var(--text-dim);font-style:italic;}
-.exp-amt{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap;font-size:13px;}
+.exp-amt{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap;font-size:13px;} .exp-per{display:block;font-weight:500;font-size:11px;color:var(--text-dim);}
 .exp-st{display:flex;flex-direction:column;align-items:flex-end;gap:2px;} .exp-st small{font-size:11px;color:var(--ok,#50AD97);white-space:nowrap;}
 .exp-chip{font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap;border:1px solid var(--border);}
 .exp-chip.wait{color:var(--warn,#F2A93B);border-color:color-mix(in srgb, var(--warn,#F2A93B) 50%, transparent);}
@@ -18829,7 +18829,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v310';
+const APP_VER = 'v311';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35148,14 +35148,15 @@ function expBalHtml(d, match){
 }
 function expRowHtml(e, mgr){
   const k = EXP_KIND[e.kind], st = EXP_STATUS[e.status] || EXP_STATUS.new, recs = Array.isArray(e.receipts) ? e.receipts : [];
-  const qty = e.kind==='fuel' ? [expL(e.liters), e.amount!=null ? expMoney(e.amount) : ''].filter(Boolean).join(' · ') : expMoney(e.amount);
+  const qty = e.kind==='fuel' ? [expL(e.liters), e.km!=null && e.km!=='' ? fmt(+e.km, 0)+' km' : '', e.amount!=null ? expMoney(e.amount) : ''].filter(Boolean).join(' · ') : expMoney(e.amount);
+  const per100 = e.kind==='fuel' && +e.liters > 0 && +e.km > 0 ? fmt(+e.liters / +e.km * 100, 1)+' l/100 km' : '';
   return `<div class="exp-row" data-eid="${esc(e.id)}">
     <span class="exp-ic k-${e.kind}" title="${esc(k.t)}">${k.i}</span>
     <span class="exp-main"><b>${esc(expWhat(e))}</b>
       <small>${esc(rpWhen(e.spent_on))} · ${esc(k.t)} · <span class="exp-paid ${e.paid}">${e.paid==='uta' ? 'UTA kortele' : 'Savais pinigais'}</span>${e.uta_tx_id ? ' · susieta su pylimu' : ''}</small>
       ${recs.length ? `<span class="exp-recs">${recs.map((r, i)=>`<button type="button" class="exp-rec" data-rec="${i}">📎 ${esc(r.name||'kvitas')}</button>`).join('')}</span>` : (e.paid==='own' ? '<span class="exp-recs"><span class="exp-norec">⚠ be kvito</span></span>' : '')}
       ${e.review_note ? `<small class="exp-note">💬 ${esc(e.review_note)}</small>` : ''}</span>
-    <span class="exp-amt">${esc(qty)}</span>
+    <span class="exp-amt">${esc(qty)}${per100 ? `<small class="exp-per">${esc(per100)}</small>` : ''}</span>
     <span class="exp-st"><span class="exp-chip ${st.c}">${st.t}</span>${e.comp!=null ? `<small>kompensacija ${expMoney(e.comp)}</small>` : ''}</span>
     <span class="exp-acts">${mgr ? `<button type="button" class="btn small" data-rev="ok">✓</button><button type="button" class="btn small" data-rev="comp" title="Kompensacija">€</button><button type="button" class="btn small" data-rev="no" title="Atmesti">✕</button>`
       : (e.status==='new' ? `<button type="button" class="icon-btn" data-ed title="Taisyti">✎</button><button type="button" class="icon-btn" data-del title="Ištrinti">🗑</button>` : '')}</span>
@@ -35231,7 +35232,8 @@ function expFormDraw(){
       <label class="field">Data<input type="date" id="exDate" value="${esc(val('spent_on', '') || pf.date || calISO(new Date()))}"></label>
       ${k!=='other' ? `<label class="field">Maršrutas<input type="text" id="exRoute" value="${esc(val('route'))}" placeholder="pvz. Vilnius – Kaunas – Vilnius"></label>` : ''}
       <label class="field ${k==='other' ? 'wide' : ''}">${k==='other' ? 'Kam išleista' : 'Priežastis'}<input type="text" id="exReason" value="${esc(val('reason'))}" placeholder="${k==='fuel' ? 'pvz. renginys „Zoom TV“, įrangos išvežimas' : k==='food' ? 'pvz. pietūs komandai montažo metu' : 'pvz. lipnios juostos, baterijos'}"></label>
-      ${k==='fuel' ? `<label class="field">Kiek litrų<input type="text" inputmode="decimal" id="exLiters" value="${esc(val('liters'))}" placeholder="pvz. 45,5"></label>` : ''}
+      ${k==='fuel' ? `<label class="field">Kiek litrų<input type="text" inputmode="decimal" id="exLiters" value="${esc(val('liters'))}" placeholder="pvz. 45,5"></label>
+      <label class="field">Kiek kilometrų<input type="text" inputmode="decimal" id="exKm" value="${esc(val('km'))}" placeholder="pvz. 210"></label>` : ''}
       <label class="field">${k==='fuel' ? 'Suma €' : 'Kiek išleista, €'}${k==='fuel' ? '<small class="muted"> (jei savais pinigais)</small>' : ''}<input type="text" inputmode="decimal" id="exAmount" value="${esc(val('amount'))}" placeholder="pvz. 23,90"></label>
     </div>
     <div class="exp-paid-row"><span>Mokėta</span><div class="exp-seg sm">
@@ -35261,14 +35263,14 @@ function expFormDraw(){
 function expKeep(){
   const g = id=>{ const el = document.getElementById(id); return el ? el.value : null; };
   const p = Object.assign({}, EXP.prefill||{});
-  [['date','exDate'],['route','exRoute'],['reason','exReason'],['liters','exLiters'],['amount','exAmount']].forEach(([k, id])=>{ const v = g(id); if(v!=null) p[k] = v; });
-  if(EXP.edit){ EXP.edit = Object.assign({}, EXP.edit, { spent_on:p.date, route:p.route, reason:p.reason, liters:p.liters, amount:p.amount }); }
+  [['date','exDate'],['route','exRoute'],['reason','exReason'],['liters','exLiters'],['km','exKm'],['amount','exAmount']].forEach(([k, id])=>{ const v = g(id); if(v!=null) p[k] = v; });
+  if(EXP.edit){ EXP.edit = Object.assign({}, EXP.edit, { spent_on:p.date, route:p.route, reason:p.reason, liters:p.liters, km:p.km, amount:p.amount }); }
   EXP.prefill = p;
 }
 async function expSave(e){
   const btn = e.target, g = id=>{ const el = document.getElementById(id); return el ? el.value.trim() : ''; };
   const k = EXP.kind, date = g('exDate'), reason = g('exReason'), route = g('exRoute');
-  const liters = g('exLiters'), amount = g('exAmount');
+  const liters = g('exLiters'), km = g('exKm'), amount = g('exAmount');
   if(!date){ toast('Nurodyk datą.'); return; }
   if(!reason){ toast(k==='other' ? 'Parašyk, kam išleista.' : 'Parašyk priežastį.'); return; }
   if(k==='fuel' && !liters){ toast('Nurodyk, kiek litrų.'); return; }
@@ -35286,7 +35288,7 @@ async function expSave(e){
       if(r.error) throw new Error(/bucket|not found/i.test(r.error.message) ? 'paleisk supabase/sql/expenses.sql' : r.error.message);
       up.push({ path, name, type, size:blob.size });
     }
-    const row = { kind:k, spent_on:date, route:k==='other' ? '' : route, reason, liters:k==='fuel' && liters ? offerNum(liters) : null,
+    const row = { kind:k, spent_on:date, route:k==='other' ? '' : route, reason, liters:k==='fuel' && liters ? offerNum(liters) : null, km:k==='fuel' && km ? offerNum(km) : null,
       amount:amount ? offerNum(amount) : null, paid:EXP.paid, uta_tx_id:k==='fuel' && EXP.paid==='uta' && EXP.txPick ? EXP.txPick : null, updated_at:new Date().toISOString() };
     let r;
     if(EXP.edit){ row.receipts = (EXP.edit.receipts||[]).concat(up); r = await sb.from('expenses').update(row).eq('id', id).select().single(); }
@@ -35758,6 +35760,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 16:24', v:'v311', k:'new', t:'Išlaidos: kilometrai prie kuro', f:'Kuro išlaidoje šalia litrų galima įrašyti ir kiek kilometrų nuvažiuota. Sąraše rodoma „42,5 l · 210 km“ ir apskaičiuotas sunaudojimas (l/100 km). Reikia paleisti supabase/sql/expenses_km.sql (jei expenses.sql jau paleistas).' },
   { d:'2026-10-05 16:19', v:'v310', k:'new', t:'Naujas puslapis: Išlaidos', f:'Kuro, maisto ir kitos išlaidos: data, maršrutas, priežastis, litrai arba suma, ar mokėta UTA kortele, ar savais pinigais (tada būtinas kvitas – nufotografuok arba įkelk). Čia pat matomi tau priskirtos UTA kortelės pylimai ir kuris turi priežastį; be priežasties – galima nurodyti vienu paspaudimu. Ataskaitos → Darbuotojai (Admin, Office, Projektų vadovai): visų darbuotojų išlaidos ir pylimai be priežasties, pasirinkus darbuotoją – patvirtinimas, atmetimas su komentaru ir kompensacijos. Už kompensaciją darbuotojas gali UTA kortele prisipilti kuro savo reikmėms – pylimą pažymėjus „Asmeninis“, rodoma, kiek dar sukaupta. Reikia paleisti supabase/sql/expenses.sql.' },
   { d:'2026-10-05 13:45', v:'v309', k:'chg', t:'Profilis: be slapyvardžio', f:'Profilyje nebėra laukelio „Slapyvardis (nickname)“. Anksčiau įrašyti slapyvardžiai nebėra rodomi nei profilyje, nei narių kortelėse ar chate – visur rodomas vardas ir pavardė.' },
   { d:'2026-10-04 22:10', v:'v308', k:'fix', t:'El. paštas: tvarkingas „kraunasi ilgiau“ pranešimas', f:'Telefone pranešimas apie ilgiau kraunamą laišką rodomas tvarkingai: tekstas viršuje, mygtukai „Bandyti dar kartą“ ir „Atidaryti Roundcube“ po juo (anksčiau buvo suspausti į siaurus stulpelius).' },

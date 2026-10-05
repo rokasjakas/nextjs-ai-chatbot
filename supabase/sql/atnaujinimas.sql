@@ -7727,3 +7727,9 @@ create policy "expense files remove" on storage.objects for delete to authentica
   using (bucket_id = 'expense-files' and ((storage.foldername(name))[1] = auth.uid()::text or public.buy_manager()));
 
 notify pgrst, 'reload schema';
+
+
+-- „Išlaidos“: kilometrai prie kuro išlaidos (jei expenses.sql jau paleistas anksčiau)
+-- Supabase → SQL Editor → New query → įklijuok → Run. Saugu paleisti pakartotinai.
+alter table public.expenses add column if not exists km numeric(10,1);
+notify pgrst, 'reload schema';
