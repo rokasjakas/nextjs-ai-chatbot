@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Brbn78Vp/OJntNqI+1v1F2+hjx27HQWijrUeqnise6s=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-zNVsOSv9KYgWUbAI/itLHx4vmEFUdL2DvK3AOchjSRI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -18769,7 +18769,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v308';
+const APP_VER = 'v309';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24832,7 +24832,7 @@ function teamMe(){ return ACCESS.profile && ACCESS.profile.id; }
 // may members of this level use the chat (Admin → permission table, row „Chatas“)
 function roleCanChat(role){ return role==='admin' || ((ACCESS.perms[role]||{}).chat||'none')!=='none'; }
 function teamName(p){ if(!p) return 'Narys'; const n = [p.first_name, p.last_name].filter(Boolean).join(' ') || p.full_name || (p.email||'').split('@')[0]; return n || 'Narys'; }
-function teamShort(p){ return p ? (p.nickname || teamName(p)) : 'Narys'; }
+function teamShort(p){ return p ? teamName(p) : 'Narys'; }
 function teamMember(id){ return TEAM.members.find(m=>m.id===id) || (ACCESS.profile && ACCESS.profile.id===id ? ACCESS.profile : null); }
 function teamInitials(p){ return teamName(p).split(/\s+/).map(x=>x[0]||'').join('').slice(0,2).toUpperCase(); }
 
@@ -27918,7 +27918,7 @@ function renderProfileTab(){
       <div class="pf-hero-t">
         <h2 class="pf-name">${esc(name)}</h2>
         ${me.job_title ? `<div class="pf-job">${esc(me.job_title)}</div>` : ''}
-        <div class="pf-pills"><span class="pill">${esc(roleLabel(ACCESS.role, accLevel()))}</span>${me.nickname ? `<span class="pill">„${esc(me.nickname)}“</span>` : ''}</div>
+        <div class="pf-pills"><span class="pill">${esc(roleLabel(ACCESS.role, accLevel()))}</span></div>
         <div class="pf-contacts">${me.phone ? `<span>📞 ${esc(me.phone)}</span>` : ''}<span>✉ ${esc(me.contact_email || me.email || '')}</span></div>
       </div>
     </div>
@@ -27930,10 +27930,7 @@ function renderProfileTab(){
             <label class="field">Vardas<input type="text" id="pfFirst" value="${esc(first)}" autocomplete="given-name"></label>
             <label class="field">Pavardė<input type="text" id="pfLast" value="${esc(last)}" autocomplete="family-name"></label>
           </div>
-          <div class="grid cols-2" style="gap:10px;">
-            <label class="field">Pareigos<input type="text" id="pfJob" value="${esc(me.job_title||'')}" placeholder="pvz. Projektų vadovas" autocomplete="organization-title"></label>
-            <label class="field">Slapyvardis (nickname)<input type="text" id="pfNick" value="${esc(me.nickname||'')}" placeholder="kaip tave vadina komanda"></label>
-          </div>
+          <label class="field">Pareigos<input type="text" id="pfJob" value="${esc(me.job_title||'')}" placeholder="pvz. Projektų vadovas" autocomplete="organization-title"></label>
           <div class="grid cols-2" style="gap:10px;">
             <label class="field">El. paštas<input type="email" id="pfEmail" value="${esc(me.contact_email || me.email || '')}" autocomplete="email"></label>
             <label class="field">Telefonas<input type="tel" id="pfPhone" value="${esc(me.phone||'')}" placeholder="+370…" autocomplete="tel"></label>
@@ -27998,7 +27995,7 @@ function renderProfileTab(){
   });
   document.getElementById('pfSave').onclick = async ()=>{
     const v = id=>document.getElementById(id).value.trim();
-    const row = { first_name:v('pfFirst'), last_name:v('pfLast'), nickname:v('pfNick'), contact_email:v('pfEmail'), phone:v('pfPhone'), profile_done:true };
+    const row = { first_name:v('pfFirst'), last_name:v('pfLast'), contact_email:v('pfEmail'), phone:v('pfPhone'), profile_done:true };
     if('job_title' in me || v('pfJob')) row.job_title = v('pfJob');   // column from mail.sql
     if(!row.first_name){ toast('Įrašyk vardą.'); document.getElementById('pfFirst').focus(); return; }
     row.full_name = [row.first_name, row.last_name].filter(Boolean).join(' ');
@@ -28093,7 +28090,6 @@ function renderMemberList(){
       <span class="tm-card-main">
         <b>${esc(teamName(m))}${m.id===teamMe()?' <span class="pill">tu</span>':''}</b>
         ${m.job_title ? `<span class="tm-job">${esc(m.job_title)}</span>` : ''}
-        ${m.nickname ? `<span class="tm-nick">„${esc(m.nickname)}“</span>` : ''}
         <span class="tm-meta"><span data-status-text="${esc(m.id)}">${esc(teamStatusText(m))}</span> · ${esc(roleLabel(m.role))}</span>
       </span>
     </button>`).join('') : `<div class="card empty-state">Narių nerasta.</div>`;
@@ -28110,7 +28106,6 @@ function openMemberCard(id){
       <div class="tm-member-top">${teamAvatar(m, 110, true)}
         <h3 style="margin:10px 0 0;">${esc(teamName(m))}</h3>
         ${m.job_title ? `<div class="tm-job">${esc(m.job_title)}</div>` : ''}
-        ${m.nickname ? `<div class="tm-nick">„${esc(m.nickname)}“</div>` : ''}
         <div class="tm-meta"><span data-status-text="${esc(m.id)}">${esc(teamStatusText(m))}</span> · ${esc(roleLabel(m.role))}</div>
       </div>
       <div class="ven-fields" style="margin-top:12px;">
@@ -29023,13 +29018,13 @@ async function chatOpenDirect(id){
 }
 function chatMemberChecklist(exclude){
   return TEAM.members.filter(m=>m.id!==teamMe() && roleCanChat(m.role) && !(exclude||[]).includes(m.id)).sort((a,b)=>teamName(a).localeCompare(teamName(b),'lt')).map(m=>`
-    <label class="chat-pick"><input type="checkbox" value="${esc(m.id)}">${teamAvatar(m, 32, true)}<span><b>${esc(teamName(m))}</b>${m.nickname?` <small>„${esc(m.nickname)}“</small>`:''}</span></label>`).join('') || '<div class="section-sub">Kitų narių nėra.</div>';
+    <label class="chat-pick"><input type="checkbox" value="${esc(m.id)}">${teamAvatar(m, 32, true)}<span><b>${esc(teamName(m))}</b></span></label>`).join('') || '<div class="section-sub">Kitų narių nėra.</div>';
 }
 function chatPickMember(){
   openModal(`<h3>Nauja žinutė</h3>
     <input type="search" id="pmQ" placeholder="Ieškoti nario…" style="width:100%;margin-bottom:8px;">
     <div class="chat-pick-list" id="pmList">${TEAM.members.filter(m=>m.id!==teamMe() && roleCanChat(m.role)).map(m=>`
-      <button class="chat-pick" data-id="${esc(m.id)}" data-s="${esc(normalizeText(teamName(m)+' '+(m.nickname||'')))}">${teamAvatar(m, 36, true)}<span><b>${esc(teamName(m))}</b>${m.nickname?` <small>„${esc(m.nickname)}“</small>`:''}<small class="tm-meta">${esc(teamStatusText(m))}</small></span></button>`).join('') || '<div class="section-sub">Kitų narių dar nėra.</div>'}</div>
+      <button class="chat-pick" data-id="${esc(m.id)}" data-s="${esc(normalizeText(teamName(m)+' '+(m.nickname||'')))}">${teamAvatar(m, 36, true)}<span><b>${esc(teamName(m))}</b><small class="tm-meta">${esc(teamStatusText(m))}</small></span></button>`).join('') || '<div class="section-sub">Kitų narių dar nėra.</div>'}</div>
     <div class="row" style="justify-content:flex-end;margin-top:10px;"><button class="btn" id="pmX">Atšaukti</button></div>`);
   const root = document.getElementById('modalRoot');
   teamFillImages(root);
@@ -35366,6 +35361,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 13:45', v:'v309', k:'chg', t:'Profilis: be slapyvardžio', f:'Profilyje nebėra laukelio „Slapyvardis (nickname)“. Anksčiau įrašyti slapyvardžiai nebėra rodomi nei profilyje, nei narių kortelėse ar chate – visur rodomas vardas ir pavardė.' },
   { d:'2026-10-04 22:10', v:'v308', k:'fix', t:'El. paštas: tvarkingas „kraunasi ilgiau“ pranešimas', f:'Telefone pranešimas apie ilgiau kraunamą laišką rodomas tvarkingai: tekstas viršuje, mygtukai „Bandyti dar kartą“ ir „Atidaryti Roundcube“ po juo (anksčiau buvo suspausti į siaurus stulpelius).' },
   { d:'2026-10-04 22:05', v:'v307', k:'fix', t:'El. paštas: laiškai nebeužstringa, „Atgal“ veikia kraunant', f:'„←“ (atgal į sąrašą) dabar veikia ir kol laiškas dar kraunasi. Vienas lėtai iš pašto serverio kraunamas laiškas (dažnai – didelis naujienlaiškis) nebeužlaiko kitų: kiti atsidaro (iš duomenų bazės – iškart, iš serverio – ne vėliau kaip po ~6 s). Jei laiškas kraunasi ilgiau nei 9 s – parodoma „Bandyti dar kartą“ ir „Atidaryti Roundcube“. Pašto funkcija (v14): naujausių laiškų išsaugojimas nebesustoja ties vienu nepavykusiu laišku, todėl daugiau laiškų atsidaro iškart.' },
   { d:'2026-10-04 21:55', v:'v306', k:'fix', t:'Telefone puslapiai nebeslankioja į šonus', f:'Ataskaitose telefone skirtukų juosta (Transportas, Transporto nuoma, UTA, Subnuoma, Freelance, Krovimai) buvo platesnė už ekraną, todėl visas puslapis slankiodavo kairėn-dešinėn. Dabar tokios skirtukų juostos slenkamos atskirai, o puslapis niekada netampa platesnis už ekraną. Patikrinti visi puslapiai ir jų skirtukai (52 vaizdai) – taip pat pataisyta Admin animacijos greičio eilutė.' },
