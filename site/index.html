@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-6UN2KY3k+k9xRYfiVFfp1C7j8bkUOEaeXsF4Qzjgigs=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-b5xbzyRU0mBH3TKyndJxuRMwTnjLpHuOkX5SPpOY8Nc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4838,6 +4838,12 @@ body.gl-cards .hs-fold{background:color-mix(in srgb, var(--gl-base, var(--panel)
 .nt-h{display:flex;align-items:baseline;gap:8px;} .nt-h b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .nt-h small{color:var(--text-dim);font-size:11.5px;flex:none;}
 .nt-snip{font-size:12.5px;color:var(--text-dim);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line;}
 .nt-pin{flex:none;width:34px;border:0;background:none;color:var(--text-faint);cursor:pointer;display:flex;align-items:center;justify-content:center;border-left:1px solid var(--border);}
+.nt-del{flex:none;width:34px;border:0;border-left:1px solid var(--border);background:none;color:#E5484D;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;border-radius:0 var(--radius,8px) var(--radius,8px) 0;}
+.nt-del:hover{background:color-mix(in srgb, #E5484D 16%, transparent);}
+.nt-ov-note{position:relative;}
+.nt-ov-del{position:absolute;top:6px;right:6px;width:26px;height:26px;border:0;border-radius:50%;background:color-mix(in srgb, #E5484D 18%, transparent);font-size:13px;z-index:1;}
+.nt-ov-note .nt-ov-h{padding-right:26px;}
+#toast.act{pointer-events:auto;z-index:100000;} #toast .nt-undo{margin-left:10px;background:none;border:0;color:var(--accent);font:inherit;font-weight:700;cursor:pointer;text-decoration:underline;}
 .nt-pin svg{width:17px;height:17px;} .nt-pin:hover{color:var(--text);} .nt-pin.on{color:#F2C94C;}
 .nt-form{display:flex;flex-direction:column;gap:8px;}
 .nt-fr{display:flex;gap:6px;} .nt-fr #ntTitle{flex:1;min-width:0;font-weight:700;} .nt-fr #ntDate{flex:none;width:150px;}
@@ -5771,7 +5777,7 @@ function uid(prefix){ return prefix+'_'+Math.random().toString(36).slice(2,9)+Da
 
 function toast(msg, ms){
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  t.textContent = msg; t.classList.remove('act');
   t.classList.add('show');
   clearTimeout(toast._h);
   toast._h = setTimeout(()=>t.classList.remove('show'), ms || 2400);
@@ -11827,6 +11833,16 @@ async function notesLoad(){
   NOTES.list = l; return l;
 }
 function notesSave(){ unoteSave('notesList', JSON.stringify(NOTES.list||[])); }
+// the red ✕: the note goes at once; „Atšaukti“ brings it back for a few seconds
+function notesDelete(id, redraw){
+  const i = NOTES.list.findIndex(x=>x.id===id); if(i < 0) return;
+  const [n] = NOTES.list.splice(i, 1); notesSave(); redraw(); stickyRender();
+  const t = document.getElementById('toast');
+  t.innerHTML = `<span>Užrašas „${esc(n.title||'Be pavadinimo')}“ ištrintas</span> <button type="button" class="nt-undo">Atšaukti</button>`;
+  t.classList.add('show', 'act'); clearTimeout(toast._h);
+  toast._h = setTimeout(()=>t.classList.remove('show', 'act'), 6000);
+  t.querySelector('.nt-undo').onclick = ()=>{ NOTES.list.splice(Math.min(i, NOTES.list.length), 0, n); notesSave(); redraw(); stickyRender(); t.classList.remove('show', 'act'); };
+}
 function notesDate(d){ return d ? String(d).split('-').reverse().join('.') : ''; }
 function notesFormHtml(n){
   return `<div class="nt-form">
@@ -11859,10 +11875,12 @@ async function notesMount(box){
     const l = NOTES.list.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')) || String(b.at||'').localeCompare(String(a.at||'')));
     box.innerHTML = `<button type="button" class="btn small nt-new" id="ntNew">${slIcon('plus')} Naujas užrašas</button>
       <div class="nt-list">${l.map(n=>`<div class="nt-i ${n.sticky ? 'pinned' : ''}"><button type="button" class="nt-open" data-ntopen="${esc(n.id)}"><span class="nt-h"><b>${esc(n.title||'Be pavadinimo')}</b><small>${esc(notesDate(n.date))}</small></span>${n.body ? `<span class="nt-snip">${esc(n.body.slice(0,140))}</span>` : ''}</button>
-        <button type="button" class="nt-pin ${n.sticky ? 'on' : ''}" data-ntpin="${esc(n.id)}" title="${n.sticky ? 'Atsegti nuo pagrindinio lango' : 'Prisegti pagrindiniame lange'}">${slIcon('pin')}</button></div>`).join('') || '<div class="section-sub" style="margin:6px 0;">Užrašų dar nėra. Spausk „Naujas užrašas“.</div>'}</div>
+        <button type="button" class="nt-pin ${n.sticky ? 'on' : ''}" data-ntpin="${esc(n.id)}" title="${n.sticky ? 'Atsegti nuo pagrindinio lango' : 'Prisegti pagrindiniame lange'}">${slIcon('pin')}</button>
+        <button type="button" class="nt-del" data-ntdel="${esc(n.id)}" title="Ištrinti užrašą" aria-label="Ištrinti užrašą">✕</button></div>`).join('') || '<div class="section-sub" style="margin:6px 0;">Užrašų dar nėra. Spausk „Naujas užrašas“.</div>'}</div>
       <small class="unote-st" data-unotest="notesList"></small>`;
     box.querySelector('#ntNew').onclick = ()=>{ NOTES.edit = { title:'', date:calISO(new Date()), body:'', sticky:false }; draw(); };
     box.querySelectorAll('[data-ntopen]').forEach(b=>b.onclick = ()=>{ const n = NOTES.list.find(x=>x.id===b.dataset.ntopen); if(n){ NOTES.edit = n; draw(); } });
+    box.querySelectorAll('[data-ntdel]').forEach(b=>b.onclick = ()=>notesDelete(b.dataset.ntdel, draw));
     box.querySelectorAll('[data-ntpin]').forEach(b=>b.onclick = ()=>{ const n = NOTES.list.find(x=>x.id===b.dataset.ntpin); if(!n) return; n.sticky = !n.sticky; notesSave(); draw(); stickyRender(); toast(n.sticky ? 'Prisegta pagrindiniame lange.' : 'Atsegta.'); });
   };
   draw();
@@ -11931,9 +11949,10 @@ function ntOvDraw(ov, edit){
       <textarea id="ntqBody" rows="3" placeholder="Tekstas…"></textarea>
       <div class="nt-ov-qb"><label class="checkbox-row"><input type="checkbox" id="ntqSticky"> Sticky note</label><span style="flex:1"></span><button type="button" class="btn primary small" id="ntqSave">${slIcon('check')} Išsaugoti</button></div>
     </div>
-    <div class="nt-ov-list">${l.map(n=>`<button type="button" class="nt-ov-note ${n.sticky ? 'sticky' : ''}" data-ntov="${esc(n.id)}">
+    <div class="nt-ov-list">${l.map(n=>`<div role="button" tabindex="0" class="nt-ov-note ${n.sticky ? 'sticky' : ''}" data-ntov="${esc(n.id)}">
+        <button type="button" class="nt-del nt-ov-del" data-ntdel="${esc(n.id)}" title="Ištrinti užrašą" aria-label="Ištrinti užrašą">✕</button>
         <span class="nt-ov-h"><b>${esc(n.title||'Be pavadinimo')}</b>${n.sticky ? slIcon('pin') : ''}</span><small>${esc(notesDate(n.date))}</small>
-        ${n.body ? `<span class="nt-ov-b">${esc(n.body)}</span>` : ''}</button>`).join('') || '<div class="nt-ov-none">Užrašų dar nėra – parašyk pirmą viršuje.</div>'}</div>`;
+        ${n.body ? `<span class="nt-ov-b">${esc(n.body)}</span>` : ''}</div>`).join('') || '<div class="nt-ov-none">Užrašų dar nėra – parašyk pirmą viršuje.</div>'}</div>`;
   const q = s=>box.querySelector(s);
   q('#ntqSave').onclick = ()=>{
     const title = q('#ntqTitle').value.trim(), body = q('#ntqBody').value;
@@ -11942,7 +11961,10 @@ function ntOvDraw(ov, edit){
     notesSave(); toast('Užrašas išsaugotas.'); ntOvDraw(ov); stickyRender();
     const nb = document.getElementById('ntBox'); if(nb) notesMount(nb);
   };
-  box.querySelectorAll('[data-ntov]').forEach(b=>b.onclick = ()=>{ const n = NOTES.list.find(x=>x.id===b.dataset.ntov); if(n) ntOvDraw(ov, n); });
+  const redraw = ()=>{ ntOvDraw(ov); const nb = document.getElementById('ntBox'); if(nb) notesMount(nb); };
+  box.querySelectorAll('[data-ntdel]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); notesDelete(b.dataset.ntdel, redraw); });
+  box.querySelectorAll('[data-ntov]').forEach(b=>{ const open = ()=>{ const n = NOTES.list.find(x=>x.id===b.dataset.ntov); if(n) ntOvDraw(ov, n); };
+    b.onclick = open; b.onkeydown = e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); } }; });
 }
 window.addEventListener('resize', ()=>{ if(ntOvOpen() && window.innerWidth > 760) ntOvClose(); });
 /* ---------- Pradžia → „Pranešimai“: kas susiję su manimi (įrašo push-notify, user_notifications.sql) ----------
@@ -19055,7 +19077,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v332';
+const APP_VER = 'v333';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37124,6 +37146,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 19:39', v:'v333', k:'new', t:'Notes: raudonas ✕ ištrinti', f:'Prie kiekvieno užrašo (Notes) dešinėje – raudonas ✕: paspaudus užrašas ištrinamas iš karto (ir nuimamas nuo pagrindinio lango, jei buvo prisegtas). Kelias sekundes rodomas „Atšaukti“ – jei paspausta netyčia, užrašas grąžinamas. Veikia ir kompiuteryje, ir telefono „Notes“ lange.' },
   { d:'2026-10-05 19:37', v:'v332', k:'chg', t:'Bolt: teisės pagal lygius', f:'Bolt ataskaitas mato visi lygiai, išskyrus Freelance ir Runner. Admin – viską: kelionių kainas ir sumas (išskaičiavimus – Admin+). Office – įkelia dokumentus, mato kas ir kiek kelionių atliko, keičia darbo / asmeninė, bet kainų nemato (serveris jų Office nariams neperduoda; Excel ir PDF – be kainų). Projektų vadovai ir Tech – mato tik savo keliones (Ataskaitose ir Išlaidų puslapyje). Wolt – tik Admin. Reikia paleisti supabase/sql/office_bolt4.sql.' },
   { d:'2026-10-05 19:33', v:'v331', k:'new', t:'Bolt: dokumentų archyvas', f:'Bolt skiltyje nauja grafa „Archyvas“: visi kada nors įkelti Bolt dokumentai (ne tik paskutiniai), sugrupuoti pagal metus – mėnuo, failas, kelionių skaičius ir suma, kas ir kada įkėlė. Originalų failą galima bet kada atsisiųsti, „Tikrinti“ – atidaro to dokumento keliones. Dokumentas išsaugomas iš karto jį įkėlus. Įkėlimo kortelėje rodomi 3 paskutiniai ir nuoroda į archyvą.' },
   { d:'2026-10-05 19:30', v:'v330', k:'chg', t:'Bolt: „Išskaičiuoti“ – tik Admin+', f:'Kiek išskaičiuoti už asmenines Bolt keliones rodoma tik Admin+ nariams – suvestinėje, Excel ir PDF ataskaitoje. Office ir kiti mato kelionių skaičių, sumas ir darbo / asmeninių kelionių suskirstymą, bet be išskaičiavimų.' },
