@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-ZPvEn6DWuUU4BfD25klm4rCa2o7upeY/muaDXMn4vkk=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-p5jMC0MI6vUSAf7S7DCrrXFb1zKUBtwSib9qY3UzsZQ=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19055,7 +19055,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v330';
+const APP_VER = 'v331';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -36348,24 +36348,52 @@ async function rpBoltDraw(box, acts){
         <label class="btn primary bolt-file">${slIcon('upload')} Pasirinkti failą (Excel, CSV, PDF…)<input type="file" id="boFile" hidden></label>
       </div>
       <small class="muted">Mėnuo nustatomas automatiškai iš dokumento (kelionių datų, laikotarpio ar failo pavadinimo) – laukelį pildyk tik norėdamas nurodyti kitą. Iš Bolt Excel imama: Date, User name, Vehicle category group, Trip reason, From, To, Total cost of ride; kitas dokumentas išsaugomas kaip failas.</small>
-      ${BOLT.reports.length ? `<div class="bolt-reps">${BOLT.reports.slice(0, 24).map(r=>`<div class="bolt-rep"><b>${esc(utaMonthName(r.month))}</b><span>${esc(r.file_name||'')}</span><small class="muted">${r.trips ? ltPlural(r.trips,'kelionė','kelionės','kelionių') : 'tik failas'} · ${esc(r.uploaded_name||'')} · ${esc(keyWhen(r.created_at))}</small>
-        ${r.file_path ? `<button type="button" class="btn small" data-bofile="${esc(r.id)}" data-ic="1" title="Atsisiųsti">${slIcon('download')}</button>` : ''}<button type="button" class="btn small danger" data-bodel="${esc(r.id)}" data-ic="1" title="Ištrinti">${slIcon('bin')}</button></div>`).join('')}</div>` : ''}
+      ${BOLT.reports.length ? `<div class="bolt-reps">${BOLT.reports.slice(0, 3).map(boltRepRow).join('')}</div>
+        <button type="button" class="btn small" data-bom="arch" style="margin-top:8px;">${slIcon('archive')} Visi įkelti dokumentai – archyvas (${BOLT.reports.length})</button>` : ''}
     </div>
-    <div class="viewmode-toggle bolt-modes">${[['sum','Suvestinė'],['chk','Tikrinimas'],['rules','Taisyklės']].map(([k,t])=>`<button type="button" data-bom="${k}" class="${BOLT.mode===k?'active':''}">${t}</button>`).join('')}</div>
+    <div class="viewmode-toggle bolt-modes">${[['sum','Suvestinė'],['chk','Tikrinimas'],['rules','Taisyklės'],['arch','Archyvas']].map(([k,t])=>`<button type="button" data-bom="${k}" class="${BOLT.mode===k?'active':''}">${t}</button>`).join('')}</div>
     <div id="boBody"><div class="card empty-state">Kraunama…</div></div>`;
   box.querySelectorAll('[data-bom]').forEach(b=>b.onclick = ()=>{ BOLT.mode = b.dataset.bom; BOLT.open = ''; rpDraw(); });
   document.getElementById('boFile').onchange = e=>{ const f = e.target.files[0]; e.target.value = ''; if(f) boltUpload(f, document.getElementById('boMonth').value || ''); };
-  box.querySelectorAll('[data-bofile]').forEach(b=>b.onclick = ()=>rpFileOpen(BOLT.reports.find(x=>x.id===b.dataset.bofile).file_path));
-  box.querySelectorAll('[data-bodel]').forEach(b=>b.onclick = async ()=>{ const r = BOLT.reports.find(x=>x.id===b.dataset.bodel);
+  box.onclick = async e=>{
+    const fb = e.target.closest('[data-bofile]'); if(fb){ rpFileOpen(BOLT.reports.find(x=>x.id===fb.dataset.bofile).file_path); return; }
+    const ob = e.target.closest('[data-bochk]'); if(ob){ BOLT.mode = 'chk'; BOLT.rep = ob.dataset.bochk; BOLT.person = ''; rpDraw(); return; }
+    const b = e.target.closest('[data-bodel]'); if(!b) return;
+    const r = BOLT.reports.find(x=>x.id===b.dataset.bodel);
     if(!(await uiConfirm(`Ištrinti ${utaMonthName(r.month)} dokumentą „${r.file_name}“${r.trips ? ' ir '+ltPlural(r.trips,'kelionę','keliones','kelionių') : ''}?`))) return;
     const d = await getSb().from('bolt_reports').delete().eq('id', r.id); if(d.error){ toast('Nepavyko: '+d.error.message); return; }
     if(r.file_path && !r.file_path.startsWith('db:')) stFrom('bolt-files').remove([r.file_path]).catch(()=>{});
     if(r.file_path && r.file_path.startsWith('db:')) getSb().from('office_files').delete().eq('id', r.file_path.slice(3)).then(()=>{});
-    if(BOLT.rep===r.id) BOLT.rep = ''; toast('Ištrinta.'); rpDraw(); });
+    if(BOLT.rep===r.id) BOLT.rep = ''; toast('Ištrinta.'); rpDraw(); };
   const body = document.getElementById('boBody');
+  if(BOLT.mode==='arch') return boltArchDraw(body);
   if(BOLT.mode==='chk') return boltCheckDraw(body);
   if(BOLT.mode==='rules') return boltRulesDraw(body);
   return boltSumDraw(body, acts);
+}
+// one uploaded document: month, file, trips, who and when; open, check, delete
+function boltRepRow(r){
+  const ic = /pdf/i.test(r.file_type||r.file_name) ? '📄' : /sheet|excel|xls|csv/i.test(r.file_type||r.file_name) ? '📊' : '📎';
+  return `<div class="bolt-rep"><b>${esc(utaMonthName(r.month))}</b><span>${ic} ${esc(r.file_name||'')}</span>
+    <small class="muted">${r.trips ? ltPlural(r.trips,'kelionė','kelionės','kelionių') : 'tik failas'}${r.sum!=null ? ' · '+expMoney(r.sum) : ''} · įkėlė ${esc(r.uploaded_name||'')} · ${esc(keyWhen(r.created_at))}${r.file_path ? '' : ' · <span style="color:var(--danger);">failas neišsaugotas</span>'}</small>
+    ${r.trips ? `<button type="button" class="btn small" data-bochk="${esc(r.id)}" title="Tikrinti keliones">Tikrinti</button>` : ''}
+    ${r.file_path ? `<button type="button" class="btn small" data-bofile="${esc(r.id)}" data-ic="1" title="Atsisiųsti dokumentą">${slIcon('download')}</button>` : ''}<button type="button" class="btn small danger" data-bodel="${esc(r.id)}" data-ic="1" title="Ištrinti">${slIcon('bin')}</button></div>`;
+}
+// „Archyvas“: every uploaded document, by year, with the sums of its trips
+async function boltArchDraw(body){
+  const reps = BOLT.reports || [];
+  let sums = {};
+  try{ (await boltTrips(()=>getSb().from('bolt_trips').select('report_id,amount'))).forEach(t=>{ sums[t.report_id] = (sums[t.report_id]||0) + (+t.amount||0); }); }catch(e){}
+  reps.forEach(r=>{ r.sum = sums[r.id]!=null ? sums[r.id] : null; });
+  const q = normalizeText(BOLT.aq||''), list = reps.filter(r=>!q || normalizeText([r.file_name, utaMonthName(r.month), r.month, r.uploaded_name].join(' ')).includes(q));
+  const years = [...new Set(list.map(r=>r.month.slice(0,4)))].sort().reverse();
+  body.innerHTML = `<div class="card"><div class="row between" style="gap:10px;flex-wrap:wrap;margin-bottom:6px;"><h2 class="section-title" style="margin:0;">Archyvas – visi įkelti Bolt dokumentai</h2>
+      <input type="search" id="boAq" placeholder="Ieškoti: mėnuo, failas…" value="${esc(BOLT.aq||'')}" style="max-width:260px;"></div>
+    <p class="section-sub" style="margin:0 0 10px;">Kiekvienas įkeltas dokumentas išsaugomas iš karto ir saugomas čia: originalų failą galima bet kada atsisiųsti, o iš jo nuskaitytas keliones – atidaryti tikrinimui.</p>
+    ${list.length ? years.map(y=>{ const ys = list.filter(r=>r.month.startsWith(y)), tot = ys.reduce((a, r)=>a + (r.sum||0), 0);
+      return `<div class="bolt-ph"><b>${y} m.</b><small>${ltPlural(ys.length,'dokumentas','dokumentai','dokumentų')} · ${expMoney(tot)}</small></div><div class="bolt-reps" style="margin-top:0;">${ys.map(boltRepRow).join('')}</div>`; }).join('')
+      : '<div class="empty-state">Dokumentų nėra.</div>'}</div>`;
+  const i = document.getElementById('boAq'); i.oninput = ()=>{ BOLT.aq = i.value; const p = i.selectionStart; boltArchDraw(body).then(()=>{ const j = document.getElementById('boAq'); j.focus(); j.setSelectionRange(p, p); }); };
 }
 // the storage refused the file: kept in the database instead (office_files, up to 8 MB)
 async function rpFileDb(kind, reportId, file){
@@ -37074,6 +37102,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 19:33', v:'v331', k:'new', t:'Bolt: dokumentų archyvas', f:'Bolt skiltyje nauja grafa „Archyvas“: visi kada nors įkelti Bolt dokumentai (ne tik paskutiniai), sugrupuoti pagal metus – mėnuo, failas, kelionių skaičius ir suma, kas ir kada įkėlė. Originalų failą galima bet kada atsisiųsti, „Tikrinti“ – atidaro to dokumento keliones. Dokumentas išsaugomas iš karto jį įkėlus. Įkėlimo kortelėje rodomi 3 paskutiniai ir nuoroda į archyvą.' },
   { d:'2026-10-05 19:30', v:'v330', k:'chg', t:'Bolt: „Išskaičiuoti“ – tik Admin+', f:'Kiek išskaičiuoti už asmenines Bolt keliones rodoma tik Admin+ nariams – suvestinėje, Excel ir PDF ataskaitoje. Office ir kiti mato kelionių skaičių, sumas ir darbo / asmeninių kelionių suskirstymą, bet be išskaičiavimų.' },
   { d:'2026-10-05 19:25', v:'v329', k:'chg', t:'Bolt: imami tik reikalingi Excel stulpeliai', f:'Iš įkelto Bolt Excel failo imami tik šie stulpeliai: Date, User name, Vehicle category group, Trip reason, From, To, Total cost of ride (kiti, pvz. telefonas, ignoruojami). Trip reason – kelionės priežastis, pagal kurią skirstoma į darbo ir asmenines; automobilio kategorija rodoma prie kiekvienos kelionės, Excel ir PDF ataskaitoje. Eilutė „Total“ neįskaičiuojama. Jei office_bolt.sql jau paleistas – paleisk supabase/sql/office_bolt3.sql.' },
   { d:'2026-10-05 19:18', v:'v328', k:'new', t:'Bolt / Wolt: mėnuo nustatomas automatiškai; tikrinime – visos kelionės', f:'Įkeliant Bolt ar Wolt dokumentą mėnuo nebereikia rinktis – jis nustatomas automatiškai pagal kelionių / užsakymų datas, dokumento laikotarpį ar datas (pvz. „2026-09-01 – 2026-09-30“, „September 2026“, „2026 m. rugsėjo“) arba failo pavadinimą; parodoma, koks mėnuo atpažintas. Jei nepavyksta – paklausiama. Bolt „Tikrinime“ pagal nutylėjimą rodomos visos mėnesio kelionės, sugrupuotos pagal žmogų (su sumomis), ir kiekvieną galima perjungti „Darbo / Asmeninė“; vardo pasirinkimas – filtras.' },
