@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-e+xRXMJFauzZrmayQzpzjKouX46nn4S4BVaUnIVcUGI=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-q8ke35/WIKYZ3pq/1ml3D5JCcXQCzijyULbaTHPev90=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3515,6 +3515,21 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .key-loan-m{display:flex;flex-direction:column;gap:2px;flex:1 1 220px;min-width:0;}
 .key-loan-m b{font-size:15px;}
 .key-ok{color:#2F9E73;font-weight:600;}
+/* Ofisas → Signalizacija */
+.alm-row,.alm-temp{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;flex-wrap:wrap;}
+.alm-ic{color:#E8590C;}
+.alm-temp{border-color:color-mix(in srgb, #2F9E73 45%, var(--border));background:color-mix(in srgb, #2F9E73 8%, var(--panel));}
+.alm-temp.exp{border-color:var(--danger);background:color-mix(in srgb, var(--danger) 14%, var(--panel));animation:almPulse 1.6s ease-in-out infinite;}
+.alm-temp.arch{border-color:var(--border);background:none;}
+.alm-temp.arch .alm-code{opacity:.55;}
+@keyframes almPulse{50%{box-shadow:0 0 0 3px color-mix(in srgb, var(--danger) 35%, transparent);}}
+.alm-code{font-family:var(--font-head);font-size:30px;font-weight:700;letter-spacing:6px;min-width:110px;text-align:center;font-variant-numeric:tabular-nums;}
+.alm-acts{display:flex;gap:6px;flex-wrap:wrap;flex:0 0 auto;}
+.alm-red{color:var(--danger);font-weight:600;}
+.alm-warn{padding:10px 12px;border-radius:10px;margin-bottom:10px;background:color-mix(in srgb, var(--danger) 16%, transparent);color:var(--danger);font-weight:600;}
+.count-badge.alm-bad{background:var(--danger) !important;color:#fff !important;}
+.alm-pill-ch{background:color-mix(in srgb, var(--accent) 18%, transparent);color:var(--accent);}
+.alm-pill-del{background:color-mix(in srgb, var(--text) 10%, transparent);}
 @media(max-width:700px){ .key-top{grid-template-columns:1fr;} .key-code{font-size:46px;letter-spacing:10px;} .key-subs{width:100%;} }
 .pf-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;}
 @media(min-width:1300px){ .pf-nav{grid-template-columns:repeat(6,minmax(0,1fr));} }
@@ -5434,6 +5449,9 @@ body.ev-full-on{overflow:hidden;}
     <button class="rail-btn" data-mobile="more" data-tab="keys" data-label="Raktai"><span class="rail-tip">Raktai</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3M16 7l3 3M13.5 9.5l2 2"/></svg>
     </button>
+    <button class="rail-btn" data-mobile="more" data-tab="alarm" data-label="Signalizacija"><span class="rail-tip">Signalizacija</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18v-6a5 5 0 0 1 10 0v6"/><path d="M5 21h14v-3H5z"/><path d="M12 2v2M4.2 5.2l1.4 1.4M19.8 5.2l-1.4 1.4M10 12a2 2 0 0 1 2-2"/></svg>
+    </button>
     <button class="rail-btn" data-mobile="more" data-tab="venues" data-label="Erdvės"><span class="rail-tip">Erdvės</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg>
     </button>
@@ -5556,12 +5574,13 @@ const slIcon = (k, cls, attrs)=> SL[k] ? `<svg class="sl${cls?' '+cls:''}" viewB
 SL.shopbag = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M240-80q-33 0-56.5-23.5T160-160v-480q0-33 23.5-56.5T240-720h80q0-66 47-113t113-47q66 0 113 47t47 113h80q33 0 56.5 23.5T800-640v480q0 33-23.5 56.5T720-80H240Zm240-320q66 0 113-47t47-113h-80q0 33-23.5 56.5T480-480q-33 0-56.5-23.5T400-560h-80q0 66 47 113t113 47ZM400-720h160q0-33-23.5-56.5T480-800q-33 0-56.5 23.5T400-720Z"/>';
 // wallet (Material Symbols, Outlined Fill – the same set)
 SL.key = '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3M16 7l3 3M13.5 9.5l2 2"/></g>';
+SL.siren = '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d=\"M7 18v-6a5 5 0 0 1 10 0v6\"/><path d=\"M5 21h14v-3H5z\"/><path d=\"M12 2v2M4.2 5.2l1.4 1.4M19.8 5.2l-1.4 1.4M10 12a2 2 0 0 1 2-2\"/></g>';
 SL.wallet = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100H520q-33 0-56.5 23.5T440-580v200q0 33 23.5 56.5T520-300h320v100q0 33-23.5 56.5T760-120H200Zm320-260q-17 0-28.5-11.5T480-420v-120q0-17 11.5-28.5T520-580h320q17 0 28.5 11.5T880-540v120q0 17-11.5 28.5T840-380H520Zm120-60q25 0 42.5-17.5T700-480q0-25-17.5-42.5T640-540q-25 0-42.5 17.5T580-480q0 25 17.5 42.5T640-440Z"/>';
 (function(){
   const RAIL = { home:'house', events:'calendar', projects:'folder', load:'cart', rentals:'pickup', handovers:'handover', inventory:'warehouse',
     rules:'package', fleet:'truck', stats:'chart', chat:'chat', members:'users', people:'card', jobs:'tasks', offers:'receipt',
     venues:'building', admin:'shield', profile:'user', gear:'alert', newproj:'addbox', sort:'sorting', stocktake:'checklist', works:'build',
-    games:'games', mail:'mail', invoices:'invoice', buy:'shopbag', tracker:'clock', expenses:'wallet', keys:'key' };
+    games:'games', mail:'mail', invoices:'invoice', buy:'shopbag', tracker:'clock', expenses:'wallet', keys:'key', alarm:'siren' };
   document.querySelectorAll('.rail-btn').forEach(b=>{
     const k = b.id==='railMore' ? 'dots' : RAIL[b.dataset.tab], s = b.querySelector('svg');
     if(k && s && SL[k]) s.outerHTML = slIcon(k);
@@ -11420,12 +11439,12 @@ const ACCESS_ROLES = [
 ];
 const ACCESS_SECTIONS = [
   ['events','Renginiai'], ['rentals','Paėmimai'], ['handovers','Išdavimai'], ['projects','Senieji projektai (Rentman, paslėpta)'], ['newproj','Projektai'], ['jobs','Pasiūlymų PDF'], ['offers','Pasiūlymų kūrimas'], ['invoices','Sąskaitos'], ['load','Krovimas'],
-  ['inventory','Įranga'], ['rules','Pakavimas'], ['fleet','Transportas'], ['stats','Ataskaitos'], ['venues','Erdvės'], ['keys','Raktai'], ['chat','Chatas'], ['mail','El. paštas'], ['people','Žmonės'],
+  ['inventory','Įranga'], ['rules','Pakavimas'], ['fleet','Transportas'], ['stats','Ataskaitos'], ['venues','Erdvės'], ['keys','Raktai'], ['alarm','Signalizacija (laikini kodai)'], ['chat','Chatas'], ['mail','El. paštas'], ['people','Žmonės'],
 ];
 // same defaults as sql/user_roles.sql
 const ACCESS_DEFAULTS = {
-  pm:        {keys:'edit', buy:'edit', invoices:'edit', newproj:'edit', people:'edit', offers:'edit', jobs:'edit', events:'edit', rentals:'edit', handovers:'edit', projects:'edit', venues:'edit', chat:'edit', mail:'edit', fleet:'view', inventory:'view', load:'view', rules:'view', stats:'view'},
-  office:    {keys:'edit', buy:'edit', invoices:'edit', newproj:'view', people:'edit', jobs:'view', chat:'edit', mail:'edit', events:'edit', rentals:'edit', handovers:'edit', fleet:'edit', venues:'edit', projects:'view', load:'view', inventory:'view', rules:'view', stats:'view'},
+  pm:        {alarm:'edit', keys:'edit', buy:'edit', invoices:'edit', newproj:'edit', people:'edit', offers:'edit', jobs:'edit', events:'edit', rentals:'edit', handovers:'edit', projects:'edit', venues:'edit', chat:'edit', mail:'edit', fleet:'view', inventory:'view', load:'view', rules:'view', stats:'view'},
+  office:    {alarm:'edit', keys:'edit', buy:'edit', invoices:'edit', newproj:'view', people:'edit', jobs:'view', chat:'edit', mail:'edit', events:'edit', rentals:'edit', handovers:'edit', fleet:'edit', venues:'edit', projects:'view', load:'view', inventory:'view', rules:'view', stats:'view'},
   tech:      {keys:'edit', buy:'edit', invoices:'edit', newproj:'view', jobs:'view', chat:'edit', rentals:'edit', handovers:'edit', load:'edit', inventory:'edit', rules:'edit', fleet:'view', events:'view', projects:'view', venues:'view'},
   freelance: {invoices:'edit', chat:'edit', events:'view', rentals:'view', projects:'view', load:'view', venues:'view', fleet:'view'},
   runner:    {chat:'edit', rentals:'edit', invoices:'edit', fleet:'view'},
@@ -17888,6 +17907,7 @@ const HOME_TILES = [
   {tab:'mail', title:'El. paštas', color:'#E0B04E', desc:'Tavo @eventsolutions.lt laiškai: skaityk ir atsakyk čia.'},
   {tab:'people', title:'Žmonės', color:'#50AD97', desc:'Kontaktų archyvas ir žmonių bookingas: skambučiai, kas sutiko, kas negali.'},
   {tab:'keys', title:'Raktai', color:'#E0B04E', desc:'Sandėlio spynos kodas, išduoti raktai ir jų archyvas.'},
+  {tab:'alarm', title:'Signalizacija', color:'#E8590C', desc:'Darbuotojų signalizacijos kodai, laikini kodai su galiojimu ir archyvas.'},
   {tab:'venues', title:'Erdvės', color:'#E07A5F', desc:'Renginių vietos: patekimas, elektra, liftas, kontaktai, nuotraukos.'},
 ];
 // Lithuanian plural: 1 automobilis, 2 automobiliai, 10 automobilių
@@ -18413,7 +18433,7 @@ const byOrder = (list, order, key)=>{ if(!Array.isArray(order)) return list; con
 
 /* ---------- Pagrindinis: grupės „Ofisas“ ir „Sandėlis“ ---------- */
 const HOME_GROUPS = [
-  {id:'office', title:'Ofisas', color:'#F35E7D', tabs:['events','people','jobs','offers','invoices','venues','fleet','keys'],
+  {id:'office', title:'Ofisas', color:'#F35E7D', tabs:['events','people','jobs','offers','invoices','venues','fleet','keys','alarm'],
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/><path d="M11 13v2h2v-2"/></svg>'},
   {id:'warehouse', title:'Sandėlis', color:'#4E9BC9', tabs:['projects','newproj','sort','load','rentals','handovers','inventory','works','stocktake','gear','rules'],
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-5 9 5v12"/><path d="M7 21v-8h10v8"/><path d="M7 17h10"/></svg>'},
@@ -18958,7 +18978,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v317';
+const APP_VER = 'v318';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35708,6 +35728,186 @@ function keyArchDraw(){
     <div id="kaList">${back.length ? back.map(x=>keyLoanCard(x, true)).join('') : '<div class="empty-state">Archyve įrašų nėra.</div>'}</div></section>`;
   const i = document.getElementById('kaQ'); i.oninput = ()=>{ KEY.q = i.value; const p = i.selectionStart; keyArchDraw(); const j = document.getElementById('kaQ'); j.focus(); j.setSelectionRange(p, p); };
 }
+/* ---------- Ofisas → Signalizacija: staff codes (Admin, Office), temporary codes, archive ---------- */
+const ALM = { sub:'', staff:null, temp:null, err:'', staffErr:'', q:'', show:new Set() };
+const almStaffOk = ()=>['admin','office'].includes(ACCESS.role);
+const almExpired = t=>!t.closed_at && new Date(t.valid_until).getTime() <= Date.now();
+function almLeft(t){
+  const ms = new Date(t.valid_until).getTime() - Date.now();
+  if(ms <= 0) return 'baigė galioti';
+  const h = Math.round(ms/36e5), d = Math.floor(h/24);
+  return d >= 1 ? `liko ${ltPlural(d,'diena','dienos','dienų')}${h%24 ? ' '+(h%24)+' val.' : ''}` : h >= 1 ? `liko ${h} val.` : `liko ${Math.max(1, Math.round(ms/6e4))} min.`;
+}
+const almCode = ()=>{ const a = new Uint32Array(4); crypto.getRandomValues(a); return [...a].map(x=>x % 10).join(''); };
+const almLocal = d=>new Date(d.getTime() - d.getTimezoneOffset()*6e4).toISOString().slice(0,16);
+async function almLoad(){
+  const sb = getSb();
+  const [t, s] = await Promise.all([
+    sb.from('alarm_temp_codes').select('*').order('created_at', { ascending:false }).limit(1000),
+    almStaffOk() ? sb.from('alarm_staff_codes').select('*').order('person_name') : Promise.resolve({ data:[] })]);
+  ALM.err = t.error ? t.error.message : ''; ALM.staffErr = s.error ? s.error.message : '';
+  ALM.temp = t.data || []; ALM.staff = s.data || [];
+}
+function renderAlarmTab(){
+  if(!ALM.sub || (ALM.sub==='staff' && !almStaffOk())) ALM.sub = almStaffOk() ? 'staff' : 'temp';
+  const act = (ALM.temp||[]).filter(t=>!t.closed_at), bad = act.filter(almExpired).length;
+  const subs = [...(almStaffOk() ? [['staff','Darbuotojų kodai']] : []), ['temp','Laikinas kodas'+(act.length ? ` <span class="count-badge${bad ? ' alm-bad' : ''}">${act.length}</span>` : '')], ['arch','Archyvas']];
+  document.getElementById('main').innerHTML = `<div class="tabpanel alarm">
+    <div class="viewmode-toggle key-subs">${subs.map(([k,t])=>`<button type="button" data-asub="${k}" class="${ALM.sub===k?'active':''}">${t}</button>`).join('')}</div>
+    <div id="almBody"><div class="card empty-state">Kraunama…</div></div>
+  </div>`;
+  document.querySelectorAll('[data-asub]').forEach(b=>b.onclick = ()=>{ ALM.sub = b.dataset.asub; renderAlarmTab(); });
+  if(!ALM.temp){ almLoad().then(()=>{ if(currentTab==='alarm') renderAlarmTab(); }); return; }
+  ({ staff:almStaffDraw, temp:almTempDraw, arch:almArchDraw })[ALM.sub]();
+}
+const almErrHtml = m=>`<div class="card mail-err">Serveris: ${esc(m)}<br><small>Paleisk supabase/sql/alarm.sql.</small></div>`;
+
+/* Darbuotojų kodai – Admin and Office only */
+function almStaffDraw(){
+  const box = document.getElementById('almBody');
+  if(ALM.staffErr){ box.innerHTML = almErrHtml(ALM.staffErr); return; }
+  const list = ALM.staff;
+  box.innerHTML = `<section class="card">
+    <div class="row between" style="gap:10px;flex-wrap:wrap;margin-bottom:10px;"><h2 class="section-title" style="margin:0;">Darbuotojų signalizacijos kodai</h2>
+      <button type="button" class="btn primary small" id="asAdd">+ Pridėti darbuotoją</button></div>
+    <div class="section-sub" style="margin:0 0 10px;">🔒 Šiuos kodus mato tik Admin ir Office.</div>
+    ${list.length ? list.map(c=>`<div class="alm-row" data-staff="${esc(c.id)}">
+      <div class="key-loan-ic alm-ic">${slIcon('user')}</div>
+      <div class="key-loan-m"><b>${esc(c.person_name)}</b>${c.note ? `<span>${esc(c.note)}</span>` : ''}<small class="muted">Atnaujinta ${esc(keyWhen(c.updated_at))}${c.updated_name ? ' · '+esc(c.updated_name) : ''}</small></div>
+      <div class="pf-uta-pin"><b class="mono">${ALM.show.has(c.id) ? esc(c.code) : '•'.repeat(c.code.length)}</b>
+        <button type="button" class="btn small ${ALM.show.has(c.id)?'active':''}" data-eye data-ic="1" aria-label="Rodyti kodą">${slIcon('eye')}</button>
+        <button type="button" class="btn small" data-edit data-ic="1" aria-label="Keisti">${slIcon('pencil')}</button></div>
+    </div>`).join('') : '<div class="empty-state">Kodų dar nėra.</div>'}
+  </section>`;
+  document.getElementById('asAdd').onclick = ()=>almStaffForm();
+  box.querySelectorAll('[data-staff]').forEach(r=>{ const c = list.find(x=>x.id===r.dataset.staff);
+    r.querySelector('[data-eye]').onclick = ()=>{ ALM.show.has(c.id) ? ALM.show.delete(c.id) : ALM.show.add(c.id); almStaffDraw(); };
+    r.querySelector('[data-edit]').onclick = ()=>almStaffForm(c); });
+}
+function almStaffForm(c){
+  const isNew = !c; c = c || { person_id:null, person_name:'', code:'', note:'' };
+  const mem = (TEAM.members||[]).slice().sort((a,b)=>teamName(a).localeCompare(teamName(b), 'lt'));
+  const other = !isNew && !c.person_id;
+  openModal(`<h3>${isNew ? 'Naujas darbuotojo kodas' : 'Darbuotojo kodas'}</h3>
+    <label class="field">Darbuotojas<select id="asWho"><option value="">— pasirink —</option>${mem.map(m=>`<option value="${esc(m.id)}" ${c.person_id===m.id?'selected':''}>${esc(teamName(m))}</option>`).join('')}<option value="__other" ${other?'selected':''}>Kitas (įrašyti vardą)</option></select></label>
+    <label class="field as-other" style="margin-top:8px;${other ? '' : 'display:none;'}">Vardas, pavardė<input type="text" id="asName" value="${esc(other ? c.person_name : '')}"></label>
+    <div class="grid cols-2" style="margin-top:8px;">
+      <label class="field">Kodas (4–8 skaitmenys)<input type="text" id="asCode" value="${esc(c.code)}" inputmode="numeric" maxlength="8" autocomplete="off"></label>
+      <label class="field">Pastaba (nebūtina)<input type="text" id="asNote" value="${esc(c.note||'')}"></label>
+    </div>
+    <div class="row" style="justify-content:space-between;gap:8px;margin-top:14px;">${isNew ? '<span></span>' : '<button type="button" class="btn danger small" id="asDel">Ištrinti</button>'}
+      <span class="row" style="gap:8px;"><button type="button" class="btn" id="asX">Atšaukti</button><button type="button" class="btn primary" id="asSave">Išsaugoti</button></span></div>`);
+  const who = document.getElementById('asWho');
+  who.onchange = ()=>{ document.querySelector('.as-other').style.display = who.value==='__other' ? '' : 'none'; };
+  document.getElementById('asX').onclick = ()=>closeModal();
+  const del = document.getElementById('asDel'); if(del) del.onclick = async ()=>{
+    if(!(await uiConfirm('Ištrinti '+c.person_name+' signalizacijos kodą?'))) return;
+    const r = await getSb().from('alarm_staff_codes').delete().eq('id', c.id);
+    if(r.error){ toast('Nepavyko: '+r.error.message); return; }
+    ALM.staff = ALM.staff.filter(x=>x.id!==c.id); closeModal(); almStaffDraw(); toast('Kodas ištrintas.');
+  };
+  document.getElementById('asSave').onclick = async ()=>{
+    const v = who.value, m = mem.find(x=>x.id===v), nm = v==='__other' ? document.getElementById('asName').value.trim() : m ? teamName(m) : '';
+    const code = document.getElementById('asCode').value.trim();
+    if(!nm){ toast(v==='__other' ? 'Įrašyk vardą.' : 'Pasirink darbuotoją.'); return; }
+    if(!/^[0-9]{4,8}$/.test(code)){ toast('Kodas – 4–8 skaitmenys.'); document.getElementById('asCode').focus(); return; }
+    const row = { person_id:m ? m.id : null, person_name:nm, code, note:document.getElementById('asNote').value.trim(), updated_at:new Date().toISOString(), updated_name:teamName(ACCESS.profile) };
+    const sb = getSb(), b = document.getElementById('asSave'); b.disabled = true;
+    const r = isNew ? await sb.from('alarm_staff_codes').insert(row).select().single() : await sb.from('alarm_staff_codes').update(row).eq('id', c.id).select().single();
+    b.disabled = false;
+    if(r.error){ toast('Nepavyko: '+r.error.message, 5000); return; }
+    if(isNew) ALM.staff.push(r.data); else Object.assign(c, r.data);
+    ALM.staff.sort((a,b)=>a.person_name.localeCompare(b.person_name, 'lt'));
+    closeModal(); almStaffDraw(); toast('✓ Kodas išsaugotas.');
+  };
+}
+
+/* Laikinas kodas: generated like the lock code, for an e-mail, valid until… */
+function almTempCard(t){
+  const exp = almExpired(t), can = canEdit('alarm');
+  const mail = `mailto:${encodeURIComponent(t.email)}?subject=${encodeURIComponent('Laikinas signalizacijos kodas')}&body=${encodeURIComponent('Laikinas signalizacijos kodas: '+t.code+'\nGalioja iki: '+keyWhen(t.valid_until))}`;
+  return `<div class="alm-temp ${exp ? 'exp' : ''}" data-temp="${esc(t.id)}">
+    <div class="alm-code">${esc(t.code)}</div>
+    <div class="key-loan-m"><b>${esc(t.email)}</b>${t.note ? `<span>${esc(t.note)}</span>` : ''}
+      <small class="${exp ? 'alm-red' : 'muted'}">${exp ? '⚠ Baigė galioti '+esc(keyWhen(t.valid_until))+' – ištrink arba pakeisk kodą' : 'Galioja iki '+esc(keyWhen(t.valid_until))+' · '+esc(almLeft(t))}</small>
+      <small class="muted">Sugeneravo ${esc(t.created_name||'')} · ${esc(keyWhen(t.created_at))}</small></div>
+    <div class="alm-acts">
+      <a class="btn small" href="${mail}" title="Išsiųsti kodą el. paštu">✉ Siųsti</a>
+      ${can ? `<button type="button" class="btn small" data-change>🔄 Pakeisti</button><button type="button" class="btn small danger" data-del>Ištrinti</button>` : ''}
+    </div>
+  </div>`;
+}
+function almTempDraw(){
+  const box = document.getElementById('almBody');
+  if(ALM.err){ box.innerHTML = almErrHtml(ALM.err); return; }
+  const can = canEdit('alarm'), act = ALM.temp.filter(t=>!t.closed_at).sort((a,b)=>new Date(a.valid_until)-new Date(b.valid_until));
+  const bad = act.filter(almExpired).length;
+  box.innerHTML = `
+    ${can ? `<section class="card alm-gen"><h2 class="section-title">Naujas laikinas kodas</h2>
+      <div class="grid cols-2">
+        <label class="field">Kam (el. paštas)<input type="email" id="atMail" placeholder="vardas@imone.lt" autocomplete="off"></label>
+        <label class="field">Galioja iki<input type="datetime-local" id="atUntil" value="${almLocal(new Date(Date.now()+864e5))}"></label>
+      </div>
+      <div class="chipbar" style="margin-top:6px;">${[[3,'3 val.'],[24,'1 d.'],[72,'3 d.'],[168,'7 d.'],[720,'30 d.']].map(([h,t])=>`<button type="button" class="chip" data-h="${h}">${t}</button>`).join('')}</div>
+      <label class="field" style="margin-top:8px;">Pastaba (nebūtina)<input type="text" id="atNote" placeholder="pvz. valytojai, montuotojai"></label>
+      <div class="row" style="justify-content:flex-end;margin-top:10px;"><button type="button" class="btn primary" id="atGo">🎲 Generuoti kodą</button></div>
+    </section>` : ''}
+    <section class="card"><h2 class="section-title">Galiojantys laikini kodai</h2>
+      ${bad ? `<div class="alm-warn">⚠ ${ltPlural(bad,'kodas baigė','kodai baigė','kodų baigė')} galioti – juos būtina ištrinti iš signalizacijos arba pakeisti.</div>` : ''}
+      <div id="atList">${act.length ? act.map(almTempCard).join('') : '<div class="empty-state">Laikinų kodų nėra.</div>'}</div>
+    </section>`;
+  box.querySelectorAll('[data-h]').forEach(b=>b.onclick = ()=>{ document.getElementById('atUntil').value = almLocal(new Date(Date.now() + b.dataset.h*36e5)); });
+  const go = document.getElementById('atGo'); if(go) go.onclick = async ()=>{
+    const email = document.getElementById('atMail').value.trim(), until = document.getElementById('atUntil').value;
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast('Įrašyk el. paštą.'); document.getElementById('atMail').focus(); return; }
+    if(!until || new Date(until).getTime() <= Date.now()){ toast('Nurodyk, iki kada kodas galioja (ateityje).'); return; }
+    go.disabled = true;
+    const r = await almInsert({ email, valid_until:new Date(until).toISOString(), note:document.getElementById('atNote').value.trim() });
+    go.disabled = false;
+    if(r) { renderAlarmTab(); toast('✓ Sugeneruotas kodas '+r.code+' ('+email+').'); }
+  };
+  box.querySelectorAll('[data-temp]').forEach(el=>{ const t = ALM.temp.find(x=>x.id===el.dataset.temp);
+    const del = el.querySelector('[data-del]'); if(del) del.onclick = async ()=>{
+      if(!(await uiConfirm(`Kodas ${t.code} (${t.email}) ištrintas iš signalizacijos? Jis bus perkeltas į archyvą.`, { yes:'Taip, ištrintas' }))) return;
+      if(await almClose(t, 'deleted')){ renderAlarmTab(); toast('Kodas perkeltas į archyvą.'); }
+    };
+    const ch = el.querySelector('[data-change]'); if(ch) ch.onclick = async ()=>{
+      const dur = Math.max(36e5, new Date(t.valid_until) - new Date(t.valid_from || t.created_at));
+      if(!(await uiConfirm(`Pakeisti kodą ${t.code} (${t.email})? Bus sugeneruotas naujas kodas tam pačiam el. paštui (galios ${ltPlural(Math.max(1, Math.round(dur/864e5)),'dieną','dienas','dienų')}), senasis – į archyvą.`, { yes:'Pakeisti', danger:false }))) return;
+      const n = await almInsert({ email:t.email, note:t.note, valid_until:new Date(Date.now() + dur).toISOString() }); if(!n) return;
+      await almClose(t, 'changed', n.id);
+      renderAlarmTab(); toast('✓ Naujas kodas '+n.code+' – įvesk jį į signalizaciją.');
+    };
+  });
+}
+async function almInsert(o){
+  const row = Object.assign({ code:almCode(), valid_from:new Date().toISOString(), created_by:teamMe(), created_name:teamName(ACCESS.profile) }, o);
+  const r = await getSb().from('alarm_temp_codes').insert(row).select().single();
+  if(r.error){ toast('Nepavyko: '+r.error.message, 5000); return null; }
+  ALM.temp.unshift(r.data); return r.data;
+}
+async function almClose(t, kind, newId){
+  const row = { closed_at:new Date().toISOString(), closed_kind:kind, closed_by:teamMe(), closed_name:teamName(ACCESS.profile), replaced_by:newId || null };
+  const r = await getSb().from('alarm_temp_codes').update(row).eq('id', t.id);
+  if(r.error){ toast('Nepavyko: '+r.error.message); return false; }
+  Object.assign(t, row); return true;
+}
+function almArchDraw(){
+  const box = document.getElementById('almBody');
+  if(ALM.err){ box.innerHTML = almErrHtml(ALM.err); return; }
+  const q = normalizeText(ALM.q||''), list = ALM.temp.filter(t=>t.closed_at && (!q || normalizeText([t.email, t.code, t.note, t.created_name, t.closed_name].join(' ')).includes(q)))
+    .sort((a,b)=>new Date(b.closed_at)-new Date(a.closed_at));
+  box.innerHTML = `<section class="card">
+    <div class="row between" style="gap:10px;flex-wrap:wrap;margin-bottom:10px;"><h2 class="section-title" style="margin:0;">Archyvas – laikini kodai</h2>
+      <input type="search" id="aaQ" placeholder="Ieškoti: el. paštas, kodas…" value="${esc(ALM.q||'')}" style="max-width:260px;"></div>
+    ${list.length ? list.map(t=>`<div class="alm-temp arch">
+      <div class="alm-code">${esc(t.code)}</div>
+      <div class="key-loan-m"><b>${esc(t.email)}</b>${t.note ? `<span>${esc(t.note)}</span>` : ''}
+        <small class="muted">Galiojo ${esc(keyWhen(t.valid_from || t.created_at))} – ${esc(keyWhen(t.valid_until))} · sugeneravo ${esc(t.created_name||'')}</small>
+        <small><span class="pill ${t.closed_kind==='changed' ? 'alm-pill-ch' : 'alm-pill-del'}">${t.closed_kind==='changed' ? '🔄 Pakeistas' : '🗑 Ištrintas'}</span> ${esc(keyWhen(t.closed_at))}${t.closed_name ? ' · '+esc(t.closed_name) : ''}</small></div>
+    </div>`).join('') : '<div class="empty-state">Archyve įrašų nėra.</div>'}</section>`;
+  const i = document.getElementById('aaQ'); i.oninput = ()=>{ ALM.q = i.value; const p = i.selectionStart; almArchDraw(); const j = document.getElementById('aaQ'); j.focus(); j.setSelectionRange(p, p); };
+}
 const TABS = {
   home: renderHomeTab,
   events: renderEventsTab,
@@ -35723,6 +35923,7 @@ const TABS = {
   tracker: renderTrackerTab,
   expenses: renderExpensesTab,
   keys: renderKeysTab,
+  alarm: renderAlarmTab,
   games: renderGamesTab,
   gear: renderGearTab,
   invoices: renderInvoicesTab,
@@ -36091,6 +36292,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 17:42', v:'v318', k:'new', t:'Naujas puslapis: Signalizacija (Ofisas)', f:'Ofise atsirado „Signalizacija“. Darbuotojų kodai: kiekvieno darbuotojo signalizacijos kodas (paslėptas, parodomas akute) – mato ir keičia tik Admin ir Office. Laikinas kodas: sugeneruojamas atsitiktinis 4 skaitmenų kodas, priskiriamas el. paštas ir nurodoma, iki kada galioja (greiti mygtukai 3 val. – 30 d.); kodą galima išsiųsti el. paštu. Pasibaigus galiojimui kodas paraudonuoja – jį būtina ištrinti arba pakeisti (pakeitus sugeneruojamas naujas kodas tam pačiam el. paštui). Ištrinti ir pakeisti kodai nukeliauja į Archyvą. Reikia paleisti supabase/sql/alarm.sql.' },
   { d:'2026-10-05 17:33', v:'v317', k:'new', t:'Naujas puslapis: Raktai (Ofisas)', f:'Ofise atsirado „Raktai“ su trimis skiltimis. Sandėlio raktas: mygtukas „Generuoti naują kodą“ sukuria atsitiktinį 4 skaitmenų kodą (užregistruojama data ir kas užsakė keitimą); įvedus jį į spyną, paspausk „Kodas ant spynos pakeistas“ – naujas kodas su data įdedamas į chato kanalą #sandėlio-raktas (kanalas sukuriamas pats, į jį įtraukiami visi, kas mato Raktus). Rodoma ir kodų istorija. Išduoti raktai: kam, kada ir kas išdavė; kol negrąžintas – šviesiai geltonas, paspaudus „Grąžintas“ pažaliuoja ir nukeliauja į Archyvą. Archyvas: visi grąžinti raktai su paieška. Kas mato ir keičia Raktus – Admin → teisės. Reikia paleisti supabase/sql/keys.sql.' },
   { d:'2026-10-05 17:20', v:'v316', k:'fix', t:'Plytelių tempimas be šokinėjimo; Mano erdvė – Išvaizdos spalvos', f:'Pagrindiniame puslapyje tempiant plyteles (Mano erdvė, Ofisas ir kt.) jos nebešokinėja ir nemirga: tempiama plytelė laikosi po pele, o užvedimo (padidėjimo) efektas tempimo metu išjungiamas. Tempimas veikia ir pakeitus plytelių dydį. Mano erdvė: grafų ir UTA kortelių ikonos klauso Išvaizda → Pradžios ikonos nustatymų (viena spalva, akcento ar sava spalva, be fono).' },
   { d:'2026-10-05 17:12', v:'v315', k:'new', t:'Mano erdvė (buvęs Profilis)', f:'Profilis pervadintas į „Mano erdvė“ ir atsirado pagrindiniame puslapyje kaip plytelė. Viršuje – grafos: Apie mane (vardas, nuotrauka, kontaktai, paskyra), UTA (tau priskirta kortelė ir bendros kortelės su PIN kodais – PIN rodomas paspaudus akutę), Išvaizda, Prašymai, Parsisiųsti (programėlės) ir Pranešimai. Paspaudus grafą rodoma tik jos informacija. Transportas → UTA kortelės: kortelei galima įrašyti PIN ir pažymėti „Bendra kortelė“. Reikia paleisti supabase/sql/uta_pins.sql.' },
