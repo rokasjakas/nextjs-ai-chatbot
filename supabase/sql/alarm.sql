@@ -1,7 +1,7 @@
 -- ============================================================
 -- Ofisas → „Signalizacija“
 --  * alarm_staff_codes – darbuotojų signalizacijos kodai: mato ir keičia TIK Admin ir Office
---  * alarm_temp_codes  – laikini kodai: atsitiktinis 4 skaitmenų kodas, kam (el. paštas), iki kada galioja.
+--  * alarm_temp_codes  – laikini kodai: atsitiktinis 4 skaitmenų kodas, kam (vardas, pavardė; el. paštas nebūtinas), iki kada galioja.
 --                        Pasibaigus galiojimui kodą reikia ištrinti arba pakeisti – tada jis
 --                        uždaromas (closed_kind = 'deleted' / 'changed') ir rodomas Archyve.
 -- Laikinus kodus mato, kas mato „Signalizaciją“ (Admin → teisės); keisti – kas ją redaguoja.
@@ -33,7 +33,8 @@ create table if not exists public.alarm_staff_codes (
 create table if not exists public.alarm_temp_codes (
   id            uuid primary key default gen_random_uuid(),
   code          text not null check (code ~ '^[0-9]{4}$'),
-  email         text not null check (length(trim(email)) > 0),
+  person_name   text,
+  email         text,
   note          text not null default '',
   valid_from    timestamptz not null default now(),
   valid_until   timestamptz not null,
@@ -46,6 +47,10 @@ create table if not exists public.alarm_temp_codes (
   closed_name   text,
   replaced_by   uuid
 );
+-- (a table made before: the name added, the e-mail not needed)
+alter table public.alarm_temp_codes add column if not exists person_name text;
+alter table public.alarm_temp_codes alter column email drop not null;
+alter table public.alarm_temp_codes drop constraint if exists alarm_temp_codes_email_check;
 create index if not exists alarm_temp_open on public.alarm_temp_codes (closed_at, valid_until);
 
 -- the staff codes: Admin and Office only (by the real level)

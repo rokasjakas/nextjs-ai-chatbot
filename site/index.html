@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-q8ke35/WIKYZ3pq/1ml3D5JCcXQCzijyULbaTHPev90=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-xcSVkLBEQvvpQXn8PpJjrCTfcNrasDQvJOvB3fRZy2w=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -18978,7 +18978,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v318';
+const APP_VER = 'v319';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35738,6 +35738,7 @@ function almLeft(t){
   const h = Math.round(ms/36e5), d = Math.floor(h/24);
   return d >= 1 ? `liko ${ltPlural(d,'diena','dienos','dienų')}${h%24 ? ' '+(h%24)+' val.' : ''}` : h >= 1 ? `liko ${h} val.` : `liko ${Math.max(1, Math.round(ms/6e4))} min.`;
 }
+const almWho = t=>t.person_name || t.email || '';
 const almCode = ()=>{ const a = new Uint32Array(4); crypto.getRandomValues(a); return [...a].map(x=>x % 10).join(''); };
 const almLocal = d=>new Date(d.getTime() - d.getTimezoneOffset()*6e4).toISOString().slice(0,16);
 async function almLoad(){
@@ -35825,14 +35826,14 @@ function almStaffForm(c){
 /* Laikinas kodas: generated like the lock code, for an e-mail, valid until… */
 function almTempCard(t){
   const exp = almExpired(t), can = canEdit('alarm');
-  const mail = `mailto:${encodeURIComponent(t.email)}?subject=${encodeURIComponent('Laikinas signalizacijos kodas')}&body=${encodeURIComponent('Laikinas signalizacijos kodas: '+t.code+'\nGalioja iki: '+keyWhen(t.valid_until))}`;
+  const mail = t.email && `mailto:${encodeURIComponent(t.email)}?subject=${encodeURIComponent('Laikinas signalizacijos kodas')}&body=${encodeURIComponent('Laikinas signalizacijos kodas: '+t.code+'\nGalioja iki: '+keyWhen(t.valid_until))}`;
   return `<div class="alm-temp ${exp ? 'exp' : ''}" data-temp="${esc(t.id)}">
     <div class="alm-code">${esc(t.code)}</div>
-    <div class="key-loan-m"><b>${esc(t.email)}</b>${t.note ? `<span>${esc(t.note)}</span>` : ''}
+    <div class="key-loan-m"><b>${esc(almWho(t))}</b>${t.person_name && t.email ? `<span>${esc(t.email)}</span>` : ''}${t.note ? `<span>${esc(t.note)}</span>` : ''}
       <small class="${exp ? 'alm-red' : 'muted'}">${exp ? '⚠ Baigė galioti '+esc(keyWhen(t.valid_until))+' – ištrink arba pakeisk kodą' : 'Galioja iki '+esc(keyWhen(t.valid_until))+' · '+esc(almLeft(t))}</small>
       <small class="muted">Sugeneravo ${esc(t.created_name||'')} · ${esc(keyWhen(t.created_at))}</small></div>
     <div class="alm-acts">
-      <a class="btn small" href="${mail}" title="Išsiųsti kodą el. paštu">✉ Siųsti</a>
+      ${mail ? `<a class="btn small" href="${mail}" title="Išsiųsti kodą el. paštu">✉ Siųsti</a>` : ''}
       ${can ? `<button type="button" class="btn small" data-change>🔄 Pakeisti</button><button type="button" class="btn small danger" data-del>Ištrinti</button>` : ''}
     </div>
   </div>`;
@@ -35845,7 +35846,8 @@ function almTempDraw(){
   box.innerHTML = `
     ${can ? `<section class="card alm-gen"><h2 class="section-title">Naujas laikinas kodas</h2>
       <div class="grid cols-2">
-        <label class="field">Kam (el. paštas)<input type="email" id="atMail" placeholder="vardas@imone.lt" autocomplete="off"></label>
+        <label class="field">Kam: vardas, pavardė<input type="text" id="atName" placeholder="pvz. Jonas Jonaitis" autocomplete="off"></label>
+        <label class="field">El. paštas (nebūtina)<input type="email" id="atMail" placeholder="vardas@imone.lt" autocomplete="off"></label>
         <label class="field">Galioja iki<input type="datetime-local" id="atUntil" value="${almLocal(new Date(Date.now()+864e5))}"></label>
       </div>
       <div class="chipbar" style="margin-top:6px;">${[[3,'3 val.'],[24,'1 d.'],[72,'3 d.'],[168,'7 d.'],[720,'30 d.']].map(([h,t])=>`<button type="button" class="chip" data-h="${h}">${t}</button>`).join('')}</div>
@@ -35858,23 +35860,24 @@ function almTempDraw(){
     </section>`;
   box.querySelectorAll('[data-h]').forEach(b=>b.onclick = ()=>{ document.getElementById('atUntil').value = almLocal(new Date(Date.now() + b.dataset.h*36e5)); });
   const go = document.getElementById('atGo'); if(go) go.onclick = async ()=>{
-    const email = document.getElementById('atMail').value.trim(), until = document.getElementById('atUntil').value;
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast('Įrašyk el. paštą.'); document.getElementById('atMail').focus(); return; }
+    const person_name = document.getElementById('atName').value.trim(), email = document.getElementById('atMail').value.trim(), until = document.getElementById('atUntil').value;
+    if(!person_name){ toast('Įrašyk vardą ir pavardę.'); document.getElementById('atName').focus(); return; }
+    if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast('Neteisingas el. paštas.'); document.getElementById('atMail').focus(); return; }
     if(!until || new Date(until).getTime() <= Date.now()){ toast('Nurodyk, iki kada kodas galioja (ateityje).'); return; }
     go.disabled = true;
-    const r = await almInsert({ email, valid_until:new Date(until).toISOString(), note:document.getElementById('atNote').value.trim() });
+    const r = await almInsert({ person_name, email:email || null, valid_until:new Date(until).toISOString(), note:document.getElementById('atNote').value.trim() });
     go.disabled = false;
-    if(r) { renderAlarmTab(); toast('✓ Sugeneruotas kodas '+r.code+' ('+email+').'); }
+    if(r) { renderAlarmTab(); toast('✓ Sugeneruotas kodas '+r.code+' ('+person_name+').'); }
   };
   box.querySelectorAll('[data-temp]').forEach(el=>{ const t = ALM.temp.find(x=>x.id===el.dataset.temp);
     const del = el.querySelector('[data-del]'); if(del) del.onclick = async ()=>{
-      if(!(await uiConfirm(`Kodas ${t.code} (${t.email}) ištrintas iš signalizacijos? Jis bus perkeltas į archyvą.`, { yes:'Taip, ištrintas' }))) return;
+      if(!(await uiConfirm(`Kodas ${t.code} (${almWho(t)}) ištrintas iš signalizacijos? Jis bus perkeltas į archyvą.`, { yes:'Taip, ištrintas' }))) return;
       if(await almClose(t, 'deleted')){ renderAlarmTab(); toast('Kodas perkeltas į archyvą.'); }
     };
     const ch = el.querySelector('[data-change]'); if(ch) ch.onclick = async ()=>{
       const dur = Math.max(36e5, new Date(t.valid_until) - new Date(t.valid_from || t.created_at));
-      if(!(await uiConfirm(`Pakeisti kodą ${t.code} (${t.email})? Bus sugeneruotas naujas kodas tam pačiam el. paštui (galios ${ltPlural(Math.max(1, Math.round(dur/864e5)),'dieną','dienas','dienų')}), senasis – į archyvą.`, { yes:'Pakeisti', danger:false }))) return;
-      const n = await almInsert({ email:t.email, note:t.note, valid_until:new Date(Date.now() + dur).toISOString() }); if(!n) return;
+      if(!(await uiConfirm(`Pakeisti kodą ${t.code} (${almWho(t)})? Bus sugeneruotas naujas kodas tam pačiam žmogui (galios ${ltPlural(Math.max(1, Math.round(dur/864e5)),'dieną','dienas','dienų')}), senasis – į archyvą.`, { yes:'Pakeisti', danger:false }))) return;
+      const n = await almInsert({ person_name:t.person_name || null, email:t.email || null, note:t.note, valid_until:new Date(Date.now() + dur).toISOString() }); if(!n) return;
       await almClose(t, 'changed', n.id);
       renderAlarmTab(); toast('✓ Naujas kodas '+n.code+' – įvesk jį į signalizaciją.');
     };
@@ -35895,14 +35898,14 @@ async function almClose(t, kind, newId){
 function almArchDraw(){
   const box = document.getElementById('almBody');
   if(ALM.err){ box.innerHTML = almErrHtml(ALM.err); return; }
-  const q = normalizeText(ALM.q||''), list = ALM.temp.filter(t=>t.closed_at && (!q || normalizeText([t.email, t.code, t.note, t.created_name, t.closed_name].join(' ')).includes(q)))
+  const q = normalizeText(ALM.q||''), list = ALM.temp.filter(t=>t.closed_at && (!q || normalizeText([t.person_name, t.email, t.code, t.note, t.created_name, t.closed_name].join(' ')).includes(q)))
     .sort((a,b)=>new Date(b.closed_at)-new Date(a.closed_at));
   box.innerHTML = `<section class="card">
     <div class="row between" style="gap:10px;flex-wrap:wrap;margin-bottom:10px;"><h2 class="section-title" style="margin:0;">Archyvas – laikini kodai</h2>
-      <input type="search" id="aaQ" placeholder="Ieškoti: el. paštas, kodas…" value="${esc(ALM.q||'')}" style="max-width:260px;"></div>
+      <input type="search" id="aaQ" placeholder="Ieškoti: vardas, el. paštas, kodas…" value="${esc(ALM.q||'')}" style="max-width:260px;"></div>
     ${list.length ? list.map(t=>`<div class="alm-temp arch">
       <div class="alm-code">${esc(t.code)}</div>
-      <div class="key-loan-m"><b>${esc(t.email)}</b>${t.note ? `<span>${esc(t.note)}</span>` : ''}
+      <div class="key-loan-m"><b>${esc(almWho(t))}</b>${t.person_name && t.email ? `<span>${esc(t.email)}</span>` : ''}${t.note ? `<span>${esc(t.note)}</span>` : ''}
         <small class="muted">Galiojo ${esc(keyWhen(t.valid_from || t.created_at))} – ${esc(keyWhen(t.valid_until))} · sugeneravo ${esc(t.created_name||'')}</small>
         <small><span class="pill ${t.closed_kind==='changed' ? 'alm-pill-ch' : 'alm-pill-del'}">${t.closed_kind==='changed' ? '🔄 Pakeistas' : '🗑 Ištrintas'}</span> ${esc(keyWhen(t.closed_at))}${t.closed_name ? ' · '+esc(t.closed_name) : ''}</small></div>
     </div>`).join('') : '<div class="empty-state">Archyve įrašų nėra.</div>'}</section>`;
@@ -36292,6 +36295,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 17:45', v:'v319', k:'chg', t:'Signalizacija: laikinam kodui – vardas, pavardė', f:'Generuojant laikiną signalizacijos kodą dabar privaloma įrašyti vardą ir pavardę, o el. paštas – nebūtinas (jei įrašytas, kodą galima išsiųsti „✉ Siųsti“). Vardas rodomas sąraše, archyve ir paieškoje. Jei alarm.sql jau buvo paleistas – paleisk supabase/sql/alarm_name.sql.' },
   { d:'2026-10-05 17:42', v:'v318', k:'new', t:'Naujas puslapis: Signalizacija (Ofisas)', f:'Ofise atsirado „Signalizacija“. Darbuotojų kodai: kiekvieno darbuotojo signalizacijos kodas (paslėptas, parodomas akute) – mato ir keičia tik Admin ir Office. Laikinas kodas: sugeneruojamas atsitiktinis 4 skaitmenų kodas, priskiriamas el. paštas ir nurodoma, iki kada galioja (greiti mygtukai 3 val. – 30 d.); kodą galima išsiųsti el. paštu. Pasibaigus galiojimui kodas paraudonuoja – jį būtina ištrinti arba pakeisti (pakeitus sugeneruojamas naujas kodas tam pačiam el. paštui). Ištrinti ir pakeisti kodai nukeliauja į Archyvą. Reikia paleisti supabase/sql/alarm.sql.' },
   { d:'2026-10-05 17:33', v:'v317', k:'new', t:'Naujas puslapis: Raktai (Ofisas)', f:'Ofise atsirado „Raktai“ su trimis skiltimis. Sandėlio raktas: mygtukas „Generuoti naują kodą“ sukuria atsitiktinį 4 skaitmenų kodą (užregistruojama data ir kas užsakė keitimą); įvedus jį į spyną, paspausk „Kodas ant spynos pakeistas“ – naujas kodas su data įdedamas į chato kanalą #sandėlio-raktas (kanalas sukuriamas pats, į jį įtraukiami visi, kas mato Raktus). Rodoma ir kodų istorija. Išduoti raktai: kam, kada ir kas išdavė; kol negrąžintas – šviesiai geltonas, paspaudus „Grąžintas“ pažaliuoja ir nukeliauja į Archyvą. Archyvas: visi grąžinti raktai su paieška. Kas mato ir keičia Raktus – Admin → teisės. Reikia paleisti supabase/sql/keys.sql.' },
   { d:'2026-10-05 17:20', v:'v316', k:'fix', t:'Plytelių tempimas be šokinėjimo; Mano erdvė – Išvaizdos spalvos', f:'Pagrindiniame puslapyje tempiant plyteles (Mano erdvė, Ofisas ir kt.) jos nebešokinėja ir nemirga: tempiama plytelė laikosi po pele, o užvedimo (padidėjimo) efektas tempimo metu išjungiamas. Tempimas veikia ir pakeitus plytelių dydį. Mano erdvė: grafų ir UTA kortelių ikonos klauso Išvaizda → Pradžios ikonos nustatymų (viena spalva, akcento ar sava spalva, be fono).' },
