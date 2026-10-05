@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-arRAQduBC5UakWaBQ3MYapTSZMud6u3lNGIoPUAYKNg=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-vARVRzaTUYhNmhfJ8xVt53POsCq09aF3eYvtRhgzIYQ=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3494,6 +3494,41 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 @media(max-width:640px){ .pp-bar{align-items:stretch !important;} .pp-bar > *{flex:1 1 100%;width:100% !important;max-width:none !important;margin:0 !important;} .pp-search input{width:100%;} .pp-subs{display:grid;grid-template-columns:1fr 1fr;} .pp-actions{display:grid;grid-template-columns:auto 1fr;} .pp-day .field{flex:1 1 100%;} .pp-sum{margin-left:0;} .pp-form .lm-row{grid-template-columns:1fr;gap:0;} .pp-cards{grid-template-columns:1fr;} }
 .nt-diag{white-space:pre-wrap;font-size:11.5px;margin:10px 0 0;padding:8px;background:var(--bg-deep);border-radius:var(--radius);color:var(--text-dim);}
 .pf-page{max-width:none;}
+/* Ataskaitos → Ofiso valymas, Bolt, Wolt */
+.cln-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+.cln-grid .cln-wide{grid-column:1/-1;}
+.cln-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:4px 0 12px;}
+.cln-stats > div{padding:10px 12px;border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;gap:2px;}
+.cln-stats small{color:var(--text-dim);font-size:12px;} .cln-stats b{font-size:18px;}
+.cln-stats .bw{border-color:color-mix(in srgb, #2F9E73 50%, var(--border));} .cln-stats .bp{border-color:color-mix(in srgb, #E0A030 55%, var(--border));}
+.cln-row{display:grid;grid-template-columns:150px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;border:1px solid var(--border);border-radius:10px;background:none;color:var(--text);font:inherit;cursor:pointer;}
+.cln-row:disabled{cursor:default;} .cln-row.wait{border-color:color-mix(in srgb, #E0A030 55%, var(--border));}
+.cln-row span{display:flex;flex-direction:column;min-width:0;} .cln-row small{color:var(--text-dim);font-size:12px;}
+.cln-c{font-weight:700;white-space:nowrap;}
+.cln-tbl td,.cln-tbl th,.bolt-tbl td,.bolt-tbl th{white-space:nowrap;}
+.bolt-up-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:6px;}
+.bolt-file{cursor:pointer;}
+.bolt-reps{display:flex;flex-direction:column;gap:6px;margin-top:12px;}
+.bolt-rep{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--border);border-radius:10px;}
+.bolt-rep span{flex:1 1 160px;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+.bolt-modes{margin:14px 0;width:max-content;max-width:100%;}
+.bolt-g{cursor:pointer;} .bolt-g.on td{background:color-mix(in srgb, var(--accent) 8%, transparent);}
+.bolt-sub td{padding:6px 8px 12px !important;white-space:normal !important;}
+.bolt-trip{display:grid;grid-template-columns:96px 1fr auto auto;gap:10px;align-items:center;padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-left-width:4px;border-radius:10px;}
+.bolt-trip.work{border-left-color:#2F9E73;} .bolt-trip.pers{border-left-color:#E0A030;}
+.bolt-trip .bolt-r{display:flex;flex-direction:column;min-width:0;} .bolt-trip small{color:var(--text-dim);font-size:12px;}
+.bolt-d{font-size:12px;color:var(--text-dim);} .bolt-a{white-space:nowrap;}
+.bolt-k{font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;} .bolt-k.work{color:#2F9E73;background:color-mix(in srgb, #2F9E73 14%, transparent);} .bolt-k.pers{color:#C98A1B;background:color-mix(in srgb, #E0A030 16%, transparent);}
+.bolt-kt button{padding:4px 10px !important;font-size:12px !important;}
+.bolt-chk-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;} .bolt-chk-bar .field{flex:1 1 220px;}
+.bolt-match{padding:10px 12px;border-radius:10px;margin-bottom:8px;background:color-mix(in srgb, #E0A030 14%, transparent);display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.bolt-match select{width:auto;}
+.bolt-ded{color:var(--danger);}
+.bolt-rules{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.wolt-by{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.wolt-kv{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);}
+@media(max-width:700px){ .cln-grid,.cln-stats{grid-template-columns:1fr 1fr;} .cln-row{grid-template-columns:1fr auto;} .cln-row .cln-m{grid-column:1/-1;grid-row:2;}
+  .bolt-trip{grid-template-columns:1fr auto;} .bolt-trip .bolt-r{grid-column:1/-1;} .bolt-rules,.wolt-by{grid-template-columns:1fr;} .bolt-modes{width:100%;} }
 /* Transportas: tepalas, profilaktika, istorija */
 .vl-oil.warn{color:#E0A030;} .vl-oil.danger{color:var(--danger);}
 .vl-cond{font-weight:700;} .vl-cond.ok{color:#2F9E73;} .vl-cond.soon{color:#E0A030;} .vl-cond.stop{color:var(--danger);}
@@ -17412,6 +17447,9 @@ const RP_SUBS = [
   ['sub', '📦 Subnuoma', ()=>canView('newproj') || canView('projects')],
   ['free', '💶 Freelance', ()=>canView('invoices') || isPlus()],
   ['emp', '👷 Darbuotojai', ()=>expManager()],
+  ['clean', '🧹 Ofiso valymas', ()=>true],
+  ['bolt', '🚕 Bolt', ()=>true],
+  ['wolt', '🍔 Wolt', ()=>boltAdmin()],
   ['loads', '📊 Krovimai', ()=>true]
 ];
 function rpPresets(){
@@ -17435,7 +17473,7 @@ function renderStatsTab(){
       ${RP.sub==='veh' ? `<label class="field">Automobilis<select id="rpVeh"><option value="">Visi</option>${(STATE.vehicles||[]).map(v=>`<option value="${esc(v.id)}" ${RP.veh===v.id ? 'selected' : ''}>${esc(vlVehName(v.id))}</option>`).join('')}</select></label>` : ''}
       ${RP.sub==='rent' ? `<label class="field">Rodyti<select id="rpRentBy">${[['veh','Pagal transportą'],['company','Pagal įmonę']].map(([k, l])=>`<option value="${k}" ${RP.rentBy===k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>` : ''}
       ${RP.sub==='uta' ? `<label class="field">Rodyti<select id="rpUtaBy">${[['veh','Pagal transportą (AUTO 1, AUTO 2…)'],['card','Pagal kortelę'],['all','Bendrai']].map(([k, l])=>`<option value="${k}" ${RP.utaBy===k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>` : ''}
-      <label class="field rp-q">Paieška<input type="search" id="rpQ" value="${esc(RP.q||'')}" placeholder="${{veh:'automobilis, darbas, servisas…', rent:'numeris, fura, renginys, vairuotojas…', uta:'AUTO 1, degalinė, kuras, kortelė…', sub:'tiekėjas, daiktas, projektas…', emp:'darbuotojas, maršrutas, priežastis…'}[RP.sub]||'Ieškoti…'}" autocomplete="off"></label>
+      <label class="field rp-q">Paieška<input type="search" id="rpQ" value="${esc(RP.q||'')}" placeholder="${{veh:'automobilis, darbas, servisas…', rent:'numeris, fura, renginys, vairuotojas…', uta:'AUTO 1, degalinė, kuras, kortelė…', sub:'tiekėjas, daiktas, projektas…', emp:'darbuotojas, maršrutas, priežastis…', clean:'valytoja, pastaba…', bolt:'vardas, adresas, pastaba…', wolt:'mėnuo…'}[RP.sub]||'Ieškoti…'}" autocomplete="off"></label>
       <span class="rp-acts" id="rpActs"></span>
     </div>`}
     <div id="rpBody"><div class="card empty-state">Kraunama…</div></div>
@@ -17471,6 +17509,9 @@ async function rpDraw(){
     if(sub==='uta'){ await utaLoad(); if(!still()) return; return rpUtaDraw(box, acts); }
     if(sub==='sub'){ await npLoad(); if(!still()) return; return rpSubDraw(box, acts); }
     if(sub==='emp') return rpEmpDraw(box, acts);
+    if(sub==='clean') return rpCleanDraw(box, acts);
+    if(sub==='bolt') return rpBoltDraw(box, acts);
+    if(sub==='wolt') return rpWoltDraw(box, acts);
     if(sub==='free'){ if(!INV.loaded) await invLoad(); if(!TEAM.members || !TEAM.members.length) await teamLoadMembers().catch(()=>{}); if(!still()) return; return rpFreeDraw(box, acts); }
   }catch(e){ box.innerHTML = `<div class="card"><div class="mail-err">Nepavyko: ${esc(e.message||e)}</div></div>`; }
 }
@@ -19011,7 +19052,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v324';
+const APP_VER = 'v325';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35434,7 +35475,10 @@ function renderExpensesTab(){
       <div id="expList"><div class="empty-state">Kraunama…</div></div></section>
     <section class="card"><div class="exp-h"><h2 class="section-title" style="margin:0;">Mano UTA kortelės pylimai</h2><small class="muted">${esc(utaMonthName(EXP.month))}</small></div>
       <div id="expTx"><div class="empty-state">Kraunama…</div></div></section>
+    <div id="expBolt"></div>
   </div>`;
+  { const [yy, mm] = EXP.month.split('-').map(Number), last = new Date(yy, mm, 0).getDate();
+    boltMineDraw(document.getElementById('expBolt'), EXP.month+'-01', EXP.month+'-'+String(last).padStart(2,'0'), 'Mano Bolt kelionės', true); }
   expFormDraw();
   document.getElementById('expPrev').onclick = ()=>{ EXP.month = expMonthShift(EXP.month, -1); renderExpensesTab(); };
   document.getElementById('expNext').onclick = ()=>{ EXP.month = expMonthShift(EXP.month, 1); renderExpensesTab(); };
@@ -36116,6 +36160,442 @@ document.addEventListener('click', async e=>{
   if(typeof vlLoad==='function'){ vlLoad(true).then(()=>{ if(typeof vlRefresh==='function') vlRefresh(); }); }
   toast('✓ Problema įtraukta į darbus – matosi automobilio „Problemose“.');
 });
+/* ---------- Ataskaitos → Ofiso valymas (supabase/sql/office_bolt.sql) ---------- */
+const CLN = { list:null, err:'' };
+const clnCan = ()=>['admin','office','pm'].includes(ACCESS.role);
+const clnSqlErr = e=>/does not exist|schema cache|relation/i.test(e.message||'') ? 'Lentelės dar nėra – paleisk supabase/sql/office_bolt.sql.' : (e.message||String(e));
+async function clnLoad(){
+  const r = await getSb().from('office_cleanings').select('*').order('done_on', { ascending:false, nullsFirst:true }).order('ordered_on', { ascending:false }).limit(3000);
+  CLN.err = r.error ? clnSqlErr(r.error) : ''; CLN.list = r.data || [];
+}
+const clnDay = c=>c.done_on || c.ordered_on || String(c.created_at||'').slice(0,10);
+async function rpCleanDraw(box, acts){
+  await clnLoad();
+  if(CLN.err){ box.innerHTML = `<div class="card"><div class="mail-err">${esc(CLN.err)}</div></div>`; return; }
+  const inP = CLN.list.filter(c=>{ const d = clnDay(c); return d >= RP.from && d <= RP.to && rpMatch(c.cleaner, c.note, c.created_name); });
+  const done = inP.filter(c=>c.done_on), wait = CLN.list.filter(c=>!c.done_on);
+  const sum = inP.reduce((s, c)=>s + (+c.cost||0), 0), paid = inP.filter(c=>c.cost!=null);
+  const byMonth = {}; inP.forEach(c=>{ const m = clnDay(c).slice(0,7); const x = byMonth[m] = byMonth[m] || { n:0, sum:0 }; x.n++; x.sum += +c.cost||0; });
+  box.innerHTML = `
+    ${clnCan() ? `<div class="card cln-form"><h2 class="section-title">Naujas valymas</h2>
+      <div class="cln-grid">
+        <label class="field">Valytoja užsakyta<input type="date" id="clOrd" value="${calISO(new Date())}"></label>
+        <label class="field">Valymas atliktas<input type="date" id="clDone"></label>
+        <label class="field">Kaina (€)<input type="number" id="clCost" min="0" step="0.01" inputmode="decimal"></label>
+        <label class="field">Valytoja / įmonė (nebūtina)<input type="text" id="clWho" placeholder="pvz. UAB Švara"></label>
+        <label class="field cln-wide">Papildomos pastabos<input type="text" id="clNote" placeholder="pvz. langai, po renginio, generalinis…"></label>
+      </div>
+      <div class="row" style="justify-content:flex-end;margin-top:10px;"><button type="button" class="btn primary" id="clAdd">+ Pridėti valymą</button></div></div>` : ''}
+    ${wait.length ? `<div class="card"><h2 class="section-title">Užsakyta, dar neatlikta</h2>${wait.map(c=>clnRow(c)).join('')}</div>` : ''}
+    <div class="card"><h2 class="section-title">Ataskaita · ${esc(rpWhen(RP.from))} – ${esc(rpWhen(RP.to))}</h2>
+      <div class="cln-stats">
+        <div><small>Valymų</small><b>${inP.length}</b></div>
+        <div><small>Atlikta</small><b>${done.length}</b></div>
+        <div><small>Iš viso kainavo</small><b>${expMoney(sum)}</b></div>
+        <div><small>Vidutiniškai už valymą</small><b>${paid.length ? expMoney(sum/paid.length) : '—'}</b></div>
+      </div>
+      ${Object.keys(byMonth).length > 1 ? `<div class="table-wrap"><table class="cln-tbl"><thead><tr><th>Mėnuo</th><th>Valymų</th><th>Suma</th></tr></thead><tbody>${Object.keys(byMonth).sort().reverse().map(m=>`<tr><td>${esc(utaMonthName(m))}</td><td>${byMonth[m].n}</td><td>${expMoney(byMonth[m].sum)}</td></tr>`).join('')}</tbody></table></div>` : ''}
+      <div style="margin-top:10px;">${inP.length ? inP.map(c=>clnRow(c)).join('') : '<div class="empty-state">Šiuo laikotarpiu valymų nėra.</div>'}</div>
+    </div>`;
+  rpActBtn(acts, ()=>rpXls('Ofiso_valymas', [['Valymai', [['Užsakyta', 'Atlikta', 'Valytoja / įmonė', 'Kaina €', 'Pastabos', 'Įrašė']].concat(inP.map(c=>[c.ordered_on||'', c.done_on||'', c.cleaner||'', c.cost!=null ? +c.cost : '', c.note||'', c.created_name||'']))
+    .concat([[], ['Iš viso', '', '', Math.round(sum*100)/100, inP.length+' valymų']])]]));
+  const add = document.getElementById('clAdd'); if(add) add.onclick = async ()=>{
+    const v = id=>document.getElementById(id).value.trim(), cost = v('clCost');
+    const row = { ordered_on:v('clOrd') || null, done_on:v('clDone') || null, cost:cost==='' ? null : Math.round(utaNum(cost)*100)/100, cleaner:v('clWho'), note:v('clNote'), created_name:teamName(ACCESS.profile) };
+    if(!row.ordered_on && !row.done_on){ toast('Nurodyk, kada užsakyta arba atlikta.'); return; }
+    add.disabled = true;
+    const r = await getSb().from('office_cleanings').insert(row);
+    add.disabled = false;
+    if(r.error){ toast('Nepavyko: '+clnSqlErr(r.error), 5000); return; }
+    toast('✓ Valymas pridėtas.'); rpDraw();
+  };
+  box.querySelectorAll('[data-cln]').forEach(el=>el.onclick = ()=>clnEdit(CLN.list.find(c=>c.id===el.dataset.cln)));
+}
+function clnRow(c){
+  return `<button type="button" class="cln-row ${c.done_on ? '' : 'wait'}" data-cln="${esc(c.id)}" ${clnCan() ? '' : 'disabled'}>
+    <span class="cln-d"><b>${c.done_on ? esc(rpWhen(c.done_on)) : 'neatlikta'}</b><small>užsakyta ${esc(rpWhen(c.ordered_on)||'—')}</small></span>
+    <span class="cln-m">${esc(c.cleaner || 'Ofiso valymas')}${c.note ? `<small>${esc(c.note)}</small>` : ''}</span>
+    <span class="cln-c">${c.cost!=null ? expMoney(+c.cost) : '<span class="muted">—</span>'}</span></button>`;
+}
+function clnEdit(c){
+  if(!c || !clnCan()) return;
+  openModal(`<h3>Ofiso valymas</h3>
+    <div class="cln-grid">
+      <label class="field">Valytoja užsakyta<input type="date" id="ceOrd" value="${esc(c.ordered_on||'')}"></label>
+      <label class="field">Valymas atliktas<input type="date" id="ceDone" value="${esc(c.done_on||'')}"></label>
+      <label class="field">Kaina (€)<input type="number" id="ceCost" min="0" step="0.01" value="${c.cost!=null ? esc(String(+c.cost)) : ''}"></label>
+      <label class="field">Valytoja / įmonė<input type="text" id="ceWho" value="${esc(c.cleaner||'')}"></label>
+      <label class="field cln-wide">Papildomos pastabos<input type="text" id="ceNote" value="${esc(c.note||'')}"></label>
+    </div>
+    <small class="muted">Įrašė ${esc(c.created_name||'')} · ${esc(keyWhen(c.created_at))}</small>
+    <div class="row" style="justify-content:space-between;gap:8px;margin-top:14px;"><button type="button" class="btn danger small" id="ceDel">Ištrinti</button>
+      <span class="row" style="gap:8px;"><button type="button" class="btn" id="ceX">Atšaukti</button><button type="button" class="btn primary" id="ceSave">Išsaugoti</button></span></div>`);
+  document.getElementById('ceX').onclick = ()=>closeModal();
+  document.getElementById('ceDel').onclick = async ()=>{ if(!(await uiConfirm('Ištrinti šį valymą?'))) return;
+    const r = await getSb().from('office_cleanings').delete().eq('id', c.id); if(r.error){ toast('Nepavyko: '+r.error.message); return; } closeModal(); rpDraw(); };
+  document.getElementById('ceSave').onclick = async ()=>{
+    const v = id=>document.getElementById(id).value.trim(), cost = v('ceCost');
+    const row = { ordered_on:v('ceOrd') || null, done_on:v('ceDone') || null, cost:cost==='' ? null : Math.round(utaNum(cost)*100)/100, cleaner:v('ceWho'), note:v('ceNote'), updated_at:new Date().toISOString() };
+    const r = await getSb().from('office_cleanings').update(row).eq('id', c.id); if(r.error){ toast('Nepavyko: '+r.error.message); return; }
+    closeModal(); toast('✓ Išsaugota.'); rpDraw();
+  };
+}
+
+/* ---------- Ataskaitos → Bolt: monthly Bolt reports, summary by person, checking work / personal ---------- */
+const BOLT = { mode:'sum', rep:'', person:'', open:'', reports:null, rules:{ personal:[], work:[] } };
+const boltAdmin = ()=>['admin','office'].includes(ACCESS.role);
+// no note, „P“ or „asmeninė“ → a personal trip; a written purpose (e.g. „iš Propeller renginio“) → work
+// the words / phrases written in „Taisyklės“ come first (a personal one wins over a work one)
+const boltNorm = t=>' '+normalizeText(String(t||'')).replace(/[^a-z0-9]+/g, ' ').trim()+' ';
+function boltKind(note){
+  const n = boltNorm(note), has = w=>{ const x = boltNorm(w); return x.trim() && n.includes(x); };
+  if((BOLT.rules.personal||[]).some(has)) return 'personal';
+  if((BOLT.rules.work||[]).some(has)) return 'work';
+  const t = n.trim(); return !t || t==='p' || /^(asmenin|asm\b|personal|privat)/.test(t) ? 'personal' : 'work';
+}
+async function boltRulesLoad(){ const r = await getSb().from('bolt_rules').select('*').eq('id', 1).maybeSingle(); if(r.data) BOLT.rules = { personal:r.data.personal||[], work:r.data.work||[] }; }
+const BOLT_KIND = { work:{ t:'Darbo', cls:'work' }, personal:{ t:'Asmeninė', cls:'pers' } };
+const BOLT_COLS = [
+  ['date', /data|date|laikas|time|created|ordered|uzsakym|pick ?up time/],
+  ['phone', /phone|telef/],
+  ['name', /rider|passenger|employee|user|keleiv|darbuotoj|vardas|name|asmuo/],
+  ['from', /pick ?up|from|pradin|is kur|paemim|start|isvyk/],
+  ['to', /kelion\w* tiksl|destination|drop|^to$|\bto\b|kur |i kur|pabaig|atvyk|end/],
+  ['amount', /total|price|amount|kaina|suma|fare|cost|moket/],
+  ['note', /comment|note|purpose|reason|expense|tiksl|komentar|pastab|project|code|kodas/]];
+// the rows of a PDF table (text lines, pieces standing close together joined into one cell)
+async function rpPdfRows(file){
+  if(typeof pdfjsLib==='undefined') await loadScriptOnce('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js', ()=>typeof pdfjsLib!=='undefined');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+  const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise, rows = [];
+  for(let p = 1; p <= pdf.numPages; p++){
+    const items = (await (await pdf.getPage(p)).getTextContent()).items.filter(it=>String(it.str).trim())
+      .map(it=>({ s:String(it.str).trim(), x:it.transform[4], y:it.transform[5], w:it.width||0 })).sort((a,b)=>b.y-a.y || a.x-b.x);
+    let cur = null; const lines = [];
+    items.forEach(it=>{ if(!cur || Math.abs(it.y-cur.y) > 3){ cur = { y:it.y, items:[] }; lines.push(cur); } cur.items.push(it); });
+    lines.forEach(l=>{ l.items.sort((a,b)=>a.x-b.x); const cells = [];
+      l.items.forEach(it=>{ const c = cells[cells.length-1]; if(c && it.x - (c.x + c.w) < 4.5){ c.s += (it.x - (c.x + c.w) > 1 ? ' ' : '')+it.s; c.w = it.x + it.w - c.x; } else cells.push(Object.assign({}, it)); });
+      rows.push(cells.map(c=>c.s)); });
+  }
+  return rows;
+}
+async function rpFileRows(file){
+  if(/\.pdf$/i.test(file.name)) return rpPdfRows(file);
+  if(!(await libNeed('xlsx'))) throw new Error('Excel biblioteka neįsikėlė – patikrink ryšį.');
+  const wb = /\.csv$/i.test(file.name) ? XLSX.read(await file.text(), { type:'string', raw:true }) : XLSX.read(await file.arrayBuffer(), { type:'array' });
+  return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header:1, raw:true, defval:'' });
+}
+function rpTableFind(rows, cols){
+  for(let i = 0; i < Math.min(rows.length, 60); i++){
+    const m = {}; (rows[i]||[]).forEach((c, j)=>{ const t = normalizeText(String(c||'')); if(!t || t.length > 40) return;
+      for(const [k, re] of cols) if(m[k]==null && re.test(t)){ m[k] = j; break; } });
+    if(Object.keys(m).length >= 3 && m.amount!=null) return { hi:i, map:m };
+  }
+  return null;
+}
+function boltParse(rows){
+  // the header row: the first row where at least 3 of the columns are recognised
+  const f = rpTableFind(rows, BOLT_COLS), hi = f ? f.hi : -1, map = f ? f.map : null;
+  if(hi < 0) return { err:'Nerasta antraštė (data, vardas, kaina…). Patikrink, ar tai Bolt kelionių Excel / CSV.' };
+  const out = [];
+  for(const r of rows.slice(hi+1)){
+    const g = k=>map[k]==null ? '' : r[map[k]];
+    const amt = utaNum(g('amount')); if(amt==null) continue;
+    const dt = utaDate(g('date')); const name = String(g('name')||'').trim();
+    if(!dt && !name) continue;
+    const at = dt ? new Date(dt.y, dt.m-1, dt.d, dt.h||0, dt.mi||0) : null;
+    const note = String(g('note')||'').trim();
+    out.push({ trip_at:at && !isNaN(at) ? at.toISOString() : null, trip_on:dt ? dt.y+'-'+String(dt.m).padStart(2,'0')+'-'+String(dt.d).padStart(2,'0') : null,
+      person_name:name, phone:String(g('phone')||'').trim() || null, from_addr:String(g('from')||'').trim(), to_addr:String(g('to')||'').trim(), amount:Math.round(amt*100)/100, note, kind:boltKind(note) });
+  }
+  return { rows:out };
+}
+// the member a trip belongs to: by the full name or the phone number
+function boltMember(name, phone){
+  const n = normalizeText(name||''), ph = String(phone||'').replace(/\D/g, '').slice(-8);
+  return (TEAM.members||[]).find(m=>(n && normalizeText(teamName(m))===n) || (n && normalizeText([m.last_name, m.first_name].filter(Boolean).join(' '))===n) || (ph.length===8 && String(m.phone||'').replace(/\D/g, '').slice(-8)===ph)) || null;
+}
+async function rpBoltDraw(box, acts){
+  if(!TEAM.members || !TEAM.members.length) await teamLoadMembers().catch(()=>{});
+  const sb = getSb(), adm = boltAdmin();
+  if(!adm){ return boltMineDraw(box, RP.from, RP.to); }
+  const rr = await sb.from('bolt_reports').select('*').order('month', { ascending:false }).order('created_at', { ascending:false });
+  if(rr.error){ box.innerHTML = `<div class="card"><div class="mail-err">${esc(clnSqlErr(rr.error))}</div></div>`; return; }
+  BOLT.reports = rr.data || []; await boltRulesLoad();
+  const lm = (()=>{ const d = new Date(); d.setDate(1); d.setMonth(d.getMonth()-1); return calISO(d).slice(0,7); })();
+  box.innerHTML = `<div class="card bolt-up"><h2 class="section-title">Įkelti Bolt mėnesio dokumentą</h2>
+      <div class="bolt-up-row">
+        <label class="field">Mėnuo<input type="month" id="boMonth" value="${lm}"></label>
+        <label class="btn primary bolt-file">${slIcon('upload')} Pasirinkti failą (Excel, CSV, PDF…)<input type="file" id="boFile" accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.png,.jpg,.jpeg" hidden></label>
+      </div>
+      <small class="muted">Iš Excel / CSV kelionės nuskaitomos automatiškai (data, vardas, telefonas, iš kur, į kur, kaina, pastaba). PDF ar kitas dokumentas išsaugomas kaip failas.</small>
+      ${BOLT.reports.length ? `<div class="bolt-reps">${BOLT.reports.slice(0, 24).map(r=>`<div class="bolt-rep"><b>${esc(utaMonthName(r.month))}</b><span>${esc(r.file_name||'')}</span><small class="muted">${r.trips ? ltPlural(r.trips,'kelionė','kelionės','kelionių') : 'tik failas'} · ${esc(r.uploaded_name||'')} · ${esc(keyWhen(r.created_at))}</small>
+        ${r.file_path ? `<button type="button" class="btn small" data-bofile="${esc(r.id)}" data-ic="1" title="Atsisiųsti">${slIcon('download')}</button>` : ''}<button type="button" class="btn small danger" data-bodel="${esc(r.id)}" data-ic="1" title="Ištrinti">${slIcon('bin')}</button></div>`).join('')}</div>` : ''}
+    </div>
+    <div class="viewmode-toggle bolt-modes">${[['sum','Suvestinė'],['chk','Tikrinimas'],['rules','Taisyklės']].map(([k,t])=>`<button type="button" data-bom="${k}" class="${BOLT.mode===k?'active':''}">${t}</button>`).join('')}</div>
+    <div id="boBody"><div class="card empty-state">Kraunama…</div></div>`;
+  box.querySelectorAll('[data-bom]').forEach(b=>b.onclick = ()=>{ BOLT.mode = b.dataset.bom; BOLT.open = ''; rpDraw(); });
+  document.getElementById('boFile').onchange = e=>{ const f = e.target.files[0]; e.target.value = ''; if(f) boltUpload(f, document.getElementById('boMonth').value || lm); };
+  box.querySelectorAll('[data-bofile]').forEach(b=>b.onclick = async ()=>{ const r = BOLT.reports.find(x=>x.id===b.dataset.bofile); const [u] = await sbSignedUrls('bolt-files', [r.file_path]); if(u) window.open(u, '_blank', 'noopener'); else toast('Failo atidaryti nepavyko.'); });
+  box.querySelectorAll('[data-bodel]').forEach(b=>b.onclick = async ()=>{ const r = BOLT.reports.find(x=>x.id===b.dataset.bodel);
+    if(!(await uiConfirm(`Ištrinti ${utaMonthName(r.month)} dokumentą „${r.file_name}“${r.trips ? ' ir '+ltPlural(r.trips,'kelionę','keliones','kelionių') : ''}?`))) return;
+    const d = await getSb().from('bolt_reports').delete().eq('id', r.id); if(d.error){ toast('Nepavyko: '+d.error.message); return; }
+    if(r.file_path) stFrom('bolt-files').remove([r.file_path]).catch(()=>{});
+    if(BOLT.rep===r.id) BOLT.rep = ''; toast('Ištrinta.'); rpDraw(); });
+  const body = document.getElementById('boBody');
+  if(BOLT.mode==='chk') return boltCheckDraw(body);
+  if(BOLT.mode==='rules') return boltRulesDraw(body);
+  return boltSumDraw(body, acts);
+}
+async function boltUpload(file, month){
+  let rows = [];
+  await boltRulesLoad();
+  if(/\.(xlsx|xls|csv|pdf)$/i.test(file.name)){
+    try{ const p = boltParse(await rpFileRows(file));
+      if(p.err && !/\.pdf$/i.test(file.name)){ toast(p.err, 7000); return; }
+      rows = p.rows || []; if(p.err) toast('PDF išsaugotas, bet kelionių lentelės jame nerasta.', 6000); }
+    catch(e){ toast('Nepavyko atidaryti failo: '+(e.message||e)); if(!/\.pdf$/i.test(file.name)) return; }
+  }
+  const sb = getSb(), id = (crypto.randomUUID ? crypto.randomUUID() : 'bo'+Date.now());
+  toast('Įkeliama…');
+  const ext = (file.name.match(/\.([a-z0-9]{2,5})$/i)||[])[1] || 'bin', path = 'bolt/'+month+'/'+id+'.'+ext.toLowerCase();
+  const up = await stFrom('bolt-files').upload(path, file, { contentType:file.type || 'application/octet-stream', upsert:false });
+  if(up.error){ toast('Failo įkelti nepavyko: '+clnSqlErr(up.error), 6000); return; }
+  const r = await sb.from('bolt_reports').insert({ id, month, file_name:file.name, file_path:path, file_type:file.type || ext, trips:rows.length, uploaded_name:teamName(ACCESS.profile) });
+  if(r.error){ stFrom('bolt-files').remove([path]).catch(()=>{}); toast('Nepavyko: '+clnSqlErr(r.error), 6000); return; }
+  if(rows.length){
+    const add = rows.map(x=>{ const m = boltMember(x.person_name, x.phone); return Object.assign({ report_id:id, person_id:m ? m.id : null }, x); });
+    for(let i = 0; i < add.length; i += 500){ const w = await sb.from('bolt_trips').insert(add.slice(i, i+500)); if(w.error){ toast('Kelionių įrašyti nepavyko: '+w.error.message, 6000); break; } }
+  }
+  BOLT.rep = id; BOLT.mode = rows.length ? 'chk' : BOLT.mode; BOLT.person = '';
+  toast(rows.length ? `✓ Įkelta: ${ltPlural(rows.length,'kelionė','kelionės','kelionių')} – patikrink „Tikrinime“.` : '✓ Dokumentas išsaugotas.', 5000);
+  rpDraw();
+}
+async function boltTrips(q){
+  const out = []; let from = 0;
+  for(;;){ const r = await q().range(from, from + 999); if(r.error) throw new Error(clnSqlErr(r.error)); out.push(...(r.data||[])); if(!r.data || r.data.length < 1000) break; from += 1000; }
+  return out;
+}
+const boltWho = t=>{ const m = t.person_id && teamMember(t.person_id); return m ? teamName(m) : (t.person_name || 'Nežinomas'); };
+function boltSums(list){ const s = { n:list.length, sum:0, wn:0, ws:0, pn:0, ps:0 }; list.forEach(t=>{ const a = +t.amount||0; s.sum += a; if(t.kind==='work'){ s.wn++; s.ws += a; } else { s.pn++; s.ps += a; } }); return s; }
+async function boltSumDraw(body, acts){
+  let trips; try{ trips = await boltTrips(()=>getSb().from('bolt_trips').select('*').gte('trip_on', RP.from).lte('trip_on', RP.to).order('trip_at')); }catch(e){ body.innerHTML = `<div class="card"><div class="mail-err">${esc(e.message)}</div></div>`; return; }
+  trips = trips.filter(t=>rpMatch(boltWho(t), t.from_addr, t.to_addr, t.note));
+  const groups = {}; trips.forEach(t=>{ const k = boltWho(t); (groups[k] = groups[k] || []).push(t); });
+  const rows = Object.entries(groups).map(([name, list])=>Object.assign({ name, list }, boltSums(list))).sort((a, b)=>b.sum - a.sum);
+  const tot = boltSums(trips);
+  body.innerHTML = `<div class="card"><h2 class="section-title">Suvestinė · ${esc(rpWhen(RP.from))} – ${esc(rpWhen(RP.to))}</h2>
+    <div class="cln-stats"><div><small>Kelionių</small><b>${tot.n}</b></div><div><small>Iš viso</small><b>${expMoney(tot.sum)}</b></div><div class="bw"><small>Darbo</small><b>${tot.wn} · ${expMoney(tot.ws)}</b></div><div class="bp"><small>Asmeninės – išskaičiuoti</small><b>${tot.pn} · ${expMoney(tot.ps)}</b></div></div>
+    ${rows.length ? `<div class="table-wrap"><table class="bolt-tbl"><thead><tr><th>Vardas</th><th>Kelionių</th><th>Kainavo</th><th>Darbo</th><th>Asmeninės</th><th>Išskaičiuoti</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr class="bolt-g ${BOLT.open===r.name ? 'on' : ''}" data-bog="${esc(r.name)}"><td><b>${esc(r.name)}</b></td><td>${r.n}</td><td><b>${expMoney(r.sum)}</b></td><td>${r.wn} · ${expMoney(r.ws)}</td><td>${r.pn} · ${expMoney(r.ps)}</td><td><b class="${r.ps ? 'bolt-ded' : ''}">${expMoney(r.ps)}</b></td></tr>
+        ${BOLT.open===r.name ? `<tr class="bolt-sub"><td colspan="6">${r.list.map(t=>boltTripHtml(t, false)).join('')}</td></tr>` : ''}`).join('')}
+      </tbody></table></div>` : '<div class="empty-state">Šiuo laikotarpiu kelionių nėra.</div>'}</div>`;
+  body.querySelectorAll('[data-bog]').forEach(tr=>tr.onclick = ()=>{ BOLT.open = BOLT.open===tr.dataset.bog ? '' : tr.dataset.bog; boltSumDraw(body, acts); });
+  if(acts){ acts.innerHTML = `<button type="button" class="btn small" id="rpXls">${slIcon('download')} Excel</button><button type="button" class="btn small primary" id="boPdf">${slIcon('print')} PDF ataskaita</button>`;
+    document.getElementById('boPdf').onclick = ()=>boltPdf(rows, tot);
+    document.getElementById('rpXls').onclick = ()=>rpXls('Bolt', [['Suvestinė', [['Vardas', 'Kelionių', 'Iš viso €', 'Darbo kelionių', 'Darbo €', 'Asmeninių', 'Asmeninės €', 'Išskaičiuoti €']].concat(rows.map(r=>[r.name, r.n, +r.sum.toFixed(2), r.wn, +r.ws.toFixed(2), r.pn, +r.ps.toFixed(2), +r.ps.toFixed(2)]))],
+    ['Kelionės', [['Data', 'Vardas', 'Iš', 'Į', 'Kaina €', 'Pastaba', 'Tipas']].concat(trips.map(t=>[t.trip_on||'', boltWho(t), t.from_addr, t.to_addr, t.amount!=null ? +t.amount : '', t.note, BOLT_KIND[t.kind].t]))]]); }
+}
+function boltTripHtml(t, edit){
+  const k = BOLT_KIND[t.kind] || BOLT_KIND.personal;
+  return `<div class="bolt-trip ${k.cls}" data-bot="${esc(t.id)}">
+    <span class="bolt-d">${esc(t.trip_at ? utaWhen(t.trip_at) : rpWhen(t.trip_on))}</span>
+    <span class="bolt-r">${esc(t.from_addr || '—')} → ${esc(t.to_addr || '—')}<small>${t.note ? '📝 '+esc(t.note) : '<span class="muted">be pastabos</span>'}${t.kind_manual ? ` · pakeista ranka${t.checked_name ? ' ('+esc(t.checked_name)+')' : ''}` : ''}</small></span>
+    <b class="bolt-a">${t.amount!=null ? expMoney(+t.amount) : ''}</b>
+    ${edit ? `<span class="viewmode-toggle bolt-kt"><button type="button" data-bok="work" class="${t.kind==='work'?'active':''}">Darbo</button><button type="button" data-bok="personal" class="${t.kind==='personal'?'active':''}">Asmeninė</button></span>` : `<span class="bolt-k ${k.cls}">${k.t}</span>`}
+  </div>`;
+}
+async function boltCheckDraw(body){
+  const reps = (BOLT.reports||[]).filter(r=>r.trips);
+  if(!reps.length){ body.innerHTML = '<div class="card empty-state">Dar nėra įkeltų Excel / CSV ataskaitų su kelionėmis.</div>'; return; }
+  if(!reps.some(r=>r.id===BOLT.rep)) BOLT.rep = reps[0].id;
+  let trips; try{ trips = await boltTrips(()=>getSb().from('bolt_trips').select('*').eq('report_id', BOLT.rep).order('trip_at')); }catch(e){ body.innerHTML = `<div class="card"><div class="mail-err">${esc(e.message)}</div></div>`; return; }
+  const names = [...new Set(trips.map(boltWho))].sort((a, b)=>a.localeCompare(b, 'lt'));
+  if(!names.includes(BOLT.person)) BOLT.person = names[0] || '';
+  const mine = trips.filter(t=>boltWho(t)===BOLT.person), s = boltSums(mine), unmatched = mine.length && !mine[0].person_id;
+  const mem = (TEAM.members||[]).slice().sort((a, b)=>teamName(a).localeCompare(teamName(b), 'lt'));
+  body.innerHTML = `<div class="card">
+    <div class="bolt-chk-bar">
+      <label class="field">Mėnesio ataskaita<select id="boRep">${reps.map(r=>`<option value="${esc(r.id)}" ${r.id===BOLT.rep?'selected':''}>${esc(utaMonthName(r.month))} · ${esc(r.file_name)}</option>`).join('')}</select></label>
+      <label class="field">Vardas<select id="boPer">${names.map(n=>{ const ss = boltSums(trips.filter(t=>boltWho(t)===n)); return `<option value="${esc(n)}" ${n===BOLT.person?'selected':''}>${esc(n)} (${ss.n})</option>`; }).join('')}</select></label>
+    </div>
+    <div class="cln-stats"><div><small>Kelionių</small><b>${s.n}</b></div><div><small>Iš viso</small><b>${expMoney(s.sum)}</b></div><div class="bw"><small>Darbo</small><b>${s.wn} · ${expMoney(s.ws)}</b></div><div class="bp"><small>Asmeninės</small><b>${s.pn} · ${expMoney(s.ps)}</b></div></div>
+    ${unmatched ? `<div class="bolt-match">⚠ „${esc(BOLT.person)}“ nesusietas su nariu – jis savo kelionių nematys. Priskirti nariui: <select id="boMem"><option value="">— pasirink —</option>${mem.map(m=>`<option value="${esc(m.id)}">${esc(teamName(m))}</option>`).join('')}</select></div>` : ''}
+    <div class="section-sub" style="margin:6px 0 8px;">Be pastabos, „P“ ar „asmeninė“ – asmeninė kelionė; su įrašytu tikslu (pvz. „iš Propeller renginio“) – darbo. Patikrink ir, jei reikia, pakeisk ranka.</div>
+    <div id="boTrips">${mine.map(t=>boltTripHtml(t, true)).join('')}</div></div>`;
+  document.getElementById('boRep').onchange = e=>{ BOLT.rep = e.target.value; BOLT.person = ''; boltCheckDraw(body); };
+  document.getElementById('boPer').onchange = e=>{ BOLT.person = e.target.value; boltCheckDraw(body); };
+  const bm = document.getElementById('boMem'); if(bm) bm.onchange = async ()=>{ if(!bm.value) return;
+    const ids = mine.map(t=>t.id), r = await getSb().from('bolt_trips').update({ person_id:bm.value }).in('id', ids);
+    if(r.error){ toast('Nepavyko: '+r.error.message); return; }
+    // the same name in the other months too
+    await getSb().from('bolt_trips').update({ person_id:bm.value }).is('person_id', null).eq('person_name', mine[0].person_name);
+    BOLT.person = teamName(teamMember(bm.value)); toast('✓ Priskirta – narys matys savo keliones.'); boltCheckDraw(body); };
+  body.querySelectorAll('[data-bot] [data-bok]').forEach(b=>b.onclick = async ()=>{
+    const id = b.closest('[data-bot]').dataset.bot, t = mine.find(x=>x.id===id); if(!t || t.kind===b.dataset.bok) return;
+    const row = { kind:b.dataset.bok, kind_manual:true, checked_by:teamMe(), checked_name:teamName(ACCESS.profile), checked_at:new Date().toISOString() };
+    const r = await getSb().from('bolt_trips').update(row).eq('id', id); if(r.error){ toast('Nepavyko: '+r.error.message); return; }
+    Object.assign(t, row); boltCheckDraw(body);
+  });
+}
+// a member: only own trips (by the name / phone the trips were matched with)
+async function boltMineDraw(box, from, to, title, hideEmpty){
+  let trips; try{ trips = await boltTrips(()=>getSb().from('bolt_trips').select('*').eq('person_id', teamMe()).gte('trip_on', from).lte('trip_on', to).order('trip_at')); }
+  catch(e){ box.innerHTML = /Lentelės dar nėra/.test(e.message) ? '' : `<div class="card"><div class="mail-err">${esc(e.message)}</div></div>`; return; }
+  if(hideEmpty && !trips.length){ box.innerHTML = ''; return; }
+  const s = boltSums(trips);
+  box.innerHTML = `<div class="card"><h2 class="section-title">${esc(title || 'Mano Bolt kelionės')} <small class="muted">· ${esc(rpWhen(from))} – ${esc(rpWhen(to))}</small></h2>
+    <div class="cln-stats"><div><small>Kelionių</small><b>${s.n}</b></div><div><small>Iš viso</small><b>${expMoney(s.sum)}</b></div><div class="bw"><small>Darbo</small><b>${s.wn} · ${expMoney(s.ws)}</b></div><div class="bp"><small>Asmeninės</small><b>${s.pn} · ${expMoney(s.ps)}</b></div></div>
+    ${trips.length ? trips.map(t=>boltTripHtml(t, false)).join('') : '<div class="empty-state">Bolt kelionių šiuo laikotarpiu nėra.</div>'}</div>`;
+}
+// „Taisyklės“: the words / phrases for personal and work trips; „Pritaikyti“ sorts again the trips not changed by hand
+function boltRulesDraw(body){
+  const ta = k=>(BOLT.rules[k]||[]).join('\n');
+  body.innerHTML = `<div class="card"><h2 class="section-title">Rūšiavimo taisyklės</h2>
+    <p class="section-sub" style="margin:0 0 10px;">Kiekvienoje eilutėje – žodis ar frazė, kurių ieškoma kelionės pastaboje (didžiosios ir lietuviškos raidės nesvarbu). Pirmiausia tikrinamos asmeninės, tada darbo frazės; jei nė viena netinka – be pastabos, „P“ ar „asmeninė“ yra asmeninė, su kitu įrašu – darbo.</p>
+    <div class="bolt-rules">
+      <label class="field">Asmeninės kelionės<textarea id="brP" rows="8" placeholder="pvz.&#10;namo&#10;asmeniniai reikalai&#10;pas gydytoją">${esc(ta('personal'))}</textarea></label>
+      <label class="field">Darbo kelionės<textarea id="brW" rows="8" placeholder="pvz.&#10;renginys&#10;propeller&#10;sandėlis&#10;klientas">${esc(ta('work'))}</textarea></label>
+    </div>
+    <div class="row" style="justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:10px;">
+      <button type="button" class="btn" id="brApply">Išsaugoti ir pritaikyti visoms kelionėms</button>
+      <button type="button" class="btn primary" id="brSave">💾 Išsaugoti</button></div>
+    <small class="muted">„Pritaikyti“ iš naujo surūšiuoja visas keliones, išskyrus tas, kurias kas nors pakeitė ranka.</small></div>`;
+  const save = async ()=>{
+    const list = id=>[...new Set(document.getElementById(id).value.split('\n').map(x=>x.trim()).filter(Boolean))];
+    const row = { id:1, personal:list('brP'), work:list('brW'), updated_by:teamMe(), updated_at:new Date().toISOString() };
+    const r = await getSb().from('bolt_rules').upsert(row); if(r.error){ toast('Nepavyko: '+clnSqlErr(r.error)); return false; }
+    BOLT.rules = { personal:row.personal, work:row.work }; return true;
+  };
+  document.getElementById('brSave').onclick = async ()=>{ if(await save()) toast('✓ Taisyklės išsaugotos – bus taikomos naujai įkeltoms kelionėms.'); };
+  document.getElementById('brApply').onclick = async ()=>{
+    if(!(await save())) return;
+    let trips; try{ trips = await boltTrips(()=>getSb().from('bolt_trips').select('id,note,kind').eq('kind_manual', false)); }catch(e){ toast(e.message); return; }
+    const ch = { work:[], personal:[] }; trips.forEach(t=>{ const k = boltKind(t.note); if(k!==t.kind) ch[k].push(t.id); });
+    for(const k of ['work','personal']) for(let i = 0; i < ch[k].length; i += 300){ const r = await getSb().from('bolt_trips').update({ kind:k }).in('id', ch[k].slice(i, i+300)); if(r.error){ toast('Nepavyko: '+r.error.message); return; } }
+    toast(`✓ Pritaikyta: pakeista ${ltPlural(ch.work.length + ch.personal.length,'kelionė','kelionės','kelionių')}.`, 5000);
+  };
+}
+// the full report to print / save as PDF: per person, the personal trips and what to deduct
+function boltPdf(rows, tot){
+  const w = window.open('', '_blank'); if(!w){ toast('Leisk iššokančius langus.'); return; }
+  const e = esc, m = n=>expMoney(n), when = t=>t.trip_at ? utaWhen(t.trip_at) : rpWhen(t.trip_on);
+  w.document.write(`<!doctype html><meta charset="utf-8"><title>Bolt ${e(RP.from)} – ${e(RP.to)}</title><style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#111;margin:24px;font-size:12px;} h1{font-size:20px;margin:0 0 2px;} h2{font-size:15px;margin:22px 0 6px;page-break-after:avoid;}
+    .sub{color:#555;margin-bottom:14px;} table{width:100%;border-collapse:collapse;margin-top:6px;} th,td{border-bottom:1px solid #ddd;padding:5px 6px;text-align:left;vertical-align:top;} th{background:#f2f2f2;font-size:11px;}
+    td.n,th.n{text-align:right;white-space:nowrap;} .ded{font-weight:700;color:#b00020;} .tot td{font-weight:700;border-top:2px solid #111;} .p{page-break-inside:avoid;} small{color:#666;}
+    @media print{ body{margin:10mm;} }</style>
+    <h1>Bolt kelionių ataskaita</h1><div class="sub">Laikotarpis: ${e(rpWhen(RP.from))} – ${e(rpWhen(RP.to))} · Sudaryta ${e(keyWhen(new Date().toISOString()))} · ${e(teamName(ACCESS.profile))}</div>
+    <table><thead><tr><th>Vardas</th><th class="n">Kelionių</th><th class="n">Iš viso</th><th class="n">Darbo</th><th class="n">Asmeninės</th><th class="n">Išskaičiuoti</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td>${e(r.name)}</td><td class="n">${r.n}</td><td class="n">${m(r.sum)}</td><td class="n">${r.wn} · ${m(r.ws)}</td><td class="n">${r.pn} · ${m(r.ps)}</td><td class="n ${r.ps ? 'ded' : ''}">${m(r.ps)}</td></tr>`).join('')}
+    <tr class="tot"><td>Iš viso</td><td class="n">${tot.n}</td><td class="n">${m(tot.sum)}</td><td class="n">${tot.wn} · ${m(tot.ws)}</td><td class="n">${tot.pn} · ${m(tot.ps)}</td><td class="n ded">${m(tot.ps)}</td></tr></tbody></table>
+    ${rows.filter(r=>r.pn).map(r=>`<div class="p"><h2>${e(r.name)} – asmeninės kelionės, išskaičiuoti ${m(r.ps)}</h2>
+      <table><thead><tr><th>Data</th><th>Iš</th><th>Į</th><th>Pastaba</th><th class="n">Kaina</th></tr></thead><tbody>
+      ${r.list.filter(t=>t.kind==='personal').map(t=>`<tr><td>${e(when(t))}</td><td>${e(t.from_addr)}</td><td>${e(t.to_addr)}</td><td>${e(t.note || '—')}${t.kind_manual ? ' <small>(pakeista ranka)</small>' : ''}</td><td class="n">${m(+t.amount||0)}</td></tr>`).join('')}
+      <tr class="tot"><td colspan="4">Išskaičiuoti</td><td class="n ded">${m(r.ps)}</td></tr></tbody></table></div>`).join('')}
+    ${rows.some(r=>r.wn) ? `<h2>Darbo kelionės</h2><table><thead><tr><th>Vardas</th><th>Data</th><th>Iš → Į</th><th>Tikslas</th><th class="n">Kaina</th></tr></thead><tbody>
+      ${rows.flatMap(r=>r.list.filter(t=>t.kind==='work').map(t=>`<tr><td>${e(r.name)}</td><td>${e(when(t))}</td><td>${e(t.from_addr)} → ${e(t.to_addr)}</td><td>${e(t.note)}</td><td class="n">${m(+t.amount||0)}</td></tr>`)).join('')}</tbody></table>` : ''}`);
+  w.document.close(); setTimeout(()=>{ w.focus(); w.print(); }, 300);
+}
+
+/* ---------- Ataskaitos → Wolt: the monthly Wolt summary, the month and any period ---------- */
+const WOLT = { open:'' };
+const WOLT_COLS = [
+  ['date', /data|date|laikas|time|created|uzsakym/],
+  ['name', /employee|user|person|darbuotoj|vardas|name|uzsakovas|orderer/],
+  ['venue', /venue|restaurant|restoran|merchant|store|parduotuv|vieta|partner/],
+  ['amount', /total|price|amount|kaina|suma|cost|moket|sum/]];
+function woltParse(rows){
+  const f = rpTableFind(rows, WOLT_COLS); if(!f) return [];
+  const out = [];
+  for(const r of rows.slice(f.hi+1)){
+    const g = k=>f.map[k]==null ? '' : r[f.map[k]];
+    const amt = utaNum(g('amount')); if(amt==null) continue;
+    const dt = utaDate(g('date')); if(!dt && !String(g('name')||'').trim() && !String(g('venue')||'').trim()) continue;
+    if(/^(iš viso|viso|total|suma|sum)/i.test(String(g('name')||g('venue')||'').trim())) continue;
+    const at = dt ? new Date(dt.y, dt.m-1, dt.d, dt.h||0, dt.mi||0) : null;
+    out.push({ order_at:at && !isNaN(at) ? at.toISOString() : null, order_on:dt ? dt.y+'-'+String(dt.m).padStart(2,'0')+'-'+String(dt.d).padStart(2,'0') : null,
+      person_name:String(g('name')||'').trim(), venue:String(g('venue')||'').trim(), amount:Math.round(amt*100)/100 });
+  }
+  return out;
+}
+async function rpWoltDraw(box, acts){
+  const sb = getSb();
+  const rr = await sb.from('wolt_reports').select('*').order('month', { ascending:false }).order('created_at', { ascending:false });
+  if(rr.error){ box.innerHTML = `<div class="card"><div class="mail-err">${esc(clnSqlErr(rr.error))}</div></div>`; return; }
+  const reps = rr.data || [], m0 = RP.from.slice(0,7), m1 = RP.to.slice(0,7);
+  const inP = reps.filter(r=>r.month >= m0 && r.month <= m1);
+  let orders = [];
+  if(inP.length){ try{ orders = await boltTrips(()=>sb.from('wolt_orders').select('*').in('report_id', inP.map(r=>r.id))); }catch(e){} }
+  // a month's sum: its orders (when the document had a table) or the sum written for it
+  const months = {}; inP.forEach(r=>{ const os = orders.filter(o=>o.report_id===r.id), x = months[r.month] = months[r.month] || { n:0, sum:0, reps:[] };
+    x.reps.push(r); x.n += os.length || r.orders || 0; x.sum += os.length ? os.reduce((s, o)=>s + (+o.amount||0), 0) : (+r.total||0); });
+  const mk = Object.keys(months).sort().reverse();
+  const tot = Object.values(months).reduce((a, x)=>({ n:a.n + x.n, sum:a.sum + x.sum }), { n:0, sum:0 });
+  const by = key=>{ const g = {}; orders.filter(o=>o[key]).forEach(o=>{ const x = g[o[key]] = g[o[key]] || { n:0, sum:0 }; x.n++; x.sum += +o.amount||0; }); return Object.entries(g).sort((a, b)=>b[1].sum - a[1].sum); };
+  const people = by('person_name'), venues = by('venue');
+  const lm = (()=>{ const d = new Date(); d.setDate(1); d.setMonth(d.getMonth()-1); return calISO(d).slice(0,7); })();
+  box.innerHTML = `<div class="card bolt-up"><h2 class="section-title">Įkelti Wolt mėnesio suvestinę</h2>
+      <div class="bolt-up-row">
+        <label class="field">Mėnuo<input type="month" id="woMonth" value="${lm}"></label>
+        <label class="btn primary bolt-file">${slIcon('upload')} Pasirinkti failą (PDF, Excel, CSV…)<input type="file" id="woFile" accept=".pdf,.xlsx,.xls,.csv,.doc,.docx,.png,.jpg,.jpeg" hidden></label>
+      </div>
+      <small class="muted">Iš dokumento su užsakymų lentele nuskaitomi užsakymai (data, kas, restoranas, suma). Jei lentelės nėra – mėnesio sumą ir užsakymų skaičių įrašyk ranka (pieštukas).</small>
+      ${reps.length ? `<div class="bolt-reps">${reps.slice(0, 24).map(r=>`<div class="bolt-rep"><b>${esc(utaMonthName(r.month))}</b><span>${esc(r.file_name||'')}</span><small class="muted">${r.orders ? ltPlural(r.orders,'užsakymas','užsakymai','užsakymų') : 'užsakymų nėra'} · ${r.total!=null ? expMoney(+r.total) : 'suma neįrašyta'} · ${esc(r.uploaded_name||'')}</small>
+        <button type="button" class="btn small" data-woed="${esc(r.id)}" data-ic="1" title="Suma ranka">${slIcon('pencil')}</button>${r.file_path ? `<button type="button" class="btn small" data-wofile="${esc(r.id)}" data-ic="1" title="Atsisiųsti">${slIcon('download')}</button>` : ''}<button type="button" class="btn small danger" data-wodel="${esc(r.id)}" data-ic="1" title="Ištrinti">${slIcon('bin')}</button></div>`).join('')}</div>` : ''}
+    </div>
+    <div class="card"><h2 class="section-title">Suvestinė · ${esc(rpWhen(RP.from))} – ${esc(rpWhen(RP.to))}</h2>
+      <div class="cln-stats"><div><small>Mėnesių</small><b>${mk.length}</b></div><div><small>Užsakymų</small><b>${tot.n}</b></div><div><small>Išleista</small><b>${expMoney(tot.sum)}</b></div><div><small>Vidutiniškai per mėnesį</small><b>${mk.length ? expMoney(tot.sum / mk.length) : '—'}</b></div></div>
+      ${mk.length ? `<div class="table-wrap"><table class="bolt-tbl"><thead><tr><th>Mėnuo</th><th>Užsakymų</th><th>Suma</th></tr></thead><tbody>
+        ${mk.map(mm=>`<tr class="bolt-g ${WOLT.open===mm ? 'on' : ''}" data-wom="${mm}"><td><b>${esc(utaMonthName(mm))}</b></td><td>${months[mm].n}</td><td><b>${expMoney(months[mm].sum)}</b></td></tr>
+          ${WOLT.open===mm ? `<tr class="bolt-sub"><td colspan="3">${(()=>{ const os = orders.filter(o=>months[mm].reps.some(r=>r.id===o.report_id)).sort((a, b)=>String(a.order_at||a.order_on).localeCompare(String(b.order_at||b.order_on)));
+              return os.length ? os.map(o=>`<div class="bolt-trip"><span class="bolt-d">${esc(o.order_at ? utaWhen(o.order_at) : rpWhen(o.order_on))}</span><span class="bolt-r">${esc(o.venue || '—')}<small>${esc(o.person_name || '')}</small></span><b class="bolt-a">${expMoney(+o.amount||0)}</b></div>`).join('') : '<span class="muted">Užsakymų sąrašo nėra – tik mėnesio suma.</span>'; })()}</td></tr>` : ''}`).join('')}
+        </tbody></table></div>` : '<div class="empty-state">Šiam laikotarpiui Wolt suvestinių neįkelta.</div>'}
+    </div>
+    ${people.length || venues.length ? `<div class="wolt-by">
+      ${people.length ? `<div class="card"><h2 class="section-title">Pagal žmogų</h2>${people.map(([n, x])=>`<div class="wolt-kv"><span>${esc(n)}</span><small class="muted">${x.n}</small><b>${expMoney(x.sum)}</b></div>`).join('')}</div>` : ''}
+      ${venues.length ? `<div class="card"><h2 class="section-title">Pagal restoraną</h2>${venues.slice(0, 20).map(([n, x])=>`<div class="wolt-kv"><span>${esc(n)}</span><small class="muted">${x.n}</small><b>${expMoney(x.sum)}</b></div>`).join('')}</div>` : ''}
+    </div>` : ''}`;
+  document.getElementById('woFile').onchange = e=>{ const f = e.target.files[0]; e.target.value = ''; if(f) woltUpload(f, document.getElementById('woMonth').value || lm); };
+  box.querySelectorAll('[data-wom]').forEach(tr=>tr.onclick = ()=>{ WOLT.open = WOLT.open===tr.dataset.wom ? '' : tr.dataset.wom; rpWoltDraw(box, acts); });
+  box.querySelectorAll('[data-wofile]').forEach(b=>b.onclick = async ()=>{ const r = reps.find(x=>x.id===b.dataset.wofile); const [u] = await sbSignedUrls('bolt-files', [r.file_path]); if(u) window.open(u, '_blank', 'noopener'); else toast('Failo atidaryti nepavyko.'); });
+  box.querySelectorAll('[data-wodel]').forEach(b=>b.onclick = async ()=>{ const r = reps.find(x=>x.id===b.dataset.wodel);
+    if(!(await uiConfirm(`Ištrinti ${utaMonthName(r.month)} Wolt suvestinę „${r.file_name}“?`))) return;
+    const d = await sb.from('wolt_reports').delete().eq('id', r.id); if(d.error){ toast('Nepavyko: '+d.error.message); return; }
+    if(r.file_path) stFrom('bolt-files').remove([r.file_path]).catch(()=>{}); toast('Ištrinta.'); rpDraw(); });
+  box.querySelectorAll('[data-woed]').forEach(b=>b.onclick = ()=>woltEdit(reps.find(x=>x.id===b.dataset.woed)));
+  rpActBtn(acts, ()=>rpXls('Wolt', [['Mėnesiai', [['Mėnuo', 'Užsakymų', 'Suma €']].concat(mk.slice().reverse().map(mm=>[utaMonthName(mm), months[mm].n, +months[mm].sum.toFixed(2)])).concat([[], ['Iš viso', tot.n, +tot.sum.toFixed(2)]])],
+    ['Užsakymai', [['Data', 'Kas', 'Restoranas', 'Suma €']].concat(orders.map(o=>[o.order_on||'', o.person_name, o.venue, o.amount!=null ? +o.amount : '']))]]));
+}
+function woltEdit(r){
+  if(!r) return;
+  openModal(`<h3>Wolt · ${esc(utaMonthName(r.month))}</h3>
+    <div class="grid cols-2"><label class="field">Išleista per mėnesį (€)<input type="number" id="weSum" min="0" step="0.01" value="${r.total!=null ? esc(String(+r.total)) : ''}"></label>
+      <label class="field">Užsakymų<input type="number" id="weN" min="0" step="1" value="${r.orders||''}"></label></div>
+    <label class="field" style="margin-top:8px;">Pastaba<input type="text" id="weNote" value="${esc(r.note||'')}"></label>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:14px;"><button type="button" class="btn" id="weX">Atšaukti</button><button type="button" class="btn primary" id="weSave">Išsaugoti</button></div>`);
+  document.getElementById('weX').onclick = ()=>closeModal();
+  document.getElementById('weSave').onclick = async ()=>{
+    const s = document.getElementById('weSum').value.trim(), n = document.getElementById('weN').value.trim();
+    const u = await getSb().from('wolt_reports').update({ total:s==='' ? null : Math.round(utaNum(s)*100)/100, orders:n==='' ? 0 : Math.round(utaNum(n)) || 0, note:document.getElementById('weNote').value.trim() }).eq('id', r.id);
+    if(u.error){ toast('Nepavyko: '+u.error.message); return; } closeModal(); rpDraw(); };
+}
+async function woltUpload(file, month){
+  let rows = [];
+  if(/\.(xlsx|xls|csv|pdf)$/i.test(file.name)){ try{ rows = woltParse(await rpFileRows(file)); }catch(e){ toast('Dokumento nuskaityti nepavyko – bus išsaugotas kaip failas.', 5000); } }
+  const sb = getSb(), id = (crypto.randomUUID ? crypto.randomUUID() : 'wo'+Date.now());
+  const ext = (file.name.match(/\.([a-z0-9]{2,5})$/i)||[])[1] || 'bin', path = 'wolt/'+month+'/'+id+'.'+ext.toLowerCase();
+  toast('Įkeliama…');
+  const up = await stFrom('bolt-files').upload(path, file, { contentType:file.type || 'application/octet-stream', upsert:false });
+  if(up.error){ toast('Failo įkelti nepavyko: '+clnSqlErr(up.error), 6000); return; }
+  const total = rows.length ? Math.round(rows.reduce((s, o)=>s + (+o.amount||0), 0)*100)/100 : null;
+  const r = await sb.from('wolt_reports').insert({ id, month, file_name:file.name, file_path:path, file_type:file.type || ext, orders:rows.length, total, uploaded_name:teamName(ACCESS.profile) }).select().single();
+  if(r.error){ stFrom('bolt-files').remove([path]).catch(()=>{}); toast('Nepavyko: '+clnSqlErr(r.error), 6000); return; }
+  if(rows.length){ for(let i = 0; i < rows.length; i += 500){ const w = await sb.from('wolt_orders').insert(rows.slice(i, i+500).map(o=>Object.assign({ report_id:id }, o))); if(w.error){ toast('Užsakymų įrašyti nepavyko: '+w.error.message, 6000); break; } } }
+  toast(rows.length ? `✓ Įkelta: ${ltPlural(rows.length,'užsakymas','užsakymai','užsakymų')}, ${expMoney(total)}.` : '✓ Dokumentas išsaugotas – įrašyk mėnesio sumą.', 6000);
+  rpDraw();
+  if(!rows.length) woltEdit(r.data);
+}
 const TABS = {
   home: renderHomeTab,
   events: renderEventsTab,
@@ -36500,6 +36980,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 19:05', v:'v325', k:'new', t:'Ataskaitos: Ofiso valymas, Bolt, Wolt', f:'🧹 Ofiso valymas: įrašai – kada užsakyta valytoja, kada atliktas valymas, kaina, valytoja / įmonė, pastabos; ataskaita pasirinktam laikotarpiui (kiek valymų, kiek kainavo, vidurkis, pagal mėnesius, Excel). 🚕 Bolt: kas mėnesį įkeliamas Bolt dokumentas (Excel, CSV, PDF); kelionės nuskaitomos automatiškai. Suvestinė pasirinktam laikotarpiui pagal vardą – kelionių, kainavo, darbo, asmeninės ir kiek išskaičiuoti; PDF ataskaita su asmeninėmis kelionėmis ir išskaičiavimais. Tikrinimas – mėnesio ataskaita pagal vardą: be pastabos, „P“ ar „asmeninė“ – asmeninė, su tikslu – darbo; galima pakeisti ranka. Taisyklės – savi žodžiai / frazės asmeninėms ir darbo kelionėms. Visas keliones mato tik Admin ir Office; narys mato tik savo (Ataskaitose ir Išlaidų puslapyje). 🍔 Wolt: kas mėnesį įkeliama suvestinė (PDF, Excel, CSV); mėnesio ir pasirinkto laikotarpio suvestinė – kiek išleista, pagal žmogų ir restoraną (jei dokumentas be lentelės – suma įrašoma ranka). Reikia paleisti supabase/sql/office_bolt.sql.' },
   { d:'2026-10-05 18:07', v:'v324', k:'chg', t:'Transportas: QR kodas matosi automobilio kortelėje', f:'Atidarius automobilį Transporte, jo QR kodas rodomas iš karto kortelės viršuje (dešinėje). Paspaudus jį – atsisiųsti PNG, spausdinti lipduką, kopijuoti nuorodą. Kiekvienam automobiliui priskiriamas vienas QR kodas, kuris niekada nesikeičia (mygtuko „Naujas kodas“ nebėra, pakeisti ar ištrinti kodo neleidžia ir serveris). Jei vehicle_qr.sql jau paleistas – paleisk supabase/sql/vehicle_qr2.sql.' },
   { d:'2026-10-05 18:05', v:'v323', k:'chg', t:'Chatas: užrakinti kanalai – apačioje', f:'Chato kanalų sąraše užrakinti (privatūs) kanalai, pvz. #automobiliai ir #sandėlio-raktas, visada rodomi apačioje – po bendru ir atvirais kanalais. Kiekvienoje grupėje kanalai išrikiuoti pagal abėcėlę.' },
   { d:'2026-10-05 18:03', v:'v322', k:'chg', t:'Automobilio QR: fotografuoti arba iš galerijos', f:'Nuskenavus automobilio QR kodą ir registruojant problemą nuotraukoms yra du mygtukai: „📷 Fotografuoti“ – iš karto atidaro telefono kamerą, „🖼 Iš galerijos“ – pasirenkamos jau padarytos nuotraukos (kelios iš karto). Iš viso iki 6.' },
