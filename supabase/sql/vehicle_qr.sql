@@ -23,10 +23,11 @@ drop policy if exists "vehicle qr view" on public.vehicle_qr;
 create policy "vehicle qr view" on public.vehicle_qr for select to authenticated using (public.can_view('fleet'));
 drop policy if exists "vehicle qr add" on public.vehicle_qr;
 create policy "vehicle qr add" on public.vehicle_qr for insert to authenticated with check (public.can_edit('fleet'));
+-- one code per vehicle, never changed or removed (the sticker stays valid)
 drop policy if exists "vehicle qr remove" on public.vehicle_qr;
-create policy "vehicle qr remove" on public.vehicle_qr for delete to authenticated using (public.can_edit('fleet'));
 revoke all on public.vehicle_qr from anon;
-grant select, insert, delete on public.vehicle_qr to authenticated;
+revoke update, delete on public.vehicle_qr from authenticated;
+grant select, insert on public.vehicle_qr to authenticated;
 
 create table if not exists public.vehicle_reports (
   id             uuid primary key default gen_random_uuid(),

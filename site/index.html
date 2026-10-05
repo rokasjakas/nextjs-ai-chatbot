@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-5OTO+TY4qkJ8zxu42kjlncEdWHdw1JO7h2iVLT553dc=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-arRAQduBC5UakWaBQ3MYapTSZMud6u3lNGIoPUAYKNg=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3509,6 +3509,12 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .vr-card{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;padding:8px 10px;border-radius:10px;border:1px solid color-mix(in srgb, #E0A030 55%, var(--border));background:color-mix(in srgb, #E0A030 10%, transparent);font-size:13px;max-width:520px;}
 .vr-card.ok{border-color:color-mix(in srgb, #2F9E73 55%, var(--border));background:color-mix(in srgb, #2F9E73 10%, transparent);}
 .vr-card svg{width:15px;height:15px;vertical-align:-3px;}
+.veh-qr{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border:1px solid var(--border);border-radius:12px;background:var(--panel);color:var(--text);cursor:pointer;font:inherit;flex:0 0 auto;align-self:flex-start;}
+.veh-qr canvas{width:112px;height:112px;border-radius:6px;background:#fff;}
+.veh-qr:not(.ok) canvas{opacity:.15;}
+.veh-qr small{font-size:11px;color:var(--text-dim);max-width:120px;text-align:center;}
+.veh-qr:hover{border-color:var(--accent);}
+.veh-qr.err small{color:var(--danger);}
 .vqr-box{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:12px 0 4px;}
 .vqr-box canvas{width:220px;height:220px;border-radius:10px;background:#fff;}
 .vqr-t{display:flex;flex-direction:column;gap:6px;align-items:flex-start;}
@@ -7241,6 +7247,7 @@ function fleetPopRender(force){
           <label class="field">Aukštis (cm)<input type="number" class="veh-H" value="${v.H}"></label>
         </div>
       </div>
+      <button type="button" class="veh-qr" data-vqrcard title="QR kodas: atsisiųsti, spausdinti"><canvas></canvas><small>QR kodas</small></button>
       <div class="veh-repair ${v.repair && v.repair.on ? 'on' : ''}">
         <label class="checkbox-row"><input type="checkbox" class="veh-rep" ${v.repair && v.repair.on ? 'checked' : ''}> <b>🔧 Išvežtas remontui</b></label>
         ${v.repair && v.repair.on ? `<span class="veh-rep-dates"><label>Nuo<input type="date" class="veh-repfrom" value="${esc(v.repair.from||'')}"></label><label>Iki<input type="date" class="veh-repto" value="${esc(v.repair.to||'')}" min="${esc(v.repair.from||'')}"></label></span>
@@ -7274,6 +7281,7 @@ function fleetPopRender(force){
   bind('.veh-maxw','maxWeight',true); bind('.veh-L','L',true); bind('.veh-W','W',true); bind('.veh-H','H',true);
   if(typeof utaVehBox==='function') utaVehBox(v); else document.getElementById('vehUta').innerHTML = '';
   fleetRmBox(v);
+  vqrCard(v, card.querySelector('[data-vqrcard]'));
   // only looking (Tech): the vehicle and its documents are shown, nothing can be changed
   if(!canEdit('fleet')){ const t = roTab; roTab = 'fleet'; applyReadOnly(pop); roTab = t; }
 }
@@ -19003,7 +19011,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v323';
+const APP_VER = 'v324';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -36031,6 +36039,16 @@ async function vqrToken(vid, make){
   if(w.error) throw new Error(w.error.message);
   VQR.tokens[vid] = token; return token;
 }
+async function vqrCard(v, el){
+  if(!el) return;
+  el.onclick = ()=>vqrOpen(v);
+  const sm = el.querySelector('small');
+  let token = null;
+  try{ token = await vqrToken(v.id, canEdit('fleet')); }catch(e){ sm.textContent = 'QR: '+e.message; el.classList.add('err'); return; }
+  if(!token){ sm.textContent = 'QR dar nesukurtas'; el.classList.add('err'); return; }
+  try{ await pollQrCanvas(el.querySelector('canvas'), vqrUrl(token), 300); el.classList.add('ok'); sm.textContent = 'Atsisiųsti / spausdinti'; }
+  catch(e){ sm.textContent = 'QR kodas'; }
+}
 async function vqrOpen(v){
   if(!v) return;
   let token = null;
@@ -36040,14 +36058,13 @@ async function vqrOpen(v){
   openModal(`<div class="row between" style="align-items:center;"><h3 style="margin:0;">QR kodas · ${esc(title)}</h3><button type="button" class="icon-btn" id="vqX">✕</button></div>
     <div class="vqr-box"><canvas id="vqC" aria-label="QR kodas"></canvas>
       <div class="vqr-t"><b>${esc(v.name||'Automobilis')}</b>${v.plate ? `<span class="fl-plate">${esc(v.plate)}</span>` : ''}<small>Nuskenuok: informacija ir problemos registravimas</small></div></div>
-    <div class="section-sub" style="margin:8px 0;">Nuskenavus atsidaro automobilio puslapis (be prisijungimo): rida, moto valandos, draudimas, tech. apžiūra, vinjetė, tepalo keitimas, profilaktika, žinomos problemos ir mygtukas „Registruoti problemą“. Problema su nuotraukomis ateina į chato kanalą #automobiliai.</div>
+    <div class="section-sub" style="margin:8px 0;">Šis kodas priskirtas tik šiam automobiliui ir niekada nesikeičia – lipduką užtenka priklijuoti vieną kartą. Nuskenavus atsidaro automobilio puslapis (be prisijungimo): rida, moto valandos, draudimas, tech. apžiūra, vinjetė, tepalo keitimas, profilaktika, žinomos problemos ir mygtukas „Registruoti problemą“. Problema su nuotraukomis ateina į chato kanalą #automobiliai.</div>
     <input type="text" readonly value="${esc(url)}" id="vqU" style="width:100%;font-size:12px;">
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px;">
       <button type="button" class="btn primary" id="vqP">${slIcon('print')} Spausdinti lipduką</button>
       <button type="button" class="btn" id="vqD">${slIcon('download')} Atsisiųsti PNG</button>
       <button type="button" class="btn" id="vqL">${slIcon('link')} Kopijuoti nuorodą</button>
       <a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${slIcon('openext')} Atidaryti</a>
-      ${canEdit('fleet') ? `<button type="button" class="btn danger small" id="vqN" style="margin-left:auto;">Naujas kodas</button>` : ''}
     </div>`);
   const cv = document.getElementById('vqC');
   await pollQrCanvas(cv, url, 560);
@@ -36060,12 +36077,7 @@ async function vqrOpen(v){
       <div><b>${esc(v.name||'Automobilis')}</b>${v.plate ? `<span>${esc(v.plate)}</span>` : ''}<img src="${cv.toDataURL('image/png')}" alt=""><small>Nuskenuok telefonu: informacija apie automobilį ir problemos registravimas</small></div>`);
     w.document.close(); setTimeout(()=>{ w.focus(); w.print(); }, 300);
   };
-  const nw = document.getElementById('vqN'); if(nw) nw.onclick = async ()=>{
-    if(!(await uiConfirm('Sukurti naują QR kodą? Senas (jau priklijuotas) kodas nustos veikti – reikės priklijuoti naują lipduką.', { yes:'Sukurti naują' }))) return;
-    const r = await getSb().from('vehicle_qr').delete().eq('vehicle_id', v.id);
-    if(r.error){ toast('Nepavyko: '+r.error.message); return; }
-    delete VQR.tokens[v.id]; closeModal(); vqrOpen(v);
-  };
+
 }
 // the report card in the chat: „Įtraukti į darbus“ for who edits „Transportas“
 function vrCardHtml(id){
@@ -36488,6 +36500,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 18:07', v:'v324', k:'chg', t:'Transportas: QR kodas matosi automobilio kortelėje', f:'Atidarius automobilį Transporte, jo QR kodas rodomas iš karto kortelės viršuje (dešinėje). Paspaudus jį – atsisiųsti PNG, spausdinti lipduką, kopijuoti nuorodą. Kiekvienam automobiliui priskiriamas vienas QR kodas, kuris niekada nesikeičia (mygtuko „Naujas kodas“ nebėra, pakeisti ar ištrinti kodo neleidžia ir serveris). Jei vehicle_qr.sql jau paleistas – paleisk supabase/sql/vehicle_qr2.sql.' },
   { d:'2026-10-05 18:05', v:'v323', k:'chg', t:'Chatas: užrakinti kanalai – apačioje', f:'Chato kanalų sąraše užrakinti (privatūs) kanalai, pvz. #automobiliai ir #sandėlio-raktas, visada rodomi apačioje – po bendru ir atvirais kanalais. Kiekvienoje grupėje kanalai išrikiuoti pagal abėcėlę.' },
   { d:'2026-10-05 18:03', v:'v322', k:'chg', t:'Automobilio QR: fotografuoti arba iš galerijos', f:'Nuskenavus automobilio QR kodą ir registruojant problemą nuotraukoms yra du mygtukai: „📷 Fotografuoti“ – iš karto atidaro telefono kamerą, „🖼 Iš galerijos“ – pasirenkamos jau padarytos nuotraukos (kelios iš karto). Iš viso iki 6.' },
   { d:'2026-10-05 17:58', v:'v321', k:'new', t:'Transportas: automobilio QR kodas ir problemų registravimas', f:'Automobilio kortelėje – mygtukas „▦ QR kodas“: kiekvienam automobiliui unikalus kodas (spausdinamas lipdukas, PNG, nuoroda; „Naujas kodas“ panaikina senąjį). Nuskenavus bet kuo telefonu (be prisijungimo) matoma svarbiausia informacija: rida, moto valandos, draudimas, tech. apžiūra, vinjetė, tepalo keitimas, profilaktika, žinomos problemos, remontas. „Registruoti problemą“: įmonės narys (prisijungęs tame telefone) registruoja savo vardu, kiti įrašo vardą ir pavardę; aprašymas, skubumas ir iki 6 nuotraukų. Problema su nuotraukomis ateina į chato kanalą #automobiliai (sukuriamas pats, jame – visi, kas mato Transportą). Ten atsakingas asmuo spaudžia „Įtraukti į darbus“ – problema įsiregistruoja automobilio skiltyje „Problemos“ (kortelėje rodomos visos atviros problemos su tuo, kas pranešė). Reikia paleisti supabase/sql/vehicle_qr.sql.' },
