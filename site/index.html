@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-K7O4zP1FxN1hH0BdK5mQqn3sxeXCSprBSd0UozlZiKo=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-YXe7A/bgNGfW/FQsxjdCDBEswH3YsqHt0SC0DLk6K9I=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3494,6 +3494,26 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 @media(max-width:640px){ .pp-bar{align-items:stretch !important;} .pp-bar > *{flex:1 1 100%;width:100% !important;max-width:none !important;margin:0 !important;} .pp-search input{width:100%;} .pp-subs{display:grid;grid-template-columns:1fr 1fr;} .pp-actions{display:grid;grid-template-columns:auto 1fr;} .pp-day .field{flex:1 1 100%;} .pp-sum{margin-left:0;} .pp-form .lm-row{grid-template-columns:1fr;gap:0;} .pp-cards{grid-template-columns:1fr;} }
 .nt-diag{white-space:pre-wrap;font-size:11.5px;margin:10px 0 0;padding:8px;background:var(--bg-deep);border-radius:var(--radius);color:var(--text-dim);}
 .pf-page{max-width:none;}
+.pf-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+@media(min-width:1300px){ .pf-nav{grid-template-columns:repeat(6,minmax(0,1fr));} }
+.pf-nav-b{display:flex;align-items:center;gap:12px;text-align:left;padding:12px;border:1px solid var(--border);border-radius:var(--radius,12px);background:var(--panel);color:var(--text);cursor:pointer;font:inherit;min-width:0;transition:border-color .15s, background .15s;}
+.pf-nav-b:hover{border-color:color-mix(in srgb, var(--pf-c) 50%, var(--border));}
+.pf-nav-b.active{border-color:var(--pf-c);background:color-mix(in srgb, var(--pf-c) 12%, var(--panel));box-shadow:inset 0 0 0 1px var(--pf-c);}
+.pf-nav-i{flex:0 0 auto;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--pf-c) 18%, transparent);color:var(--pf-c);}
+.pf-nav-i svg{width:22px;height:22px;}
+.pf-nav-t{display:flex;flex-direction:column;min-width:0;}
+.pf-nav-t b{font-size:15px;}
+.pf-nav-t small{color:var(--text-dim);font-size:11.5px;line-height:1.3;}
+.pf-pane[hidden]{display:none !important;}
+.pf-pane[data-pane="look"] > .card{max-width:760px;}
+.pf-uta{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;flex-wrap:wrap;}
+.pf-uta-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, #2F9E73 18%, transparent);color:#2F9E73;flex:0 0 auto;}
+.pf-uta-ic svg{width:22px;height:22px;}
+.pf-uta-m{display:flex;flex-direction:column;gap:2px;flex:1 1 200px;min-width:0;}
+.pf-uta-m .mono{font-size:13px;letter-spacing:.5px;}
+.pf-uta-pin{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+.pf-uta-pin b{font-size:18px;letter-spacing:2px;min-width:52px;text-align:center;}
+@media(max-width:640px){ .pf-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} .pf-nav-b{padding:10px;gap:10px;} .pf-nav-i{width:34px;height:34px;} .pf-nav-t small{display:none;} }
 .pf-hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-bottom:14px;background-image:var(--hex-lines);background-repeat:no-repeat;background-size:360px auto;background-position:right -80px center;}
 .pf-hero-t{flex:1 1 260px;min-width:0;}
 .pf-name{font-family:var(--font-head);font-size:40px;line-height:1;text-transform:uppercase;margin:0 0 4px;font-weight:500;}
@@ -5385,7 +5405,7 @@ body.ev-full-on{overflow:hidden;}
     <button class="rail-btn" data-mobile="more" data-tab="admin" data-label="Admin"><span class="rail-tip">Admin</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><circle cx="12" cy="10" r="2.5"/><path d="M8 16c.8-1.6 2.3-2.5 4-2.5s3.2.9 4 2.5"/></svg>
     </button>
-    <button class="rail-btn rail-profile" data-mobile="more" data-tab="profile" data-label="Mano profilis"><span class="rail-tip">Profilis</span>
+    <button class="rail-btn rail-profile" data-mobile="more" data-tab="profile" data-label="Mano erdvė"><span class="rail-tip">Mano erdvė</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5c.9-3.8 3.9-6.2 7.5-6.2s6.6 2.4 7.5 6.2"/></svg>
     </button>
     <button class="rail-btn more-only" id="railNotes" type="button" data-label="Notes" aria-label="Užrašai ir sticky notes" aria-expanded="false"><span class="rail-tip">Notes</span>
@@ -7765,11 +7785,16 @@ function utaCardForm(c){
       <label class="field">Galioja iki<input type="date" id="ucValid" value="${esc(c.valid_until||'')}"></label>
       <label class="checkbox-row" style="align-self:end;margin-bottom:8px;"><input type="checkbox" id="ucActive" ${c.active!==false ? 'checked' : ''}> Aktyvi</label>
     </div>
-    <label class="field" style="margin-top:8px;">Pastaba<input type="text" id="ucNote" value="${esc(c.note||'')}" placeholder="pvz. limitas, PIN laiko vairuotojas"></label>
-    <small class="muted">PIN kodo čia nesaugok.</small>
+    <label class="field" style="margin-top:8px;">Pastaba<input type="text" id="ucNote" value="${esc(c.note||'')}" placeholder="pvz. limitas"></label>
+    <div class="grid cols-2" style="margin-top:8px;">
+      <label class="field">PIN kodas (nebūtina)<input type="text" id="ucPin" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="${isNew ? '' : 'kraunama…'}"></label>
+      <label class="checkbox-row" style="align-self:end;margin-bottom:8px;"><input type="checkbox" id="ucShared" ${c.shared ? 'checked' : ''}> Bendra kortelė</label>
+    </div>
+    <small class="muted">PIN mato tik tas, kam kortelė priskirta (Mano erdvė → UTA), o bendros kortelės – visi patvirtinti nariai. Reikia supabase/sql/uta_pins.sql.</small>
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:14px;">${isNew ? '<span></span>' : '<button type="button" class="btn danger small" id="ucDel">Ištrinti kortelę</button>'}
       <span class="row" style="gap:8px;"><button type="button" class="btn" id="ucX">Atšaukti</button><button type="button" class="btn primary" id="ucSave">Išsaugoti</button></span></div>`);
-  let kind = c.assign_kind;
+  let kind = c.assign_kind, pin0 = '';
+  if(!isNew) getSb().from('uta_pins').select('pin').eq('card_id', c.id).maybeSingle().then(r=>{ const i = document.getElementById('ucPin'); if(!i) return; i.placeholder = ''; if(r && r.data){ pin0 = r.data.pin || ''; if(!i.value) i.value = pin0; } });
   const show = ()=>{
     document.querySelectorAll('#ucKind [data-k]').forEach(b=>b.classList.toggle('active', b.dataset.k===kind));
     document.querySelector('.uc-veh').style.display = kind==='vehicle' ? '' : 'none';
@@ -7797,11 +7822,16 @@ function utaCardForm(c){
       vehicle_id: kind==='vehicle' ? vid : null, vehicle_name: kind==='vehicle' && v ? v.name+(v.plate ? ' · '+v.plate : '') : null,
       person_id: kind==='person' && m ? m.id : null, person_name: kind==='person' ? (m ? teamName(m) : pn) : null,
       valid_until: document.getElementById('ucValid').value || null, note:document.getElementById('ucNote').value.trim(), active:document.getElementById('ucActive').checked, updated_at:new Date().toISOString() };
+    if(document.getElementById('ucShared').checked || 'shared' in c) row.shared = document.getElementById('ucShared').checked;   // column from uta_pins.sql
+    const pin = document.getElementById('ucPin').value.trim();
+    if(pin && !/^[0-9A-Za-z]{3,12}$/.test(pin)){ toast('PIN – 3–12 skaitmenų.'); document.getElementById('ucPin').focus(); return; }
     const b = document.getElementById('ucSave'); b.disabled = true;
     const r = isNew ? await getSb().from('uta_cards').insert(row).select().single() : await getSb().from('uta_cards').update(row).eq('id', c.id).select().single();
     b.disabled = false;
     if(r.error){ toast(/duplicate|uta_cards_no/i.test(r.error.message) ? 'Tokia kortelė jau yra.' : 'Nepavyko: '+r.error.message, 5000); return; }
     if(isNew) UTA.cards.push(r.data); else Object.assign(c, r.data);
+    if(pin!==pin0){ const q = pin ? await getSb().from('uta_pins').upsert({ card_id:r.data.id, pin, updated_by:teamMe(), updated_at:new Date().toISOString() }) : await getSb().from('uta_pins').delete().eq('card_id', r.data.id);
+      if(q.error) toast('Kortelė išsaugota, bet PIN – ne: '+q.error.message+' (paleisk supabase/sql/uta_pins.sql)', 6000); }
     // lines from earlier reports with this number now belong to it
     getSb().from('uta_tx').update({ card_id:r.data.id }).is('card_id', null).eq('card_no', r.data.card_no).then(()=>{});
     closeModal(); utaDraw(); toast('✓ Kortelė išsaugota.');
@@ -17816,6 +17846,7 @@ const HOME_TILES = [
   {tab:'members', title:'Nariai', color:'#50AD97', desc:'Komandos nariai, kas prisijungęs, kontaktai.'},
   {tab:'chat', title:'Chatas', color:'#4E9BC9', desc:'Bendras chatas, asmeninės ir grupinės žinutės.'},
   {tab:'tracker', title:'Team Tracker', color:'#50AD97', desc:'Darbo laikas: pradėk, keisk veiklą (sandėlis, vairavimas, montažas…), baik – ir matyk, kiek pradirbta.'},
+  {tab:'profile', title:'Mano erdvė', color:'#4E9BC9', desc:'Apie mane, UTA kortelės ir PIN, išvaizda, prašymai, programėlės, pranešimai.'},
   {tab:'expenses', title:'Išlaidos', color:'#2F9E73', desc:'Kuro, maisto ir kitos išlaidos su kvitais; UTA kortelės pylimų priežastys ir sukaupta kompensacija.'},
   {tab:'buy', title:'Pirkiniai', color:'#E8590C', desc:'Ko reikia nupirkti: VIDEO, LIGHT, AUDIO, bendri daiktai – kainos, nuorodos, svarba.'},
   {tab:'mail', title:'El. paštas', color:'#E0B04E', desc:'Tavo @eventsolutions.lt laiškai: skaityk ir atsakyk čia.'},
@@ -18887,7 +18918,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v314';
+const APP_VER = 'v315';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25077,7 +25108,7 @@ async function teamStart(){
   if(currentTab==='home' || currentTab==='chat'){ calRender(); todoRender(); }   // member names are known now
   // a new member is asked to fill in the profile once
   if(ACCESS.profile && !ACCESS.profile.profile_done){
-    setTimeout(()=>{ if(currentTab==='home'){ setTab('profile'); toast('Sveiki! Užpildyk savo profilį — jį matys kiti komandos nariai.'); } }, 600);
+    setTimeout(()=>{ if(currentTab==='home'){ pfOpen('about'); toast('Sveiki! Užpildyk savo profilį — jį matys kiti komandos nariai.'); } }, 600);
   }
 }
 async function teamLoadMembers(){
@@ -28020,6 +28051,58 @@ function pfUiDraw(){
   const rl = document.getElementById('pfUiRail'); if(rl) rl.onchange = ()=>{ uiSet({ rail:rl.value }); pfUiDraw(); };
   const rs = document.getElementById('pfUiReset'); if(rs) rs.onclick = ()=>{ uiSet({ accent:'', rail:'' }); pfUiDraw(); };
 }
+/* ---------- Mano erdvė: sections, one shown at a time ---------- */
+let PF_SEC = 'about';
+try{ PF_SEC = sessionStorage.getItem('es-pf-sec') || 'about'; }catch(e){}
+const pfSecs = ()=>[
+  ['about','Apie mane','user','#4E9BC9','Vardas, nuotrauka, kontaktai'],
+  ['uta','UTA','creditcard','#2F9E73','Mano ir bendros kortelės, PIN'],
+  ['look','Išvaizda','palette','#9775FA','Tema, spalvos, fonas'],
+  ['leave','Prašymai','vacation','#F2A93B','Laisvos dienos, atostogos'],
+  ['app','Parsisiųsti','download','#E07A5F','Programėlės telefonui ir kompiuteriui'],
+  ['notify','Pranešimai','bell','#F35E7D','Kas ir kada pranešama']];
+function pfOpen(sec){
+  if(!pfSecs().some(x=>x[0]===sec)) sec = 'about';
+  PF_SEC = sec; try{ sessionStorage.setItem('es-pf-sec', sec); }catch(e){}
+  if(currentTab==='profile' && document.getElementById('pfNav')) pfShow(true); else setTab('profile');
+}
+function pfShow(scroll){
+  document.querySelectorAll('[data-pfsec]').forEach(b=>b.classList.toggle('active', b.dataset.pfsec===PF_SEC));
+  document.querySelectorAll('.pf-pane').forEach(p=>p.hidden = p.dataset.pane!==PF_SEC);
+  if(PF_SEC==='uta') pfUtaDraw();
+  if(scroll){ const n = document.getElementById('pfNav'); if(n && n.getBoundingClientRect().top < 0) n.scrollIntoView({ block:'start', behavior:'smooth' }); }
+}
+// UTA: the card(s) given to me and the shared ones, with their PIN codes
+async function pfUtaDraw(){
+  const box = document.getElementById('pfUta'); if(!box) return;
+  const sb = getSb(), me = teamMe();
+  const [c1, c2] = await Promise.all([
+    sb.from('uta_cards').select('*').eq('assign_kind', 'person').eq('person_id', me),
+    sb.from('uta_cards').select('*').eq('shared', true)]);
+  if(!document.body.contains(box)) return;
+  if(c1.error && c2.error){ box.innerHTML = `<h2 class="section-title">UTA kortelės</h2><div class="muted">Nepavyko įkelti: ${esc(c1.error.message)}</div>`; return; }
+  const seen = new Set(), mine = [], shared = [];
+  (c1.data||[]).forEach(c=>{ if(c.active!==false && !seen.has(c.id)){ seen.add(c.id); mine.push(c); } });
+  (c2.data||[]).forEach(c=>{ if(c.active!==false && !seen.has(c.id)){ seen.add(c.id); shared.push(c); } });
+  const ids = [...seen], pins = {};
+  if(ids.length){ const r = await sb.from('uta_pins').select('card_id,pin').in('card_id', ids); if(!r.error) (r.data||[]).forEach(x=>pins[x.card_id] = x.pin); }
+  if(!document.body.contains(box)) return;
+  const today = calISO(new Date());
+  const card = c=>{ const pin = pins[c.id], old = c.valid_until && c.valid_until < today;
+    return `<div class="pf-uta">
+      <div class="pf-uta-ic">${slIcon('creditcard')}</div>
+      <div class="pf-uta-m"><b>${esc(c.title || 'UTA kortelė')}</b><span class="mono">${esc(c.card_no)}</span>
+        <small class="muted">${[c.assign_kind==='vehicle' && c.vehicle_name ? esc(c.vehicle_name) : '', c.valid_until ? `<span style="${old?'color:var(--danger);':''}">${old ? 'nebegalioja nuo' : 'galioja iki'} ${esc(c.valid_until)}</span>` : '', c.note ? esc(c.note) : ''].filter(Boolean).join(' · ')}</small></div>
+      <div class="pf-uta-pin">${pin ? `<span class="muted">PIN</span><b class="mono" data-pin="${esc(pin)}">••••</b><button type="button" class="btn small" data-pinshow data-ic="1">${slIcon('eye')}</button>` : '<span class="muted">PIN neįrašytas</span>'}</div>
+    </div>`; };
+  box.innerHTML = `<h2 class="section-title">Mano UTA kortelė</h2>
+    ${mine.length ? mine.map(card).join('') : '<div class="muted">Tau UTA kortelė nepriskirta.</div>'}
+    <h2 class="section-title" style="margin-top:18px;">Bendros kortelės</h2>
+    ${shared.length ? shared.map(card).join('') : '<div class="muted">Bendrų kortelių nėra.</div>'}
+    <div class="section-sub" style="margin:12px 0 0;">PIN kodą rodyk tik sau – nesiųsk jo žinutėmis. Korteles ir PIN tvarko Transportas → UTA kortelės.</div>`;
+  box.querySelectorAll('[data-pinshow]').forEach(b=>b.onclick = ()=>{ const v = b.parentNode.querySelector('[data-pin]'); const on = v.textContent==='••••';
+    v.textContent = on ? v.dataset.pin : '••••'; b.classList.toggle('active', on); });
+}
 function renderProfileTab(){
   const me = ACCESS.profile || {};
   const first = me.first_name || (me.full_name||'').split(' ')[0] || '';
@@ -28028,6 +28111,8 @@ function renderProfileTab(){
   document.getElementById('main').innerHTML = `
   <div class="tabpanel pf-page">
     ${!me.profile_done ? '<div class="tm-welcome">👋 Sveiki! Užpildyk savo profilį — jį matys kiti komandos nariai skiltyje „Nariai“.</div>' : ''}
+    <div class="pf-nav" id="pfNav">${pfSecs().map(([k,t,ic,col,d])=>`<button type="button" class="pf-nav-b" data-pfsec="${k}" style="--pf-c:${col};"><span class="pf-nav-i">${slIcon(ic)}</span><span class="pf-nav-t"><b>${t}</b><small>${d}</small></span></button>`).join('')}</div>
+    <div class="pf-pane" data-pane="about">
     <div class="card pf-hero">
       <div class="tm-prof-photo">${teamAvatar(me, 128)}
         <label class="btn small" style="cursor:pointer;margin-top:10px;">📷 ${me.avatar_path ? 'Keisti nuotrauką' : 'Įkelti nuotrauką'}<input type="file" id="pfPhoto" accept="image/*" style="display:none;"></label>
@@ -28057,7 +28142,7 @@ function renderProfileTab(){
         </div>
       </div>
       <div class="pf-side">
-        <div class="card pf-sec">
+        <div class="card pf-sec" data-pfmove="look">
           <h2 class="section-title">Išvaizda</h2>
           <div class="viewmode-toggle pf-theme">
             <button type="button" data-pftheme="dark" class="${themeNow()==='dark'?'active':''}">🌙 Tamsi</button>
@@ -28076,10 +28161,17 @@ function renderProfileTab(){
         </div>
       </div>
     </div>
-    <div class="card pf-sec" id="pfLeave"></div>
-    <div class="card pf-sec" id="pfApp"></div>
-    ${canView('chat') ? '<div class="card tm-profile pf-sec" id="pfNotify"></div>' : ''}
+    </div>
+    <div class="pf-pane" data-pane="uta"><div class="card pf-sec" id="pfUta"><div class="muted">Kraunama…</div></div></div>
+    <div class="pf-pane" data-pane="look"></div>
+    <div class="pf-pane" data-pane="leave"><div class="card pf-sec" id="pfLeave"></div></div>
+    <div class="pf-pane" data-pane="app"><div class="card pf-sec" id="pfApp"></div></div>
+    <div class="pf-pane" data-pane="notify">${canView('chat') ? '<div class="card tm-profile pf-sec" id="pfNotify"></div>' : '<div class="card empty-state">Pranešimų nustatymai atsiras, kai turėsi prieigą prie Chato.</div>'}</div>
   </div>`;
+  // Išvaizda gets its own section (the card is moved out of „Apie mane“)
+  const look = document.querySelector('[data-pfmove="look"]'); document.querySelector('[data-pane="look"]').appendChild(look);
+  document.querySelectorAll('[data-pfsec]').forEach(b=>b.onclick = ()=>pfOpen(b.dataset.pfsec));
+  pfShow();
   pfUiDraw();
   document.querySelectorAll('[data-pftheme]').forEach(b=>b.onclick = ()=>{ themeSet(b.dataset.pftheme); document.querySelectorAll('[data-pftheme]').forEach(x=>x.classList.toggle('active', x===b)); });
   document.getElementById('pfOut').onclick = ()=>document.getElementById('signOutBtn').click();
@@ -29423,7 +29515,7 @@ function chatBindSide(el){
   el.querySelectorAll('[data-act="browse"]').forEach(b=>b.onclick = chatBrowseChannels);
   const ws = el.querySelector('[data-act="wsmenu"]'); if(ws) ws.onclick = e=>evPopMenu(e.currentTarget, [
     { html:'#  Naujas kanalas', fn:()=>chatChannelModal() }, { html:'🔎 Naršyti kanalus', fn:chatBrowseChannels }, { html:'✉ Nauja žinutė', fn:chatPickMember },
-    { sep:true }, { html:'🔔 Pranešimų nustatymai', fn:()=>setTab('profile') } ]);
+    { sep:true }, { html:'🔔 Pranešimų nustatymai', fn:()=>pfOpen('notify') } ]);
   const ms = el.querySelector('[data-act="msgsearch"]'); if(ms) ms.onclick = ()=>chatSearchMessages(TEAM.sideQ);
   const f = el.querySelector('#skFind'); if(f){
     f.addEventListener('input', ()=>{ TEAM.sideQ = f.value; clearTimeout(f._t); f._t = setTimeout(()=>{ chatRenderList(); const x = document.getElementById('skFind'); if(x){ x.focus(); x.selectionStart = x.selectionEnd = x.value.length; } }, 200); });
@@ -32977,10 +33069,10 @@ const GS_FN = [
   { t:'Pranešti klaidą / pasiūlymą', d:'kūrėjams', ic:'chat', kw:'klaida bug pasiulymas atsiliepimas', go:()=>gsClick('fbHdr') },
   { t:'Išsaugoti viską', d:'serveryje dabar', ic:'save', kw:'saugoti', go:()=>gsClick('saveAllBtn') },
   { t:'Atsisiųsti atsarginę kopiją', d:'visi duomenys JSON', ic:'download', kw:'kopija backup eksportas', go:()=>gsClick('exportBtn') },
-  { t:'Prašymas: laisvos dienos', d:'Profilis → Prašymai', ic:'calendar', kw:'laisva diena prasymas', go:()=>{ setTab('profile'); setTimeout(()=>lvForm('dayoff'), 300); } },
-  { t:'Prašymas: atostogos', d:'Profilis → Prašymai', ic:'sun', kw:'atostogos prasymas', go:()=>{ setTab('profile'); setTimeout(()=>lvForm('vacation'), 300); } },
-  { t:'Atsisiųsti programėlę', d:'Android / iPhone', ic:'mobile', kw:'programele app android ios iphone apk telefonas', go:()=>{ setTab('profile'); setTimeout(()=>{ const b = document.getElementById('pfApp'); if(b) b.scrollIntoView({ block:'start', behavior:'smooth' }); }, 300); } },
-  { t:'Pranešimų nustatymai', d:'įjungti / išjungti, tylos valandos', ic:'bell', kw:'pranesimai notifications push isjungti tyla', go:()=>{ setTab('profile'); setTimeout(()=>{ const b = document.getElementById('pfNotify'); if(b) b.scrollIntoView({ block:'start', behavior:'smooth' }); }, 300); } },
+  { t:'Prašymas: laisvos dienos', d:'Profilis → Prašymai', ic:'calendar', kw:'laisva diena prasymas', go:()=>{ pfOpen('leave'); setTimeout(()=>lvForm('dayoff'), 300); } },
+  { t:'Prašymas: atostogos', d:'Profilis → Prašymai', ic:'sun', kw:'atostogos prasymas', go:()=>{ pfOpen('leave'); setTimeout(()=>lvForm('vacation'), 300); } },
+  { t:'Atsisiųsti programėlę', d:'Android / iPhone', ic:'mobile', kw:'programele app android ios iphone apk telefonas', go:()=>pfOpen('app') },
+  { t:'Pranešimų nustatymai', d:'įjungti / išjungti, tylos valandos', ic:'bell', kw:'pranesimai notifications push isjungti tyla', go:()=>pfOpen('notify') },
   { t:'Keisti temą', d:'šviesi / tamsi', ic:'moon', kw:'tamsi sviesi tema spalvos', go:()=>gsClick('themeBtn') },
   { t:'Atsijungti', d:'', ic:'logout', kw:'iseiti logout', go:()=>gsClick('signOutBtn') },
 ];
@@ -33190,7 +33282,7 @@ function deskHelp(kind){
     <p class="muted" style="font-size:12.5px;">Tada pranešimai iššoks kompiuterio kampe net uždarius programos langą; paspaudus – atsidarys programa reikiamoje vietoje.</p>`;
   openModal(`<div class="pwa-ios">${html}<div class="row" style="justify-content:flex-end;gap:8px;margin-top:10px;">${kind==='notify' ? '<button type="button" class="btn" id="dhNotif">Atidaryti pranešimų nustatymus</button>' : ''}<button type="button" class="btn primary" id="dhX">Supratau</button></div></div>`);
   document.getElementById('dhX').onclick = ()=>closeModal();
-  const nb = document.getElementById('dhNotif'); if(nb) nb.onclick = ()=>{ closeModal(); const b = document.getElementById('pfNotify'); if(b) b.scrollIntoView({ block:'start', behavior:'smooth' }); };
+  const nb = document.getElementById('dhNotif'); if(nb) nb.onclick = ()=>{ closeModal(); pfOpen('notify'); };
 }
 /* ---------- Profilis: Prašymai ---------- */
 function lvRender(){
@@ -33327,7 +33419,7 @@ function lvFromUrl(){
   const id = new URLSearchParams(location.search).get('leave'); if(!id) return;
   history.replaceState(null, '', location.pathname);
   lvLoad().then(()=>{ const r = LV.list.find(x=>x.id===id); if(r){ LV.focus = id; if(r.status!=='pending') LV.show = 'all'; }
-    setTab('profile'); setTimeout(()=>{ const b = document.getElementById('pfLeave'); if(b && !LV.focus) b.scrollIntoView({ block:'start' }); }, 300); });
+    pfOpen('leave'); });
 }
 /* ---------- renginiai: no one on approved leave ----------
    A member newly written into an event whose days fall on their approved day
@@ -35820,6 +35912,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 17:12', v:'v315', k:'new', t:'Mano erdvė (buvęs Profilis)', f:'Profilis pervadintas į „Mano erdvė“ ir atsirado pagrindiniame puslapyje kaip plytelė. Viršuje – grafos: Apie mane (vardas, nuotrauka, kontaktai, paskyra), UTA (tau priskirta kortelė ir bendros kortelės su PIN kodais – PIN rodomas paspaudus akutę), Išvaizda, Prašymai, Parsisiųsti (programėlės) ir Pranešimai. Paspaudus grafą rodoma tik jos informacija. Transportas → UTA kortelės: kortelei galima įrašyti PIN ir pažymėti „Bendra kortelė“. Reikia paleisti supabase/sql/uta_pins.sql.' },
   { d:'2026-10-05 16:56', v:'v314', k:'new', t:'Dydis: iki 30%', f:'Lange „Dydis“ plyteles, dešinės korteles ir meniu dabar galima sumažinti iki 30% (anksčiau iki 70%). Telefone sumažintos plytelės rikiuojasi po 3–5 eilėje. Telefono apatinis meniu nemažėja daugiau nei iki 60%, kad mygtukus būtų galima paspausti. Pataisyta: telefone sumažinus meniu, dalis jo mygtukų nebeišeina už ekrano.' },
   { d:'2026-10-05 16:54', v:'v313', k:'new', t:'Dydis: ir dešinės kortelės', f:'Lange „Dydis“ (viršutiniame meniu) atsirado eilutė „Dešinės kortelės“: − / + mažina arba didina pagrindinio puslapio dešinės pusės korteles (Pranešimai, Sąskaitos, kalendorius ir kt.) nuo 70% iki 130% – kartu siaurėja ar platėja ir pats stulpelis.' },
   { d:'2026-10-05 16:41', v:'v312', k:'new', t:'Dydis: plytelės ir meniu', f:'Viršutiniame meniu (telefone – po ⋯) naujas mygtukas „Dydis“: mygtukais − / + galima sumažinti arba padidinti pagrindinio puslapio plyteles ir šoninį (telefone – apatinį) meniu nuo 70% iki 130%. Sumažinus plyteles, į eilę telpa daugiau. „Kaip buvo“ grąžina 100%. Nustatymas įsimenamas šiame įrenginyje.' },
