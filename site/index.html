@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-zWb+IcyM9wqAN64ZTKZ1sxSmhA8kfriHBtC14debcr8=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-K7O4zP1FxN1hH0BdK5mQqn3sxeXCSprBSd0UozlZiKo=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -5265,14 +5265,15 @@ body.ev-full-on{overflow:hidden;}
 .home-tiles{zoom:var(--tile-z,1);}
 .home-side{zoom:var(--side-z,1);}
 @media (min-width:1100px){ .home-layout.with-side{grid-template-columns:minmax(0,1fr) calc(370px * var(--side-z,1));} }
-@media (max-width:640px){ :root.tz-s .home-tiles{grid-template-columns:repeat(3,minmax(0,1fr)) !important;} }
+@media (max-width:640px){ :root.tz-s .home-tiles{grid-template-columns:repeat(3,minmax(0,1fr)) !important;} :root.tz-xs .home-tiles{grid-template-columns:repeat(4,minmax(0,1fr)) !important;} :root.tz-xxs .home-tiles{grid-template-columns:repeat(5,minmax(0,1fr)) !important;} }
 @media (min-width:761px){
   aside.rail{zoom:var(--rail-z,1);height:calc(100vh / var(--rail-z,1));}
   .nm-panel{left:calc(64px * var(--rail-z,1));}
   :root[data-ui="v2"] .nm-panel{left:calc(236px * var(--rail-z,1));}
   :root[data-ui="v2"] body.v2-fold .nm-panel{left:calc(64px * var(--rail-z,1));}
 }
-@media (max-width:760px){ aside.rail{zoom:var(--rail-z,1);width:calc(100% / var(--rail-z,1));} }
+/* the phone's bottom bar stays big enough to tap: at least 60 % */
+@media (max-width:760px){ aside.rail{zoom:max(var(--rail-z,1), .6);} }
 .size-pop{position:fixed;z-index:400;width:290px;max-width:calc(100vw - 16px);box-sizing:border-box;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px;box-shadow:0 14px 34px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:10px;}
 .size-pop .sz-h{font-weight:700;font-size:14px;}
 .size-pop .sz-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
@@ -11165,25 +11166,25 @@ function uiApply(p){
   // home page icons: in colour (default), all one colour, and with / without the tinted square behind them
   r.classList.toggle('ht-mono', p.ico==='mono'); r.classList.toggle('ht-acc', p.ico==='accent'); r.classList.toggle('ht-own', p.ico==='own' && uiLum(p.icoColor)>=0);
   if(p.ico==='own' && uiLum(p.icoColor)>=0) r.style.setProperty('--ht-ico', p.icoColor); else r.style.removeProperty('--ht-ico'); r.classList.toggle('ht-nobg', p.icoBg===false);
-  // size of the home tiles and the side menu (chosen in the top menu: 70–130 %)
+  // size of the home tiles and the side menu (chosen in the top menu: 30–130 %)
   const tz = uiZ(p.tz), rz = uiZ(p.rz);
   if(tz!==1) r.style.setProperty('--tile-z', tz); else r.style.removeProperty('--tile-z');
   if(rz!==1) r.style.setProperty('--rail-z', rz); else r.style.removeProperty('--rail-z');
   const sz = uiZ(p.sz); if(sz!==1) r.style.setProperty('--side-z', sz); else r.style.removeProperty('--side-z');
-  r.classList.toggle('tz-s', tz<=.8);
+  r.classList.toggle('tz-s', tz<=.8); r.classList.toggle('tz-xs', tz<=.6); r.classList.toggle('tz-xxs', tz<=.4);
   uiFoldInit();
 }
-function uiZ(v){ v = +v; return v>=.7 && v<=1.3 ? Math.round(v*10)/10 : 1; }
+function uiZ(v){ v = +v; return v>=.3 && v<=1.3 ? Math.round(v*10)/10 : 1; }
 // the size window: − / + for the home tiles and the side menu
 function sizePop(btn){
   let pop = document.getElementById('sizePop');
   if(pop){ pop.remove(); return; }
   pop = document.createElement('div'); pop.id = 'sizePop'; pop.className = 'size-pop';
-  const rows = [['tz','Plytelės','Pagrindinio puslapio kortelės'],['sz','Dešinės kortelės','Pranešimai, kalendorius ir kt. dešinėje'],['rz','Meniu','Šoninis (telefone – apatinis) meniu']];
+  const rows = [['tz','Plytelės','Pagrindinio puslapio kortelės'],['sz','Dešinės kortelės','Pranešimai, kalendorius ir kt. dešinėje'],['rz','Meniu','Šoninis (telefone – apatinis, ne mažiau 60%) meniu']];
   const draw = ()=>{ const p = uiPrefs();
     pop.innerHTML = '<div class="sz-h">Dydis</div>' + rows.map(([k,t,d])=>{ const z = uiZ(p[k]);
       return `<div class="sz-row"><div class="sz-t"><b>${t}</b><small>${d}</small></div><div class="sz-ctl">`
-        + `<button type="button" data-k="${k}" data-d="-1" ${z<=.7?'disabled':''} aria-label="Mažinti">−</button><span>${Math.round(z*100)}%</span>`
+        + `<button type="button" data-k="${k}" data-d="-1" ${z<=.3?'disabled':''} aria-label="Mažinti">−</button><span>${Math.round(z*100)}%</span>`
         + `<button type="button" data-k="${k}" data-d="1" ${z>=1.3?'disabled':''} aria-label="Didinti">+</button></div></div>`; }).join('')
       + `<button type="button" class="sz-reset" data-k="reset" ${uiZ(p.tz)===1 && uiZ(p.rz)===1 && uiZ(p.sz)===1 ? 'disabled' : ''}>Kaip buvo (100%)</button>`; };
   draw();
@@ -18886,7 +18887,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v313';
+const APP_VER = 'v314';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35819,6 +35820,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-05 16:56', v:'v314', k:'new', t:'Dydis: iki 30%', f:'Lange „Dydis“ plyteles, dešinės korteles ir meniu dabar galima sumažinti iki 30% (anksčiau iki 70%). Telefone sumažintos plytelės rikiuojasi po 3–5 eilėje. Telefono apatinis meniu nemažėja daugiau nei iki 60%, kad mygtukus būtų galima paspausti. Pataisyta: telefone sumažinus meniu, dalis jo mygtukų nebeišeina už ekrano.' },
   { d:'2026-10-05 16:54', v:'v313', k:'new', t:'Dydis: ir dešinės kortelės', f:'Lange „Dydis“ (viršutiniame meniu) atsirado eilutė „Dešinės kortelės“: − / + mažina arba didina pagrindinio puslapio dešinės pusės korteles (Pranešimai, Sąskaitos, kalendorius ir kt.) nuo 70% iki 130% – kartu siaurėja ar platėja ir pats stulpelis.' },
   { d:'2026-10-05 16:41', v:'v312', k:'new', t:'Dydis: plytelės ir meniu', f:'Viršutiniame meniu (telefone – po ⋯) naujas mygtukas „Dydis“: mygtukais − / + galima sumažinti arba padidinti pagrindinio puslapio plyteles ir šoninį (telefone – apatinį) meniu nuo 70% iki 130%. Sumažinus plyteles, į eilę telpa daugiau. „Kaip buvo“ grąžina 100%. Nustatymas įsimenamas šiame įrenginyje.' },
   { d:'2026-10-05 16:24', v:'v311', k:'new', t:'Išlaidos: kilometrai prie kuro', f:'Kuro išlaidoje šalia litrų galima įrašyti ir kiek kilometrų nuvažiuota. Sąraše rodoma „42,5 l · 210 km“ ir apskaičiuotas sunaudojimas (l/100 km). Reikia paleisti supabase/sql/expenses_km.sql (jei expenses.sql jau paleistas).' },
