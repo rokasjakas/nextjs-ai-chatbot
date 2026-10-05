@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Vl64rpYe5Tmn/JTPuUkAR7AspiZR1gvhs8sKORXWuyM=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-yuhc4oO5NMi+q2zrMj8Qx1X6BnT6WnObsrZWM2X6Mbc=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-vWW6tlGAMKy1jO74/zRmwC/vT01V4gUoWQE8+3u7BNY=' 'sha256-/ELbeYGChI0WewEdt+Tq49cM9Wkw1c31UqSSBdHjOaM=' 'sha256-Ee114T0rCoZif8vLDkAfuqigGWThopK/77kikFsceAk=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Automobilis · Event Solutions</title>
@@ -41,7 +41,7 @@ textarea{min-height:110px;resize:vertical;}
 .ph{position:relative;width:76px;height:76px;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
 .ph img{width:100%;height:100%;object-fit:cover;}
 .ph button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;cursor:pointer;line-height:1;}
-.addph{width:76px;height:76px;border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:12px;color:var(--dim);cursor:pointer;}
+.addph{width:96px;height:76px;border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:12px;color:var(--dim);cursor:pointer;}
 .addph span{font-size:22px;}
 .me{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--ok) 14%,transparent);font-size:14px;}
 .err{color:var(--bad);font-size:14px;margin-top:8px;}
@@ -118,7 +118,7 @@ function draw(){
       <label for="rpText">Kas pastebėta</label><textarea id="rpText" placeholder="pvz. Dega variklio lemputė, barška priekiniai stabdžiai…"></textarea>
       <label>Kaip skubu</label>
       <div class="sev">${Object.entries(SEV).map(([k,l])=>`<label><input type="radio" name="sev" value="${k}" ${k==='soon'?'checked':''}> ${l}</label>`).join('')}</div>
-      <label>Nuotraukos (nebūtina, iki 6)</label>
+      <label>Nuotraukos (nebūtina, iki 6): nufotografuok arba pridėk iš galerijos</label>
       <div class="phs" id="phs"></div>
       <div class="err" id="rpErr"></div>
       <div style="margin-top:14px;"><button class="btn" id="rpGo">Registruoti problemą</button></div>
@@ -129,10 +129,10 @@ function draw(){
 function drawPh(){
   const box = document.getElementById('phs'); if(!box) return;
   box.innerHTML = PH.map((p,i)=>`<div class="ph"><img src="${p.url}" alt=""><button type="button" data-x="${i}" aria-label="Pašalinti">✕</button></div>`).join('')
-    + (PH.length < 6 ? '<label class="addph"><input type="file" accept="image/*" multiple hidden id="phIn"><span>📷</span>Pridėti</label>' : '');
+    + (PH.length < 6 ? '<label class="addph"><input type="file" accept="image/*" capture="environment" hidden data-ph><span>📷</span>Fotografuoti</label>'
+                     + '<label class="addph"><input type="file" accept="image/*" multiple hidden data-ph><span>🖼</span>Iš galerijos</label>' : '');
   box.querySelectorAll('[data-x]').forEach(b=>b.onclick = ()=>{ URL.revokeObjectURL(PH[+b.dataset.x].url); PH.splice(+b.dataset.x, 1); drawPh(); });
-  const inp = document.getElementById('phIn');
-  if(inp) inp.onchange = async ()=>{ for(const f of [...inp.files].slice(0, 6 - PH.length)){ try{ const blob = await shrink(f); PH.push({ blob, url:URL.createObjectURL(blob) }); }catch(e){} } drawPh(); };
+  box.querySelectorAll('[data-ph]').forEach(inp=>inp.onchange = async ()=>{ for(const f of [...inp.files].slice(0, 6 - PH.length)){ try{ const blob = await shrink(f); PH.push({ blob, url:URL.createObjectURL(blob) }); }catch(e){} } drawPh(); });
 }
 // pictures made smaller before sending (max 1600 px, JPEG)
 async function shrink(file){
