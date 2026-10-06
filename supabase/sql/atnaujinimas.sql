@@ -8667,3 +8667,13 @@ create policy "comp use remove" on public.comp_use for delete to authenticated
 revoke all on public.comp_use from anon;
 grant select, insert, delete on public.comp_use to authenticated;
 notify pgrst, 'reload schema';
+
+
+-- ============================================================
+-- „Išlaidos“: mokėjimo būdas „Iš savo kuro“ (paid = 'tank')
+--  kuras iš savo automobilio bako – be kvito ir be sumos
+-- Reikia: expenses.sql. Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
+-- ============================================================
+alter table public.expenses drop constraint if exists expenses_paid_check;
+alter table public.expenses add constraint expenses_paid_check check (paid in ('uta','own','tank'));
+notify pgrst, 'reload schema';

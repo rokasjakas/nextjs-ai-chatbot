@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-IQwb3tQESl+6TztxLxebNJ8VeEbFhC3rm84GEJ2VE+A=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-rlttOl2iXLbpTxlwu4EzwktVRyfS57pmSbyTaX/bvaw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -5130,6 +5130,8 @@ body.has-bg:not(.gl-menu) .pageheader,body.has-bg:not(.gl-menu) .topbar{backgrou
 .exp-kpis b{font-size:16px;font-variant-numeric:tabular-nums;} .exp-kpis small{font-size:11px;color:var(--text-dim);}
 .exp-kpis .warn b{color:var(--warn,#F2A93B);} .exp-kpis .bad b{color:var(--danger);}
 .exp-bal.in-rep{margin-top:8px;}
+.exp-tank-note{font-size:13px;color:var(--text-dim);padding:10px 12px;border:1px dashed var(--border);border-radius:10px;margin:4px 0 10px;}
+.exp-paid.tank{color:var(--ok,#50AD97);}
 .exp-bal-btns{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;} .exp-bal-btns:empty{display:none;}
 .exp-acc-b{background:none;border:1px dashed var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;color:inherit;text-align:left;font:inherit;} .exp-acc-b:hover{border-color:var(--accent);}
 .cb-tot{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;} .cb-tot>div{flex:1 1 140px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;gap:2px;}
@@ -19374,7 +19376,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v360';
+const APP_VER = 'v361';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35933,7 +35935,7 @@ function expRowHtml(e, mgr){
   return `<div class="exp-row" data-eid="${esc(e.id)}">
     <span class="exp-ic k-${e.kind}" title="${esc(k.t)}">${k.i}</span>
     <span class="exp-main"><b>${esc(expWhat(e))}</b>
-      <small>${esc(rpWhen(e.spent_on))} · ${esc(k.t)} · <span class="exp-paid ${e.paid}">${e.paid==='uta' ? 'UTA kortele' : 'Savais pinigais'}</span>${e.uta_tx_id ? ' · susieta su pylimu' : ''}${e.from_allow ? ' · <span class="exp-chip allow">iš sukaupto likučio</span>' : ''}</small>
+      <small>${esc(rpWhen(e.spent_on))} · ${esc(k.t)} · <span class="exp-paid ${e.paid}">${e.paid==='uta' ? 'UTA kortele' : e.paid==='tank' ? 'Iš savo kuro' : 'Savais pinigais'}</span>${e.uta_tx_id ? ' · susieta su pylimu' : ''}${e.from_allow ? ' · <span class="exp-chip allow">iš sukaupto likučio</span>' : ''}</small>
       ${recs.length ? `<span class="exp-recs">${recs.map((r, i)=>`<button type="button" class="exp-rec" data-rec="${i}">📎 ${esc(r.name||'kvitas')}</button>`).join('')}</span>` : (e.paid==='own' ? '<span class="exp-recs"><span class="exp-norec">⚠ be kvito</span></span>' : '')}
       ${e.review_note ? `<small class="exp-note">💬 ${esc(e.review_note)}</small>` : ''}</span>
     <span class="exp-amt">${esc(qty)}${per100 ? `<small class="exp-per">${esc(per100)}</small>` : ''}</span>
@@ -36025,10 +36027,12 @@ function expFormDraw(){
     </div>
     <div class="exp-paid-row"><span>Mokėta</span><div class="exp-seg sm">
       <button type="button" data-ep="uta" class="${EXP.paid==='uta' ? 'on' : ''}">UTA kortele</button>
-      <button type="button" data-ep="own" class="${EXP.paid==='own' ? 'on' : ''}">Savais pinigais</button></div></div>
+      <button type="button" data-ep="own" class="${EXP.paid==='own' ? 'on' : ''}">Savais pinigais</button>
+      ${k==='fuel' ? `<button type="button" data-ep="tank" class="${EXP.paid==='tank' ? 'on' : ''}" title="Kuras iš savo automobilio bako – nereikia nei kvito, nei sumos">Iš savo kuro</button>` : ''}</div></div>
     ${k==='fuel' && EXP.paid==='uta' && fills.length ? `<label class="field">Kuris pylimas (iš tavo kortelės)<select id="exTx"><option value="">Nustatyti pagal datą automatiškai</option>${fills.map(t=>`<option value="${esc(t.id)}" ${EXP.txPick===t.id ? 'selected' : ''}>${esc(rpWhen(t.tx_date)+' '+String(t.tx_at||'').slice(11,16)+' · '+(t.station||'')+' · '+utaQty(t.quantity)+' · '+utaMoney(t.amount_gross))}</option>`).join('')}</select></label>` : ''}
-    ${d && d.allow ? `<label class="exp-allow-chk"><input type="checkbox" id="exAllow" ${EXP.allow ? 'checked' : ''}><span>Apmokėti iš sukaupto likučio <small class="muted">(liko ${expMoney(d.allow.left + (e && d.allow.usedIds.has(e.id) ? (+e.amount||0) : 0))})</small></span></label>` : ''}
-    <div class="exp-rec-box ${EXP.paid==='own' ? 'need' : ''}">
+    ${d && d.allow && EXP.paid!=='tank' ? `<label class="exp-allow-chk"><input type="checkbox" id="exAllow" ${EXP.allow ? 'checked' : ''}><span>Apmokėti iš sukaupto likučio <small class="muted">(liko ${expMoney(d.allow.left + (e && d.allow.usedIds.has(e.id) ? (+e.amount||0) : 0))})</small></span></label>` : ''}
+    ${EXP.paid==='tank' ? '<div class="exp-tank-note">Kuras iš savo bako – kvito ir sumos nereikia, užtenka litrų (ir, jei žinai, kilometrų).</div>' : ''}
+    <div class="exp-rec-box ${EXP.paid==='own' ? 'need' : ''}" ${EXP.paid==='tank' ? 'hidden' : ''}>
       <div class="exp-rec-h"><b>Kvitas</b>${EXP.paid==='own' ? '<span class="exp-req">būtinas mokant savais pinigais</span>' : '<small class="muted">nebūtinas</small>'}</div>
       <div class="exp-rec-btns">
         <label class="btn small">📷 Fotografuoti<input type="file" id="exCam" accept="image/*" capture="environment" hidden></label>
@@ -36037,7 +36041,7 @@ function expFormDraw(){
       <div class="exp-rec-list" id="exRecList">${(e ? (e.receipts||[]).map((r, i)=>`<span class="inv-chip">📎 ${esc(r.name||'kvitas')}<button type="button" data-rx="${i}" aria-label="Pašalinti kvitą">×</button></span>`) : []).concat(EXP.files.map((f, i)=>`<span class="inv-chip">${esc(f.name)} <small>${Math.round(f.size/1024)} KB</small><button type="button" data-fx="${i}" aria-label="Pašalinti">×</button></span>`)).join('')}</div>
     </div>
     <div class="row" style="justify-content:flex-end;"><button type="button" class="btn primary" id="exSave">${e ? 'Išsaugoti pakeitimus' : 'Pateikti išlaidą'}</button></div>`;
-  box.querySelectorAll('[data-ek]').forEach(b=>b.onclick = ()=>{ expKeep(); EXP.kind = b.dataset.ek; expFormDraw(); });
+  box.querySelectorAll('[data-ek]').forEach(b=>b.onclick = ()=>{ expKeep(); EXP.kind = b.dataset.ek; if(EXP.kind!=='fuel' && EXP.paid==='tank') EXP.paid = 'own'; expFormDraw(); });
   box.querySelectorAll('[data-ep]').forEach(b=>b.onclick = ()=>{ expKeep(); EXP.paid = b.dataset.ep; expFormDraw(); });
   const add = list=>{ expKeep(); EXP.files = EXP.files.concat([...list]).slice(0, 6); expFormDraw(); };
   document.getElementById('exCam').onchange = ev=>add(ev.target.files);
@@ -36045,6 +36049,7 @@ function expFormDraw(){
   box.querySelectorAll('[data-fx]').forEach(b=>b.onclick = ()=>{ expKeep(); EXP.files.splice(+b.dataset.fx, 1); expFormDraw(); });
   box.querySelectorAll('[data-rx]').forEach(b=>b.onclick = ()=>{ expKeep(); const recs = (EXP.edit.receipts||[]).slice(), [x] = recs.splice(+b.dataset.rx, 1); if(x && x.path) (EXP.gone = EXP.gone || []).push(x.path); EXP.edit = Object.assign({}, EXP.edit, { receipts:recs }); expFormDraw(); });
   const tx = document.getElementById('exTx'); if(tx) tx.onchange = ()=>{ EXP.txPick = tx.value; };
+  if(EXP.paid==='tank'){ const am = document.getElementById('exAmount'); if(am) am.closest('.field').hidden = true; }
   const al = document.getElementById('exAllow'); if(al) al.onchange = ()=>{ EXP.allow = al.checked; };
   const c = document.getElementById('exCancel'); if(c) c.onclick = ()=>{ EXP.edit = null; EXP.prefill = null; EXP.files = []; EXP.txPick = ''; EXP.allow = false; EXP.gone = []; expFormDraw(); };
   document.getElementById('exSave').onclick = expSave;
@@ -36065,7 +36070,7 @@ async function expSave(e){
   if(!reason){ toast(k==='other' ? 'Parašyk, kam išleista.' : 'Parašyk priežastį.'); return; }
   if(k==='fuel' && !liters){ toast('Nurodyk, kiek litrų.'); return; }
   if((k!=='fuel' || EXP.paid==='own') && !amount){ toast('Nurodyk sumą eurais.'); return; }
-  const AL = EXP.data && EXP.data.allow, useAllow = !!(AL && EXP.allow);
+  const AL = EXP.data && EXP.data.allow, useAllow = !!(AL && EXP.allow && EXP.paid!=='tank');
   if(useAllow){
     if(!amount){ toast('Apmokant iš sukaupto likučio nurodyk sumą eurais.'); return; }
     const left = AL.left + (EXP.edit && AL.usedIds.has(EXP.edit.id) ? (+EXP.edit.amount||0) : 0);
@@ -36085,7 +36090,7 @@ async function expSave(e){
       up.push({ path, name, type, size:blob.size });
     }
     const row = { kind:k, spent_on:date, route:k==='other' ? '' : route, reason, liters:k==='fuel' && liters ? offerNum(liters) : null, km:k==='fuel' && km ? offerNum(km) : null,
-      amount:amount ? offerNum(amount) : null, paid:EXP.paid, uta_tx_id:k==='fuel' && EXP.paid==='uta' && EXP.txPick ? EXP.txPick : null, updated_at:new Date().toISOString() };
+      amount:amount && EXP.paid!=='tank' ? offerNum(amount) : null, paid:EXP.paid, uta_tx_id:k==='fuel' && EXP.paid==='uta' && EXP.txPick ? EXP.txPick : null, updated_at:new Date().toISOString() };
     if(AL) row.from_allow = useAllow;
     let r;
     if(EXP.edit){
@@ -36256,7 +36261,7 @@ function expChoose(q, opts){
 // the compensation of one expense: euros or litres of fuel
 function expCompAsk(e){
   return new Promise(res=>{
-    let unit = e.comp!=null ? (e.comp_unit==='l' ? 'l' : 'eur') : 'eur';
+    let unit = e.comp!=null ? (e.comp_unit==='l' ? 'l' : 'eur') : e.paid==='tank' ? 'l' : 'eur';
     const defFor = u=>e.comp!=null && (e.comp_unit==='l' ? 'l' : 'eur')===u ? e.comp : u==='l' ? (e.liters!=null ? e.liters : '') : (e.paid==='own' && e.amount!=null ? e.amount : '');
     const nice = v=>v==='' || v==null ? '' : String(v).replace('.', ',');
     openModal(`<h3 style="margin:0 0 6px;">Kompensacija</h3>
@@ -37673,6 +37678,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 15:07', v:'v361', k:'new', t:'Išlaidos: „Iš savo kuro“', f:'Pildant kuro išlaidą, prie „Mokėta“ atsirado trečias pasirinkimas – „Iš savo kuro“ (kuras iš savo automobilio bako). Jam nereikia nei kvito, nei sumos – užtenka litrų (ir, jei žinai, kilometrų). Vadovui tvirtinant, kompensacija iš karto siūloma litrais.' },
   { d:'2026-10-06 14:46', v:'v360', k:'fix', t:'Įrangos paieška: tiksliausi atitikmenys pirmi', f:'Projekto įrangos paieškoje (Sandėlis kairėje) pirmiausia rodomi aplankai ir daiktai, kurių pavadinimas prasideda įvestu žodžiu (pvz. „trisk“ – pirma Triskyliai ir 3m / 5m / 10m Triskylis), panašūs – po jų. Pavadinimo pradžioje esantis skliaustelis, pvz. „(Luko) 3m Shucko“, nebenustumia daikto į sąrašo galą – visuose sąrašuose jis rikiuojamas kaip „3m Shucko“.' },
   { d:'2026-10-06 14:42', v:'v359', k:'chg', t:'Rūšiavimas: skyriai pagal projektą, be „Kabelių“', f:'Rūšiavime ir Krovime daiktai skirstomi pagal tai, kur jie įdėti projekte: Šviesos / Garso / Video subprojektai – į tą skyrių; Elektrifikacijoje – pagal grupę („El. Šviesa“ → Apšvietimas, „El. Video“ → Video, „El. Garsas“ → Garsas, „Bendra“ → Bendra, kitos, pvz. „El. Įvadas“ → Elektrifikacija); Bendri daiktai → Bendra. Atskiro „Kabelių“ skyriaus nebelieka – kabelis keliauja su tuo skyriumi, kuriam naudojamas.' },
   { d:'2026-10-06 14:40', v:'v358', k:'chg', t:'Rūšiavimas: kabeliai priskiriami tam skyriui, kuriame naudojami', f:'Jei kabelis (trišakis, šukos, PowerCon, TrueCon ir pan.) projekte įdėtas į Šviesos (pvz. „DMX/Shuko“), Garso ar Video subprojektą, Rūšiavime ir Krovime jis rodomas prie to skyriaus (Apšvietimas / Garsas / Video), o ne „Kabeliuose“. Elektrifikacijos ir kitų subprojektų kabeliai lieka „Kabeliuose“. Jei tas pats kabelis yra keliuose skyriuose – priskiriamas tam, kur jo daugiausia.' },
