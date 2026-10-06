@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-9CjlDEKx6QKkoJkoRCszqY8w9V56lPY4FVPVLZlN7EI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-PcWs2Uv+KqOY0KKxAe8gMS4h/3eDWR5Ojl4cPa/tFfc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -9714,7 +9714,7 @@ function ldSwipe(card, done, left){
 // „±“ / swipe to the left: the real quantity (found fewer, or took more) – the load is recalculated at once,
 // what was already marked as loaded stays marked
 /* ---------- Krovimas ⇄ Projektai: loaded / prepared / real quantities ---------- */
-var LD = { mode:(()=>{ try{ return localStorage.getItem('ldMode')==='prep' ? 'prep' : 'load'; }catch(e){ return 'load'; } })(), t:null, pulled:null };
+var LD = { dev:Math.random().toString(36).slice(2, 10), mode:(()=>{ try{ return localStorage.getItem('ldMode')==='prep' ? 'prep' : 'load'; }catch(e){ return 'load'; } })(), t:null, pulled:null };
 // one key per warehouse item (the same in Krovimas and in the project)
 function ldKey(r){ return r && r.refId!=null && r.refId!=='' ? String(r.refId) : 'l:'+((r && r.label)||''); }
 function ldRowOfPlaced(p){ return p && p.box ? curLoadList().find(r=>r.rowId===p.box.rowId) : null; }
@@ -9732,8 +9732,18 @@ function ldMarkLoaded(counts){
   const list = curLoadList(), cl = curChecklist(), left = Object.assign({}, counts||{});
   lastPackResult.bins.forEach(b=>b.placed.forEach(x=>{ const r = list.find(y=>y.rowId===x.box.rowId), k = r ? ldKey(r) : ldKey(x.box); if(left[k] > 0){ cl[binPlacedId(b, x)] = true; left[k]--; } }));
 }
+// every sorted / unsorted mark gets the time it was made: two people sorting at once – the later mark wins per item
+function ldStamp(){
+  const proj = activeProject(); if(!proj) return {};
+  if(!proj.sortedLast) proj.sortedLast = Object.assign({}, ldSorted());
+  const srt = ldSorted(), last = proj.sortedLast, ts = proj.sortedTs = proj.sortedTs || {}, now = new Date().toISOString();
+  new Set([...Object.keys(srt), ...Object.keys(last)]).forEach(k=>{ if((srt[k]||0)!==(last[k]||0)) ts[k] = now; });
+  proj.sortedLast = Object.assign({}, srt);
+  return ts;
+}
 function ldState(){
-  const list = curLoadList(), st = { loaded:ldLoadedCounts(lastPackResult), sorted:Object.assign({}, ldSorted()), done:(activeProject()||{}).loadDone||null, qty:{}, plan:{}, at:new Date().toISOString(), by:(typeof npMe==='function' ? npMe() : '') };
+  const ts = ldStamp();
+  const list = curLoadList(), st = { loaded:ldLoadedCounts(lastPackResult), sorted:Object.assign({}, ldSorted()), sortedTs:Object.assign({}, ts), dev:LD.dev, done:(activeProject()||{}).loadDone||null, qty:{}, plan:{}, at:new Date().toISOString(), by:(typeof npMe==='function' ? npMe() : '') };
   list.forEach(r=>{ if(!(r.qty>0) && r.qtyPlan==null) return; const k = ldKey(r); st.qty[k] = (st.qty[k]||0) + (+r.qty||0); st.plan[k] = (st.plan[k]||0) + (r.qtyPlan!=null ? +r.qtyPlan : (+r.qty||0)); });
   return st;
 }
@@ -9774,18 +9784,47 @@ function ldChanged(){
     rp.load_state = st; if(NP.cur && NP.cur.id===rp.id) NP.cur.load_state = st;
     const { error } = await sb.rpc('rp_set_load_state', { pid:rp.id, st });
     if(error) console.warn('load_state', error.message);
-  }, 700);
+  }, 300);
+}
+// the marks from another phone / browser: per item the later one wins; what this one has newer is sent back
+function ldMergeSorted(proj, st){
+  if(!proj || !st) return false;
+  const srt = proj.sorted = proj.sorted || {}, lts = proj.sortedTs = proj.sortedTs || {};
+  const rs = st.sorted || st.prepared || {}, rts = st.sortedTs || null;
+  let changed = false;
+  new Set([...Object.keys(rs), ...Object.keys(rts||{})]).forEach(k=>{
+    const rt = rts ? rts[k] : st.at; if(!rt || (lts[k] && lts[k] >= rt)) return;
+    const v = +rs[k] || 0;
+    if((+srt[k]||0)!==v){ if(v) srt[k] = v; else delete srt[k]; changed = true; }
+    lts[k] = rt;
+  });
+  proj.sortedLast = Object.assign({}, srt);
+  return changed;
+}
+function ldRemote(row){
+  const st = row && row.load_state; if(!st || st.dev===LD.dev) return;
+  const proj = activeProject(), rp = ldRp(); if(!proj || !rp || rp.id!==row.id) return;
+  const changed = ldMergeSorted(proj, st);
+  if(changed){
+    saveState();
+    if(currentTab==='sort') sortRenderList();
+    else if(currentTab==='load' && !(document.activeElement && document.activeElement.closest('#main input, #main textarea'))) renderLoadTab();
+  }
+  // this phone has marks the other one has not got yet: send them
+  const lts = proj.sortedTs || {}, rts = st.sortedTs || {};
+  if(Object.keys(lts).some(k=>lts[k] > (rts[k]||''))) ldChanged();
 }
 // coming back (or on another phone): take what the project knows about this list
 async function ldCloudPull(){
   const proj = activeProject(); if(!proj || typeof NP==='undefined') return;
+  if(!proj.sortedLast) proj.sortedLast = Object.assign({}, ldSorted());
   if(!NP.loaded){ await npLoad().catch(()=>{}); }
   if((currentTab!=='load' && currentTab!=='sort') || activeProject()!==proj || LD.pulled===proj.id) return;
   LD.pulled = proj.id;
   const rp = ldRp(), st = rp && rp.load_state; if(!st || !st.at) return;
   let changed = false;
   curLoadList().forEach(r=>{ const k = ldKey(r); if(r.qtyPlan==null && st.plan && st.plan[k]!=null && st.qty && st.qty[k]===r.qty && st.plan[k]!==r.qty){ r.qtyPlan = st.plan[k]; changed = true; } });
-  const srt = ldSorted(), fromCloud = st.sorted || st.prepared; if(!Object.keys(srt).length && fromCloud && Object.keys(fromCloud).length){ Object.assign(srt, fromCloud); changed = true; }
+  if(ldMergeSorted(proj, st)) changed = true;
   if(proj.loadDone===undefined && st.done){ proj.loadDone = st.done; changed = true; }
   if(lastPackResult && !Object.keys(curChecklist()).length && st.loaded && Object.keys(st.loaded).length){ ldMarkLoaded(st.loaded); changed = true; }
   if(changed){ saveState(); if(currentTab==='load') renderLoadTab(); else if(currentTab==='sort') renderSortTab(); }
@@ -9876,6 +9915,7 @@ function renderSortTab(){
 }
 function sortRenderList(){
   const wrap = document.getElementById('sortList'); if(!wrap) return;
+  { const pj = activeProject(); if(pj && !pj.sortedLast) pj.sortedLast = Object.assign({}, ldSorted()); }   // marks made before this version: no new time
   const small = smallItemIds(), all = curLoadList().filter(r=>r.qty>0 && !isSmallRow(r, small)), srt = ldSorted();
   // departments present in this list: Garsas, Video, Šviesa…
   const grps = GROUP_ORDER.filter(g=>all.some(r=>r.groupKey===g)).concat([...new Set(all.map(r=>r.groupKey))].filter(g=>g && !GROUP_ORDER.includes(g)));
@@ -12858,6 +12898,7 @@ async function npLoad(force){
           return;
         }
         const row = npFix(merged), i = NP.list.findIndex(x=>x.id===row.id); if(i>=0) NP.list[i] = row; else NP.list.unshift(row);
+        if(p.new.load_state!==undefined) try{ ldRemote(row); }catch(e){ console.warn('ldRemote', e); }
         // someone else saved the project that is open here and nothing is typed: take theirs
         if(NP.cur && NP.cur.id===row.id){
           const lsChanged = JSON.stringify(NP.cur.load_state||{})!==JSON.stringify(row.load_state||{});
@@ -19181,7 +19222,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v349';
+const APP_VER = 'v350';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37477,6 +37518,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 13:49', v:'v350', k:'fix', t:'Rūšiavimas: kito žmogaus pažymėjimai matomi iš karto', f:'Kai keli žmonės rūšiuoja tą patį projektą, vieno pažymėtas „Atrūšiuota“ (ar atšauktas) daiktas kitiems atsiranda per sekundę – nebereikia perkrauti programos. Jei du žmonės pažymi skirtingus daiktus tuo pačiu metu, išsaugomi abu; jei tą patį – galioja vėlesnis.' },
   { d:'2026-10-06 13:37', v:'v349', k:'chg', t:'Projektai → Įranga: grupė pasirenkama paspaudus pavadinimą', f:'Pildant įrangos sąrašą grupę (pvz. „Prietaisai“) pasirinkti galima paspaudus ant jos pavadinimo – nebereikia taikyti į rutuliuką. Pavadinimui pakeisti – pieštuko (✎) mygtukas šalia pavadinimo: Enter išsaugo, Esc atšaukia.' },
   { d:'2026-10-06 13:21', v:'v348', k:'fix', t:'Rūšiavimas / Krovimas telefone: sąrašas slenka sklandžiai', f:'Telefone sąrašai „Reikia atrūšiuoti“ / „Atrūšiuota“ (ir Krovimo sąrašai) nebeturi atskiro mažo slinkimo langelio – slenka visas puslapis, niekas nebeatšoka. Kortelė į šoną (atrūšiuota / kiekis) patraukiama tik aiškiai horizontaliu judesiu, todėl slenkant įstrižai kortelės nebepabėga į šonus ir netyčia nepažymimos.' },
   { d:'2026-10-06 13:17', v:'v347', k:'fix', t:'Telefonas: puslapis vėl slenka normaliai (Rūšiavimas ir kt.)', f:'Telefone kai kuriuose puslapiuose (pvz. Rūšiavimas) puslapis nebeslinko – patraukus atšokdavo atgal. Priežastis: slinkimo užraktas įsijungdavo ir nuo paslėpto, jau uždaryto lango likučio. Dabar užraktas įsijungia tik kai langas tikrai matomas ekrane.' },
