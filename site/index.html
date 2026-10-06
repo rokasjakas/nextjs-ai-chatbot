@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-0vv58+yrUCcQ5c42CVJtmSuzehQ+OsjIbbS3Hcxh1cw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-GJpedhCBq6xYnY76vpJsrPdMj2Tqu6klmwM3uFTaiXk=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4534,7 +4534,8 @@ body.gm-open{overflow:hidden;}
   .gm-slider{display:flex;}
   /* the board keeps its own size at the top, the control strip takes all the free room under it */
   .gm-stage:has(~ .gm-slider){flex:0 0 auto;height:min(52vh, calc((100vw - 24px) / 1.5));}
-  .gm-slider{flex:1 1 auto;height:auto;min-height:150px;width:100%;margin:10px 0 0;box-sizing:border-box;}
+  .gm-slider{flex:0 0 auto;height:clamp(150px, 30vh, 260px);width:100%;margin:auto 0 0;box-sizing:border-box;}
+  .gm-slider .gm-slk{display:none;}
   .gm-box:has(.gm-slider) .gm-pad:empty{display:none;}
 }
 .gm-k{width:58px;height:52px;border-radius:12px;border:1px solid #2b3160;background:#1a2040;color:#fff;font-size:22px;touch-action:none;user-select:none;-webkit-user-select:none;}
@@ -19391,7 +19392,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v364';
+const APP_VER = 'v365';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37735,6 +37736,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 15:36', v:'v365', k:'fix', t:'Pongas telefone: mažesnis valdymo laukas be brūkšnio', f:'Valdymo laukas sumažintas (apie trečdalį ekrano, apačioje – patogu nykščiui), rankenėlės brūkšnys pašalintas.' },
   { d:'2026-10-06 15:34', v:'v364', k:'fix', t:'Pongas telefone: didelis valdymo laukas', f:'Telefone Pongo žaidimo laukas pakeltas į viršų, o valdymo laukas užima visą laisvą vietą po juo – pirštą vesti patogu per visą ekrano apačią.' },
   { d:'2026-10-06 15:29', v:'v363', k:'chg', t:'Pongas telefone: patogesnis valdymas', f:'Telefone Pongo (ir „Pongas 1 prieš 1“) raketės atitrauktos nuo ekrano kraštų, o po žaidimo lauku atsirado atskiras valdymo laukas: vedi pirštą aukštyn / žemyn ir raketė juda kartu – pirštas nebeuždengia žaidimo. Rankenėlė lauke rodo, kur raketė. Kompiuteryje valdymas pele / klavišais – kaip anksčiau.' },
   { d:'2026-10-06 15:22', v:'v362', k:'fix', t:'iPhone: apatinis meniu ir chato rašymas', f:'Apatiniame meniu nebelieka kelių paryškintų mygtukų: paspaudus kitą puslapį, Notes ir Meniu langai užsidaro, „Meniu“ paryškinamas tik kai atidaryto puslapio mygtuko juostoje nėra, o iPhone nebepalieka paspaudimo paryškinimo. Chate telefone pokalbio langas pritvirtintas prie ekrano: rašymo laukelis visada apačioje virš meniu, o paspaudus rašyti – iškart virš klaviatūros; puslapis nebenušoka į viršų ir žinutės lieka matomos.' },
