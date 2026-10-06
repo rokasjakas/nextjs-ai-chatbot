@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-aMPuf92tJMDItwPfsVLLu+ItENSEh6RjOXXYl4YPy8c=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-LMD7kcsNxTXa/asSOvXBHId8aWczNljAUy/a/n+edUY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4906,7 +4906,8 @@ main.has-stickies{position:relative;}
   background:rgb(0 0 0 / .38);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);animation:fadeIn .18s ease-out;}
 .nt-ov.out{opacity:0;transition:opacity .18s;}
 :root[data-theme="light"] .nt-ov{background:rgb(255 255 255 / .35);}
-.nt-ov-in{display:flex;flex-direction:column;gap:12px;padding:14px 14px 24px;max-width:560px;margin:0 auto;}
+/* below the phone's status bar (clock, battery) and a bit lower still */
+.nt-ov-in{display:flex;flex-direction:column;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 28px) 14px 24px;max-width:560px;margin:0 auto;}
 .nt-ov-card{background:color-mix(in srgb, var(--panel) 82%, transparent);border:1px solid rgb(var(--hi-rgb) / .22);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 30px rgb(0 0 0 / .35);}
 .nt-ov-card h3{margin:0;font-size:16px;}
 .nt-ov-quick input,.nt-ov-quick textarea{width:100%;}
@@ -19100,7 +19101,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v334';
+const APP_VER = 'v335';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37173,6 +37174,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 10:10', v:'v335', k:'fix', t:'Telefonas: Notes langas žemiau', f:'Telefone (ypač iPhone) „Notes“ langas nebeprasideda po būsenos juosta (laikrodis, baterija) – naujo užrašo laukelis ir sąrašas pradedami žemiau, su tarpu nuo viršaus.' },
   { d:'2026-10-05 19:52', v:'v334', k:'chg', t:'Ikonos: visur Material Symbols (Outlined Fill)', f:'Patikrinti visi puslapiai, jų skiltys ir langai (kompiuteryje ir telefone): visos ikonos dabar iš „Outlined Fill – Material Symbols“ (Google, Apache 2.0). Pakeistos ne šio rinkinio ikonos: Raktai, Signalizacija, Skaičiuotuvas, Dydis, Notes (telefone), tepalo keitimas, profilaktika, QR kodas, kodo generavimas, Ofiso valymas, Bolt, Wolt, maistas, el. laiškas, žaidimų ikonos ir rezultatų lentelės medaliai, prisijungusių taškas; automobilio QR puslapyje – remontas, įspėjimas, kamera, galerija, sėkmė. Jaustukai palikti tik žmonių žinutėse (chato jaustukų pasirinkimas).' },
   { d:'2026-10-05 19:39', v:'v333', k:'new', t:'Notes: raudonas ✕ ištrinti', f:'Prie kiekvieno užrašo (Notes) dešinėje – raudonas ✕: paspaudus užrašas ištrinamas iš karto (ir nuimamas nuo pagrindinio lango, jei buvo prisegtas). Kelias sekundes rodomas „Atšaukti“ – jei paspausta netyčia, užrašas grąžinamas. Veikia ir kompiuteryje, ir telefono „Notes“ lange.' },
   { d:'2026-10-05 19:37', v:'v332', k:'chg', t:'Bolt: teisės pagal lygius', f:'Bolt ataskaitas mato visi lygiai, išskyrus Freelance ir Runner. Admin – viską: kelionių kainas ir sumas (išskaičiavimus – Admin+). Office – įkelia dokumentus, mato kas ir kiek kelionių atliko, keičia darbo / asmeninė, bet kainų nemato (serveris jų Office nariams neperduoda; Excel ir PDF – be kainų). Projektų vadovai ir Tech – mato tik savo keliones (Ataskaitose ir Išlaidų puslapyje). Wolt – tik Admin. Reikia paleisti supabase/sql/office_bolt4.sql.' },
