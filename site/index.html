@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-YFGE860aI6G1yVE2iwH77bgwFiIObMkXgpC7SzFMr5Y=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-CW1CKH29NXy4CXymRDgdrAsAszIDvqPPtrtCkay59Lg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19136,7 +19136,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v340';
+const APP_VER = 'v341';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37292,6 +37292,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 12:39', v:'v341', k:'fix', t:'Atidarytas meniu ar langelis: paspaudimas šalia jį tik uždaro', f:'Kai atidarytas iššokantis meniu ar langelis (Dydis, ⋯ meniu, pasirinkimų sąrašai, datos parinkimas, „?“ paaiškinimai, laikų / reakcijų parinkimas ir pan.), paspaudus šalia jo – jis tik užsidaro, o po juo esantys mygtukai, nuorodos ir laukeliai nebesureaguoja. Veikia ir telefone, ir kompiuteryje. Skaičiuotuvas ir kalendorius (plaukiojantys langai) puslapio neužblokuoja.' },
   { d:'2026-10-06 12:36', v:'v340', k:'new', t:'Team Tracker: darbo pradžios ir pabaigos vieta', f:'Paspaudus „Pradėti darbą“ ir „Baigti darbą“ užfiksuojama telefono vieta (adresas ir koordinatės). Ji rodoma suvestinėse prie kiekvienos pamainos (paspaudus – atsidaro žemėlapyje), prie paskutinės pamainos ir Excel ataskaitoje. Jei vieta neleista – tai irgi pažymima; darbo pradėti ar baigti tai netrukdo.' },
   { d:'2026-10-06 12:32', v:'v339', k:'chg', t:'„Atnaujinimai“ – tik Super Admin', f:'Mygtukas „Atnaujinimai“ viršutinėje juostoje rodomas tik Super Admin nariams; kiti jo nebemato.' },
   { d:'2026-10-06 12:26', v:'v338', k:'new', t:'Išlaidos: mėnesinis kompensavimo limitas', f:'Nariui galima nustatyti mėnesinį kompensavimo limitą (pvz. 200 € / mėn.) – kas mėnesį jis pridedamas, o nepanaudotas likutis pereina į kitą mėnesį. Pildant išlaidą galima uždėti varnelę „Apmokėti iš sukaupto likučio“ – suma atimama iš likučio (atmesta išlaida jį grąžina). Likutis matomas Išlaidų puslapyje; limitą nustato Admin / Office (Ataskaitos → Darbuotojai → narys → „€ Mėnesinis limitas“).' },
@@ -37555,6 +37556,31 @@ function helpScan(root){
   };
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
+/* while a small popup / menu is open, a tap outside it only closes it: nothing under it reacts
+   (no button press, no link, no field focus). The popups that close on „pointerdown“ close by themselves;
+   the ones that close on „click“ get a click on the empty page instead of the real one. */
+const POP_GUARD_SEL = '.op-pop, .np-menu-pop, .stk-menu, .sel-pop, .xg-pop, .help-pop, .size-pop, .ltd-pop, .ev-more-sheet, #railMoreSheet, .topbar-more.open';
+let popShield = 0;
+function popGuardOpen(){
+  return [...document.querySelectorAll(POP_GUARD_SEL)].filter(el=>{
+    if(!el.isConnected || !el.getClientRects().length) return false;
+    const cs = getComputedStyle(el); return cs.visibility!=='hidden' && cs.display!=='none' && (cs.position==='fixed' || cs.position==='absolute');
+  });
+}
+window.addEventListener('pointerdown', e=>{
+  popShield = 0;
+  if(e.button > 0 || !(e.target instanceof Element)) return;
+  const open = popGuardOpen(); if(!open.length) return;
+  if(open.some(p=>p.contains(e.target))) return;
+  popShield = Date.now();
+}, true);
+window.addEventListener('mousedown', e=>{ if(popShield && Date.now() - popShield < 1500) e.preventDefault(); }, true);
+window.addEventListener('click', e=>{
+  if(!popShield || !e.isTrusted) return;
+  const fresh = Date.now() - popShield < 1500; popShield = 0; if(!fresh) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  document.body.dispatchEvent(new MouseEvent('click', { bubbles:true, cancelable:true, view:window }));
+}, true);
 /* „?“ next to a title: the explanation opens on click (instead of long texts under everything) */
 document.addEventListener('click', e=>{
   const old = document.querySelector('.help-pop');
