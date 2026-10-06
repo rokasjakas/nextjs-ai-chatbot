@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dIm4jrFq9kly2hzG2xRZZokNMIsdPs8CLf7Tz5xiCCM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QNHkxja6nk0+tn3eYScA3F/274afEZYe7pU4HWyMqAw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -5779,6 +5779,8 @@ GROUP_LABEL.subnuoma = 'Subnuoma'; GROUP_COLOR.subnuoma = '#A98BE8'; GROUP_ABBR.
 Object.assign(GROUP_LABEL, { apsvietimas:'Apšvietimas', garsas:'Garsas', video:'Video', santvaros:'Santvaros', kabeliai:'Kabeliai', defenderiai:'Defenderiai', pakylos:'Pakylos', kita:'Kita' });
 Object.assign(GROUP_ABBR, { apsvietimas:'Light', garsas:'Sound', video:'Video', santvaros:'Truss', kabeliai:'Cable', defenderiai:'Def.', pakylos:'Pakyl.', kita:'Kita' });
 Object.assign(GROUP_COLOR, { defenderiai:'#E8B730', kita:'#55606B' });
+// departments used only in Rūšiavimas / Krovimas (from the project's Elektrifikacija and Bendri daiktai)
+Object.assign(GROUP_LABEL, { el:'Elektrifikacija', bendra:'Bendra' }); Object.assign(GROUP_ABBR, { el:'Elektr.', bendra:'Bendra' }); Object.assign(GROUP_COLOR, { el:'#F35E7D', bendra:'#50AD97' });
 const GROUP_ORDER = ['apsvietimas','garsas','video','santvaros','kabeliai','defenderiai','pakylos','kita'];
 const GROUP_LEGACY = { riggingas:'santvaros', elektrifikacija:'kabeliai', papildomai:'kita', converted_containers:'kita' };
 // older saved rows (projects, sessions) may still carry an old key: shown as its new category
@@ -6313,6 +6315,8 @@ function groupIconSvg(group){
     riggingas:'<path d="M12 3v18M5 8l7-5 7 5M5 8v9l7 5 7-5V8"/>',
     pakylos:'<rect x="3" y="13" width="18" height="5" rx="1"/><path d="M7 13V9M17 13V9M4 21h16"/>',
     elektrifikacija:'<path d="M13 2L4 14h7l-1 8 10-13h-7l1-7z"/>',
+    el:'<path d="M13 2L4 14h7l-1 8 10-13h-7l1-7z"/>',
+    bendra:'<path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/>',
     kabeliai:'<path d="M4 8a4 4 0 004 4h8a4 4 0 000 8"/><circle cx="4" cy="8" r="2"/><circle cx="16" cy="20" r="2"/>',
     papildomai:'<rect x="4" y="4" width="16" height="16" rx="3"/>',
     converted_containers:'<rect x="3" y="6" width="18" height="12" rx="1"/><path d="M3 10h18M9 6v12M15 6v12"/>',
@@ -14667,17 +14671,25 @@ async function npPdfBlob(p, o){
    Link to „Projektai“ (public.projects / project_items): every project made here
    gets its own entry there with the equipment list, so Krovimas can load it.
    ============================================================ */
-// the department of a subproject (Šviesa / Garsas / Video) – cables put there are sorted with it, not with „Kabeliai“
-function npSubDept(sub){
-  const n = normalizeText((sub && sub.name) || '');
-  return /sviesa|apsviet|light|lighting/.test(n) ? 'apsvietimas' : /garsas|garso|sound|audio/.test(n) ? 'garsas' : /video/.test(n) ? 'video' : '';
+/* the department an item is sorted with (Rūšiavimas / Krovimas) comes from where it sits in the project:
+   Šviesa / Garsas / Video subproject → that department; in Elektrifikacija by the group („El. Šviesa“ → Šviesa,
+   „El. Video“ → Video, „El. Garsas“ → Garsas, „Bendra“ → Bendra, others → Elektrifikacija); Bendri daiktai → Bendra.
+   No „Kabeliai“: a cable goes with the department it is used for. */
+function npDeptOf(name){
+  const n = normalizeText(name || '');
+  return /sviesa|sviesos|apsviet|light/.test(n) ? 'apsvietimas' : /garsas|garso|sound|audio/.test(n) ? 'garsas' : /video|vaizd/.test(n) ? 'video' : /bendr/.test(n) ? 'bendra' : '';
+}
+function npGroupDept(sub, g){
+  const sn = normalizeText((sub && sub.name) || '');
+  if(/elektr/.test(sn)) return npDeptOf(g && g.name) || 'el';
+  return npDeptOf(sub && sub.name);
 }
 function npLoadData(d){
   const qty = {}, label = {}, deptQ = {};
   const subOf = id=>(d.subs||[]).find(x=>x.id===id);
-  (d.groups||[]).forEach(g=>{ const dept = npSubDept(subOf(g.sub)); (g.items||[]).forEach(r=>{ if(r.bundle || r.item==null || r.item==='') return; const it = getItem(r.item); if(!it) return; qty[it.id] = (qty[it.id]||0) + offerNum(r.qty); if(r.label && !label[it.id]) label[it.id] = r.label;
-    if(it.group==='kabeliai' && dept){ const m = deptQ[it.id] = deptQ[it.id] || {}; m[dept] = (m[dept]||0) + offerNum(r.qty); } }); });
-  // a cable in several departments goes with the one it is used most in
+  (d.groups||[]).forEach(g=>{ const dept = npGroupDept(subOf(g.sub), g); (g.items||[]).forEach(r=>{ if(r.bundle || r.item==null || r.item==='') return; const it = getItem(r.item); if(!it) return; qty[it.id] = (qty[it.id]||0) + offerNum(r.qty); if(r.label && !label[it.id]) label[it.id] = r.label;
+    if(dept){ const m = deptQ[it.id] = deptQ[it.id] || {}; m[dept] = (m[dept]||0) + offerNum(r.qty); } }); });
+  // an item in several departments goes with the one it is used most in
   const deptOf = id=>{ const m = deptQ[id]; if(!m) return ''; return Object.entries(m).sort((a, b)=>b[1]-a[1])[0][0]; };
   // the name given in the project (if any) goes to Rūšiavimas / Krovimas too
   const items = Object.keys(qty).filter(id=>qty[id]>0).map(id=>{ const dp = deptOf(id); return dp ? [id, Math.round(qty[id]), label[id]||'', dp] : label[id] ? [id, Math.round(qty[id]), label[id]] : [id, Math.round(qty[id])]; }).sort((a,b)=>String(a[0]).localeCompare(String(b[0])));
@@ -19353,7 +19365,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v358';
+const APP_VER = 'v359';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37652,6 +37664,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 14:42', v:'v359', k:'chg', t:'Rūšiavimas: skyriai pagal projektą, be „Kabelių“', f:'Rūšiavime ir Krovime daiktai skirstomi pagal tai, kur jie įdėti projekte: Šviesos / Garso / Video subprojektai – į tą skyrių; Elektrifikacijoje – pagal grupę („El. Šviesa“ → Apšvietimas, „El. Video“ → Video, „El. Garsas“ → Garsas, „Bendra“ → Bendra, kitos, pvz. „El. Įvadas“ → Elektrifikacija); Bendri daiktai → Bendra. Atskiro „Kabelių“ skyriaus nebelieka – kabelis keliauja su tuo skyriumi, kuriam naudojamas.' },
   { d:'2026-10-06 14:40', v:'v358', k:'chg', t:'Rūšiavimas: kabeliai priskiriami tam skyriui, kuriame naudojami', f:'Jei kabelis (trišakis, šukos, PowerCon, TrueCon ir pan.) projekte įdėtas į Šviesos (pvz. „DMX/Shuko“), Garso ar Video subprojektą, Rūšiavime ir Krovime jis rodomas prie to skyriaus (Apšvietimas / Garsas / Video), o ne „Kabeliuose“. Elektrifikacijos ir kitų subprojektų kabeliai lieka „Kabeliuose“. Jei tas pats kabelis yra keliuose skyriuose – priskiriamas tam, kur jo daugiausia.' },
   { d:'2026-10-06 14:28', v:'v357', k:'chg', t:'Renginiai: komandos lentelė paprastesnė', f:'Paspaudus ant žmogaus laukelio, žmonių sąrašas nebeiškrenta iš karto – jis atsiranda tik pradėjus rašyti vardą. Mygtukas „+ žmogus“ panaikintas, „+ poz.“ pervadintas į „Pridėti eilutę“. Laisva pozicija – tiesiog tuščias raudonas laukelis (be pilko „LAISVA“ užrašo).' },
   { d:'2026-10-06 14:13', v:'v356', k:'fix', t:'Daiktai su metražu rikiuojami pagal skaičių', f:'Visoje programoje (sandėlis, projektų įranga, krovimas, rūšiavimas ir kiti sąrašai) pavadinimai su skaičiais rikiuojami pagal skaičiaus dydį: 0.5m, 1m, 1.5m, 2m, 3m, 5m, 10m, 15m DMX – nebe 10m prieš 2m. Suprantamos ir dešimtainės (1.5 ir 1,5).' },
