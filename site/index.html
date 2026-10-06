@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/169JQnXFAs7PZm/lVNNCFFuKNnfiJkDSbk0W3P1fBY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-0Of0brND/EHwzpMfp5Ey7j9Hxcum2puAKemoKbRFMRc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -5108,6 +5108,8 @@ body.has-bg:not(.gl-menu) .pageheader,body.has-bg:not(.gl-menu) .topbar{backgrou
 .exp-kpis b{font-size:16px;font-variant-numeric:tabular-nums;} .exp-kpis small{font-size:11px;color:var(--text-dim);}
 .exp-kpis .warn b{color:var(--warn,#F2A93B);} .exp-kpis .bad b{color:var(--danger);}
 .exp-bal.in-rep{margin-top:8px;}
+.exp-bal-two{display:flex;flex-wrap:wrap;gap:4px 18px;align-items:baseline;}
+.exp-choose{display:flex;flex-direction:column;gap:8px;} .exp-choose .btn{justify-content:flex-start;text-align:left;white-space:normal;}
 .exp-allow{padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--border);}
 .exp-chip.allow{background:color-mix(in srgb, var(--accent) 18%, transparent);color:var(--accent);}
 .exp-allow-chk{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:4px 0 10px;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:14px;}
@@ -19141,7 +19143,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v342';
+const APP_VER = 'v343';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35560,8 +35562,8 @@ async function expData(uid, from, to){
   const [ex, cards, comp, pers] = await Promise.all([
     sb.from('expenses').select('*').eq('user_id', uid).gte('spent_on', from).lte('spent_on', to).order('spent_on', { ascending:false }).order('created_at', { ascending:false }),
     sb.from('uta_cards').select('*').eq('assign_kind', 'person').eq('person_id', uid),
-    sb.from('expenses').select('comp').eq('user_id', uid).eq('status', 'ok').not('comp', 'is', null),
-    sb.from('uta_personal').select('tx_id, uta_tx(amount_gross, tx_date)').eq('user_id', uid)]);
+    expTry(sel=>sb.from('expenses').select(sel).eq('user_id', uid).eq('status', 'ok').not('comp', 'is', null), 'comp, comp_unit', 'comp'),
+    expTry(sel=>sb.from('uta_personal').select(sel).eq('user_id', uid), 'tx_id, unit, uta_tx(amount_gross, quantity, tx_date)', 'tx_id, uta_tx(amount_gross, quantity, tx_date)')]);
   if(ex.error) throw new Error(expSqlErr(ex.error));
   const allow = await expAllowLoad(uid);
   const cardIds = (cards.data||[]).map(c=>c.id);
@@ -35570,11 +35572,18 @@ async function expData(uid, from, to){
     const r = await sb.from('uta_tx').select('*').in('card_id', cardIds).gte('tx_date', from).lte('tx_date', to).order('tx_at');
     if(!r.error) tx = r.data||[];
   }
-  const persSet = new Set((pers.data||[]).map(p=>p.tx_id));
-  const compTotal = (comp.data||[]).reduce((s, x)=>s + (+x.comp||0), 0);
-  const persTotal = (pers.data||[]).reduce((s, p)=>s + (+(p.uta_tx && p.uta_tx.amount_gross)||0), 0);
-  return { uid, from, to, exps:ex.data||[], cards:cards.data||[], tx, persSet, compTotal, persTotal, allow, cardsErr:cards.error ? cards.error.message : '' };
+  const persSet = new Set((pers.data||[]).map(p=>p.tx_id)), persUnit = new Map((pers.data||[]).map(p=>[p.tx_id, p.unit==='l' ? 'l' : 'eur']));
+  const isL = x=>x.comp_unit==='l', pL = p=>p.unit==='l';
+  const compTotal = (comp.data||[]).filter(x=>!isL(x)).reduce((s, x)=>s + (+x.comp||0), 0);
+  const compL = (comp.data||[]).filter(isL).reduce((s, x)=>s + (+x.comp||0), 0);
+  const persTotal = (pers.data||[]).filter(p=>!pL(p)).reduce((s, p)=>s + (+(p.uta_tx && p.uta_tx.amount_gross)||0), 0);
+  const persL = (pers.data||[]).filter(pL).reduce((s, p)=>s + (+(p.uta_tx && p.uta_tx.quantity)||0), 0);
+  const unitsOk = !comp.old && !pers.old;
+  return { uid, from, to, exps:ex.data||[], cards:cards.data||[], tx, persSet, persUnit, compTotal, persTotal, compL, persL, unitsOk, allow, cardsErr:cards.error ? cards.error.message : '' };
 }
+// a query with the newer columns first; before sql/expenses_liters.sql is run – without them
+async function expTry(q, sel, old){ const r = await q(sel); if(!r.error) return r; const r2 = await q(old); r2.old = true; return r2; }
+const expLit = n=>fmt(+n||0, 2)+' l';
 // the monthly allowance (sql/expense_allowance.sql): so much is added every month from start_month on,
 // what is not spent moves to the next month; expenses ticked „iš sukaupto likučio“ (not rejected) use it
 const expMonthsSince = start=>{ const [y, m] = String(start||'').slice(0,7).split('-').map(Number), n = new Date(); return y ? Math.max(0, (n.getFullYear()*12 + n.getMonth()) - (y*12 + m - 1) + 1) : 0; };
@@ -35664,10 +35673,10 @@ function expBalHtml(d, match){
   const own = d.exps.filter(e=>e.paid==='own' && e.status!=='rejected').reduce((s, e)=>s + (+e.amount||0), 0);
   const waiting = d.exps.filter(e=>e.status==='new').length;
   const noReason = d.tx.filter(t=>!match.has(t.id) && !d.persSet.has(t.id)).length;
-  const bal = d.compTotal - d.persTotal;
+  const bal = d.compTotal - d.persTotal, balL = d.compL - d.persL, hasL = d.compL > 0 || d.persL > 0;
   return `${expAllowHtml(d.allow)}<div class="exp-bal-h">Sukaupta asmeniniams pylimams</div>
-    <div class="exp-bal-n ${bal < 0 ? 'neg' : ''}">${expMoney(bal)}</div>
-    <div class="exp-bal-s">Kompensacijų iš viso <b>${expMoney(d.compTotal)}</b> · panaudota asmeniniams pylimams <b>${expMoney(d.persTotal)}</b></div>
+    <div class="exp-bal-two"><div class="exp-bal-n ${bal < 0 ? 'neg' : ''}">${expMoney(bal)}</div>${hasL ? `<div class="exp-bal-n ${balL < 0 ? 'neg' : ''}">${expLit(balL)}</div>` : ''}</div>
+    <div class="exp-bal-s">Kompensacijų eurais <b>${expMoney(d.compTotal)}</b> · panaudota <b>${expMoney(d.persTotal)}</b>${hasL ? `<br>Kompensacijų litrais <b>${expLit(d.compL)}</b> · panaudota <b>${expLit(d.persL)}</b>` : ''}</div>
     <div class="exp-kpis">
       <span><b>${expMoney(own)}</b><small>savais pinigais ${d.from.slice(0,7)===d.to.slice(0,7) ? '('+esc(utaMonthName(d.from.slice(0,7)))+')' : 'per laikotarpį'}</small></span>
       <span class="${waiting ? 'warn' : ''}"><b>${waiting}</b><small>laukia patikros</small></span>
@@ -35686,8 +35695,8 @@ function expRowHtml(e, mgr){
       ${recs.length ? `<span class="exp-recs">${recs.map((r, i)=>`<button type="button" class="exp-rec" data-rec="${i}">📎 ${esc(r.name||'kvitas')}</button>`).join('')}</span>` : (e.paid==='own' ? '<span class="exp-recs"><span class="exp-norec">⚠ be kvito</span></span>' : '')}
       ${e.review_note ? `<small class="exp-note">💬 ${esc(e.review_note)}</small>` : ''}</span>
     <span class="exp-amt">${esc(qty)}${per100 ? `<small class="exp-per">${esc(per100)}</small>` : ''}</span>
-    <span class="exp-st"><span class="exp-chip ${st.c}">${st.t}</span>${e.comp!=null ? `<small>kompensacija ${expMoney(e.comp)}</small>` : ''}</span>
-    <span class="exp-acts">${mgr ? `<button type="button" class="btn small" data-rev="ok">✓</button><button type="button" class="btn small" data-rev="comp" title="Kompensacija">€</button><button type="button" class="btn small" data-rev="no" title="Atmesti">✕</button>`
+    <span class="exp-st"><span class="exp-chip ${st.c}">${st.t}</span>${e.comp!=null ? `<small>kompensacija ${e.comp_unit==='l' ? expLit(e.comp) : expMoney(e.comp)}</small>` : ''}</span>
+    <span class="exp-acts">${mgr ? `<button type="button" class="btn small" data-rev="ok">✓</button><button type="button" class="btn small" data-rev="comp" title="Kompensacija (eurais arba litrais)">€ / l</button><button type="button" class="btn small" data-rev="no" title="Atmesti">✕</button>`
       : (e.status==='new' ? `<button type="button" class="icon-btn" data-ed title="Taisyti">✎</button><button type="button" class="icon-btn" data-del title="Ištrinti">🗑</button>` : '')}</span>
   </div>`;
 }
@@ -35696,7 +35705,7 @@ function expTxHtml(d, match, mgr){
   if(!d.tx.length) return '<div class="empty-state">Šiuo laikotarpiu pylimų nėra (arba UTA ataskaita dar neįkelta).</div>';
   return `<div class="exp-tx">${d.tx.map(t=>{
     const e = match.get(t.id), pers = d.persSet.has(t.id), fuel = utaIsFuel(t);
-    const why = pers ? '<span class="exp-chip pers">Asmeninis (iš kompensacijos)</span>'
+    const why = pers ? `<span class="exp-chip pers">Asmeninis (iš kompensacijos${d.persUnit && d.persUnit.get(t.id)==='l' ? ' litrais' : ' eurais'})</span>`
       : e ? `<span class="exp-why ok">✓ ${esc(expWhat(e))}</span>` : '<span class="exp-why bad">⚠ Priežastis nenurodyta</span>';
     return `<div class="exp-txr ${!e && !pers ? 'miss' : ''}" data-tx="${esc(t.id)}">
       <span class="exp-txd"><b>${esc(rpWhen(t.tx_date))}</b><small>${esc(String(t.tx_at||'').slice(11,16))}</small></span>
@@ -35731,7 +35740,12 @@ function expBindTx(box, d, mgr, after){
     };
     const pb = row.querySelector('[data-txpers]'); if(pb) pb.onclick = async ()=>{
       const on = !d.persSet.has(t.id), sb = getSb();
-      const r = on ? await sb.from('uta_personal').insert({ tx_id:t.id, user_id:d.uid }) : await sb.from('uta_personal').delete().eq('tx_id', t.id);
+      let unit = 'eur';
+      if(on && d.unitsOk && d.compL > 0){
+        unit = await expChoose('Iš kurios sukauptos kompensacijos atimti šį pylimą?', [['l', `Iš litrų (${expLit(t.quantity)}; liko ${expLit(d.compL - d.persL)})`], ['eur', `Iš eurų (${expMoney(t.amount_gross)}; liko ${expMoney(d.compTotal - d.persTotal)})`]]);
+        if(!unit) return;
+      }
+      const r = on ? await sb.from('uta_personal').insert(Object.assign({ tx_id:t.id, user_id:d.uid }, d.unitsOk ? { unit } : {})) : await sb.from('uta_personal').delete().eq('tx_id', t.id);
       if(r.error){ toast('Nepavyko: '+expSqlErr(r.error)); return; }
       toast(on ? 'Pažymėta: asmeninis pylimas (atimama iš sukauptos sumos).' : 'Žyma nuimta.');
       if(after) after(); else { await expReload(); expDrawLists(); }
@@ -35896,6 +35910,39 @@ async function rpEmpDraw(box, acts){
     if(r.error){ toast('Nepavyko: '+r.error.message); return; } toast('Patvirtinta.'); again();
   };
 }
+// a small choice dialog: resolves with the chosen key, or null
+function expChoose(q, opts){
+  return new Promise(res=>{
+    openModal(`<h3 style="margin:0 0 10px;">${esc(q)}</h3><div class="exp-choose">${opts.map(([k, l])=>`<button type="button" class="btn" data-ch="${esc(k)}">${esc(l)}</button>`).join('')}</div>
+      <div class="row" style="justify-content:flex-end;margin-top:10px;"><button type="button" class="btn" id="chNo">Atšaukti</button></div>`);
+    let done = false; const fin = v=>{ if(done) return; done = true; closeModal(); res(v); };
+    document.querySelectorAll('[data-ch]').forEach(b=>b.onclick = ()=>fin(b.dataset.ch));
+    document.getElementById('chNo').onclick = ()=>fin(null);
+    const bd = document.getElementById('modalBackdrop'); if(bd) new MutationObserver((m, o)=>{ if(!bd.isConnected){ o.disconnect(); if(!done){ done = true; res(null); } } }).observe(document.body, { childList:true });
+  });
+}
+// the compensation of one expense: euros or litres of fuel
+function expCompAsk(e){
+  return new Promise(res=>{
+    let unit = e.comp!=null ? (e.comp_unit==='l' ? 'l' : 'eur') : 'eur';
+    const defFor = u=>e.comp!=null && (e.comp_unit==='l' ? 'l' : 'eur')===u ? e.comp : u==='l' ? (e.liters!=null ? e.liters : '') : (e.paid==='own' && e.amount!=null ? e.amount : '');
+    const nice = v=>v==='' || v==null ? '' : String(v).replace('.', ',');
+    openModal(`<h3 style="margin:0 0 6px;">Kompensacija</h3>
+      <p class="section-sub" style="margin:0 0 10px;">Už ją narys galės UTA kortele prisipilti kuro savo reikmėms. Tuščia – be kompensacijos.</p>
+      <div class="exp-seg sm" style="margin-bottom:10px;"><button type="button" data-cu="eur">Eurais (€)</button><button type="button" data-cu="l">Litrais (l)</button></div>
+      <label class="field"><span id="cuL"></span><input type="text" inputmode="decimal" id="cuV"></label>
+      <div class="row" style="justify-content:flex-end;gap:8px;margin-top:10px;"><button type="button" class="btn" id="cuNo">Atšaukti</button><button type="button" class="btn primary" id="cuOk">Išsaugoti</button></div>`);
+    const inp = document.getElementById('cuV');
+    const draw = ()=>{ document.querySelectorAll('[data-cu]').forEach(b=>b.classList.toggle('on', b.dataset.cu===unit)); document.getElementById('cuL').textContent = unit==='l' ? 'Kiek litrų kuro' : 'Kiek eurų'; };
+    inp.value = nice(defFor(unit)); draw(); setTimeout(()=>inp.focus(), 30);
+    document.querySelectorAll('[data-cu]').forEach(b=>b.onclick = ()=>{ if(unit===b.dataset.cu) return; unit = b.dataset.cu; inp.value = nice(defFor(unit)); draw(); });
+    let done = false; const fin = v=>{ if(done) return; done = true; closeModal(); res(v); };
+    document.getElementById('cuNo').onclick = ()=>fin(null);
+    document.getElementById('cuOk').onclick = ()=>fin({ n:inp.value.trim() ? offerNum(inp.value) : null, unit });
+    inp.addEventListener('keydown', ev=>{ if(ev.key==='Enter') document.getElementById('cuOk').click(); });
+    const bd = document.getElementById('modalBackdrop'); if(bd) new MutationObserver((m, o)=>{ if(!bd.isConnected){ o.disconnect(); if(!done){ done = true; res(null); } } }).observe(document.body, { childList:true });
+  });
+}
 async function expReview(e, what, after){
   const base = { reviewed_by:teamMe(), reviewed_name:teamName(ACCESS.profile), reviewed_at:new Date().toISOString() };
   let patch = null;
@@ -35906,15 +35953,12 @@ async function expReview(e, what, after){
     patch = Object.assign({ status:'rejected', comp:null, review_note:String(note).trim() || null }, base);
   }
   if(what==='comp'){
-    const def = e.comp!=null ? e.comp : (e.paid==='own' && e.amount!=null ? e.amount : '');
-    const v = await uiAsk('Kompensacija, € (už ją narys galės UTA kortele prisipilti kuro savo reikmėms). Tuščia – be kompensacijos.', { input:true, yes:'Išsaugoti', no:'Atšaukti', value:def===''? '' : String(def).replace('.', ',') });
-    if(v==null || v===false) return;
-    const n = String(v).trim() ? offerNum(v) : null;
-    patch = Object.assign({ status:'ok', comp:n }, base);
+    const c = await expCompAsk(e); if(!c) return;
+    patch = Object.assign({ status:'ok', comp:c.n }, c.n!=null && c.unit ? { comp_unit:c.unit } : {}, base);
   }
   if(!patch) return;
   const r = await getSb().from('expenses').update(patch).eq('id', e.id);
-  if(r.error){ toast('Nepavyko: '+r.error.message); return; }
+  if(r.error){ toast('Nepavyko: '+(/comp_unit/.test(r.error.message) ? 'kompensacijai litrais paleisk supabase/sql/expenses_liters.sql' : r.error.message), 6000); return; }
   toast(what==='no' ? 'Išlaida atmesta.' : what==='comp' ? 'Kompensacija priskirta.' : 'Patvirtinta.');
   if(after) after();
 }
@@ -37297,6 +37341,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 12:44', v:'v343', k:'new', t:'Išlaidos: kompensacija eurais arba litrais', f:'Tvirtinant išlaidą (Ataskaitos → Darbuotojai → narys → „€ / l“) kompensaciją galima skirti eurais arba litrais kuro. Narys mato atskirai sukauptus eurus ir litrus; žymint UTA pylimą kaip asmeninį, pasirenkama, iš ko jį atimti – iš litrų (atimami pylimo litrai) ar iš eurų (atimama pylimo suma).' },
   { d:'2026-10-06 12:43', v:'v342', k:'fix', t:'Telefonas: atidarius langą puslapis po juo nebeslenka', f:'Telefone (ir planšetėje), kol atidarytas bet koks langas, Notes, meniu ar iššokantis sąrašas, puslapis po juo nebeslenka – slenka tik pats langas. Uždarius – puslapis lieka toje pačioje vietoje.' },
   { d:'2026-10-06 12:39', v:'v341', k:'fix', t:'Atidarytas meniu ar langelis: paspaudimas šalia jį tik uždaro', f:'Kai atidarytas iššokantis meniu ar langelis (Dydis, ⋯ meniu, pasirinkimų sąrašai, datos parinkimas, „?“ paaiškinimai, laikų / reakcijų parinkimas ir pan.), paspaudus šalia jo – jis tik užsidaro, o po juo esantys mygtukai, nuorodos ir laukeliai nebesureaguoja. Veikia ir telefone, ir kompiuteryje. Skaičiuotuvas ir kalendorius (plaukiojantys langai) puslapio neužblokuoja.' },
   { d:'2026-10-06 12:36', v:'v340', k:'new', t:'Team Tracker: darbo pradžios ir pabaigos vieta', f:'Paspaudus „Pradėti darbą“ ir „Baigti darbą“ užfiksuojama telefono vieta (adresas ir koordinatės). Ji rodoma suvestinėse prie kiekvienos pamainos (paspaudus – atsidaro žemėlapyje), prie paskutinės pamainos ir Excel ataskaitoje. Jei vieta neleista – tai irgi pažymima; darbo pradėti ar baigti tai netrukdo.' },
