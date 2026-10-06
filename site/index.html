@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-41urb+e+WcPt4SVT6kEDrNaj0Qcm0Uttoeh1IBEu/z8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-hEmgxz2Q4Hwkq+VCQ0Jm+shyVqpP3+EXZWANFUj5ckg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4750,7 +4750,7 @@ body .tabpanel.xg-panel.ev-full{padding-top:calc(10px + env(safe-area-inset-top,
 .cl-hdr[hidden]{display:none !important;}
 /* phones / touch screens: while a popup or a window is open, the page under it does not scroll */
 @media (max-width:760px), (pointer:coarse){
-  html:has(.modal-backdrop:not(.docked-left), .nt-ov, .gs-pop, .of-pop, .nav-menu, .ui-ask, .veh-pop-bd, .ven-lightbox, .fb-lb, .gm-ov, .pp-dial, .size-pop, .sel-pop, .xg-pop, .help-pop, .ltd-pop, .ev-more-sheet, #railMoreSheet, .topbar-more.open, .stk-menu, .np-menu-pop, .op-pop){overflow:hidden !important;overscroll-behavior:none;}
+  html.pop-lock{overflow:hidden !important;overscroll-behavior:none;}
   .modal-backdrop, .modal, .nm-panel, .sel-pop, .xg-pop, .ltd-pop, .size-pop, .gs-pop, .veh-pop-bd, .ui-ask, .ev-more-sheet, #railMoreSheet{overscroll-behavior:contain;}
 }
 .btn.cl-hdr{position:relative;display:inline-flex;align-items:center;gap:6px;} .cl-hdr-i{display:inline-flex;} .cl-hdr-i svg{width:18px;height:18px;}
@@ -19153,7 +19153,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v346';
+const APP_VER = 'v347';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37449,6 +37449,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 13:17', v:'v347', k:'fix', t:'Telefonas: puslapis vėl slenka normaliai (Rūšiavimas ir kt.)', f:'Telefone kai kuriuose puslapiuose (pvz. Rūšiavimas) puslapis nebeslinko – patraukus atšokdavo atgal. Priežastis: slinkimo užraktas įsijungdavo ir nuo paslėpto, jau uždaryto lango likučio. Dabar užraktas įsijungia tik kai langas tikrai matomas ekrane.' },
   { d:'2026-10-06 12:57', v:'v346', k:'chg', t:'Išlaidos: sukaupta eurais ir litrais – dvi sumos', f:'Kortelėje „Sukaupta asmeniniams pylimams“ visada rodomos dvi sumos: kiek sukaupta eurais ir kiek litrais (kiekvienai – sukaupta ir panaudota).' },
   { d:'2026-10-06 12:51', v:'v345', k:'new', t:'Išlaidos: kuras iš sukaupto likučio ir likučio sudėtis', f:'Kiekvienas narys Išlaidų puslapyje gali paspausti „Pasipildžiau iš likučio“ ir pažymėti, kad prisipylė kuro iš sukaupto likučio (atimti iš litrų arba eurų; daugiau nei liko – neleidžiama). „Iš ko susideda likutis“ parodo visas kompensacijas (+), asmeninius UTA pylimus ir pylimus iš likučio (−) bei mėnesinį limitą. Admin+ nariai tai mato ir prie kiekvieno nario (Ataskaitos → Darbuotojai – paspaudus sukauptą sumą arba nario kortelėje).' },
   { d:'2026-10-06 12:48', v:'v344', k:'new', t:'Išlaidos: narys pats taiso ir trina savo išlaidas; sukauptos kompensacijos prie narių', f:'Narys gali bet kada pataisyti (✎) ar ištrinti (🗑) savo pateiktą išlaidą, taip pat pašalinti netinkamą kvitą. Jei išlaida jau buvo patikrinta, pataisius ji vėl laukia vadovo patikros, o priskirta kompensacija nuimama (prieš tai paklausiama). Ataskaitos → Darbuotojai sąraše prie kiekvieno nario rodoma, kiek sukaupta kompensacijų – eurais ir / ar litrais; nario kortelėje rodomas tik naudojamas vienetas.' },
@@ -37723,6 +37724,22 @@ function helpScan(root){
    the ones that close on „click“ get a click on the empty page instead of the real one. */
 const POP_GUARD_SEL = '.op-pop, .np-menu-pop, .stk-menu, .sel-pop, .xg-pop, .help-pop, .size-pop, .ltd-pop, .ev-more-sheet, #railMoreSheet, .topbar-more.open';
 let popShield = 0;
+/* phones: the page does not scroll while a popup / window is really on the screen (a hidden or left-over
+   element does not count) – html.pop-lock, see the CSS */
+const POP_LOCK_SEL = '.modal-backdrop:not(.docked-left), .nt-ov, .gs-pop, .of-pop, .nav-menu, .ui-ask, .veh-pop-bd, .ven-lightbox, .fb-lb, .gm-ov, .pp-dial, .size-pop, .sel-pop, .xg-pop, .help-pop, .ltd-pop, .ev-more-sheet, #railMoreSheet, .topbar-more.open, .stk-menu, .np-menu-pop, .op-pop';
+let popLockQ = false;
+function popLockSync(){
+  popLockQ = false;
+  const on = [...document.querySelectorAll(POP_LOCK_SEL)].some(el=>{
+    if(!el.getClientRects().length) return false;
+    const cs = getComputedStyle(el); if(cs.visibility==='hidden' || cs.display==='none' || +cs.opacity===0) return false;
+    const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight;
+  });
+  document.documentElement.classList.toggle('pop-lock', on);
+}
+new MutationObserver(()=>{ if(!popLockQ){ popLockQ = true; requestAnimationFrame(popLockSync); } })
+  .observe(document.documentElement, { childList:true, subtree:true, attributes:true, attributeFilter:['class', 'style', 'hidden'] });
+
 function popGuardOpen(){
   return [...document.querySelectorAll(POP_GUARD_SEL)].filter(el=>{
     if(!el.isConnected || !el.getClientRects().length) return false;
