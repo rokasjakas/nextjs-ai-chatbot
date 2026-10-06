@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-uE3U8rvNH/9dIrSxUPvkXvMgWb7OD9qND1L2G0p6q2c=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-YFGE860aI6G1yVE2iwH77bgwFiIObMkXgpC7SzFMr5Y=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3096,6 +3096,11 @@ main.buy-full{padding:0;max-width:none;}
 .tt-shift summary b{font-variant-numeric:tabular-nums;min-width:84px;text-align:right;}
 .tt-shift[open] summary{border-bottom:1px solid var(--border);}
 .tt-shift .tt-segs{padding:8px;}
+.tt-locs{display:flex;flex-wrap:wrap;gap:6px 14px;padding:8px 12px 0;font-size:12.5px;}
+.tt-loc{display:inline-flex;align-items:center;gap:5px;color:var(--text-dim);text-decoration:none;min-width:0;}
+.tt-loc b{color:var(--text);font-weight:600;} a.tt-loc:hover b{text-decoration:underline;}
+.tt-loc svg{width:15px;height:15px;flex:none;color:var(--accent);} .tt-loc.none svg{color:var(--text-dim);}
+.tt-sh-loc{display:inline-flex;align-items:center;gap:2px;margin-left:8px;color:var(--text-dim);font-size:11.5px;} .tt-sh-loc svg{width:12px;height:12px;}
 .tt-pill{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border-radius:999px;border:1.5px solid var(--tc);background:color-mix(in srgb, var(--tc) 18%, transparent);color:var(--text);font:inherit;font-size:13px;cursor:pointer;align-self:center;}
 .tt-pill b{font-variant-numeric:tabular-nums;}
 .tt-pill-k{color:var(--text-dim);}
@@ -19131,7 +19136,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v339';
+const APP_VER = 'v340';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35153,6 +35158,41 @@ async function ttRpc(fn, args){
   if(data && data.error){ const e = new Error(data.error); e.auth = !!data.auth; throw e; }
   return data;
 }
+/* where the work started / ended (sql/tracker_loc.sql): the phone's location + a short address */
+function ttGeo(){
+  return new Promise(res=>{
+    if(!navigator.geolocation) return res({ err:'none' });
+    navigator.geolocation.getCurrentPosition(p=>res({ lat:+p.coords.latitude.toFixed(6), lng:+p.coords.longitude.toFixed(6), acc:Math.round(p.coords.accuracy||0) }),
+      e=>res({ err:e && e.code===1 ? 'denied' : 'fail' }), { enableHighAccuracy:true, timeout:15000, maximumAge:60000 });
+  });
+}
+async function ttAddr(lat, lng){
+  const ac = new AbortController(), tm = setTimeout(()=>ac.abort(), 6000);
+  try{
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&accept-language=lt&lat=${lat}&lon=${lng}`, { signal:ac.signal });
+    const j = await r.json(), a = j.address || {};
+    const street = [a.road || a.pedestrian || a.footway || a.neighbourhood, a.house_number].filter(Boolean).join(' ');
+    const town = a.city || a.town || a.village || a.municipality || a.county || '';
+    return [street, town].filter(Boolean).join(', ') || String(j.display_name||'').split(',').slice(0, 3).join(',').trim();
+  }catch(e){ return ''; } finally{ clearTimeout(tm); }
+}
+// taken when the button is pressed, sent after the shift is saved; never stops the work from starting / ending
+function ttLocTake(){ return ttGeo().then(async g=>{ if(g.lat!=null) g.addr = await ttAddr(g.lat, g.lng); return g; }); }
+async function ttLocSend(m, which, take, late){
+  try{
+    const g = await take; if(late) g.late = true;
+    await ttRpc('tt_loc', { m, p_token:ttTok(m), p_which:which, p_loc:g });
+    if(g.err==='denied') toast('📍 Vieta neužfiksuota – leisk naršyklei naudoti tavo vietą (lokaciją).', 5000);
+    if(TT.view===m && currentTab==='tracker'){ await ttLoadReport(); ttRenderReport(); }
+  }catch(e){ console.warn('tt_loc', e && e.message); }
+}
+function ttLocHtml(l, what){
+  if(!l) return '';
+  if(l.lat==null) return `<span class="tt-loc none">${slIcon('pin')} ${what}: ${l.err==='denied' ? 'vieta neleista' : 'vietos nepavyko nustatyti'}</span>`;
+  const url = `https://www.google.com/maps?q=${l.lat},${l.lng}`;
+  return `<a class="tt-loc" href="${esc(url)}" target="_blank" rel="noopener" title="Atidaryti žemėlapyje${l.acc ? ' (tikslumas ±'+l.acc+' m)' : ''}">${slIcon('pin')} ${what}: <b>${esc(l.addr || (l.lat+', '+l.lng))}</b>${l.late ? ' <small>(užfiksuota vėliau)</small>' : ''}</a>`;
+}
+const ttLocTxt = l=>!l ? '' : l.lat==null ? (l.err==='denied' ? 'neleista' : 'nenustatyta') : (l.addr ? l.addr+' ' : '')+'('+l.lat+', '+l.lng+')';
 // a sign-in key that no longer works (member deleted, signed out elsewhere) is forgotten
 function ttForget(m){ const d = ttDev(); delete d.tokens[m]; if(d.cur===m) d.cur = Object.keys(d.tokens)[0] || null; ttDevSave(); if(TT.state && TT.state.member && TT.state.member.id===m) TT.state = null; }
 
@@ -35311,11 +35351,13 @@ function ttRenderClock(full){
       <button class="tt-go" id="ttStart" style="--tc:${TT_K[pick].c}">${slIcon('play')}<span>Pradėti darbą</span><small>${esc(TT_K[pick].t)}</small></button>
       ${last ? `<div class="tt-last"><div class="tt-last-h"><b>Paskutinė pamaina</b><span>${esc(ttDay(last.started_at))} · ${esc(ttTime(last.started_at))} – ${esc(ttTime(last.ended_at))}</span></div>
         <div class="tt-big2"><div><small>Pradirbta</small><b>${esc(ttHm(sm.work))}</b></div>${sm.brk ? `<div><small>Pertraukos</small><b>${esc(ttHm(sm.brk))}</b></div>` : ''}</div>
-        ${ttBars(sm.by, sm.work + sm.brk)}</div>` : ''}`;
+        ${ttBars(sm.by, sm.work + sm.brk)}
+        ${last.start_loc || last.end_loc ? `<div class="tt-locs" style="padding:8px 0 0;">${ttLocHtml(last.start_loc, 'Pradėta')}${ttLocHtml(last.end_loc, 'Baigta')}</div>` : ''}</div>` : ''}`;
     box.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ TT.pick = b.dataset.pick; ttRenderClock(true); });
     document.getElementById('ttStart').onclick = async e=>{
       e.currentTarget.disabled = true;
-      try{ TT.state = await ttRpc('tt_start', { m:d.cur, p_token:ttTok(d.cur), p_kind:pick }); TT.pick = null; toast('▶ Darbas pradėtas: '+TT_K[pick].t+'.'); }
+      const take = ttLocTake(), mm = d.cur;
+      try{ TT.state = await ttRpc('tt_start', { m:d.cur, p_token:ttTok(d.cur), p_kind:pick }); TT.pick = null; toast('▶ Darbas pradėtas: '+TT_K[pick].t+'.'); ttLocSend(mm, 'start', take); }
       catch(err){ if(err.auth) ttForget(d.cur); toast(err.message); }
       ttPill(); ttRenderClock(true); if(TT.view===d.cur){ await ttLoadReport(); ttRenderReport(); }
     };
@@ -35342,8 +35384,10 @@ function ttRenderClock(full){
       ttPill(); ttRenderClock(true);
     });
     const stop = async at=>{
+      const take = ttLocTake(), mm = d.cur;
       try{ TT.state = await ttRpc('tt_stop', { m:d.cur, p_token:ttTok(d.cur), p_at:at || null }); }
       catch(err){ if(err.auth) ttForget(d.cur); toast(err.message); return; }
+      ttLocSend(mm, 'end', take, !!at);
       const l = TT.state.last, sm2 = l ? ttSum(l.entries) : null;
       toast(sm2 ? `■ Darbas baigtas: pradirbta ${ttHm(sm2.work)}.` : '■ Darbas baigtas.', 6000);
       ttPill(); ttRenderClock(true); if(TT.view===d.cur){ await ttLoadReport(); ttRenderReport(); }
@@ -35440,8 +35484,9 @@ function ttRenderReport(){
       ${ttBars(all.by, all.work + all.brk)}
       <h3 class="tt-h3">Pamainos</h3>
       <div class="tt-shifts">${shifts.map(s=>{ const sm = ttSum(s.entries);
-        return `<details class="tt-shift"><summary><span class="tt-sh-d">${esc(ttDay(s.started_at))}</span><span class="tt-sh-t">${esc(ttTime(s.started_at))} – ${s.ended_at ? esc(ttTime(s.ended_at)) : '<i>vyksta</i>'}</span>
+        return `<details class="tt-shift"><summary><span class="tt-sh-d">${esc(ttDay(s.started_at))}</span><span class="tt-sh-t">${esc(ttTime(s.started_at))} – ${s.ended_at ? esc(ttTime(s.ended_at)) : '<i>vyksta</i>'}${s.start_loc && s.start_loc.lat!=null ? `<small class="tt-sh-loc" title="Pradžios vieta">${slIcon('pin')}${esc(String(s.start_loc.addr||'').split(',').pop().trim() || 'vieta')}</small>` : ''}</span>
           <span class="tt-stack sm">${TT_KINDS.filter(k=>sm.by[k.k]).map(k=>`<span style="flex:${sm.by[k.k]};background:${k.c}"></span>`).join('')}</span><b>${esc(ttHm(sm.work))}</b></summary>
+          ${s.start_loc || s.end_loc ? `<div class="tt-locs">${ttLocHtml(s.start_loc, 'Pradėta')}${ttLocHtml(s.end_loc, 'Baigta')}</div>` : ''}
           ${ttSegs(s.entries)}</details>`; }).join('') || '<div class="tt-none">Šiuo laikotarpiu pamainų nėra.</div>'}</div>`;
   }
   const mine = m && (ttTok(m) || admin || ((TT.members||[]).find(x=>x.id===m)||{}).mine);
@@ -35479,7 +35524,7 @@ function ttRenderReport(){
   if(xls) xls.onclick = ()=>libNeed('xlsx').then(ok=>{
     if(!ok){ toast('Nepavyko įkelti Excel įrankio.'); return; }
     const rows = [];
-    (TT.report.shifts||[]).slice().reverse().forEach(s=>s.entries.forEach(e=>rows.push({ 'Data':new Date(e.started_at).toLocaleDateString('lt-LT'), 'Veikla':(TT_K[e.kind]||{}).t||e.kind, 'Nuo':ttTime(e.started_at), 'Iki':e.ended_at ? ttTime(e.ended_at) : 'vyksta', 'Valandos':Math.round(ttMs(e)/36e3)/100 })));
+    (TT.report.shifts||[]).slice().reverse().forEach(s=>s.entries.forEach(e=>rows.push({ 'Data':new Date(e.started_at).toLocaleDateString('lt-LT'), 'Veikla':(TT_K[e.kind]||{}).t||e.kind, 'Nuo':ttTime(e.started_at), 'Iki':e.ended_at ? ttTime(e.ended_at) : 'vyksta', 'Valandos':Math.round(ttMs(e)/36e3)/100, 'Pradžios vieta':ttLocTxt(s.start_loc), 'Pabaigos vieta':ttLocTxt(s.end_loc) })));
     const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Laikas');
     XLSX.writeFile(wb, `Team Tracker - ${ttName(m)} ${f.toLocaleDateString('lt-LT')}–${new Date(+t-1).toLocaleDateString('lt-LT')}.xlsx`);
   });
@@ -37247,6 +37292,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 12:36', v:'v340', k:'new', t:'Team Tracker: darbo pradžios ir pabaigos vieta', f:'Paspaudus „Pradėti darbą“ ir „Baigti darbą“ užfiksuojama telefono vieta (adresas ir koordinatės). Ji rodoma suvestinėse prie kiekvienos pamainos (paspaudus – atsidaro žemėlapyje), prie paskutinės pamainos ir Excel ataskaitoje. Jei vieta neleista – tai irgi pažymima; darbo pradėti ar baigti tai netrukdo.' },
   { d:'2026-10-06 12:32', v:'v339', k:'chg', t:'„Atnaujinimai“ – tik Super Admin', f:'Mygtukas „Atnaujinimai“ viršutinėje juostoje rodomas tik Super Admin nariams; kiti jo nebemato.' },
   { d:'2026-10-06 12:26', v:'v338', k:'new', t:'Išlaidos: mėnesinis kompensavimo limitas', f:'Nariui galima nustatyti mėnesinį kompensavimo limitą (pvz. 200 € / mėn.) – kas mėnesį jis pridedamas, o nepanaudotas likutis pereina į kitą mėnesį. Pildant išlaidą galima uždėti varnelę „Apmokėti iš sukaupto likučio“ – suma atimama iš likučio (atmesta išlaida jį grąžina). Likutis matomas Išlaidų puslapyje; limitą nustato Admin / Office (Ataskaitos → Darbuotojai → narys → „€ Mėnesinis limitas“).' },
   { d:'2026-10-06 10:51', v:'v337', k:'fix', t:'Telefonas: apatinis meniu be tuščio tarpo', f:'Apatinis meniu telefone (iPhone) nebepalieka didelio tuščio tarpo po mygtukais – lieka tik tiek vietos, kiek reikia iPhone brūkšniui apačioje. Pranešimai ir Notes langas prisitaiko prie naujo aukščio.' },
