@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-PcWs2Uv+KqOY0KKxAe8gMS4h/3eDWR5Ojl4cPa/tFfc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-VhzeszJr4eBaL2dixDmzV0PjZrB7ISaZOupkEqMmhW8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -9897,7 +9897,7 @@ function renderSortTab(){
     </div>
     ${proj && !rp ? `<div class="section-sub" style="margin-top:8px;">Rūšiuojamas krovinys: <b>${esc(proj.name)}</b></div>` : ''}
     <div class="sort-grps" id="sortGrps"></div></div>
-    ${proj ? `<div class="cargo-panel" id="sortList" style="margin-top:14px;"></div><div id="smallItemsWrap" style="margin-top:14px;"></div>`
+    ${proj ? `<div class="cargo-panel" id="sortList" style="margin-top:14px;"></div>`
       : `<div class="card empty-state" style="margin-top:14px;">Pasirink projektą – čia bus jo įrangos sąrašas rūšiavimui.</div>`}
   </div>`;
   document.getElementById('sortProj').onchange = async e=>{
@@ -9911,12 +9911,13 @@ function renderSortTab(){
   const op = document.getElementById('sortOpenProj'); if(op) op.onclick = ()=>{ setTab('newproj'); npOpen(rp.id); };
   document.getElementById('sortBack').onclick = ldBackToProject;
   const gl = document.getElementById('sortGoLoad'); if(gl) gl.onclick = ()=>setTab('load');
-  if(proj){ sortRenderList(); renderSmallItems(); ldCloudPull(); }
+  if(proj){ sortRenderList(); ldCloudPull(); }
 }
 function sortRenderList(){
   const wrap = document.getElementById('sortList'); if(!wrap) return;
   { const pj = activeProject(); if(pj && !pj.sortedLast) pj.sortedLast = Object.assign({}, ldSorted()); }   // marks made before this version: no new time
-  const small = smallItemIds(), all = curLoadList().filter(r=>r.qty>0 && !isSmallRow(r, small)), srt = ldSorted();
+  // everything in one list – cables and small things too (the boxes for them are made later, in Krovimas)
+  const all = curLoadList().filter(r=>r.qty>0 && !isSmallBoxRow(r)), srt = ldSorted();
   // departments present in this list: Garsas, Video, Šviesa…
   const grps = GROUP_ORDER.filter(g=>all.some(r=>r.groupKey===g)).concat([...new Set(all.map(r=>r.groupKey))].filter(g=>g && !GROUP_ORDER.includes(g)));
   if(LD.sortGrp && !grps.includes(LD.sortGrp)) LD.sortGrp = '';
@@ -9941,7 +9942,7 @@ function sortRenderList(){
       <button type="button" class="ld-tog ${isDone?'undo':''}" data-ptog="${esc(r.rowId)}" title="${isDone?'Grąžinti':'Pažymėti kaip atrūšiuotą'}">${isDone?'↺':'+'}</button>
     </div>`; };
   wrap.innerHTML = `<div class="row between"><h2 class="section-title" style="margin:0;">Rūšiavimas${LD.sortGrp ? ' — '+esc(GROUP_LABEL[LD.sortGrp]||LD.sortGrp) : ''}</h2><span class="count-badge">${ready} / ${units}</span></div>
-    <p class="section-sub" style="margin:2px 0 0;">${LD_TOUCH ? 'Perbrauk daiktą į dešinę – atrūšiuota, į kairę – pataisyti kiekį.' : 'Spausk + – atrūšiuota, ± – pataisyti kiekį.'} Smulkius daiktus ir kabelius sudėk į dėžes apačioje.</p>
+    <p class="section-sub" style="margin:2px 0 0;">${LD_TOUCH ? 'Perbrauk daiktą į dešinę – atrūšiuota, į kairę – pataisyti kiekį.' : 'Spausk + – atrūšiuota, ± – pataisyti kiekį.'}</p>
     <div class="ld-prog"><i style="width:${units ? Math.round(ready/units*100) : 0}%"></i></div>
     <div class="checklist-group"><button class="checklist-group-header open" data-pg="todo"><span class="chevron">▸</span> Reikia atrūšiuoti <span class="count-badge">${todo.length}</span></button>
       <div class="checklist-group-body">${todo.map(r=>card(r, false)).join('') || `<div class="empty-state" style="padding:14px;">${rows.length ? 'Viskas atrūšiuota.' : 'Sąrašas tuščias.'}</div>`}</div></div>
@@ -19222,7 +19223,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v350';
+const APP_VER = 'v351';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37518,6 +37519,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 13:52', v:'v351', k:'chg', t:'Rūšiavimas: kabeliai ir smulkūs daiktai – tame pačiame sąraše', f:'Rūšiavime kabeliai ir smulkūs daiktai nebėra perkeliami į atskirą „Smulkūs daiktai ir kabeliai“ skiltį – jie rūšiuojami tame pačiame sąraše kaip ir visa kita įranga (su skyrių filtrais, pvz. „Kabeliai“). Dėžės smulkiems daiktams sudaromos Krovime, kaip ir anksčiau.' },
   { d:'2026-10-06 13:49', v:'v350', k:'fix', t:'Rūšiavimas: kito žmogaus pažymėjimai matomi iš karto', f:'Kai keli žmonės rūšiuoja tą patį projektą, vieno pažymėtas „Atrūšiuota“ (ar atšauktas) daiktas kitiems atsiranda per sekundę – nebereikia perkrauti programos. Jei du žmonės pažymi skirtingus daiktus tuo pačiu metu, išsaugomi abu; jei tą patį – galioja vėlesnis.' },
   { d:'2026-10-06 13:37', v:'v349', k:'chg', t:'Projektai → Įranga: grupė pasirenkama paspaudus pavadinimą', f:'Pildant įrangos sąrašą grupę (pvz. „Prietaisai“) pasirinkti galima paspaudus ant jos pavadinimo – nebereikia taikyti į rutuliuką. Pavadinimui pakeisti – pieštuko (✎) mygtukas šalia pavadinimo: Enter išsaugo, Esc atšaukia.' },
   { d:'2026-10-06 13:21', v:'v348', k:'fix', t:'Rūšiavimas / Krovimas telefone: sąrašas slenka sklandžiai', f:'Telefone sąrašai „Reikia atrūšiuoti“ / „Atrūšiuota“ (ir Krovimo sąrašai) nebeturi atskiro mažo slinkimo langelio – slenka visas puslapis, niekas nebeatšoka. Kortelė į šoną (atrūšiuota / kiekis) patraukiama tik aiškiai horizontaliu judesiu, todėl slenkant įstrižai kortelės nebepabėga į šonus ir netyčia nepažymimos.' },
