@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-jxV1EEWLsiisx9bWA55svOOTb1fjGb0S98SyKGich5M=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/a8v9OGQchTfcC1bTjPb3UoCpIkxcBRNwGgOcm69Ix8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4528,7 +4528,7 @@ body.gm-open{overflow:hidden;}
 .gm-pad{display:none;justify-content:center;gap:10px;flex-wrap:wrap;}
 .gm-slider{display:none;position:relative;height:150px;flex:none;margin:6px auto 0;width:min(100%, 420px);border-radius:16px;border:1px solid #2b3160;background:linear-gradient(#141a36,#1a2040);touch-action:none;user-select:none;-webkit-user-select:none;align-items:center;justify-content:center;}
 .gm-slider span{color:#8a93b8;font-size:12.5px;pointer-events:none;}
-.gm-stage canvas.race3d{position:absolute;z-index:0;border-radius:10px;box-shadow:none;}
+.gm-stage canvas.race3d{position:absolute;z-index:0;border-radius:10px;box-shadow:none;} .gm-stage canvas.race-px{image-rendering:pixelated;}
 .gm-stage:has(canvas.race3d) #gmCv{position:relative;z-index:1;box-shadow:none;}
 .gm-csbox .gm-stage canvas.cs-hud{cursor:crosshair;} .gm-bots{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#cfd4ea;}
 .gm-rlist{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;font-size:13px;} .gm-rc{border:1px solid var(--c);color:var(--c);border-radius:999px;padding:2px 9px;font-weight:700;}
@@ -19401,7 +19401,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v368';
+const APP_VER = 'v369';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32926,21 +32926,41 @@ function gmRoomBar(html){ const el = document.getElementById('gmMpBar'); if(el) 
 // a win is one point in the „keliese“ table
 function gmMpWin(game){ gmSaveScore(game, 1); }
 const GM_MP_MAKE = {};
-/* ---- Lenktynės: trasa iš viršaus, 3 ratai. Vienam – prieš 3 kompiuterio mašinas, keliese – iki 10 žaidėjų.
+/* ---- Lenktynės (retro stiliumi, 3D iš už mašinos), 3 ratai. Kiekvienoms lenktynėms – nauja trasa (iš „sėklos“,
+   keliese visi gauna tą pačią). Iš trasos išvažiuoti negalima – kraštuose bortai.
    Kompiuteryje: ← → vairuoti, ↑ dujos, ↓ stabdis. Telefone: dujos pačios, vairuoji slinkdamas pirštą
    kairėn / dešinėn valdymo lauke po trasa. ---- */
 const RACE_LAPS = 3, RACE_W = 640, RACE_H = 440, RACE_HW = 34;
-const RACE_COLORS = ['#ff6b6b','#4dabf7','#ffd43b','#69db7c','#da77f2','#ff922b','#3bc9db','#f783ac','#a9e34b','#e9ecef'];
+const RACE_COLORS = ['#e03131','#4dabf7','#fab005','#40c057','#be4bdb','#fd7e14','#15aabf','#f06595','#82c91e','#e9ecef'];
 let RACE_T = null;
-function raceTrack(){
-  if(RACE_T) return RACE_T;
-  const P = [[90,360],[88,250],[96,140],[150,74],[260,70],[330,120],[350,190],[420,210],[470,150],[530,84],[590,110],[600,200],[560,270],[470,300],[440,350],[480,395],[420,415],[250,412],[140,405]];
-  const pts = [], n = P.length;
-  for(let i=0;i<n;i++){ const p0 = P[(i-1+n)%n], p1 = P[i], p2 = P[(i+1)%n], p3 = P[(i+2)%n];
-    for(let k=0;k<12;k++){ const t = k/12, t2 = t*t, t3 = t2*t;
-      pts.push([0, 1].map(j=>0.5*((2*p1[j]) + (-p0[j]+p2[j])*t + (2*p0[j]-5*p1[j]+4*p2[j]-p3[j])*t2 + (-p0[j]+3*p1[j]-3*p2[j]+p3[j])*t3))); } }
-  const cum = [0]; for(let i=1;i<=pts.length;i++){ const a = pts[i-1], b = pts[i%pts.length]; cum.push(cum[i-1] + Math.hypot(b[0]-a[0], b[1]-a[1])); }
-  return RACE_T = { pts, cum, L:cum[pts.length] };
+const raceRng = seed=>{ let a = seed >>> 0 || 1; return ()=>{ a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; };
+// a new closed track from a seed: points around an ellipse with random radii, smoothed; tried again if it would touch itself
+function raceTrack(seed){
+  seed = seed==null ? 7 : seed;
+  if(RACE_T && RACE_T.seed===seed) return RACE_T;
+  const W = 1600, H = 1100;
+  for(let tryN = 0; tryN < 30; tryN++){
+    const rnd = raceRng(seed*31 + tryN*977 + 1), N = 10 + Math.floor(rnd()*5), cx = W/2, cy = H/2;
+    let f = Array.from({ length:N }, ()=>0.5 + rnd()*0.5); f = f.map((v, i)=>0.6*v + 0.2*f[(i+N-1)%N] + 0.2*f[(i+1)%N]);
+    const P = f.map((v, i)=>{ const a = (i + (rnd()-0.5)*0.5)/N*Math.PI*2; return [cx + Math.cos(a)*W*0.43*v, cy + Math.sin(a)*H*0.41*v]; });
+    let pts = [];
+    for(let i=0;i<N;i++){ const p0 = P[(i-1+N)%N], p1 = P[i], p2 = P[(i+1)%N], p3 = P[(i+2)%N];
+      for(let k=0;k<16;k++){ const t = k/16, t2 = t*t, t3 = t2*t;
+        pts.push([0, 1].map(j=>0.5*((2*p1[j]) + (-p0[j]+p2[j])*t + (2*p0[j]-5*p1[j]+4*p2[j]-p3[j])*t2 + (-p0[j]+3*p1[j]-3*p2[j]+p3[j])*t3))); } }
+    // the track must not come close to itself
+    const n = pts.length; let ok = true;
+    for(let i=0;i<n && ok;i+=3) for(let j=i+24;j<n;j+=3){ if((n - j + i) < 24) continue; if(Math.hypot(pts[i][0]-pts[j][0], pts[i][1]-pts[j][1]) < RACE_HW*2 + 40){ ok = false; break; } }
+    if(!ok) continue;
+    // the start on the straightest piece
+    const turn = i=>{ const a = pts[(i-6+n)%n], b = pts[i], c = pts[(i+6)%n]; let d = Math.atan2(c[1]-b[1], c[0]-b[0]) - Math.atan2(b[1]-a[1], b[0]-a[0]); while(d > Math.PI) d -= 2*Math.PI; while(d < -Math.PI) d += 2*Math.PI; return d; };
+    let best = 0, bv = 9; for(let i=0;i<n;i++){ let s = 0; for(let k=-10;k<=10;k+=5) s += Math.abs(turn((i+k+n)%n)); if(s < bv){ bv = s; best = i; } }
+    pts = pts.slice(best).concat(pts.slice(0, best));
+    const cum = [0]; for(let i=1;i<=n;i++){ const a = pts[i-1], b = pts[i%n]; cum.push(cum[i-1] + Math.hypot(b[0]-a[0], b[1]-a[1])); }
+    const T = { seed, W, H, pts, cum, L:cum[n] };
+    T.turn = pts.map((_, i)=>turn(i));
+    return RACE_T = T;
+  }
+  return RACE_T = raceTrack(seed + 1);
 }
 function raceAt(T, s){
   s = ((s % T.L) + T.L) % T.L; let lo = 0, hi = T.pts.length - 1;
@@ -32949,150 +32969,84 @@ function raceAt(T, s){
   return { x:a[0] + (b[0]-a[0])*f, y:a[1] + (b[1]-a[1])*f, a:Math.atan2(b[1]-a[1], b[0]-a[0]) };
 }
 function raceProj(T, x, y){
-  let best = { d:1e9, s:0 };
+  let best = { d:1e9, s:0, px:x, py:y };
   for(let i=0;i<T.pts.length;i++){ const a = T.pts[i], b = T.pts[(i+1) % T.pts.length], dx = b[0]-a[0], dy = b[1]-a[1], l2 = dx*dx + dy*dy || 1;
     const t = Math.max(0, Math.min(1, ((x-a[0])*dx + (y-a[1])*dy) / l2)), px = a[0] + dx*t, py = a[1] + dy*t, d = Math.hypot(x-px, y-py);
-    if(d < best.d) best = { d, s:T.cum[i] + Math.sqrt(l2)*t }; }
+    if(d < best.d) best = { d, s:T.cum[i] + Math.sqrt(l2)*t, px, py }; }
   return best;
 }
 function raceCar(T, slot, color, name){
   const s0 = T.L - 30 - Math.floor(slot/2)*30, p = raceAt(T, s0), lat = (slot % 2 ? 1 : -1) * 13, n = p.a + Math.PI/2;
-  return { x:p.x + Math.cos(n)*lat, y:p.y + Math.sin(n)*lat, a:p.a, v:0, s:s0, cr:0, half:true, fin:false, time:0, color, name, off:false };
+  return { x:p.x + Math.cos(n)*lat, y:p.y + Math.sin(n)*lat, a:p.a, v:0, s:s0, cr:0, half:true, fin:false, time:0, color, name, wall:0, lapAt:0, best:0 };
 }
-// one car, one step: ctl = { steer:-1..1, gas, brake }
+// one car, one step: ctl = { steer:-1..1, gas, brake }. The edges are walls: the car scrapes along them and slows down.
 function raceStep(T, c, dt, ctl){
-  const pr = raceProj(T, c.x, c.y); c.off = pr.d > RACE_HW;
-  const vmax = c.off ? 95 : 245;
-  if(ctl.gas) c.v += 270*dt; else c.v -= 70*dt;
+  if(ctl.gas) c.v += 265*dt; else c.v -= 60*dt;
   if(ctl.brake) c.v -= 430*dt;
-  if(c.v > vmax) c.v = Math.max(vmax, c.v - 420*dt);
-  c.v = Math.max(0, c.v);
-  c.a += (ctl.steer||0) * 2.9 * Math.min(1, 0.35 + c.v/200) * dt * (c.v > 4 ? 1 : 0);
-  c.x = Math.max(6, Math.min(RACE_W-6, c.x + Math.cos(c.a)*c.v*dt)); c.y = Math.max(6, Math.min(RACE_H-6, c.y + Math.sin(c.a)*c.v*dt));
-  const s = raceProj(T, c.x, c.y).s, L = T.L;
+  c.v = Math.max(0, Math.min(260, c.v));
+  c.a += (ctl.steer||0) * 2.7 * Math.min(1, 0.35 + c.v/200) * dt * (c.v > 4 ? 1 : 0);
+  c.x += Math.cos(c.a)*c.v*dt; c.y += Math.sin(c.a)*c.v*dt;
+  const pr = raceProj(T, c.x, c.y), lim = RACE_HW - 5;
+  c.wall = Math.max(0, (c.wall||0) - dt);
+  if(pr.d > lim){ const k = lim / pr.d; c.x = pr.px + (c.x - pr.px)*k; c.y = pr.py + (c.y - pr.py)*k; c.v *= Math.max(0, 1 - 2.4*dt); c.wall = 0.25;
+    const ta = raceAt(T, pr.s).a; let d = ta - c.a; while(d > Math.PI) d -= 2*Math.PI; while(d < -Math.PI) d += 2*Math.PI; if(Math.abs(d) < 2) c.a += d*Math.min(1, 4*dt); }
+  const s = pr.s, L = T.L;
   if(s > L*0.42 && s < L*0.58) c.half = true;
-  if(c.s > L*0.8 && s < L*0.2 && c.half){ c.cr++; c.half = false; }
-  else if(c.s < L*0.2 && s > L*0.8){ c.cr = Math.max(0, c.cr - 1); c.half = true; }   // back over the line: that crossing does not count
+  if(c.s > L*0.8 && s < L*0.2 && c.half){ c.cr++; c.half = false; c.crossed = true; }
+  else if(c.s < L*0.2 && s > L*0.8){ c.cr = Math.max(0, c.cr - 1); c.half = true; }
   c.s = s;
 }
-// how far a car is (for the places): crossed lines and where on the lap
 const raceProg = (T, c)=>c.fin ? 1e9 - c.time : c.cr*T.L + (c.cr ? c.s : c.s - T.L);
+// lap times: called after a step with the race clock
+function raceLaps(c, t){ if(!c.crossed) return; c.crossed = false; if(c.cr >= 2){ const lt = t - c.lapAt; if(!c.best || lt < c.best) c.best = lt; } c.lapAt = t; }
 function raceAI(T, c, skill){
   const ahead = raceAt(T, c.s + 46 + c.v*0.12);
   let d = Math.atan2(ahead.y - c.y, ahead.x - c.x) - c.a; while(d > Math.PI) d -= 2*Math.PI; while(d < -Math.PI) d += 2*Math.PI;
-  const turn = Math.abs(d), want = 245*skill*(turn > 0.5 ? 0.62 : turn > 0.25 ? 0.82 : 1);
+  const turn = Math.abs(d), want = 255*skill*(turn > 0.5 ? 0.6 : turn > 0.25 ? 0.8 : 1);
   return { steer:Math.max(-1, Math.min(1, d*2.4)), gas:c.v < want, brake:c.v > want + 30 };
 }
+// from above (when 3D cannot be shown): the whole track scaled into the canvas
 function raceDraw(ctx, T, cars, meCar, hud){
-  gmBg(ctx, RACE_W, RACE_H, '#2f6b33');
-  ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  gmBg(ctx, RACE_W, RACE_H, '#7cb342');
+  const k = Math.min(RACE_W/T.W, RACE_H/T.H);
+  ctx.save(); ctx.translate((RACE_W - T.W*k)/2, (RACE_H - T.H*k)/2); ctx.scale(k, k); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   const path = ()=>{ ctx.beginPath(); T.pts.forEach((p, i)=>i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); };
-  path(); ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = RACE_HW*2 + 8; ctx.setLineDash([14, 14]); ctx.stroke();
-  path(); ctx.strokeStyle = '#d6336c'; ctx.lineDashOffset = 14; ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
-  path(); ctx.strokeStyle = '#4a4f57'; ctx.lineWidth = RACE_HW*2; ctx.stroke();
-  path(); ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; ctx.setLineDash([10, 14]); ctx.stroke(); ctx.setLineDash([]);
-  // start / finish line
-  const st = raceAt(T, 0), n = st.a + Math.PI/2;
-  for(let k=-4;k<4;k++) for(let j=0;j<2;j++){ ctx.fillStyle = (k+j)%2 ? '#fff' : '#111';
-    const ox = st.x + Math.cos(n)*(k*RACE_HW/4) + Math.cos(st.a)*(j*6 - 6), oy = st.y + Math.sin(n)*(k*RACE_HW/4) + Math.sin(st.a)*(j*6 - 6);
-    ctx.save(); ctx.translate(ox, oy); ctx.rotate(st.a); ctx.fillRect(0, 0, 6, RACE_HW/4); ctx.restore(); }
+  path(); ctx.strokeStyle = '#f1f3f5'; ctx.lineWidth = RACE_HW*2 + 10; ctx.stroke();
+  path(); ctx.strokeStyle = '#6a6f86'; ctx.lineWidth = RACE_HW*2; ctx.stroke();
+  path(); ctx.strokeStyle = '#fcc419'; ctx.lineWidth = 3; ctx.setLineDash([14, 14]); ctx.stroke(); ctx.setLineDash([]);
+  cars.forEach(c=>{ if(!c || c.x==null) return; ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.a); ctx.fillStyle = c.color; ctx.fillRect(-11, -7, 22, 14); if(c===meCar){ ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.strokeRect(-12, -8, 24, 16); } ctx.restore(); });
   ctx.restore();
-  cars.forEach(c=>{ if(!c || c.x==null) return;
-    ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.a);
-    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(-9, -4, 20, 11);
-    ctx.fillStyle = c.color; ctx.fillRect(-10, -6, 20, 12); ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(1, -4, 5, 8); ctx.fillStyle = '#111'; ctx.fillRect(-8, -7.5, 5, 2); ctx.fillRect(-8, 5.5, 5, 2); ctx.fillRect(4, -7.5, 5, 2); ctx.fillRect(4, 5.5, 5, 2);
-    if(c===meCar){ ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.strokeRect(-11, -7, 22, 14); }
-    ctx.restore();
-    if(c.name && c!==meCar) gmText(ctx, c.name, c.x, c.y - 12, 10, '#fff', 'center'); });
   if(hud) hud(ctx);
 }
 const raceFmt = t=>{ const m = Math.floor(t/60), s = t - m*60; return (m ? m+':'+String(s.toFixed(1)).padStart(4, '0') : s.toFixed(1))+' s'; };
-let RACE_VIEW = null;
-/* ---- Lenktynės 3D: vaizdas iš kabinos (Three.js). Fizika ta pati (raceStep), trasa ta pati – piešiama 3D.
-   Jei 3D nepavyksta įkelti, lieka vaizdas iš viršaus. ---- */
-function race3d(stage, T){
-  if(typeof THREE==='undefined' || !stage) return null;
-  if(RACE_VIEW) RACE_VIEW.dispose(); RACE_VIEW = null;      // one 3D view at a time (a restart makes a new one)
-  stage.querySelectorAll('canvas.race3d').forEach(c=>c.remove());
-  let renderer;
-  try{ renderer = new THREE.WebGLRenderer({ antialias:true }); }catch(e){ return null; }
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
-  const gl = renderer.domElement; gl.className = 'race3d'; stage.insertBefore(gl, stage.firstChild);
-  const scene = new THREE.Scene(); scene.background = new THREE.Color('#8ec5ff'); scene.fog = new THREE.Fog('#8ec5ff', 260, 900);
-  const cam = new THREE.PerspectiveCamera(72, 1.45, 0.5, 2000);
-  scene.add(new THREE.HemisphereLight('#ffffff', '#3d6b35', 0.95));
-  const sun = new THREE.DirectionalLight('#ffffff', 0.55); sun.position.set(200, 400, 100); scene.add(sun);
-  // ground
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.MeshLambertMaterial({ color:'#3c7a3a' }));
-  ground.rotation.x = -Math.PI/2; ground.position.set(RACE_W/2, -0.05, RACE_H/2); scene.add(ground);
-  // a ribbon along the track: [inner offset, outer offset, height, colour / per-piece colour]
-  const n = T.pts.length, nrm = i=>{ const a = T.pts[(i-1+n)%n], b = T.pts[(i+1)%n], dx = b[0]-a[0], dy = b[1]-a[1], l = Math.hypot(dx, dy)||1; return [-dy/l, dx/l]; };
-  const ribbon = (o1, o2, y, colorFn)=>{
-    const pos = [], col = [], idx = [];
-    for(let i=0;i<=n;i++){ const p = T.pts[i%n], m = nrm(i%n), c = new THREE.Color(colorFn(i));
-      pos.push(p[0]+m[0]*o1, y, p[1]+m[1]*o1, p[0]+m[0]*o2, y, p[1]+m[1]*o2); col.push(c.r, c.g, c.b, c.r, c.g, c.b);
-      if(i<n){ const k = i*2; idx.push(k, k+1, k+2, k+1, k+3, k+2); } }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals();
-    const m = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ vertexColors:true, side:THREE.DoubleSide })); scene.add(m); return m; };
-  ribbon(-RACE_HW, RACE_HW, 0.02, ()=>'#50555e');
-  ribbon(-RACE_HW-6, -RACE_HW, 0.06, i=>Math.floor(i/2)%2 ? '#e03131' : '#f1f3f5');
-  ribbon(RACE_HW, RACE_HW+6, 0.06, i=>Math.floor(i/2)%2 ? '#e03131' : '#f1f3f5');
-  ribbon(-0.8, 0.8, 0.04, i=>Math.floor(i/3)%2 ? '#50555e' : '#d0d3d8');
-  // start / finish: chequered strip
-  { const st = raceAt(T, 0), cvs = document.createElement('canvas'); cvs.width = 64; cvs.height = 8; const x = cvs.getContext('2d');
-    for(let i=0;i<16;i++) for(let j=0;j<2;j++){ x.fillStyle = (i+j)%2 ? '#fff' : '#111'; x.fillRect(i*4, j*4, 4, 4); }
-    const tex = new THREE.CanvasTexture(cvs); tex.magFilter = THREE.NearestFilter;
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(RACE_HW*2, 8), new THREE.MeshBasicMaterial({ map:tex }));
-    m.rotation.x = -Math.PI/2; m.rotation.z = -st.a - Math.PI/2; m.position.set(st.x, 0.08, st.y); scene.add(m);
-    // a gate over the line
-    const n2 = st.a + Math.PI/2, post = new THREE.BoxGeometry(2, 18, 2), pm = new THREE.MeshLambertMaterial({ color:'#343a40' });
-    [-1, 1].forEach(sd=>{ const p = new THREE.Mesh(post, pm); p.position.set(st.x + Math.cos(n2)*sd*(RACE_HW+8), 9, st.y + Math.sin(n2)*sd*(RACE_HW+8)); scene.add(p); });
-    const bar = new THREE.Mesh(new THREE.BoxGeometry(2, 4, RACE_HW*2+18), new THREE.MeshBasicMaterial({ map:tex })); bar.position.set(st.x, 18, st.y); bar.rotation.y = -st.a; scene.add(bar); }
-  // trees and a few tyre stacks outside the track
-  { const trunk = new THREE.CylinderGeometry(0.8, 1, 5, 6), crown = new THREE.ConeGeometry(5, 12, 7), tm = new THREE.MeshLambertMaterial({ color:'#6b4f2a' }), cm = new THREE.MeshLambertMaterial({ color:'#2b8a3e' });
-    let seed = 7; const rnd = ()=>{ seed = (seed*16807) % 2147483647; return seed/2147483647; };
-    for(let k=0, made=0; k<900 && made<170; k++){ const x = -220 + rnd()*1080, z = -200 + rnd()*840; if(raceProj(T, x, z).d < RACE_HW + 22) continue; made++;
-      const s = 0.7 + rnd()*0.9, t = new THREE.Mesh(trunk, tm), c = new THREE.Mesh(crown, cm); t.position.set(x, 2.5*s, z); t.scale.setScalar(s); c.position.set(x, 10*s, z); c.scale.setScalar(s); scene.add(t, c); } }
-  // cars
-  const carMesh = color=>{ const g = new THREE.Group(), m = new THREE.MeshLambertMaterial({ color });
-    const body = new THREE.Mesh(new THREE.BoxGeometry(20, 4, 11), m); body.position.y = 3; g.add(body);
-    const cab = new THREE.Mesh(new THREE.BoxGeometry(9, 3.5, 9), new THREE.MeshLambertMaterial({ color:'#1b1f2a' })); cab.position.set(-1, 6.5, 0); g.add(cab);
-    const wg = new THREE.CylinderGeometry(2, 2, 2, 10), wm = new THREE.MeshLambertMaterial({ color:'#111' });
-    [[6,5.5],[6,-5.5],[-6,5.5],[-6,-5.5]].forEach(([x, z])=>{ const w = new THREE.Mesh(wg, wm); w.rotation.x = Math.PI/2; w.position.set(x, 2, z); g.add(w); });
-    scene.add(g); return g; };
-  const label = text=>{ const c = document.createElement('canvas'); c.width = 256; c.height = 64; const x = c.getContext('2d'); x.font = 'bold 34px sans-serif'; x.textAlign = 'center'; x.lineWidth = 6; x.strokeStyle = 'rgba(0,0,0,.7)'; x.strokeText(text, 128, 44); x.fillStyle = '#fff'; x.fillText(text, 128, 44);
-    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:new THREE.CanvasTexture(c), depthTest:false })); s.scale.set(16, 4, 1); scene.add(s); return s; };
-  const meshes = new Map();
-  let w0 = 0, h0 = 0;
-  return RACE_VIEW = {
-    canvas:gl,
-    render(over, me, cars){
-      if(!gl.isConnected){ this.dispose(); return; }
-      const r = over.getBoundingClientRect(), sr = stage.getBoundingClientRect(), w = Math.round(r.width), h = Math.round(r.height);
-      if(w!==w0 || h!==h0){ w0 = w; h0 = h; renderer.setSize(w, h, false); cam.aspect = w/Math.max(1, h); cam.updateProjectionMatrix(); }
-      Object.assign(gl.style, { left:(r.left - sr.left)+'px', top:(r.top - sr.top)+'px', width:w+'px', height:h+'px' });
-      cars.forEach(c=>{ if(!c || c.x==null) return; let o = meshes.get(c);
-        if(!o){ o = { g:carMesh(c.color), l:c===me ? null : label(c.name||'') }; meshes.set(c, o); }
-        o.g.visible = c!==me; o.g.position.set(c.x, 0, c.y); o.g.rotation.y = -c.a;
-        if(o.l) o.l.position.set(c.x, 16, c.y); });
-      if(me){ const fx = Math.cos(me.a), fz = Math.sin(me.a);
-        cam.position.set(me.x - fx*1, 7, me.y - fz*1); cam.lookAt(me.x + fx*60, 4.5, me.y + fz*60); }
-      renderer.render(scene, cam);
-    },
-    dispose(){ try{ renderer.dispose(); gl.remove(); }catch(e){} }
-  };
+const raceClock = t=>{ t = Math.max(0, t||0); const m = Math.floor(t/60), s = Math.floor(t%60), h = Math.floor((t*100)%100); return String(m).padStart(2,'0')+'\''+String(s).padStart(2,'0')+'"'+String(h).padStart(2,'0'); };
+// the retro HUD: lap, place, clock, best lap, a speedometer and the small map
+function raceText(ctx, txt, x, y, size, color, align){
+  ctx.save(); ctx.font = '900 '+size+'px "Courier New", monospace'; ctx.textAlign = align||'left'; ctx.lineJoin = 'round';
+  ctx.lineWidth = Math.max(3, size/4); ctx.strokeStyle = '#1b1530'; ctx.strokeText(txt, x, y); ctx.fillStyle = color||'#fff'; ctx.fillText(txt, x, y); ctx.restore();
 }
-// the small map in the corner of the 3D view
-function raceMiniMap(ctx, T, cars, me){
-  const k = 0.2, ox = RACE_W - RACE_W*k - 10, oy = 34;
-  // the dashboard with the speed
-  if(me){ const w = 150, x0 = RACE_W/2 - w/2, y0 = RACE_H - 40; ctx.save(); ctx.fillStyle = 'rgba(10,12,20,.72)'; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(x0, y0, w, 32, 10); else ctx.rect(x0, y0, w, 32); ctx.fill();
-    ctx.fillStyle = '#e9ecef'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(Math.round(me.v*0.8)+' km/h', RACE_W/2, y0 + 23); ctx.restore(); }
-  ctx.save(); ctx.globalAlpha = 0.85; ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(ox-4, oy-4, RACE_W*k+8, RACE_H*k+8);
-  ctx.beginPath(); T.pts.forEach((p, i)=>i ? ctx.lineTo(ox + p[0]*k, oy + p[1]*k) : ctx.moveTo(ox + p[0]*k, oy + p[1]*k)); ctx.closePath();
-  ctx.strokeStyle = '#ced4da'; ctx.lineWidth = 4; ctx.stroke();
+function raceHud(ctx, T, cars, me, o){
+  const total = cars.length, pl = 1 + cars.filter(c=>c!==me && raceProg(T, c) > raceProg(T, me)).length;
+  raceText(ctx, 'RATAS', 14, 24, 15); raceText(ctx, Math.min(RACE_LAPS, Math.max(1, me.cr))+'/'+RACE_LAPS, 14, 56, 32);
+  raceText(ctx, 'VIETA', 14, 84, 15); raceText(ctx, pl+'/'+total, 14, 116, 32, pl===1 ? '#ffd43b' : '#fff');
+  raceText(ctx, raceClock(o.time), RACE_W/2, 24, 17, '#fff', 'center'); raceText(ctx, raceClock(o.lap), RACE_W/2, 44, 15, '#dee2e6', 'center');
+  raceText(ctx, 'GERIAUSIAS RATAS', RACE_W-14, 24, 13, '#fff', 'right'); raceText(ctx, me.best ? raceClock(me.best) : '--\'--"--', RACE_W-14, 44, 15, '#fff', 'right');
+  // speedometer
+  const cx = RACE_W - 62, cy = RACE_H - 52, r = 42, kmh = Math.round(me.v*0.8), f = Math.min(1, me.v/260);
+  ctx.save(); ctx.fillStyle = 'rgba(27,21,48,.85)'; ctx.beginPath(); ctx.arc(cx, cy, r+6, 0, Math.PI*2); ctx.fill();
+  const a0 = Math.PI*0.8, a1 = Math.PI*2.2; [['#40c057',0,.5],['#fab005',.5,.8],['#fa5252',.8,1]].forEach(([c, p, q])=>{ ctx.strokeStyle = c; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(cx, cy, r-4, a0 + (a1-a0)*p, a0 + (a1-a0)*q); ctx.stroke(); });
+  const na = a0 + (a1-a0)*f; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(na)*(r-10), cy + Math.sin(na)*(r-10)); ctx.stroke(); ctx.restore();
+  raceText(ctx, String(kmh), cx, cy + 30, 16, '#fff', 'center'); raceText(ctx, 'km/h', cx, cy + 12, 10, '#ced4da', 'center');
+  // the map
+  const k = Math.min(120/T.W, 84/T.H), ox = 14, oy = RACE_H - 14 - T.H*k;
+  ctx.save(); ctx.fillStyle = 'rgba(27,21,48,.6)'; ctx.fillRect(ox-6, oy-6, T.W*k+12, T.H*k+12);
+  ctx.beginPath(); T.pts.forEach((p, i)=>i ? ctx.lineTo(ox + p[0]*k, oy + p[1]*k) : ctx.moveTo(ox + p[0]*k, oy + p[1]*k)); ctx.closePath(); ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 3; ctx.stroke();
   cars.forEach(c=>{ if(!c || c.x==null) return; ctx.fillStyle = c.color; ctx.beginPath(); ctx.arc(ox + c.x*k, oy + c.y*k, c===me ? 4 : 3, 0, Math.PI*2); ctx.fill(); if(c===me){ ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke(); } });
   ctx.restore();
+  if(o.count > 0) raceText(ctx, String(Math.ceil(o.count)), RACE_W/2, RACE_H/2 + 10, 72, '#ffd43b', 'center');
+  else if(o.go) raceText(ctx, 'VAŽIUOJAM!', RACE_W/2, RACE_H/2, 46, '#69db7c', 'center');
+  if(me.wall > 0 && !me.fin) raceText(ctx, '! BORTAS !', RACE_W/2, RACE_H - 22, 14, '#ffa94d', 'center');
+  return pl;
 }
 // controls: keys on a computer; on a phone a strip – the finger left / right steers, the gas is on by itself
 function raceCtl(keys, steerTouch){
@@ -33107,39 +33061,135 @@ function raceSteerWire(el){
   el.onpointerup = el.onpointercancel = e=>{ if(e.pointerId===st.id){ st.id = null; st.v = 0; el.classList.remove('on'); } };
   return ()=>st.v;
 }
+/* the 3D view: pixel look (drawn small and enlarged), pink sky and mountains, striped grass, pines, arrow signs in the corners */
+let RACE_VIEW = null;
+function race3d(stage, T){
+  if(typeof THREE==='undefined' || !stage) return null;
+  if(RACE_VIEW) RACE_VIEW.dispose(); RACE_VIEW = null;
+  stage.querySelectorAll('canvas.race3d').forEach(c=>c.remove());
+  let renderer; try{ renderer = new THREE.WebGLRenderer({ antialias:false }); }catch(e){ return null; }
+  renderer.setPixelRatio(1);
+  const gl = renderer.domElement; gl.className = 'race3d race-px'; stage.insertBefore(gl, stage.firstChild);
+  const scene = new THREE.Scene();
+  const ctex = (w, h, draw)=>{ const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; return t; };
+  scene.background = ctex(4, 64, (x, w, h)=>{ const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#e0866a'); g.addColorStop(0.55, '#f0a07c'); g.addColorStop(1, '#f6c39a'); x.fillStyle = g; x.fillRect(0, 0, w, h); });
+  scene.fog = new THREE.Fog('#f2b08c', 420, 1500);
+  const cam = new THREE.PerspectiveCamera(62, 1.45, 1, 4000);
+  scene.add(new THREE.HemisphereLight('#fff4e6', '#5c7a2e', 1.0)); const sun = new THREE.DirectionalLight('#fff', 0.45); sun.position.set(300, 500, 200); scene.add(sun);
+  const rnd = raceRng((T.seed||7)*7 + 3), lam = c=>new THREE.MeshLambertMaterial({ color:c, flatShading:true });
+  // striped grass
+  const grass = ctex(8, 16, (x, w, h)=>{ x.fillStyle = '#a3cf4f'; x.fillRect(0, 0, w, h); x.fillStyle = '#8cbf3f'; x.fillRect(0, h/2, w, h/2); });
+  grass.wrapS = grass.wrapT = THREE.RepeatWrapping; grass.repeat.set(1, 120);
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(9000, 9000), new THREE.MeshLambertMaterial({ map:grass }));
+  ground.rotation.x = -Math.PI/2; ground.position.set(T.W/2, -0.1, T.H/2); scene.add(ground);
+  // mountains around
+  for(let i=0;i<46;i++){ const a = i/46*Math.PI*2 + rnd()*0.1, R = 2200 + rnd()*500, h = 260 + rnd()*380, m = new THREE.Mesh(new THREE.ConeGeometry(260 + rnd()*200, h, 5), lam(rnd() < 0.5 ? '#c95a9b' : '#a2458a'));
+    m.position.set(T.W/2 + Math.cos(a)*R, h/2 - 20, T.H/2 + Math.sin(a)*R); m.rotation.y = rnd()*3; scene.add(m); }
+  // the track: asphalt, white edges, yellow middle line, red / white curbs and a low wall
+  const n = T.pts.length, nrm = i=>{ const a = T.pts[(i-1+n)%n], b = T.pts[(i+1)%n], dx = b[0]-a[0], dy = b[1]-a[1], l = Math.hypot(dx, dy)||1; return [-dy/l, dx/l]; };
+  const ribbon = (o1, o2, y, colorFn, show)=>{
+    const pos = [], col = [], idx = [];
+    for(let i=0;i<=n;i++){ const p = T.pts[i%n], m = nrm(i%n), c = new THREE.Color(colorFn(i));
+      pos.push(p[0]+m[0]*o1, y, p[1]+m[1]*o1, p[0]+m[0]*o2, y, p[1]+m[1]*o2); col.push(c.r, c.g, c.b, c.r, c.g, c.b);
+      if(i<n && (!show || show(i))){ const k = i*2; idx.push(k, k+1, k+2, k+1, k+3, k+2); } }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals();
+    scene.add(new THREE.Mesh(g, new THREE.MeshLambertMaterial({ vertexColors:true, side:THREE.DoubleSide }))); };
+  const wall = (o, h, colorFn)=>{
+    const pos = [], col = [], idx = [];
+    for(let i=0;i<=n;i++){ const p = T.pts[i%n], m = nrm(i%n), c = new THREE.Color(colorFn(i)), x = p[0]+m[0]*o, z = p[1]+m[1]*o;
+      pos.push(x, 0, z, x, h, z); col.push(c.r, c.g, c.b, c.r, c.g, c.b); if(i<n){ const k = i*2; idx.push(k, k+1, k+2, k+1, k+3, k+2); } }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals();
+    scene.add(new THREE.Mesh(g, new THREE.MeshLambertMaterial({ vertexColors:true, side:THREE.DoubleSide }))); };
+  ribbon(-RACE_HW, RACE_HW, 0.02, ()=>'#6a6f86');
+  ribbon(-RACE_HW+3, -RACE_HW+5, 0.05, ()=>'#f8f9fa'); ribbon(RACE_HW-5, RACE_HW-3, 0.05, ()=>'#f8f9fa');
+  ribbon(-1.2, 1.2, 0.05, ()=>'#fcc419', i=>Math.floor(i/3)%2===0);
+  ribbon(-RACE_HW-7, -RACE_HW, 0.04, i=>Math.floor(i/2)%2 ? '#e03131' : '#f8f9fa'); ribbon(RACE_HW, RACE_HW+7, 0.04, i=>Math.floor(i/2)%2 ? '#e03131' : '#f8f9fa');
+  wall(-RACE_HW-8, 3, i=>Math.floor(i/4)%2 ? '#e9ecef' : '#c92a2a'); wall(RACE_HW+8, 3, i=>Math.floor(i/4)%2 ? '#e9ecef' : '#c92a2a');
+  // start / finish line and gate
+  { const st = raceAt(T, 0), chk = ctex(16, 2, (x)=>{ for(let i=0;i<16;i++) for(let j=0;j<2;j++){ x.fillStyle = (i+j)%2 ? '#fff' : '#111'; x.fillRect(i, j, 1, 1); } });
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(RACE_HW*2, 8), new THREE.MeshBasicMaterial({ map:chk })); m.rotation.x = -Math.PI/2; m.rotation.z = -st.a - Math.PI/2; m.position.set(st.x, 0.08, st.y); scene.add(m);
+    const n2 = st.a + Math.PI/2, pm = lam('#343a40'); [-1, 1].forEach(sd=>{ const p = new THREE.Mesh(new THREE.BoxGeometry(3, 26, 3), pm); p.position.set(st.x + Math.cos(n2)*sd*(RACE_HW+12), 13, st.y + Math.sin(n2)*sd*(RACE_HW+12)); scene.add(p); });
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(3, 6, RACE_HW*2+28), new THREE.MeshBasicMaterial({ map:chk })); bar.position.set(st.x, 26, st.y); bar.rotation.y = -st.a; scene.add(bar); }
+  // arrow signs on the outside of the corners
+  { const sign = dir=>ctex(32, 16, (x, w, h)=>{ x.fillStyle = '#c92a2a'; x.fillRect(0, 0, w, h); x.fillStyle = '#fff'; for(let k=0;k<3;k++){ const ox = 5 + k*8; x.beginPath(); if(dir > 0){ x.moveTo(ox, 3); x.lineTo(ox+5, 8); x.lineTo(ox, 13); x.lineTo(ox+2, 8); } else { x.moveTo(ox+5, 3); x.lineTo(ox, 8); x.lineTo(ox+5, 13); x.lineTo(ox+3, 8); } x.fill(); } x.strokeStyle = '#fff'; x.lineWidth = 1; x.strokeRect(0.5, 0.5, w-1, h-1); });
+    const tR = sign(1), tL = sign(-1), post = new THREE.BoxGeometry(1.5, 12, 1.5), pm = lam('#495057');
+    let lastS = -999;
+    for(let i=0;i<n;i+=2){ const tv = T.turn[i]; if(Math.abs(tv) < 0.22 || T.cum[i] - lastS < 90) continue; lastS = T.cum[i];
+      const p = T.pts[i], m = nrm(i), side = tv > 0 ? -1 : 1, a = raceAt(T, T.cum[i]).a, x = p[0] + m[0]*side*(RACE_HW+20), z = p[1] + m[1]*side*(RACE_HW+20);
+      const b = new THREE.Mesh(new THREE.PlaneGeometry(18, 9), new THREE.MeshBasicMaterial({ map:tv > 0 ? tR : tL, side:THREE.DoubleSide })); b.position.set(x, 13, z); b.rotation.y = -a - Math.PI/2 + Math.PI; scene.add(b);
+      const ps = new THREE.Mesh(post, pm); ps.position.set(x, 6, z); scene.add(ps); } }
+  // pines (green and autumn) and rocks outside the track
+  { const trunk = new THREE.CylinderGeometry(1.2, 1.6, 6, 5), c1 = new THREE.ConeGeometry(9, 16, 6), c2 = new THREE.ConeGeometry(6.5, 13, 6), tm = lam('#7a5230'), rock = new THREE.DodecahedronGeometry(5, 0), rm = lam('#adb5bd');
+    const cols = ['#2f9e44','#37b24d','#5c940d','#f59f00','#e8590c'];
+    for(let k=0, made=0; k<3000 && made<420; k++){ const x = -500 + rnd()*(T.W+1000), z = -500 + rnd()*(T.H+1000); const d = raceProj(T, x, z).d; if(d < RACE_HW + 26 || d > 700) continue; made++;
+      const s = 0.7 + rnd()*0.9;
+      if(rnd() < 0.12){ const r = new THREE.Mesh(rock, rm); r.position.set(x, 2*s, z); r.scale.setScalar(s); scene.add(r); continue; }
+      const cm = lam(cols[Math.floor(rnd()*cols.length)]), t = new THREE.Mesh(trunk, tm), a = new THREE.Mesh(c1, cm), b = new THREE.Mesh(c2, cm);
+      t.position.set(x, 3*s, z); t.scale.setScalar(s); a.position.set(x, 12*s, z); a.scale.setScalar(s); b.position.set(x, 20*s, z); b.scale.setScalar(s); scene.add(t, a, b); } }
+  // cars: a low body with two stripes, a dark cabin, wheels and a shadow
+  const carMesh = color=>{ const g = new THREE.Group(), m = lam(color), dark = lam('#1b1530'), stripe = lam('#fcc419');
+    const body = new THREE.Mesh(new THREE.BoxGeometry(22, 4.5, 12), m); body.position.y = 3.4; g.add(body);
+    const cab = new THREE.Mesh(new THREE.BoxGeometry(9, 3.6, 10), dark); cab.position.set(-2, 7.3, 0); g.add(cab);
+    [-1.8, 1.8].forEach(z=>{ const s = new THREE.Mesh(new THREE.BoxGeometry(22.2, 0.4, 1.4), stripe); s.position.set(0, 5.75, z); g.add(s); });
+    const spoiler = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1, 12), m); spoiler.position.set(-10.5, 6.6, 0); g.add(spoiler);
+    const wg = new THREE.CylinderGeometry(2.4, 2.4, 2.2, 8), wm = lam('#111');
+    [[7,6.2],[7,-6.2],[-7,6.2],[-7,-6.2]].forEach(([x, z])=>{ const w = new THREE.Mesh(wg, wm); w.rotation.x = Math.PI/2; w.position.set(x, 2.4, z); g.add(w); });
+    const sh = new THREE.Mesh(new THREE.PlaneGeometry(26, 15), new THREE.MeshBasicMaterial({ color:'#000', transparent:true, opacity:0.25 })); sh.rotation.x = -Math.PI/2; sh.position.y = 0.06; g.add(sh);
+    scene.add(g); return g; };
+  const label = text=>{ const c = document.createElement('canvas'); c.width = 128; c.height = 32; const x = c.getContext('2d'); x.font = '900 20px "Courier New", monospace'; x.textAlign = 'center'; x.lineWidth = 5; x.strokeStyle = '#1b1530'; x.strokeText(text, 64, 23); x.fillStyle = '#fff'; x.fillText(text, 64, 23);
+    const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:t, depthTest:false })); s.scale.set(22, 5.5, 1); scene.add(s); return s; };
+  const meshes = new Map(), camPos = new THREE.Vector3(), look = new THREE.Vector3();
+  let w0 = 0, h0 = 0, first = true, lastT = performance.now();
+  return RACE_VIEW = {
+    canvas:gl,
+    render(over, me, cars){
+      if(!gl.isConnected){ this.dispose(); return; }
+      const now = performance.now(), dt = Math.min(0.1, (now - lastT)/1000); lastT = now;
+      const r = over.getBoundingClientRect(), sr = stage.getBoundingClientRect(), w = Math.round(r.width), h = Math.round(r.height);
+      if(w!==w0 || h!==h0){ w0 = w; h0 = h; const px = w > 700 ? 3 : 2; renderer.setSize(Math.max(80, Math.round(w/px)), Math.max(60, Math.round(h/px)), false); cam.aspect = w/Math.max(1, h); cam.updateProjectionMatrix(); }
+      Object.assign(gl.style, { left:(r.left - sr.left)+'px', top:(r.top - sr.top)+'px', width:w+'px', height:h+'px' });
+      cars.forEach(c=>{ if(!c || c.x==null) return; let o = meshes.get(c);
+        if(!o){ o = { g:carMesh(c.color), l:c===me ? null : label(c.name||'') }; meshes.set(c, o); }
+        o.g.position.set(c.x, 0, c.y); o.g.rotation.y = -c.a;
+        if(o.l){ o.l.position.set(c.x, 17, c.y); o.l.visible = !me || Math.hypot(c.x - me.x, c.y - me.y) > 70; } });   // a name right next to the camera would fill the screen
+      if(me){ const fx = Math.cos(me.a), fz = Math.sin(me.a);
+        const want = new THREE.Vector3(me.x - fx*34, 13, me.y - fz*34);
+        if(first){ camPos.copy(want); first = false; } else camPos.lerp(want, 1 - Math.exp(-7*dt));
+        cam.position.copy(camPos); look.set(me.x + fx*30, 4, me.y + fz*30); cam.lookAt(look); }
+      renderer.render(scene, cam);
+    },
+    dispose(){ try{ renderer.dispose(); gl.remove(); }catch(e){} }
+  };
+}
 GM_MAKE.race = api=>{
-  const T = raceTrack(), me = raceCar(T, 3, '#4dabf7', 'TU');
-  const ai = [0, 2, 4].map((k, i)=>Object.assign(raceCar(T, k, ['#ff6b6b','#ffd43b','#69db7c'][i], ['Rokas','Ieva','Tomas'][i]), { skill:0.86 + i*0.04 + Math.random()*0.03 }));
+  const T = raceTrack(Math.floor(Math.random()*1e9)), me = raceCar(T, 3, '#e03131', 'TU');
+  const ai = [0, 2, 4].map((k, i)=>Object.assign(raceCar(T, k, ['#4dabf7','#fab005','#40c057'][i], ['Rokas','Ieva','Tomas'][i]), { skill:0.86 + i*0.04 + Math.random()*0.03 }));
   const cars = ai.concat([me]); let t = -3, done = false, steer = null;
   const sl = document.getElementById('gmSlider'); if(sl) steer = raceSteerWire(sl);
   const place = ()=>1 + cars.filter(c=>c!==me && raceProg(T, c) > raceProg(T, me)).length;
-  // the 3D view from the cockpit (until Three.js is there – from above)
+  // the 3D view (until Three.js is there – from above)
   const stage = document.getElementById('gmStage'), over = document.getElementById('gmCv'); let view = null;
   libNeed('three').then(ok=>{ if(ok && over && over.isConnected && !done) view = race3d(stage, T); });
   return { W:RACE_W, H:RACE_H,
     step(dt){
       t += dt; if(t < 0) return;
       cars.forEach(c=>{ if(c.fin){ c.v *= 0.96; c.x += Math.cos(c.a)*c.v*dt; c.y += Math.sin(c.a)*c.v*dt; return; }
-        raceStep(T, c, dt, c===me ? raceCtl(api.keys, steer) : raceAI(T, c, c.skill));
+        raceStep(T, c, dt, c===me ? raceCtl(api.keys, steer) : raceAI(T, c, c.skill)); raceLaps(c, t);
         if(c.cr > RACE_LAPS && !c.fin){ c.fin = true; c.time = t; } });
-      if(me.fin && !done){ done = true; const pl = place(); const sc = Math.max(100, Math.round(4000 - me.time*25) + [1500, 800, 300, 0][pl-1]);
+      if(me.fin && !done){ done = true; const pl = place(); const sc = Math.max(100, Math.round(5000 - me.time*25) + [1500, 800, 300, 0][pl-1]);
         api.set(sc); setTimeout(()=>api.end((pl===1 ? '🏆 Laimėjai! ' : pl+' vieta · ')+raceFmt(me.time)), 900); } },
-    draw(c){ const hud3 = fn=>{ if(view && view.canvas.isConnected){ c.clearRect(0, 0, RACE_W, RACE_H); view.render(over, me, cars); raceMiniMap(c, T, cars, me); fn(c); } else raceDraw(c, T, cars, me, fn); };
-      hud3(ctx=>{
-      const lap = Math.min(RACE_LAPS, Math.max(1, me.cr));
-      gmText(ctx, 'Ratas '+lap+'/'+RACE_LAPS, 12, 22, 15, '#fff'); gmText(ctx, 'Vieta '+place()+'/4', 12, 42, 15, '#fff'); gmText(ctx, raceFmt(Math.max(0, me.fin ? me.time : t)), RACE_W-12, 22, 15, '#fff', 'right');
-      if(t < 0) gmText(ctx, String(Math.ceil(-t)), RACE_W/2, RACE_H/2+20, 64, '#ffd43b', 'center');
-      else if(t < 0.8) gmText(ctx, 'VAŽIUOJAM!', RACE_W/2, RACE_H/2+16, 44, '#69db7c', 'center');
-      if(me.off && t > 0 && !me.fin) gmText(ctx, 'Grįžk į trasą', RACE_W/2, RACE_H - 16, 14, '#ffd43b', 'center'); }); } };
+    draw(c){
+      const hud = x=>raceHud(x, T, cars, me, { time:me.fin ? me.time : t, lap:me.fin ? 0 : t - me.lapAt, count:t < 0 ? -t : 0, go:t >= 0 && t < 0.8 });
+      if(view && view.canvas.isConnected){ c.clearRect(0, 0, RACE_W, RACE_H); view.render(over, me, cars); hud(c); } else raceDraw(c, T, cars, me, hud); } };
 };
 /* keliese: kambarys iki 10 žaidėjų – šeimininkas kviečia kolegas ir paleidžia startą */
 GM_MP_MAKE.race10 = R=>{
-  const T = raceTrack(), me = teamMe();
+  let T = raceTrack(), me = teamMe();
   const st = document.getElementById('gmStage');
   st.innerHTML = '<canvas id="gmCv"></canvas>';
   st.insertAdjacentHTML('afterend', '<div class="gm-slider gm-steer" id="gmSlider2"><span>Slink pirštą kairėn / dešinėn – vairuoti</span></div>');
   const cv = document.getElementById('gmCv'), ctx = cv.getContext('2d'), sl = document.getElementById('gmSlider2'), steer = raceSteerWire(sl);
-  let view = null; libNeed('three').then(ok=>{ if(ok && cv.isConnected) view = race3d(st, T); });
+  let view = null, three = false; libNeed('three').then(ok=>{ three = ok; });
   const S = { phase:'lobby', roster:[], cars:{}, t:0, startAt:0, results:[] }, keys = new Set();
   let raf = 0, last = performance.now(), sendT = 0, recorded = false, endT = 0;
   if(R.host) S.roster = [{ id:me, name:gmMeName() }];
@@ -33156,10 +33206,12 @@ GM_MP_MAKE.race10 = R=>{
       gmRoomBar(`<div class="gm-rbar">${S.roster.length < 10 && free.length ? `<select id="gmRInv"><option value="">+ pakviesti kolegą…</option>${free.map(m=>`<option value="${esc(m.id)}">${esc(teamName(m))}</option>`).join('')}</select>` : ''}
         <button type="button" class="btn primary" id="gmRGo" ${S.roster.length < 1 ? 'disabled' : ''}>${S.results.length ? 'Dar kartą' : 'Startas'}</button></div>`);
       const iv = document.getElementById('gmRInv'); if(iv) iv.onchange = ()=>{ if(iv.value) gmRaceInvite(R, iv.value); iv.value = ''; };
-      const go = document.getElementById('gmRGo'); if(go) go.onclick = ()=>{ const order = S.roster.map(p=>p.id); gmSend({ t:'start', order, names:S.roster.map(p=>p.name) }); begin(order, S.roster.map(p=>p.name)); };
+      const go = document.getElementById('gmRGo'); if(go) go.onclick = ()=>{ const order = S.roster.map(p=>p.id), seed = Math.floor(Math.random()*1e9); gmSend({ t:'start', order, names:S.roster.map(p=>p.name), seed }); begin(order, S.roster.map(p=>p.name), seed); };
     } else gmRoomBar('<span class="muted">Laukiama, kol šeimininkas paspaus „Startas“…</span>');
   };
-  const begin = (order, names)=>{
+  const begin = (order, names, seed)=>{
+    T = raceTrack(seed);                                   // a new track every race – the host chose it, everyone builds the same
+    if(three && cv.isConnected) view = race3d(st, T);
     S.cars = {}; order.forEach((id, i)=>{ S.cars[id] = raceCar(T, i, RACE_COLORS[i % 10], names[i] || 'Žaidėjas'); S.cars[id].id = id; });
     S.phase = 'count'; S.t = -3; S.results = []; recorded = false; endT = 0; lobbyUi();
   };
@@ -33169,7 +33221,7 @@ GM_MP_MAKE.race10 = R=>{
     if(p.t==='hi' && R.host){ if(!S.roster.some(x=>x.id===p.id)){ if(S.roster.length >= 10){ gmSend({ t:'full', id:p.id }); return; } S.roster.push({ id:p.id, name:p.name||'Kolega' }); } sendRoster(); lobbyUi(); }
     if(p.t==='roster' && !R.host){ S.roster = p.roster||[]; lobbyUi(); }
     if(p.t==='full' && p.id===me){ gmRoomMsg('Kambarys pilnas (10 žaidėjų).'); }
-    if(p.t==='start' && !R.host) begin(p.order||[], p.names||[]);
+    if(p.t==='start' && !R.host) begin(p.order||[], p.names||[], p.seed);
     if(p.t==='pos'){ const c = S.cars[p.id]; if(c && p.id!==me){ c.x = p.x; c.y = p.y; c.a = p.a; c.cr = p.cr; c.s = p.s; if(p.fin && !c.fin){ c.fin = true; c.time = p.time; } } }
     if(p.t==='bye' && p.id){ S.roster = S.roster.filter(x=>x.id!==p.id); const c = S.cars[p.id]; if(c && !c.fin){ c.fin = true; c.time = null; c.gone = true; } sendRoster(); lobbyUi(); }
   };
@@ -33182,7 +33234,7 @@ GM_MP_MAKE.race10 = R=>{
     if(S.phase==='count' || S.phase==='race'){
       S.t += dt; if(S.phase==='count' && S.t >= 0) S.phase = 'race';
       const c = myCar();
-      if(S.phase==='race' && c && !c.fin){ raceStep(T, c, dt, raceCtl(keys, GM_TOUCH() ? steer : null)); if(c.cr > RACE_LAPS){ c.fin = true; c.time = S.t; } }
+      if(S.phase==='race' && c && !c.fin){ raceStep(T, c, dt, raceCtl(keys, GM_TOUCH() ? steer : null)); raceLaps(c, S.t); if(c.cr > RACE_LAPS){ c.fin = true; c.time = S.t; } }
       else if(c && c.fin){ c.v *= 0.95; }
       sendT += dt; if(c && sendT > 0.09){ sendT = 0; gmSend({ t:'pos', id:me, x:Math.round(c.x*10)/10, y:Math.round(c.y*10)/10, a:Math.round(c.a*100)/100, cr:c.cr, s:Math.round(c.s), fin:c.fin, time:c.time }); }
       const all = Object.values(S.cars), fins = finishList();
@@ -33195,17 +33247,13 @@ GM_MP_MAKE.race10 = R=>{
       }
     }
     const cs = Object.values(S.cars), c = myCar();
-    const draw3 = (fn)=>{ if(view && view.canvas.isConnected && c && S.phase!=='lobby'){ ctx.clearRect(0, 0, RACE_W, RACE_H); view.render(cv, c, cs); raceMiniMap(ctx, T, cs, c); fn(ctx); } else raceDraw(ctx, T, cs, c, fn); };
+    const draw3 = (fn)=>{ if(view && view.canvas.isConnected && c && S.phase!=='lobby'){ ctx.clearRect(0, 0, RACE_W, RACE_H); view.render(cv, c, cs); fn(ctx); } else raceDraw(ctx, T, cs, c, fn); };
     draw3(x=>{
       if(S.phase==='lobby'){ x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(0, 0, RACE_W, RACE_H); gmText(x, R.host ? 'Pakviesk kolegas ir spausk „Startas“' : 'Laukiama starto…', RACE_W/2, RACE_H/2, 20, '#fff', 'center'); return; }
       if(!c) return;
-      const pl = 1 + cs.filter(o=>o!==c && raceProg(T, o) > raceProg(T, c)).length;
-      gmText(x, 'Ratas '+Math.min(RACE_LAPS, Math.max(1, c.cr))+'/'+RACE_LAPS, 12, 22, 15, '#fff'); gmText(x, 'Vieta '+pl+'/'+cs.length, 12, 42, 15, '#fff');
-      gmText(x, raceFmt(Math.max(0, c.fin ? c.time : S.t)), RACE_W-12, 22, 15, '#fff', 'right');
-      if(S.phase==='count') gmText(x, String(Math.ceil(-S.t)), RACE_W/2, RACE_H/2+20, 64, '#ffd43b', 'center');
-      else if(S.phase==='race' && S.t < 0.8) gmText(x, 'VAŽIUOJAM!', RACE_W/2, RACE_H/2+16, 44, '#69db7c', 'center');
-      if(c.fin && S.phase==='race') gmText(x, 'Finišavai '+pl+' · '+raceFmt(c.time)+' – laukiam kitų', RACE_W/2, RACE_H/2, 18, '#fff', 'center');
-      if(S.phase==='done'){ x.fillStyle = 'rgba(0,0,0,.5)'; x.fillRect(0, 0, RACE_W, RACE_H); S.results.slice(0, 10).forEach((r, i)=>gmText(x, (i+1)+'. '+r.name+'  '+(r.time!=null ? raceFmt(r.time) : '—'), RACE_W/2, 90 + i*28, 18, i===0 ? '#ffd43b' : '#fff', 'center')); }
+      const pl = raceHud(x, T, cs, c, { time:c.fin ? c.time : Math.max(0, S.t), lap:c.fin ? 0 : Math.max(0, S.t - c.lapAt), count:S.phase==='count' ? -S.t : 0, go:S.phase==='race' && S.t < 0.8 });
+      if(c.fin && S.phase==='race') raceText(x, 'FINIŠAS '+pl+' · '+raceFmt(c.time)+' – LAUKIAM KITŲ', RACE_W/2, RACE_H/2, 17, '#fff', 'center');
+      if(S.phase==='done'){ x.fillStyle = 'rgba(27,21,48,.7)'; x.fillRect(0, 0, RACE_W, RACE_H); S.results.slice(0, 10).forEach((r, i)=>raceText(x, (i+1)+'. '+r.name+'  '+(r.time!=null ? raceFmt(r.time) : '—'), RACE_W/2, 90 + i*28, 18, i===0 ? '#ffd43b' : '#fff', 'center')); }
     });
     raf = requestAnimationFrame(loop);
   };
@@ -38392,6 +38440,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 16:01', v:'v369', k:'chg', t:'Lenktynės: retro stilius, bortai ir vis nauja trasa', f:'Lenktynės dabar retro (pikselių) stiliumi: vaizdas iš už savo mašinos, rausvas dangus ir kalnai, dryžuota žolė, eglutės, posūkių ženklai su rodyklėmis, geltona vidurio linija, spidometras, ratų ir geriausio rato laikai. Iš trasos išvažiuoti nebegalima – kraštuose bortai (atsitrenkus sulėtėji ir slysti pakraščiu). Kiekvienoms lenktynėms sugeneruojama nauja trasa; keliese visi gauna tą pačią.' },
   { d:'2026-10-06 15:52', v:'v368', k:'new', t:'Žaidimai: Šaudyklė (kaip Counter-Strike) 3D', f:'Naujas 3D pirmo asmens žaidimas „Šaudyklė“: dykumos žemėlapis su sienomis ir dėžėmis, dvi komandos (T ir CT), raundai iki 8 pergalių. Vienam – 5 prieš 5 su botais; „Šaudyklė keliese“ – iki 12 žaidėjų (šeimininkas kviečia kolegas ir pasirenka, kiek botų užpildys vietas). Valdymas: WASD – eiti, pelė – žiūrėti (spustelk ant žaidimo), kairys pelės – šauti, R – užtaisyti, Shift – eiti tyliau. Žaidžiama tik kompiuteryje.' },
   { d:'2026-10-06 15:46', v:'v367', k:'new', t:'Lenktynės – 3D vaizdas iš kabinos', f:'Lenktynės (vienam ir keliese) dabar rodomos 3D, iš vairuotojo vietos: trasa su bortais, medžiai, starto vartai, kitų mašinų vardai, greitis apačioje ir trasos žemėlapis kampe. Jei 3D įkelti nepavyksta – rodomas vaizdas iš viršaus, kaip anksčiau.' },
   { d:'2026-10-06 15:41', v:'v366', k:'new', t:'Žaidimai: Lenktynės (vienam ir iki 10 keliese)', f:'Naujas žaidimas „Lenktynės“: trasa iš viršaus, 3 ratai prieš 3 kompiuterio mašinas (rekordas – pagal vietą ir laiką). „Lenktynės keliese“ – iki 10 žaidėjų realiu laiku: šeimininkas pakviečia kolegas (po vieną iš sąrašo), visi mato vieni kitų mašinas, po finišo – rezultatų lentelė, „Dar kartą“. Kompiuteryje: ← → vairuoti, ↑ dujos, ↓ stabdis. Telefone dujos pačios, vairuoji slinkdamas pirštą kairėn / dešinėn valdymo lauke, ↓ – stabdis.' },
