@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-DUJpayo4bDwMYYG0SrxG0MGJwND2pvgCkRY6mB2jmN4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-zCbkZGmp8URwS/uD8mCnKsa3LdaNScW/e03d3bZtMXg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3885,7 +3885,13 @@ input.np-title:hover,input.np-title:focus{border-color:var(--border);background:
 .np-tab.on{color:var(--text);border-bottom-color:var(--c);}
 #npBody{margin-top:14px;}
 .np-menu-pop{position:fixed;z-index:3000;display:flex;flex-direction:column;}
-.np-menu-pop button.danger{color:var(--danger);}
+.np-menu-pop{padding:6px !important;min-width:230px;border-radius:12px;box-shadow:0 14px 34px rgba(0,0,0,.45);gap:2px;}
+.combo-pop.np-menu-pop button{display:flex !important;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:9px 12px !important;margin:0;border:0 !important;border-radius:8px !important;
+  background:transparent !important;color:var(--text) !important;font:inherit;font-size:14px;font-weight:600;text-align:left;cursor:pointer;box-shadow:none !important;}
+.combo-pop.np-menu-pop button:hover,.combo-pop.np-menu-pop button:focus-visible{background:rgb(var(--hi-rgb) / .08) !important;outline:none;}
+.combo-pop.np-menu-pop button svg{width:18px;height:18px;flex:none;}
+.combo-pop.np-menu-pop button.danger{color:var(--danger) !important;}
+.combo-pop.np-menu-pop button.danger:hover{background:color-mix(in srgb, var(--danger) 14%, transparent) !important;}
 .np-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start;}
 .np-col{display:flex;flex-direction:column;gap:14px;}
 .np-col .card + .card{margin-top:0;}
@@ -13333,9 +13339,9 @@ function npEditor(){
 function npMenu(btn){
   const old = document.getElementById('npMenuPop'); if(old){ old.remove(); return; }
   const pop = document.createElement('div'); pop.id = 'npMenuPop'; pop.className = 'combo-pop np-menu-pop';
-  pop.innerHTML = `<button data-m="dup">⧉ Kopijuoti projektą</button><button data-m="tpl">📐 Išsaugoti kaip šabloną</button><button data-m="del" class="danger">🗑 Ištrinti projektą</button>`;
+  pop.innerHTML = `<button data-m="dup">${slIcon('copy')} Kopijuoti projektą</button><button data-m="tpl">${slIcon('file')} Išsaugoti kaip šabloną</button><button data-m="del" class="danger">${slIcon('bin')} Ištrinti projektą</button>`;
   document.body.appendChild(pop);
-  const r = btn.getBoundingClientRect(); Object.assign(pop.style, { display:'block', top:Math.round(r.bottom+4)+'px', left:Math.round(Math.max(8, r.right-220))+'px', minWidth:'220px' });
+  const r = btn.getBoundingClientRect(); Object.assign(pop.style, { display:'flex', top:Math.round(r.bottom+4)+'px', left:Math.round(Math.max(8, r.right-240))+'px', minWidth:'230px' });
   const off = e=>{ if(!pop.contains(e.target) && e.target!==btn){ pop.remove(); document.removeEventListener('pointerdown', off, true); } };
   setTimeout(()=>document.addEventListener('pointerdown', off, true), 0);
   pop.querySelectorAll('[data-m]').forEach(b=>b.onclick = ()=>{ pop.remove(); document.removeEventListener('pointerdown', off, true);
@@ -19330,7 +19336,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v354';
+const APP_VER = 'v355';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37626,6 +37632,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 14:09', v:'v355', k:'fix', t:'Projekto „⋯“ meniu – tvarkinga išvaizda', f:'Projekto „⋯“ meniu (Kopijuoti projektą, Išsaugoti kaip šabloną, Ištrinti projektą) nebeturi pilkų mygtukų fonų: vientisas langas, vienodo pločio eilutės su Material ikonomis, užvedus – paryškinama.' },
   { d:'2026-10-06 14:06', v:'v354', k:'new', t:'Projektai → Įranga: daiktų tempimas; priedai grupės apačioje', f:'Daiktą galima nutempti už ⋮⋮ rankenėlės aukštyn ar žemyn grupėje arba į kitą grupę (veikia ir telefone; tempiant prie ekrano krašto puslapis slenka). Perkeliant į kitą grupę kartu keliauja ir jo priedai – bendras priedo kiekis senoje grupėje sumažėja, naujoje atsiranda. Priedai grupėje visada rodomi apačioje, po antrašte „Priedai“.' },
   { d:'2026-10-06 14:02', v:'v353', k:'fix', t:'Projektai → Įranga: seni priedai sujungiami į bendrą eilutę', f:'Projektuose, kur priedai buvo įrašyti po kiekvienu daiktu (↳), jie atidarius automatiškai perkeliami į atskirą daikto eilutę su bendru kiekiu (pvz. Powercon kabelis: 4 × Rogue R2 + 2 × Rogue R3X = 6). Kiekis toliau keičiasi kartu su daiktų kiekiais.' },
   { d:'2026-10-06 13:57', v:'v352', k:'chg', t:'Projektai → Įranga: priedai sumuojami į bendrą kiekį', f:'Pridedant daiktą su priedais iššoka langas su dviem mygtukais – „Įtraukti priedus“ arba „Be priedų“ (✕ – atšaukti). Jei tas pats priedas (pvz. TrueCon kabelis) priklauso keliems daiktams, grupėje jis rodomas viena eilute su bendru kiekiu (po pavadinimu matyti, iš ko jis susideda). Keičiant daikto kiekį ar jį išimant, bendras priedo kiekis persiskaičiuoja.' },
