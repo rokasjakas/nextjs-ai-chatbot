@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-nLqt/OmLuHI6v014Ocm2BuoAwFrsV1g+1nsW/8o9a6w=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-9UUf6e+OUkjej4lAcXeVOf0vOUVsVWenCxqEN5ljZww=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -13810,6 +13810,18 @@ function npAccAdd(g, parent, itemId, per){
   c.acc[parent.id] = offerNum(c.acc[parent.id]) + per;
   npAccRecalc(g, c);
 }
+// accessories saved the old way (a ↳ row under each item) become shared rows – the same accessory under several items is one row
+function npAccMigrate(g){
+  const ids = new Set(g.items.map(x=>x.id)), byId = Object.fromEntries(g.items.map(x=>[x.id, x]));
+  const kids = g.items.filter(c=>c.parent && ids.has(c.parent) && !byId[c.parent].bundle && !byId[c.parent].parent && c.item!=null && c.item!=='');
+  const move = kids; if(!move.length) return false;
+  move.forEach(c=>{
+    const p = byId[c.parent], per = c.per!=null ? offerNum(c.per) : (offerNum(p.qty) ? offerNum(c.qty) / offerNum(p.qty) : 0);
+    g.items = g.items.filter(x=>x!==c);
+    if(per > 0) npAccAdd(g, p, c.item, per);
+  });
+  return true;
+}
 // after an item row is removed: the shared accessory rows lose its part (and go when nothing is left)
 function npAccDrop(g, pid){
   g.items.filter(c=>c.acc && c.acc[pid]!=null).forEach(c=>{ delete c.acc[pid]; npAccRecalc(g, c); });
@@ -13877,6 +13889,7 @@ function npGroups(idx){
   const box = document.getElementById('npGroups'); if(!box) return;
   const d = NP.cur.data, s = d.subs.find(x=>x.id===NP.sub), ed = npGearEd(), ro = ed ? '' : 'readonly', dis = ed ? '' : 'disabled';
   const groups = d.groups.filter(g=>g.sub===s.id);
+  if(ed){ let mig = false; groups.forEach(g=>{ if(npAccMigrate(g)) mig = true; }); if(mig){ NP.dirty = true; clearTimeout(NP.saveT); NP.saveT = setTimeout(npSave, 700); } }
   const subTimes = d.times.filter(t=>!t.sub || t.sub===s.id);
   // a reserved subproject (Laukiama / Patvirtinta / Paruošta / Vietoje): its equipment turns green
   const booked = NP_HOLD.has(s.status), LI = npLoadInfo(NP.cur);
@@ -19250,7 +19263,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v352';
+const APP_VER = 'v353';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37546,6 +37559,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 14:02', v:'v353', k:'fix', t:'Projektai → Įranga: seni priedai sujungiami į bendrą eilutę', f:'Projektuose, kur priedai buvo įrašyti po kiekvienu daiktu (↳), jie atidarius automatiškai perkeliami į atskirą daikto eilutę su bendru kiekiu (pvz. Powercon kabelis: 4 × Rogue R2 + 2 × Rogue R3X = 6). Kiekis toliau keičiasi kartu su daiktų kiekiais.' },
   { d:'2026-10-06 13:57', v:'v352', k:'chg', t:'Projektai → Įranga: priedai sumuojami į bendrą kiekį', f:'Pridedant daiktą su priedais iššoka langas su dviem mygtukais – „Įtraukti priedus“ arba „Be priedų“ (✕ – atšaukti). Jei tas pats priedas (pvz. TrueCon kabelis) priklauso keliems daiktams, grupėje jis rodomas viena eilute su bendru kiekiu (po pavadinimu matyti, iš ko jis susideda). Keičiant daikto kiekį ar jį išimant, bendras priedo kiekis persiskaičiuoja.' },
   { d:'2026-10-06 13:52', v:'v351', k:'chg', t:'Rūšiavimas: kabeliai ir smulkūs daiktai – tame pačiame sąraše', f:'Rūšiavime kabeliai ir smulkūs daiktai nebėra perkeliami į atskirą „Smulkūs daiktai ir kabeliai“ skiltį – jie rūšiuojami tame pačiame sąraše kaip ir visa kita įranga (su skyrių filtrais, pvz. „Kabeliai“). Dėžės smulkiems daiktams sudaromos Krovime, kaip ir anksčiau.' },
   { d:'2026-10-06 13:49', v:'v350', k:'fix', t:'Rūšiavimas: kito žmogaus pažymėjimai matomi iš karto', f:'Kai keli žmonės rūšiuoja tą patį projektą, vieno pažymėtas „Atrūšiuota“ (ar atšauktas) daiktas kitiems atsiranda per sekundę – nebereikia perkrauti programos. Jei du žmonės pažymi skirtingus daiktus tuo pačiu metu, išsaugomi abu; jei tą patį – galioja vėlesnis.' },
