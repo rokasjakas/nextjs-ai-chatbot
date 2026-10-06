@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-GDXAHlMdDI7YppOvKERBBeLXsjd8xYmH95g1pbsrgm8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-71amS5Saba41O0OYIe69sVF7oGjnUSTOJ0OpGlVeEY4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19344,7 +19344,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v356';
+const APP_VER = 'v357';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -21855,7 +21855,7 @@ function evEntryHtml(e, gi, i){
   const vacant = e.pos && !(e.person||'').trim();
   return `<div class="xg-line xg-entry ${st.cls}${vacant?' vacant':''}" data-g="${gi}" data-i="${i}">
     <input type="text" class="xg-pos" data-g="${gi}" data-i="${i}" data-k="pos" value="${esc(e.pos||'')}" data-combo="dl-positions" placeholder="poz.">
-    <textarea class="xg-ta xg-person" rows="1" data-g="${gi}" data-i="${i}" data-k="person" data-combo="dl-people" placeholder="${vacant?'LAISVA':'vardas'}">${esc(e.person||'')}</textarea>
+    <textarea class="xg-ta xg-person" rows="1" data-g="${gi}" data-i="${i}" data-k="person" data-combo="dl-people" data-combo-lazy placeholder="${vacant?'':'vardas'}">${esc(e.person||'')}</textarea>
     <button type="button" class="xg-st" data-act="entry-menu" data-g="${gi}" data-i="${i}" title="Statusas">${st.v ? st.label.slice(0,1) : '·'}</button>
   </div>`;
 }
@@ -21863,7 +21863,7 @@ function evGroupCellHtml(g, gi, simple){
   return `<div class="xg-grp" data-g="${gi}">
     ${simple ? '' : `<div class="xg-line xg-note"><input type="text" data-g="${gi}" data-k="note" value="${esc(g.note||'')}" placeholder="diena, laikas" ${EV_TOUCH ? 'inputmode="none"' : ''} autocomplete="off"></div>`}
     <div class="xg-entries">${(g.entries||[]).map((e,i)=>evEntryHtml(e, gi, i)).join('')}</div>
-    <div class="xg-adds">${simple ? '' : `<button type="button" data-act="grp-pop" data-g="${gi}" title="Atidaryti: pozicijos, žmonės, laisvi technikai">${slIcon('tune')}</button>`}<button type="button" data-act="add-entry" data-g="${gi}" title="Pridėti žmogų">+<span class="xg-lbl"> žmogus</span></button>${simple?'':`<button type="button" data-act="add-pos" data-g="${gi}" title="Tuščia pozicija (pvz. V1) — raudona, kol neįrašytas žmogus">+<span class="xg-lbl"> poz.</span></button>`}</div>
+    <div class="xg-adds">${simple ? '' : `<button type="button" data-act="grp-pop" data-g="${gi}" title="Atidaryti: pozicijos, žmonės, laisvi technikai">${slIcon('tune')}</button>`}${simple ? `<button type="button" data-act="add-entry" data-g="${gi}" title="Pridėti eilutę">+<span class="xg-lbl"> Pridėti eilutę</span></button>` : `<button type="button" data-act="add-pos" data-g="${gi}" title="Nauja eilutė su pozicija (pvz. V1) — raudona, kol neįrašytas žmogus">+<span class="xg-lbl"> Pridėti eilutę</span></button>`}</div>
   </div>`;
 }
 // a rented vehicle: the supplier (e.g. Movie Wheels), the plate and its kind – red until written
@@ -24937,9 +24937,12 @@ function comboMove(d){
   opts.forEach((o,i)=>o.classList.toggle('hl', i===comboIdx));
   opts[comboIdx].scrollIntoView({block:'nearest'});
 }
-document.addEventListener('focusin', e=>{ const t = e.target; if(t && t.dataset && t.dataset.combo) comboOpen(t, true); });
-document.addEventListener('click', e=>{ const t = e.target; if(t && t.dataset && t.dataset.combo && t===document.activeElement && (!comboEl || comboEl.style.display!=='block')) comboOpen(t, true); });
-document.addEventListener('input', e=>{ const t = e.target; if(t && t.dataset && t.dataset.combo && t===comboInput && t===document.activeElement) comboOpen(t, false); });
+// data-combo-lazy: the list does not drop down on a tap – only once something is typed
+document.addEventListener('focusin', e=>{ const t = e.target; if(t && t.dataset && t.dataset.combo && t.dataset.comboLazy===undefined) comboOpen(t, true); });
+document.addEventListener('click', e=>{ const t = e.target; if(t && t.dataset && t.dataset.combo && t.dataset.comboLazy===undefined && t===document.activeElement && (!comboEl || comboEl.style.display!=='block')) comboOpen(t, true); });
+document.addEventListener('input', e=>{ const t = e.target; if(!t || !t.dataset || !t.dataset.combo || t!==document.activeElement) return;
+  if(t.dataset.comboLazy!==undefined){ if(String(t.value||'').trim()) comboOpen(t, false); else if(comboInput===t) comboClose(); return; }
+  if(t===comboInput) comboOpen(t, false); });
 document.addEventListener('focusout', e=>{ if(e.target===comboInput) setTimeout(()=>{ if(document.activeElement!==comboInput) comboClose(); }, 120); });
 document.addEventListener('keydown', e=>{
   if(!comboEl || comboEl.style.display!=='block' || e.target!==comboInput) return;
@@ -37640,6 +37643,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 14:28', v:'v357', k:'chg', t:'Renginiai: komandos lentelė paprastesnė', f:'Paspaudus ant žmogaus laukelio, žmonių sąrašas nebeiškrenta iš karto – jis atsiranda tik pradėjus rašyti vardą. Mygtukas „+ žmogus“ panaikintas, „+ poz.“ pervadintas į „Pridėti eilutę“. Laisva pozicija – tiesiog tuščias raudonas laukelis (be pilko „LAISVA“ užrašo).' },
   { d:'2026-10-06 14:13', v:'v356', k:'fix', t:'Daiktai su metražu rikiuojami pagal skaičių', f:'Visoje programoje (sandėlis, projektų įranga, krovimas, rūšiavimas ir kiti sąrašai) pavadinimai su skaičiais rikiuojami pagal skaičiaus dydį: 0.5m, 1m, 1.5m, 2m, 3m, 5m, 10m, 15m DMX – nebe 10m prieš 2m. Suprantamos ir dešimtainės (1.5 ir 1,5).' },
   { d:'2026-10-06 14:09', v:'v355', k:'fix', t:'Projekto „⋯“ meniu – tvarkinga išvaizda', f:'Projekto „⋯“ meniu (Kopijuoti projektą, Išsaugoti kaip šabloną, Ištrinti projektą) nebeturi pilkų mygtukų fonų: vientisas langas, vienodo pločio eilutės su Material ikonomis, užvedus – paryškinama.' },
   { d:'2026-10-06 14:06', v:'v354', k:'new', t:'Projektai → Įranga: daiktų tempimas; priedai grupės apačioje', f:'Daiktą galima nutempti už ⋮⋮ rankenėlės aukštyn ar žemyn grupėje arba į kitą grupę (veikia ir telefone; tempiant prie ekrano krašto puslapis slenka). Perkeliant į kitą grupę kartu keliauja ir jo priedai – bendras priedo kiekis senoje grupėje sumažėja, naujoje atsiranda. Priedai grupėje visada rodomi apačioje, po antrašte „Priedai“.' },
