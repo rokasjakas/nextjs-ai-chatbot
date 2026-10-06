@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-LMD7kcsNxTXa/asSOvXBHId8aWczNljAUy/a/n+edUY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-5xx8PAVd8ffI0x540SbwYUI82nUiU3mzs/i31wBVi3s=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4718,6 +4718,27 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 .gr-mem{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
 .gr-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;} .gr-gal img{width:100%;border-radius:8px;display:block;}
 @media (max-width:640px){ .gr-card{flex-wrap:wrap;} .gr-acts{flex-direction:row;width:100%;justify-content:flex-end;} .gr-form{grid-template-columns:1fr;} .gr-pi{flex-direction:column;align-items:flex-start;gap:1px;} .gr-states{grid-template-columns:1fr;} }
+
+/* ---------- phones: nothing of a window under the status bar (clock, battery, the island) ----------
+   env(safe-area-inset-*) is 0 on computers, so there everything stays as it was */
+.modal-backdrop:not(.docked-left){padding-top:max(20px, calc(12px + env(safe-area-inset-top,0px))) !important;padding-bottom:max(20px, calc(12px + env(safe-area-inset-bottom,0px))) !important;}
+.modal-backdrop:not(.docked-left) > .modal{max-height:min(88vh, calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));}
+@media (max-width:640px){ .modal-backdrop:not(.docked-left){padding-top:calc(10px + env(safe-area-inset-top,0px)) !important;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px)) !important;} }
+.modal-backdrop.docked-left{padding-top:calc(12px + env(safe-area-inset-top,0px));}
+.ui-ask,.call-ring,.pp-dial{padding-top:max(16px, calc(10px + env(safe-area-inset-top,0px)));padding-bottom:max(16px, calc(10px + env(safe-area-inset-bottom,0px)));}
+.gs-pop{padding-top:max(10vh, calc(12px + env(safe-area-inset-top,0px)));}
+.gm-ov{padding-top:max(12px, env(safe-area-inset-top,0px));padding-bottom:max(12px, env(safe-area-inset-bottom,0px));}
+@media (max-width:640px){ .gm-ov{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);} }
+.grd-stage.big .grd-bigx{top:calc(10px + env(safe-area-inset-top,0px));}
+.ven-lightbox{padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;}
+body .tabpanel.xg-panel.ev-full{padding-top:calc(10px + env(safe-area-inset-top,0px)) !important;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px)) !important;}
+.poll-pub{padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;}
+/* the vehicle window on a phone: below the status bar, its header stays below it while scrolling */
+@media (max-width:640px){
+  .veh-pop-bd{padding-top:env(safe-area-inset-top,0px) !important;}
+  .veh-pop-bd .veh-pop-h{top:0;}
+  .veh-pop-bd::before{content:'';position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:6;}
+}
 </style>
 <style id="ldSimCss">
 .btn.cl-hdr{position:relative;display:inline-flex;align-items:center;gap:6px;} .cl-hdr-i{display:inline-flex;} .cl-hdr-i svg{width:18px;height:18px;}
@@ -11381,7 +11402,8 @@ function sizePop(btn){
     draw(); });
   document.body.appendChild(pop);
   const rc = btn.getBoundingClientRect(), w = pop.offsetWidth;
-  pop.style.top = Math.min(rc.bottom + 8, innerHeight - pop.offsetHeight - 8) + 'px';
+  const sat = (()=>{ const d = document.createElement('div'); d.style.cssText = 'position:fixed;top:0;height:0;padding-top:env(safe-area-inset-top,0px);visibility:hidden'; document.body.appendChild(d); const v = parseFloat(getComputedStyle(d).paddingTop)||0; d.remove(); return v; })();
+  pop.style.top = Math.max(sat + 8, Math.min(rc.bottom + 8, innerHeight - pop.offsetHeight - 8)) + 'px';
   pop.style.left = Math.max(8, Math.min(rc.right - w, innerWidth - w - 8)) + 'px';
   const off = e=>{ if(!pop.contains(e.target) && e.target!==btn && !btn.contains(e.target)){ pop.remove(); document.removeEventListener('click', off, true); } };
   setTimeout(()=>document.addEventListener('click', off, true), 0);
@@ -19101,7 +19123,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v335';
+const APP_VER = 'v336';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37174,6 +37196,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 10:36', v:'v336', k:'fix', t:'Telefonai: langai nebelenda po būsenos juosta', f:'Patikrinti visi iššokantys langai telefone (su iPhone „sala“ / įpjova): įprasti langai, patvirtinimai, formos, automobilio kortelė (ir paslinkus – jos antraštė lieka matoma), „Dydis“, paieška, nuotraukų peržiūra, žaidimai, renginiai per visą ekraną, skambučio langas, balsavimo ekranas, automobilio QR puslapis. Nė vienas langas nebeprasideda po laikrodžiu / baterija – viršuje paliekamas saugus tarpas; apačioje – tarpas virš iPhone juostelės. Kompiuteryje niekas nepasikeitė.' },
   { d:'2026-10-06 10:10', v:'v335', k:'fix', t:'Telefonas: Notes langas žemiau', f:'Telefone (ypač iPhone) „Notes“ langas nebeprasideda po būsenos juosta (laikrodis, baterija) – naujo užrašo laukelis ir sąrašas pradedami žemiau, su tarpu nuo viršaus.' },
   { d:'2026-10-05 19:52', v:'v334', k:'chg', t:'Ikonos: visur Material Symbols (Outlined Fill)', f:'Patikrinti visi puslapiai, jų skiltys ir langai (kompiuteryje ir telefone): visos ikonos dabar iš „Outlined Fill – Material Symbols“ (Google, Apache 2.0). Pakeistos ne šio rinkinio ikonos: Raktai, Signalizacija, Skaičiuotuvas, Dydis, Notes (telefone), tepalo keitimas, profilaktika, QR kodas, kodo generavimas, Ofiso valymas, Bolt, Wolt, maistas, el. laiškas, žaidimų ikonos ir rezultatų lentelės medaliai, prisijungusių taškas; automobilio QR puslapyje – remontas, įspėjimas, kamera, galerija, sėkmė. Jaustukai palikti tik žmonių žinutėse (chato jaustukų pasirinkimas).' },
   { d:'2026-10-05 19:39', v:'v333', k:'new', t:'Notes: raudonas ✕ ištrinti', f:'Prie kiekvieno užrašo (Notes) dešinėje – raudonas ✕: paspaudus užrašas ištrinamas iš karto (ir nuimamas nuo pagrindinio lango, jei buvo prisegtas). Kelias sekundes rodomas „Atšaukti“ – jei paspausta netyčia, užrašas grąžinamas. Veikia ir kompiuteryje, ir telefono „Notes“ lange.' },
