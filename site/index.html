@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-GJpedhCBq6xYnY76vpJsrPdMj2Tqu6klmwM3uFTaiXk=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-9LsbZY3fXjZH4eafPHou7S8RnreowvL7T/KKepxrOjU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4528,6 +4528,9 @@ body.gm-open{overflow:hidden;}
 .gm-pad{display:none;justify-content:center;gap:10px;flex-wrap:wrap;}
 .gm-slider{display:none;position:relative;height:150px;flex:none;margin:6px auto 0;width:min(100%, 420px);border-radius:16px;border:1px solid #2b3160;background:linear-gradient(#141a36,#1a2040);touch-action:none;user-select:none;-webkit-user-select:none;align-items:center;justify-content:center;}
 .gm-slider span{color:#8a93b8;font-size:12.5px;pointer-events:none;}
+.gm-rlist{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;font-size:13px;} .gm-rc{border:1px solid var(--c);color:var(--c);border-radius:999px;padding:2px 9px;font-weight:700;}
+.gm-rres{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;font-size:13px;margin-bottom:6px;color:#ffd43b;}
+.gm-rbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;} .gm-rbar select{max-width:240px;}
 .gm-slk{position:absolute;left:12px;right:12px;height:36px;top:calc(50% - 18px);border-radius:12px;background:#2a3266;border:1px solid #4a5490;pointer-events:none;}
 .gm-slider.on{border-color:#9775FA;} .gm-slider.on .gm-slk{background:#9775FA;border-color:#b197fc;}
 @media (hover:none), (max-width:760px){
@@ -5767,6 +5770,8 @@ SL.gm_brick = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 
 SL.gm_flutter_dash = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M295-320q-3-4 19.5-31.5T366-410q33-37 77-82 12-18 33-18t35 16q12 16 9 36.5T498-428q-55 33-98 58-38 21-70 37.5T295-320ZM430-40q-5 0-10-2t-8-7q-4-6-8-16.5T400-90q0-9 1-16.5t3-15.5q-27-5-45.5-27T340-200q0-4 3-21-74-26-119.5-83T165-451q-5 5-11 8t-14 3q-15 0-37.5-22.5T80-560q0-69 40.5-124.5T200-740q13 0 16.5 11.5T220-706q38-54 95.5-89T442-838q6-29 29-45.5t49-16.5v40q4-6 10-10 5-4 12.5-7t17.5-3q10 0 17.5 3t12.5 7q6 4 10 10-15 0-25 9t-13 22q54 14 100 46t78 77q0-11 3.5-22.5T760-740q39 0 79.5 55.5T880-560q0 75-22.5 97.5T820-440q-7 0-13.5-2.5T795-450q-14 100-68.5 159.5T582-211q3 14 13.5 22.5T620-180h23q7 0 12 4t7 10q5 16 17.5 30t23.5 23q8 7 7.5 16.5T702-82q-11 8-28 14t-44 8q-5 0-10-2t-8-7q-4-6-8-16.5t-4-24.5q0-9 1-16.5t3-15.5q-24-5-40.5-22T542-204q-15 2-30 3t-32 1q-26 0-50.5-2.5T382-210l-2 10q0 17 11.5 28.5T420-160h23q7 0 12 4t7 10q5 16 17.5 30T503-93q8 7 7.5 16.5T502-62q-11 8-28 14t-44 8Zm320-391q5-20 7.5-42t2.5-47q0-116-82-198t-198-82q-116 0-198 82t-82 198q0 24 2.5 46t7.5 42q5-20 13.5-39.5T243-508q-6-14-9.5-29.5T230-570q0-63 43.5-106.5T380-720q29 0 54.5 10.5T480-681q20-18 45.5-28.5T580-720q63 0 106.5 43.5T730-570q0 17-3.5 32.5T716-508q11 17 20 36.5t14 40.5ZM480-240q87 0 146.5-27t92.5-81q0-3 .5-6t.5-6q0-30-7-58t-21-53q-21 23-49.5 37T580-420q-8 0-16-1t-16-3q5-7 7.5-14.5T559-454q1-2 1-4v-4q5 1 10 1.5t10 .5q46 0 78-32t32-78q0-46-32-78t-78-32q-20 0-39 7.5T507-651l-27 24-27-24q-15-14-34-21.5t-39-7.5q-46 0-78 32t-32 78q0 41 25.5 70.5T359-462l-30 33q-18-7-33.5-17.5T268-471q-14 25-21 53t-7 58v10q34 54 94 82t146 28Zm57.5-280.5Q520-541 520-570t17.5-49.5Q555-640 580-640t42.5 20.5Q640-599 640-570t-17.5 49.5Q605-500 580-500t-42.5-20.5ZM595-590q7 0 11-4.5t4-10.5q0-6-4.5-10.5T595-620q-7 0-11 4.5t-4 10.5q0 7 4.5 11t10.5 4Zm-257.5 69.5Q320-541 320-570t17.5-49.5Q355-640 380-640t42.5 20.5Q440-599 440-570t-17.5 49.5Q405-500 380-500t-42.5-20.5ZM395-590q7 0 11-4.5t4-10.5q0-6-4.5-10.5T395-620q-7 0-11 4.5t-4 10.5q0 7 4.5 11t10.5 4Z"/>';
 SL.gm_bomb = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M346-48q-125 0-212.5-88.5T46-350q0-125 87-211.5T345-648h12l34-60q9-17 27-21.5t35 4.5l52 30 5-8q23-39 66.5-50.5T660-743l26 15-30 52-26-15q-18-11-38.5-5.5T561-673l-4 8 61 35q16 10 21 27.5t-5 33.5l-34 61q23 36 34.5 76.5T646-348q0 125-87.5 212.5T346-48Zm474-570v-60h100v60H820ZM590-848v-100h60v100h-60Zm195 77-42-42 71-71 42 42-71 71Z"/>';
 SL.gm_smart_toy = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M147-376q-45 0-76-31.21T40-483q0-44.58 31.21-75.79Q102.42-590 147-590v-123q0-24 18-42t42-18h166q0-45 31-76t76-31q45 0 76 31.21T587-773h166q24 0 42 18t18 42v123q45 0 76 31.21T920-483q0 44.58-31.21 75.79Q857.58-376 813-376v196q0 24-18 42t-42 18H207q-24 0-42-18t-18-42v-196Zm224.5-111.74q11.5-11.73 11.5-28.5 0-16.76-11.74-28.26-11.73-11.5-28.5-11.5-16.76 0-28.26 11.74-11.5 11.73-11.5 28.5 0 16.76 11.74 28.26 11.73 11.5 28.5 11.5 16.76 0 28.26-11.74Zm274 0q11.5-11.73 11.5-28.5 0-16.76-11.74-28.26-11.73-11.5-28.5-11.5-16.76 0-28.26 11.74-11.5 11.73-11.5 28.5 0 16.76 11.74 28.26 11.73 11.5 28.5 11.5 16.76 0 28.26-11.74ZM312-285h336v-60H312v60Z"/>';
+SL.gm_sports_score = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M390-740h60v-60h-60v60Zm120 0v-60h60v60h-60ZM390-500v-60h60v60h-60Zm240-120v-60h60v60h-60Zm0 120v-60h60v60h-60Zm-120 0v-60h60v60h-60Zm120-240v-60h60v60h-60Zm-180 60v-60h60v60h-60ZM270-160v-640h60v60h60v60h-60v60h60v60h-60v400h-60Zm300-400v-60h60v60h-60Zm-120 0v-60h60v60h-60Zm-60-60v-60h60v60h-60Zm120 0v-60h60v60h-60Zm60-60v-60h60v60h-60Z"/>';
+SL.gm_directions_car = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M200-204v54q0 12.75-8.62 21.37Q182.75-120 170-120h-20q-12.75 0-21.37-8.63Q120-137.25 120-150v-324l85-256q5-14 16.5-22t26.5-8h464q15 0 26.5 8t16.5 22l85 256v324q0 12.75-8.62 21.37Q822.75-120 810-120h-21q-12.75 0-21.37-8.63Q759-137.25 759-150v-54H200Zm3-330h554l-55-166H258l-55 166Zm82.76 220q23.24 0 38.74-15.75Q340-345.5 340-368q0-23.33-15.75-39.67Q308.5-424 286-424q-23.33 0-39.67 16.26Q230-391.47 230-368.24q0 23.24 16.26 38.74 16.27 15.5 39.5 15.5ZM675-314q23.33 0 39.67-15.75Q731-345.5 731-368q0-23.33-16.26-39.67Q698.47-424 675.24-424q-23.24 0-38.74 16.26-15.5 16.27-15.5 39.5 0 23.24 15.75 38.74Q652.5-314 675-314Z"/>';
 SL.gm_sports_tennis = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="m123-159-43-43 174-174q33-33 47-82.5T315-597q0-57 25-112t76-106q88-88 193-100t173 56q68 68 56 174T738-491q-51 51-106 75t-112 24q-89 0-139.5 13T297-333L123-159Zm290-332q49 49 133 36.5T697-534q67-67 80-149.5T741-815q-49-49-132.5-36.5T458-772q-67 67-80.5 149.5T413-491ZM634-82q-42-42-42-102t42-102q42-42 102-42t102 42q42 42 42 102T838-82q-42 42-102 42T634-82Z"/>';
 SL.gm_directions_run = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M535-40v-239l-108-99-42 188-265-55 11-56 199 40 73-369-100 47v134h-60v-175l164-69q32-14 45.5-17.5T480-714q20 0 35.5 8.5T542-680l42 67q26 42 71 73t105 31v60q-67 0-119.5-31T543-573l-39 158 91 84v291h-60Zm-46.5-735.5Q467-797 467-827t21.5-51.5Q510-900 540-900t51.5 21.5Q613-857 613-827t-21.5 51.5Q570-754 540-754t-51.5-21.5Z"/>';
 SL.gm_rocket_launch = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="m98-537 168-168q14-14 33-20t39-2l77 14q-55 62-89 117.5T263-466L98-537Zm202 89q27-73 68-137.5T461-702q88-88 201-131.5T873-860q17 98-26 211T716-448q-52 52-117 93t-138 68L300-448Zm335.5-105q29.5 0 49.5-20t20-49.5q0-29.5-20-49.5t-49.5-20q-29.5 0-49.5 20t-20 49.5q0 29.5 20 49.5t49.5 20ZM551-85l-72-165q74-29 129.5-63T726-402l14 77q4 20-2 39.5T718-252L551-85ZM162-318q35-35 85-35.5t85 34.5q35 35 35 85t-35 85q-26 26-81 43T87-74q15-109 32-163.5t43-80.5Z"/>';
@@ -19392,7 +19397,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v365';
+const APP_VER = 'v366';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32344,15 +32349,18 @@ const GM_SOLO = [
   { id:'invaders',  name:'Ateiviai',    icon:'👾', desc:'Kaip Space Invaders: nušauk ateivių armadą.', help:'← → judėti · Tarpas – šauti', pad:['ArrowLeft',' ','ArrowRight'] },
   { id:'pong',      name:'Pongas',      icon:'🏓', desc:'Klasikinis tenisas prieš kompiuterį iki 7 taškų.', help:'↑ ↓ arba pelė / pirštas', slider:true },
   { id:'dino',      name:'Bėgikas',     icon:'🦖', desc:'Bėk, šokinėk per kaktusus ir lenkis nuo paukščių.', help:'Tarpas / ↑ – šokti · ↓ – pasilenkti', pad:['ArrowDown',' '] },
+  { id:'race',      name:'Lenktynės',   icon:'🏎', desc:'3 ratai trasoje prieš 3 kompiuterio mašinas.', help:'← → vairuoti · ↑ dujos · ↓ stabdis', pad:['ArrowDown'], steer:true },
   { id:'asteroids', name:'Asteroidai',  icon:'☄️', desc:'Skraidyk erdvėlaiviu ir sprogdink asteroidus.', help:'← → sukti · ↑ greitinti · Tarpas – šauti', pad:['ArrowLeft','ArrowUp',' ','ArrowRight'] },
 ];
 // the games' icons: Material Symbols too
 const GM_SL = {"blocks": "gm_view_quilt", "snake": "gm_gesture", "2048": "gm_grid_view", "breakout": "gm_brick", "flappy": "gm_flutter_dash", "mines": "gm_bomb", "invaders": "gm_smart_toy", "pong": "gm_sports_tennis", "dino": "gm_directions_run", "asteroids": "gm_rocket_launch", "ttt": "gm_grid_3x3", "c4": "gm_radio_button_checked", "pong2": "gm_sports_tennis"};
+Object.assign(GM_SL, { race:'gm_sports_score', race10:'gm_directions_car' });
 const gmIcon = g=>slIcon(GM_SL[g.id] || 'games');
 const GM_MP = [
   { id:'ttt',   name:'Kryžiukai-nuliukai', icon:'⭕', desc:'Trys iš eilės – du žaidėjai.' },
   { id:'c4',    name:'Keturi iš eilės',    icon:'🔴', desc:'Mesk žetonus ir sudėliok 4 iš eilės.' },
   { id:'pong2', name:'Pongas 1 prieš 1',   icon:'🏓', desc:'Tenisas prieš kolegą realiu laiku, iki 5 taškų.' },
+  { id:'race10', name:'Lenktynės keliese', icon:'🏎', desc:'Iki 10 žaidėjų realiu laiku, 3 ratai – pakviesk kelis kolegas.' },
 ];
 const GM_ALL = GM_SOLO.concat(GM_MP);
 const gmDef = id=>GM_ALL.find(g=>g.id===id);
@@ -32436,7 +32444,7 @@ function gmRenderOnline(){
   const list = gmOnlineList();
   el.innerHTML = list.length ? list.map(m=>`<div class="gm-on"><span class="gm-dot st-${teamStatus(m.id)}"></span><span class="gm-nm">${esc(teamName(m))}</span><button type="button" class="btn small primary" data-gminv="${esc(m.id)}">Kviesti</button></div>`).join('')
     : '<div class="muted" style="padding:6px 0;">Šiuo metu daugiau niekas neprisijungęs. Kai kas nors prisijungs, jį matysi čia.</div>';
-  el.querySelectorAll('[data-gminv]').forEach(b=>b.onclick = ()=>{ const g = (document.querySelector('input[name="gmMp"]:checked')||{}).value || 'ttt'; gmInvite(b.dataset.gminv, g); });
+  el.querySelectorAll('[data-gminv]').forEach(b=>b.onclick = ()=>{ const g = (document.querySelector('input[name="gmMp"]:checked')||{}).value || 'ttt'; if(g==='race10') gmRaceOpen(b.dataset.gminv); else gmInvite(b.dataset.gminv, g); });
 }
 /* ---- žaidimo langas ---- */
 function gmOpen(id){
@@ -32450,6 +32458,7 @@ function gmOpen(id){
     <div class="gm-help">${esc(g.help)}</div>
     <div class="gm-pad">${(g.pad||[]).map(k=>`<button type="button" class="gm-k${k===' '?' wide':''}" data-gk="${esc(k)}">${GM_PADL[k]||k}</button>`).join('')}</div>
     ${g.slider ? '<div class="gm-slider" id="gmSlider"><i class="gm-slk"></i><span>Vesk pirštą aukštyn / žemyn</span></div>' : ''}
+    ${g.steer ? '<div class="gm-slider gm-steer" id="gmSlider"><span>Slink pirštą kairėn / dešinėn – vairuoti</span></div>' : ''}
   </div>`;
   document.body.appendChild(ov); document.body.classList.add('gm-open');
   document.getElementById('gmX').onclick = ()=>gmClose();
@@ -32875,6 +32884,7 @@ function gmLobbyMsg(p){
   }
   if(p.t==='cancel'){ if(GM.inv[p.room] && GM.inv[p.room].incoming){ delete GM.inv[p.room]; if(document.getElementById('gmYes')) closeModal(); toast((p.name||'Kolega')+' atšaukė kvietimą.'); } return; }
   const mine = GM.inv[p.room]; if(!mine) return;
+  if(mine.race){ toast((p.name||'Kolega')+(p.t==='accept' ? ' prisijungia prie lenktynių.' : p.t==='busy' ? ' dabar žaidžia kitą žaidimą.' : ' šįkart atsisakė.')); return; }
   delete GM.inv[p.room];
   if(document.getElementById('gmInvX')) closeModal();
   if(p.t==='accept') gmRoomJoin(p.room, mine.game, true, p.from, p.name);
@@ -32886,13 +32896,13 @@ function gmRoomJoin(room, game, host, opp, oppName){
   const R = GM.room = { id:room, game, host, opp, oppName:oppName||'Kolega', ch:null, onMsg:null, ready:false, queue:[] };
   R.ch = sb.channel('gm-'+room, { config:{ broadcast:{ self:false } } })
     .on('broadcast', { event:'m' }, ({ payload })=>{ if(GM.room!==R) return; const p = payload||{};
-      if(p.t==='bye'){ gmRoomMsg('🚪 '+R.oppName+' išėjo iš žaidimo.'); R.gone = true; return; }
+      if(p.t==='bye' && R.game!=='race10'){ gmRoomMsg('🚪 '+R.oppName+' išėjo iš žaidimo.'); R.gone = true; return; }
       if(R.onMsg) R.onMsg(p); })
     .subscribe(st=>{ if(st==='SUBSCRIBED'){ R.ready = true; R.queue.splice(0).forEach(m=>R.ch.send(m)); } });
   const g = gmDef(game);
   const ov = document.createElement('div'); ov.id = 'gmOv'; ov.className = 'gm-ov';
   ov.innerHTML = `<div class="gm-box gm-mpbox">
-    <div class="gm-top"><b class="gm-title">${gmIcon(g)} ${esc(g.name)}</b><span class="gm-sc">prieš <b>${esc(R.oppName)}</b></span><span class="gm-sp"></span><button type="button" class="gm-b" id="gmX" title="Išeiti">✕</button></div>
+    <div class="gm-top"><b class="gm-title">${gmIcon(g)} ${esc(g.name)}</b><span class="gm-sc">${game==='race10' ? (host ? 'tu – šeimininkas' : 'keliese') : `prieš <b>${esc(R.oppName)}</b>`}</span><span class="gm-sp"></span><button type="button" class="gm-b" id="gmX" title="Išeiti">✕</button></div>
     <div class="gm-mpst" id="gmMpSt"></div>
     <div class="gm-stage" id="gmStage"></div>
     <div class="gm-mpbar" id="gmMpBar"></div>
@@ -32902,12 +32912,219 @@ function gmRoomJoin(room, game, host, opp, oppName){
   GM_MP_MAKE[game](R);
 }
 function gmSend(p){ const R = GM.room; if(!R) return; const m = { type:'broadcast', event:'m', payload:p }; if(R.ready) R.ch.send(m); else R.queue.push(m); }
-function gmRoomLeave(silent){ const R = GM.room; if(!R) return; try{ if(!R.gone) R.ch.send({ type:'broadcast', event:'m', payload:{ t:'bye' } }); }catch(e){} if(R.stop) R.stop(); setTimeout(()=>{ try{ getSb().removeChannel ? getSb().removeChannel(R.ch) : R.ch.unsubscribe(); }catch(e){} }, 300); GM.room = null; }
+function gmRoomLeave(silent){ const R = GM.room; if(!R) return; try{ if(!R.gone) R.ch.send({ type:'broadcast', event:'m', payload:{ t:'bye', id:teamMe() } }); }catch(e){} if(R.stop) R.stop(); setTimeout(()=>{ try{ getSb().removeChannel ? getSb().removeChannel(R.ch) : R.ch.unsubscribe(); }catch(e){} }, 300); GM.room = null; }
 function gmRoomMsg(t){ const el = document.getElementById('gmMpSt'); if(el) el.innerHTML = t; }
 function gmRoomBar(html){ const el = document.getElementById('gmMpBar'); if(el) el.innerHTML = html; }
 // a win is one point in the „keliese“ table
 function gmMpWin(game){ gmSaveScore(game, 1); }
 const GM_MP_MAKE = {};
+/* ---- Lenktynės: trasa iš viršaus, 3 ratai. Vienam – prieš 3 kompiuterio mašinas, keliese – iki 10 žaidėjų.
+   Kompiuteryje: ← → vairuoti, ↑ dujos, ↓ stabdis. Telefone: dujos pačios, vairuoji slinkdamas pirštą
+   kairėn / dešinėn valdymo lauke po trasa. ---- */
+const RACE_LAPS = 3, RACE_W = 640, RACE_H = 440, RACE_HW = 34;
+const RACE_COLORS = ['#ff6b6b','#4dabf7','#ffd43b','#69db7c','#da77f2','#ff922b','#3bc9db','#f783ac','#a9e34b','#e9ecef'];
+let RACE_T = null;
+function raceTrack(){
+  if(RACE_T) return RACE_T;
+  const P = [[90,360],[88,250],[96,140],[150,74],[260,70],[330,120],[350,190],[420,210],[470,150],[530,84],[590,110],[600,200],[560,270],[470,300],[440,350],[480,395],[420,415],[250,412],[140,405]];
+  const pts = [], n = P.length;
+  for(let i=0;i<n;i++){ const p0 = P[(i-1+n)%n], p1 = P[i], p2 = P[(i+1)%n], p3 = P[(i+2)%n];
+    for(let k=0;k<12;k++){ const t = k/12, t2 = t*t, t3 = t2*t;
+      pts.push([0, 1].map(j=>0.5*((2*p1[j]) + (-p0[j]+p2[j])*t + (2*p0[j]-5*p1[j]+4*p2[j]-p3[j])*t2 + (-p0[j]+3*p1[j]-3*p2[j]+p3[j])*t3))); } }
+  const cum = [0]; for(let i=1;i<=pts.length;i++){ const a = pts[i-1], b = pts[i%pts.length]; cum.push(cum[i-1] + Math.hypot(b[0]-a[0], b[1]-a[1])); }
+  return RACE_T = { pts, cum, L:cum[pts.length] };
+}
+function raceAt(T, s){
+  s = ((s % T.L) + T.L) % T.L; let lo = 0, hi = T.pts.length - 1;
+  while(lo < hi){ const m = (lo + hi + 1) >> 1; if(T.cum[m] <= s) lo = m; else hi = m - 1; }
+  const a = T.pts[lo], b = T.pts[(lo+1) % T.pts.length], f = (s - T.cum[lo]) / Math.max(1e-6, T.cum[lo+1] - T.cum[lo]);
+  return { x:a[0] + (b[0]-a[0])*f, y:a[1] + (b[1]-a[1])*f, a:Math.atan2(b[1]-a[1], b[0]-a[0]) };
+}
+function raceProj(T, x, y){
+  let best = { d:1e9, s:0 };
+  for(let i=0;i<T.pts.length;i++){ const a = T.pts[i], b = T.pts[(i+1) % T.pts.length], dx = b[0]-a[0], dy = b[1]-a[1], l2 = dx*dx + dy*dy || 1;
+    const t = Math.max(0, Math.min(1, ((x-a[0])*dx + (y-a[1])*dy) / l2)), px = a[0] + dx*t, py = a[1] + dy*t, d = Math.hypot(x-px, y-py);
+    if(d < best.d) best = { d, s:T.cum[i] + Math.sqrt(l2)*t }; }
+  return best;
+}
+function raceCar(T, slot, color, name){
+  const s0 = T.L - 30 - Math.floor(slot/2)*30, p = raceAt(T, s0), lat = (slot % 2 ? 1 : -1) * 13, n = p.a + Math.PI/2;
+  return { x:p.x + Math.cos(n)*lat, y:p.y + Math.sin(n)*lat, a:p.a, v:0, s:s0, cr:0, half:true, fin:false, time:0, color, name, off:false };
+}
+// one car, one step: ctl = { steer:-1..1, gas, brake }
+function raceStep(T, c, dt, ctl){
+  const pr = raceProj(T, c.x, c.y); c.off = pr.d > RACE_HW;
+  const vmax = c.off ? 95 : 245;
+  if(ctl.gas) c.v += 270*dt; else c.v -= 70*dt;
+  if(ctl.brake) c.v -= 430*dt;
+  if(c.v > vmax) c.v = Math.max(vmax, c.v - 420*dt);
+  c.v = Math.max(0, c.v);
+  c.a += (ctl.steer||0) * 2.9 * Math.min(1, 0.35 + c.v/200) * dt * (c.v > 4 ? 1 : 0);
+  c.x = Math.max(6, Math.min(RACE_W-6, c.x + Math.cos(c.a)*c.v*dt)); c.y = Math.max(6, Math.min(RACE_H-6, c.y + Math.sin(c.a)*c.v*dt));
+  const s = raceProj(T, c.x, c.y).s, L = T.L;
+  if(s > L*0.42 && s < L*0.58) c.half = true;
+  if(c.s > L*0.8 && s < L*0.2 && c.half){ c.cr++; c.half = false; }
+  else if(c.s < L*0.2 && s > L*0.8){ c.cr = Math.max(0, c.cr - 1); c.half = true; }   // back over the line: that crossing does not count
+  c.s = s;
+}
+// how far a car is (for the places): crossed lines and where on the lap
+const raceProg = (T, c)=>c.fin ? 1e9 - c.time : c.cr*T.L + (c.cr ? c.s : c.s - T.L);
+function raceAI(T, c, skill){
+  const ahead = raceAt(T, c.s + 46 + c.v*0.12);
+  let d = Math.atan2(ahead.y - c.y, ahead.x - c.x) - c.a; while(d > Math.PI) d -= 2*Math.PI; while(d < -Math.PI) d += 2*Math.PI;
+  const turn = Math.abs(d), want = 245*skill*(turn > 0.5 ? 0.62 : turn > 0.25 ? 0.82 : 1);
+  return { steer:Math.max(-1, Math.min(1, d*2.4)), gas:c.v < want, brake:c.v > want + 30 };
+}
+function raceDraw(ctx, T, cars, meCar, hud){
+  gmBg(ctx, RACE_W, RACE_H, '#2f6b33');
+  ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  const path = ()=>{ ctx.beginPath(); T.pts.forEach((p, i)=>i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); };
+  path(); ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = RACE_HW*2 + 8; ctx.setLineDash([14, 14]); ctx.stroke();
+  path(); ctx.strokeStyle = '#d6336c'; ctx.lineDashOffset = 14; ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+  path(); ctx.strokeStyle = '#4a4f57'; ctx.lineWidth = RACE_HW*2; ctx.stroke();
+  path(); ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; ctx.setLineDash([10, 14]); ctx.stroke(); ctx.setLineDash([]);
+  // start / finish line
+  const st = raceAt(T, 0), n = st.a + Math.PI/2;
+  for(let k=-4;k<4;k++) for(let j=0;j<2;j++){ ctx.fillStyle = (k+j)%2 ? '#fff' : '#111';
+    const ox = st.x + Math.cos(n)*(k*RACE_HW/4) + Math.cos(st.a)*(j*6 - 6), oy = st.y + Math.sin(n)*(k*RACE_HW/4) + Math.sin(st.a)*(j*6 - 6);
+    ctx.save(); ctx.translate(ox, oy); ctx.rotate(st.a); ctx.fillRect(0, 0, 6, RACE_HW/4); ctx.restore(); }
+  ctx.restore();
+  cars.forEach(c=>{ if(!c || c.x==null) return;
+    ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.a);
+    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(-9, -4, 20, 11);
+    ctx.fillStyle = c.color; ctx.fillRect(-10, -6, 20, 12); ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(1, -4, 5, 8); ctx.fillStyle = '#111'; ctx.fillRect(-8, -7.5, 5, 2); ctx.fillRect(-8, 5.5, 5, 2); ctx.fillRect(4, -7.5, 5, 2); ctx.fillRect(4, 5.5, 5, 2);
+    if(c===meCar){ ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.strokeRect(-11, -7, 22, 14); }
+    ctx.restore();
+    if(c.name && c!==meCar) gmText(ctx, c.name, c.x, c.y - 12, 10, '#fff', 'center'); });
+  if(hud) hud(ctx);
+}
+const raceFmt = t=>{ const m = Math.floor(t/60), s = t - m*60; return (m ? m+':'+String(s.toFixed(1)).padStart(4, '0') : s.toFixed(1))+' s'; };
+// controls: keys on a computer; on a phone a strip – the finger left / right steers, the gas is on by itself
+function raceCtl(keys, steerTouch){
+  const touch = GM_TOUCH();
+  return { steer:(keys.has('ArrowLeft') ? -1 : 0) + (keys.has('ArrowRight') ? 1 : 0) || (steerTouch ? steerTouch() : 0),
+    gas:keys.has('ArrowUp') || (touch && !keys.has('ArrowDown')), brake:keys.has('ArrowDown') };
+}
+function raceSteerWire(el){
+  const st = { id:null, x0:0, v:0 };
+  el.onpointerdown = e=>{ e.preventDefault(); st.id = e.pointerId; st.x0 = e.clientX; st.v = 0; try{ el.setPointerCapture(st.id); }catch(err){} el.classList.add('on'); };
+  el.onpointermove = e=>{ if(e.pointerId!==st.id) return; st.v = Math.max(-1, Math.min(1, (e.clientX - st.x0) / Math.max(50, el.clientWidth*0.22))); };
+  el.onpointerup = el.onpointercancel = e=>{ if(e.pointerId===st.id){ st.id = null; st.v = 0; el.classList.remove('on'); } };
+  return ()=>st.v;
+}
+GM_MAKE.race = api=>{
+  const T = raceTrack(), me = raceCar(T, 3, '#4dabf7', 'TU');
+  const ai = [0, 2, 4].map((k, i)=>Object.assign(raceCar(T, k, ['#ff6b6b','#ffd43b','#69db7c'][i], ['Rokas','Ieva','Tomas'][i]), { skill:0.86 + i*0.04 + Math.random()*0.03 }));
+  const cars = ai.concat([me]); let t = -3, done = false, steer = null;
+  const sl = document.getElementById('gmSlider'); if(sl) steer = raceSteerWire(sl);
+  const place = ()=>1 + cars.filter(c=>c!==me && raceProg(T, c) > raceProg(T, me)).length;
+  return { W:RACE_W, H:RACE_H,
+    step(dt){
+      t += dt; if(t < 0) return;
+      cars.forEach(c=>{ if(c.fin){ c.v *= 0.96; c.x += Math.cos(c.a)*c.v*dt; c.y += Math.sin(c.a)*c.v*dt; return; }
+        raceStep(T, c, dt, c===me ? raceCtl(api.keys, steer) : raceAI(T, c, c.skill));
+        if(c.cr > RACE_LAPS && !c.fin){ c.fin = true; c.time = t; } });
+      if(me.fin && !done){ done = true; const pl = place(); const sc = Math.max(100, Math.round(4000 - me.time*25) + [1500, 800, 300, 0][pl-1]);
+        api.set(sc); setTimeout(()=>api.end((pl===1 ? '🏆 Laimėjai! ' : pl+' vieta · ')+raceFmt(me.time)), 900); } },
+    draw(c){ raceDraw(c, T, cars, me, ctx=>{
+      const lap = Math.min(RACE_LAPS, Math.max(1, me.cr));
+      gmText(ctx, 'Ratas '+lap+'/'+RACE_LAPS, 12, 22, 15, '#fff'); gmText(ctx, 'Vieta '+place()+'/4', 12, 42, 15, '#fff'); gmText(ctx, raceFmt(Math.max(0, me.fin ? me.time : t)), RACE_W-12, 22, 15, '#fff', 'right');
+      if(t < 0) gmText(ctx, String(Math.ceil(-t)), RACE_W/2, RACE_H/2+20, 64, '#ffd43b', 'center');
+      else if(t < 0.8) gmText(ctx, 'VAŽIUOJAM!', RACE_W/2, RACE_H/2+16, 44, '#69db7c', 'center');
+      if(me.off && t > 0 && !me.fin) gmText(ctx, 'Grįžk į trasą', RACE_W/2, RACE_H - 16, 14, '#ffd43b', 'center'); }); } };
+};
+/* keliese: kambarys iki 10 žaidėjų – šeimininkas kviečia kolegas ir paleidžia startą */
+GM_MP_MAKE.race10 = R=>{
+  const T = raceTrack(), me = teamMe();
+  const st = document.getElementById('gmStage');
+  st.innerHTML = '<canvas id="gmCv"></canvas>';
+  st.insertAdjacentHTML('afterend', '<div class="gm-slider gm-steer" id="gmSlider2"><span>Slink pirštą kairėn / dešinėn – vairuoti</span></div>');
+  const cv = document.getElementById('gmCv'), ctx = cv.getContext('2d'), sl = document.getElementById('gmSlider2'), steer = raceSteerWire(sl);
+  const S = { phase:'lobby', roster:[], cars:{}, t:0, startAt:0, results:[] }, keys = new Set();
+  let raf = 0, last = performance.now(), sendT = 0, recorded = false, endT = 0;
+  if(R.host) S.roster = [{ id:me, name:gmMeName() }];
+  const fit = ()=>{ const dpr = Math.min(2, window.devicePixelRatio||1); cv.width = RACE_W*dpr; cv.height = RACE_H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); const k = Math.min(st.clientWidth/RACE_W, st.clientHeight/RACE_H) || 0.5; cv.style.width = Math.floor(RACE_W*k)+'px'; cv.style.height = Math.floor(RACE_H*k)+'px'; };
+  fit();
+  const myCar = ()=>S.cars[me];
+  const lobbyUi = ()=>{
+    if(S.phase==='race' || S.phase==='count'){ gmRoomBar(''); return; }
+    const names = S.roster.map((p, i)=>`<span class="gm-rc" style="--c:${RACE_COLORS[i % 10]}">${esc(p.name)}${p.id===me ? ' (tu)' : ''}</span>`).join('');
+    const res = S.results.length ? '<div class="gm-rres">'+S.results.map((r, i)=>`<span>${i+1}. ${esc(r.name)} – ${r.time!=null ? raceFmt(r.time) : 'nefinišavo'}</span>`).join('')+'</div>' : '';
+    gmRoomMsg(`${res}<div class="gm-rlist">Žaidėjai (${S.roster.length}/10): ${names || '—'}</div>`);
+    if(R.host){
+      const inRoom = new Set(S.roster.map(p=>p.id)), free = gmOnlineList().filter(m=>!inRoom.has(m.id));
+      gmRoomBar(`<div class="gm-rbar">${S.roster.length < 10 && free.length ? `<select id="gmRInv"><option value="">+ pakviesti kolegą…</option>${free.map(m=>`<option value="${esc(m.id)}">${esc(teamName(m))}</option>`).join('')}</select>` : ''}
+        <button type="button" class="btn primary" id="gmRGo" ${S.roster.length < 1 ? 'disabled' : ''}>${S.results.length ? 'Dar kartą' : 'Startas'}</button></div>`);
+      const iv = document.getElementById('gmRInv'); if(iv) iv.onchange = ()=>{ if(iv.value) gmRaceInvite(R, iv.value); iv.value = ''; };
+      const go = document.getElementById('gmRGo'); if(go) go.onclick = ()=>{ const order = S.roster.map(p=>p.id); gmSend({ t:'start', order, names:S.roster.map(p=>p.name) }); begin(order, S.roster.map(p=>p.name)); };
+    } else gmRoomBar('<span class="muted">Laukiama, kol šeimininkas paspaus „Startas“…</span>');
+  };
+  const begin = (order, names)=>{
+    S.cars = {}; order.forEach((id, i)=>{ S.cars[id] = raceCar(T, i, RACE_COLORS[i % 10], names[i] || 'Žaidėjas'); S.cars[id].id = id; });
+    S.phase = 'count'; S.t = -3; S.results = []; recorded = false; endT = 0; lobbyUi();
+  };
+  const finishList = ()=>Object.values(S.cars).filter(c=>c.fin).sort((a, b)=>a.time - b.time);
+  const sendRoster = ()=>{ if(R.host) gmSend({ t:'roster', roster:S.roster, phase:S.phase }); };
+  R.onMsg = p=>{
+    if(p.t==='hi' && R.host){ if(!S.roster.some(x=>x.id===p.id)){ if(S.roster.length >= 10){ gmSend({ t:'full', id:p.id }); return; } S.roster.push({ id:p.id, name:p.name||'Kolega' }); } sendRoster(); lobbyUi(); }
+    if(p.t==='roster' && !R.host){ S.roster = p.roster||[]; lobbyUi(); }
+    if(p.t==='full' && p.id===me){ gmRoomMsg('Kambarys pilnas (10 žaidėjų).'); }
+    if(p.t==='start' && !R.host) begin(p.order||[], p.names||[]);
+    if(p.t==='pos'){ const c = S.cars[p.id]; if(c && p.id!==me){ c.x = p.x; c.y = p.y; c.a = p.a; c.cr = p.cr; c.s = p.s; if(p.fin && !c.fin){ c.fin = true; c.time = p.time; } } }
+    if(p.t==='bye' && p.id){ S.roster = S.roster.filter(x=>x.id!==p.id); const c = S.cars[p.id]; if(c && !c.fin){ c.fin = true; c.time = null; c.gone = true; } sendRoster(); lobbyUi(); }
+  };
+  if(!R.host) gmSend({ t:'hi', id:me, name:gmMeName() });
+  const kd = e=>{ if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){ e.preventDefault(); keys.add(e.key); } }, ku = e=>keys.delete(e.key);
+  window.addEventListener('keydown', kd); window.addEventListener('keyup', ku); window.addEventListener('resize', fit);
+  const loop = now=>{
+    if(!GM.room || GM.room!==R) return;
+    const dt = Math.min(0.05, (now - last)/1000); last = now;
+    if(S.phase==='count' || S.phase==='race'){
+      S.t += dt; if(S.phase==='count' && S.t >= 0) S.phase = 'race';
+      const c = myCar();
+      if(S.phase==='race' && c && !c.fin){ raceStep(T, c, dt, raceCtl(keys, GM_TOUCH() ? steer : null)); if(c.cr > RACE_LAPS){ c.fin = true; c.time = S.t; } }
+      else if(c && c.fin){ c.v *= 0.95; }
+      sendT += dt; if(c && sendT > 0.09){ sendT = 0; gmSend({ t:'pos', id:me, x:Math.round(c.x*10)/10, y:Math.round(c.y*10)/10, a:Math.round(c.a*100)/100, cr:c.cr, s:Math.round(c.s), fin:c.fin, time:c.time }); }
+      const all = Object.values(S.cars), fins = finishList();
+      if(fins.length && !endT) endT = S.t + 45;   // after the first one is in, the others have 45 s
+      if(all.length && (all.every(x=>x.fin) || (endT && S.t > endT))){
+        S.phase = 'done'; S.results = all.slice().sort((a, b)=>(a.time==null) - (b.time==null) || (a.time||0) - (b.time||0)).map(x=>({ name:x.name, time:x.time }));
+        const mineFirst = fins[0] && fins[0].id===me && all.length > 1;
+        if(mineFirst && !recorded){ recorded = true; gmMpWin('race10'); }
+        lobbyUi();
+      }
+    }
+    const cs = Object.values(S.cars), c = myCar();
+    raceDraw(ctx, T, cs, c, x=>{
+      if(S.phase==='lobby'){ x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(0, 0, RACE_W, RACE_H); gmText(x, R.host ? 'Pakviesk kolegas ir spausk „Startas“' : 'Laukiama starto…', RACE_W/2, RACE_H/2, 20, '#fff', 'center'); return; }
+      if(!c) return;
+      const pl = 1 + cs.filter(o=>o!==c && raceProg(T, o) > raceProg(T, c)).length;
+      gmText(x, 'Ratas '+Math.min(RACE_LAPS, Math.max(1, c.cr))+'/'+RACE_LAPS, 12, 22, 15, '#fff'); gmText(x, 'Vieta '+pl+'/'+cs.length, 12, 42, 15, '#fff');
+      gmText(x, raceFmt(Math.max(0, c.fin ? c.time : S.t)), RACE_W-12, 22, 15, '#fff', 'right');
+      if(S.phase==='count') gmText(x, String(Math.ceil(-S.t)), RACE_W/2, RACE_H/2+20, 64, '#ffd43b', 'center');
+      else if(S.phase==='race' && S.t < 0.8) gmText(x, 'VAŽIUOJAM!', RACE_W/2, RACE_H/2+16, 44, '#69db7c', 'center');
+      if(c.fin && S.phase==='race') gmText(x, 'Finišavai '+pl+' · '+raceFmt(c.time)+' – laukiam kitų', RACE_W/2, RACE_H/2, 18, '#fff', 'center');
+      if(S.phase==='done'){ x.fillStyle = 'rgba(0,0,0,.5)'; x.fillRect(0, 0, RACE_W, RACE_H); S.results.slice(0, 10).forEach((r, i)=>gmText(x, (i+1)+'. '+r.name+'  '+(r.time!=null ? raceFmt(r.time) : '—'), RACE_W/2, 90 + i*28, 18, i===0 ? '#ffd43b' : '#fff', 'center')); }
+    });
+    raf = requestAnimationFrame(loop);
+  };
+  R.stop = ()=>{ cancelAnimationFrame(raf); window.removeEventListener('keydown', kd); window.removeEventListener('keyup', ku); window.removeEventListener('resize', fit); if(sl) sl.remove(); };
+  lobbyUi(); if(R.host) sendRoster(); raf = requestAnimationFrame(loop);
+};
+// the host opens the room first, then invites colleagues one by one (up to 9)
+function gmRaceOpen(firstUid){
+  if(GM.room && GM.room.game==='race10' && GM.room.host){ if(firstUid) gmRaceInvite(GM.room, firstUid); return; }
+  const room = 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  gmLobbyStart(); gmRoomJoin(room, 'race10', true, null, '');
+  if(firstUid) gmRaceInvite(GM.room, firstUid);
+}
+function gmRaceInvite(R, uid){
+  gmLobbyStart(); if(!GM.lobby){ toast('Nėra ryšio su serveriu.'); return; }
+  GM.inv[R.id] = Object.assign(GM.inv[R.id] || {}, { game:'race10', race:true, t:Date.now() });
+  gmLobbySend({ t:'invite', to:uid, game:'race10', room:R.id });
+  const m = teamMember(uid); toast('Pakviestas '+(m ? teamName(m) : 'kolega')+'.');
+}
+
 // turn games share the flow: whose move, win / draw, „Dar kartą“ with the other one starting
 function gmTurnGame(R, cfg){
   const S = { board:cfg.empty(), turn:0, starter:0, over:false, me:R.host ? 0 : 1, wins:[0,0] };
@@ -37736,6 +37953,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 15:41', v:'v366', k:'new', t:'Žaidimai: Lenktynės (vienam ir iki 10 keliese)', f:'Naujas žaidimas „Lenktynės“: trasa iš viršaus, 3 ratai prieš 3 kompiuterio mašinas (rekordas – pagal vietą ir laiką). „Lenktynės keliese“ – iki 10 žaidėjų realiu laiku: šeimininkas pakviečia kolegas (po vieną iš sąrašo), visi mato vieni kitų mašinas, po finišo – rezultatų lentelė, „Dar kartą“. Kompiuteryje: ← → vairuoti, ↑ dujos, ↓ stabdis. Telefone dujos pačios, vairuoji slinkdamas pirštą kairėn / dešinėn valdymo lauke, ↓ – stabdis.' },
   { d:'2026-10-06 15:36', v:'v365', k:'fix', t:'Pongas telefone: mažesnis valdymo laukas be brūkšnio', f:'Valdymo laukas sumažintas (apie trečdalį ekrano, apačioje – patogu nykščiui), rankenėlės brūkšnys pašalintas.' },
   { d:'2026-10-06 15:34', v:'v364', k:'fix', t:'Pongas telefone: didelis valdymo laukas', f:'Telefone Pongo žaidimo laukas pakeltas į viršų, o valdymo laukas užima visą laisvą vietą po juo – pirštą vesti patogu per visą ekrano apačią.' },
   { d:'2026-10-06 15:29', v:'v363', k:'chg', t:'Pongas telefone: patogesnis valdymas', f:'Telefone Pongo (ir „Pongas 1 prieš 1“) raketės atitrauktos nuo ekrano kraštų, o po žaidimo lauku atsirado atskiras valdymo laukas: vedi pirštą aukštyn / žemyn ir raketė juda kartu – pirštas nebeuždengia žaidimo. Rankenėlė lauke rodo, kur raketė. Kompiuteryje valdymas pele / klavišais – kaip anksčiau.' },
