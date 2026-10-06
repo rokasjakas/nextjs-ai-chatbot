@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QNHkxja6nk0+tn3eYScA3F/274afEZYe7pU4HWyMqAw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-IQwb3tQESl+6TztxLxebNJ8VeEbFhC3rm84GEJ2VE+A=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -5717,7 +5717,9 @@ if(window.__bm) __bm('main');
 const NAT_KEY = new Map();
 function natKey(v){
   v = String(v==null ? '' : v); let k = NAT_KEY.get(v); if(k!==undefined) return k;
-  k = v.replace(/\d+(?:[.,]\d+)?/g, m=>{ const [i, f = ''] = m.replace(',', '.').split('.'); return i.replace(/^0+(?=\d)/, '').padStart(12, '0')+'.'+f.padEnd(6, '0').slice(0, 6); });
+  // „(Luko) 3m Shucko“ sorts as „3m Shucko (Luko)“ – a leading note in brackets does not decide the place
+  const pre = v.match(/^\s*[(\[][^)\]]*[)\]]\s*/);
+  k = (pre && pre[0].length < v.length ? v.slice(pre[0].length)+' '+pre[0].trim() : v).replace(/\d+(?:[.,]\d+)?/g, m=>{ const [i, f = ''] = m.replace(',', '.').split('.'); return i.replace(/^0+(?=\d)/, '').padStart(12, '0')+'.'+f.padEnd(6, '0').slice(0, 6); });
   if(NAT_KEY.size > 20000) NAT_KEY.clear(); NAT_KEY.set(v, k); return k;
 }
 if(!String.prototype.natCmp) Object.defineProperty(String.prototype, 'natCmp', { value:function(b){ return natKey(this).localeCompare(natKey(b), 'lt'); }, configurable:true, writable:true });
@@ -13757,7 +13759,14 @@ function npTree(idx){
   const bundles = invBundles().filter(b=>match([b.name, 'rinkinys bundle', (b.items||[]).map(x=>{ const it = getItem(x.id); return it ? it.name : ''; }).join(' ')].join(' ')));
   const inGrp = {}; if(g) g.items.forEach(r=>{ if(r.item!=='' && r.item!=null) inGrp[r.item] = (inGrp[r.item]||0) + offerNum(r.qty); });
   const byG = {}; items.forEach(it=>{ const k = it.group||'kita'; ((byG[k] || (byG[k] = {}))[it.folder||'—'] || (byG[k][it.folder||'—'] = [])).push(it); });
-  const order = GROUP_ORDER.filter(k=>byG[k]).concat(Object.keys(byG).filter(k=>!GROUP_ORDER.includes(k)));
+  // while searching: what matches best first – the name / folder starting with the words, then a word in it starting so
+  const q = normalizeText(NP.whQ).trim();
+  const rel = t=>{ if(!q) return 0; const n = normalizeText(String(t||'').replace(/^\s*[(\[][^)\]]*[)\]]\s*/, '')); if(n.startsWith(q)) return 0; if(words.every(w=>new RegExp('(^|[^a-z0-9])'+w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(n))) return 1; return words.every(w=>n.includes(w)) ? 2 : 3; };
+  const itRel = it=>{ const r = rel(it.name); return r < 3 ? r : 3 + rel(it.folder)/10; };   // found by its own name first, by the folder only after
+  const fRel = f=>Math.min(rel(f), ...f && byFolder[f] ? byFolder[f] : [3]);
+  const byFolder = {}; items.forEach(it=>{ const f = it.folder||'—'; (byFolder[f] = byFolder[f] || []).push(itRel(it)); });
+  const gRel = k=>Math.min(...Object.keys(byG[k]).map(fRel));
+  const order = GROUP_ORDER.filter(k=>byG[k]).concat(Object.keys(byG).filter(k=>!GROUP_ORDER.includes(k))).sort((a, b)=>q ? gRel(a) - gRel(b) : 0);
   const open = k=>words.length || NP.whOpen[k];
   const qtyAdd = (attr, title)=>ed && g ? `<span class="np-tadd"><input type="text" inputmode="numeric" class="np-tq" data-tq="${attr}" value="1" aria-label="Kiekis" data-ro-ok><button class="np-add" data-add="${attr}" title="${npE(title)}">+</button></span>` : '';
   const bundleHtml = bundles.length ? `<div class="np-tg ${open('__b')?'open':''}"><button class="np-tgh" data-ro-ok data-tg="__b" style="--c:#F2A93B"><i class="np-dot"></i>📦 Rinkiniai <span class="count-badge">${bundles.length}</span><span class="np-car">›</span></button>
@@ -13766,7 +13775,7 @@ function npTree(idx){
   // while searching the items come first (Enter goes to the first item), rinkiniai after them
   const itemsHtml = order.map(k=>{ const folders = byG[k], n = Object.values(folders).reduce((a,x)=>a+x.length,0);
     return `<div class="np-tg ${open(k)?'open':''}"><button class="np-tgh" data-ro-ok data-tg="${npE(k)}" style="--c:${npE(GROUP_COLOR[k]||'#888')}"><i class="np-dot"></i>${npE(GROUP_LABEL[k]||k)} <span class="count-badge">${n}</span><span class="np-car">›</span></button>
-      ${open(k) ? Object.keys(folders).sort((a,b)=>a.natCmp(b)).map(f=>`<div class="np-tf"><div class="np-tfh">${npE(f)}</div>${folders[f].sort((a,b)=>a.name.natCmp(b.name)).map(it=>{
+      ${open(k) ? Object.keys(folders).sort((a,b)=>(q ? fRel(a) - fRel(b) : 0) || a.natCmp(b)).map(f=>`<div class="np-tf"><div class="np-tfh">${npE(f)}</div>${folders[f].sort((a,b)=>(q ? itRel(a) - itRel(b) : 0) || a.name.natCmp(b.name)).map(it=>{
         const fr = npFree(it.id, sp, idx, null, pr), have = inGrp[it.id]||0, acc = invAcc(it);
         return `<div class="np-ti ${fr.free<0?'bad':fr.free===0?'zero':''}"><span class="np-tin"><b>${npE(it.name)}${fr.inv && !fr.inv.ok ? ` <em class="np-invw" title="${npE(stkInvText(fr.inv)+(fr.inv.inv < fr.inv.wh ? ' – rezervuoti galima tik '+stkFmt(fr.inv.inv) : ''))}">⚠ inv. ${fmt(fr.inv.inv,0)}/${fmt(fr.inv.wh,0)}</em>` : ''}</b><small>${it.code?npE(it.code)+' · ':''}${fr.sub ? 'subnuoma'+(it.pack ? ' · '+npE(it.pack) : '') : `liko <b>${fmt(fr.free,0)}</b> / ${fmt(fr.all,0)}`}${have ? ` · grupėje ${fmt(have,0)}` : ''}${acc.length ? ` · <span class="np-acchint" title="${npE(acc.map(a=>{ const x = getItem(a.id); return (x?x.name:'?')+' × '+a.qty; }).join('\n'))}">🔗 +${acc.length} pried.</span>` : ''}</small></span>
           ${qtyAdd(it.id, 'Pridėti į „'+(g?g.name:'')+'“')}</div>`; }).join('')}</div>`).join('') : ''}</div>`; }).join('');
@@ -19365,7 +19374,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v359';
+const APP_VER = 'v360';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37664,6 +37673,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 14:46', v:'v360', k:'fix', t:'Įrangos paieška: tiksliausi atitikmenys pirmi', f:'Projekto įrangos paieškoje (Sandėlis kairėje) pirmiausia rodomi aplankai ir daiktai, kurių pavadinimas prasideda įvestu žodžiu (pvz. „trisk“ – pirma Triskyliai ir 3m / 5m / 10m Triskylis), panašūs – po jų. Pavadinimo pradžioje esantis skliaustelis, pvz. „(Luko) 3m Shucko“, nebenustumia daikto į sąrašo galą – visuose sąrašuose jis rikiuojamas kaip „3m Shucko“.' },
   { d:'2026-10-06 14:42', v:'v359', k:'chg', t:'Rūšiavimas: skyriai pagal projektą, be „Kabelių“', f:'Rūšiavime ir Krovime daiktai skirstomi pagal tai, kur jie įdėti projekte: Šviesos / Garso / Video subprojektai – į tą skyrių; Elektrifikacijoje – pagal grupę („El. Šviesa“ → Apšvietimas, „El. Video“ → Video, „El. Garsas“ → Garsas, „Bendra“ → Bendra, kitos, pvz. „El. Įvadas“ → Elektrifikacija); Bendri daiktai → Bendra. Atskiro „Kabelių“ skyriaus nebelieka – kabelis keliauja su tuo skyriumi, kuriam naudojamas.' },
   { d:'2026-10-06 14:40', v:'v358', k:'chg', t:'Rūšiavimas: kabeliai priskiriami tam skyriui, kuriame naudojami', f:'Jei kabelis (trišakis, šukos, PowerCon, TrueCon ir pan.) projekte įdėtas į Šviesos (pvz. „DMX/Shuko“), Garso ar Video subprojektą, Rūšiavime ir Krovime jis rodomas prie to skyriaus (Apšvietimas / Garsas / Video), o ne „Kabeliuose“. Elektrifikacijos ir kitų subprojektų kabeliai lieka „Kabeliuose“. Jei tas pats kabelis yra keliuose skyriuose – priskiriamas tam, kur jo daugiausia.' },
   { d:'2026-10-06 14:28', v:'v357', k:'chg', t:'Renginiai: komandos lentelė paprastesnė', f:'Paspaudus ant žmogaus laukelio, žmonių sąrašas nebeiškrenta iš karto – jis atsiranda tik pradėjus rašyti vardą. Mygtukas „+ žmogus“ panaikintas, „+ poz.“ pervadintas į „Pridėti eilutę“. Laisva pozicija – tiesiog tuščias raudonas laukelis (be pilko „LAISVA“ užrašo).' },
