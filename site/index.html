@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-KwwyNL1rgIV0U8eZEqYhf7WlEXbR4Zvz8Rj0koYMiM8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-9CjlDEKx6QKkoJkoRCszqY8w9V56lPY4FVPVLZlN7EI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3985,6 +3985,11 @@ input.np-subname:focus{border-color:var(--border);background:var(--input);}
 .np-grp.folded input.np-gname,.np-grp.empty:not(.on) input.np-gname{padding:1px 4px;}
 .np-gh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .np-gsel{background:none;border:none;color:var(--accent);font-size:16px;cursor:pointer;padding:0 2px;}
+.np-gname-w{display:inline-flex;align-items:center;gap:2px;flex:1;min-width:120px;}
+.np-gname-b{font-weight:600;font-size:14px;background:none;border:1px solid transparent;border-radius:8px;color:var(--text);padding:3px 6px;cursor:pointer;text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.np-gname-b:hover{border-color:var(--border);background:rgb(var(--hi-rgb) / .04);} .np-grp.on .np-gname-b{color:var(--accent);}
+.np-gren{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:2px;display:inline-flex;border-radius:6px;} .np-gren:hover{color:var(--accent);background:rgb(var(--hi-rgb) / .06);} .np-gren svg{width:16px;height:16px;}
+.np-gname-w input.np-gname{flex:1;border-color:var(--border);background:var(--input);}
 input.np-gname{font-weight:600;font-size:14px;background:transparent;border:1px solid transparent;color:var(--text);padding:3px 4px;min-width:120px;flex:1;}
 input.np-gname:focus{border-color:var(--border);background:var(--input);}
 .np-gh select{max-width:170px;}
@@ -5701,6 +5706,7 @@ SL.shopbag = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0
 SL.key = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M371.5-388.5Q409-426 409-480t-37.5-91.5Q334-609 280-609t-91.5 37.5Q151-534 151-480t37.5 91.5Q226-351 280-351t91.5-37.5ZM280-240q-100 0-170-70T40-480q0-100 70-170t170-70q85 0 142.5 46.5T503-555h344l73 73-127 146-103-84-84 84-71-71h-32q-19 75-80.5 121T280-240Z"/>';
 SL.siren = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M210-160v-60h61l84-277q6-19 21.5-31t35.5-12h136q20 0 35.5 12t21.5 31l84 277h61v60H210Zm240-500v-180h60v180h-60Zm235 98-43-43 128-127 42 42-127 128Zm55 192v-60h180v60H740ZM275-562 148-690l42-42 128 127-43 43ZM40-370v-60h180v60H40Z"/>';
 /* Material Symbols (Outlined Fill) for the icons added later */
+SL.edit = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M120-120v-128l575-574q8-8 19-12.5t23-4.5q11 0 22 4.5t20 12.5l44 44q9 9 13 20t4 22q0 11-4.5 22.5T823-694L248-120H120Zm619-577 40-40-41-41-40 40 41 41Z"/>';
 SL.openfull = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M120-120v-300h60v198l558-558H540v-60h300v300h-60v-198L222-180h198v60H120Z"/>';
 SL.oilbarrel = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M160-120q-12 0-21-9t-9-21.5q0-12.5 9-21t21-8.5h40v-270h-50q-12 0-21-9t-9-21.5q0-12.5 9-21t21-8.5h50v-270h-40q-12 0-21-9t-9-21.5q0-12.5 9-21t21-8.5h640q12.75 0 21.38 8.62Q830-822.75 830-810q0 12-8.62 21-8.63 9-21.38 9h-40v270h50q12.75 0 21.38 8.62Q840-492.75 840-480q0 12-8.62 21-8.63 9-21.38 9h-50v270h40q12.75 0 21.38 8.62Q830-162.75 830-150q0 12-8.62 21-8.63 9-21.38 9H160Zm398-244.64q32-31.65 32-76.59Q590-477 569.5-502T480-607q-69 79-89.5 104.5T370-441.23q0 44.94 32.12 76.59 32.12 31.64 78 31.64T558-364.64Z"/>';
 SL.science = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M172-120q-41.78 0-59.39-39T124-230l248-280v-270h-52q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h320q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5h-52v270l248 280q29 32 11.39 71T788-120H172Z"/>';
@@ -13812,7 +13818,7 @@ function npGroups(idx){
    + groups.map(g=>{ const sp = npGroupSpan(d, g), on = g.id===NP.grp, t = npTotals({ groups:[g] }), empty = !g.items.length, folded = fold.has(g.id);
     return `<div class="card np-grp ${on?'on':''} ${empty?'empty':''} ${folded?'folded':''}" data-gid="${npE(g.id)}">
       <div class="np-gh"><button type="button" class="np-gfold" data-ro-ok data-gfold="${npE(g.id)}" title="${folded ? 'Išskleisti' : 'Suskleisti'}">${slIcon(folded ? 'dropright' : 'dropdown')}</button><button class="np-gsel" data-ro-ok data-gpick="${npE(g.id)}" title="Pridėti daiktus į šią grupę">${on?'●':'○'}</button>
-        <input type="text" class="np-gname" data-gname="${npE(g.id)}" value="${npE(g.name)}" ${ro}>
+        <span class="np-gname-w"><button type="button" class="np-gname-b" data-ro-ok data-gpick="${npE(g.id)}" title="Pasirinkti šią grupę – daiktai bus pridedami į ją">${npE(g.name || 'Be pavadinimo')}</button>${ed ? `<button type="button" class="np-gren" data-gren="${npE(g.id)}" title="Pervadinti grupę">${slIcon('edit')}</button>` : ''}</span>
         <select data-gtime="${npE(g.id)}" title="Laikotarpis" ${dis}><option value="">Subprojekto laikas</option>${subTimes.map(x=>`<option value="${npE(x.id)}" ${g.time===x.id?'selected':''}>${npE(x.name)}${x.sub?'':' (pagr.)'}</option>`).join('')}</select>
         <small class="np-gper">📅 ${npE(npSpanText(sp))}</small>
         ${on ? '<span class="np-gon">Pasirinkta</span>' : ''}<small class="np-gw">${empty ? 'tuščia' : fmt(t.count,0)+' vnt. · '+fmt(t.weight,0)+' kg'}</small>
@@ -13837,7 +13843,18 @@ function npGroups(idx){
   box.querySelectorAll('[data-gfold]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); npFoldSet(b.dataset.gfold, !npFoldGet().has(b.dataset.gfold)); npGroups(idx); });
   const fa = box.querySelector('#npFoldAll'); if(fa) fa.onclick = ()=>{ groups.forEach(g=>npFoldSet(g.id, !allFolded)); npGroups(idx); };
   box.querySelectorAll('.np-grp').forEach(c=>c.addEventListener('click', e=>{ if(NP.grp!==c.dataset.gid && !e.target.closest('button,input,select')){ NP.grp = c.dataset.gid; npFoldSet(c.dataset.gid, false); npRender(); } }));
-  box.querySelectorAll('[data-gname]').forEach(el=>el.oninput = ()=>{ G(el.dataset.gname).name = el.value; soft(); });
+  // ✎ next to the name: the name turns into a field; Enter / leaving it saves, Esc cancels
+  box.querySelectorAll('[data-gren]').forEach(b=>b.onclick = e=>{
+    e.stopPropagation(); if(!npEditGate()) return;
+    const g = G(b.dataset.gren), w = b.closest('.np-gname-w'); if(!g || !w) return;
+    w.innerHTML = `<input type="text" class="np-gname" maxlength="80" value="${npE(g.name||'')}">`;
+    const inp = w.querySelector('input'); inp.focus(); inp.select();
+    let done = false;
+    const fin = save=>{ if(done) return; done = true; const v = inp.value.trim(); if(save && v && v!==g.name){ npLog(`Grupė „${g.name}“ pervadinta į „${v}“`); g.name = v; npTouch(true); } else npGroups(idx); };
+    inp.addEventListener('keydown', ev=>{ if(ev.key==='Enter'){ ev.preventDefault(); fin(true); } else if(ev.key==='Escape'){ ev.preventDefault(); fin(false); } });
+    inp.addEventListener('blur', ()=>fin(true));
+    inp.addEventListener('click', ev=>ev.stopPropagation());
+  });
   box.querySelectorAll('[data-gtime]').forEach(el=>el.onchange = ()=>{ G(el.dataset.gtime).time = el.value; npTouch(true); });
   box.querySelectorAll('[data-gdel]').forEach(b=>b.onclick = async ()=>{ const g = G(b.dataset.gdel); if(g.items.length && !(await uiConfirm(`Ištrinti grupę „${g.name}“ su ${g.items.length} eil.?`))) return; d.groups = d.groups.filter(x=>x!==g); npLog('Ištrinta grupė „'+g.name+'“'); npTouch(true); });
   const mv = (id, dir)=>{ const same = d.groups.filter(g=>g.sub===s.id), i = same.findIndex(g=>g.id===id), j = i+dir; if(j<0 || j>=same.length) return;
@@ -19164,7 +19181,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v348';
+const APP_VER = 'v349';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37460,6 +37477,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 13:37', v:'v349', k:'chg', t:'Projektai → Įranga: grupė pasirenkama paspaudus pavadinimą', f:'Pildant įrangos sąrašą grupę (pvz. „Prietaisai“) pasirinkti galima paspaudus ant jos pavadinimo – nebereikia taikyti į rutuliuką. Pavadinimui pakeisti – pieštuko (✎) mygtukas šalia pavadinimo: Enter išsaugo, Esc atšaukia.' },
   { d:'2026-10-06 13:21', v:'v348', k:'fix', t:'Rūšiavimas / Krovimas telefone: sąrašas slenka sklandžiai', f:'Telefone sąrašai „Reikia atrūšiuoti“ / „Atrūšiuota“ (ir Krovimo sąrašai) nebeturi atskiro mažo slinkimo langelio – slenka visas puslapis, niekas nebeatšoka. Kortelė į šoną (atrūšiuota / kiekis) patraukiama tik aiškiai horizontaliu judesiu, todėl slenkant įstrižai kortelės nebepabėga į šonus ir netyčia nepažymimos.' },
   { d:'2026-10-06 13:17', v:'v347', k:'fix', t:'Telefonas: puslapis vėl slenka normaliai (Rūšiavimas ir kt.)', f:'Telefone kai kuriuose puslapiuose (pvz. Rūšiavimas) puslapis nebeslinko – patraukus atšokdavo atgal. Priežastis: slinkimo užraktas įsijungdavo ir nuo paslėpto, jau uždaryto lango likučio. Dabar užraktas įsijungia tik kai langas tikrai matomas ekrane.' },
   { d:'2026-10-06 12:57', v:'v346', k:'chg', t:'Išlaidos: sukaupta eurais ir litrais – dvi sumos', f:'Kortelėje „Sukaupta asmeniniams pylimams“ visada rodomos dvi sumos: kiek sukaupta eurais ir kiek litrais (kiekvienai – sukaupta ir panaudota).' },
