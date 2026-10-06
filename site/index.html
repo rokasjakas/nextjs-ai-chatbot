@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-VhzeszJr4eBaL2dixDmzV0PjZrB7ISaZOupkEqMmhW8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-nLqt/OmLuHI6v014Ocm2BuoAwFrsV1g+1nsW/8o9a6w=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -779,7 +779,8 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .inv-brandbar{align-items:center;} .inv-chiplbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;font-weight:800;color:var(--text-dim);margin-right:2px;}
 .inv-brand-guess{color:var(--text-dim);font-style:italic;}
 .inv-acct{font-size:11px;color:var(--accent);margin-top:2px;}
-.np-accask{max-width:520px;width:calc(100% - 32px);} .np-accask .ui-ask-msg{display:flex;flex-direction:column;gap:4px;} .np-accask .ui-ask-msg small{color:var(--text-dim);font-size:12.5px;}
+.np-accask{max-width:520px;width:calc(100% - 32px);position:relative;} .np-acc-x{position:absolute;top:10px;right:10px;} .np-accask .ui-ask-msg{padding-right:34px;} .np-acc-b{justify-content:flex-end;}
+.np-accof{color:var(--accent) !important;} .np-accask .ui-ask-msg{display:flex;flex-direction:column;gap:4px;} .np-accask .ui-ask-msg small{color:var(--text-dim);font-size:12.5px;}
 .np-acc-list{display:flex;flex-direction:column;gap:6px;margin:12px 0 4px;max-height:50vh;overflow:auto;}
 .np-acc-r{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);background:var(--panel-2);cursor:pointer;}
 .np-acc-r span{flex:1;min-width:0;display:flex;flex-direction:column;} .np-acc-r small{color:var(--text-dim);font-size:11.5px;}
@@ -13791,7 +13792,29 @@ function npChild(g, parent, itemId, per){
   else { c = { id:npId('npi'), item:itemId, qty:0, remark:'', parent:parent.id, per }; if(parent.at) c.at = parent.at; const i = g.items.indexOf(parent), after = g.items.reduce((m, x, j)=>x.parent===parent.id ? j : m, i); g.items.splice(after+1, 0, c); }
   c.qty = offerNum(parent.qty) * c.per;
 }
-function npScaleChildren(g, parent){ g.items.forEach(c=>{ if(c.parent===parent.id && c.per!=null) c.qty = Math.round(offerNum(parent.qty) * offerNum(c.per) * 100)/100; }); }
+function npScaleChildren(g, parent){
+  g.items.forEach(c=>{ if(c.parent===parent.id && c.per!=null) c.qty = Math.round(offerNum(parent.qty) * offerNum(c.per) * 100)/100; });
+  g.items.forEach(c=>{ if(c.acc && c.acc[parent.id]!=null) npAccRecalc(g, c); });
+}
+/* an accessory used by several items (e.g. a TrueCon cable) is one row in the group with the total:
+   row.acc = { <item row id>: per one unit }, row.own = what was added by itself / changed by hand */
+function npAccSum(g, r){ let t = 0; Object.entries(r.acc||{}).forEach(([pid, per])=>{ const p = g.items.find(x=>x.id===pid); if(p) t += offerNum(p.qty) * offerNum(per); }); return t; }
+function npAccRecalc(g, r){
+  Object.keys(r.acc||{}).forEach(pid=>{ if(!g.items.some(x=>x.id===pid)) delete r.acc[pid]; });
+  r.qty = Math.max(0, Math.round((offerNum(r.own) + npAccSum(g, r)) * 100)/100);
+}
+function npAccAdd(g, parent, itemId, per){
+  let c = g.items.find(x=>!x.parent && !x.bundle && String(x.item)===String(itemId));
+  if(!c){ c = { id:npId('npi'), item:itemId, qty:0, own:0, remark:'', acc:{} }; if(parent.at) c.at = parent.at; g.items.splice(g.items.indexOf(parent)+1, 0, c); }
+  if(!c.acc){ c.acc = {}; c.own = offerNum(c.qty); }
+  c.acc[parent.id] = offerNum(c.acc[parent.id]) + per;
+  npAccRecalc(g, c);
+}
+// after an item row is removed: the shared accessory rows lose its part (and go when nothing is left)
+function npAccDrop(g, pid){
+  g.items.filter(c=>c.acc && c.acc[pid]!=null).forEach(c=>{ delete c.acc[pid]; npAccRecalc(g, c); });
+  g.items = g.items.filter(c=>!(c.acc && !Object.keys(c.acc).length && !(offerNum(c.own) > 0)));
+}
 // an item with accessories (Sandėlis → Priedai) is added: which of them go in too?
 // -> [{ id, qty per one unit }] or null (cancelled)
 function npAccAsk(it, acc, qty){
@@ -13799,7 +13822,8 @@ function npAccAsk(it, acc, qty){
     const doc = uiDoc(), el = doc.createElement('div'); el.className = 'ui-ask'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
     el.innerHTML = `<div class="ui-ask-card np-accask"><div class="ui-ask-msg"><b>Priedai: ${esc(it.name)}</b><small>Pažymėk, kuriuos priedus įdėti kartu (kiekis – vienam vienetui, iš viso × ${fmt(qty,0)}).</small></div>
       <div class="np-acc-list">${acc.map((a, i)=>{ const x = getItem(a.id); return `<label class="np-acc-r"><input type="checkbox" data-ai="${i}" checked><span><b>${esc(x.name)}</b><small>${esc(GROUP_LABEL[x.group]||'')}${invBrand(x) ? ' · '+esc(invBrand(x)) : ''}</small></span><input type="text" inputmode="decimal" data-aq="${i}" value="${esc(fmt(a.qty,2))}" title="Kiek vienam vienetui"><em data-at="${i}"></em></label>`; }).join('')}</div>
-      <div class="ui-ask-b"><button type="button" class="btn" data-a="no">Atšaukti</button><button type="button" class="btn" data-a="none">Be priedų</button><button type="button" class="btn primary" data-a="yes">Įdėti</button></div></div>`;
+      <div class="ui-ask-b np-acc-b"><button type="button" class="btn" data-a="none">Be priedų</button><button type="button" class="btn primary" data-a="yes">Įtraukti priedus</button></div>
+      <button type="button" class="icon-btn np-acc-x" data-a="no" aria-label="Atšaukti" title="Atšaukti">✕</button></div>`;
     const tot = ()=>acc.forEach((a, i)=>{ const on = el.querySelector(`[data-ai="${i}"]`).checked, q = offerNum(el.querySelector(`[data-aq="${i}"]`).value); el.querySelector(`[data-at="${i}"]`).textContent = on && q>0 ? '= '+fmt(q*qty,2) : ''; el.querySelector(`[data-aq="${i}"]`).disabled = !on; });
     const pick = ()=>acc.map((a, i)=>({ id:a.id, qty:offerNum(el.querySelector(`[data-aq="${i}"]`).value) })).filter((a, i)=>el.querySelector(`[data-ai="${i}"]`).checked && a.qty>0);
     const done = v=>{ doc.removeEventListener('keydown', key, true); el.classList.add('out'); setTimeout(()=>el.remove(), 120); res(v); };
@@ -13821,11 +13845,12 @@ async function npAddItem(itemId, qty, accPick){
     if(pick===null) return;
     return npAddItem(itemId, qty, pick);
   }
-  if(r) r.qty = offerNum(r.qty) + qty; else { r = { id:npId('npi'), item:it ? it.id : itemId, qty, remark:'' }; if(npNewPrio(NP.cur.data, g)!==Infinity) r.at = new Date().toISOString(); g.items.push(r); }
+  if(r && r.acc){ r.own = offerNum(r.own) + qty; npAccRecalc(g, r); }
+  else if(r) r.qty = offerNum(r.qty) + qty; else { r = { id:npId('npi'), item:it ? it.id : itemId, qty, remark:'' }; if(npNewPrio(NP.cur.data, g)!==Infinity) r.at = new Date().toISOString(); g.items.push(r); }
   // accessories: the chosen ones for a new row; more of an existing row only scales the ones it has
   const acc = accPick || [];
   g.items.forEach(c=>{ if(c.parent===r.id && c.per==null){ const a = accAll.find(x=>String(x.id)===String(c.item)); if(a) c.per = offerNum(a.qty); } });
-  acc.forEach(a=>{ if(!getItem(a.id)) return; const c = g.items.find(x=>x.parent===r.id && String(x.item)===String(a.id)); if(c){ if(c.per==null) c.per = offerNum(a.qty); } else npChild(g, r, a.id, offerNum(a.qty)); });
+  acc.forEach(a=>{ if(!getItem(a.id)) return; const c = g.items.find(x=>x.parent===r.id && String(x.item)===String(a.id)); if(c){ if(c.per==null) c.per = offerNum(a.qty); } else npAccAdd(g, r, a.id, offerNum(a.qty)); });
   npScaleChildren(g, r);
   npLog(`${g.name}: +${qty} × ${it ? it.name : itemId}${acc.length ? ' (su priedais)' : ''}`);
   npSoftSave(); npAfterAdd(r.id);
@@ -13871,7 +13896,7 @@ function npGroups(idx){
         const par = r.parent ? g.items.find(x=>x.id===r.parent) : null, li = it ? LI(it.id) : null;
         const ldCls = npRowLoadCls(li) || (npSubUnknown(it) ? 'bad subq' : '');
         return `<div class="np-ir ${ldCls || (fr && fr.free<0 ? 'bad' : booked && (it || r.bundle) ? 'booked' : '')} ${par ? 'child' : ''} ${r.bundle ? 'bundle' : ''}" data-irow="${npE(r.id)}">
-          <span class="np-iname">${par ? '<i class="np-sub-ar">↳</i>' : ''}${r.bundle ? `<b>📦 ${npE(r.name||'Rinkinys')}</b><small>rinkinys · ${g.items.filter(x=>x.parent===r.id).length} daikt.</small>` : it ? `<b class="np-rname">${npE(npRowName(r, it))}${ed ? `<button type="button" class="np-ren" data-iren="${npE(r.id)}" title="Pakeisti pavadinimą šiame projekte / pridėti priesagą">✎</button>` : ''}</b>${r.label ? `<small class="np-orig">sandėlyje: ${npE(it.name)}</small>` : ''}${(()=>{ const c = typeof stkInvFor==='function' ? stkInvFor(it.id, it.qty) : null; return c && !c.ok ? `<small class="np-invw" title="${npE(stkInvText(c))}">⚠ ${npE(stkInvText(c))}</small>` : ''; })()}<small>${par ? (par.bundle ? 'rinkinio dalis' : 'priedas') + (r.per!=null ? ' · '+fmt(r.per,2)+' / vnt.' : '') : npE(GROUP_LABEL[it.group]||'')+' · '+npE(it.folder||'')}</small>${li ? npLoadBadges(li) : ''}` : `<input type="text" data-iname="${npE(r.id)}" value="${npE(r.name||'')}" placeholder="Daiktas (ne iš sandėlio)" ${ro}>`}</span>
+          <span class="np-iname">${par ? '<i class="np-sub-ar">↳</i>' : ''}${r.bundle ? `<b>📦 ${npE(r.name||'Rinkinys')}</b><small>rinkinys · ${g.items.filter(x=>x.parent===r.id).length} daikt.</small>` : it ? `<b class="np-rname">${npE(npRowName(r, it))}${ed ? `<button type="button" class="np-ren" data-iren="${npE(r.id)}" title="Pakeisti pavadinimą šiame projekte / pridėti priesagą">✎</button>` : ''}</b>${r.label ? `<small class="np-orig">sandėlyje: ${npE(it.name)}</small>` : ''}${(()=>{ const c = typeof stkInvFor==='function' ? stkInvFor(it.id, it.qty) : null; return c && !c.ok ? `<small class="np-invw" title="${npE(stkInvText(c))}">⚠ ${npE(stkInvText(c))}</small>` : ''; })()}<small>${par ? (par.bundle ? 'rinkinio dalis' : 'priedas') + (r.per!=null ? ' · '+fmt(r.per,2)+' / vnt.' : '') : npE(GROUP_LABEL[it.group]||'')+' · '+npE(it.folder||'')}</small>${li ? npLoadBadges(li) : ''}${r.acc && Object.keys(r.acc).length ? `<small class="np-accof" title="Bendras priedo kiekis">priedas: ${Object.entries(r.acc).map(([pid, per])=>{ const p = g.items.find(x=>x.id===pid), pi = p && getItem(p.item); return p ? npE(fmt(offerNum(p.qty)*offerNum(per),0)+' × '+(pi ? npRowName(p, pi) : (p.name||'daiktas'))) : ''; }).filter(Boolean).join(', ')}${offerNum(r.own) ? ' · atskirai '+npE(fmt(offerNum(r.own),0)) : ''}</small>` : ''}` : `<input type="text" data-iname="${npE(r.id)}" value="${npE(r.name||'')}" placeholder="Daiktas (ne iš sandėlio)" ${ro}>`}</span>
           <input type="number" min="0" data-iqty="${npE(r.id)}" value="${npE(r.qty)}" ${ro}>
           <span class="np-ifree">${fr && fr.sub ? (npSubUnknown(it) ? `<button type="button" class="np-shortbtn" data-ro-ok data-subedit="${npE(it.id)}" title="Įrašyti, iš ko subnuoma">⚠ iš ko? ›</button>` : `<button type="button" class="np-subtag" data-ro-ok data-subedit="${npE(it.id)}" title="Keisti subnuomos informaciją">subnuoma ✎</button>`) : fr ? (fr.free<0 ? `<button type="button" class="np-shortbtn" data-ro-ok data-npshort="${npE(r.id)}" title="Kur dirba ši įranga? (${npE(holds.map(h=>(h.p.data.name||h.p.name)+': '+h.q).join(', '))})">⚠ trūksta ${fmt(-fr.free,0)} ›</button>` : `${fmt(fr.free,0)} / ${fmt(fr.all,0)}`) : '—'}</span>
           <input type="text" data-irem="${npE(r.id)}" value="${npE(r.remark||'')}" placeholder="—" ${ro}>
@@ -13907,6 +13932,8 @@ function npGroups(idx){
     el.oninput = ()=>{ const [g, r] = R(el.dataset.iqty); r.qty = Math.max(0, offerNum(el.value));
       // a child changed by hand keeps its new share; a parent takes its children along
       if(r.parent){ const p = g.items.find(x=>x.id===r.parent); if(p && offerNum(p.qty)) r.per = r.qty / offerNum(p.qty); }
+      if(r.acc) r.own = r.qty - npAccSum(g, r);
+      if(g.items.some(x=>x.acc && x.acc[r.id]!=null)){ npScaleChildren(g, r); g.items.forEach(c=>{ if(c.acc && c.acc[r.id]!=null){ const ci = box.querySelector(`[data-iqty="${CSS.escape(c.id)}"]`); if(ci) ci.value = c.qty; } }); }
       if(g.items.some(x=>x.parent===r.id)){ npScaleChildren(g, r); g.items.forEach(c=>{ if(c.parent===r.id){ const ci = box.querySelector(`[data-iqty="${CSS.escape(c.id)}"]`); if(ci) ci.value = c.qty; } }); }
       soft(); };
     el.onchange = ()=>{ const [g, r] = R(el.dataset.iqty); const it = getItem(r.item); npLog(`${g.name}: ${it ? it.name : (r.name||'daiktas')} → ${fmt(r.qty,0)}`);
@@ -13918,7 +13945,7 @@ function npGroups(idx){
   box.querySelectorAll('[data-npshort]').forEach(b=>b.onclick = ()=>{ const [g, r] = R(b.dataset.npshort); if(r) npShortModal(g, r); });
   box.querySelectorAll('[data-irem]').forEach(el=>el.oninput = ()=>{ R(el.dataset.irem)[1].remark = el.value; soft(); });
   box.querySelectorAll('[data-iname]').forEach(el=>el.oninput = ()=>{ R(el.dataset.iname)[1].name = el.value; soft(); });
-  box.querySelectorAll('[data-idel]').forEach(b=>b.onclick = ()=>{ const [g, r] = R(b.dataset.idel); g.items = g.items.filter(x=>x!==r && x.parent!==r.id); const it = getItem(r.item);
+  box.querySelectorAll('[data-idel]').forEach(b=>b.onclick = ()=>{ const [g, r] = R(b.dataset.idel); g.items = g.items.filter(x=>x!==r && x.parent!==r.id); npAccDrop(g, r.id); const it = getItem(r.item);
     npLog(`${g.name}: išimta ${it ? it.name : (r.name||'daiktas')}`); soft(); const i2 = npBusyIndex(); npGroups(i2); npTree(i2); npCounts(); });
   box.querySelectorAll('[data-icustom]').forEach(b=>b.onclick = ()=>{ const g = G(b.dataset.icustom); const r = { id:npId('npi'), item:'', name:'', qty:1, remark:'' }; g.items.push(r); NP.grp = g.id; soft(); const i2 = npBusyIndex(); npGroups(i2); npTree(i2);
     const inp = document.querySelector(`[data-iname="${CSS.escape(r.id)}"]`); if(inp) inp.focus(); });
@@ -19223,7 +19250,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v351';
+const APP_VER = 'v352';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37519,6 +37546,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 13:57', v:'v352', k:'chg', t:'Projektai → Įranga: priedai sumuojami į bendrą kiekį', f:'Pridedant daiktą su priedais iššoka langas su dviem mygtukais – „Įtraukti priedus“ arba „Be priedų“ (✕ – atšaukti). Jei tas pats priedas (pvz. TrueCon kabelis) priklauso keliems daiktams, grupėje jis rodomas viena eilute su bendru kiekiu (po pavadinimu matyti, iš ko jis susideda). Keičiant daikto kiekį ar jį išimant, bendras priedo kiekis persiskaičiuoja.' },
   { d:'2026-10-06 13:52', v:'v351', k:'chg', t:'Rūšiavimas: kabeliai ir smulkūs daiktai – tame pačiame sąraše', f:'Rūšiavime kabeliai ir smulkūs daiktai nebėra perkeliami į atskirą „Smulkūs daiktai ir kabeliai“ skiltį – jie rūšiuojami tame pačiame sąraše kaip ir visa kita įranga (su skyrių filtrais, pvz. „Kabeliai“). Dėžės smulkiems daiktams sudaromos Krovime, kaip ir anksčiau.' },
   { d:'2026-10-06 13:49', v:'v350', k:'fix', t:'Rūšiavimas: kito žmogaus pažymėjimai matomi iš karto', f:'Kai keli žmonės rūšiuoja tą patį projektą, vieno pažymėtas „Atrūšiuota“ (ar atšauktas) daiktas kitiems atsiranda per sekundę – nebereikia perkrauti programos. Jei du žmonės pažymi skirtingus daiktus tuo pačiu metu, išsaugomi abu; jei tą patį – galioja vėlesnis.' },
   { d:'2026-10-06 13:37', v:'v349', k:'chg', t:'Projektai → Įranga: grupė pasirenkama paspaudus pavadinimą', f:'Pildant įrangos sąrašą grupę (pvz. „Prietaisai“) pasirinkti galima paspaudus ant jos pavadinimo – nebereikia taikyti į rutuliuką. Pavadinimui pakeisti – pieštuko (✎) mygtukas šalia pavadinimo: Enter išsaugo, Esc atšaukia.' },
