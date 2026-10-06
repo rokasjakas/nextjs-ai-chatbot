@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-rlttOl2iXLbpTxlwu4EzwktVRyfS57pmSbyTaX/bvaw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-EjgoLMRUFo7pMuoJ6++2XgVTGw2WZxVRNskaJvU2wQw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -1744,6 +1744,8 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 .chat-toast span{color:var(--text-dim);font-size:13px;}
 @media (max-width:760px){
   .chat-shell{grid-template-columns:1fr;border-radius:0;margin:0 -12px;}
+  html.chat-fix, html.chat-fix body{overflow:hidden;overscroll-behavior:none;}
+  html.chat-fix .chat-shell{position:fixed;left:0;right:0;margin:0;z-index:5;grid-template-rows:minmax(0,1fr);border-left:0;border-right:0;}
   .chat-shell .chat-main{display:none;}
   .chat-shell.thread-open .chat-side{display:none;}
   .chat-shell.thread-open .chat-main{display:flex;}
@@ -4980,6 +4982,8 @@ main.has-stickies{position:relative;}
 .nt-ov-b{font-size:13px;color:var(--text);opacity:.9;white-space:pre-wrap;overflow:hidden;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;line-height:1.4;}
 .nt-ov-none{grid-column:1/-1;text-align:center;color:var(--text-dim);padding:20px;}
 #railNotes.active{background:var(--accent) !important;color:var(--accent-ink,#fff) !important;}
+/* touch screens keep „hover“ after a tap (iPhone): no hover look there, only the real active button is lit */
+@media (hover:none){ aside.rail .rail-btn:not(.active):hover, :root[data-ui="v2"] aside.rail .rail-btn:not(.active):hover{background:transparent !important;color:inherit;} aside.rail .rail-btn:hover .rail-tip{transform:none !important;} }
 #railNotes.active svg,#railNotes.active .rail-tip{color:inherit !important;}
 .nt-sticky{position:absolute;width:240px;max-width:calc(100% - 16px);pointer-events:auto;background:var(--panel);color:var(--text);
   border:1px solid var(--border);border-top:3px solid #F2C94C;border-radius:var(--radius,8px);box-shadow:0 10px 28px rgb(0 0 0 / .3);padding:0 0 10px;font-size:13px;transition:box-shadow .15s, transform .15s;}
@@ -19376,7 +19380,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v361';
+const APP_VER = 'v362';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -28866,6 +28870,7 @@ function chatFit(){
   sh.style.height = Math.max(380, window.innerHeight - sh.getBoundingClientRect().top - window.scrollY - bottom - 12)+'px';
 }
 window.addEventListener('resize', ()=>{ if(currentTab==='chat') chatFit(); });
+if(window.visualViewport){ const vf = ()=>{ if(currentTab==='chat') requestAnimationFrame(chatFit); }; window.visualViewport.addEventListener('resize', vf); window.visualViewport.addEventListener('scroll', vf); }
 function chatRenderList(){
   const el = document.getElementById('chList'); if(!el) return;
   if(TEAM.convError){ el.innerHTML = `<div class="empty-state" style="color:var(--danger);">Serveris: ${esc(TEAM.convError)}</div>`; return; }
@@ -31479,6 +31484,22 @@ document.addEventListener('mousedown', e=>{ if(e.target.closest && e.target.clos
 function chatFit(){
   const sh = document.getElementById('chatShell'); if(!sh) return;
   const rail = document.querySelector('aside.rail');
+  // phone: the chat is pinned to what is really seen – between the page header and the menu bar, or right above
+  // the keyboard while typing (iPhone scrolls the page when the keyboard opens: the visual viewport says where it is)
+  const phone = window.matchMedia('(max-width:760px)').matches;
+  document.documentElement.classList.toggle('chat-fix', phone && currentTab==='chat');
+  if(phone){
+    const vv = window.visualViewport, vh = vv ? vv.height : window.innerHeight, off = vv ? vv.offsetTop : 0;
+    const hdr = document.querySelector('header.pageheader'), hb = hdr ? hdr.getBoundingClientRect().bottom : 0;
+    if(chatFit.sat==null){ const d = document.createElement('div'); d.style.cssText = 'position:fixed;top:0;height:0;padding-top:env(safe-area-inset-top,0px);visibility:hidden'; document.body.appendChild(d); chatFit.sat = parseFloat(getComputedStyle(d).paddingTop)||0; d.remove(); }
+    const topVis = Math.max(off > 0 ? chatFit.sat : 0, Math.min(hb - off, vh * .4));   // the page scrolled away under the keyboard: stay below the status bar
+    const railOn = rail && !document.body.classList.contains('kb-open') && getComputedStyle(rail).display!=='none' && getComputedStyle(rail).position==='fixed';
+    const railH = railOn ? rail.getBoundingClientRect().height : 0;
+    sh.style.top = (off + topVis)+'px';
+    sh.style.height = Math.max(160, vh - topVis - railH)+'px';
+    return;
+  }
+  sh.style.top = '';
   const bottom = rail && getComputedStyle(rail).position==='fixed' && rail.getBoundingClientRect().top > window.innerHeight/2 ? rail.offsetHeight : 0;
   // with the phone keyboard open the menu bar is hidden and the room is small
   const vh = window.visualViewport ? Math.min(window.innerHeight, window.visualViewport.height) : window.innerHeight;
@@ -37338,8 +37359,13 @@ function setTab(key){
   disposeViz3D();
   currentTab = key;
   document.querySelectorAll('.rail-btn[data-tab]').forEach(b=>b.classList.toggle('active', b.getAttribute('data-tab')===key));
+  if(key!=='chat') document.documentElement.classList.remove('chat-fix');
+  // another page chosen: the phone's Notes / Meniu layer closes, only one button stays lit
+  if(typeof ntOvOpen==='function' && ntOvOpen()) ntOvClose();
+  if(document.body.classList.contains('nav-open')) try{ navMenuToggle(false); }catch(e){}
   const moreBtn = document.getElementById('railMore');
-  if(moreBtn) moreBtn.classList.toggle('active', !!document.querySelector('.rail-btn[data-mobile="more"][data-tab="'+key+'"]'));
+  // „Meniu“ is lit only for a page whose own button is not in the bottom bar
+  if(moreBtn){ const own = document.querySelector('.rail-btn[data-tab="'+key+'"]'); moreBtn.classList.toggle('active', !!(own && own.dataset.mobile==='more' && !own.offsetWidth)); }
   const sheet = document.getElementById('railMoreSheet'); if(sheet) sheet.remove();
   if(document.body.classList.contains('nav-open')) navMenuToggle(false);
   document.body.classList.remove('home-edit');
@@ -37678,6 +37704,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 15:22', v:'v362', k:'fix', t:'iPhone: apatinis meniu ir chato rašymas', f:'Apatiniame meniu nebelieka kelių paryškintų mygtukų: paspaudus kitą puslapį, Notes ir Meniu langai užsidaro, „Meniu“ paryškinamas tik kai atidaryto puslapio mygtuko juostoje nėra, o iPhone nebepalieka paspaudimo paryškinimo. Chate telefone pokalbio langas pritvirtintas prie ekrano: rašymo laukelis visada apačioje virš meniu, o paspaudus rašyti – iškart virš klaviatūros; puslapis nebenušoka į viršų ir žinutės lieka matomos.' },
   { d:'2026-10-06 15:07', v:'v361', k:'new', t:'Išlaidos: „Iš savo kuro“', f:'Pildant kuro išlaidą, prie „Mokėta“ atsirado trečias pasirinkimas – „Iš savo kuro“ (kuras iš savo automobilio bako). Jam nereikia nei kvito, nei sumos – užtenka litrų (ir, jei žinai, kilometrų). Vadovui tvirtinant, kompensacija iš karto siūloma litrais.' },
   { d:'2026-10-06 14:46', v:'v360', k:'fix', t:'Įrangos paieška: tiksliausi atitikmenys pirmi', f:'Projekto įrangos paieškoje (Sandėlis kairėje) pirmiausia rodomi aplankai ir daiktai, kurių pavadinimas prasideda įvestu žodžiu (pvz. „trisk“ – pirma Triskyliai ir 3m / 5m / 10m Triskylis), panašūs – po jų. Pavadinimo pradžioje esantis skliaustelis, pvz. „(Luko) 3m Shucko“, nebenustumia daikto į sąrašo galą – visuose sąrašuose jis rikiuojamas kaip „3m Shucko“.' },
   { d:'2026-10-06 14:42', v:'v359', k:'chg', t:'Rūšiavimas: skyriai pagal projektą, be „Kabelių“', f:'Rūšiavime ir Krovime daiktai skirstomi pagal tai, kur jie įdėti projekte: Šviesos / Garso / Video subprojektai – į tą skyrių; Elektrifikacijoje – pagal grupę („El. Šviesa“ → Apšvietimas, „El. Video“ → Video, „El. Garsas“ → Garsas, „Bendra“ → Bendra, kitos, pvz. „El. Įvadas“ → Elektrifikacija); Bendri daiktai → Bendra. Atskiro „Kabelių“ skyriaus nebelieka – kabelis keliauja su tuo skyriumi, kuriam naudojamas.' },
