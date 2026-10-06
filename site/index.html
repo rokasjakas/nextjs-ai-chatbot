@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-mMOEUB4gZCbkK0Bp1MnIrt6PriIefQr/jinaToBDyZ8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-paabGifL2vsezsaPS6FPaBC0LOS/GR/Yh/etWssBbx8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -5097,6 +5097,10 @@ body.has-bg:not(.gl-menu) .pageheader,body.has-bg:not(.gl-menu) .topbar{backgrou
 .exp-kpis b{font-size:16px;font-variant-numeric:tabular-nums;} .exp-kpis small{font-size:11px;color:var(--text-dim);}
 .exp-kpis .warn b{color:var(--warn,#F2A93B);} .exp-kpis .bad b{color:var(--danger);}
 .exp-bal.in-rep{margin-top:8px;}
+.exp-allow{padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--border);}
+.exp-chip.allow{background:color-mix(in srgb, var(--accent) 18%, transparent);color:var(--accent);}
+.exp-allow-chk{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:4px 0 10px;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:14px;}
+.exp-allow-chk input{width:18px;height:18px;flex:none;accent-color:var(--accent);}
 .exp-row,.exp-txr{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:10px 4px;border-top:1px solid var(--border);}
 .exp-row:first-child,.exp-txr:first-child{border-top:0;}
 .exp-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--panel-2);}
@@ -19124,7 +19128,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v337';
+const APP_VER = 'v338';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35487,7 +35491,7 @@ function ttRenderReport(){
    Darbuotojai) patvirtina išlaidas ir priskiria kompensacijas: už jas narys
    gali kortele prisipilti kuro savo reikmėms – rodoma, kiek sukaupta.
    ============================================================ */
-const EXP = { month:'', data:null, loading:null, err:'', kind:'fuel', paid:'uta', files:[], edit:null, txPick:'', prefill:null };
+const EXP = { month:'', data:null, loading:null, err:'', kind:'fuel', paid:'uta', files:[], edit:null, txPick:'', prefill:null, allow:false };
 const EXP_KIND = { fuel:{ t:'Kuras', i:'⛽' }, food:{ t:'Maistas', i:'🍽' }, other:{ t:'Kitos', i:'🧾' } };
 const EXP_STATUS = { new:{ t:'Laukia patikros', c:'wait' }, ok:{ t:'Patvirtinta', c:'ok' }, rejected:{ t:'Atmesta', c:'no' } };
 const expManager = ()=>['admin','office','pm'].includes(ACCESS.role) || (typeof isPlus==='function' && isPlus());
@@ -35506,6 +35510,7 @@ async function expData(uid, from, to){
     sb.from('expenses').select('comp').eq('user_id', uid).eq('status', 'ok').not('comp', 'is', null),
     sb.from('uta_personal').select('tx_id, uta_tx(amount_gross, tx_date)').eq('user_id', uid)]);
   if(ex.error) throw new Error(expSqlErr(ex.error));
+  const allow = await expAllowLoad(uid);
   const cardIds = (cards.data||[]).map(c=>c.id);
   let tx = [];
   if(cardIds.length){
@@ -35515,7 +35520,39 @@ async function expData(uid, from, to){
   const persSet = new Set((pers.data||[]).map(p=>p.tx_id));
   const compTotal = (comp.data||[]).reduce((s, x)=>s + (+x.comp||0), 0);
   const persTotal = (pers.data||[]).reduce((s, p)=>s + (+(p.uta_tx && p.uta_tx.amount_gross)||0), 0);
-  return { uid, from, to, exps:ex.data||[], cards:cards.data||[], tx, persSet, compTotal, persTotal, cardsErr:cards.error ? cards.error.message : '' };
+  return { uid, from, to, exps:ex.data||[], cards:cards.data||[], tx, persSet, compTotal, persTotal, allow, cardsErr:cards.error ? cards.error.message : '' };
+}
+// the monthly allowance (sql/expense_allowance.sql): so much is added every month from start_month on,
+// what is not spent moves to the next month; expenses ticked „iš sukaupto likučio“ (not rejected) use it
+const expMonthsSince = start=>{ const [y, m] = String(start||'').slice(0,7).split('-').map(Number), n = new Date(); return y ? Math.max(0, (n.getFullYear()*12 + n.getMonth()) - (y*12 + m - 1) + 1) : 0; };
+async function expAllowLoad(uid){
+  const sb = getSb();
+  const [a, u] = await Promise.all([
+    sb.from('expense_allowance').select('*').eq('user_id', uid).maybeSingle(),
+    sb.from('expenses').select('id, amount').eq('user_id', uid).eq('from_allow', true).neq('status', 'rejected')]);
+  if(a.error || !a.data) return null;
+  const months = expMonthsSince(a.data.start_month), earned = (+a.data.monthly||0) * months;
+  const usedRows = u.error ? [] : (u.data||[]), used = usedRows.reduce((t, x)=>t + (+x.amount||0), 0);
+  return { monthly:+a.data.monthly||0, start:a.data.start_month, months, earned, used, usedIds:new Set(usedRows.map(x=>x.id)), left:earned - used };
+}
+function expAllowHtml(al){
+  if(!al) return '';
+  return `<div class="exp-allow"><div class="exp-bal-h">Mėnesinis kompensavimo limitas</div>
+    <div class="exp-bal-n ${al.left < 0 ? 'neg' : ''}">${expMoney(al.left)}</div>
+    <div class="exp-bal-s">Kas mėnesį pridedama <b>${expMoney(al.monthly)}</b> (skaičiuojama nuo ${esc(String(al.start).slice(0,7))}) · sukaupta <b>${expMoney(al.earned)}</b> · panaudota <b>${expMoney(al.used)}</b>. Nepanaudotas likutis pereina į kitą mėnesį.</div></div>`;
+}
+// Admin / Office: set or change the member's monthly allowance
+async function expAllowSet(uid, name, al, after){
+  const v = await uiAsk(`„${name}“ mėnesinis kompensavimo limitas, € (kiekvieną mėnesį pridedama, likutis pereina į kitą mėnesį). 0 arba tuščia – limitą panaikinti.`, { input:true, yes:'Išsaugoti', no:'Atšaukti', value:al ? String(al.monthly).replace('.', ',') : '' });
+  if(v==null || v===false) return;
+  const n = String(v).trim() ? offerNum(v) : 0, sb = getSb();
+  let r;
+  if(!n) r = await sb.from('expense_allowance').delete().eq('user_id', uid);
+  else r = al ? await sb.from('expense_allowance').update({ monthly:n, set_by:teamMe(), updated_at:new Date().toISOString() }).eq('user_id', uid)
+    : await sb.from('expense_allowance').insert({ user_id:uid, monthly:n, start_month:expMonthNow()+'-01' });
+  if(r.error){ toast('Nepavyko: '+(/expense_allowance|schema cache|does not exist/i.test(r.error.message) ? 'paleisk supabase/sql/expense_allowance.sql' : r.error.message), 6000); return; }
+  toast(n ? 'Limitas nustatytas: '+expMoney(n)+' / mėn.' : 'Limitas panaikintas.');
+  if(after) after();
 }
 // each UTA fill → the expense that explains it: the one linked to it, else a UTA-paid fuel expense of the same day (closest litres)
 function expMatch(tx, exps){
@@ -35575,7 +35612,7 @@ function expBalHtml(d, match){
   const waiting = d.exps.filter(e=>e.status==='new').length;
   const noReason = d.tx.filter(t=>!match.has(t.id) && !d.persSet.has(t.id)).length;
   const bal = d.compTotal - d.persTotal;
-  return `<div class="exp-bal-h">Sukaupta asmeniniams pylimams</div>
+  return `${expAllowHtml(d.allow)}<div class="exp-bal-h">Sukaupta asmeniniams pylimams</div>
     <div class="exp-bal-n ${bal < 0 ? 'neg' : ''}">${expMoney(bal)}</div>
     <div class="exp-bal-s">Kompensacijų iš viso <b>${expMoney(d.compTotal)}</b> · panaudota asmeniniams pylimams <b>${expMoney(d.persTotal)}</b></div>
     <div class="exp-kpis">
@@ -35592,7 +35629,7 @@ function expRowHtml(e, mgr){
   return `<div class="exp-row" data-eid="${esc(e.id)}">
     <span class="exp-ic k-${e.kind}" title="${esc(k.t)}">${k.i}</span>
     <span class="exp-main"><b>${esc(expWhat(e))}</b>
-      <small>${esc(rpWhen(e.spent_on))} · ${esc(k.t)} · <span class="exp-paid ${e.paid}">${e.paid==='uta' ? 'UTA kortele' : 'Savais pinigais'}</span>${e.uta_tx_id ? ' · susieta su pylimu' : ''}</small>
+      <small>${esc(rpWhen(e.spent_on))} · ${esc(k.t)} · <span class="exp-paid ${e.paid}">${e.paid==='uta' ? 'UTA kortele' : 'Savais pinigais'}</span>${e.uta_tx_id ? ' · susieta su pylimu' : ''}${e.from_allow ? ' · <span class="exp-chip allow">iš sukaupto likučio</span>' : ''}</small>
       ${recs.length ? `<span class="exp-recs">${recs.map((r, i)=>`<button type="button" class="exp-rec" data-rec="${i}">📎 ${esc(r.name||'kvitas')}</button>`).join('')}</span>` : (e.paid==='own' ? '<span class="exp-recs"><span class="exp-norec">⚠ be kvito</span></span>' : '')}
       ${e.review_note ? `<small class="exp-note">💬 ${esc(e.review_note)}</small>` : ''}</span>
     <span class="exp-amt">${esc(qty)}${per100 ? `<small class="exp-per">${esc(per100)}</small>` : ''}</span>
@@ -35620,7 +35657,7 @@ function expBindRows(box, mgr, after){
   box.querySelectorAll('[data-eid]').forEach(row=>{
     const id = row.dataset.eid, list = mgr ? (EXPR.data && EXPR.data.exps) : (EXP.data && EXP.data.exps), e = (list||[]).find(x=>x.id===id); if(!e) return;
     row.querySelectorAll('[data-rec]').forEach(b=>b.onclick = ()=>expReceiptOpen((e.receipts||[])[+b.dataset.rec]));
-    const ed = row.querySelector('[data-ed]'); if(ed) ed.onclick = ()=>{ EXP.edit = e; EXP.kind = e.kind; EXP.paid = e.paid; EXP.files = []; EXP.txPick = e.uta_tx_id || ''; expFormDraw(); document.getElementById('expForm').scrollIntoView({ behavior:'smooth', block:'start' }); };
+    const ed = row.querySelector('[data-ed]'); if(ed) ed.onclick = ()=>{ EXP.edit = e; EXP.kind = e.kind; EXP.paid = e.paid; EXP.files = []; EXP.txPick = e.uta_tx_id || ''; EXP.allow = !!e.from_allow; expFormDraw(); document.getElementById('expForm').scrollIntoView({ behavior:'smooth', block:'start' }); };
     const del = row.querySelector('[data-del]'); if(del) del.onclick = async ()=>{
       if(!(await uiConfirm('Ištrinti šią išlaidą?', { yes:'Ištrinti', no:'Ne' }))) return;
       const r = await getSb().from('expenses').delete().eq('id', e.id);
@@ -35679,6 +35716,7 @@ function expFormDraw(){
       <button type="button" data-ep="uta" class="${EXP.paid==='uta' ? 'on' : ''}">UTA kortele</button>
       <button type="button" data-ep="own" class="${EXP.paid==='own' ? 'on' : ''}">Savais pinigais</button></div></div>
     ${k==='fuel' && EXP.paid==='uta' && fills.length ? `<label class="field">Kuris pylimas (iš tavo kortelės)<select id="exTx"><option value="">Nustatyti pagal datą automatiškai</option>${fills.map(t=>`<option value="${esc(t.id)}" ${EXP.txPick===t.id ? 'selected' : ''}>${esc(rpWhen(t.tx_date)+' '+String(t.tx_at||'').slice(11,16)+' · '+(t.station||'')+' · '+utaQty(t.quantity)+' · '+utaMoney(t.amount_gross))}</option>`).join('')}</select></label>` : ''}
+    ${d && d.allow ? `<label class="exp-allow-chk"><input type="checkbox" id="exAllow" ${EXP.allow ? 'checked' : ''}><span>Apmokėti iš sukaupto likučio <small class="muted">(liko ${expMoney(d.allow.left + (e && d.allow.usedIds.has(e.id) ? (+e.amount||0) : 0))})</small></span></label>` : ''}
     <div class="exp-rec-box ${EXP.paid==='own' ? 'need' : ''}">
       <div class="exp-rec-h"><b>Kvitas</b>${EXP.paid==='own' ? '<span class="exp-req">būtinas mokant savais pinigais</span>' : '<small class="muted">nebūtinas</small>'}</div>
       <div class="exp-rec-btns">
@@ -35695,7 +35733,8 @@ function expFormDraw(){
   document.getElementById('exFile').onchange = ev=>add(ev.target.files);
   box.querySelectorAll('[data-fx]').forEach(b=>b.onclick = ()=>{ expKeep(); EXP.files.splice(+b.dataset.fx, 1); expFormDraw(); });
   const tx = document.getElementById('exTx'); if(tx) tx.onchange = ()=>{ EXP.txPick = tx.value; };
-  const c = document.getElementById('exCancel'); if(c) c.onclick = ()=>{ EXP.edit = null; EXP.prefill = null; EXP.files = []; EXP.txPick = ''; expFormDraw(); };
+  const al = document.getElementById('exAllow'); if(al) al.onchange = ()=>{ EXP.allow = al.checked; };
+  const c = document.getElementById('exCancel'); if(c) c.onclick = ()=>{ EXP.edit = null; EXP.prefill = null; EXP.files = []; EXP.txPick = ''; EXP.allow = false; expFormDraw(); };
   document.getElementById('exSave').onclick = expSave;
 }
 // what is typed is kept while the kind / payment is switched
@@ -35714,6 +35753,12 @@ async function expSave(e){
   if(!reason){ toast(k==='other' ? 'Parašyk, kam išleista.' : 'Parašyk priežastį.'); return; }
   if(k==='fuel' && !liters){ toast('Nurodyk, kiek litrų.'); return; }
   if((k!=='fuel' || EXP.paid==='own') && !amount){ toast('Nurodyk sumą eurais.'); return; }
+  const AL = EXP.data && EXP.data.allow, useAllow = !!(AL && EXP.allow);
+  if(useAllow){
+    if(!amount){ toast('Apmokant iš sukaupto likučio nurodyk sumą eurais.'); return; }
+    const left = AL.left + (EXP.edit && AL.usedIds.has(EXP.edit.id) ? (+EXP.edit.amount||0) : 0);
+    if(offerNum(amount) > left + 0.004){ toast('Sukaupto likučio nepakanka: liko '+expMoney(left)+'.', 5000); return; }
+  }
   const had = EXP.edit ? (EXP.edit.receipts||[]).length : 0;
   if(EXP.paid==='own' && !had && !EXP.files.length){ toast('Mokant savais pinigais būtinas kvitas – nufotografuok arba įkelk jį.', 5000); document.querySelector('.exp-rec-box').classList.add('flash'); return; }
   btn.disabled = true; btn.textContent = 'Saugoma…';
@@ -35729,12 +35774,13 @@ async function expSave(e){
     }
     const row = { kind:k, spent_on:date, route:k==='other' ? '' : route, reason, liters:k==='fuel' && liters ? offerNum(liters) : null, km:k==='fuel' && km ? offerNum(km) : null,
       amount:amount ? offerNum(amount) : null, paid:EXP.paid, uta_tx_id:k==='fuel' && EXP.paid==='uta' && EXP.txPick ? EXP.txPick : null, updated_at:new Date().toISOString() };
+    if(AL) row.from_allow = useAllow;
     let r;
     if(EXP.edit){ row.receipts = (EXP.edit.receipts||[]).concat(up); r = await sb.from('expenses').update(row).eq('id', id).select().single(); }
     else { Object.assign(row, { id, user_id:me, user_name:teamName(ACCESS.profile), status:'new', receipts:up }); r = await sb.from('expenses').insert(row).select().single(); }
     if(r.error) throw new Error(expSqlErr(r.error));
     toast(EXP.edit ? 'Išlaida pataisyta.' : '✓ Išlaida pateikta – mėnesio gale ją patikrins vadovas.');
-    EXP.edit = null; EXP.prefill = null; EXP.files = []; EXP.txPick = '';
+    EXP.edit = null; EXP.prefill = null; EXP.files = []; EXP.txPick = ''; EXP.allow = false;
     if(date.slice(0,7)!==EXP.month){ EXP.month = date.slice(0,7); renderExpensesTab(); return; }
     await expReload(); expDrawLists();
   }catch(err){
@@ -35780,13 +35826,14 @@ async function rpEmpDraw(box, acts){
   EXPR.data = d;
   const m = teamMember(RP.emp), name = m ? teamName(m) : ((d.exps[0] && d.exps[0].user_name) || 'Narys'), match = expMatch(d.tx, d.exps);
   const exps = d.exps.filter(e=>rpMatch(expWhat(e), e.kind, EXP_KIND[e.kind].t));
-  box.innerHTML = `<div class="card"><div class="exp-h"><button type="button" class="btn small" id="empBack">‹ Visi darbuotojai</button><h2 class="section-title" style="margin:0;">${esc(name)}</h2></div>
+  box.innerHTML = `<div class="card"><div class="exp-h"><button type="button" class="btn small" id="empBack">‹ Visi darbuotojai</button><h2 class="section-title" style="margin:0;">${esc(name)}</h2>${['admin','office'].includes(ACCESS.role) || isPlus() ? `<button type="button" class="btn small" id="empAllow" style="margin-left:auto;">€ ${d.allow ? 'Limitas '+esc(expMoney(d.allow.monthly))+' / mėn.' : 'Mėnesinis limitas'}</button>` : ''}</div>
       <div class="exp-bal in-rep">${expBalHtml(d, match)}</div></div>
     <div class="card"><div class="exp-h"><h2 class="section-title" style="margin:0;">Išlaidos</h2>${d.exps.some(e=>e.status==='new') ? '<button type="button" class="btn small" id="empAllOk">✓ Patvirtinti visas laukiančias</button>' : ''}</div>
       <div id="empList">${exps.length ? exps.map(e=>expRowHtml(e, true)).join('') : '<div class="empty-state">Išlaidų nėra.</div>'}</div></div>
     <div class="card"><div class="exp-h"><h2 class="section-title" style="margin:0;">UTA kortelės pylimai ir priežastys</h2></div><div id="empTx">${expTxHtml(d, match, true)}</div></div>`;
   const again = ()=>rpDraw();
   document.getElementById('empBack').onclick = ()=>{ RP.emp = ''; rpDraw(); };
+  const ab = document.getElementById('empAllow'); if(ab) ab.onclick = ()=>expAllowSet(RP.emp, name, d.allow, again);
   expBindRows(document.getElementById('empList'), true, again);
   expBindTx(document.getElementById('empTx'), d, true, again);
   const all = document.getElementById('empAllOk'); if(all) all.onclick = async ()=>{
@@ -37197,6 +37244,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 12:26', v:'v338', k:'new', t:'Išlaidos: mėnesinis kompensavimo limitas', f:'Nariui galima nustatyti mėnesinį kompensavimo limitą (pvz. 200 € / mėn.) – kas mėnesį jis pridedamas, o nepanaudotas likutis pereina į kitą mėnesį. Pildant išlaidą galima uždėti varnelę „Apmokėti iš sukaupto likučio“ – suma atimama iš likučio (atmesta išlaida jį grąžina). Likutis matomas Išlaidų puslapyje; limitą nustato Admin / Office (Ataskaitos → Darbuotojai → narys → „€ Mėnesinis limitas“).' },
   { d:'2026-10-06 10:51', v:'v337', k:'fix', t:'Telefonas: apatinis meniu be tuščio tarpo', f:'Apatinis meniu telefone (iPhone) nebepalieka didelio tuščio tarpo po mygtukais – lieka tik tiek vietos, kiek reikia iPhone brūkšniui apačioje. Pranešimai ir Notes langas prisitaiko prie naujo aukščio.' },
   { d:'2026-10-06 10:36', v:'v336', k:'fix', t:'Telefonai: langai nebelenda po būsenos juosta', f:'Patikrinti visi iššokantys langai telefone (su iPhone „sala“ / įpjova): įprasti langai, patvirtinimai, formos, automobilio kortelė (ir paslinkus – jos antraštė lieka matoma), „Dydis“, paieška, nuotraukų peržiūra, žaidimai, renginiai per visą ekraną, skambučio langas, balsavimo ekranas, automobilio QR puslapis. Nė vienas langas nebeprasideda po laikrodžiu / baterija – viršuje paliekamas saugus tarpas; apačioje – tarpas virš iPhone juostelės. Kompiuteryje niekas nepasikeitė.' },
   { d:'2026-10-06 10:10', v:'v335', k:'fix', t:'Telefonas: Notes langas žemiau', f:'Telefone (ypač iPhone) „Notes“ langas nebeprasideda po būsenos juosta (laikrodis, baterija) – naujo užrašo laukelis ir sąrašas pradedami žemiau, su tarpu nuo viršaus.' },
