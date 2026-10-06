@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-9LsbZY3fXjZH4eafPHou7S8RnreowvL7T/KKepxrOjU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-uBIJZtOalxyL9uWhvVDiSOdy4WS18zoe5970psCPpxs=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4528,6 +4528,8 @@ body.gm-open{overflow:hidden;}
 .gm-pad{display:none;justify-content:center;gap:10px;flex-wrap:wrap;}
 .gm-slider{display:none;position:relative;height:150px;flex:none;margin:6px auto 0;width:min(100%, 420px);border-radius:16px;border:1px solid #2b3160;background:linear-gradient(#141a36,#1a2040);touch-action:none;user-select:none;-webkit-user-select:none;align-items:center;justify-content:center;}
 .gm-slider span{color:#8a93b8;font-size:12.5px;pointer-events:none;}
+.gm-stage canvas.race3d{position:absolute;z-index:0;border-radius:10px;box-shadow:none;}
+.gm-stage:has(canvas.race3d) #gmCv{position:relative;z-index:1;box-shadow:none;}
 .gm-rlist{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;font-size:13px;} .gm-rc{border:1px solid var(--c);color:var(--c);border-radius:999px;padding:2px 9px;font-weight:700;}
 .gm-rres{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;font-size:13px;margin-bottom:6px;color:#ffd43b;}
 .gm-rbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;} .gm-rbar select{max-width:240px;}
@@ -19397,7 +19399,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v366';
+const APP_VER = 'v367';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32541,6 +32543,7 @@ async function gmOver(id, score, msg){
 }
 function gmClose(silent){
   if(GM.run){ cancelAnimationFrame(GM.run.raf); GM.run = null; }
+  if(typeof RACE_VIEW!=='undefined' && RACE_VIEW){ RACE_VIEW.dispose(); RACE_VIEW = null; }
   if(GM.room) gmRoomLeave(silent);
   const ov = document.getElementById('gmOv'); if(ov) ov.remove();
   document.body.classList.remove('gm-open');
@@ -32999,6 +33002,93 @@ function raceDraw(ctx, T, cars, meCar, hud){
   if(hud) hud(ctx);
 }
 const raceFmt = t=>{ const m = Math.floor(t/60), s = t - m*60; return (m ? m+':'+String(s.toFixed(1)).padStart(4, '0') : s.toFixed(1))+' s'; };
+let RACE_VIEW = null;
+/* ---- Lenktynės 3D: vaizdas iš kabinos (Three.js). Fizika ta pati (raceStep), trasa ta pati – piešiama 3D.
+   Jei 3D nepavyksta įkelti, lieka vaizdas iš viršaus. ---- */
+function race3d(stage, T){
+  if(typeof THREE==='undefined' || !stage) return null;
+  if(RACE_VIEW) RACE_VIEW.dispose(); RACE_VIEW = null;      // one 3D view at a time (a restart makes a new one)
+  stage.querySelectorAll('canvas.race3d').forEach(c=>c.remove());
+  let renderer;
+  try{ renderer = new THREE.WebGLRenderer({ antialias:true }); }catch(e){ return null; }
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
+  const gl = renderer.domElement; gl.className = 'race3d'; stage.insertBefore(gl, stage.firstChild);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color('#8ec5ff'); scene.fog = new THREE.Fog('#8ec5ff', 260, 900);
+  const cam = new THREE.PerspectiveCamera(72, 1.45, 0.5, 2000);
+  scene.add(new THREE.HemisphereLight('#ffffff', '#3d6b35', 0.95));
+  const sun = new THREE.DirectionalLight('#ffffff', 0.55); sun.position.set(200, 400, 100); scene.add(sun);
+  // ground
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.MeshLambertMaterial({ color:'#3c7a3a' }));
+  ground.rotation.x = -Math.PI/2; ground.position.set(RACE_W/2, -0.05, RACE_H/2); scene.add(ground);
+  // a ribbon along the track: [inner offset, outer offset, height, colour / per-piece colour]
+  const n = T.pts.length, nrm = i=>{ const a = T.pts[(i-1+n)%n], b = T.pts[(i+1)%n], dx = b[0]-a[0], dy = b[1]-a[1], l = Math.hypot(dx, dy)||1; return [-dy/l, dx/l]; };
+  const ribbon = (o1, o2, y, colorFn)=>{
+    const pos = [], col = [], idx = [];
+    for(let i=0;i<=n;i++){ const p = T.pts[i%n], m = nrm(i%n), c = new THREE.Color(colorFn(i));
+      pos.push(p[0]+m[0]*o1, y, p[1]+m[1]*o1, p[0]+m[0]*o2, y, p[1]+m[1]*o2); col.push(c.r, c.g, c.b, c.r, c.g, c.b);
+      if(i<n){ const k = i*2; idx.push(k, k+1, k+2, k+1, k+3, k+2); } }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals();
+    const m = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ vertexColors:true, side:THREE.DoubleSide })); scene.add(m); return m; };
+  ribbon(-RACE_HW, RACE_HW, 0.02, ()=>'#50555e');
+  ribbon(-RACE_HW-6, -RACE_HW, 0.06, i=>Math.floor(i/2)%2 ? '#e03131' : '#f1f3f5');
+  ribbon(RACE_HW, RACE_HW+6, 0.06, i=>Math.floor(i/2)%2 ? '#e03131' : '#f1f3f5');
+  ribbon(-0.8, 0.8, 0.04, i=>Math.floor(i/3)%2 ? '#50555e' : '#d0d3d8');
+  // start / finish: chequered strip
+  { const st = raceAt(T, 0), cvs = document.createElement('canvas'); cvs.width = 64; cvs.height = 8; const x = cvs.getContext('2d');
+    for(let i=0;i<16;i++) for(let j=0;j<2;j++){ x.fillStyle = (i+j)%2 ? '#fff' : '#111'; x.fillRect(i*4, j*4, 4, 4); }
+    const tex = new THREE.CanvasTexture(cvs); tex.magFilter = THREE.NearestFilter;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(RACE_HW*2, 8), new THREE.MeshBasicMaterial({ map:tex }));
+    m.rotation.x = -Math.PI/2; m.rotation.z = -st.a - Math.PI/2; m.position.set(st.x, 0.08, st.y); scene.add(m);
+    // a gate over the line
+    const n2 = st.a + Math.PI/2, post = new THREE.BoxGeometry(2, 18, 2), pm = new THREE.MeshLambertMaterial({ color:'#343a40' });
+    [-1, 1].forEach(sd=>{ const p = new THREE.Mesh(post, pm); p.position.set(st.x + Math.cos(n2)*sd*(RACE_HW+8), 9, st.y + Math.sin(n2)*sd*(RACE_HW+8)); scene.add(p); });
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(2, 4, RACE_HW*2+18), new THREE.MeshBasicMaterial({ map:tex })); bar.position.set(st.x, 18, st.y); bar.rotation.y = -st.a; scene.add(bar); }
+  // trees and a few tyre stacks outside the track
+  { const trunk = new THREE.CylinderGeometry(0.8, 1, 5, 6), crown = new THREE.ConeGeometry(5, 12, 7), tm = new THREE.MeshLambertMaterial({ color:'#6b4f2a' }), cm = new THREE.MeshLambertMaterial({ color:'#2b8a3e' });
+    let seed = 7; const rnd = ()=>{ seed = (seed*16807) % 2147483647; return seed/2147483647; };
+    for(let k=0, made=0; k<900 && made<170; k++){ const x = -220 + rnd()*1080, z = -200 + rnd()*840; if(raceProj(T, x, z).d < RACE_HW + 22) continue; made++;
+      const s = 0.7 + rnd()*0.9, t = new THREE.Mesh(trunk, tm), c = new THREE.Mesh(crown, cm); t.position.set(x, 2.5*s, z); t.scale.setScalar(s); c.position.set(x, 10*s, z); c.scale.setScalar(s); scene.add(t, c); } }
+  // cars
+  const carMesh = color=>{ const g = new THREE.Group(), m = new THREE.MeshLambertMaterial({ color });
+    const body = new THREE.Mesh(new THREE.BoxGeometry(20, 4, 11), m); body.position.y = 3; g.add(body);
+    const cab = new THREE.Mesh(new THREE.BoxGeometry(9, 3.5, 9), new THREE.MeshLambertMaterial({ color:'#1b1f2a' })); cab.position.set(-1, 6.5, 0); g.add(cab);
+    const wg = new THREE.CylinderGeometry(2, 2, 2, 10), wm = new THREE.MeshLambertMaterial({ color:'#111' });
+    [[6,5.5],[6,-5.5],[-6,5.5],[-6,-5.5]].forEach(([x, z])=>{ const w = new THREE.Mesh(wg, wm); w.rotation.x = Math.PI/2; w.position.set(x, 2, z); g.add(w); });
+    scene.add(g); return g; };
+  const label = text=>{ const c = document.createElement('canvas'); c.width = 256; c.height = 64; const x = c.getContext('2d'); x.font = 'bold 34px sans-serif'; x.textAlign = 'center'; x.lineWidth = 6; x.strokeStyle = 'rgba(0,0,0,.7)'; x.strokeText(text, 128, 44); x.fillStyle = '#fff'; x.fillText(text, 128, 44);
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:new THREE.CanvasTexture(c), depthTest:false })); s.scale.set(16, 4, 1); scene.add(s); return s; };
+  const meshes = new Map();
+  let w0 = 0, h0 = 0;
+  return RACE_VIEW = {
+    canvas:gl,
+    render(over, me, cars){
+      if(!gl.isConnected){ this.dispose(); return; }
+      const r = over.getBoundingClientRect(), sr = stage.getBoundingClientRect(), w = Math.round(r.width), h = Math.round(r.height);
+      if(w!==w0 || h!==h0){ w0 = w; h0 = h; renderer.setSize(w, h, false); cam.aspect = w/Math.max(1, h); cam.updateProjectionMatrix(); }
+      Object.assign(gl.style, { left:(r.left - sr.left)+'px', top:(r.top - sr.top)+'px', width:w+'px', height:h+'px' });
+      cars.forEach(c=>{ if(!c || c.x==null) return; let o = meshes.get(c);
+        if(!o){ o = { g:carMesh(c.color), l:c===me ? null : label(c.name||'') }; meshes.set(c, o); }
+        o.g.visible = c!==me; o.g.position.set(c.x, 0, c.y); o.g.rotation.y = -c.a;
+        if(o.l) o.l.position.set(c.x, 16, c.y); });
+      if(me){ const fx = Math.cos(me.a), fz = Math.sin(me.a);
+        cam.position.set(me.x - fx*1, 7, me.y - fz*1); cam.lookAt(me.x + fx*60, 4.5, me.y + fz*60); }
+      renderer.render(scene, cam);
+    },
+    dispose(){ try{ renderer.dispose(); gl.remove(); }catch(e){} }
+  };
+}
+// the small map in the corner of the 3D view
+function raceMiniMap(ctx, T, cars, me){
+  const k = 0.2, ox = RACE_W - RACE_W*k - 10, oy = 34;
+  // the dashboard with the speed
+  if(me){ const w = 150, x0 = RACE_W/2 - w/2, y0 = RACE_H - 40; ctx.save(); ctx.fillStyle = 'rgba(10,12,20,.72)'; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(x0, y0, w, 32, 10); else ctx.rect(x0, y0, w, 32); ctx.fill();
+    ctx.fillStyle = '#e9ecef'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(Math.round(me.v*0.8)+' km/h', RACE_W/2, y0 + 23); ctx.restore(); }
+  ctx.save(); ctx.globalAlpha = 0.85; ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(ox-4, oy-4, RACE_W*k+8, RACE_H*k+8);
+  ctx.beginPath(); T.pts.forEach((p, i)=>i ? ctx.lineTo(ox + p[0]*k, oy + p[1]*k) : ctx.moveTo(ox + p[0]*k, oy + p[1]*k)); ctx.closePath();
+  ctx.strokeStyle = '#ced4da'; ctx.lineWidth = 4; ctx.stroke();
+  cars.forEach(c=>{ if(!c || c.x==null) return; ctx.fillStyle = c.color; ctx.beginPath(); ctx.arc(ox + c.x*k, oy + c.y*k, c===me ? 4 : 3, 0, Math.PI*2); ctx.fill(); if(c===me){ ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke(); } });
+  ctx.restore();
+}
 // controls: keys on a computer; on a phone a strip – the finger left / right steers, the gas is on by itself
 function raceCtl(keys, steerTouch){
   const touch = GM_TOUCH();
@@ -33018,6 +33108,9 @@ GM_MAKE.race = api=>{
   const cars = ai.concat([me]); let t = -3, done = false, steer = null;
   const sl = document.getElementById('gmSlider'); if(sl) steer = raceSteerWire(sl);
   const place = ()=>1 + cars.filter(c=>c!==me && raceProg(T, c) > raceProg(T, me)).length;
+  // the 3D view from the cockpit (until Three.js is there – from above)
+  const stage = document.getElementById('gmStage'), over = document.getElementById('gmCv'); let view = null;
+  libNeed('three').then(ok=>{ if(ok && over && over.isConnected && !done) view = race3d(stage, T); });
   return { W:RACE_W, H:RACE_H,
     step(dt){
       t += dt; if(t < 0) return;
@@ -33026,7 +33119,8 @@ GM_MAKE.race = api=>{
         if(c.cr > RACE_LAPS && !c.fin){ c.fin = true; c.time = t; } });
       if(me.fin && !done){ done = true; const pl = place(); const sc = Math.max(100, Math.round(4000 - me.time*25) + [1500, 800, 300, 0][pl-1]);
         api.set(sc); setTimeout(()=>api.end((pl===1 ? '🏆 Laimėjai! ' : pl+' vieta · ')+raceFmt(me.time)), 900); } },
-    draw(c){ raceDraw(c, T, cars, me, ctx=>{
+    draw(c){ const hud3 = fn=>{ if(view && view.canvas.isConnected){ c.clearRect(0, 0, RACE_W, RACE_H); view.render(over, me, cars); raceMiniMap(c, T, cars, me); fn(c); } else raceDraw(c, T, cars, me, fn); };
+      hud3(ctx=>{
       const lap = Math.min(RACE_LAPS, Math.max(1, me.cr));
       gmText(ctx, 'Ratas '+lap+'/'+RACE_LAPS, 12, 22, 15, '#fff'); gmText(ctx, 'Vieta '+place()+'/4', 12, 42, 15, '#fff'); gmText(ctx, raceFmt(Math.max(0, me.fin ? me.time : t)), RACE_W-12, 22, 15, '#fff', 'right');
       if(t < 0) gmText(ctx, String(Math.ceil(-t)), RACE_W/2, RACE_H/2+20, 64, '#ffd43b', 'center');
@@ -33040,6 +33134,7 @@ GM_MP_MAKE.race10 = R=>{
   st.innerHTML = '<canvas id="gmCv"></canvas>';
   st.insertAdjacentHTML('afterend', '<div class="gm-slider gm-steer" id="gmSlider2"><span>Slink pirštą kairėn / dešinėn – vairuoti</span></div>');
   const cv = document.getElementById('gmCv'), ctx = cv.getContext('2d'), sl = document.getElementById('gmSlider2'), steer = raceSteerWire(sl);
+  let view = null; libNeed('three').then(ok=>{ if(ok && cv.isConnected) view = race3d(st, T); });
   const S = { phase:'lobby', roster:[], cars:{}, t:0, startAt:0, results:[] }, keys = new Set();
   let raf = 0, last = performance.now(), sendT = 0, recorded = false, endT = 0;
   if(R.host) S.roster = [{ id:me, name:gmMeName() }];
@@ -33095,7 +33190,8 @@ GM_MP_MAKE.race10 = R=>{
       }
     }
     const cs = Object.values(S.cars), c = myCar();
-    raceDraw(ctx, T, cs, c, x=>{
+    const draw3 = (fn)=>{ if(view && view.canvas.isConnected && c && S.phase!=='lobby'){ ctx.clearRect(0, 0, RACE_W, RACE_H); view.render(cv, c, cs); raceMiniMap(ctx, T, cs, c); fn(ctx); } else raceDraw(ctx, T, cs, c, fn); };
+    draw3(x=>{
       if(S.phase==='lobby'){ x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(0, 0, RACE_W, RACE_H); gmText(x, R.host ? 'Pakviesk kolegas ir spausk „Startas“' : 'Laukiama starto…', RACE_W/2, RACE_H/2, 20, '#fff', 'center'); return; }
       if(!c) return;
       const pl = 1 + cs.filter(o=>o!==c && raceProg(T, o) > raceProg(T, c)).length;
@@ -33108,7 +33204,7 @@ GM_MP_MAKE.race10 = R=>{
     });
     raf = requestAnimationFrame(loop);
   };
-  R.stop = ()=>{ cancelAnimationFrame(raf); window.removeEventListener('keydown', kd); window.removeEventListener('keyup', ku); window.removeEventListener('resize', fit); if(sl) sl.remove(); };
+  R.stop = ()=>{ cancelAnimationFrame(raf); window.removeEventListener('keydown', kd); window.removeEventListener('keyup', ku); window.removeEventListener('resize', fit); if(sl) sl.remove(); if(view) view.dispose(); };
   lobbyUi(); if(R.host) sendRoster(); raf = requestAnimationFrame(loop);
 };
 // the host opens the room first, then invites colleagues one by one (up to 9)
@@ -37953,6 +38049,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 15:46', v:'v367', k:'new', t:'Lenktynės – 3D vaizdas iš kabinos', f:'Lenktynės (vienam ir keliese) dabar rodomos 3D, iš vairuotojo vietos: trasa su bortais, medžiai, starto vartai, kitų mašinų vardai, greitis apačioje ir trasos žemėlapis kampe. Jei 3D įkelti nepavyksta – rodomas vaizdas iš viršaus, kaip anksčiau.' },
   { d:'2026-10-06 15:41', v:'v366', k:'new', t:'Žaidimai: Lenktynės (vienam ir iki 10 keliese)', f:'Naujas žaidimas „Lenktynės“: trasa iš viršaus, 3 ratai prieš 3 kompiuterio mašinas (rekordas – pagal vietą ir laiką). „Lenktynės keliese“ – iki 10 žaidėjų realiu laiku: šeimininkas pakviečia kolegas (po vieną iš sąrašo), visi mato vieni kitų mašinas, po finišo – rezultatų lentelė, „Dar kartą“. Kompiuteryje: ← → vairuoti, ↑ dujos, ↓ stabdis. Telefone dujos pačios, vairuoji slinkdamas pirštą kairėn / dešinėn valdymo lauke, ↓ – stabdis.' },
   { d:'2026-10-06 15:36', v:'v365', k:'fix', t:'Pongas telefone: mažesnis valdymo laukas be brūkšnio', f:'Valdymo laukas sumažintas (apie trečdalį ekrano, apačioje – patogu nykščiui), rankenėlės brūkšnys pašalintas.' },
   { d:'2026-10-06 15:34', v:'v364', k:'fix', t:'Pongas telefone: didelis valdymo laukas', f:'Telefone Pongo žaidimo laukas pakeltas į viršų, o valdymo laukas užima visą laisvą vietą po juo – pirštą vesti patogu per visą ekrano apačią.' },
