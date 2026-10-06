@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-DnbOmAktHK07ycRhDn1NxKBf/4q5mY4kyRFpF6xNfQA=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-C2C1CKj1yLhYUhEQ5xIkn3pr/Qmnil+2p6AvlAK8MAs=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19406,7 +19406,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v372';
+const APP_VER = 'v373';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -33684,24 +33684,91 @@ function cs3d(stage){
     else if(w==='glock' || w==='usp'){ box(0.15, 0.17, 0.5, w==='usp' ? blk : mtl, 0, 0, -0.08); box(0.13, 0.32, 0.16, blk, 0, -0.22, 0.08, -0.2); if(w==='usp') box(0.09, 0.09, 0.3, blk, 0, 0, -0.45); }
     else { box(0.035, 0.13, 0.6, lam('#d3d8de'), 0, 0, -0.32); box(0.09, 0.14, 0.3, blk, 0, -0.02, 0.12); }
     if(scale) g.scale.setScalar(scale); return g; };
-  // people: T – a balaclava, a dark jacket; CT – a helmet with goggles, a vest, a blue-grey uniform
   const blobT = (()=>{ const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(0,0,0,.45)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
-  const person = team=>{ const g = new THREE.Group(), T = team==='T', body = new THREE.Group(); body.scale.setScalar(0.82); g.add(body);
-    const pants = lam(T ? '#3f3b30' : '#2f3b4c'), top = lam(T ? '#5b4a33' : '#3c4d63'), vest = lam(T ? '#4b3d28' : '#1c2433'), skin = lam('#d4a27c'), headM = lam(T ? '#1a1a1a' : '#d4a27c'), boot = lam('#151515'), glove = lam('#1d1d1d');
-    const part = (sx, sy, sz, m, x, y, z, parent)=>{ const b = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), m); b.position.set(x, y, z); (parent||body).add(b); return b; };
+  // people: CT – a soldier in tan gear, a black SWAT officer, a police officer in a cap;
+  // T – five different fighters (a pakol and a long shirt, a balaclava and jeans, a scarf and a striped jumper,
+  // desert camo, a white robe with a red-and-white headscarf). Which one – from the player's id, the same on every computer.
+  const ptex = (draw, s=64)=>{ const c = document.createElement('canvas'); c.width = c.height = s; const x = c.getContext('2d'); draw(x, s); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; };
+  const PT = {
+    cloth:ptex((x, s)=>{ x.fillStyle = '#fff'; x.fillRect(0, 0, s, s); for(let i=0;i<700;i++){ const v = 215 + Math.floor(rnd()*40); x.fillStyle = `rgb(${v},${v},${v})`; x.fillRect(rnd()*s, rnd()*s, 1 + rnd()*2, 1); } x.fillStyle = 'rgba(0,0,0,.08)'; for(let i=0;i<s;i+=4) x.fillRect(0, i, s, 1); }),
+    jeans:ptex((x, s)=>{ x.fillStyle = '#4a6a9a'; x.fillRect(0, 0, s, s); for(let i=0;i<900;i++){ x.fillStyle = rnd() < 0.5 ? 'rgba(255,255,255,.12)' : 'rgba(0,0,30,.15)'; x.fillRect(rnd()*s, rnd()*s, 1, 2 + rnd()*3); } x.fillStyle = 'rgba(200,170,90,.6)'; x.fillRect(s*0.48, 0, 1, s); }),
+    stripes:ptex((x, s)=>{ for(let i=0;i<8;i++){ x.fillStyle = i % 2 ? '#f2f0ec' : '#c8202a'; x.fillRect(0, i*s/8, s, s/8); } }),
+    camo:ptex((x, s)=>{ x.fillStyle = '#c9b48c'; x.fillRect(0, 0, s, s); [['#a8916a', 14], ['#8a7552', 10], ['#e0cfa8', 8]].forEach(([c, n])=>{ x.fillStyle = c; for(let i=0;i<n;i++){ x.beginPath(); x.ellipse(rnd()*s, rnd()*s, 4 + rnd()*8, 2 + rnd()*5, rnd()*3, 0, 7); x.fill(); } }); }),
+    shemaghR:ptex((x, s)=>{ x.fillStyle = '#f4f1ea'; x.fillRect(0, 0, s, s); x.fillStyle = '#c22a2a'; for(let i=0;i<s;i+=8){ x.fillRect(i, 0, 3, s); x.fillRect(0, i, s, 3); } }),
+    shemaghG:ptex((x, s)=>{ x.fillStyle = '#e8e6df'; x.fillRect(0, 0, s, s); x.fillStyle = '#6d6a63'; for(let i=0;i<s;i+=8){ x.fillRect(i, 0, 2, s); x.fillRect(0, i, s, 2); } })
+  };
+  const fab = (c, map)=>new THREE.MeshLambertMaterial({ color:c, map:map===undefined ? PT.cloth : map });
+  const CS_LOOK = {
+    CT:[
+      { top:'#b9ab8a', pants:'#b0a07e', vest:'#857553', helm:'#93845f', boots:'#9a845e', glove:'#7d6e50', pads:'#857654', goggles:true, pouches:true },
+      { top:'#2a2c2f', pants:'#28292c', vest:'#1c1d20', helm:'#141517', boots:'#111', glove:'#151515', pads:'#202124', visor:true, pouches:true, bulky:true },
+      { top:'#3d413f', pants:'#393c3b', belt:'#141414', cap:true, boots:'#0e0e0e', glove:null, badge:true, fat:true } ],
+    T:[
+      { top:'#cdb994', long:'#cdb994', pants:'#bfae88', vest:'#5b6a3a', pakol:true, beard:'#3a2a1c', feet:'sandal' },
+      { top:'#5a6544', pants:'jeans', mask:'#151515', feet:'#f2f2f2' },
+      { top:'stripes', pants:'jeans', scarf:'shemaghG', feet:'#5a3a22' },
+      { top:'#a3895c', pants:'camo', mask:'#3e4734', feet:'#b59a6c' },
+      { top:'#ecebe6', long:'#ecebe6', pants:'#8c8a86', vest:'#22252b', shemagh:true, beard:'#8a8580', feet:'sandal' } ]
+  };
+  const CS_PGUN = 1.75;
+  const person = (team, id)=>{
+    const looks = CS_LOOK[team], h = [...String(id||'')].reduce((a, ch)=>(a*31 + ch.charCodeAt(0)) >>> 0, 7), L = looks[h % looks.length];
+    const g = new THREE.Group(), body = new THREE.Group(); body.scale.setScalar(0.82); g.add(body);
+    const M = c=>c==='jeans' ? fab('#ffffff', PT.jeans) : c==='stripes' ? fab('#ffffff', PT.stripes) : c==='camo' ? fab('#ffffff', PT.camo) : fab(c);
+    const skin = lam('#c8956c'), dark = lam('#141414');
+    const add = (geo, m, x, y, z, parent, rot)=>{ const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); if(rot) o.rotation.set(rot[0], rot[1], rot[2]); (parent||body).add(o); return o; };
+    const box = (sx, sy, sz, m, x, y, z, p, r)=>add(new THREE.BoxGeometry(sx, sy, sz), m, x, y, z, p, r);
+    const cyl = (r0, r1, hh, m, x, y, z, p, sx)=>{ const o = add(new THREE.CylinderGeometry(r0, r1, hh, 10), m, x, y, z, p); if(sx) o.scale.x = sx; return o; };
+    const ball = (r, m, x, y, z, p, sc)=>{ const o = add(new THREE.SphereGeometry(r, 12, 9), m, x, y, z, p); if(sc) o.scale.set(...sc); return o; };
+    const limb = (A, B, r, m, p)=>{ const a = new THREE.Vector3(...A), b = new THREE.Vector3(...B), o = new THREE.Mesh(new THREE.CylinderGeometry(r, r*0.85, a.distanceTo(b), 8), m);
+      o.position.copy(a).add(b).multiplyScalar(0.5); o.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize()); p.add(o); return o; };
+    const topM = M(L.top), pantsM = M(L.pants), fat = L.fat ? 1.12 : 1;
+    // legs
     const hip = new THREE.Group(); hip.position.y = 3.3; body.add(hip);
     const legL = new THREE.Group(), legR = new THREE.Group(); legL.position.set(0, 0, -0.5); legR.position.set(0, 0, 0.5); hip.add(legL, legR);
-    [legL, legR].forEach(l=>{ part(0.95, 1.7, 0.9, pants, 0, -0.85, 0, l); part(0.85, 1.6, 0.85, pants, 0, -2.4, 0, l); part(1.25, 0.45, 0.95, boot, 0.17, -3.05, 0, l); });
+    [legL, legR].forEach(l=>{
+      cyl(0.52*fat, 0.44, 1.75, pantsM, 0, -0.85, 0, l); cyl(0.43, 0.34, 1.6, pantsM, 0, -2.4, 0, l);
+      if(L.pads) box(0.28, 0.6, 0.55, fab(L.pads), 0.36, -1.7, 0, l);
+      if(L.pouches && l===legR) box(0.35, 0.55, 0.3, fab(L.vest), 0, -0.9, 0.48, l);
+      if(L.feet==='sandal'){ box(1.0, 0.12, 0.5, lam('#4a3826'), 0.15, -3.22, 0, l); box(0.8, 0.22, 0.42, skin, 0.15, -3.05, 0, l); }
+      else box(1.15, 0.45, 0.6, L.boots ? lam(L.boots) : lam(L.feet || '#222'), 0.18, -3.05, 0, l); });
+    // body
     const torso = new THREE.Group(); torso.position.y = 3.3; body.add(torso);
-    part(1.3, 2.9, 2.1, top, 0, 1.45, 0, torso); part(1.55, 2.0, 2.25, vest, 0.02, 1.6, 0, torso); part(1.2, 0.35, 2.15, T ? lam('#2a241a') : lam('#151b26'), 0, 0.15, 0, torso);
-    part(0.5, 0.35, 0.6, skin, 0, 3.05, 0, torso); const head = part(1.25, 1.35, 1.2, headM, 0, 3.85, 0, torso);
-    if(T){ part(1.27, 0.3, 0.95, skin, 0.03, 4.0, 0, torso); part(0.2, 0.18, 0.8, lam('#111'), 0.66, 4.0, 0, torso); }
-    else { part(1.5, 0.62, 1.45, lam('#283445'), 0, 4.6, 0, torso); part(0.22, 0.32, 1.05, lam('#0d0d0d'), 0.66, 4.05, 0, torso); part(0.15, 0.2, 0.7, lam('#c48f6d'), 0.66, 3.55, 0, torso); }
-    const arms = new THREE.Group(); arms.position.set(0.25, 2.55, 0); torso.add(arms);
-    part(1.9, 0.6, 0.6, top, 0.9, -0.1, 0.95, arms); part(1.9, 0.6, 0.6, top, 0.9, -0.1, -0.75, arms); part(0.45, 0.5, 0.5, glove, 1.95, -0.1, 0.95, arms); part(0.45, 0.5, 0.5, glove, 1.95, -0.1, -0.75, arms);
-    const gun = gunModel(CS_LOAD[team][1], 4.2); gun.rotation.y = -Math.PI/2; gun.position.set(1.9, 0.15, 0.25); arms.add(gun);
-    const sh = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 4.2), new THREE.MeshBasicMaterial({ map:blobT, transparent:true, depthWrite:false })); sh.rotation.x = -Math.PI/2; scene.add(sh);
-    scene.add(g); return { g, body, legL, legR, hip, torso, arms, gun, head, sh, team, w:CS_LOAD[team][1] }; };
+    cyl(0.95*fat, 0.9*fat, 0.55, pantsM, 0, 0.15, 0, torso, 0.68);
+    cyl((L.bulky ? 1.22 : 1.12)*fat, 0.98*fat*(L.fat ? 1.15 : 1), 2.6, topM, 0, 1.55, 0, torso, L.fat ? 0.82 : 0.62);
+    if(L.long){ cyl(1.02, 1.4, 3.0, M(L.long), 0, -0.9, 0, torso, 0.72); }                                   // a long shirt / a robe
+    if(L.vest){ cyl(1.2*fat, 1.06*fat, 1.9, fab(L.vest), 0.02, 1.75, 0, torso, 0.7);
+      if(L.pouches) for(const z of [-0.6, -0.2, 0.2, 0.6]) box(0.3, 0.55, 0.32, fab(L.vest), 0.78, 1.25, z, torso);
+      else { box(0.12, 0.45, 0.5, fab(L.vest), 0.76, 1.3, -0.45, torso); box(0.12, 0.45, 0.5, fab(L.vest), 0.76, 1.3, 0.45, torso); } }
+    if(L.belt){ cyl(1.0*fat, 1.0*fat, 0.3, lam(L.belt), 0, 0.45, 0, torso, 0.82); box(0.3, 0.55, 0.3, dark, 0.2, 0.25, 1.05, torso); box(0.25, 0.35, 0.25, dark, 0.55, 0.35, -0.95, torso); box(0.06, 0.22, 0.18, lam('#c9a43a'), 0.55, 2.35, -0.45, torso); }
+    if(L.badge) box(0.12, 0.35, 0.3, lam('#d0b04a'), 0.55, 2.55, 1.18, torso, [0, 0, 0]);
+    cyl(0.32, 0.36, 0.45, skin, 0, 3.0, 0, torso);
+    // the head
+    const headM = L.mask ? lam(L.mask) : L.scarf ? fab('#ffffff', PT[L.scarf]) : skin;
+    const head = ball(0.62, headM, 0.02, 3.62, 0, torso, [0.95, 1.1, 0.9]);
+    const eye = L.mask || L.scarf ? skin : dark;
+    if(L.mask || L.scarf) box(0.12, 0.22, 0.75, eye, 0.55, 3.72, 0, torso);                                   // the slit for the eyes
+    box(0.06, 0.08, 0.13, dark, 0.6, 3.72, -0.2, torso); box(0.06, 0.08, 0.13, dark, 0.6, 3.72, 0.2, torso);
+    if(!L.mask && !L.scarf){ box(0.16, 0.2, 0.14, skin, 0.66, 3.55, 0, torso); }
+    if(L.beard){ const bm = lam(L.beard); box(0.42, 0.6, 0.85, bm, 0.38, 3.2, 0, torso); box(0.12, 0.12, 0.5, bm, 0.58, 3.45, 0, torso); }
+    if(L.helm){ const hm = lam(L.helm); add(new THREE.SphereGeometry(0.74, 14, 8, 0, Math.PI*2, 0, Math.PI*0.55), hm, 0, 3.72, 0, torso); box(0.35, 0.22, 0.3, hm, 0.55, 4.25, 0, torso);
+      if(L.goggles){ box(0.18, 0.24, 0.9, dark, 0.62, 3.78, 0, torso); box(0.05, 0.16, 0.36, lam('#c96b1e'), 0.71, 3.78, -0.2, torso); box(0.05, 0.16, 0.36, lam('#c96b1e'), 0.71, 3.78, 0.2, torso); }
+      if(L.visor){ const v = new THREE.MeshLambertMaterial({ color:'#0b0c0e', transparent:true, opacity:0.85 }); box(0.12, 0.62, 1.1, v, 0.72, 3.62, 0, torso); } }
+    if(L.cap){ const cm = lam('#222426'); cyl(0.66, 0.6, 0.32, cm, 0.02, 4.12, 0, torso); cyl(0.78, 0.72, 0.18, cm, 0.08, 4.34, 0, torso, 1.05); box(0.5, 0.06, 0.95, lam('#0a0a0a'), 0.62, 3.98, 0, torso, [0, 0, -0.25]); box(0.05, 0.16, 0.14, lam('#c9a43a'), 0.7, 4.15, 0, torso); }
+    if(L.pakol){ const pm = fab('#d8ccb8'); cyl(0.72, 0.7, 0.22, pm, 0, 4.18, 0, torso); add(new THREE.TorusGeometry(0.68, 0.14, 6, 14), pm, 0, 4.08, 0, torso, [Math.PI/2, 0, 0]); }
+    if(L.shemagh){ const sm = fab('#ffffff', PT.shemaghR); ball(0.72, sm, -0.05, 3.72, 0, torso, [0.95, 1.05, 1]); box(1.0, 1.6, 1.25, sm, -0.4, 3.1, 0, torso); add(new THREE.TorusGeometry(0.6, 0.08, 6, 14), dark, 0, 4.12, 0, torso, [Math.PI/2, 0, 0]);
+      box(0.1, 0.5, 0.95, skin, 0.62, 3.55, 0, torso); box(0.06, 0.08, 0.13, dark, 0.66, 3.72, -0.2, torso); box(0.06, 0.08, 0.13, dark, 0.66, 3.72, 0.2, torso); }
+    if(L.scarf) box(0.3, 0.5, 1.05, fab('#ffffff', PT[L.scarf]), 0.35, 3.1, 0, torso);
+    // the arms hold the gun
+    const arms = new THREE.Group(); torso.add(arms);
+    const sleeve = L.vest && !L.pouches && !L.long ? topM : topM, hand = L.glove ? lam(L.glove) : skin, sh = L.bulky ? 0.5 : 0.42;
+    ball(sh, L.bulky ? fab(L.vest) : sleeve, 0, 2.55, 1.15*fat, arms); ball(sh, L.bulky ? fab(L.vest) : sleeve, 0, 2.55, -1.15*fat, arms);
+    limb([0, 2.5, 1.15*fat], [0.55, 1.55, 1.05], 0.34, sleeve, arms); limb([0.55, 1.55, 1.05], [1.55, 1.72, 0.42], 0.3, sleeve, arms); ball(0.24, hand, 1.62, 1.75, 0.38, arms);
+    limb([0, 2.5, -1.15*fat], [1.2, 1.5, -0.75], 0.34, sleeve, arms); limb([1.2, 1.5, -0.75], [2.85, 1.98, 0.28], 0.3, sleeve, arms); ball(0.24, hand, 2.9, 2.0, 0.3, arms);
+    if(L.badge) box(0.4, 0.45, 0.06, lam('#c9a43a'), 0.25, 2.1, 1.28, arms);                                 // the shoulder patch
+    const gun = gunModel(CS_LOAD[team][1], CS_PGUN); gun.rotation.y = -Math.PI/2; gun.position.set(1.6 + 0.25*CS_PGUN, 1.75 + 0.22*CS_PGUN, 0.35); arms.add(gun);
+    const shd = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 4.2), new THREE.MeshBasicMaterial({ map:blobT, transparent:true, depthWrite:false })); shd.rotation.x = -Math.PI/2; scene.add(shd);
+    scene.add(g); return { g, body, legL, legR, hip, torso, arms, gun, head, sh:shd, team, w:CS_LOAD[team][1] }; };
   const label = (text, col)=>{ const c = document.createElement('canvas'); c.width = 256; c.height = 64; const x = c.getContext('2d'); x.font = 'bold 28px Verdana, sans-serif'; x.textAlign = 'center'; x.lineWidth = 5; x.strokeStyle = 'rgba(0,0,0,.7)'; x.strokeText(text, 128, 42); x.fillStyle = col; x.fillText(text, 128, 42);
     const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:new THREE.CanvasTexture(c), depthTest:false, transparent:true })); s.scale.set(8, 2, 1); scene.add(s); return s; };
   // the gun in the hands, with gloved hands and sleeves
@@ -33732,8 +33799,8 @@ function cs3d(stage){
       Object.assign(gl.style, { left:(r.left - sr.left)+'px', top:(r.top - sr.top)+'px', width:w+'px', height:h+'px' });
       const now = performance.now()/1000;
       ents.forEach(e=>{ let o = meshes.get(e.id);
-        if(!o || o.team!==e.team){ if(o){ scene.remove(o.g); scene.remove(o.sh); if(o.l) scene.remove(o.l); } o = person(e.team); o.l = e.showName ? label(e.name, CS_TEAM[e.team].color) : null; meshes.set(e.id, o); }
-        if(o.w!==e.w){ const pos = o.gun.position.clone(); o.arms.remove(o.gun); const ng = gunModel(e.w, 4.2); ng.rotation.y = -Math.PI/2; ng.position.copy(pos); o.arms.add(ng); o.gun = ng; o.w = e.w; }
+        if(!o || o.team!==e.team){ if(o){ scene.remove(o.g); scene.remove(o.sh); if(o.l) scene.remove(o.l); } o = person(e.team, e.id); o.l = e.showName ? label(e.name, CS_TEAM[e.team].color) : null; meshes.set(e.id, o); }
+        if(o.w!==e.w){ const pos = o.gun.position.clone(); o.arms.remove(o.gun); const ng = gunModel(e.w, CS_PGUN); ng.rotation.y = -Math.PI/2; ng.position.copy(pos); o.arms.add(ng); o.gun = ng; o.w = e.w; }
         const vis = e!==view.who; o.g.visible = vis; o.sh.visible = vis && e.alive;
         o.g.position.set(e.x, e.y, e.z); o.g.rotation.y = -e.yaw; o.sh.position.set(e.x, csSupport(e.x, e.z) + 0.05, e.z);
         const sw = e.alive && e.mv && e.ground!==false ? Math.sin(now*(e.loud ? 10 : 6) + (e.id.length||1))*(e.loud ? 0.6 : 0.35) : 0;
@@ -38970,6 +39037,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 16:48', v:'v373', k:'new', t:'Šaudyklė: nauji žmogeliukai', f:'Kontrteroristai – trys išvaizdos: kareivis smėlio spalvos apranga su šalmu, akiniais ir liemene su dėklais, juodas specialiųjų pajėgų pareigūnas su skydeliu prieš veidą ir antkeliais, policininkas su kepure, ženklu ir diržu su dėklais. Teroristai – penkios: su pakolio kepure, barzda, ilgais marškiniais ir žalia liemene; su juoda kauke, žalia striuke ir džinsais; su skarele ant veido ir dryžuotu megztiniu; su kauke ir dykumos margumo kelnėmis; su raudonai balta skara ir baltu drabužiu. Kiekvienas žaidėjas visada atrodo vienodai visuose kompiuteriuose.' },
   { d:'2026-10-06 16:45', v:'v372', k:'fix', t:'iPhone: meniu juosta nebepakyla atidarius chatą', f:'Atidarius chatą ar langą telefone apatinė meniu juosta likdavo pakilusi nuo ekrano krašto. Puslapis po chatu ir langais dabar laikomas vietoje kitaip – juosta lieka apačioje, o sąrašai viduje slenka kaip anksčiau.' },
   { d:'2026-10-06 16:42', v:'v371', k:'new', t:'Šaudyklė – kaip Counter-Strike 1.6', f:'Judėjimas kaip CS 1.6: įsibėgėjimas ir trintis, šuolis (Tarpas), pritūpimas ir šuolis pritūpus ant didelių dėžių, laipteliai, lėtesnis ėjimas nusileidus, kritimo žala. Ginklai su originalo parametrais: AK-47, M4A1, Glock-18, USP ir peilis (dešinys pelės – dūris); žala pagal kūno vietą (galva ×4), šarvai su šalmu, atatranka purškiant ir sklaida bėgant ar ore. CS 1.6 stiliaus ekranas: gyvybės, šarvai, laikas, šoviniai, radaras, žudymų sąrašas, Tab – rezultatų lentelė, žalias kintantis taikiklis, iš kur šauna. Grafika: detalesnės tekstūros, šešėliai ant žemės, dangus su debesimis, kulkų žymės sienose, dulkės ir kraujas, ugnis iš vamzdžio. Žemėlapiai pagal klasikinių (Dust II, Dust, Inferno, Aztec, Nuke, Office, Italy, Train, Mirage, Cobble) išplanavimą su bombų vietomis A ir B, plius 10 sugeneruotų. Botai eina į bombų vietas, šaudo serijomis, žuvus galima stebėti komandos draugus.' },
   { d:'2026-10-06 16:10', v:'v370', k:'new', t:'Šaudyklė: 20 žemėlapių, CT prieš T, ginklai, sėlinimas; kvietimai neprisijungusiems', f:'Šaudyklėje – 20 žemėlapių (Dust, Dust II, Aztec, Inferno, Nuke, Office…) skirtingais stiliais; prieš žaidimą pasirenki žemėlapį (ar atsitiktinį), komandą ir dydį. Kontrteroristai su šalmais ir liemenėmis prieš teroristus su balaklavomis; einant juda kojos, pritūpia. Ginklai: AK-47 / M4A1, Glock / USP, peilis (1/2/3 arba pelės ratukas), šūvių garsai. Sėlinimas: Ctrl / C – pritūpti (mažesnis ir taiklesnis), Shift – eiti tyliai; botai girdi tik bėgančius ir šaudančius. Žaidimuose keliese galima pakviesti ir neprisijungusį kolegą – jis gauna pranešimą „… kviečia pažaisti“, o atsidaręs programą gali prisijungti (kvietimas kartojamas 10 min.).' },
