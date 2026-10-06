@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-5xx8PAVd8ffI0x540SbwYUI82nUiU3mzs/i31wBVi3s=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-mMOEUB4gZCbkK0Bp1MnIrt6PriIefQr/jinaToBDyZ8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -44,6 +44,7 @@ try{ var u = JSON.parse(localStorage.getItem('es-ui')||'null') || {};
 @font-face{font-family:'Barlow';src:url('fonts/Barlow-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap;}
 @font-face{font-family:'Barlow';src:url('fonts/Barlow-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
 @font-face{font-family:'Barlow';src:url('fonts/Barlow-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap;}
+:root{--nav-pb:max(4px, calc(env(safe-area-inset-bottom,0px) - 22px));}
 :root{
   color-scheme:dark;
   /* eventsolutions.lt: near-black, flat dark blocks, square corners,
@@ -159,7 +160,7 @@ body.rail-fav #tabNav .rail-btn[data-tab]:not(.fav):not(.active):not(.rail-profi
   #tabNav .rail-btn[data-tab="home"].active svg{box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent), 0 3px 12px rgb(0 0 0 / .3);}
   #tabNav .rail-btn[data-tab="home"]::before{display:none !important;}
   .nm-panel{left:0;right:0;top:auto;bottom:0;width:auto;max-width:none;max-height:82vh;border-right:0;border-top:1px solid var(--border);border-radius:16px 16px 0 0;
-    padding-bottom:calc(84px + env(safe-area-inset-bottom,0px));animation:nmUp .18s ease-out;}
+    padding-bottom:calc(84px + var(--nav-pb));animation:nmUp .18s ease-out;}
   @keyframes nmUp{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
   .nav-menu{z-index:79;}
   .nm-go{padding:11px 10px;font-size:15px;}
@@ -566,7 +567,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .more-btn{display:none;}
 .topbar-more{display:contents;}
 @media(max-width:640px){
-  main{padding:12px 12px calc(90px + env(safe-area-inset-bottom,0px));}
+  main{padding:12px 12px calc(90px + var(--nav-pb));}
   header.pageheader{padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top,0px));}
   .crumbs{display:none;}
   h1.page-title{font-size:19px;}
@@ -584,7 +585,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
   /* navigation moves to a bottom bar, like a phone app */
   .shell{flex-direction:column;}
   aside.rail{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;height:auto;flex-direction:row;
-    padding:4px 2px calc(4px + env(safe-area-inset-bottom,0px));border-right:0;border-top:1px solid var(--border);z-index:80;}
+    padding:4px 2px var(--nav-pb);border-right:0;border-top:1px solid var(--border);z-index:80;}
   .rail-logo{display:none;}
   nav.rail-nav{flex-direction:row;justify-content:space-around;gap:0;}
   .rail-btn{flex:1 1 0;min-width:0;width:auto;height:52px;flex-direction:column-reverse;gap:2px;border-radius:10px;padding:0 1px;}
@@ -594,7 +595,7 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
   aside.rail{overflow:hidden;}
   .rail-btn.active{background:transparent;color:var(--accent);}
   .rail-btn:hover{background:transparent;}
-  #toast{bottom:calc(76px + env(safe-area-inset-bottom,0px));}
+  #toast{bottom:calc(76px + var(--nav-pb));}
   .veh-card{flex-direction:column;}
   .cargo-list{max-height:340px;}
   .viz-canvas{height:300px;}
@@ -919,7 +920,7 @@ button.btn.primary:hover{filter:brightness(1.08);}
 .rt-dt input[type=date]{flex:1 1 135px;} .rt-dt input[type=time]{flex:1 1 90px;}
 .rt-place{gap:4px;}
 .rt-flag{color:var(--danger);font-size:12px;font-weight:700;}
-.ev-more-sheet{position:fixed;left:8px;right:8px;bottom:calc(66px + env(safe-area-inset-bottom,0px));z-index:95;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+.ev-more-sheet{position:fixed;left:8px;right:8px;bottom:calc(66px + var(--nav-pb));z-index:95;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
   padding:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;box-shadow:0 -10px 34px rgba(0,0,0,.6);}
 .ev-more-sheet button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;background:var(--panel-2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font:inherit;font-size:12px;}
 .ev-more-sheet svg{width:24px;height:24px;}
@@ -1410,7 +1411,7 @@ td.xg-copied{animation:xgcopy .9s ease-out;}
 @media (hover:none){ .xg-daypop .dp-grid button{padding:10px 0;} }
 
 /* ---------- install as an app ---------- */
-.pwa-bar{position:fixed;left:10px;right:10px;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;align-items:center;gap:10px;
+.pwa-bar{position:fixed;left:10px;right:10px;bottom:calc(76px + var(--nav-pb));z-index:900;display:flex;align-items:center;gap:10px;
   background:var(--panel);border:1px solid var(--border-2);border-left:4px solid #F35E7D;border-radius:var(--radius);padding:10px 10px 10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.5);}
 .pwa-bar-ico{width:40px;height:40px;flex:0 0 40px;border-radius:9px;background:#111 url("icons/icon-192.png") center/cover no-repeat;}
 .pwa-bar-txt{flex:1;min-width:0;display:flex;flex-direction:column;font-size:12.5px;color:var(--text-dim);}
@@ -1745,7 +1746,7 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
   .chat-shell.thread-open .chat-main{display:flex;}
   .chat-back{display:inline-flex !important;}
   .chat-bubble-wrap{max-width:84%;}
-  .chat-toast{left:10px;right:10px;bottom:calc(80px + env(safe-area-inset-bottom,0px));max-width:none;}
+  .chat-toast{left:10px;right:10px;bottom:calc(80px + var(--nav-pb));max-width:none;}
   .tm-list{grid-template-columns:1fr;}
   .tm-head-chat{height:34px;}
 }
@@ -2611,7 +2612,7 @@ tr.xg-flash td{animation:xgflash 1.8s ease;}
 @media (min-width:761px) and (max-height:760px){ aside.rail{gap:2px;} .rail-btn{height:31px;} nav.rail-nav{gap:1px;} .rail-logo{margin-bottom:4px;} }
 @media (min-width:761px) and (max-height:700px){ aside.rail{overflow-y:auto;scrollbar-width:none;} aside.rail::-webkit-scrollbar{display:none;} .rail-btn{height:29px;} }
 main.fit-screen{padding-bottom:12px;}
-@media (max-width:760px){ main.fit-screen{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px));} }
+@media (max-width:760px){ main.fit-screen{padding-bottom:calc(76px + var(--nav-pb));} }
 /* sticky parts of pages stop right below the page header (its height: --head-h) */
 .of-bar{top:var(--head-h,0px) !important;}
 @media (min-width:1100px){
@@ -2840,7 +2841,7 @@ main.buy-full{padding:0;max-width:none;}
 .bq-acts{display:flex;gap:6px;flex-wrap:wrap;}
 .bq-acts .btn .sl{width:14px;height:14px;vertical-align:-2px;}
 @media (max-width:900px){
-  .pbw{height:calc(100vh - var(--head-h,56px) - 76px - env(safe-area-inset-bottom,0px));}
+  .pbw{height:calc(100vh - var(--head-h,56px) - 76px - var(--nav-pb));}
   .pbw>.pb{height:auto;}
   .pb-tabs{padding:8px 10px 4px;}
   .bq-cols{grid-template-columns:1fr;}
@@ -2979,7 +2980,7 @@ main.buy-full{padding:0;max-width:none;}
 .pb-help td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
 .pb-help code{font-size:12.5px;}
 @media (max-width:900px){
-  .pb{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);padding:0;height:calc(100vh - var(--head-h,56px) - 76px - env(safe-area-inset-bottom,0px));}
+  .pb{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);padding:0;height:calc(100vh - var(--head-h,56px) - 76px - var(--nav-pb));}
   .pb-side{flex-direction:row;align-items:center;padding:8px;gap:6px;overflow-x:auto;scrollbar-width:none;}
   .pb-new{height:38px;margin:0;padding:0 12px;border-radius:999px;flex:none;}
   .pb-new span,.pb-imp span{display:none;}
@@ -3777,7 +3778,7 @@ input.ltd-in{cursor:pointer;font-variant-numeric:tabular-nums;} input.ltd-in[dat
 .ev-sec input.ltd-in{width:100%;min-width:0;} .rt-dt input.ltd-in[data-ltd=date]{flex:1 1 135px;} .rt-dt input.ltd-in[data-ltd=time]{flex:1 1 90px;} .gp .gp-bar input.ltd-in{min-height:32px;}
 .super-card{border:1.5px solid #A895E0;background:linear-gradient(160deg,rgb(168 149 224 / .14),transparent 60%);}
 .super-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:4500;display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:12px;background:#2a1830;border:1.5px solid #A895E0;color:#fff;box-shadow:0 10px 30px rgb(0 0 0 / .45);font-size:13px;}
-@media (max-width:760px){ .super-bar{bottom:calc(76px + env(safe-area-inset-bottom,0px));} }
+@media (max-width:760px){ .super-bar{bottom:calc(76px + var(--nav-pb));} }
 .inv-row{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--panel-2);color:var(--text);font:inherit;text-align:left;cursor:pointer;}
 .inv-row:hover{border-color:var(--accent);} .inv-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;} .inv-main b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .inv-main small{color:var(--text-dim);font-size:12px;}
 .inv-main .inv-note{color:var(--text);opacity:.85;} .inv-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto;} .inv-side b{font-size:14px;}
@@ -4562,7 +4563,7 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 .app-upd-ic{flex:0 0 38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--accent) 16%, transparent);color:var(--accent);} .app-upd-ic svg.sl{width:20px;height:20px;}
 .app-upd-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:13.5px;} .app-upd-t small{color:var(--text-dim);font-size:12px;}
 .app-upd-b{display:flex;flex-direction:column;gap:6px;} .app-upd-b .btn{text-align:center;text-decoration:none;justify-content:center;}
-@media (max-width:640px){ .app-upd{bottom:calc(76px + env(safe-area-inset-bottom, 0px));} }
+@media (max-width:640px){ .app-upd{bottom:calc(76px + var(--nav-pb));} }
 .veh-docs{flex:1 1 100%;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;} .veh-docs:empty{display:none;}
 .veh-docs .doc-card{background:transparent;}
 .veh-docs-help{margin-top:10px;font-size:13px;} .veh-docs-help summary{cursor:pointer;color:var(--text-dim);}
@@ -4923,7 +4924,7 @@ main.has-stickies{position:relative;}
 @media (max-width:760px){ .inv-tw{max-height:calc(100vh - var(--head-h,56px) - 200px);} }
 @media (max-width:760px){ #ntStickies{display:none !important;} }   /* phones: the notes open from „Notes“ in the bottom bar */
 /* phone „Notes“: the notes over the blurred page, above everything but the bottom bar */
-.nt-ov{position:fixed;left:0;right:0;top:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:900;overflow-y:auto;overscroll-behavior:contain;
+.nt-ov{position:fixed;left:0;right:0;top:0;bottom:calc(64px + var(--nav-pb));z-index:900;overflow-y:auto;overscroll-behavior:contain;
   background:rgb(0 0 0 / .38);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);animation:fadeIn .18s ease-out;}
 .nt-ov.out{opacity:0;transition:opacity .18s;}
 :root[data-theme="light"] .nt-ov{background:rgb(255 255 255 / .35);}
@@ -19123,7 +19124,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v336';
+const APP_VER = 'v337';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37196,6 +37197,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-06 10:51', v:'v337', k:'fix', t:'Telefonas: apatinis meniu be tuščio tarpo', f:'Apatinis meniu telefone (iPhone) nebepalieka didelio tuščio tarpo po mygtukais – lieka tik tiek vietos, kiek reikia iPhone brūkšniui apačioje. Pranešimai ir Notes langas prisitaiko prie naujo aukščio.' },
   { d:'2026-10-06 10:36', v:'v336', k:'fix', t:'Telefonai: langai nebelenda po būsenos juosta', f:'Patikrinti visi iššokantys langai telefone (su iPhone „sala“ / įpjova): įprasti langai, patvirtinimai, formos, automobilio kortelė (ir paslinkus – jos antraštė lieka matoma), „Dydis“, paieška, nuotraukų peržiūra, žaidimai, renginiai per visą ekraną, skambučio langas, balsavimo ekranas, automobilio QR puslapis. Nė vienas langas nebeprasideda po laikrodžiu / baterija – viršuje paliekamas saugus tarpas; apačioje – tarpas virš iPhone juostelės. Kompiuteryje niekas nepasikeitė.' },
   { d:'2026-10-06 10:10', v:'v335', k:'fix', t:'Telefonas: Notes langas žemiau', f:'Telefone (ypač iPhone) „Notes“ langas nebeprasideda po būsenos juosta (laikrodis, baterija) – naujo užrašo laukelis ir sąrašas pradedami žemiau, su tarpu nuo viršaus.' },
   { d:'2026-10-05 19:52', v:'v334', k:'chg', t:'Ikonos: visur Material Symbols (Outlined Fill)', f:'Patikrinti visi puslapiai, jų skiltys ir langai (kompiuteryje ir telefone): visos ikonos dabar iš „Outlined Fill – Material Symbols“ (Google, Apache 2.0). Pakeistos ne šio rinkinio ikonos: Raktai, Signalizacija, Skaičiuotuvas, Dydis, Notes (telefone), tepalo keitimas, profilaktika, QR kodas, kodo generavimas, Ofiso valymas, Bolt, Wolt, maistas, el. laiškas, žaidimų ikonos ir rezultatų lentelės medaliai, prisijungusių taškas; automobilio QR puslapyje – remontas, įspėjimas, kamera, galerija, sėkmė. Jaustukai palikti tik žmonių žinutėse (chato jaustukų pasirinkimas).' },
