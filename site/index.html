@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-kUpIF6oCSWBpl5NKZJP69yLx5p5EZH6nM7DjHerhEZQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-IJWs/XA1fLGCWoE8BXGAnjuYvbJPkvO86pEdgS8EPqY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19558,7 +19558,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v412';
+const APP_VER = 'v413';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26121,10 +26121,39 @@ function mailHtmlText(html){
 // dark theme: the letter's colours are turned over (white paper → dark, black text → light, as Gmail does);
 // pictures are turned back so they keep their real colours. „Originalios spalvos“ (⋯) shows it as sent.
 function mailDarkOn(){ return themeNow()!=='light' && !MAIL.origColors; }
+// a letter that is dark already (dark background, light text – designed so): it is shown as sent, not turned over
+function mlColorLum(c){
+  c = String(c||'').trim().toLowerCase(); if(!c || c==='transparent' || c==='none' || c==='inherit') return null;
+  const named = { black:'#000', white:'#fff', '#fff':'#fff' }; if(named[c]) c = named[c];
+  let r, g, b, m;
+  if((m = c.match(/^#([0-9a-f]{3})$/))){ [r,g,b] = m[1].split('').map(x=>parseInt(x+x,16)); }
+  else if((m = c.match(/^#([0-9a-f]{6})/))){ r = parseInt(m[1].slice(0,2),16); g = parseInt(m[1].slice(2,4),16); b = parseInt(m[1].slice(4,6),16); }
+  else if((m = c.match(/^rgba?\(\s*(\d+)[ ,]+(\d+)[ ,]+(\d+)(?:[ ,/]+([\d.]+))?/))){ if(m[4]!==undefined && +m[4] < 0.3) return null; r = +m[1]; g = +m[2]; b = +m[3]; }
+  else return null;
+  return (0.2126*r + 0.7152*g + 0.0722*b)/255;
+}
+function mlLooksDark(html){
+  try{
+    const doc = new DOMParser().parseFromString(String(html||'').slice(0, 400000), 'text/html');
+    const bgOf = el=>{ const s = el.getAttribute('style')||''; const m = s.match(/background(?:-color)?\s*:\s*([^;!]+)/i);
+      return el.getAttribute('bgcolor') || (m ? (m[1].match(/#[0-9a-f]{3,6}\b|rgba?\([^)]*\)|\b(?:black|white)\b/i)||[])[0] : null); };
+    // the page's own background (body / the outer tables), from <style> too
+    const css = [...doc.querySelectorAll('style')].map(s=>s.textContent).join(' ');
+    const bm = css.match(/body[^{]*\{[^}]*background(?:-color)?\s*:\s*([^;}!]+)/i);
+    const cands = [doc.body, ...doc.body.querySelectorAll('table,td,div,center,section')].slice(0, 60);
+    let lum = bm ? mlColorLum((bm[1].match(/#[0-9a-f]{3,6}\b|rgba?\([^)]*\)|\b(?:black|white)\b/i)||[])[0]) : null;
+    for(const el of cands){ if(lum!==null) break; const c = bgOf(el); if(c) lum = mlColorLum(c); }
+    if(lum!==null) return lum < 0.4;
+    // no background colour, but the text is written light (the background is a picture)
+    const light = (String(html).match(/(?:^|[;"'\s])color\s*:\s*(#fff\b|#ffffff|white|rgb\(\s*255\s*,\s*255\s*,\s*255)/gi)||[]).length;
+    const darkTxt = (String(html).match(/(?:^|[;"'\s])color\s*:\s*(#000\b|#000000|black|#111|#222|#333)/gi)||[]).length;
+    return light >= 3 && light > darkTxt*2;
+  }catch(e){ return false; }
+}
 function mailFrameDoc(html){
-  const dark = mailDarkOn();
+  const themeDark = mailDarkOn(), dark = themeDark && !mlLooksDark(html), asIs = themeDark && !dark;   // asIs: a dark letter on the dark page
   return `<!doctype html><html><head><meta charset="utf-8"><base target="_blank">
-    <style>body{margin:0;padding:12px;font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;color:#111;background:${dark ? 'transparent' : '#fff'};word-wrap:break-word;}img{max-width:100%;height:auto;}table{max-width:100%;}@media (min-width:640px){body{padding:6px 24px 16px 76px;}}
+    <style>body{margin:0;padding:12px;font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;color:${asIs ? '#e8e8e8' : '#111'};background:${themeDark ? 'transparent' : '#fff'};word-wrap:break-word;}img{max-width:100%;height:auto;}table{max-width:100%;}@media (min-width:640px){body{padding:6px 24px 16px 76px;}}
     ${dark ? `html{filter:invert(1) hue-rotate(180deg);background:transparent;color-scheme:light;}
       img,video,picture,canvas,iframe,svg image,[style*="background-image"],[background]{filter:invert(1) hue-rotate(180deg);}
       a{color:#0b57d0;}` : ''}</style></head><body>${html}</body></html>`;
@@ -40242,6 +40271,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 20:24', v:'v413', k:'fix', t:'Paštas: tamsūs laiškai rodomi teisingai', f:'Laiškas, kuris pats sukurtas tamsus (tamsus fonas, baltas tekstas), tamsiame režime nebeapverčiamas – rodomas toks, koks atsiųstas (anksčiau tekstas būdavo baltas ant šviesaus fono). Paprasti ir balti laiškai tamsiame režime tamsinami kaip anksčiau; ⋯ → „Originalios laiško spalvos“ – kaip atsiųsta.' },
   { d:'2026-10-07 20:23', v:'v412', k:'fix', t:'Paštas tikrinamas nuolat', f:'Kai atidarytas Paštas, nauji laiškai tikrinami kas 20 sekundžių ir atsiranda patys – nebereikia iš naujo įeiti į paštą. Kituose puslapiuose naujų laiškų skaičius atnaujinamas kas minutę.' },
   { d:'2026-10-07 20:22', v:'v411', k:'fix', t:'Paštas: atsidaro „Pagrindiniai“, skirtukuose – naujų laiškų skaičius', f:'Gautuosiuose pagal nutylėjimą atsidaro „Pagrindiniai“ (kaip Gmail), o ne „Darbas“ – todėl matosi ir laiškai, atėję į Gmail adresą. Ant kiekvieno skirtuko – neperskaitytų laiškų skaičius. „⟳ Atnaujinti“ iškart patikrina naujus laiškus.' },
   { d:'2026-10-07 20:12', v:'v410', k:'new', t:'Paštas per Gmail: du adresai ir du parašai', f:'Prijungus Gmail paštas veikia kaip Gmail: laiškai skaitomi iš Gmail (iš anksto paruošiama iki 400 naujausių – atsidaro iš karto), kairėje Gmail aplankai (Pažymėti žvaigždute, Svarbūs, Visi laiškai, Šlamštas…), viršuje skirtukai. Siunčiama iš dviejų adresų: atsakant laiškas automatiškai eina iš to adreso, kuriam jis buvo atsiųstas – į @eventsolutions.lt – iš darbo adreso su darbo parašu (su logotipu), į Gmail – iš Gmail su asmeniniu parašu. Rašant naują laišką – pasirinkimas „Nuo“. Nustatymuose (⚙️) – du parašai: darbo (automatinis iš profilio) ir asmeninis (vardas ir telefonas arba savas tekstas), ir kuris parašas kuriam adresui. Kol Gmail neprijungtas – „Gautuosiuose“ kvietimas jį prijungti. Reikia atnaujinti „mail“ funkciją (v16).' },
