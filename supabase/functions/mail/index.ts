@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 20;
+const VERSION = 21;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -321,9 +321,26 @@ async function folderPath(c: ImapFlow, folder: string): Promise<string> {
   if (!hit || hit.flags?.has("\\Noselect")) throw new UserError("Tokio aplanko nėra.");
   return hit.path;
 }
-async function folders(a: Account) {
+async function folders(a: Account, only = "all") {
   return await withImap(a, async (c) => {
     const list = (await c.list({ statusQuery: { messages: true, unseen: true } })) as unknown as Box[];
+    // only the work (or only the personal) letters shown: the counts are of those letters
+    if (only !== "all") {
+      const t0 = Date.now();
+      for (const b of list) {
+        if (b.flags?.has("\\Noselect") || b.flags?.has("\\NonExistent") || Date.now() - t0 > 20_000) continue;
+        const key = specialOf(b) || b.path;
+        try {
+          const lock = await c.getMailboxLock(b.path);
+          try {
+            const w = await workUids(c, key), keep = (u: number) => only === "work" ? w.has(u) : !w.has(u);
+            const unseen = (((await c.search({ seen: false }, { uid: true })) || []) as number[]).filter(keep).length;
+            const total = only === "work" ? w.size : Math.max(0, (b.status?.messages ?? 0) - w.size);
+            b.status = { messages: total, unseen };
+          } finally { lock.release(); }
+        } catch { /* a folder that cannot be opened keeps its own numbers */ }
+      }
+    }
     const p = [...pool.values()].find((x) => x.c === c); if (p) p.boxes = { at: Date.now(), list };
     const order = ["starred", "important", "sent", "drafts", "all", "junk", "trash", "archive"];
     // two folders of one kind (e.g. „Junk“ and „Spam“): only the one the app opens is shown as that kind,
@@ -559,9 +576,7 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
       present = ((await c.search({ all: true }, { uid: true })) || []) as number[];
       if (only !== "all") {
         // the work letters: to / copy (in Sent: from) …@eventsolutions.lt – asked from Gmail, not read one by one
-        const dom = (Deno.env.get("MAIL_WORK_DOMAIN") || "eventsolutions.lt").toLowerCase();
-        const q = folder === "sent" || folder === "drafts" ? { from: dom } : { or: [{ to: dom }, { cc: dom }] };
-        const work = new Set(((await c.search(q as never, { uid: true })) || []) as number[]);
+        const work = await workUids(c, folder);
         present = present.filter((u) => only === "work" ? work.has(u) : !work.has(u));
       }
       const now = await c.status(path, { highestModseq: true }).catch(() => null) as { highestModseq?: bigint } | null;
@@ -847,7 +862,13 @@ async function attachment(a: Account, folder: string, uid: number, part: string)
 
 // ---------- search ----------
 type SearchBody = { q?: string; from?: string; to?: string; subject?: string; since?: string; before?: string; unseen?: boolean; attachments?: boolean; folder?: string };
-async function search(a: Account, b: SearchBody) {
+// the work letters of the open folder (to / copy …@eventsolutions.lt; in Sent / Drafts: from)
+async function workUids(c: ImapFlow, folder: string): Promise<Set<number>> {
+  const dom = (Deno.env.get("MAIL_WORK_DOMAIN") || "eventsolutions.lt").toLowerCase();
+  const q = folder === "sent" || folder === "drafts" ? { from: dom } : { or: [{ to: dom }, { cc: dom }] };
+  return new Set(((await c.search(q as never, { uid: true })) || []) as number[]);
+}
+async function search(a: Account, b: SearchBody, only = "all") {
   const crit: Record<string, unknown> = {};
   const q = String(b.q ?? "").trim().slice(0, 200);
   if (q) crit.or = [{ from: q }, { to: q }, { subject: q }, { body: q }];
@@ -876,7 +897,8 @@ async function search(a: Account, b: SearchBody) {
     for (const f of folders) {
       const lock = await c.getMailboxLock(await folderPath(c, f));
       try {
-        const uids = ((await c.search(crit, { uid: true })) || []) as number[];
+        let uids = ((await c.search(crit, { uid: true })) || []) as number[];
+        if (only !== "all") { const w = await workUids(c, f); uids = uids.filter((u) => only === "work" ? w.has(u) : !w.has(u)); }
         total += uids.length;
         const last = uids.sort((x, y) => x - y).slice(-60);
         if (!last.length) continue;
@@ -1066,7 +1088,7 @@ async function send(me: Me, a: Account, b: SendBody) {
   }));
   if (atts.reduce((n, x) => n + x.content.length, 0) > MAX_SEND_BYTES) throw new UserError("Priedai per dideli (iki 15 MB).");
   // from which address: the work one (company mail server) or the personal Gmail (Gmail's own server)
-  const personal = b.from === "personal" && !!a.reader;
+  const personal = b.from === "personal" && !!a.reader && (await acctPref(me.id)) !== "work";
   const fromAcc: Account = personal ? a.reader! : a;
   const st = await settingsOf(me.id);
   // which signature: the event letter always the work one (b.sig); otherwise as set for that address
@@ -1364,7 +1386,7 @@ async function handle(me: Me, body: Record<string, unknown>) {
     }
     case "sync": {
       const st = await settingsOf(me.id);
-      return { connected: true, email: a0.email, reader: a0.reader?.email ?? null, autoOn: autoActive(st.auto), sig: st.sig !== false, ...(await syncFolder(me.id, a, folder)) };
+      return { connected: true, email: a0.email, reader: a0.reader?.email ?? null, only: a0.reader ? await acctPref(me.id) : "all", autoOn: autoActive(st.auto), sig: st.sig !== false, ...(await syncFolder(me.id, a, folder)) };
     }
     case "read": {
       needUid();
@@ -1374,7 +1396,7 @@ async function handle(me: Me, body: Record<string, unknown>) {
       return r;
     }
     case "folders":
-      return { connected: true, folders: await folders(a) };
+      return { connected: true, folders: await folders(a, a0.reader ? await acctPref(me.id) : "all") };
     case "flag": {
       needUid();
       const r = await star(a, folder, uid, body.flagged !== false);
@@ -1403,7 +1425,7 @@ async function handle(me: Me, body: Record<string, unknown>) {
       return r;
     }
     case "search":
-      return { connected: true, ...(await search(a, body as SearchBody)) };
+      return { connected: true, ...(await search(a, body as SearchBody, a0.reader ? await acctPref(me.id) : "all")) };
     case "send":
       return await send(me, a0, body as SendBody);
   }
