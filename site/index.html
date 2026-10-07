@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-VpBM/14hPuE6PaEXL4IWxfDuXUAbBQKjKt6Y12ON/3k=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-kUpIF6oCSWBpl5NKZJP69yLx5p5EZH6nM7DjHerhEZQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19558,7 +19558,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v411';
+const APP_VER = 'v412';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25842,6 +25842,10 @@ async function mailPoll(soft){
   if(soft && MAIL.polled && Date.now()-MAIL.polled < 30000) return;
   MAIL.polled = Date.now();
   if(!MAIL.timer) MAIL.timer = setInterval(()=>{ if(document.visibilityState==='visible') mailPoll(); }, 60000);
+  // the mail page open: new letters are checked every 20 s (whether or not the server checks every minute)
+  if(!MAIL.fastTimer) MAIL.fastTimer = setInterval(()=>{
+    if(document.visibilityState==='visible' && currentTab==='mail' && MAIL.idx!==false && !MAIL.results && (MAIL.data||{}).connected) mlSync(MAIL.folder==='inbox' ? 'inbox' : MAIL.folder, true);
+  }, 20000);
   // the letter list kept in the database: a quick count, no mail-server login
   if(MAIL.idx!==false){
     const st = await mlDbState('inbox');
@@ -25849,7 +25853,7 @@ async function mailPoll(soft){
       mlLive();
       const n = await mlDbUnseen(); mailSetUnseen(n!=null ? n : (st.unseen||0));
       // no minute-by-minute sync on the server (pg_cron): keep it fresh from here
-      if(!st.synced_at || Date.now() - Date.parse(st.synced_at) > 3*60000) mlSync('inbox');
+      if(!st.synced_at || Date.now() - Date.parse(st.synced_at) > 60000) mlSync('inbox');
       return;
     }
   }
@@ -40238,6 +40242,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 20:23', v:'v412', k:'fix', t:'Paštas tikrinamas nuolat', f:'Kai atidarytas Paštas, nauji laiškai tikrinami kas 20 sekundžių ir atsiranda patys – nebereikia iš naujo įeiti į paštą. Kituose puslapiuose naujų laiškų skaičius atnaujinamas kas minutę.' },
   { d:'2026-10-07 20:22', v:'v411', k:'fix', t:'Paštas: atsidaro „Pagrindiniai“, skirtukuose – naujų laiškų skaičius', f:'Gautuosiuose pagal nutylėjimą atsidaro „Pagrindiniai“ (kaip Gmail), o ne „Darbas“ – todėl matosi ir laiškai, atėję į Gmail adresą. Ant kiekvieno skirtuko – neperskaitytų laiškų skaičius. „⟳ Atnaujinti“ iškart patikrina naujus laiškus.' },
   { d:'2026-10-07 20:12', v:'v410', k:'new', t:'Paštas per Gmail: du adresai ir du parašai', f:'Prijungus Gmail paštas veikia kaip Gmail: laiškai skaitomi iš Gmail (iš anksto paruošiama iki 400 naujausių – atsidaro iš karto), kairėje Gmail aplankai (Pažymėti žvaigždute, Svarbūs, Visi laiškai, Šlamštas…), viršuje skirtukai. Siunčiama iš dviejų adresų: atsakant laiškas automatiškai eina iš to adreso, kuriam jis buvo atsiųstas – į @eventsolutions.lt – iš darbo adreso su darbo parašu (su logotipu), į Gmail – iš Gmail su asmeniniu parašu. Rašant naują laišką – pasirinkimas „Nuo“. Nustatymuose (⚙️) – du parašai: darbo (automatinis iš profilio) ir asmeninis (vardas ir telefonas arba savas tekstas), ir kuris parašas kuriam adresui. Kol Gmail neprijungtas – „Gautuosiuose“ kvietimas jį prijungti. Reikia atnaujinti „mail“ funkciją (v16).' },
   { d:'2026-10-07 19:54', v:'v409', k:'new', t:'Paštas: Gmail skirtukai ir pranešimai apie naujus laiškus', f:'Kai laiškai gaunami per Gmail, „Gautųjų“ viršuje – skirtukai kaip Gmail: 💼 Darbas (tik laiškai į @eventsolutions.lt), Pagrindiniai, Reklamos, Socialiniai, Naujienos, Forumai ir Visi. Naujas laiškas, gautas į @eventsolutions.lt adresą, dabar praneša telefone ir kompiuteryje (paspaudus atsidaro tas laiškas); išjungti galima Profilis → Pranešimai → „Nauji darbo laiškai“. Reikia: iš naujo paleisti supabase/sql/mail_gmail.sql ir atnaujinti „mail“ bei „push-notify“ funkcijas.' },
