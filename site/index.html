@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-iSHuHzte9t60J41cB04cpU4/PbEyGr/RQdRs9qJE38A=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-BpsEtKQ0Oyp0pR67FJMIPWIwwPCXdjgxu5TpotwfBvI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3843,6 +3843,7 @@ html body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal .section-sub, html bod
 html body .combo-pop.od-posm{background:#17181d !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;color:#f1f2f5 !important;border:1px solid rgb(255 255 255 / .14) !important;}
 html body .combo-pop.od-posm .combo-opt{color:#f1f2f5;} html body .combo-pop.od-posm .combo-opt:hover{background:rgb(255 255 255 / .09);}
 :root[data-theme="light"] body .combo-pop.od-posm{background:#fff !important;color:#16181d !important;border-color:rgb(0 0 0 / .14) !important;} :root[data-theme="light"] body .combo-pop.od-posm .combo-opt{color:#16181d;}
+.inv-nmrow{display:flex;align-items:center;gap:4px;} .inv-ren{opacity:.35;font-size:13px;padding:0 4px;} tr:hover .inv-ren,.inv-ren:focus{opacity:1;}
 .cp-pop{position:fixed;z-index:3200;width:276px;padding:8px;background:#17181d;border:1px solid rgb(255 255 255 / .14);border-radius:12px;box-shadow:0 18px 48px rgb(0 0 0 / .55);color:#f1f2f5;}
 .cp-pop canvas{display:block;width:260px;border-radius:7px;cursor:crosshair;touch-action:none;} .cp-sv{height:150px;} .cp-hue{height:14px;margin-top:8px;cursor:ew-resize;}
 .cp-row{display:flex;gap:8px;align-items:center;margin-top:8px;} .cp-prev{width:34px;height:30px;border-radius:7px;border:1px solid rgb(255 255 255 / .2);flex:none;}
@@ -6058,6 +6059,20 @@ function updateItem(id, patch){
   saveState();
 }
 
+// a Sandėlis item gets a new name: it is shown everywhere by its id; the copies kept by name are changed too
+// (the inventorizacija rows linked to it); offers are documents and keep what was written in them
+async function itemRenameEverywhere(id, nv){
+  const it = getItem(id); if(!it) return; id = String(id);
+  updateItem(id, { name:nv });
+  let n = 0;
+  try{
+    if(typeof stkLoad==='function'){ await stkLoad();
+      const rows = (STK.items||[]).filter(x=>String(x.item_id||'')===id && x.name!==nv);
+      if(rows.length){ const was = rows.map(x=>x.name); rows.forEach(x=>{ x.name = nv; });
+        await stkSaveItems(rows.map(stkRow)); await stkLogAdd(rows.map((x, k)=>({ stk_id:x.id, sheet:x.sheet, name:nv, action:'rename', from_v:was[k], to_v:nv, reason:'Pervadinta sandėlyje' }))); n = rows.length; } }
+  }catch(e){ toast('Inventorizacijoje pervadinti nepavyko: '+(e.message||e)); return; }
+  toast('✓ Pervadinta: „'+nv+'“'+(n ? ' · inventorizacijoje '+n+' eil.' : ''));
+}
 function itemVolume(it){ return (it.L*it.W*it.H)/1e6; } // m3, cm->m
 
 /* ---------- Krovimas working context: either a project's own list, or the generic one ---------- */
@@ -7046,7 +7061,7 @@ function renderInvRows(){
       </select></td>
       <td><input type="text" data-f="brand" list="invBrandList" value="${esc(br)}" placeholder="—" style="width:120px;" title="${it.brand==null && br ? 'Atpažinta iš pavadinimo – gali pakeisti' : 'Gamintojas'}" class="${it.brand==null && br ? 'inv-brand-guess' : ''}"></td>
       <td style="min-width:180px;">
-        <div>${esc(it.name)}${it.isCustom?' <span class="pill" style="background:#8A6FD822;color:#8A6FD8;">custom</span>':''}${it.rented?` <span class="pill" style="background:#8A6FD822;color:var(--violet);">🔄 ${esc(it.supplier||'nuomota')}</span>`:''}</div>
+        <div class="inv-nmrow"><span>${esc(it.name)}</span>${canEdit('inventory') ? `<button type="button" class="icon-btn inv-ren" data-ren="${esc(String(it.id))}" data-ro-ok title="Pervadinti (pasikeis visur)">✎</button>` : ''}${it.isCustom?' <span class="pill" style="background:#8A6FD822;color:#8A6FD8;">custom</span>':''}${it.rented?` <span class="pill" style="background:#8A6FD822;color:var(--violet);">🔄 ${esc(it.supplier||'nuomota')}</span>`:''}</div>
         <div style="font-size:10.5px;color:var(--text-faint);">${esc(it.folder||'')}</div>
         ${accT ? `<div class="inv-acct" title="Priedai">+ Priedai: ${esc(accT)}</div>` : ''}
       </td>
@@ -7079,6 +7094,9 @@ let INV_RT = 0;
 function invBindRows(tbody){
   tbody.querySelectorAll('[data-price]').forEach(el=>el.addEventListener('change', ()=>ipSet(el.dataset.price, el.value, el)));
   tbody.querySelectorAll('[data-acc]').forEach(b=>b.addEventListener('click', ()=>invAccModal(b.dataset.acc)));
+  tbody.querySelectorAll('[data-ren]').forEach(b=>b.addEventListener('click', async ()=>{ const it = getItem(b.dataset.ren); if(!it) return;
+    const nv = await uiPrompt('Daikto pavadinimas – pasikeis visur (sandėlyje, inventorizacijoje, projektuose, renginiuose)', it.name); if(nv==null || !nv.trim() || nv.trim()===it.name) return;
+    await itemRenameEverywhere(it.id, nv.trim()); refreshInv(); }));
   tbody.querySelectorAll('[data-sf]').forEach(b=>b.addEventListener('click', ()=>stackFacesOpen(b.dataset.sf)));
   tbody.querySelectorAll('input:not([data-price]),select').forEach(el=>{
     el.addEventListener('change', e=>{
@@ -19513,7 +19531,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v397';
+const APP_VER = 'v398';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32875,6 +32893,12 @@ function stkItemModal(it){
       Object.assign(it, { sheet:sh, section:se, name:nm, comment:cm, item_id: whIt ? String(whIt.id) : null });
       try{ await stkSaveItems([stkRow(it)]);
         if(before.name!==nm) await stkLogAdd([{ stk_id:it.id, sheet:sh, name:nm, action:'rename', from_v:before.name, to_v:nm, reason:'' }]);
+        // a row linked to a Sandėlis item: the item (and its other rows) get the same name
+        if(before.name!==nm && it.item_id && getItem(it.item_id) && getItem(it.item_id).name!==nm && canEdit('inventory')){
+          const others = STK.items.filter(x=>x!==it && String(x.item_id||'')===String(it.item_id) && x.name!==nm);
+          updateItem(it.item_id, { name:nm });
+          if(others.length){ others.forEach(x=>{ x.name = nm; }); await stkSaveItems(others.map(stkRow)); }
+          toast('✓ Pervadinta ir sandėlyje'+(others.length ? ' bei '+others.length+' kitose inventorizacijos eilutėse' : '')); }
         closeModal(); renderStocktakeTab(); }
       catch(e){ Object.assign(it, before); toast('Nepavyko: '+e.message); }
     }
@@ -39864,6 +39888,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 16:27', v:'v398', k:'new', t:'Daikto pervadinimas visur', f:'Sandėlio sąraše prie daikto pavadinimo atsirado ✎ – pakeitus pavadinimą jis pasikeičia visur: sandėlyje, inventorizacijos eilutėse, susietose su šiuo daiktu, projektuose ir renginiuose. Inventorizacijoje pervadinus su sandėliu susietą eilutę (Redaguoti), naujas pavadinimas išsaugomas ir sandėlyje bei kitose to daikto eilutėse. Pervadinimai įrašomi į inventorizacijos istoriją.' },
   { d:'2026-10-07 15:49', v:'v397', k:'fix', t:'Sava spalva – paletė šalia spalvos mygtuko', f:'„🎨 Pasirinkti savo spalvą…“ dabar atidaro paletę šalia paspaustos spalvos ikonėlės (ne kampe): spalvų laukas, atspalvio juosta, HEX laukelis ir peržiūra – skilties juosta keičiasi iškart. Du mygtukai: „Pasirinkti“ – tik šiai skilčiai, „Išsaugoti į paletę“ – ir įsimenama spalvų sąraše visiems. Esc arba spustelėjus šalia – atšaukti.' },
   { d:'2026-10-07 15:44', v:'v396', k:'new', t:'Sava skilties spalva; meniu ant balto fono – tamsūs', f:'Pasiūlymo skilties spalvų sąraše – „🎨 Pasirinkti savo spalvą…“: atsidaro visa paletė, pasirinkta spalva pritaikoma ir išsaugoma sąraše visiems. Visi iššokantys meniu ir langai ant balto fono (pasiūlymas, renginių lentelė, krovimo lapai) dabar vientisi tamsūs (šviesioje temoje – balti), nebe pilki permatomi.' },
   { d:'2026-10-07 15:42', v:'v395', k:'fix', t:'Ypatybė „Aukštis“, tvarkingos lentelės', f:'Įrangos grupių ypatybė „Kojos (aukštis)“ supaprastinta į „↕ Aukštis“ – grupėje nieko nustatinėti nereikia. Pasiūlyme įrašai aukštį (cm), o kojos tam aukščiui parenkamos iš sandėlio savaime pagal pavadinimą (pvz. „… 40cm“, o jei tokių nėra – reguliuojamos „… 40-65cm“), po 4 vienai pakylai. Aptarnavimo ir Kita lentelėse mygtukai nebelipa ant datos.' },
