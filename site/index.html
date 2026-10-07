@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-MDzQsyFqbcUgsFvaXceOTQqV6RD1RW5fnwlQ9Tnctuc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Z9//2cl0XOg5pJFIVxRmqRSzaVlHLaMRCPkHlw7K4bY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3781,7 +3781,16 @@ html body .combo-pop.od-sug .op-g{filter:brightness(1.35);}
 .ct-n{display:flex;gap:8px;align-items:center;min-width:0;} .ct-n .op-g{flex:0 0 30px;} .ct-n>span:last-child{display:flex;flex-direction:column;min-width:0;}
 .ct-n b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .ct-n small,.ct-used small{color:var(--text-dim);font-size:11.5px;}
 .ct-used{display:flex;flex-direction:column;font-weight:700;} .ct-act{display:flex;gap:4px;justify-content:flex-end;align-items:center;}
-.ct-gsec{margin-bottom:14px;} .ct-gsec-h{margin:0 0 8px;display:flex;gap:8px;align-items:baseline;} .ct-gsec-h .muted{font-weight:600;}
+.ct-gsec{margin-bottom:12px;padding:12px 14px;} .ct-gsec-h b{font-size:15px;}
+.ct-glist{display:flex;flex-direction:column;margin-top:6px;}
+.ct-gr{display:grid;grid-template-columns:minmax(0,1fr) 130px 130px;grid-template-areas:"n s p" "d s p";column-gap:12px;align-items:center;width:100%;padding:7px 8px;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--text);font:inherit;text-align:left;cursor:pointer;border-radius:6px;}
+.ct-gr:hover{background:var(--panel-2);} .ct-gr>b{grid-area:n;} .ct-gr>small{grid-area:d;color:var(--text-dim);font-size:12px;line-height:1.35;} .ct-gr>small i{font-style:normal;color:var(--accent);}
+.ct-gr .ct-gst{grid-area:s;font-weight:700;} .ct-gr .ct-price{grid-area:p;text-align:right;}
+.ct-gh{cursor:default;grid-template-areas:"n s p";font-size:11.5px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.03em;} .ct-gh:hover{background:transparent;} .ct-gh span:last-child{text-align:right;}
+.ct-sub{margin-top:6px;} .ct-sub-h{display:flex;align-items:center;gap:8px;padding:6px 8px 4px;font-weight:800;font-size:13px;color:var(--accent);border-bottom:1px solid var(--border-2,var(--border));}
+.ct-sub-h small{color:var(--text-dim);font-weight:600;} .ct-sub-h .icon-btn{font-size:13px;padding:0 6px;}
+@media (max-width:760px){ .ct-gr{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n p" "d d" "s s";} .ct-gh{display:none;} }
+.ct-gsec{margin-bottom:12px;} .ct-gsec-h{margin:0 0 8px;display:flex;gap:8px;align-items:baseline;} .ct-gsec-h .muted{font-weight:600;}
 .ct-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
 .ct-g{display:flex;flex-direction:column;gap:6px;text-align:left;cursor:pointer;font:inherit;color:var(--text);margin:0;}
 .ct-g:hover{border-color:var(--accent);} .ct-g small{color:var(--text-dim);font-size:12.5px;line-height:1.4;}
@@ -19455,7 +19464,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v382';
+const APP_VER = 'v383';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -28023,12 +28032,14 @@ function offerPickItems(si){
 const CT = { list:[], loaded:false, err:'', tab:'items', q:'', grp:'' };
 const CT_CATS = ['Garsas','Šviesos','Vaizdas','Konstrukcijos','Elektrifikacija','Gretutinės paslaugos','Aptarnavimas','Kita'];
 // equipment groups are sorted into Audio / Video / Light / Priedai / Kita (older ones: Garsas → Audio, Vaizdas → Video, Šviesos → Light)
-const CT_GCATS = ['Audio','Video','Light','Priedai','Kita'];
+// the sub-groups used in a group (Video → „LED ekranas“, „LED ekrano komutacija / kompiuteriai“ …)
+function ctSubsOf(cat){ return [...new Set(CT.list.filter(e=>e.kind==='group' && ctGCat(e)===cat && String(e.sub||'').trim()).map(e=>String(e.sub).trim()))].sort((a,b)=>a.natCmp(b)); }
+const CT_GCATS = ['Audio','Video','Light','Konstrukcijos/Pakylos','Priedai','Kita'];
 function ctGCat(e){ const t = normalizeText((e && e.cat) || '');
-  if(/^(audio|gars)/.test(t)) return 'Audio'; if(/^(video|vaizd)/.test(t)) return 'Video'; if(/^(light|svies|apsviet)/.test(t)) return 'Light'; if(/^pried/.test(t)) return 'Priedai'; return 'Kita'; }
+  if(/^(audio|gars)/.test(t)) return 'Audio'; if(/^(video|vaizd)/.test(t)) return 'Video'; if(/^(light|svies|apsviet)/.test(t)) return 'Light'; if(/^(konstr|pakyl|scen|santv)/.test(t)) return 'Konstrukcijos/Pakylos'; if(/^pried/.test(t)) return 'Priedai'; return 'Kita'; }
 // does a group / a service belong to this offer section (by the section's title)?
 function ctCatHit(e, title){ const st = normalizeText(title||''); if(!e || !e.cat || !st) return false;
-  if(e.kind==='group'){ const g = ctGCat(e), sg = offerSecGroups(title); return (g==='Audio' && sg.includes('garsas')) || (g==='Video' && sg.includes('video')) || (g==='Light' && sg.includes('apsvietimas')); }
+  if(e.kind==='group'){ const g = ctGCat(e), sg = offerSecGroups(title); return (g==='Audio' && sg.includes('garsas')) || (g==='Video' && sg.includes('video')) || (g==='Light' && sg.includes('apsvietimas')) || (g==='Konstrukcijos/Pakylos' && (sg.includes('santvaros') || sg.includes('pakylos'))); }
   return normalizeText(e.cat).slice(0, 4)===st.slice(0, 4); }
 const ctErr = m=>/does not exist|schema cache/i.test(m) ? 'Įrangos / paslaugų lentelės dar nėra – Supabase paleisk offer_catalog.sql.' : /row-level|permission/i.test(m) ? 'tavo lygiui neleista keisti' : m;
 async function ctLoad(force){
@@ -28210,19 +28221,26 @@ function ctBody(){
     return;
   }
   if(CT.tab==='groups'){
-    const all = CT.list.filter(e=>e.kind==='group' && ctMatch([e.name, e.cat, ctVarsText(e)].join(' '))).sort((a,b)=>a.name.natCmp(b.name));
+    const all = CT.list.filter(e=>e.kind==='group' && ctMatch([e.name, e.cat, e.sub, ctVarsText(e)].join(' '))).sort((a,b)=>a.name.natCmp(b.name));
     const gc = CT.gcat && CT_GCATS.includes(CT.gcat) ? CT.gcat : '', cnt = c=>all.filter(e=>ctGCat(e)===c).length;
-    const card = e=>`<button type="button" class="card ct-g" data-ctgr="${odE(e.id)}">
-        <span class="ct-g-h"><b>${odE(e.name)}</b><span class="ct-price">${money(e.price)}${e.unit ? ' / '+odE(ctUnitN(e.unit) || e.unit) : ''}</span></span>
-        <small>${odE(ctGroupLine(e))}</small>
-        ${ctGroupStock(e)!=null ? `<small>Sandėlyje iš viso: <b>${ctQty(ctGroupStock(e))} ${odE(ctUnitN(e.unit) || 'vnt.')}</b></small>` : ''}
-        ${e.showParts ? '<small class="muted">Pasiūlyme rodoma ir sudėtis</small>' : ''}</button>`;
+    const row = e=>{ const st = ctGroupStock(e), u = ctUnitN(e.unit) || 'vnt.';
+      return `<button type="button" class="ct-gr" data-ctgr="${odE(e.id)}"><b>${odE(e.name)}</b><small>${odE(ctGroupLine(e))}${e.showParts ? ' · <i>sudėtis rodoma pasiūlyme</i>' : ''}</small>
+        <span class="ct-gst">${st!=null ? ctQty(st)+' '+odE(u) : '—'}</span><span class="ct-price">${money(e.price)} / ${odE(u)}</span></button>`; };
+    const subBlock = (c, sub, list)=>`<div class="ct-sub">${sub!=null ? `<div class="ct-sub-h"><span>${odE(sub || 'Be pogrupio')}</span><small>${list.length}</small>${ed && sub ? `<button type="button" class="icon-btn" data-subren="${odE(c)}|${odE(sub)}" title="Pervadinti pogrupį">✎</button>` : ''}${ed ? `<button type="button" class="icon-btn" data-subadd="${odE(c)}|${odE(sub||'')}" title="Nauja grupė šiame pogrupyje">＋</button>` : ''}</div>` : ''}${list.map(row).join('')}</div>`;
+    const catBlock = c=>{ const list = all.filter(e=>ctGCat(e)===c), subs = [...new Set(list.map(e=>String(e.sub||'').trim()))].sort((a,b)=>!a ? 1 : !b ? -1 : a.natCmp(b));
+      return `<div class="card ct-gsec"><div class="ct-gsec-h"><b>${c}</b> <span class="muted">${list.length}</span></div>
+        <div class="ct-glist"><div class="ct-gr ct-gh"><span>Pavadinimas</span><span>Sandėlyje</span><span>Kaina</span></div>
+        ${subs.length===1 && !subs[0] ? subBlock(c, null, list) : subs.map(sb=>subBlock(c, sb, list.filter(e=>String(e.sub||'').trim()===sb))).join('')}</div></div>`; };
     box.innerHTML = `<div class="chipbar" style="margin:0 0 10px;"><button class="chip ${!gc?'active':''}" data-gcat="">Visos <span class="count-badge">${all.length}</span></button>${CT_GCATS.map(c=>`<button class="chip ${gc===c?'active':''}" data-gcat="${c}">${c} <span class="count-badge">${cnt(c)}</span></button>`).join('')}</div>`
-      + (all.length ? CT_GCATS.filter(c=>(!gc || gc===c) && cnt(c)).map(c=>`<div class="ct-gsec"><div class="fb-sec ct-gsec-h">${c} <span class="muted">${cnt(c)}</span></div><div class="ct-groups">${all.filter(e=>ctGCat(e)===c).map(card).join('')}</div></div>`).join('')
-        || `<div class="card empty-state">Šioje grupėje nieko nėra.</div>`
+      + (all.length ? CT_GCATS.filter(c=>(!gc || gc===c) && cnt(c)).map(catBlock).join('') || `<div class="card empty-state">Šioje grupėje nieko nėra.</div>`
       : `<div class="card empty-state">${CT.q ? 'Nieko nerasta.' : 'Grupių dar nėra.'+(ed ? ' Spausk „+ Nauja grupė“.' : '')}</div>`);
     box.querySelectorAll('[data-gcat]').forEach(b=>b.onclick = ()=>{ CT.gcat = b.dataset.gcat; ctBody(); });
     box.querySelectorAll('[data-ctgr]').forEach(b=>b.onclick = ()=>ctGroupModal(CT.list.find(e=>e.id===b.dataset.ctgr)));
+    box.querySelectorAll('[data-subadd]').forEach(b=>b.onclick = ()=>{ const [c, sb] = b.dataset.subadd.split('|'); const was = [CT.gcat, CT.newSub]; CT.gcat = c; CT.newSub = sb; ctGroupModal(null); CT.gcat = was[0]; CT.newSub = was[1]; });
+    box.querySelectorAll('[data-subren]').forEach(b=>b.onclick = async ()=>{ const [c, sb] = b.dataset.subren.split('|');
+      const nv = await uiPrompt('Pogrupio pavadinimas', sb); if(nv==null || nv.trim()===sb) return;
+      for(const e of CT.list.filter(x=>x.kind==='group' && ctGCat(x)===c && String(x.sub||'').trim()===sb)) await ctPut(Object.assign({}, e, { sub:nv.trim() }));
+      ctBody(); });
     return;
   }
   const kind = { services:'service', staff:'staff', other:'other' }[CT.tab], used = kind!=='service';
@@ -28261,14 +28279,15 @@ async function ctEntryAdd(kind){
 // a group: the name in the offer, the unit (as written), the price for one unit, what one unit is made of –
 // one or several ways („arba“), each of one or several Sandėlis items
 function ctGroupModal(g){
-  const ed = canEdit('offers'), x = g ? JSON.parse(JSON.stringify(g)) : { id:null, kind:'group', name:'', unit:'', price:'', cat:CT.gcat || 'Kita', showParts:false };
+  const ed = canEdit('offers'), x = g ? JSON.parse(JSON.stringify(g)) : { id:null, kind:'group', name:'', unit:'', price:'', cat:CT.gcat || 'Kita', sub:CT.newSub || '', showParts:false };
   x.variants = JSON.parse(JSON.stringify(ctVariants(x))).map(v=>({ parts:v.parts||[] }));
   openModal(`<div class="row between" style="align-items:center;margin-bottom:10px;"><h3 style="margin:0;">${g ? 'Įrangos grupė' : 'Nauja įrangos grupė'}</h3><button class="icon-btn" id="cgX" style="font-size:20px;" aria-label="Uždaryti">✕</button></div>
     <label class="field">Pavadinimas pasiūlyme<input id="cgName" value="${odE(x.name)}" placeholder="pvz. Infiled P3 LED ekranas"></label>
     <div class="row" style="gap:8px;flex-wrap:wrap;">
       <label class="field" style="flex:1 1 120px;">Vienetas<select id="cgUnit">${CT_UNITS.map(u=>`<option ${(ctUnitPick(x.unit) || 'vnt.')===u?'selected':''}>${u}</option>`).join('')}</select></label>
       <label class="field" style="flex:1 1 110px;">Kaina už vienetą, €<input id="cgPrice" value="${odE(ctHasPrice(x.price) ? offerPlain(offerNum(x.price)) : '')}" inputmode="decimal"></label>
-      <label class="field" style="flex:1 1 130px;">Grupė<select id="cgCat">${CT_GCATS.map(c=>`<option ${ctGCat(x)===c?'selected':''}>${c}</option>`).join('')}</select></label></div>
+      <label class="field" style="flex:1 1 130px;">Grupė<select id="cgCat">${CT_GCATS.map(c=>`<option ${ctGCat(x)===c?'selected':''}>${c}</option>`).join('')}</select></label>
+      <label class="field" style="flex:1 1 170px;">Pogrupis<input id="cgSub" value="${odE(x.sub||'')}" placeholder="pvz. LED ekranas" list="cgSubs" autocomplete="off"><datalist id="cgSubs"></datalist></label></div>
     <label class="row" style="gap:8px;align-items:center;margin:4px 0 10px;"><input type="checkbox" id="cgShow" ${x.showParts?'checked':''}> Pasiūlyme po pavadinimu rodyti sudėtį</label>
     <div class="fb-sec" style="margin:0 0 6px;">Sudėtis – <span id="cgU1">${odE(ctUnitOne(x.unit))}</span> sudaro:</div>
     <div id="cgVars"></div>
@@ -28276,6 +28295,9 @@ function ctGroupModal(g){
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;">${g && ed ? '<button class="btn danger" id="cgDel">Ištrinti</button>' : '<span></span>'}
       <span class="row" style="gap:8px;"><button class="btn" id="cgCancel">Atšaukti</button>${ed ? '<button class="btn primary" id="cgSave">Išsaugoti</button>' : ''}</span></div>`);
   const unitOne = ()=>ctUnitOne(document.getElementById('cgUnit').value.trim());
+  // the sub-groups already used in the chosen group, to pick from
+  const subs = ()=>{ const c = document.getElementById('cgCat').value; document.getElementById('cgSubs').innerHTML = ctSubsOf(c).map(v=>`<option value="${odE(v)}">`).join(''); };
+  subs(); document.getElementById('cgCat').addEventListener('change', subs);
   // what a variant is worth at Sandėlis prices – for comparison
   const worth = v=>{ let sum = 0, miss = 0; v.parts.forEach(p=>{ const it = getItem(p.itemId), pr = it ? ctItemPrice(it) : ''; if(ctHasPrice(pr)) sum += offerNum(pr)*offerNum(p.qty); else miss++; });
     return v.parts.length ? `Atskirai pagal kainas: <b>${offerMoney(sum)}</b> už ${odE(unitOne())}${miss ? ` <small>(${miss} be kainos)</small>` : ''}` : ''; };
@@ -28316,7 +28338,7 @@ function ctGroupModal(g){
   document.getElementById('cgX').onclick = closeModal; document.getElementById('cgCancel').onclick = closeModal;
   const del = document.getElementById('cgDel'); if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti grupę „'+g.name+'“? Jau sukurtuose pasiūlymuose ji liks.'))) return; if(await ctDel(g.id)){ closeModal(); ctBody(); } };
   const sv = document.getElementById('cgSave'); if(sv) sv.onclick = async ()=>{
-    x.name = document.getElementById('cgName').value.trim(); x.unit = document.getElementById('cgUnit').value.trim(); x.cat = document.getElementById('cgCat').value; x.showParts = document.getElementById('cgShow').checked;
+    x.name = document.getElementById('cgName').value.trim(); x.unit = document.getElementById('cgUnit').value.trim(); x.cat = document.getElementById('cgCat').value; x.sub = document.getElementById('cgSub').value.trim(); x.showParts = document.getElementById('cgShow').checked;
     const pr = document.getElementById('cgPrice').value.trim(); x.price = pr==='' ? '' : offerNum(pr);
     x.variants = x.variants.map(v=>({ parts:v.parts.filter(p=>offerNum(p.qty) > 0) })).filter((v, i, a)=>v.parts.length || a.length===1);
     x.parts = x.variants[0].parts;
@@ -39467,6 +39489,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 13:48', v:'v383', k:'new', t:'Įrangos grupės: sąrašas, pogrupiai, Konstrukcijos/Pakylos', f:'Įrangos grupės rodomos sąrašu: grupė (Audio, Video, Light, nauja – Konstrukcijos/Pakylos, Priedai, Kita) → pogrupis (pvz. Video → LED ekranas, LED ekrano komutacija / kompiuteriai) → eilutės su sudėtimi, kiekiu sandėlyje ir kaina. Pogrupį įrašai grupės lange (siūlomi jau esami), prie pogrupio pavadinimo – ✎ pervadinti ir ＋ nauja grupė tame pogrupyje.' },
   { d:'2026-10-07 13:41', v:'v382', k:'new', t:'Įranga / Paslaugos: skiltis Aptarnavimas, savi įrašai', f:'Nauja skiltis „Aptarnavimas“: kas pasiūlymo skiltyje APTARNAVIMAS įrašyta ranka (pvz. garso operatorius, montažo darbuotojas), išsaugoma čia; kas kitose skiltyse – „Kita“. Paslaugose, Aptarnavime ir Kita galima pridėti savo įrašų („+ Naujas įrašas“) ir perkelti juos tarp skilčių (→ Paslauga, → Aptarnavimas, → Kita). Pasiūlymo APTARNAVIMO skiltyje rašant pirmiausia siūloma iš Aptarnavimo.' },
   { d:'2026-10-07 13:30', v:'v381', k:'fix', t:'Pasiūlymai: švaresnės eilutės', f:'Po pasiūlymo eilutėmis nebėra papildomos informacijos (grupės sudėtis, variantas, laisvas kiekis, likutis) – kiekiai ir trūkumai matomi šone, „Sandėlio kiekiai“. Grupės pagal nutylėjimą imamos iš bendro kiekio.' },
   { d:'2026-10-07 13:26', v:'v380', k:'fix', t:'Pasiūlymai: be „GR“ ženkliukų', f:'Siūlymuose ir „+ Grupė / paslauga“ sąraše prie grupių ir paslaugų pavadinimų nebėra „GR“ / „PS“ ženkliukų.' },
