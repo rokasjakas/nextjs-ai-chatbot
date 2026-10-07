@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-tVNj8+iqMpnu7oDPgpUoWAJGofV6uvfZ70TmVUBh1MI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-z2P8V/RCuogdMLJtyIeiUQvjRi6qXYaCY7uNpnW2Tzc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19455,7 +19455,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v380';
+const APP_VER = 'v381';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26805,16 +26805,15 @@ function odSection(d, s, si, mode, rows, cont){
     : `<div class="od-sh" style="background:${odE(s.color)}">${odE(s.title)}${cont?' (tęsinys)':''}</div>`;
   const cols = np ? `<div class="od-tr od-th np"><span>#</span><span class="od-name">Pavadinimas</span><span>Kiekis</span></div>`
     : `<div class="od-tr od-th"><span>#</span><span class="od-name">Pavadinimas</span><span>Kiekis</span><span>Kaina</span><span>Koef.</span><span class="od-sum">Suma</span></div>`;
-  const stockOf = {}, busyIdx = ed ? offerBusyIndex(OFFER.cur && OFFER.cur.data===d ? OFFER.cur.id : null) : null;
-  if(ed) offerStock(d).forEach(x=>stockOf[x.id] = x);
+  const stockOf = {};
   const body = list.map((r)=>{
     const i = s.rows.indexOf(r);
     if(ed){
       const st = r.itemId!=null && r.itemId!=='' ? stockOf[r.itemId] : null;
-      const over = st && st.used > st.stock;
+      const over = false;   // what is short is shown on the side (Sandėlio kiekiai), not under the rows
       return `<div class="od-tr ${over?'over':''}" data-row="${si}:${i}">
         <span class="od-n">${i+1}</span>
-        <span class="od-name"><input data-f="name" value="${odE(r.name)}" placeholder="Pavadinimas">${r.groupId || r.svcId ? `<small class="od-desc">${r.groupId ? 'grupė' : r.svcId ? 'paslauga' : ''}${r.groupId && offerRowParts(r).length ? ' · '+odE(ctPartsText(offerRowParts(r), 1)) : ''}</small>` : ''}${r.groupId ? odGroupFree(d, r, busyIdx) : ''}${st ? `<small class="od-stock ${over?'bad':''}" title="${st.busy ? `Sandėlyje ${st.total}, kiti patvirtinti pasiūlymai tomis dienomis užima ${st.busy}` : 'Sandėlyje '+st.total}">${over?'⚠ ':''}likutis ${st.stock} iš ${st.total}</small>` : ''}</span>
+        <span class="od-name"><input data-f="name" value="${odE(r.name)}" placeholder="Pavadinimas"></span>
         ${ctUnitShort(r.unit) ? `<span class="od-qw"><input data-f="qty" value="${odE(r.qty)}" inputmode="decimal"><i>${odE(ctUnitShort(r.unit))}</i></span>` : `<input data-f="qty" value="${odE(r.qty)}" inputmode="decimal">`}
         <input data-f="price" value="${odE(r.price)}" inputmode="decimal">
         <input data-f="coef" value="${odE(r.coef)}" inputmode="decimal">
@@ -27712,16 +27711,6 @@ function offerRefreshNumbers(){
   document.querySelectorAll('#odEdit [data-row]').forEach(el=>{
     const [si, i] = el.dataset.row.split(':').map(Number), r = d.sections[si].rows[i];
     el.querySelector('.od-sum').textContent = offerMoney(offerRowSum(r));
-  });
-  const stock = {}; offerStock(d).forEach(x=>stock[x.id] = x); let gIdx = null;
-  document.querySelectorAll('#odEdit [data-row]').forEach(el=>{
-    const [si, i] = el.dataset.row.split(':').map(Number), r = d.sections[si].rows[i];
-    const st = r.itemId!=null && r.itemId!=='' ? stock[r.itemId] : null, over = !!(st && st.used > st.stock);
-    el.classList.toggle('over', over);
-    const sm = el.querySelector('.od-stock'); if(sm && st){ sm.classList.toggle('bad', over); sm.textContent = (over?'⚠ ':'')+(st.busy ? 'laisva '+st.stock+' iš '+st.total : 'sandėlyje '+st.stock); }
-    if(r.groupId){ const tmp = document.createElement('div'); tmp.innerHTML = odGroupFree(d, r, gIdx || (gIdx = offerBusyIndex(OFFER.cur.id)));
-      const ns = tmp.querySelector('.od-stock'); if(sm && ns) sm.replaceWith(ns);
-      const ds = el.querySelector('.od-desc'); if(ds){ const p = offerRowParts(r); ds.textContent = 'grupė'+(p.length ? ' · '+ctPartsText(p, 1) : ''); } }
   });
   document.querySelectorAll('#odEdit .od-sec').forEach(el=>{
     const si = +el.dataset.sec, s = d.sections[si], x = t.secs[si], f = el.querySelector('.od-foot');
@@ -39467,6 +39456,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 13:30', v:'v381', k:'fix', t:'Pasiūlymai: švaresnės eilutės', f:'Po pasiūlymo eilutėmis nebėra papildomos informacijos (grupės sudėtis, variantas, laisvas kiekis, likutis) – kiekiai ir trūkumai matomi šone, „Sandėlio kiekiai“. Grupės pagal nutylėjimą imamos iš bendro kiekio.' },
   { d:'2026-10-07 13:26', v:'v380', k:'fix', t:'Pasiūlymai: be „GR“ ženkliukų', f:'Siūlymuose ir „+ Grupė / paslauga“ sąraše prie grupių ir paslaugų pavadinimų nebėra „GR“ / „PS“ ženkliukų.' },
   { d:'2026-10-07 13:25', v:'v379', k:'fix', t:'Pasiūlymai: aiškus siūlymų langas', f:'Rašant eilutės pavadinimą ar klientą pasiūlyme, siūlymų langas buvo permatomas ir ant balto pasiūlymo nesimatė teksto. Dabar jis vientisas tamsus (šviesioje temoje – baltas), pavadinimai aiškiai matomi.' },
   { d:'2026-10-07 13:22', v:'v378', k:'new', t:'Pasiūlymuose – tuščia eilutė kiekvienoje skiltyje', f:'Kiekvienos pasiūlymo skilties apačioje visada yra tuščia eilutė – iškart rašai pavadinimą (siūloma iš įrangos, grupių ir paslaugų), kiekį ar kainą, o po ja atsiranda nauja tuščia. Tuščios eilutės į PDF nepatenka.' },
