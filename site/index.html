@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-7LrHo4ysS/Mc2EngKUxJuXOw9coOK/5JNn/t1udkUAU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-iSHuHzte9t60J41cB04cpU4/PbEyGr/RQdRs9qJE38A=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3843,6 +3843,12 @@ html body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal .section-sub, html bod
 html body .combo-pop.od-posm{background:#17181d !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;color:#f1f2f5 !important;border:1px solid rgb(255 255 255 / .14) !important;}
 html body .combo-pop.od-posm .combo-opt{color:#f1f2f5;} html body .combo-pop.od-posm .combo-opt:hover{background:rgb(255 255 255 / .09);}
 :root[data-theme="light"] body .combo-pop.od-posm{background:#fff !important;color:#16181d !important;border-color:rgb(0 0 0 / .14) !important;} :root[data-theme="light"] body .combo-pop.od-posm .combo-opt{color:#16181d;}
+.cp-pop{position:fixed;z-index:3200;width:276px;padding:8px;background:#17181d;border:1px solid rgb(255 255 255 / .14);border-radius:12px;box-shadow:0 18px 48px rgb(0 0 0 / .55);color:#f1f2f5;}
+.cp-pop canvas{display:block;width:260px;border-radius:7px;cursor:crosshair;touch-action:none;} .cp-sv{height:150px;} .cp-hue{height:14px;margin-top:8px;cursor:ew-resize;}
+.cp-row{display:flex;gap:8px;align-items:center;margin-top:8px;} .cp-prev{width:34px;height:30px;border-radius:7px;border:1px solid rgb(255 255 255 / .2);flex:none;}
+.cp-hex{flex:1;min-width:0;padding:6px 8px;border-radius:7px;border:1px solid rgb(255 255 255 / .18);background:#22242b;color:#f1f2f5;font:inherit;text-transform:uppercase;}
+.cp-btns{display:flex;gap:6px;margin-top:8px;} .cp-btns .btn{flex:1;white-space:nowrap;}
+:root[data-theme="light"] .cp-pop{background:#fff;color:#16181d;border-color:rgb(0 0 0 / .14);} :root[data-theme="light"] .cp-hex{background:#f4f5f7;color:#16181d;border-color:rgb(0 0 0 / .16);}
 .od-posbox{padding:6px !important;} .od-posin{width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid rgb(255 255 255 / .18);background:#22242b;color:#f1f2f5;font:inherit;outline:none;margin-bottom:4px;}
 .od-posin:focus{border-color:var(--accent);} .od-poshd{font-size:11px;color:#8b8f9a;padding:6px 9px 2px;text-transform:uppercase;letter-spacing:.04em;} .od-posbox .od-posnone{color:#ff8a8a !important;}
 :root[data-theme="light"] .od-posin{background:#f4f5f7;color:#16181d;border-color:rgb(0 0 0 / .16);}
@@ -19507,7 +19513,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v396';
+const APP_VER = 'v397';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27916,7 +27922,7 @@ function offerEditorBind(){
     const own = CT.list.filter(e=>e.kind==='color' && /^#[0-9a-f]{6}$/i.test(e.name||'')).map(e=>e.name);
     evPopMenu(b, OFFER_COLORS.map(c=>({ html:sw(c.v)+c.label, fn:()=>{ d.sections[si].color = c.v; offerTouch(true); } }))
       .concat(own.length ? [{ sep:true }].concat(own.map(v=>({ html:sw(v)+v.toUpperCase(), fn:()=>{ d.sections[si].color = v; offerTouch(true); } }))) : [])
-      .concat([{ sep:true }, { html:'🎨 Pasirinkti savo spalvą…', fn:()=>offerColorPick(si) }])); });
+      .concat([{ sep:true }, { html:'🎨 Pasirinkti savo spalvą…', fn:()=>offerColorPick(si, b) }])); });
   // a new section: a ready name, or one written by hand
   const as = document.getElementById('odAddSec'); if(as) as.onclick = ()=>{
     const box = as.parentElement, add = title=>{ d.sections.push({ id:offerUid(), title, color:OFFER_COLORS[d.sections.length % OFFER_COLORS.length].v, discount:0, rows:[] }); offerTouch(true); };
@@ -28197,17 +28203,48 @@ function odGroupByPos(sec){
   sec.rows = out.flatMap(x=>Array.isArray(x) ? x : [x]);
 }
 const odPosTxt = r=>r.pos ? ' ('+r.pos+')' : '';
-// any colour from the whole palette; it is kept in the colour list for everybody
-function offerColorPick(si){
+// any colour from the whole palette, in a window next to the section's colour button:
+// „Pasirinkti“ – only for this section, „Išsaugoti į paletę“ – also kept in the colour list for everybody
+function offerColorPick(si, anchor){
   const d = OFFER.cur.data, sec = d.sections[si]; if(!sec) return;
-  const inp = document.createElement('input'); inp.type = 'color'; inp.value = /^#[0-9a-f]{6}$/i.test(sec.color||'') ? sec.color : '#83dacb';
-  Object.assign(inp.style, { position:'fixed', left:'50%', top:'40%', width:'1px', height:'1px', opacity:'0', pointerEvents:'none' });
-  document.body.appendChild(inp);
-  inp.addEventListener('input', ()=>{ const h = document.querySelector(`#odEdit .od-sec[data-sec="${si}"] .od-sh`); if(h) h.style.background = inp.value; });
-  inp.addEventListener('change', ()=>{ const v = inp.value.toLowerCase(); inp.remove(); sec.color = v; offerTouch(true);
-    if(canEdit('offers') && !OFFER_COLORS.some(c=>c.v.toLowerCase()===v) && !CT.list.some(e=>e.kind==='color' && String(e.name).toLowerCase()===v)) ctPut({ id:'c:'+v.slice(1), kind:'color', name:v }); });
-  inp.addEventListener('blur', ()=>setTimeout(()=>{ if(inp.isConnected && document.activeElement!==inp) inp.remove(); }, 60000));
-  inp.click();
+  const old = document.getElementById('cpPop'); if(old) old.remove();
+  const hex2rgb = h=>[1,3,5].map(i=>parseInt(h.slice(i, i+2), 16)), rgb2hex = a=>'#'+a.map(v=>Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
+  const rgb2hsv = ([r, g, b])=>{ r/=255; g/=255; b/=255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), dd = mx - mn; let h = 0;
+    if(dd){ h = mx===r ? ((g - b)/dd) % 6 : mx===g ? (b - r)/dd + 2 : (r - g)/dd + 4; h *= 60; if(h < 0) h += 360; } return [h, mx ? dd/mx : 0, mx]; };
+  const hsv2rgb = (h, s, v)=>{ const f = n=>{ const k = (n + h/60) % 6; return v - v*s*Math.max(0, Math.min(k, 4 - k, 1)); }; return [f(5)*255, f(3)*255, f(1)*255]; };
+  let [H, S, V] = rgb2hsv(hex2rgb(/^#[0-9a-f]{6}$/i.test(sec.color||'') ? sec.color : '#83dacb'));
+  const pop = document.createElement('div'); pop.id = 'cpPop'; pop.className = 'cp-pop';
+  pop.innerHTML = `<canvas class="cp-sv" width="260" height="150"></canvas><canvas class="cp-hue" width="260" height="14"></canvas>
+    <div class="cp-row"><span class="cp-prev"></span><input class="cp-hex" maxlength="7" spellcheck="false"></div>
+    <div class="cp-btns"><button type="button" class="btn small" data-cp="pick">Pasirinkti</button><button type="button" class="btn small primary" data-cp="save">Išsaugoti į paletę</button></div>`;
+  document.body.appendChild(pop);
+  const r = (anchor || document.querySelector(`#odEdit .od-sec[data-sec="${si}"] .od-color`) || document.body).getBoundingClientRect();
+  pop.style.left = Math.max(8, Math.min(innerWidth - 290, r.left))+'px';
+  pop.style.top = Math.max(8, Math.min(innerHeight - pop.offsetHeight - 8, r.bottom + 6))+'px';
+  const sv = pop.querySelector('.cp-sv'), hue = pop.querySelector('.cp-hue'), hexIn = pop.querySelector('.cp-hex'), prev = pop.querySelector('.cp-prev');
+  const head = ()=>document.querySelector(`#odEdit .od-sec[data-sec="${si}"] .od-sh`);
+  const cur = ()=>rgb2hex(hsv2rgb(H, S, V));
+  const draw = (fromHex)=>{
+    const x = sv.getContext('2d'), w = sv.width, h = sv.height;
+    x.fillStyle = rgb2hex(hsv2rgb(H, 1, 1)); x.fillRect(0, 0, w, h);
+    let g = x.createLinearGradient(0, 0, w, 0); g.addColorStop(0, '#fff'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, w, h);
+    g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, '#000'); x.fillStyle = g; x.fillRect(0, 0, w, h);
+    x.strokeStyle = V > 0.5 ? '#000' : '#fff'; x.lineWidth = 2; x.beginPath(); x.arc(S*w, (1 - V)*h, 6, 0, 7); x.stroke();
+    const y = hue.getContext('2d'), hg = y.createLinearGradient(0, 0, hue.width, 0); [0, 60, 120, 180, 240, 300, 360].forEach(a=>hg.addColorStop(a/360, rgb2hex(hsv2rgb(a % 360, 1, 1))));
+    y.fillStyle = hg; y.fillRect(0, 0, hue.width, hue.height); y.fillStyle = '#fff'; y.fillRect(H/360*hue.width - 2, 0, 4, hue.height); y.strokeStyle = '#000'; y.strokeRect(H/360*hue.width - 2.5, 0.5, 5, hue.height - 1);
+    const c = cur(); prev.style.background = c; if(!fromHex) hexIn.value = c.toUpperCase(); const hd = head(); if(hd) hd.style.background = c; };
+  const drag = (el, fn)=>el.addEventListener('pointerdown', e=>{ e.preventDefault(); el.setPointerCapture(e.pointerId); const mv = ev=>{ const b = el.getBoundingClientRect(); fn(Math.max(0, Math.min(1, (ev.clientX - b.left)/b.width)), Math.max(0, Math.min(1, (ev.clientY - b.top)/b.height))); draw(); };
+    mv(e); el.onpointermove = mv; el.onpointerup = ()=>{ el.onpointermove = null; }; });
+  drag(sv, (a, b)=>{ S = a; V = 1 - b; }); drag(hue, a=>{ H = Math.min(359.9, a*360); });
+  hexIn.addEventListener('input', ()=>{ let v = hexIn.value.trim(); if(!v.startsWith('#')) v = '#'+v; if(/^#[0-9a-f]{6}$/i.test(v)){ [H, S, V] = rgb2hsv(hex2rgb(v)); draw(true); } });
+  const close = ok=>{ pop.remove(); document.removeEventListener('pointerdown', out, true); document.removeEventListener('keydown', esc, true); if(!ok){ const hd = head(); if(hd) hd.style.background = sec.color; } };
+  const out = e=>{ if(!pop.contains(e.target)) close(false); };
+  const esc = e=>{ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); close(false); } };
+  setTimeout(()=>{ document.addEventListener('pointerdown', out, true); document.addEventListener('keydown', esc, true); }, 0);
+  pop.querySelectorAll('[data-cp]').forEach(b=>b.onclick = ()=>{ const v = cur().toLowerCase(); close(true); sec.color = v;
+    if(b.dataset.cp==='save' && canEdit('offers') && !OFFER_COLORS.some(c=>c.v.toLowerCase()===v) && !CT.list.some(e=>e.kind==='color' && String(e.name).toLowerCase()===v)){ ctPut({ id:'c:'+v.slice(1), kind:'color', name:v }); toast('🎨 Spalva išsaugota paletėje'); }
+    offerTouch(true); });
+  draw();
 }
 function odPosPick(anchor, si, i){
   const d = OFFER.cur.data, sec = d.sections[si], r = sec.rows[i]; if(!r) return;
@@ -39827,6 +39864,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 15:49', v:'v397', k:'fix', t:'Sava spalva – paletė šalia spalvos mygtuko', f:'„🎨 Pasirinkti savo spalvą…“ dabar atidaro paletę šalia paspaustos spalvos ikonėlės (ne kampe): spalvų laukas, atspalvio juosta, HEX laukelis ir peržiūra – skilties juosta keičiasi iškart. Du mygtukai: „Pasirinkti“ – tik šiai skilčiai, „Išsaugoti į paletę“ – ir įsimenama spalvų sąraše visiems. Esc arba spustelėjus šalia – atšaukti.' },
   { d:'2026-10-07 15:44', v:'v396', k:'new', t:'Sava skilties spalva; meniu ant balto fono – tamsūs', f:'Pasiūlymo skilties spalvų sąraše – „🎨 Pasirinkti savo spalvą…“: atsidaro visa paletė, pasirinkta spalva pritaikoma ir išsaugoma sąraše visiems. Visi iššokantys meniu ir langai ant balto fono (pasiūlymas, renginių lentelė, krovimo lapai) dabar vientisi tamsūs (šviesioje temoje – balti), nebe pilki permatomi.' },
   { d:'2026-10-07 15:42', v:'v395', k:'fix', t:'Ypatybė „Aukštis“, tvarkingos lentelės', f:'Įrangos grupių ypatybė „Kojos (aukštis)“ supaprastinta į „↕ Aukštis“ – grupėje nieko nustatinėti nereikia. Pasiūlyme įrašai aukštį (cm), o kojos tam aukščiui parenkamos iš sandėlio savaime pagal pavadinimą (pvz. „… 40cm“, o jei tokių nėra – reguliuojamos „… 40-65cm“), po 4 vienai pakylai. Aptarnavimo ir Kita lentelėse mygtukai nebelipa ant datos.' },
   { d:'2026-10-07 15:29', v:'v394', k:'new', t:'Pasiūlymai: pozicija įrašoma iškart', f:'Paspaudus „+ poz.“ prie eilutės iškart atsiranda laukelis įrašyti poziciją, o po juo – išsaugotos pozicijos (atsirenka pagal tai, ką rašai). Enter – išsaugoti (nauja pozicija įsimenama), rodyklės ↑↓ arba spustelėjimas – pasirinkti iš sąrašo, „✕ Be pozicijos“ – pašalinti.' },
