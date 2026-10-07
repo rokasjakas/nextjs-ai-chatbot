@@ -6,7 +6,9 @@
 // calls this function – no sign-in, the token in the letter is the key.
 //
 // POST {"t":"<token>"}                                  -> what the letter was about
-// POST {"t":"<token>","a":"paid|queued|reply","who":"…","text":"…"} -> saves the answer
+// POST {"t":"<token>","a":"paid|queued|reply","who":"…","text":"…","file":{name,type,base64}} -> saves the answer
+//   (the comment is optional; a file – e.g. the payment order's copy – may come with any answer: it is kept with
+//   the invoice's files and attached to the answer's e-mail)
 //
 // After an answer: Admin+ get an app notification (push-notify, mode
 // invoice-reply) and the sender plus every recipient of that letter get an
@@ -14,19 +16,20 @@
 // Secrets: CRON_SECRET (to call push-notify). SUPABASE_URL and
 // SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
 
-const VERSION = 1;
+const VERSION = 2;
 const DEFAULT_FROM = "Event Solutions <onboarding@resend.dev>";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-const KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos", purchase: "Pirkinių" };
+const KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos", purchase: "Pirkinių", other: "Kitos" };
 const ANSWER: Record<string, string> = { paid: "Sąskaita apmokėta", queued: "Sąskaita suvesta apmokėjimui", reply: "Atsakymas" };
 
 type Sent = { at: string; by?: string; by_email?: string; to: string[]; comment?: string; token: string };
-type Resp = { at: string; who: string; kind: string; text: string; token: string };
-type Invoice = { id: string; kind: string; supplier: string | null; number: string | null; amount: number | null; invoice_date: string | null; due_date: string | null; status: string; sent: Sent[]; responses: Resp[] };
+type RespFile = { path: string; name: string; type: string; size: number; role?: string };
+type Resp = { at: string; who: string; kind: string; text: string; token: string; file?: RespFile };
+type Invoice = { id: string; created_by: string; files?: RespFile[]; kind: string; supplier: string | null; number: string | null; amount: number | null; invoice_date: string | null; due_date: string | null; status: string; sent: Sent[]; responses: Resp[] };
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json; charset=utf-8" } });
@@ -58,7 +61,24 @@ async function byToken(t: string): Promise<{ v: Invoice; s: Sent } | null> {
   const s = (v.sent || []).find((x) => x.token === t); return s ? { v, s } : null;
 }
 
-async function mailAnswer(v: Invoice, s: Sent, r: Resp) {
+// the payment order's copy (or any file) that came with the answer: into the invoice's storage folder
+const MAX_FILE = 10 * 1024 * 1024;
+async function saveFile(v: Invoice, f: { name?: string; type?: string; base64?: string }): Promise<{ meta: RespFile; b64: string } | null> {
+  if (!f || !f.base64) return null;
+  const b64 = String(f.base64);
+  const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  if (bytes.length > MAX_FILE) throw new Error("FILE_BIG");
+  const type = String(f.type || "application/octet-stream");
+  if (!/^(application\/pdf|image\/)/.test(type)) throw new Error("FILE_TYPE");
+  const name = String(f.name || "pavedimas").replace(/[\\/\u0000-\u001f]+/g, "_").slice(-120);
+  const path = `${v.created_by}/resp/${v.id}/${Date.now()}-${name.replace(/[^\w.\-]+/g, "_").slice(-80)}`;
+  const key = env("SUPABASE_SERVICE_ROLE_KEY");
+  const up = await fetch(`${env("SUPABASE_URL")}/storage/v1/object/invoice-files/${path}`, { method: "POST", headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": type, "x-upsert": "true" }, body: bytes });
+  if (!up.ok) throw new Error("upload " + up.status + " " + (await up.text()).slice(0, 160));
+  return { meta: { path, name, type, size: bytes.length, role: "payment" }, b64 };
+}
+
+async function mailAnswer(v: Invoice, s: Sent, r: Resp, fileB64 = "") {
   const key = Deno.env.get("RESEND_API_KEY"); if (!key) return { mailed: 0, note: "RESEND_API_KEY not set" };
   const to = [...new Set([s.by_email, ...(s.to || [])].filter(Boolean).map((x) => String(x).toLowerCase()))];
   if (!to.length) return { mailed: 0 };
@@ -66,11 +86,13 @@ async function mailAnswer(v: Invoice, s: Sent, r: Resp) {
     <p><b>${esc(ANSWER[r.kind] || "Atsakymas")}</b> — ${esc(invTitle(v))}</p>
     <p>Atsakė: <b>${esc(r.who || "—")}</b></p>
     ${r.text ? `<p style="white-space:pre-wrap;border-left:3px solid #F35E7D;padding-left:10px;">${esc(r.text)}</p>` : ""}
+    ${r.file ? `<p>📎 Prisegta: <b>${esc(r.file.name)}</b></p>` : ""}
     <p style="color:#777;font-size:12px;margin-top:18px;">Event Solutions · automatinis pranešimas</p></div>`;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: Deno.env.get("INVOICE_FROM") || Deno.env.get("REMINDER_FROM") || DEFAULT_FROM, to, subject: `${ANSWER[r.kind] || "Atsakymas"}: ${invTitle(v)}`, html, ...(s.by_email ? { reply_to: s.by_email } : {}) }),
+    body: JSON.stringify({ from: Deno.env.get("INVOICE_FROM") || Deno.env.get("REMINDER_FROM") || DEFAULT_FROM, to, subject: `${ANSWER[r.kind] || "Atsakymas"}: ${invTitle(v)}`, html, ...(s.by_email ? { reply_to: s.by_email } : {}),
+      ...(r.file && fileB64 ? { attachments: [{ filename: r.file.name, content: fileB64 }] } : {}) }),
   });
   if (!res.ok) { console.error("Resend", res.status, (await res.text()).slice(0, 300)); return { mailed: 0 }; }
   return { mailed: to.length };
@@ -87,19 +109,27 @@ if (import.meta.main) Deno.serve(async (req) => {
     const { v, s } = hit;
     const about = { v: VERSION, title: invTitle(v), supplier: v.supplier, number: v.number, amount: v.amount, invoice_date: v.invoice_date, due_date: v.due_date,
       recipients: s.to || [], comment: s.comment || "", from: s.by || "", status: v.status,
-      answers: (v.responses || []).filter((r) => r.token === s.token).map(({ at, who, kind, text }) => ({ at, who, kind, text })) };
+      answers: (v.responses || []).filter((r) => r.token === s.token).map(({ at, who, kind, text, file }) => ({ at, who, kind, text, ...(file ? { file: file.name } : {}) })) };
     const a = String(b.a ?? "");
     if (!a) return json(about);
     if (!ANSWER[a]) return json({ error: "Nežinomas atsakymas." }, 400);
     const text = String(b.text ?? "").trim().slice(0, 2000);
-    if (a === "reply" && !text) return json({ error: "Parašyk atsakymą." }, 400);
-    const r: Resp = { at: new Date().toISOString(), who: String(b.who ?? "").trim().slice(0, 120), kind: a, text, token: s.token };
+    let saved: { meta: RespFile; b64: string } | null = null;
+    try { saved = await saveFile(v, (b.file ?? {}) as { name?: string; type?: string; base64?: string }); }
+    catch (e) {
+      const m = (e as Error).message;
+      return json({ error: m === "FILE_BIG" ? "Failas per didelis (iki 10 MB)." : m === "FILE_TYPE" ? "Prisegti galima PDF arba nuotrauką." : "Nepavyko įkelti failo – pabandykite dar kartą." }, 400);
+    }
+    // the comment is optional; only a bare „reply“ needs something in it (a text or a file)
+    if (a === "reply" && !text && !saved) return json({ error: "Parašykite atsakymą arba prisekite failą." }, 400);
+    const r: Resp = { at: new Date().toISOString(), who: String(b.who ?? "").trim().slice(0, 120), kind: a, text, token: s.token, ...(saved ? { file: saved.meta } : {}) };
     const status = a === "paid" ? "paid" : a === "queued" && v.status !== "paid" ? "queued" : v.status;
-    await db(`invoices?id=eq.${v.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ responses: [...(v.responses || []), r], status, uploader_seen: status !== v.status ? false : undefined }) });
+    await db(`invoices?id=eq.${v.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ responses: [...(v.responses || []), r], status, uploader_seen: status !== v.status ? false : undefined,
+      ...(saved ? { files: [...(v.files || []), { ...saved.meta, name: "Pavedimas – " + saved.meta.name }] } : {}) }) });
     const secret = Deno.env.get("CRON_SECRET");
     if (secret) await fetch(`${env("SUPABASE_URL")}/functions/v1/push-notify`, { method: "POST", headers: { "Content-Type": "application/json", "x-cron-secret": secret }, body: JSON.stringify({ mode: "invoice-reply", invoice_id: v.id }) }).catch(() => {});
-    const m = await mailAnswer(v, s, r).catch((e) => ({ mailed: 0, error: String(e) }));
-    return json({ ...about, status, answers: [...about.answers, { at: r.at, who: r.who, kind: r.kind, text: r.text }], saved: true, ...m });
+    const m = await mailAnswer(v, s, r, saved?.b64 || "").catch((e) => ({ mailed: 0, error: String(e) }));
+    return json({ ...about, status, answers: [...about.answers, { at: r.at, who: r.who, kind: r.kind, text: r.text, ...(r.file ? { file: r.file.name } : {}) }], saved: true, ...m });
   } catch (err) {
     console.error(err);
     return json({ error: "Nepavyko. Pabandykite dar kartą." }, 500);
