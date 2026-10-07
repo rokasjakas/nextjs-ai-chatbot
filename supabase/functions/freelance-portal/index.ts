@@ -4,9 +4,13 @@
 //                                               to the company (Žmonės / app members) get one
 //   {action:"login", email, pin}               -> {token, name}  (the session lasts 2 hours)
 //   {action:"events", token, date}             the events of that day (from „Renginiai“), mine first
-//   {action:"submit", token, number, total, lines:[…], file:{name,type,base64}}
+//   {action:"submit", token, id?, number, total, lines:[…], file:{name,type,base64}}
 //        lines: [{date, event_id?, event_name, type:"fixed"|"hourly", amount?, hours?, rate?}] – all with taxes;
-//        the lines must add up to the invoice total, then the invoice goes to „Sąskaitos“ → Freelance
+//        the lines must add up to the invoice total, then the invoice goes to „Sąskaitos“ → Freelance.
+//        With id: a not yet approved / rejected invoice of this e-mail is corrected (the file may stay) and
+//        goes back to „Naujos“
+//   {action:"list", token}                      the invoices this e-mail sent, with their state
+//   {action:"file", token, id}                  a short-lived link to the invoice's file
 //
 // Secrets: RESEND_API_KEY, REMINDER_FROM (as for the other e-mails), CRON_SECRET (to tell Admin+).
 // Deploy: supabase functions deploy freelance-portal --no-verify-jwt
@@ -81,8 +85,14 @@ async function eventsOn(date: string, name: string) {
   }).sort((a, b) => Number(b.mine) - Number(a.mine) || a.name.localeCompare(b.name, "lt"));
 }
 
+type Mine = { id: string; number: string | null; amount: number; status: string; decision_note: string | null; decision_at: string | null; created_at: string; invoice_date: string | null; note: string | null; lines: unknown[]; files: { path: string; name: string; type: string; size: number }[]; responses: unknown[] };
+async function mine(email: string, id?: string) {
+  return await db<Mine[]>(`invoices?select=id,number,amount,status,decision_note,decision_at,created_at,invoice_date,note,lines,files,responses&source=eq.portal&ext_email=eq.${enc(email)}${id ? "&id=eq." + enc(id) : ""}&order=created_at.desc&limit=100`);
+}
+const EDITABLE = ["new", "rejected"];
+
 type Line = { date?: string; event_id?: string; event_name?: string; type?: string; amount?: number; hours?: number; rate?: number };
-async function submit(s: { email: string; name: string }, b: { number?: string; total?: number; lines?: Line[]; file?: { name?: string; type?: string; base64?: string }; note?: string }) {
+async function submit(s: { email: string; name: string }, b: { id?: string; number?: string; total?: number; lines?: Line[]; file?: { name?: string; type?: string; base64?: string }; note?: string }) {
   const lines = Array.isArray(b.lines) ? b.lines.slice(0, 80) : [];
   if (!lines.length) throw new UserError("Įrašyk bent vieną renginį.");
   const ids = [...new Set(lines.map((l) => String(l.event_id || "")).filter(Boolean))];
@@ -106,7 +116,12 @@ async function submit(s: { email: string; name: string }, b: { number?: string; 
   const sum = round2(clean.reduce((t, l) => t + l.amount, 0)), total = round2(Number(b.total));
   if (!(total > 0)) throw new UserError("Įrašyk sąskaitos sumą.");
   if (Math.abs(sum - total) > 0.005) throw new UserError(`Sumos nesutampa: renginių suma ${sum.toFixed(2)} €, sąskaitos suma ${total.toFixed(2)} €.`);
+  const editId = b.id ? String(b.id) : "";
+  const old = editId ? (await mine(s.email, editId))[0] : null;
+  if (editId && !old) throw new UserError("Sąskaita nerasta.");
+  if (old && !EDITABLE.includes(old.status)) throw new UserError("Ši sąskaita jau patvirtinta – jos taisyti nebegalima.");
   const f = b.file || {};
+  if (!f.base64 && old && old.files?.length) return await saveEdit(s, old, b, clean, total, null);
   if (!f.base64) throw new UserError("Įkelk sąskaitos failą.");
   const bytes = Uint8Array.from(atob(String(f.base64)), (c) => c.charCodeAt(0));
   if (bytes.length > MAX_FILE) throw new UserError("Failas per didelis (iki 10 MB).");
@@ -116,12 +131,13 @@ async function submit(s: { email: string; name: string }, b: { number?: string; 
   const owners = await db<{ id: string }[]>("profiles?select=id&role=eq.admin&level=in.(plus,super)&order=created_at&limit=1");
   const owner = owners[0]?.id || (await db<{ id: string }[]>("profiles?select=id&role=eq.admin&order=created_at&limit=1"))[0]?.id;
   if (!owner) throw new Error("no admin");
-  const id = crypto.randomUUID();
+  const id = old ? old.id : crypto.randomUUID();
   const fname = String(f.name || "saskaita").replace(/[\\/\u0000-\u001f]+/g, "_").slice(0, 120);
   const ext = ((fname.match(/\.([A-Za-z0-9]{1,6})$/) || [])[1] || (type === "application/pdf" ? "pdf" : "jpg")).toLowerCase();
-  const path = `${owner}/portal/${id}/saskaita.${ext}`;
+  const path = `${owner}/portal/${id}/saskaita${old ? "-" + Date.now() : ""}.${ext}`;
   const up = await fetch(`${SUPABASE_URL}/storage/v1/object/invoice-files/${path}`, { method: "POST", headers: hdr({ "Content-Type": type, "x-upsert": "true" }), body: bytes });
   if (!up.ok) throw new Error("upload " + up.status + " " + (await up.text()).slice(0, 200));
+  if (old) return await saveEdit(s, old, b, clean, total, { path, name: fname, type, size: bytes.length });
   await db("invoices", {
     method: "POST", headers: { Prefer: "return=minimal" },
     body: JSON.stringify({
@@ -135,6 +151,24 @@ async function submit(s: { email: string; name: string }, b: { number?: string; 
   const cs = Deno.env.get("CRON_SECRET");
   if (cs) await fetch(SUPABASE_URL + "/functions/v1/push-notify", { method: "POST", headers: { "Content-Type": "application/json", "x-cron-secret": cs }, body: JSON.stringify({ mode: "invoice-portal", invoice_id: id }) }).catch(() => {});
   return { ok: true, id, total };
+}
+
+// a corrected invoice: the new lines (and file), back to „Naujos“; the old decision stays in its history
+async function saveEdit(s: { email: string; name: string }, old: Mine, b: { number?: string; note?: string }, lines: unknown[], total: number, file: { path: string; name: string; type: string; size: number } | null) {
+  const why = old.status === "rejected" ? "Pataisė netvirtintą sąskaitą" + (old.decision_note ? " (priežastis buvo: „" + old.decision_note + "“)" : "") : "Pataisė sąskaitą";
+  await db(`invoices?id=eq.${old.id}`, {
+    method: "PATCH", headers: { Prefer: "return=minimal" },
+    body: JSON.stringify({
+      number: String(b.number || "").trim().slice(0, 80) || null, amount: total, note: String(b.note || "").trim().slice(0, 1000) || null,
+      lines, ext_name: s.name, status: "new", decision_note: null, decision_by: null, decision_at: null, remind_at: null, reminded_at: null,
+      responses: [...(old.responses || []), { at: new Date().toISOString(), who: s.name, kind: "reply", text: why }],
+      ...(file ? { files: [file] } : {}),
+    }),
+  });
+  if (file && old.files?.length) await fetch(`${SUPABASE_URL}/storage/v1/object/invoice-files`, { method: "DELETE", headers: hdr({ "Content-Type": "application/json" }), body: JSON.stringify({ prefixes: old.files.map((x) => x.path) }) }).catch(() => {});
+  const cs = Deno.env.get("CRON_SECRET");
+  if (cs) await fetch(SUPABASE_URL + "/functions/v1/push-notify", { method: "POST", headers: { "Content-Type": "application/json", "x-cron-secret": cs }, body: JSON.stringify({ mode: "invoice-portal", invoice_id: old.id, edited: true }) }).catch(() => {});
+  return { ok: true, id: old.id, total, edited: true };
 }
 
 Deno.serve(async (req) => {
@@ -175,6 +209,20 @@ Deno.serve(async (req) => {
       const date = String(b.date || "");
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new UserError("Pasirink datą.");
       return json({ events: await eventsOn(date, s.name) });
+    }
+    if (action === "list") {
+      const s = await session(b.token);
+      const rows = await mine(s.email);
+      return json({ invoices: rows.map((v) => ({ ...v, files: (v.files || []).map((f) => ({ name: f.name, type: f.type, size: f.size })), responses: undefined, editable: EDITABLE.includes(v.status) })) });
+    }
+    if (action === "file") {
+      const s = await session(b.token);
+      const [v] = await mine(s.email, String(b.id || ""));
+      const f = v?.files?.[0]; if (!f) throw new UserError("Failas nerastas.");
+      const r = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/invoice-files/${f.path.split("/").map(enc).join("/")}`, { method: "POST", headers: hdr({ "Content-Type": "application/json" }), body: JSON.stringify({ expiresIn: 600 }) });
+      const d = await r.json().catch(() => ({})) as { signedURL?: string };
+      if (!r.ok || !d.signedURL) throw new Error("sign " + r.status);
+      return json({ url: SUPABASE_URL + "/storage/v1" + d.signedURL });
     }
     if (action === "submit") {
       const s = await session(b.token);

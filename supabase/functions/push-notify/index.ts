@@ -1036,7 +1036,8 @@ async function onTask(uid: string, taskId: string, ev: string) {
 
 // Sąskaitos: a new one goes to Admin+, the decision to its uploader, a reply
 // from the e-mail to Admin+; „Priminti vėliau“ comes back at the chosen time
-type Invoice = { id: string; created_by: string; kind: string; supplier: string | null; number: string | null; amount: number | null; status: string; decision_note: string | null; remind_at: string | null; reminded_at: string | null; responses: { who?: string; kind: string; text?: string }[] };
+type Invoice = { id: string; created_by: string; kind: string; supplier: string | null; number: string | null; amount: number | null; status: string; decision_note: string | null; decision_at?: string | null; remind_at: string | null; reminded_at: string | null; responses: { who?: string; kind: string; text?: string }[];
+  source?: string | null; ext_email?: string | null; ext_name?: string | null; ext_mailed?: string | null; lines?: { date?: string; event?: string; amount?: number }[] | null };
 const INV_KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos", purchase: "Pirkinių" };
 const INV_STATUS: Record<string, string> = { approved: "✅ Sąskaita patvirtinta", rejected: "✖ Sąskaita netvirtinta", later: "⏰ Sąskaita atidėta vėlesniam laikui", sent: "📤 Sąskaita patvirtinta ir išsiųsta", paid: "💶 Sąskaita apmokėta", queued: "🗂 Sąskaita suvesta apmokėjimui" };
 async function plusIds(): Promise<string[]> {
@@ -1053,20 +1054,62 @@ async function onInvoice(uid: string, id: string, ev: string) {
     return await sendTo(await wantIds(plus.filter((u) => u !== uid), "other"), { title: "🧾 Nauja sąskaita: " + invTitle(v), body: "Įkėlė " + name(me), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
   }
   if (!plus.includes(uid)) return { error: "Tik Admin+" };
+  if (v.source === "portal") return await portalMail(v);
   if (v.created_by === uid || !INV_STATUS[v.status]) return { sent: 0 };
   return await sendTo(await wantIds([v.created_by], "other"), { title: INV_STATUS[v.status], body: invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
 }
-// a freelancer sent an invoice on saskaitos.eventsolutions.lt (called by freelance-portal with the cron secret)
-async function onInvoicePortal(id: string) {
-  const [v] = await db<(Invoice & { ext_name?: string; ext_email?: string })[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
+// a freelancer sent (or corrected) an invoice on saskaitos.eventsolutions.lt (called by freelance-portal with the cron secret)
+async function onInvoicePortal(id: string, edited: boolean) {
+  const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
   if (!v) return { error: "Sąskaita nerasta" };
-  return await sendTo(await wantIds(await plusIds(), "other"), { title: "🧾 Nauja freelance sąskaita: " + (v.ext_name || v.supplier || ""), body: invTitle(v) + " · per saskaitos.eventsolutions.lt", tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+  return await sendTo(await wantIds(await plusIds(), "other"), { title: (edited ? "✏️ Pataisyta freelance sąskaita: " : "🧾 Nauja freelance sąskaita: ") + (v.ext_name || v.supplier || ""), body: invTitle(v) + " · per saskaitos.eventsolutions.lt", tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+}
+// the freelancer is told by e-mail: not approved (why + „Taisyti sąskaitą“), approved and passed to accounting, paid.
+// ext_mailed keeps what was already told, so pressing the same button twice sends no second letter.
+const PORTAL_URL = Deno.env.get("FL_PORTAL_URL") || "https://saskaitos.eventsolutions.lt/";
+async function portalMail(v: Invoice) {
+  if (v.source !== "portal" || !v.ext_email) return { mailed: false };
+  const grp = v.status === "rejected" ? "rejected" : ["approved", "sent", "queued"].includes(v.status) ? "ok" : v.status === "paid" ? "paid" : "";
+  if (!grp) return { mailed: false };
+  const key = grp === "paid" ? "paid" : grp + "|" + (v.decision_at || "");
+  if (v.ext_mailed === key || (grp === "ok" && v.ext_mailed === "paid")) return { mailed: false, already: true };
+  const key2 = Deno.env.get("RESEND_API_KEY"); if (!key2) return { mailed: false, error: "RESEND_API_KEY" };
+  const money = (n: unknown) => Number(n || 0).toFixed(2).replace(".", ",") + " €";
+  const what = "sąskaita" + (v.number ? " nr. " + v.number : "") + " (" + money(v.amount) + ")";
+  const lines = (v.lines || []).map((l) => `<tr><td style="padding:3px 10px 3px 0;color:#555">${escHtml(l.date || "")}</td><td style="padding:3px 10px 3px 0">${escHtml(l.event || "")}</td><td style="padding:3px 0;text-align:right">${money(l.amount)}</td></tr>`).join("");
+  const table = lines ? `<table style="border-collapse:collapse;font-size:14px;margin:10px 0">${lines}</table>` : "";
+  const hi = `<p>Sveiki${v.ext_name ? ", " + escHtml(v.ext_name.split(" ")[0]) : ""},</p>`;
+  let subject = "", body = "";
+  if (grp === "rejected") {
+    subject = "Sąskaita nepatvirtinta" + (v.number ? ": " + v.number : "");
+    body = `${hi}<p>Jūsų ${escHtml(what)} <b style="color:#c62828">nepatvirtinta</b>.</p>
+      ${v.decision_note ? `<p style="padding:10px 14px;background:#fdecea;border-left:4px solid #c62828;border-radius:4px"><b>Priežastis:</b> ${escHtml(v.decision_note)}</p>` : ""}${table}
+      <p>Pataisykite ir pateikite iš naujo:</p>
+      <p><a href="${PORTAL_URL}?edit=${encodeURIComponent(v.id)}" style="display:inline-block;padding:12px 22px;background:#1e6fd9;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold">✏️ Taisyti sąskaitą</a></p>`;
+  } else if (grp === "ok") {
+    subject = "Sąskaita patvirtinta" + (v.number ? ": " + v.number : "");
+    body = `${hi}<p>Jūsų ${escHtml(what)} <b style="color:#2e7d32">patvirtinta ir perduota buhalterijai</b> apmokėti.</p>${table}
+      ${v.decision_note ? `<p style="color:#555">Komentaras: ${escHtml(v.decision_note)}</p>` : ""}`;
+  } else {
+    subject = "Sąskaita apmokėta" + (v.number ? ": " + v.number : "");
+    body = `${hi}<p>Jūsų ${escHtml(what)} <b style="color:#2e7d32">apmokėta</b>. Ačiū!</p>${table}`;
+  }
+  const html = `<div style="font-family:Arial,sans-serif;font-size:15px;color:#111;max-width:560px">${body}
+    <p style="color:#777;font-size:13px;margin-top:20px">Visas savo sąskaitas matote <a href="${PORTAL_URL}">${PORTAL_URL.replace(/^https?:\/\//, "").replace(/\/$/, "")}</a>.</p></div>`;
+  const r = await fetch("https://api.resend.com/emails", {
+    signal: AbortSignal.timeout(12000), method: "POST", headers: { Authorization: `Bearer ${key2}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from: Deno.env.get("REMINDER_FROM") || "Event Solutions <onboarding@resend.dev>", to: [v.ext_email], subject, html }),
+  });
+  if (!r.ok) return { mailed: false, error: (await r.text()).slice(0, 200) };
+  await db(`invoices?id=eq.${v.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ ext_mailed: key }) }).catch(() => {});
+  return { mailed: true, to: v.ext_email };
 }
 // a reply given in the e-mail (called by invoice-respond with the cron secret)
 async function onInvoiceReply(id: string) {
   const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
   if (!v) return { error: "Sąskaita nerasta" };
   const r = (v.responses || [])[v.responses.length - 1]; if (!r) return { sent: 0 };
+  if (v.source === "portal" && v.status === "paid") await portalMail(v).catch(() => {});
   const what = r.kind === "paid" ? "💶 Apmokėta" : r.kind === "queued" ? "🗂 Suvesta apmokėjimui" : "💬 Atsakymas";
   return await sendTo(await plusIds(), { title: what + ": " + invTitle(v), body: (r.who ? r.who + ": " : "") + (r.text || ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
 }
@@ -1322,7 +1365,7 @@ Deno.serve(async (req) => {
     if (body?.mode === "invoice-portal") {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
-      return json(await onInvoicePortal(String(body.invoice_id ?? "")));
+      return json(await onInvoicePortal(String(body.invoice_id ?? ""), body.edited === true));
     }
     if (body?.mode === "invoice-reply") {
       const secret = Deno.env.get("CRON_SECRET");

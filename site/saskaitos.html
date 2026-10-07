@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-TN2h5jvju6vBzMsEBTGD6p1/x8Bk9pTE+3mj5HJ8PIM=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-8CKLiK6Csj8+WXJhYJuXz6QQ8G39HDYAiSH6OppmZDo=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-2hcBlKX83Y/UNtJBP6zMvmAuOil5p4b83xYH2EayWxo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-pcaxXmuPZNTmXpR12jScKSXbAzIEjLjl7s26IkjMTBE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-vQhns6wLe9ZqKyaJmd22T2FdbxUqGMdpL9W3PlOWXck=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -52,6 +52,14 @@ input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(
 .file{display:flex;align-items:center;gap:10px;padding:12px;border:1px dashed var(--border);border-radius:10px;cursor:pointer;margin-top:4px;}
 .file b{word-break:break-all;}
 .file input{display:none;}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;} .top h1{flex:1;margin:0;}
+.inv{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;}
+.inv-h{display:flex;align-items:flex-start;gap:10px;} .inv-h .sp{flex:1;min-width:0;} .inv-h b{font-variant-numeric:tabular-nums;white-space:nowrap;}
+.inv small{display:block;color:var(--dim);font-size:13px;}
+.st{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);margin-top:6px;}
+.why{margin-top:8px;padding:9px 11px;border-radius:8px;background:color-mix(in srgb,var(--bad) 13%,transparent);font-size:14px;}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.lnk{background:none;border:0;color:var(--accent);font:inherit;font-size:14px;cursor:pointer;padding:0;}
 .done{text-align:center;padding:26px 16px;}
 .done .big{font-size:48px;}
 </style>
@@ -92,10 +100,54 @@ let S = { token:store.get('flTok'), name:store.get('flName')||'', email:store.ge
 function logout(){ S.token = null; store.set('flTok', null); store.set('flName', null); draft = null; }
 document.getElementById('out').onclick = ()=>{ logout(); render(); };
 
+// a link from the e-mail „Taisyti sąskaitą“ (?edit=<id>): opened after signing in
+(function(){ const e = new URLSearchParams(location.search).get('edit'); if(e){ store.set('flEdit', e); history.replaceState(null, '', location.pathname); } })();
 function render(){
   document.getElementById('out').hidden = !S.token;
   if(!S.token) return S.pinSent ? viewPin() : viewEmail();
-  viewForm();
+  if(draft) return viewForm();
+  viewHome();
+}
+
+// ---- my invoices ----
+const ST = { new:['Pateikta – laukia patvirtinimo','#E0A030'], later:['Pateikta – laukia patvirtinimo','#E0A030'], rejected:['Nepatvirtinta','#E5484D'],
+  approved:['Patvirtinta, perduota buhalterijai','#2F9E73'], sent:['Patvirtinta, perduota buhalterijai','#2F9E73'], queued:['Suvesta apmokėjimui','#2F9E73'], paid:['Apmokėta','#2F9E73'] };
+let LIST = null;
+async function viewHome(){
+  $app.innerHTML = `<div class="card"><div class="top"><h1>Sveiki${S.name ? ', '+esc(S.name.split(' ')[0]) : ''}!</h1><button class="btn small" id="new">+ Nauja sąskaita</button></div>
+      <p class="muted">Čia matai visas savo pateiktas sąskaitas. Jei sąskaita nepatvirtinta – gausi el. laišką su priežastimi ir galėsi ją pataisyti.</p></div>
+    <div class="card"><h2>Mano sąskaitos</h2><div id="list"><p class="muted">Kraunama…</p></div></div>`;
+  document.getElementById('new').onclick = ()=>{ draft = blankDraft(); render(); };
+  try{ LIST = (await call({ action:'list', token:S.token })).invoices || []; }
+  catch(x){ if(!S.token) return render(); document.getElementById('list').innerHTML = `<div class="err">${esc(x.message)}</div>`; return; }
+  const box = document.getElementById('list'); if(!box) return;
+  const want = store.get('flEdit');
+  if(want){ store.set('flEdit', null); const v = LIST.find(x=>x.id===want);
+    if(v && v.editable) return startEdit(v);
+    if(v) setTimeout(()=>alert('Ši sąskaita jau patvirtinta – jos taisyti nebereikia.'), 50); }
+  box.innerHTML = LIST.length ? LIST.map(v=>{
+    const st = ST[v.status] || ST.new, L = v.lines || [];
+    return `<div class="inv"><div class="inv-h"><div class="sp"><div><b>${v.number ? 'Nr. '+esc(v.number) : 'Sąskaita be nr.'}</b></div>
+        <small>Pateikta ${esc(String(v.created_at||'').slice(0,10))} · ${L.length} ${L.length===1 ? 'renginys' : 'renginiai'}${L.length ? ': '+esc(L.slice(0,3).map(l=>l.event).join(', '))+(L.length>3 ? '…' : '') : ''}</small>
+        <span class="st" style="--c:${st[1]}">${st[0]}</span></div><b>${eur(cents(Number(v.amount||0)))}</b></div>
+      ${v.status==='rejected' && v.decision_note ? `<div class="why"><b>Priežastis:</b> ${esc(v.decision_note)}</div>` : ''}
+      <div class="acts">${v.editable ? `<button class="btn small${v.status==='rejected' ? '' : ' ghost'}" data-edit="${esc(v.id)}">✏️ Taisyti sąskaitą</button>` : ''}${(v.files||[]).length ? `<button class="btn small ghost" data-file="${esc(v.id)}">📎 Failas</button>` : ''}</div></div>`;
+  }).join('') : '<p class="muted">Dar nepateikei nė vienos sąskaitos.</p>';
+  box.querySelectorAll('[data-edit]').forEach(b=>b.onclick = ()=>startEdit(LIST.find(v=>v.id===b.dataset.edit)));
+  box.querySelectorAll('[data-file]').forEach(b=>b.onclick = async ()=>{
+    const w = window.open('', '_blank');
+    try{ const d = await call({ action:'file', token:S.token, id:b.dataset.file }); if(w) w.location = d.url; else location.href = d.url; }
+    catch(x){ if(w) w.close(); alert(x.message); }
+  });
+}
+function startEdit(v){
+  if(!v) return;
+  draft = { editId:v.id, wasRejected:v.status==='rejected', why:v.decision_note||'', number:v.number||'', total:String(v.amount||'').replace('.', ','), note:v.note||'', file:null, oldFile:(v.files||[])[0]||null,
+    lines:(v.lines||[]).map(l=>Object.assign(newLine(l.date), { ename:l.event||'', ev:l.event_id || '__manual', name:l.event_id ? '' : (l.event||''), type:l.type==='hourly' ? 'hourly' : 'fixed',
+      amount:l.type==='hourly' ? '' : String(l.amount).replace('.', ','), hours:l.type==='hourly' ? String(l.hours).replace('.', ',') : '', rate:l.type==='hourly' ? String(l.rate).replace('.', ',') : '' })) };
+  if(!draft.lines.length) draft.lines.push(newLine());
+  render();
+  draft.lines.forEach((l, i)=>{ if(l.date) loadEvents(i, true); });
 }
 
 // ---- 1. e-mail ----
@@ -153,28 +205,33 @@ function lineOk(l){
   if(manual(l) ? !l.name.trim() : !l.ev) return false;
   return lineCents(l) > 0;
 }
-async function loadEvents(i){
+async function loadEvents(i, keepEv){
   const l = draft.lines[i]; if(!l || !l.date) return;
+  const was = keepEv ? l.ev : '';
   l.loading = true; l.events = null; l.ev = ''; drawLines();
   try{
     const d = await call({ action:'events', token:S.token, date:l.date });
     if(draft.lines[i]!==l) return;
     l.events = d.events || [];
     const mine = l.events.filter(e=>e.mine);
-    if(mine.length===1) l.ev = mine[0].id;
+    if(was && (was==='__manual' ? l.events.length : l.events.some(e=>e.id===was))) l.ev = was;
+    else if(was && was!=='__manual'){ l.ev = '__manual'; l.name = l.name || l.ename || ''; }   // the event is no longer in „Renginiai“: its name stays, typed
+    else if(mine.length===1) l.ev = mine[0].id;
     else if(l.events.length===1) l.ev = l.events[0].id;
   }catch(x){ if(!S.token) return render(); l.events = []; l.err = x.message; }
   l.loading = false; drawLines();
 }
+const blankDraft = ()=>({ number:'', total:'', note:'', file:null, lines:[newLine()] });
 function viewForm(){
-  if(!draft) draft = { number:'', total:'', note:'', file:null, lines:[newLine()] };
-  $app.innerHTML = `<div class="card"><h1>Sveiki${S.name ? ', '+esc(S.name.split(' ')[0]) : ''}!</h1>
-      <p class="muted">Nurodyk, kuriuose renginiuose dirbai, ir įkelk sąskaitą. Visos sumos – <b>su mokesčiais</b>. Sąskaitos suma turi sutapti su renginių suma.</p></div>
+  if(!draft) draft = blankDraft();
+  $app.innerHTML = `<div class="card"><div class="top"><h1>${draft.editId ? 'Sąskaitos taisymas' : 'Nauja sąskaita'}</h1><button class="btn small ghost" id="back">← Mano sąskaitos</button></div>
+      <p class="muted">Nurodyk, kuriuose renginiuose dirbai, ir įkelk sąskaitą. Visos sumos – <b>su mokesčiais</b>. Sąskaitos suma turi sutapti su renginių suma.</p>
+      ${draft.wasRejected && draft.why ? `<div class="why"><b>Nepatvirtinta, nes:</b> ${esc(draft.why)}</div>` : ''}</div>
     <div class="card"><h2>Sąskaita</h2>
       <div class="row2"><div><label>Sąskaitos nr.</label><input id="num" value="${esc(draft.number)}" autocomplete="off"></div>
       <div><label>Suma su mokesčiais, €</label><input id="tot" inputmode="decimal" value="${esc(draft.total)}" placeholder="0,00" autocomplete="off"></div></div>
       <label>Sąskaitos failas (PDF arba nuotrauka)</label>
-      <label class="file" id="fl"><span>📎</span><span id="fname">${draft.file ? '<b>'+esc(draft.file.name)+'</b>' : 'Pasirink failą…'}</span><input id="file" type="file" accept="application/pdf,image/*"></label>
+      <label class="file" id="fl"><span>📎</span><span id="fname">${draft.file ? '<b>'+esc(draft.file.name)+'</b>' : draft.oldFile ? '<b>'+esc(draft.oldFile.name)+'</b> <span class="muted">(paliekamas – spausk, jei nori pakeisti)</span>' : 'Pasirink failą…'}</span><input id="file" type="file" accept="application/pdf,image/*"></label>
     </div>
     <div class="card"><h2>Renginiai</h2><div id="lines"></div>
       <button class="btn ghost" id="add">+ Pridėti renginį</button></div>
@@ -193,6 +250,8 @@ function viewForm(){
   };
   q('add').onclick = ()=>{ draft.lines.push(newLine()); drawLines(); const els = document.querySelectorAll('.l-date'); els[els.length-1].focus(); };
   q('send').onclick = submit;
+  q('back').onclick = ()=>{ draft = null; render(); };
+  if(draft.editId) q('send').textContent = 'Siųsti pataisytą sąskaitą';
   drawLines();
 }
 function drawLines(){
@@ -240,10 +299,10 @@ function drawSum(){
   else m = `<div class="match bad">✗ Sumos nesutampa: skiriasi ${eur(Math.abs(tot-sum))} (renginiuose ${sum>tot ? 'daugiau' : 'mažiau'}).</div>`;
   const miss = [];
   if(bad>=0) miss.push(`užpildyk ${bad+1} eilutę (data, renginys, suma)`);
-  if(!draft.file) miss.push('įkelk sąskaitos failą');
+  if(!draft.file && !draft.oldFile) miss.push('įkelk sąskaitos failą');
   box.innerHTML = `<div class="sum"><span>Renginių (${draft.lines.length}) suma</span><b>${eur(sum)}</b></div><div class="sum"><span>Sąskaitos suma</span><b>${tot ? eur(tot) : '—'}</b></div>${m}${miss.length ? `<p class="muted">Dar: ${miss.join(', ')}.</p>` : ''}`;
   const send = document.getElementById('send');
-  if(send) send.disabled = !(tot && sum===tot && bad<0 && draft.file);
+  if(send) send.disabled = !(tot && sum===tot && bad<0 && (draft.file || draft.oldFile));
 }
 function fileB64(f){
   return new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = ()=>rej(new Error('Nepavyko perskaityti failo.')); r.readAsDataURL(f); });
@@ -259,11 +318,12 @@ async function submit(){
       return o;
     });
     const f = draft.file;
-    const d = await call({ action:'submit', token:S.token, number:draft.number.trim(), total:num(draft.total), note:draft.note.trim(), lines, file:{ name:f.name, type:f.type, base64:await fileB64(f) } });
+    const d = await call({ action:'submit', token:S.token, id:draft.editId || undefined, number:draft.number.trim(), total:num(draft.total), note:draft.note.trim(), lines,
+      file: f ? { name:f.name, type:f.type, base64:await fileB64(f) } : null });
     draft = null;
-    $app.innerHTML = `<div class="card done"><div class="big">✅</div><h1>Sąskaita išsiųsta</h1>
-      <p class="muted">Gavome jūsų sąskaitą (${eur(cents(d.total))}). Ji perduota tvirtinimui – ačiū!</p>
-      <button class="btn" id="again">Siųsti kitą sąskaitą</button><button class="btn ghost" id="bye">Atsijungti</button></div>`;
+    $app.innerHTML = `<div class="card done"><div class="big">✅</div><h1>${d.edited ? 'Pataisyta sąskaita išsiųsta' : 'Sąskaita išsiųsta'}</h1>
+      <p class="muted">Gavome jūsų sąskaitą (${eur(cents(d.total))}). Ji perduota tvirtinimui – kai bus patvirtinta, gausite el. laišką.</p>
+      <button class="btn" id="again">Mano sąskaitos</button><button class="btn ghost" id="bye">Atsijungti</button></div>`;
     document.getElementById('again').onclick = ()=>render();
     document.getElementById('bye').onclick = ()=>{ logout(); render(); };
   }catch(x){
