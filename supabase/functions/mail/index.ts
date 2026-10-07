@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 26;
+const VERSION = 27;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -700,8 +700,9 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
 // was switched on; each run copies up to 10 (≤ 25 MB), the rest go in the next runs. The server's own forwarding
 // may work only sometimes: a letter already in Gmail (same Message-ID) is not copied again, and a new one waits a
 // minute first, so a forwarded copy can come.
-type MirrorState = { uidValidity?: string; lastUid?: number; copied?: number; busy?: string;
-  last?: { at: string; n: number; skipped?: number; waiting?: number; err?: string } };
+type MirrorState = { uidValidity?: string; lastUid?: number; copied?: number; busy?: string; removed?: number;
+  recent?: Record<string, number>;   // Message-IDs copied in the last hours: a later forwarded copy of one is deleted
+  last?: { at: string; n: number; skipped?: number; waiting?: number; removed?: number; err?: string } };
 const MIRROR_WAIT_MS = Number(Deno.env.get("MAIL_MIRROR_WAIT_MS") ?? 60_000);
 type MirrorRow = { user_id: string; email: string; secret: string; reader?: Reader | null; settings?: Settings | null; state?: { mirror?: MirrorState } | null };
 async function mirrorSave(user: string, mirror: MirrorState) {
@@ -713,6 +714,7 @@ type MirrorMsg = { uid: number; source: Buffer; flags: string[]; date?: Date; mi
 // Message-ID in „All Mail“; each handled letter is reported (copied or already there)
 async function toGmail(dst: Account, msgs: MirrorMsg[], done: (m: MirrorMsg) => void = () => {}) {
   let n = 0, skipped = 0;
+  const mids: string[] = [];
   await withImap(dst, async (g) => {
     const gm = !!(g.capabilities as unknown as Map<string, unknown>)?.has?.("X-GM-EXT-1");
     const allBox = (await boxes(g)).find((b) => b.specialUse === "\\All")?.path || "INBOX";
@@ -725,14 +727,46 @@ async function toGmail(dst: Account, msgs: MirrorMsg[], done: (m: MirrorMsg) => 
           there = ((await g.search(q as never, { uid: true })) || []).length > 0;
         }
         // with the letter's own receive time; a server that refuses that date format gets it without one
-        if (!there) { await g.append("INBOX", m.source, m.flags, m.date).catch(() => g.append("INBOX", m.source, m.flags)); n++; }
+        if (!there) { await g.append("INBOX", m.source, m.flags, m.date).catch(() => g.append("INBOX", m.source, m.flags)); n++; if (m.mid) mids.push(m.mid); }
         else skipped++;
         done(m);
       }
     } finally { lock.release(); }
   }, false, 90_000);
-  return { n, skipped };
+  return { n, skipped, mids };
 }
+// one letter, two copies in Gmail (we copied it, then the server's forwarding brought it too, or the other way):
+// the one that came first stays, the later one goes to the Trash (and so out of the app's list)
+const RECENT_MS = 6 * 3600e3;
+async function dedupeGmail(dst: Account, recent: Record<string, number>): Promise<number> {
+  const mids = Object.keys(recent).filter((k) => Date.now() - recent[k] < RECENT_MS);
+  if (!mids.length) return 0;
+  let removed = 0;
+  await withImap(dst, async (g) => {
+    const gm = !!(g.capabilities as unknown as Map<string, unknown>)?.has?.("X-GM-EXT-1");
+    const list = await boxes(g);
+    const allBox = list.find((b) => b.specialUse === "\\All")?.path || "INBOX";
+    const trash = list.find((b) => b.specialUse === "\\Trash")?.path;
+    const lock = await g.getMailboxLock(allBox);
+    try {
+      for (const mid of mids) {
+        const q = gm ? { gmraw: "rfc822msgid:" + mid.replace(/^<|>$/g, "") } : { header: { "message-id": mid } };
+        const uids = ((await g.search(q as never, { uid: true })) || []).sort((x, y) => x - y);
+        if (uids.length < 2) continue;
+        const later = uids.slice(1).join(",");     // the lowest UID came first
+        if (trash) await g.messageMove(later, trash, { uid: true }); else await g.messageDelete(later, { uid: true });
+        removed += uids.length - 1;
+      }
+    } finally { lock.release(); }
+  }, false, 60_000);
+  return removed;
+}
+const keepRecent = (r: Record<string, number> | undefined, add: string[]) => {
+  const out: Record<string, number> = {};
+  for (const [k, t] of Object.entries(r ?? {})) if (Date.now() - t < RECENT_MS) out[k] = t;
+  for (const k of add) out[k] = Date.now();
+  return Object.fromEntries(Object.entries(out).sort((a, b) => b[1] - a[1]).slice(0, 200));
+};
 // the company Inbox's letters (sources) by UID, at most 25 MB
 async function companyMsgs(c: ImapFlow, uids: number[]): Promise<MirrorMsg[]> {
   const sizes = new Map<number, number>();
@@ -763,7 +797,12 @@ async function mirrorBack(row: MirrorRow, hours: number) {
       return want.length ? await companyMsgs(c, want.slice(0, 30)) : [] as MirrorMsg[];
     } finally { lock.release(); }
   }, true, 120_000);
-  const r = msgs.length ? await toGmail(a.reader!, msgs) : { n: 0, skipped: 0 };
+  const r = msgs.length ? await toGmail(a.reader!, msgs) : { n: 0, skipped: 0, mids: [] as string[] };
+  if (r.mids.length) {
+    const [cur] = await db<{ state: { mirror?: MirrorState } | null }[]>(`mail_accounts?select=state&user_id=eq.${row.user_id}`);
+    const m = cur?.state?.mirror ?? {};
+    await mirrorSave(row.user_id, { ...m, recent: keepRecent(m.recent, r.mids), copied: (m.copied ?? 0) + r.n });
+  }
   return { copied: r.n, skipped: r.skipped, checked: msgs.length, more };
 }
 async function mirrorFor(row: MirrorRow, force = false) {
@@ -778,7 +817,7 @@ async function mirrorFor(row: MirrorRow, force = false) {
   const st: MirrorState = { ...(locked[0].state?.mirror ?? {}) };
   delete st.busy;
   const a = await accountOf(row), src: Account = { email: a.email, password: a.password }, dst = a.reader!;
-  let n = 0, waiting = 0, skipped = 0, err = "";
+  let n = 0, waiting = 0, skipped = 0, removed = 0, err = "";
   try {
     // 1) the company Inbox: which letters are new (the first run only notes where „now“ is)
     type Msg = MirrorMsg;
@@ -806,15 +845,19 @@ async function mirrorFor(row: MirrorRow, force = false) {
     if (msgs.length) {
       const r = await toGmail(dst, msgs, (m) => { st.lastUid = m.uid; });
       n += r.n; skipped += r.skipped;
+      st.recent = keepRecent(st.recent, r.mids);
     }
+    // a forwarded copy of a letter copied earlier: the later of the two is deleted
+    if (Object.keys(st.recent ?? {}).length) { removed = await dedupeGmail(dst, st.recent!).catch((e) => { console.error("dedupe", (e as Error).message); return 0; }); st.recent = keepRecent(st.recent, []); }
   } catch (e) {
     err = e instanceof UserError ? e.message : (e as Error).message || "klaida";
     console.error("mirror", row.email, err);
   }
   st.copied = (st.copied ?? 0) + n;
-  st.last = { at: new Date().toISOString(), n, ...(skipped ? { skipped } : {}), ...(waiting ? { waiting } : {}), ...(err ? { err: err.slice(0, 300) } : {}) };
+  st.removed = (st.removed ?? 0) + removed;
+  st.last = { at: new Date().toISOString(), n, ...(skipped ? { skipped } : {}), ...(waiting ? { waiting } : {}), ...(removed ? { removed } : {}), ...(err ? { err: err.slice(0, 300) } : {}) };
   await mirrorSave(row.user_id, st);
-  return { copied: n, skipped, waiting, err: err || undefined };
+  return { copied: n, skipped, waiting, removed, err: err || undefined };
 }
 
 // pg_cron, every minute: Inbox for everyone (Sent every 5 min), one after another
@@ -1533,10 +1576,11 @@ async function handle(me: Me, body: Record<string, unknown>) {
   if (action === "settings") {
     return {
       connected: true, email: a0.email, reader: a0.reader?.email ?? null, settings: await settingsOf(me.id),
+      companyHost: a0.host || env("MAIL_IMAP_HOST", "koala.serveriai.lt"),
       psignature: psigHtml(me.person, (await settingsOf(me.id)).psig || ""),
       ...(await (async () => {
         const stt = (await db<{ state: { auto?: AutoState; mirror?: MirrorState } | null }[]>(`mail_accounts?select=state&user_id=eq.${me.id}`))[0]?.state;
-        return { autoLast: stt?.auto?.last ?? null, mirror: { last: stt?.mirror?.last ?? null, copied: stt?.mirror?.copied ?? 0 } };
+        return { autoLast: stt?.auto?.last ?? null, mirror: { last: stt?.mirror?.last ?? null, copied: stt?.mirror?.copied ?? 0, removed: stt?.mirror?.removed ?? 0 } };
       })()),
       signature: sigHtml(me.person).replace(`cid:${LOGO_CID}`, "data:image/png;base64," + LOGO_PNG_BASE64),
     };
@@ -1560,7 +1604,7 @@ async function handle(me: Me, body: Record<string, unknown>) {
     const [row] = await db<MirrorRow[]>(`mail_accounts?select=user_id,email,secret,reader,settings,state&user_id=eq.${me.id}`);
     const r = await mirrorFor(row, true);
     const stt = (await db<{ state: { mirror?: MirrorState } | null }[]>(`mail_accounts?select=state&user_id=eq.${me.id}`))[0]?.state?.mirror;
-    return { ok: true, on: !!row.settings?.mirror?.on, result: r, last: stt?.last ?? null, copied: stt?.copied ?? 0 };
+    return { ok: true, on: !!row.settings?.mirror?.on, result: r, last: stt?.last ?? null, copied: stt?.copied ?? 0, removed: stt?.removed ?? 0 };
   }
   if (action === "settings_save") {
     const settings = cleanSettings(body.settings, await settingsOf(me.id));
