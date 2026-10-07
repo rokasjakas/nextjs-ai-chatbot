@@ -62,6 +62,10 @@ open(headers_out, 'w').write(f"""/*
   Cache-Control: no-cache
 /auto.html
   Cache-Control: no-cache
+/saskaitos
+  Cache-Control: no-cache
+/saskaitos.html
+  Cache-Control: no-cache
 /.well-known/assetlinks.json
   Content-Type: application/json
 /EventSolutions.apk

@@ -2,8 +2,10 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-CrNcik9ptS5b1WwTFZqlV8D1YnVBOnOd6WOXVSAZ90I=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-TN2h5jvju6vBzMsEBTGD6p1/x8Bk9pTE+3mj5HJ8PIM=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-8CKLiK6Csj8+WXJhYJuXz6QQ8G39HDYAiSH6OppmZDo=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-2hcBlKX83Y/UNtJBP6zMvmAuOil5p4b83xYH2EayWxo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
+// saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
+if(/^saskaitos\./.test(location.hostname)) location.replace(location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html');
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
 </script>
@@ -3919,6 +3921,8 @@ input.ltd-in{cursor:pointer;font-variant-numeric:tabular-nums;} input.ltd-in[dat
 .btn.inv-ok{border-color:var(--ok);color:var(--ok);font-weight:800;} .btn.inv-no{border-color:var(--danger);color:var(--danger);font-weight:800;} .btn.inv-later{border-color:#A895E0;color:#A895E0;font-weight:800;}
 .btn.inv-ok:hover{background:var(--ok);color:#fff;} .btn.inv-no:hover{background:var(--danger);color:#fff;} .btn.inv-later:hover{background:#A895E0;color:#fff;}
 .inv-laterbox{margin-top:10px;padding:10px;border:1px dashed #A895E0;border-radius:10px;}
+.inv-lines{width:100%;border-collapse:collapse;font-size:13px;margin:2px 0 8px;} .inv-lines th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--text-dim);font-weight:700;padding:5px 6px;border-bottom:1px solid var(--border);} .inv-lines td{padding:6px;border-bottom:1px solid var(--border);vertical-align:top;} .inv-lines td.n,.inv-lines th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;} .inv-lines tfoot td{border-bottom:0;font-weight:700;} .inv-lines small{color:var(--text-dim);}
+@media (max-width:600px){ .inv-lines .t{display:none;} }
 .inv-hist{display:flex;flex-direction:column;gap:4px;font-size:12.5px;} .inv-hist div{display:grid;grid-template-columns:120px 1fr;gap:8px;padding:5px 8px;border-radius:6px;background:var(--panel-2);} .inv-hist div span:first-child{color:var(--text-dim);}
 .inv-to{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--input-bg,var(--panel-2));cursor:text;} .inv-to input{flex:1;min-width:160px;border:0 !important;background:transparent !important;padding:4px !important;box-shadow:none !important;}
 .inv-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 4px 3px 10px;border-radius:14px;background:color-mix(in srgb, var(--accent) 16%, transparent);font-size:12.5px;} .inv-chip small{color:var(--text-dim);}
@@ -15341,13 +15345,13 @@ const invNew = ()=>INV.list.filter(v=>v.status==='new');
 const invDue = ()=>INV.list.filter(v=>v.status==='later' && v.remind_at && new Date(v.remind_at) <= new Date());
 function invBadge(){
   const b = document.querySelector('.rail-btn[data-tab="invoices"]'); if(!b) return;
-  const n = isPlus() ? invNew().length + invDue().length : INV.list.filter(v=>v.created_by===teamMe() && v.uploader_seen===false).length;
+  const n = isPlus() ? invNew().length + invDue().length : INV.list.filter(v=>v.created_by===teamMe() && v.uploader_seen===false && !invPortal(v)).length;
   b.dataset.badge = n ? String(n) : '';
 }
 // the uploader is told what happened to his invoice
 let invAnsBusy = false;
 function invAnswers(){
-  const list = INV.list.filter(v=>v.created_by===teamMe() && v.uploader_seen===false && v.status!=='new');
+  const list = INV.list.filter(v=>v.created_by===teamMe() && v.uploader_seen===false && v.status!=='new' && !invPortal(v));
   if(!list.length || invAnsBusy || document.getElementById('modalBackdrop')) return;
   invAnsBusy = true;
   openModal(`<h3>Tavo sąskaitos</h3><div class="fb-list">${list.map(v=>invRowHtml(v, false)).join('')}</div>
@@ -15358,11 +15362,27 @@ function invAnswers(){
   };
   document.getElementById('modalBackdrop').addEventListener('click', e=>{ if(e.target.id==='modalBackdrop') invAnsBusy = false; });
 }
+// an invoice a freelancer sent on saskaitos.eventsolutions.lt: who sent it is the e-mail's person, not the member it belongs to
+const invPortal = v=>v.source==='portal';
+const invWho = (v, mail)=>invPortal(v) ? (v.ext_name || v.ext_email || 'freelanceris')+(mail && v.ext_email && v.ext_name ? ' <'+v.ext_email+'>' : '') : tkName(v.created_by);
+function invLinesHtml(v){
+  const L = Array.isArray(v.lines) ? v.lines : []; if(!L.length) return '';
+  const sum = L.reduce((t, l)=>t+Math.round(Number(l.amount||0)*100), 0), tot = Math.round(Number(v.amount||0)*100), ok = sum===tot;
+  return `<div class="fb-sec">Renginiai (${L.length})</div><div style="overflow-x:auto;"><table class="inv-lines"><thead><tr><th>Data</th><th>Renginys</th><th class="t">Tipas</th><th class="n">Suma</th></tr></thead><tbody>${L.map(l=>`<tr>
+      <td style="white-space:nowrap;">${esc(l.date||'')}</td>
+      <td>${l.event_id ? `<a href="#" data-inv-ev="${esc(l.event_id)}">${esc(l.event||'Renginys')}</a>` : esc(l.event||'—')+' <small>(įrašyta ranka)</small>'}</td>
+      <td class="t">${l.type==='hourly' ? esc(String(l.hours).replace('.', ','))+' val. × '+esc(invMoney(l.rate)) : 'sutarta suma'}</td>
+      <td class="n">${esc(invMoney(l.amount))}</td></tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="2">Iš viso <small>(su mokesčiais)</small></td><td class="t"></td><td class="n">${esc(invMoney(sum/100))} ${ok ? '<span style="color:#2F9E73;">✓</span>' : '<span style="color:#E5484D;" title="Nesutampa su sąskaitos suma">≠ '+esc(invMoney(tot/100))+'</span>'}</td></tr></tfoot></table></div>`;
+}
+function invLinesBind(){
+  document.querySelectorAll('#modalRoot [data-inv-ev]').forEach(a=>a.onclick = e=>{ e.preventDefault(); const id = a.dataset.invEv; closeModal(); appOpenFromUrl('./?event='+encodeURIComponent(id)); });
+}
 function invRowHtml(v, who){
   const k = invKind(v.kind), st = INV_ST[v.status] || INV_ST.new, last = (v.responses||[])[(v.responses||[]).length-1];
   return `<button type="button" class="inv-row" data-inv="${esc(v.id)}">
     <span class="inv-k" style="--c:${k[2]}">${esc(k[1])}</span>
-    <span class="inv-main"><b>${esc(invTitle(v))}</b><small>${[v.invoice_date ? 'data '+v.invoice_date : '', v.due_date ? 'apmokėti iki '+v.due_date : '', who ? 'įkėlė '+tkName(v.created_by) : '', (v.files||[]).length ? '📎 '+v.files.length : ''].filter(Boolean).map(esc).join(' · ')}</small>
+    <span class="inv-main"><b>${esc(invTitle(v))}</b><small>${[v.invoice_date ? 'data '+v.invoice_date : '', v.due_date ? 'apmokėti iki '+v.due_date : '', invPortal(v) ? '🌐 pateikė '+invWho(v) : who ? 'įkėlė '+tkName(v.created_by) : '', (v.files||[]).length ? '📎 '+v.files.length : ''].filter(Boolean).map(esc).join(' · ')}</small>
       ${v.decision_note ? `<small class="inv-note">💬 ${esc(v.decision_note)}</small>` : ''}${last ? `<small class="inv-note">↩ ${esc((last.who ? last.who+': ' : '')+(last.kind==='paid'?'apmokėta':last.kind==='queued'?'suvesta apmokėjimui':last.text||''))}</small>` : ''}
       ${v.status==='later' && v.remind_at ? `<small>⏰ priminti ${esc(fbWhen(v.remind_at))}</small>` : ''}</span>
     <span class="inv-side"><b>${esc(invMoney(v.amount))}</b><span class="fb-st" style="--c:${st.c}">${st.t}</span></span>
@@ -15395,7 +15415,7 @@ function invBrowse(kind, st){
 function invcFilter(list, kind, st, q){
   const w = normalizeText(q||'').split(/\s+/).filter(Boolean);
   return list.filter(v=>(!kind || v.kind===kind) && (!st || (st==='done' ? ['paid','rejected'].includes(v.status) : st==='sent' ? ['approved','sent','queued'].includes(v.status) : v.status===st))
-    && (!w.length || w.every(x=>normalizeText([v.supplier, v.number, v.note, tkName(v.created_by), v.amount].join(' ')).includes(x))));
+    && (!w.length || w.every(x=>normalizeText([v.supplier, v.number, v.note, invWho(v), v.ext_email, v.amount].join(' ')).includes(x))));
 }
 function invBrowseDraw(){
   const box = document.getElementById('invBrowse'); if(!box) return;
@@ -15428,7 +15448,7 @@ function invFilesBind(v){
 }
 function invHistHtml(v){
   const h = [];
-  h.push([v.created_at, '⬆ Įkėlė '+tkName(v.created_by)]);
+  h.push([v.created_at, invPortal(v) ? '🌐 Pateikė '+invWho(v, true)+' per saskaitos.eventsolutions.lt' : '⬆ Įkėlė '+tkName(v.created_by)]);
   if(v.decision_at) h.push([v.decision_at, (INV_ST[v.status==='sent'||v.status==='queued'||v.status==='paid' ? 'approved' : v.status]||{}).t+(v.decision_by ? ' – '+tkName(v.decision_by) : '')+(v.decision_note ? ': „'+v.decision_note+'“' : '')]);
   (v.sent||[]).forEach(s=>h.push([s.at, '📤 Išsiųsta: '+(s.to||[]).join(', ')+(s.comment ? ' – „'+s.comment+'“' : '')]));
   (v.responses||[]).forEach(r=>h.push([r.at, '↩ '+(r.who||'—')+': '+(r.kind==='paid'?'apmokėta':r.kind==='queued'?'suvesta apmokėjimui':'„'+r.text+'“')]));
@@ -15441,8 +15461,8 @@ function invInfoHtml(v){
     <div class="inv-kv">
       <div><span>Tiekėjas / išrašė</span><b>${esc(v.supplier||'—')}</b></div><div><span>Sąskaitos nr.</span><b>${esc(v.number||'—')}</b></div>
       <div><span>Suma</span><b>${esc(invMoney(v.amount)||'—')}</b></div><div><span>Sąskaitos data</span><b>${esc(v.invoice_date||'—')}</b></div>
-      <div><span>Apmokėti iki</span><b>${esc(v.due_date||'—')}</b></div><div><span>Įkėlė</span><b>${esc(tkName(v.created_by))}</b></div>
-    </div>${v.note ? `<div class="fb-note" style="border-left-color:var(--border)"><b>Komentaras:</b> ${esc(v.note)}</div>` : ''}`;
+      <div><span>Apmokėti iki</span><b>${esc(v.due_date||'—')}</b></div><div><span>${invPortal(v) ? 'Pateikė (portale)' : 'Įkėlė'}</span><b>${esc(invWho(v, true))}</b></div>
+    </div>${v.note ? `<div class="fb-note" style="border-left-color:var(--border)"><b>Komentaras:</b> ${esc(v.note)}</div>` : ''}${invLinesHtml(v)}`;
 }
 // the uploader looks at his own invoice
 function invView(v){
@@ -15451,7 +15471,7 @@ function invView(v){
     <div class="row" style="justify-content:space-between;margin-top:12px;">${v.status==='new' && v.created_by===teamMe() ? '<button class="btn small danger" id="ivDel">Ištrinti</button>' : '<span></span>'}<button class="btn primary" id="ivOk">Gerai</button></div>`);
   document.getElementById('modalRoot').classList.add('inv-modal');
   document.getElementById('ivX').onclick = document.getElementById('ivOk').onclick = closeModal;
-  invFilesBind(v);
+  invFilesBind(v); invLinesBind();
   const del = document.getElementById('ivDel');
   if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti šią sąskaitą?'))) return; const { error } = await getSb().from('invoices').delete().eq('id', v.id); if(error){ toast('Nepavyko: '+error.message); return; } INV.list = INV.list.filter(x=>x.id!==v.id); closeModal(); invListDraw(); invBadge(); toast('Ištrinta.'); };
 }
@@ -15481,16 +15501,16 @@ function invDecide(v, fromBrowse){
   document.getElementById('modalRoot').classList.add('inv-modal');
   document.getElementById('idX').onclick = closeModal;
   document.getElementById('idBack').onclick = back;
-  invFilesBind(v);
+  invFilesBind(v); invLinesBind();
   const presets = [()=>new Date(Date.now()+36e5), ()=>preset(1,9), ()=>preset(3,9), ()=>preset(7,9)];
   document.querySelectorAll('[data-lp]').forEach(b=>b.onclick = ()=>{ document.getElementById('idWhen').value = loc(presets[+b.dataset.lp]()); });
   const decide = async (status, extra)=>{
     const note = document.getElementById('idNote').value.trim() || null;
-    const upd = Object.assign({ status, decision_note:note, decision_by:teamMe(), decision_at:new Date().toISOString(), uploader_seen: v.created_by===teamMe() }, extra||{});
+    const upd = Object.assign({ status, decision_note:note, decision_by:teamMe(), decision_at:new Date().toISOString(), uploader_seen: v.created_by===teamMe() || invPortal(v) }, extra||{});
     const { error } = await getSb().from('invoices').update(upd).eq('id', v.id);
     if(error){ toast('Nepavyko: '+error.message); return false; }
     Object.assign(v, upd); invBadge(); invCard(); if(currentTab==='invoices') invListDraw();
-    if(v.created_by!==teamMe()) try{ notifyCall({ kind:'invoice', invoice_id:v.id, event:'decided' }); }catch(e){}
+    if(v.created_by!==teamMe() && !invPortal(v)) try{ notifyCall({ kind:'invoice', invoice_id:v.id, event:'decided' }); }catch(e){}
     return true;
   };
   document.getElementById('idYes').onclick = async ()=>{ if(await decide('approved', { remind_at:null })){ toast('✅ Patvirtinta – įkėlęs asmuo gaus pranešimą.'); invSendModal(v, fromBrowse); } };
@@ -19609,7 +19629,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v422';
+const APP_VER = 'v423';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -40403,6 +40423,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 21:35', v:'v423', k:'new', t:'Freelance sąskaitos per saskaitos.eventsolutions.lt', f:'Freelanceriai gali patys pateikti sąskaitas puslapyje saskaitos.eventsolutions.lt: įveda el. paštą, gauna vienkartinį kodą (galioja 1 val.), pasirenka datas ir renginius (jei renginio nėra sąraše – įrašo ranka), nurodo sutartą sumą arba valandas × įkainį ir įkelia sąskaitą. Siųsti galima tik kai renginių suma sutampa su sąskaitos suma (viskas su mokesčiais). Sąskaita atsiranda „Sąskaitos“ → Freelance su pateikusio vardu ir renginių išskaidymu, Admin+ gauna pranešimą.' },
   { d:'2026-10-07 21:19', v:'v422', k:'fix', t:'Automatinis atsakymas iškart, be pranešimų', f:'Kol įjungtas automatinis atsakymas, pranešimai apie naujus laiškus nesiunčiami, o į naują darbo laišką atsakymas išsiunčiamas iškart, vos laiškas pastebimas (per ~15–30 s). Pašto nustatymuose prie automatinio atsakymo – paskutinio patikrinimo informacija: kiek laiškų patikrinta, kam atsakyta ir, jei neatsakyta, kodėl (pvz. šiam siuntėjui jau atsakyta per 4 d.). Atsakymas niekada neišsiunčiamas du kartus. Reikia „mail“ funkcijos v23.' },
   { d:'2026-10-07 21:13', v:'v421', k:'fix', t:'Automatinis atsakymas – per minutę', f:'Automatinis atsakymas („ne biure“) dabar išsiunčiamas per ~1 minutę po laiško gavimo (anksčiau – tikrinta kas 10 min.). Prijungus Gmail atsakoma tik į laiškus, gautus į darbo @eventsolutions.lt adresą (ne į asmeninius). Atsakoma tik į laiškus, gautus po atsakymo įjungimo, ir tam pačiam siuntėjui – kartą per 4 dienas. Reikia „mail“ funkcijos v22 ir mail_auto.sql.' },
   { d:'2026-10-07 21:05', v:'v420', k:'fix', t:'Pašto viršus nebepasislepia', f:'Pašto puslapyje slinkdavo visas puslapis ir viršus (paieška, mygtukai, „Rašyti laišką“) pasislėpdavo po antrašte. Dabar puslapis stovi vietoje – slenka tik laiškų sąrašas, aplankai ir atidarytas laiškas.' },

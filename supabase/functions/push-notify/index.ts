@@ -1056,6 +1056,12 @@ async function onInvoice(uid: string, id: string, ev: string) {
   if (v.created_by === uid || !INV_STATUS[v.status]) return { sent: 0 };
   return await sendTo(await wantIds([v.created_by], "other"), { title: INV_STATUS[v.status], body: invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
 }
+// a freelancer sent an invoice on saskaitos.eventsolutions.lt (called by freelance-portal with the cron secret)
+async function onInvoicePortal(id: string) {
+  const [v] = await db<(Invoice & { ext_name?: string; ext_email?: string })[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
+  if (!v) return { error: "Sąskaita nerasta" };
+  return await sendTo(await wantIds(await plusIds(), "other"), { title: "🧾 Nauja freelance sąskaita: " + (v.ext_name || v.supplier || ""), body: invTitle(v) + " · per saskaitos.eventsolutions.lt", tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+}
 // a reply given in the e-mail (called by invoice-respond with the cron secret)
 async function onInvoiceReply(id: string) {
   const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
@@ -1313,7 +1319,12 @@ Deno.serve(async (req) => {
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       return json(await onMailNew(String(body.user_id ?? ""), Array.isArray(body.items) ? body.items : []));
     }
-        if (body?.mode === "invoice-reply") {
+    if (body?.mode === "invoice-portal") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      return json(await onInvoicePortal(String(body.invoice_id ?? "")));
+    }
+    if (body?.mode === "invoice-reply") {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       return json(await onInvoiceReply(String(body.invoice_id ?? "")));
