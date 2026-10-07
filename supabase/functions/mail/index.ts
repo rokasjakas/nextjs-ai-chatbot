@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 30;
+const VERSION = 31;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -1067,7 +1067,9 @@ async function inboxAction(me: Me, action: string, body: Record<string, unknown>
   if (!(await isPlusUser(me.id))) throw new UserError("Sąskaitų dėžutę tvarko tik Admin+.");
   let row = await inboxRow().catch(() => null);
   if (action === "inv_inbox_get") {
-    return { email: row?.email ?? "", host: row?.host ?? "", active: !!row?.active, hasPassword: !!row?.secret, rules: row?.rules ?? [], default_kind: row?.default_kind ?? "other", last: row?.state?.last ?? null, total: row?.state?.total ?? 0 };
+    const stt = (row?.state ?? {}) as InboxRow["state"] & { failed?: number[] };
+    return { email: row?.email ?? "", host: row?.host ?? "", active: !!row?.active, hasPassword: !!row?.secret, rules: row?.rules ?? [], default_kind: row?.default_kind ?? "other", last: stt.last ?? null, total: stt.total ?? 0,
+      busy: stt.busy && Date.parse(stt.busy) > Date.now() ? stt.busy : null, failed: stt.failed ?? [] };
   }
   if (action === "inv_inbox_save") {
     const email = String(body.email ?? "").trim().toLowerCase(), password = String(body.password ?? ""), host = String(body.host ?? "").trim().toLowerCase();
