@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-66/VcSOffmPbWxUCA9NRmKgfosPK1kdF5o6KktdsW8o=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-6oYtDw3dmRAWn25BW1NWAJCvvI4c8sS+t2lRSVGsAsI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-qqSq5hr5FF7RVNrS8leRCqqR00EeOrZu08n9ZgmHun4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-6oYtDw3dmRAWn25BW1NWAJCvvI4c8sS+t2lRSVGsAsI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -6680,6 +6680,8 @@ function bestMatch(name){
 
 async function extractPdfText(file){
   const buf = await file.arrayBuffer();
+  // the PDF library is loaded when first needed (an invoice read before anything else opened a PDF)
+  if(typeof pdfjsLib==='undefined') await loadScriptOnce('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js', ()=>typeof pdfjsLib!=='undefined');
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
   const pdf = await pdfjsLib.getDocument({data:buf}).promise;
   let full = '';
@@ -15320,6 +15322,32 @@ async function invLoad(){
   INV.err = error ? (/does not exist|schema cache/i.test(error.message) ? 'Sąskaitų lentelės dar nėra — Supabase paleisk invoices.sql.' : error.message) : '';
   INV.list = data || []; INV.loaded = true;
   invBadge(); invCard(); invAnswers();
+  if(isPlus()) setTimeout(invMailFill, 1500);
+}
+// invoices that came by e-mail: the server does not read their PDF (too heavy for it) – the app reads the
+// total and the number here, once per invoice, and saves them
+let invFillBusy = false;
+async function invMailFill(){
+  if(invFillBusy) return; invFillBusy = true;
+  try{
+    let tried = []; try{ tried = JSON.parse(localStorage.getItem('invMailFill')||'[]'); }catch(e){}
+    const todo = INV.list.filter(v=>invMail(v) && v.amount==null && !tried.includes(v.id) && (v.files||[]).some(f=>/\.pdf$/i.test(f.name||'') || /pdf/.test(f.type||''))).slice(0, 5);
+    for(const v of todo){
+      tried.push(v.id); try{ localStorage.setItem('invMailFill', JSON.stringify(tried.slice(-300))); }catch(e){}
+      try{
+        const f = v.files.find(x=>/\.pdf$/i.test(x.name||'') || /pdf/.test(x.type||''));
+        const url = await invFileUrl(f); if(!url) continue;
+        const blob = await (await fetch(url)).blob();
+        const p = invParse(await clFileText(new File([blob], /\.pdf$/i.test(f.name||'') ? f.name : (f.name||'saskaita')+'.pdf', { type:'application/pdf' })), f.name);
+        const upd = {};
+        if(p.amount) upd.amount = p.amount;
+        if(p.number && !v.number) upd.number = String(p.number).slice(0, 80);
+        if(!Object.keys(upd).length) continue;
+        const { error } = await getSb().from('invoices').update(upd).eq('id', v.id);
+        if(!error){ Object.assign(v, upd); invCard(); if(currentTab==='invoices') invListDraw(); }
+      }catch(e){}
+    }
+  }finally{ invFillBusy = false; }
 }
 function invStart(){
   if(INV.started || !canView('invoices') && !isPlus()) return; INV.started = true;
@@ -15476,7 +15504,7 @@ async function invInboxModal(){
   const kindOpts = cur=>INV_KINDS.map(([k,l])=>`<option value="${k}" ${cur===k?'selected':''}>${l}</option>`).join('');
   const lastHtml = L=>!L || !L.at ? '<span class="muted">Dar netikrinta.</span>' : `Paskutinis patikrinimas: <b>${esc(mailDate(L.at, true))}</b> · įkelta: <b>${L.n||0}</b>${L.skipped ? ` · jau buvo: ${L.skipped}` : ''} · iš viso: ${r.total||0}${L.err ? `<div style="color:#e66">⚠ ${esc(L.err)}</div>` : ''}${(L.items||[]).length ? `<div class="inb-items">${L.items.map(x=>`<span><i style="--c:${invKind(x.kind)[2]}">${esc(invKind(x.kind)[1])}</i> ${esc(x.subject)}</span>`).join('')}</div>` : ''}`;
   openModal(`<div class="row between" style="align-items:center;margin-bottom:10px;"><h3 style="margin:0;">📥 Sąskaitų dėžutė</h3><button class="icon-btn" id="ibxX" style="font-size:20px;" aria-label="Uždaryti">✕</button></div>
-    <div class="section-sub" style="margin-top:0;">Kiekvienas naujas laiškas į šią dėžutę tampa sąskaita „Sąskaitose“: priedai – sąskaitos failai, suma randama PDF'e, tiekėjas – siuntėjas. Rūšis parenkama pagal raktažodžius. Tikrinama kas 15 sekundžių.</div>
+    <div class="section-sub" style="margin-top:0;">Kiekvienas naujas laiškas į šią dėžutę tampa sąskaita „Sąskaitose“: priedai – sąskaitos failai, suma ir numeris nuskaitomi iš PDF, tiekėjas – siuntėjas. Rūšis parenkama pagal raktažodžius. Tikrinama kas 15 sekundžių.</div>
     <div class="mail-set"><h4>🔐 Dėžutė</h4>
       <div class="grid cols-3" style="gap:10px;">
         <label class="field">El. paštas<input type="email" id="ibxE" value="${esc(r.email || 'saskaitos@eventsolutions.lt')}" autocomplete="off"></label>
@@ -15523,7 +15551,7 @@ async function invInboxModal(){
   q('ibxAdd').onclick = ()=>{ rules.push({ kw:'', where:'any', kind:'service', supplier:'' }); draw(); const ins = q('ibxRules').querySelectorAll('input[data-k="kw"]'); ins[ins.length-1].focus(); };
   q('ibxX').onclick = q('ibxCancel').onclick = closeModal;
   const busy = async (btn, label, fn)=>{ const t = btn.textContent; btn.disabled = true; btn.textContent = label;
-    try{ await fn(); }catch(e){ toast(/Nežinomas veiksmas/.test(e.message) ? 'Atnaujink „mail“ funkciją (v29).' : e.message); } btn.disabled = false; btn.textContent = t; };
+    try{ await fn(); }catch(e){ toast(/Nežinomas veiksmas/.test(e.message) ? 'Atnaujink „mail“ funkciją (v30).' : e.message); } btn.disabled = false; btn.textContent = t; };
   const save = async (quiet)=>{
     await mailCall({ action:'inv_inbox_save', email:q('ibxE').value.trim(), password:q('ibxP').value, host:q('ibxH').value.trim(), active:q('ibxOn').checked, rules, default_kind:q('ibxDef').value });
     q('ibxP').value = ''; r.hasPassword = true;
@@ -19746,7 +19774,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v434';
+const APP_VER = 'v435';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -40580,6 +40608,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-08 01:20', v:'v435', k:'fix', t:'Sąskaitų dėžutė: laiškai vėl keliami', f:'Sąskaitų dėžutės tikrinimas užstrigdavo: serveris bandydavo perskaityti PDF ir viršydavo leistiną skaičiavimo laiką. Dabar dėžutė tikrinama atskirai (netrukdo paštui), užstrigęs laiškas praleidžiamas, o sumą ir numerį iš PDF nuskaito programa, kai Admin+ atsidaro „Sąskaitas“. Taip pat pataisytas sąskaitos duomenų nuskaitymas iš PDF įkeliant ranka (kartais nesuveikdavo).' },
   { d:'2026-10-08 01:00', v:'v434', k:'fix', t:'Sąskaitų dėžutė tikrinama kas 15 s', f:'Laiškai į saskaitos@ dabar tikrinami kas 15 sekundžių (anksčiau – kas minutę): nauja sąskaita „Sąskaitose“ atsiranda per ~15–30 s.' },
   { d:'2026-10-08 00:45', v:'v433', k:'new', t:'Sąskaitų dėžutė saskaitos@ → Sąskaitos', f:'Sąskaitose (Admin+) – „📥 Sąskaitų dėžutė“: prijungus saskaitos@eventsolutions.lt, kiekvienas naujas laiškas tampa sąskaita (priedai – failai, suma randama PDF\'e, numeris – iš temos ar failo pavadinimo, tiekėjas – siuntėjas). Rūšis parenkama pagal raktažodžius (siuntėjas, tema, tekstas, priedo pavadinimas); netinkant nė vienai taisyklei – numatytoji rūšis. Nauja rūšis „Kitos“. Peržiūra, kaip būtų surūšiuoti paskutiniai laiškai, ir anksčiau gautų laiškų įkėlimas.' },
   { d:'2026-10-08 00:25', v:'v432', k:'new', t:'Paštas: dublikatai šalinami (lieka pirmas)', f:'Kai tas pats laiškas į Gmail patenka du kartus (nukopijuotas iš serveriai.lt ir dar persiųstas serverio), paliekamas tas, kuris atėjo pirmas, o vėlesnė kopija ištrinama ir programoje nerodoma. Nustatymuose matosi, prie kurio įmonės pašto ir serverio jungiamasi ir kiek dublikatų pašalinta.' },

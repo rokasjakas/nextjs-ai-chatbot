@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 29;
+const VERSION = 30;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -870,38 +870,6 @@ type InboxRow = { id: number; email: string | null; host: string | null; secret:
   state: { uidValidity?: string; lastUid?: number; busy?: string; total?: number; last?: { at: string; n: number; skipped?: number; err?: string; items?: { subject: string; kind: string; rule?: number }[] } } };
 const INV_KINDS_OK = ["freelance", "service", "rent", "purchase", "other"];
 const foldLt = (t: string) => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-// the final total (with taxes) in an invoice's text: the strongest keyword wins, its last number on that line
-function findTotal(raw: string): number | null {
-  const text = String(raw || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\u00a0/g, " ");
-  const NUM = /(\d{1,3}(?:[ .]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)(?!\d)/g;
-  const parse = (s: string) => {
-    let t = s.replace(/ /g, "");
-    if (/[.,]\d{1,2}$/.test(t)) { const d = t.slice(-3).replace(/^[.,]/, ""); t = t.slice(0, t.length - (t.match(/[.,]\d{1,2}$/)![0].length)).replace(/[.,]/g, "") + "." + d; }
-    else t = t.replace(/[.,]/g, "");
-    const n = Number(t); return isFinite(n) ? n : NaN;
-  };
-  const levels = [
-    /(moketina suma|suma apmoke?jimui|suma moketi|is viso moketi|viso moketi|moketi is viso|moketi|apmoketi|amount due|total due|to pay)/,
-    /(is viso su pvm|viso su pvm|suma su pvm|bendra suma su pvm|su pvm is viso|total incl|total with vat|grand total)/,
-    /(is viso|viso|bendra suma|galutine suma|total|suma)/,
-  ];
-  const lines = text.split(/\n+/);
-  for (const [li, re] of levels.entries()) {
-    const found: number[] = [];
-    for (const [i, line0] of lines.entries()) {
-      const m = line0.match(re); if (!m) continue;
-      if (li === 2 && /be pvm|pvm \d|pvm suma|zodziais|kiekis|kaina/.test(line0)) continue;
-      if (li < 2 && /zodziais/.test(line0)) continue;
-      // the amount after the keyword on that line, or on the next line (tables)
-      let rest = line0.slice(m.index + m[0].length).replace(/\d{4}-\d{2}-\d{2}/g, " ").replace(/\d{1,3}\s?%/g, " ");
-      let nums = [...rest.matchAll(NUM)].map((x) => parse(x[1])).filter((n) => n > 0);
-      if (!nums.length && lines[i + 1]) nums = [...lines[i + 1].replace(/\d{4}-\d{2}-\d{2}/g, " ").matchAll(NUM)].map((x) => parse(x[1])).filter((n) => n > 0);
-      if (nums.length) found.push(nums[nums.length - 1]);
-    }
-    if (found.length) return Math.round((li === 2 ? Math.max(...found) : found[found.length - 1]) * 100) / 100;
-  }
-  return null;
-}
 type InboxLetter = { uid: number; mid: string; date: Date | null; subject: string; from: { name: string; address: string }; text: string;
   files: { name: string; type: string; data: Buffer }[]; skippedFiles: string[] };
 // which rule fits a letter (index), or -1
@@ -947,14 +915,6 @@ async function inboxLetter(c: ImapFlow, uid: number): Promise<InboxLetter | null
   const e = msg.envelope, f = (e.from ?? [])[0] ?? {};
   return { uid, mid: e.messageId || "", date: (e.date ?? msg.internalDate) as Date | null, subject: e.subject || "", from: { name: f.name || "", address: (f.address || "").toLowerCase() }, text, files, skippedFiles };
 }
-async function pdfTotal(data: Buffer): Promise<number | null> {
-  try {
-    const { extractText, getDocumentProxy } = await import("npm:unpdf@1.8.1");
-    const pdf = await getDocumentProxy(new Uint8Array(data));
-    const { text } = await extractText(pdf, { mergePages: true });
-    return findTotal(String(text || ""));
-  } catch (e) { console.error("pdf total", (e as Error).message); return null; }
-}
 // the invoice's number: after „Nr.“ / „No“, or a series code like LVA0390087, ES-0123, AB 0012
 export const numberOf = (t: string) => {
   const s = String(t || "").replace(/_/g, " ");
@@ -985,8 +945,9 @@ async function inboxImport(row: InboxRow, l: InboxLetter, owner: string): Promis
   for (const f of l.files) await up(f.name, f.type, new Uint8Array(f.data));
   // no attachment (a link or the text itself): the letter is kept as a text file
   if (!l.files.length) await up("laiskas.txt", "text/plain", new TextEncoder().encode(`Nuo: ${l.from.name} <${l.from.address}>\nTema: ${l.subject}\nData: ${l.date ? new Date(l.date).toISOString() : ""}\n\n${l.text}`.slice(0, 500_000)));
-  let amount: number | null = null;
-  for (const f of l.files) if (/pdf/i.test(f.type) || /\.pdf$/i.test(f.name)) { amount = await pdfTotal(f.data); if (amount != null) break; }
+  // the total is not read here (a PDF's parsing would run out of the function's CPU time): the app reads it
+  // from the PDF when Admin+ opens „Sąskaitos“ and fills it in
+  const amount: number | null = null;
   const number = numberOf(l.subject) || l.files.map((f) => numberOf(f.name.replace(/\.[a-z0-9]+$/i, ""))).find(Boolean) || null;
   const day = l.date ? new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Vilnius" }).format(new Date(l.date)) : null;
   const note = ["📧 " + (l.subject || "(be temos)"), l.skippedFiles.length ? "Per dideli priedai (neįkelti): " + l.skippedFiles.join(", ") : ""].filter(Boolean).join("\n").slice(0, 1000);
@@ -1014,10 +975,16 @@ async function runInvoiceInbox(force = false, sinceDays = 0, max = 8) {
   if (!row || !row.email || !row.secret || (!row.active && !force)) return null;
   const now = new Date().toISOString();
   const locked = await db<InboxRow[]>(`invoice_inbox?id=eq.1&or=(state->>busy.is.null,state->>busy.lt.${now})`,
-    { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ state: { ...row.state, busy: new Date(Date.now() + 180_000).toISOString() } }) });
+    { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ state: { ...row.state, busy: new Date(Date.now() + 100_000).toISOString() } }) });
   if (!locked.length) return { busy: true };
-  const st = { ...locked[0].state }; delete st.busy;
+  const st: InboxRow["state"] & { trying?: number; failed?: number[] } = { ...locked[0].state }; delete st.busy;
   row.state = st;
+  // the last run stopped inside a letter (it never finished): that letter is skipped, so it can't stop every run
+  if (!sinceDays && st.trying && st.lastUid !== undefined && st.trying > st.lastUid) {
+    st.lastUid = st.trying; st.failed = [...(st.failed ?? []), st.trying].slice(-20);
+  }
+  delete st.trying;
+  const keep = (extra: Record<string, unknown> = {}) => db("invoice_inbox?id=eq.1", { method: "PATCH", body: JSON.stringify({ state: { ...st, ...extra, busy: new Date(Date.now() + 100_000).toISOString() } }) }).catch(() => {});
   const a: Account = { email: row.email, password: await unseal(row.secret), host: row.host || undefined };
   let n = 0, skipped = 0, err = "", more = 0;
   const items: { subject: string; kind: string; rule?: number }[] = [];
@@ -1042,15 +1009,16 @@ async function runInvoiceInbox(force = false, sinceDays = 0, max = 8) {
         const take = uids.slice(0, sinceDays > 0 ? 25 : max);
         more = uids.length - take.length;
         for (const uid of take) {
+          if (!sinceDays) await keep({ trying: uid });
           const l = await inboxLetter(c, uid);
           if (l) {
             const r = await inboxImport(row, l, owner);
             if (r) { n++; items.push({ subject: l.subject.slice(0, 120), kind: r.kind, ...(r.rule >= 0 ? { rule: r.rule } : {}) }); } else skipped++;
           }
-          if (!sinceDays) st.lastUid = uid;
+          if (!sinceDays) { st.lastUid = uid; await keep(); }
         }
       } finally { lock.release(); }
-    }, true, 140_000);
+    }, true, 80_000);
   } catch (e) {
     err = e instanceof UserError ? e.message : (e as Error).message || "klaida";
     console.error("invoice inbox", err);
@@ -1150,8 +1118,13 @@ async function runSyncAll(quick = false) {
   let auto: unknown = null, inbox: unknown = null;
   if (!quick) { try { auto = await runAutoReplies(); } catch (e) { auto = { error: (e as Error).message }; } }
   // the invoice mailbox (saskaitos@) → „Sąskaitos“
-  // (every 15 s too: the quick run takes up to 3 letters, the minute run up to 8)
-  try { inbox = await runInvoiceInbox(false, 0, quick ? 3 : 8); } catch (e) { inbox = { error: (e as Error).message }; }
+  // (every 15 s too, in its own call of this function – a slow letter does not hold up the mail sync)
+  const cs = Deno.env.get("CRON_SECRET");
+  if (cs) {
+    await fetch(`${env("SUPABASE_URL")}/functions/v1/mail`, { method: "POST", signal: AbortSignal.timeout(2500),
+      headers: { "Content-Type": "application/json", "x-cron-secret": cs }, body: JSON.stringify({ action: "invoice_inbox", quick }) }).catch(() => null);
+    inbox = "started";
+  }
   return { synced: Object.keys(done).length, ms: Date.now() - t0, auto, inbox };
 }
 
@@ -1955,6 +1928,7 @@ Deno.serve(async (req) => {
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       const cb = await req.clone().json().catch(() => ({}));
       if ((cb as { action?: string }).action === "sync_all") return json(await runSyncAll((cb as { quick?: boolean }).quick === true));
+      if ((cb as { action?: string }).action === "invoice_inbox") return json(await runInvoiceInbox(false, 0, (cb as { quick?: boolean }).quick === true ? 3 : 8) ?? { off: true });
       // (the old 10-minute job – sql/mail_auto.sql switches it off: the replies now go with the minute sync)
       return json(await runAutoReplies());
     }
