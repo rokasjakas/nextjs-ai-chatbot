@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-t31e4uD0OwyJ7V4Ehx7yiQkEB5gkF/GCMTXiYMijG/8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-xwuf1nZT6AWwNmb3qdCnAKpodqDKvGNjb+iOYvQZb+0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -12313,7 +12313,7 @@ window.addEventListener('resize', ()=>{ if(ntOvOpen() && window.innerWidth > 760
 const NTF = { list:null, err:'', all:false, timer:0 };
 async function ntfLoad(){
   const sb = getSb(), me = teamMe(); if(!sb || !me) return;
-  const { data, error } = await sb.from('user_notifications').select('id,tag,kind,title,body,url,created_at,read_at').eq('user_id', me).order('created_at', { ascending:false }).limit(60);
+  const { data, error } = await sb.from('user_notifications').select('id,tag,kind,title,body,url,created_at,read_at').eq('user_id', me).is('read_at', null).order('created_at', { ascending:false }).limit(100);
   if(error){ NTF.err = /does not exist|schema cache|relation/i.test(error.message) ? 'sql' : error.message; NTF.list = []; return; }
   NTF.err = ''; NTF.list = data || [];
   clearInterval(NTF.timer); NTF.timer = setInterval(()=>{ if(currentTab==='home' && document.visibilityState==='visible') ntfLoad().then(ntfCardRender); }, 60000);
@@ -12334,10 +12334,10 @@ function ntfAgo(iso){
   if(d.toDateString()===y.toDateString()) return 'vakar';
   return d.toLocaleDateString('lt-LT', { month:'2-digit', day:'2-digit' });
 }
-// messages of one chat make one row (the newest, with the count of unread)
+// only what is new (a tapped one is read and goes away); messages of one chat make one row (the newest, with the count)
 function ntfRows(){
   const out = [], byChat = new Map();
-  (NTF.list||[]).forEach(n=>{ const w = ntfWhat(n);
+  (NTF.list||[]).filter(n=>!n.read_at).forEach(n=>{ const w = ntfWhat(n);
     if(w.k==='chat'){ const key = w.sp.get('chat')+'|'+(w.sp.get('thread')||''); const g = byChat.get(key);
       if(g){ g.ids.push(n.id); if(!n.read_at) g.unread++; return; }
       const r = Object.assign({}, n, { w, ids:[n.id], unread:n.read_at ? 0 : 1 }); byChat.set(key, r); out.push(r); return; }
@@ -12353,7 +12353,7 @@ function ntfCardRender(){
     ${NTF.list==null ? '<div class="ntf-none">Kraunama…</div>'
       : NTF.err==='sql' ? '<div class="ntf-none">Pranešimų kortelė dar neįjungta: Supabase → SQL Editor → paleisk supabase/sql/user_notifications.sql ir iš naujo įdiek push-notify.</div>'
       : NTF.err ? `<div class="ntf-none">${esc(NTF.err)}</div>`
-      : !rows.length ? '<div class="ntf-none">Naujų pranešimų nėra. Čia matysi žinutes, kvietimus į kalendorių, renginius, užduotis ir kt.</div>'
+      : !rows.length ? '<div class="ntf-none">Naujų pranešimų nėra. Čia matysi naujas žinutes, kvietimus į kalendorių, renginius, užduotis ir kt. – paspaudus pranešimas dingsta.</div>'
       : `<div class="ntf-list">${shown.map((r, i)=>`<button type="button" class="ntf-row ${r.unread ? 'new' : ''}" data-ntf="${i}" title="${esc(r.title)}${r.body ? ' – '+esc(r.body) : ''}">
           <span class="ntf-ic" style="--nc:${r.w.c}">${slIcon(r.w.ic)}</span>
           <span class="ntf-tx"><span class="ntf-t">${esc(r.title)}${r.unread > 1 ? `<span class="ntf-cnt">+${r.unread-1}</span>` : ''}</span>${r.body ? `<span class="ntf-b">${esc(r.body)}</span>` : ''}</span>
@@ -19553,7 +19553,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v404';
+const APP_VER = 'v405';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -40071,6 +40071,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 18:09', v:'v405', k:'new', t:'Pranešimai – tik nauji', f:'Pradžios „Pranešimų“ kortelėje rodomi tik nauji (neperskaityti) pranešimai. Paspaudus pranešimą atsidaro vieta, o pranešimas dingsta iš sąrašo; „✓ Visi“ – išvalo visus iš karto.' },
   { d:'2026-10-07 18:02', v:'v404', k:'new', t:'Automobilio pasirinkimas ir kompiuteryje', f:'Transporte paspaudus automobilį ir kompiuteryje (kaip telefone) iššoka langas su dviem pasirinkimais: „Pranešti apie problemą“ ir „Apie automobilį“ (visa informacija, redagavimas pagal teises).' },
   { d:'2026-10-07 17:21', v:'v403', k:'new', t:'Automobilio problema: vieta, data ir laikas', f:'Pranešant apie automobilio problemą (programoje ir per QR kodą) telefonas nustato vietą – formoje matyti „📍 Vieta nustatyta (±18 m) · žemėlapyje“ ir laikas. Chato #automobiliai žinutėje rodoma data, laikas (🕒) ir nuoroda „Vieta žemėlapyje“, problemos kortelėje – „Pranešta“ (data ir laikas) bei „Vieta“. Jei vietos nustatymas neleistas – galima bandyti dar kartą, problema vis tiek užregistruojama. Reikia paleisti supabase/sql/vehicle_loc.sql.' },
   { d:'2026-10-07 17:15', v:'v402', k:'new', t:'Problemos video įkeliamas fone', f:'Pranešant apie automobilio problemą nebereikia laukti, kol video suspaus ir įkels: pasirinktas video rodomas su ženkliuku „įkels fone“, gali iškart viską užpildyti ir spausti „Išsaugoti“. Problema iškart įrašoma ir atsiranda chate #automobiliai, o video suspaudžiamas ir įkeliamas fone – apačioje rodoma eiga, programa naudojama toliau. Baigus video pridedamas prie problemos ir įdedamas į chatą kaip atsakymas į problemos žinutę. Nepavykus – mygtukas „Kartoti“. Taip pat ir per QR kodą: problema užregistruojama iškart, o video įkeliamas po to (puslapio neuždaryti, kol baigsis). Reikia paleisti supabase/sql/vehicle_media2.sql.' },
