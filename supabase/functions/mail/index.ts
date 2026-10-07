@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 27;
+const VERSION = 28;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -860,6 +860,275 @@ async function mirrorFor(row: MirrorRow, force = false) {
   return { copied: n, skipped, waiting, removed, err: err || undefined };
 }
 
+// ---------- the invoice mailbox (saskaitos@eventsolutions.lt) → „Sąskaitos“ ----------
+// Every new letter to the invoice mailbox becomes an invoice: its attachments are the invoice's files, the
+// total is found in a PDF's text, the sender is the supplier, and the kind comes from Admin+'s keyword rules
+// (the first rule whose words are found wins; none – the default kind). The same letter is never imported
+// twice (invoices.mail_id = its Message-ID). Checked with the minute sync; up to 8 letters per run.
+type InboxRule = { kw?: string; where?: string; kind?: string; supplier?: string };
+type InboxRow = { id: number; email: string | null; host: string | null; secret: string | null; active: boolean; rules: InboxRule[]; default_kind: string;
+  state: { uidValidity?: string; lastUid?: number; busy?: string; total?: number; last?: { at: string; n: number; skipped?: number; err?: string; items?: { subject: string; kind: string; rule?: number }[] } } };
+const INV_KINDS_OK = ["freelance", "service", "rent", "purchase", "other"];
+const foldLt = (t: string) => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+// the final total (with taxes) in an invoice's text: the strongest keyword wins, its last number on that line
+function findTotal(raw: string): number | null {
+  const text = String(raw || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\u00a0/g, " ");
+  const NUM = /(\d{1,3}(?:[ .]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)(?!\d)/g;
+  const parse = (s: string) => {
+    let t = s.replace(/ /g, "");
+    if (/[.,]\d{1,2}$/.test(t)) { const d = t.slice(-3).replace(/^[.,]/, ""); t = t.slice(0, t.length - (t.match(/[.,]\d{1,2}$/)![0].length)).replace(/[.,]/g, "") + "." + d; }
+    else t = t.replace(/[.,]/g, "");
+    const n = Number(t); return isFinite(n) ? n : NaN;
+  };
+  const levels = [
+    /(moketina suma|suma apmoke?jimui|suma moketi|is viso moketi|viso moketi|moketi is viso|moketi|apmoketi|amount due|total due|to pay)/,
+    /(is viso su pvm|viso su pvm|suma su pvm|bendra suma su pvm|su pvm is viso|total incl|total with vat|grand total)/,
+    /(is viso|viso|bendra suma|galutine suma|total|suma)/,
+  ];
+  const lines = text.split(/\n+/);
+  for (const [li, re] of levels.entries()) {
+    const found: number[] = [];
+    for (const [i, line0] of lines.entries()) {
+      const m = line0.match(re); if (!m) continue;
+      if (li === 2 && /be pvm|pvm \d|pvm suma|zodziais|kiekis|kaina/.test(line0)) continue;
+      if (li < 2 && /zodziais/.test(line0)) continue;
+      // the amount after the keyword on that line, or on the next line (tables)
+      let rest = line0.slice(m.index + m[0].length).replace(/\d{4}-\d{2}-\d{2}/g, " ").replace(/\d{1,3}\s?%/g, " ");
+      let nums = [...rest.matchAll(NUM)].map((x) => parse(x[1])).filter((n) => n > 0);
+      if (!nums.length && lines[i + 1]) nums = [...lines[i + 1].replace(/\d{4}-\d{2}-\d{2}/g, " ").matchAll(NUM)].map((x) => parse(x[1])).filter((n) => n > 0);
+      if (nums.length) found.push(nums[nums.length - 1]);
+    }
+    if (found.length) return Math.round((li === 2 ? Math.max(...found) : found[found.length - 1]) * 100) / 100;
+  }
+  return null;
+}
+type InboxLetter = { uid: number; mid: string; date: Date | null; subject: string; from: { name: string; address: string }; text: string;
+  files: { name: string; type: string; data: Buffer }[]; skippedFiles: string[] };
+// which rule fits a letter (index), or -1
+export function inboxRule(rules: InboxRule[], l: { subject: string; from: { name: string; address: string }; text: string; files: { name: string }[] }): number {
+  const fields: Record<string, string> = {
+    from: foldLt(l.from.name + " " + l.from.address), subject: foldLt(l.subject), text: foldLt(l.text).slice(0, 200_000),
+    file: foldLt(l.files.map((f) => f.name).join(" ")),
+  };
+  fields.any = [fields.from, fields.subject, fields.text, fields.file].join("\n");
+  for (const [i, r] of rules.entries()) {
+    const words = String(r.kw || "").split(/[,;\n]+/).map((w) => foldLt(w).trim()).filter(Boolean);
+    if (!words.length) continue;
+    const hay = fields[r.where || "any"] ?? fields.any;
+    if (words.some((w) => hay.includes(w))) return i;
+  }
+  return -1;
+}
+const htmlToText = (h: string) => h.replace(/<(script|style)[\s\S]*?<\/\1>/gi, " ").replace(/<br\s*\/?>|<\/(p|div|tr|li|h\d)>/gi, "\n").replace(/<[^>]+>/g, " ")
+  .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/[ \t]+/g, " ").replace(/\n\s*\n+/g, "\n").trim();
+// one letter of the invoice mailbox: the text (for the rules) and the attachments (≤ 15 MB each, ≤ 30 MB in all)
+async function inboxLetter(c: ImapFlow, uid: number): Promise<InboxLetter | null> {
+  const msg = await c.fetchOne(String(uid), { uid: true, envelope: true, bodyStructure: true, internalDate: true }, { uid: true });
+  if (!msg || !msg.envelope) return null;
+  const all = leaves(msg.bodyStructure as Node);
+  const isBody = (l: Leaf) => l.disposition !== "attachment" && !l.filename;
+  const htmlPart = all.find((l) => l.type === "text/html" && isBody(l)), textPart = all.find((l) => l.type === "text/plain" && isBody(l));
+  let text = "";
+  if (textPart && textPart.size < 400_000) text = decodeText(await partBuffer(c, uid, textPart.part, 400_000), textPart.charset);
+  else if (htmlPart && htmlPart.size < 1_000_000) text = htmlToText(decodeText(await partBuffer(c, uid, htmlPart.part, 1_000_000), htmlPart.charset));
+  const files: InboxLetter["files"] = [], skippedFiles: string[] = [];
+  let budget = 30e6;
+  for (const l of all) {
+    if (l === htmlPart || l === textPart) continue;
+    const named = l.disposition === "attachment" || !!l.filename;
+    if (!named) continue;
+    if (l.cid && l.type.startsWith("image/") && l.size < 60_000 && l.disposition !== "attachment") continue;   // logos inside the letter
+    const name = (l.filename || "priedas." + (l.type.split("/")[1] || "bin")).replace(/[\\/\u0000-\u001f]+/g, "_").slice(-120);
+    if (l.size > 15e6 * 1.37 || l.size > budget * 1.37) { skippedFiles.push(name); continue; }
+    const data = await partBuffer(c, uid, l.part, 16e6);
+    budget -= data.length;
+    files.push({ name, type: l.type || "application/octet-stream", data });
+  }
+  const e = msg.envelope, f = (e.from ?? [])[0] ?? {};
+  return { uid, mid: e.messageId || "", date: (e.date ?? msg.internalDate) as Date | null, subject: e.subject || "", from: { name: f.name || "", address: (f.address || "").toLowerCase() }, text, files, skippedFiles };
+}
+async function pdfTotal(data: Buffer): Promise<number | null> {
+  try {
+    const { extractText, getDocumentProxy } = await import("npm:unpdf@1.8.1");
+    const pdf = await getDocumentProxy(new Uint8Array(data));
+    const { text } = await extractText(pdf, { mergePages: true });
+    return findTotal(String(text || ""));
+  } catch (e) { console.error("pdf total", (e as Error).message); return null; }
+}
+// the invoice's number: after „Nr.“ / „No“, or a series code like LVA0390087, ES-0123, AB 0012
+export const numberOf = (t: string) => {
+  const s = String(t || "").replace(/_/g, " ");
+  return (s.match(/\b(?:nr|no|numeris)\.?\s*[:#]?\s*([A-Z0-9][A-Z0-9\-\/]{2,30})/i) || [])[1]
+    || (s.match(/\b([A-Z]{1,6}[- ]?\d{3,}[A-Z0-9\-\/]*)\b/) || [])[1]?.replace(" ", "-") || null;
+};
+async function inboxOwner(): Promise<string> {
+  const o = await db<{ id: string }[]>("profiles?select=id&role=eq.admin&level=in.(plus,super)&order=created_at&limit=1");
+  const id = o[0]?.id || (await db<{ id: string }[]>("profiles?select=id&role=eq.admin&order=created_at&limit=1"))[0]?.id;
+  if (!id) throw new Error("no admin");
+  return id;
+}
+// a letter → an invoice (false when it was imported before)
+async function inboxImport(row: InboxRow, l: InboxLetter, owner: string): Promise<{ kind: string; rule: number } | false> {
+  const mailId = l.mid || `uid:${row.email}:${row.state.uidValidity}:${l.uid}`;
+  const had = await db<{ id: string }[]>(`invoices?select=id&mail_id=eq.${encodeURIComponent(mailId)}&limit=1`);
+  if (had.length) return false;
+  const ri = inboxRule(row.rules || [], l), rule = ri >= 0 ? row.rules[ri] : null;
+  const kind = INV_KINDS_OK.includes(String(rule?.kind)) ? String(rule!.kind) : (INV_KINDS_OK.includes(row.default_kind) ? row.default_kind : "other");
+  const id = crypto.randomUUID(), key = env("SUPABASE_SERVICE_ROLE_KEY"), base = env("SUPABASE_URL");
+  const files: { path: string; name: string; type: string; size: number }[] = [];
+  const up = async (name: string, type: string, data: Uint8Array) => {
+    const path = `${owner}/mail/${id}/${files.length + 1}-${name.replace(/[^\w.\-]+/g, "_").slice(-80)}`;
+    const r = await fetch(`${base}/storage/v1/object/invoice-files/${path}`, { method: "POST", headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": type, "x-upsert": "true" }, body: data });
+    if (!r.ok) throw new Error("upload " + r.status + " " + (await r.text()).slice(0, 160));
+    files.push({ path, name, type, size: data.length });
+  };
+  for (const f of l.files) await up(f.name, f.type, new Uint8Array(f.data));
+  // no attachment (a link or the text itself): the letter is kept as a text file
+  if (!l.files.length) await up("laiskas.txt", "text/plain", new TextEncoder().encode(`Nuo: ${l.from.name} <${l.from.address}>\nTema: ${l.subject}\nData: ${l.date ? new Date(l.date).toISOString() : ""}\n\n${l.text}`.slice(0, 500_000)));
+  let amount: number | null = null;
+  for (const f of l.files) if (/pdf/i.test(f.type) || /\.pdf$/i.test(f.name)) { amount = await pdfTotal(f.data); if (amount != null) break; }
+  const number = numberOf(l.subject) || l.files.map((f) => numberOf(f.name.replace(/\.[a-z0-9]+$/i, ""))).find(Boolean) || null;
+  const day = l.date ? new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Vilnius" }).format(new Date(l.date)) : null;
+  const note = ["📧 " + (l.subject || "(be temos)"), l.skippedFiles.length ? "Per dideli priedai (neįkelti): " + l.skippedFiles.join(", ") : ""].filter(Boolean).join("\n").slice(0, 1000);
+  try {
+    await db("invoices", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify({
+      id, created_by: owner, kind, supplier: (rule?.supplier || l.from.name || l.from.address || "").slice(0, 200) || null, number, amount, invoice_date: day, note, files,
+      source: "email", ext_email: l.from.address || null, ext_name: l.from.name || null, mail_id: mailId, uploader_seen: true,
+    }) });
+  } catch (e) {
+    await fetch(`${base}/storage/v1/object/invoice-files`, { method: "DELETE", headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ prefixes: files.map((f) => f.path) }) }).catch(() => {});
+    if (/duplicate key|invoices_mail_id/i.test((e as Error).message)) return false;   // imported by a parallel run
+    throw e;
+  }
+  const cs = Deno.env.get("CRON_SECRET");
+  if (cs) await fetch(`${base}/functions/v1/push-notify`, { method: "POST", headers: { "Content-Type": "application/json", "x-cron-secret": cs }, body: JSON.stringify({ mode: "invoice-email", invoice_id: id }) }).catch(() => {});
+  return { kind, rule: ri };
+}
+async function inboxRow(): Promise<InboxRow | null> {
+  const [r] = await db<InboxRow[]>("invoice_inbox?select=*&id=eq.1").catch(() => [] as InboxRow[]);
+  return r ?? null;
+}
+// one run: new letters (since=days: the letters of the last days, those not imported yet)
+async function runInvoiceInbox(force = false, sinceDays = 0) {
+  const row = await inboxRow();
+  if (!row || !row.email || !row.secret || (!row.active && !force)) return null;
+  const now = new Date().toISOString();
+  const locked = await db<InboxRow[]>(`invoice_inbox?id=eq.1&or=(state->>busy.is.null,state->>busy.lt.${now})`,
+    { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ state: { ...row.state, busy: new Date(Date.now() + 180_000).toISOString() } }) });
+  if (!locked.length) return { busy: true };
+  const st = { ...locked[0].state }; delete st.busy;
+  row.state = st;
+  const a: Account = { email: row.email, password: await unseal(row.secret), host: row.host || undefined };
+  let n = 0, skipped = 0, err = "", more = 0;
+  const items: { subject: string; kind: string; rule?: number }[] = [];
+  try {
+    const owner = await inboxOwner();
+    await withImap(a, async (c) => {
+      const lock = await c.getMailboxLock("INBOX");
+      try {
+        const uv = String((c.mailbox as unknown as { uidValidity: bigint }).uidValidity);
+        let uids: number[];
+        if (sinceDays > 0) {
+          uids = ((await c.search({ since: new Date(Date.now() - sinceDays * 864e5) }, { uid: true })) || []).sort((x, y) => x - y);
+        } else {
+          if (st.uidValidity !== uv || st.lastUid === undefined) {   // the first run only notes where „now“ is
+            const allU = (await c.search({ all: true }, { uid: true })) || [];
+            st.uidValidity = uv; st.lastUid = allU.length ? Math.max(...allU) : 0;
+            return;
+          }
+          uids = ((await c.search({ uid: `${st.lastUid + 1}:*` }, { uid: true })) || []).filter((u) => u > st.lastUid!).sort((x, y) => x - y);
+        }
+        st.uidValidity = uv;
+        const take = uids.slice(0, sinceDays > 0 ? 25 : 8);
+        more = uids.length - take.length;
+        for (const uid of take) {
+          const l = await inboxLetter(c, uid);
+          if (l) {
+            const r = await inboxImport(row, l, owner);
+            if (r) { n++; items.push({ subject: l.subject.slice(0, 120), kind: r.kind, ...(r.rule >= 0 ? { rule: r.rule } : {}) }); } else skipped++;
+          }
+          if (!sinceDays) st.lastUid = uid;
+        }
+      } finally { lock.release(); }
+    }, true, 140_000);
+  } catch (e) {
+    err = e instanceof UserError ? e.message : (e as Error).message || "klaida";
+    console.error("invoice inbox", err);
+  }
+  st.total = (st.total ?? 0) + n;
+  st.last = { at: new Date().toISOString(), n, ...(skipped ? { skipped } : {}), ...(err ? { err: err.slice(0, 300) } : {}), ...(items.length ? { items } : (st.last?.items ? { items: st.last.items } : {})) };
+  await db("invoice_inbox?id=eq.1", { method: "PATCH", body: JSON.stringify({ state: st }) });
+  return { imported: n, skipped, more, err: err || undefined };
+}
+// „Peržiūra“: how the last letters would be sorted with these rules (nothing is imported)
+async function inboxPreview(row: InboxRow, rules: InboxRule[]) {
+  const a: Account = { email: row.email!, password: await unseal(row.secret!), host: row.host || undefined };
+  return await withImap(a, async (c) => {
+    const lock = await c.getMailboxLock("INBOX");
+    try {
+      const allU = ((await c.search({ all: true }, { uid: true })) || []).sort((x, y) => y - x).slice(0, 15);
+      const out = [];
+      for (const uid of allU) {
+        const msg = await c.fetchOne(String(uid), { uid: true, envelope: true, bodyStructure: true }, { uid: true });
+        if (!msg || !msg.envelope) continue;
+        const lv = leaves(msg.bodyStructure as Node);
+        const tp = lv.find((l) => l.type === "text/plain" && l.disposition !== "attachment" && !l.filename && l.size < 200_000);
+        const text = tp ? decodeText(await partBuffer(c, uid, tp.part, 200_000), tp.charset) : "";
+        const f = (msg.envelope.from ?? [])[0] ?? {};
+        const l = { subject: msg.envelope.subject || "", from: { name: f.name || "", address: f.address || "" }, text, files: lv.filter((x) => x.disposition === "attachment" || x.filename).map((x) => ({ name: x.filename || "" })) };
+        const ri = inboxRule(rules, l);
+        out.push({ date: (msg.envelope.date as Date | undefined)?.toISOString?.() ?? null, subject: l.subject, from: l.from.name || l.from.address, files: l.files.map((x) => x.name).filter(Boolean), rule: ri, kind: ri >= 0 ? rules[ri].kind : row.default_kind });
+      }
+      return out;
+    } finally { lock.release(); }
+  }, true, 90_000);
+}
+export function cleanRules(v: unknown): InboxRule[] {
+  return (Array.isArray(v) ? v : []).slice(0, 60).map((r) => ({
+    kw: String((r as InboxRule)?.kw ?? "").slice(0, 500),
+    where: ["any", "from", "subject", "text", "file"].includes(String((r as InboxRule)?.where)) ? String((r as InboxRule).where) : "any",
+    kind: INV_KINDS_OK.includes(String((r as InboxRule)?.kind)) ? String((r as InboxRule).kind) : "other",
+    supplier: String((r as InboxRule)?.supplier ?? "").slice(0, 200),
+  })).filter((r) => r.kw.trim());
+}
+async function isPlusUser(uid: string) {
+  const [p] = await db<{ role: string; level: string | null }[]>(`profiles?select=role,level&id=eq.${uid}`);
+  return !!p && p.role === "admin" && ["plus", "super"].includes(String(p.level));
+}
+async function inboxAction(me: Me, action: string, body: Record<string, unknown>) {
+  if (!(await isPlusUser(me.id))) throw new UserError("Sąskaitų dėžutę tvarko tik Admin+.");
+  let row = await inboxRow().catch(() => null);
+  if (action === "inv_inbox_get") {
+    return { email: row?.email ?? "", host: row?.host ?? "", active: !!row?.active, hasPassword: !!row?.secret, rules: row?.rules ?? [], default_kind: row?.default_kind ?? "other", last: row?.state?.last ?? null, total: row?.state?.total ?? 0 };
+  }
+  if (action === "inv_inbox_save") {
+    const email = String(body.email ?? "").trim().toLowerCase(), password = String(body.password ?? ""), host = String(body.host ?? "").trim().toLowerCase();
+    if (!emailRe.test(email)) throw new UserError("Įrašyk sąskaitų dėžutės el. paštą.");
+    if (host && !/^[a-z0-9.-]+\.[a-z]{2,}$/.test(host)) throw new UserError("Neteisingas serverio adresas.");
+    const secret = password ? await seal(password) : (row?.email === email ? row?.secret : null);
+    if (!secret) throw new UserError("Įrašyk dėžutės slaptažodį.");
+    if (password || row?.email !== email || (row?.host || "") !== host) {
+      try { await withImap({ email, password: password || await unseal(secret), host: host || undefined }, async () => null, false); }
+      catch (e) { throw e instanceof UserError && /Neteisingas/.test(e.message) ? new UserError("Prie dėžutės neprisijungta: patikrink el. paštą ir slaptažodį.") : e; }
+    }
+    const active = body.active === true, default_kind = INV_KINDS_OK.includes(String(body.default_kind)) ? String(body.default_kind) : "other";
+    const changed = row?.email !== email;
+    await db("invoice_inbox?on_conflict=id", { method: "POST", headers: { Prefer: "resolution=merge-duplicates" }, body: JSON.stringify({
+      id: 1, email, host: host || null, secret, active, rules: cleanRules(body.rules), default_kind, updated_at: new Date().toISOString(),
+      ...(changed || !row ? { state: {} } : {}),
+    }) });
+    row = await inboxRow();
+    // switched on for the first time: where „now“ is gets noted at once (only later letters are imported)
+    if (active && row && row.state?.lastUid === undefined) await runInvoiceInbox(true).catch(() => null);
+    return { ok: true };
+  }
+  if (!row?.email || !row.secret) throw new UserError("Pirmiausia išsaugok dėžutės prisijungimą.");
+  if (action === "inv_inbox_now") return { ok: true, ...(await runInvoiceInbox(true)) };
+  if (action === "inv_inbox_back") return { ok: true, ...(await runInvoiceInbox(true, Math.min(60, Math.max(1, Number(body.days) || 7)))) };
+  if (action === "inv_inbox_preview") return { ok: true, letters: await inboxPreview(row, cleanRules(body.rules ?? row.rules)) };
+  throw new UserError("Nežinomas veiksmas.");
+}
+
 // pg_cron, every minute: Inbox for everyone (Sent every 5 min), one after another
 async function runSyncAll(quick = false) {
   const rows = await db<MirrorRow[]>("mail_accounts?select=user_id,email,secret,reader,settings,state");
@@ -878,9 +1147,11 @@ async function runSyncAll(quick = false) {
     }
   }
   // automatic replies („out of office“) – every minute now, right after the letters are checked
-  let auto: unknown = null;
+  let auto: unknown = null, inbox: unknown = null;
   if (!quick) { try { auto = await runAutoReplies(); } catch (e) { auto = { error: (e as Error).message }; } }
-  return { synced: Object.keys(done).length, ms: Date.now() - t0, auto };
+  // the invoice mailbox (saskaitos@) → „Sąskaitos“
+  if (!quick) { try { inbox = await runInvoiceInbox(); } catch (e) { inbox = { error: (e as Error).message }; } }
+  return { synced: Object.keys(done).length, ms: Date.now() - t0, auto, inbox };
 }
 
 // ---------- reading a message: only the parts that are needed ----------
@@ -1552,6 +1823,7 @@ async function handle(me: Me, body: Record<string, unknown>) {
     accCache.delete(me.id);
     return { connected: false };
   }
+  if (action.startsWith("inv_inbox_")) return await inboxAction(me, action, body);
   const a0 = await account(me.id);
   if (!a0) return { connected: false };
   // „Gauti per Gmail“: letters read from Gmail (the company server forwards to it), sent as before

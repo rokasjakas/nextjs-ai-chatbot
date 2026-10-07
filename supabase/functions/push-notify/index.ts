@@ -1038,7 +1038,7 @@ async function onTask(uid: string, taskId: string, ev: string) {
 // from the e-mail to Admin+; „Priminti vėliau“ comes back at the chosen time
 type Invoice = { id: string; created_by: string; kind: string; supplier: string | null; number: string | null; amount: number | null; status: string; decision_note: string | null; decision_at?: string | null; remind_at: string | null; reminded_at: string | null; responses: { who?: string; kind: string; text?: string }[];
   source?: string | null; ext_email?: string | null; ext_name?: string | null; ext_mailed?: string | null; lines?: { date?: string; event?: string; amount?: number; total?: number; extras?: { what?: string; amount?: number }[] }[] | null };
-const INV_KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos", purchase: "Pirkinių" };
+const INV_KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos", purchase: "Pirkinių", other: "Kitos" };
 const INV_STATUS: Record<string, string> = { approved: "✅ Sąskaita patvirtinta", rejected: "✖ Sąskaita netvirtinta", later: "⏰ Sąskaita atidėta vėlesniam laikui", sent: "📤 Sąskaita patvirtinta ir išsiųsta", paid: "💶 Sąskaita apmokėta", queued: "🗂 Sąskaita suvesta apmokėjimui" };
 async function plusIds(): Promise<string[]> {
   return (await db<{ id: string }[]>(`profiles?select=id&role=eq.admin&level=in.(plus,super)`)).map((p) => p.id);
@@ -1374,6 +1374,14 @@ Deno.serve(async (req) => {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       return json(await onMailNew(String(body.user_id ?? ""), Array.isArray(body.items) ? body.items : []));
+    }
+    // an invoice that came by e-mail to saskaitos@ (the „mail“ function, with the cron secret)
+    if (body?.mode === "invoice-email") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(String(body.invoice_id ?? ""))}`);
+      if (!v) return json({ error: "Sąskaita nerasta" });
+      return json(await sendTo(await wantIds(await plusIds(), "other"), { title: "📧 Nauja sąskaita el. paštu: " + (v.supplier || v.ext_email || ""), body: invTitle(v), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" }));
     }
     if (body?.mode === "invoice-portal") {
       const secret = Deno.env.get("CRON_SECRET");
