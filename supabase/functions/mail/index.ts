@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 14;
+const VERSION = 15;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -131,7 +131,11 @@ export async function unseal(sealed: string): Promise<string> {
 }
 
 // ---------- IMAP / SMTP ----------
-type Account = { email: string; password: string };
+// reader: where letters are read from, when not the company mail server (e.g. Gmail that the
+// server forwards to); sending always goes from the company mailbox
+type Account = { email: string; password: string; host?: string; reader?: Account };
+const GMAIL_IMAP = "imap.gmail.com";
+const readerOf = (a: Account): Account => a.reader ?? a;
 const insecure = () => Deno.env.get("MAIL_TLS_INSECURE") === "1"; // tests only
 // the last lines of the talk with the mail server, printed to the function
 // log when a letter does not open (passwords are never logged by imapflow;
@@ -151,7 +155,7 @@ const trails = new WeakMap<ImapFlow, Trail>();
 function imapClient(a: Account) {
   const trail: Trail = [];
   const c = new ImapFlow({
-    host: env("MAIL_IMAP_HOST", "koala.serveriai.lt"),
+    host: a.host || env("MAIL_IMAP_HOST", "koala.serveriai.lt"),
     port: Number(env("MAIL_IMAP_PORT", "993")),
     secure: true,
     auth: { user: a.email, pass: a.password },
@@ -170,7 +174,7 @@ type Pooled = { c: ImapFlow; ready: Promise<void>; timer?: ReturnType<typeof set
 type Box = { path: string; name: string; delimiter: string; specialUse?: string; flags?: Set<string>; status?: { messages?: number; unseen?: number } };
 const pool = new Map<string, Pooled>();
 const IDLE_MS = 60_000;
-const poolKey = (a: Account) => a.email + "\u0000" + a.password;
+const poolKey = (a: Account) => (a.host || "") + "\u0000" + a.email + "\u0000" + a.password;
 function connectError(e: unknown): UserError {
   const err = e as { authenticationFailed?: boolean };
   return new UserError(err?.authenticationFailed ? "Neteisingas el. paštas arba slaptažodis." : "Nepavyko prisijungti prie pašto serverio.");
@@ -552,13 +556,13 @@ async function syncFolder(user: string, a: Account, folder: string) {
 }
 // pg_cron, every minute: Inbox for everyone (Sent every 5 min), one after another
 async function runSyncAll() {
-  const rows = await db<{ user_id: string; email: string; secret: string }[]>("mail_accounts?select=user_id,email,secret");
+  const rows = await db<{ user_id: string; email: string; secret: string; reader?: Reader | null }[]>("mail_accounts?select=user_id,email,secret,reader");
   const t0 = Date.now(), done: Record<string, unknown> = {};
   const sent = new Date().getMinutes() % 5 === 0;
   for (const r of rows) {
     if (Date.now() - t0 > 100_000) break;
     try {
-      const a = { email: r.email, password: await unseal(r.secret) };
+      const a = readerOf(await accountOf(r));
       done[r.email] = await syncFolder(r.user_id, a, "inbox");
       if (sent) await syncFolder(r.user_id, a, "sent").catch(() => null);
     } catch (e) {
@@ -962,7 +966,9 @@ async function send(me: Me, a: Account, b: SendBody) {
   }
   // a copy in "Sent" and the original marked as answered; the mail is already
   // out, so problems here are not reported as a failure
-  await withImap(a, async (c) => {
+  // (read through Gmail: the copy also goes to the company mailbox's "Sent")
+  if (a.reader) withImap(a, async (c) => { await c.append(await folderPath(c, "sent"), raw, ["\\Seen"]); }, false).catch((e) => console.error("append company", e?.message));
+  await withImap(readerOf(a), async (c) => {
     await c.append(await folderPath(c, "sent"), raw, ["\\Seen"]).catch((e: Error) => console.error("append", e?.message));
     if (b.replyUid && b.replyFolder) {
       const lock = await c.getMailboxLock(await folderPath(c, b.replyFolder));
@@ -977,12 +983,24 @@ async function send(me: Me, a: Account, b: SendBody) {
 }
 
 // ---------- account storage ----------
+type Reader = { email: string; host: string; secret: string };
+async function accountOf(row: { email: string; secret: string; reader?: Reader | null }): Promise<Account> {
+  const a: Account = { email: row.email, password: await unseal(row.secret) };
+  if (row.reader?.email && row.reader?.secret) a.reader = { email: row.reader.email, host: row.reader.host || GMAIL_IMAP, password: await unseal(row.reader.secret) };
+  return a;
+}
+// letters of another mailbox: what the app keeps about the old one (list, texts) is cleared
+async function clearIndex(uid: string) {
+  for (const t of ["mail_index", "mail_sync", "mail_bodies"]) await db(`${t}?user_id=eq.${uid}`, { method: "DELETE" }).catch(() => null);
+  const [row] = await db<{ state: Record<string, unknown> | null }[]>(`mail_accounts?select=state&user_id=eq.${uid}`);
+  if (row) await db(`mail_accounts?user_id=eq.${uid}`, { method: "PATCH", body: JSON.stringify({ state: { ...(row.state ?? {}), auto: {} } }) });
+}
 const accCache = new Map<string, { a: Account | null; exp: number }>();
 async function account(uid: string): Promise<Account | null> {
   const hit = accCache.get(uid);
   if (hit && hit.exp > Date.now()) return hit.a;
-  const [row] = await db<{ email: string; secret: string }[]>(`mail_accounts?select=email,secret&user_id=eq.${uid}`);
-  const a = row ? { email: row.email, password: await unseal(row.secret) } : null;
+  const [row] = await db<{ email: string; secret: string; reader?: Reader | null }[]>(`mail_accounts?select=email,secret,reader&user_id=eq.${uid}`);
+  const a = row ? await accountOf(row) : null;
   accCache.set(uid, { a, exp: Date.now() + 60_000 });
   return a;
 }
@@ -1047,8 +1065,8 @@ export function autoSkip(from: string, own: string, headers: string): boolean {
 type AutoState = { uidValidity?: string; lastUid?: number; replied?: Record<string, number> };
 const REPLY_EVERY = 4 * 24 * 3600e3; // the same sender gets the auto reply once per 4 days
 
-async function autoReplyFor(row: { user_id: string; email: string; secret: string; settings: Settings; state: { auto?: AutoState } | null }) {
-  const a = { email: row.email, password: await unseal(row.secret) };
+async function autoReplyFor(row: { user_id: string; email: string; secret: string; reader?: Reader | null; settings: Settings; state: { auto?: AutoState } | null }) {
+  const a = await accountOf(row);
   const auto = row.settings.auto!;
   const st: AutoState = { ...(row.state?.auto ?? {}) };
   const replied: Record<string, number> = {};
@@ -1056,7 +1074,7 @@ async function autoReplyFor(row: { user_id: string; email: string; secret: strin
   const [p] = await db<Person[]>(`profiles?select=*&id=eq.${row.user_id}`);
   const fromName = personName(p);
   const out: { to: string; subject: string; messageId: string; references: string[] }[] = [];
-  await withImap(a, async (c) => {
+  await withImap(readerOf(a), async (c) => {
     const lock = await c.getMailboxLock("INBOX");
     try {
       const mb = c.mailbox as { uidValidity: bigint; uidNext: number };
@@ -1125,8 +1143,8 @@ async function autoReplyFor(row: { user_id: string; email: string; secret: strin
 }
 
 async function runAutoReplies() {
-  const rows = await db<{ user_id: string; email: string; secret: string; settings: Settings; state: { auto?: AutoState } | null }[]>(
-    "mail_accounts?select=user_id,email,secret,settings,state&settings->auto->>on=eq.true",
+  const rows = await db<{ user_id: string; email: string; secret: string; reader?: Reader | null; settings: Settings; state: { auto?: AutoState } | null }[]>(
+    "mail_accounts?select=user_id,email,secret,reader,settings,state&settings->auto->>on=eq.true",
   );
   let sent = 0, checked = 0;
   for (const row of rows) {
@@ -1167,11 +1185,30 @@ async function handle(me: Me, body: Record<string, unknown>) {
     accCache.delete(me.id);
     return { connected: false };
   }
-  const a = await account(me.id);
-  if (!a) return { connected: false };
+  const a0 = await account(me.id);
+  if (!a0) return { connected: false };
+  // „Gauti per Gmail“: letters read from Gmail (the company server forwards to it), sent as before
+  if (action === "connect_reader") {
+    const email = String(body.email ?? "").trim().toLowerCase(), password = String(body.password ?? "").replace(/\s+/g, "");
+    if (!emailRe.test(email) || !password) throw new UserError("Įrašyk Gmail adresą ir programos slaptažodį.");
+    const host = GMAIL_IMAP;
+    try { await withImap({ email, password, host }, async () => null, false); }
+    catch (e) { throw e instanceof UserError && /Neteisingas/.test(e.message) ? new UserError("Gmail neprisijungė: patikrink adresą ir programos slaptažodį (16 raidžių, iš myaccount.google.com/apppasswords).") : e; }
+    await db(`mail_accounts?user_id=eq.${me.id}`, { method: "PATCH", body: JSON.stringify({ reader: { email, host, secret: await seal(password) }, updated_at: new Date().toISOString() }) });
+    accCache.delete(me.id);
+    await clearIndex(me.id);
+    return { ok: true, reader: email };
+  }
+  if (action === "disconnect_reader") {
+    await db(`mail_accounts?user_id=eq.${me.id}`, { method: "PATCH", body: JSON.stringify({ reader: null }) });
+    accCache.delete(me.id);
+    await clearIndex(me.id);
+    return { ok: true, reader: null };
+  }
+  const a = readerOf(a0);            // reading: Gmail when connected, otherwise the company mailbox
   if (action === "settings") {
     return {
-      connected: true, email: a.email, settings: await settingsOf(me.id),
+      connected: true, email: a0.email, reader: a0.reader?.email ?? null, settings: await settingsOf(me.id),
       signature: sigHtml(me.person).replace(`cid:${LOGO_CID}`, "data:image/png;base64," + LOGO_PNG_BASE64),
     };
   }
@@ -1184,15 +1221,15 @@ async function handle(me: Me, body: Record<string, unknown>) {
   const needUid = () => { if (!Number.isInteger(uid) || uid <= 0) throw new UserError("Nežinomas laiškas."); };
   switch (action) {
     case "status":
-      return await withImap(a, async (c) => ({ connected: true, email: a.email, unseen: (await c.status("INBOX", { unseen: true })).unseen ?? 0 }))
-        .catch((e) => ({ connected: true, email: a.email, error: e instanceof UserError ? e.message : "Paštas nepasiekiamas." }));
+      return await withImap(a, async (c) => ({ connected: true, email: a0.email, reader: a0.reader?.email ?? null, unseen: (await c.status("INBOX", { unseen: true })).unseen ?? 0 }))
+        .catch((e) => ({ connected: true, email: a0.email, reader: a0.reader?.email ?? null, error: e instanceof UserError ? e.message : "Paštas nepasiekiamas." }));
     case "list": {
       const st = await settingsOf(me.id);
-      return { connected: true, email: a.email, autoOn: autoActive(st.auto), sig: st.sig !== false, ...(await list(a, folder, Math.max(0, Number(body.page) || 0))) };
+      return { connected: true, email: a0.email, reader: a0.reader?.email ?? null, autoOn: autoActive(st.auto), sig: st.sig !== false, ...(await list(a, folder, Math.max(0, Number(body.page) || 0))) };
     }
     case "sync": {
       const st = await settingsOf(me.id);
-      return { connected: true, email: a.email, autoOn: autoActive(st.auto), sig: st.sig !== false, ...(await syncFolder(me.id, a, folder)) };
+      return { connected: true, email: a0.email, reader: a0.reader?.email ?? null, autoOn: autoActive(st.auto), sig: st.sig !== false, ...(await syncFolder(me.id, a, folder)) };
     }
     case "read": {
       needUid();
@@ -1233,7 +1270,7 @@ async function handle(me: Me, body: Record<string, unknown>) {
     case "search":
       return { connected: true, ...(await search(a, body as SearchBody)) };
     case "send":
-      return await send(me, a, body as SendBody);
+      return await send(me, a0, body as SendBody);
   }
   throw new UserError("Nežinomas veiksmas.");
 }
