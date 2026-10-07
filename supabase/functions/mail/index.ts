@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 34;
+const VERSION = 35;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -973,10 +973,20 @@ async function inboxRow(): Promise<InboxRow | null> {
 async function runInvoiceInbox(force = false, sinceDays = 0, max = 8) {
   const row = await inboxRow();
   if (!row || !row.email || !row.secret || (!row.active && !force)) return null;
-  const now = new Date().toISOString();
-  const locked = await db<InboxRow[]>(`invoice_inbox?id=eq.1&or=(state->>busy.is.null,state->>busy.lt.${now})`,
-    { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ state: { ...row.state, busy: new Date(Date.now() + 100_000).toISOString() } }) });
-  if (!locked.length) return { busy: true };
+  // importing earlier days needs no lock (it does not move the position, and a letter can't come in twice –
+  // invoices.mail_id is unique); the regular check takes it, „Tikrinti dabar“ waits up to 20 s for it
+  let locked: InboxRow[] = [row];
+  if (!sinceDays) {
+    for (let i = 0; ; i++) {
+      const now = new Date().toISOString();
+      const cur = i ? await inboxRow() : row;
+      locked = await db<InboxRow[]>(`invoice_inbox?id=eq.1&or=(state->>busy.is.null,state->>busy.lt.${now})`,
+        { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ state: { ...(cur?.state ?? {}), busy: new Date(Date.now() + 100_000).toISOString() } }) });
+      if (locked.length) break;
+      if (!force || i >= 10) return { busy: true };
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
   const st: InboxRow["state"] & { trying?: number; failed?: number[] } = { ...locked[0].state }; delete st.busy;
   row.state = st;
   // the last run stopped inside a letter (it never finished): that letter is skipped, so it can't stop every run
@@ -1039,7 +1049,13 @@ async function runInvoiceInbox(force = false, sinceDays = 0, max = 8) {
   st.total = (st.total ?? 0) + n;
   if (sinceDays > 0 && !err && !errors.length) delete st.failed;   // the earlier days were imported: the skipped letters are in now
   st.last = { at: new Date().toISOString(), n, ...(skipped ? { skipped } : {}), ...(err ? { err: err.slice(0, 300) } : {}), ...(errors.length ? { errors } : {}), ...(items.length ? { items } : (st.last?.items ? { items: st.last.items } : {})) };
-  await db("invoice_inbox?id=eq.1", { method: "PATCH", body: JSON.stringify({ state: st }) });
+  if (sinceDays) {
+    // only what this import knows; the position (and a running check's lock) stay as they are now
+    const cur = (await inboxRow())?.state ?? {};
+    const merged: Record<string, unknown> = { ...cur, total: (cur.total ?? 0) + n, last: st.last };
+    if (!err && !errors.length) delete merged.failed;
+    await db("invoice_inbox?id=eq.1", { method: "PATCH", body: JSON.stringify({ state: merged }) });
+  } else await db("invoice_inbox?id=eq.1", { method: "PATCH", body: JSON.stringify({ state: st }) });
   return { imported: n, skipped, more, err: err || undefined, errors: errors.length ? errors : undefined };
 }
 // „Peržiūra“: how the last letters would be sorted with these rules (nothing is imported)
