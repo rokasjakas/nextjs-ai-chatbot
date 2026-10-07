@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-NIULau54uRDlHHBqZsSxH4+5W+/HMdgPla2OYSslhoU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-BjHFjwQJKpCZdz06rQax2UUVIOA4JMRc9qtUzUwEeec=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19478,7 +19478,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v387';
+const APP_VER = 'v388';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26811,13 +26811,19 @@ function odLines(text){
 }
 
 /* ---------- the document (edit / print / noprice) ---------- */
+// the offer in English: the fixed words of the document (the texts themselves are translated once – offerTranslateEN)
+const OD_EN = { 'Komercinis pasiūlymas':'Commercial offer', 'Klientas:':'Client:', 'Vardas:':'Contact:', 'Projektas:':'Project:', 'Lokacija:':'Location:', 'Data:':'Date:', 'Iki:':'Until:',
+  '(tęsinys)':'(continued)', 'Pavadinimas':'Description', 'Kiekis':'Qty', 'Kaina':'Price', 'Koef.':'Coef.', 'Suma':'Amount', 'Suma (BE PVM)':'Total (excl. VAT)', 'Nuolaida (%)':'Discount (%)',
+  'Suma su nuolaida':'Total after discount', 'Pasiūlymą paruošė:':'Prepared by:', 'Apžvalga':'Summary', 'Viso Suma (BE PVM)':'Total (excl. VAT)', 'PVM':'VAT', 'VISO SUMA (SU PVM)':'TOTAL (incl. VAT)' };
+const odT = (d, t)=>d && d.lang==='en' ? (OD_EN[t] || t) : t;
+const odU = (d, u)=>d && d.lang==='en' ? ({ 'vnt.':'pcs.', 'kompl.':'set' }[u] || u) : u;
 function odTitleCard(d, mode){
   const ed = mode==='edit';
   const f = (k, label, w)=>ed
     ? `<label class="od-f"><b>${label}</b><input data-h="${k}" value="${odE(d[k])}" style="width:${w}px"${k==='date'||k==='dateTo'?' type="date"':''}${k==='client'?' autocomplete="off"':''}>${k==='client' && canEdit('offers') ? '<button type="button" class="od-clpick" data-clpick data-ic="1" title="Pasirinkti iš klientų sąrašo">▾</button>' : ''}</label>`
     : `<span class="od-f"><b>${label}</b> ${odE(k==='date' ? d[k] : d[k])}</span>`;
-  return `<div class="od-card od-title"><div class="od-h1">Komercinis pasiūlymas</div>
-    <div class="od-meta">${f('client','Klientas:',120)}${f('contact','Vardas:',100)}${f('project','Projektas:',130)}${f('location','Lokacija:',110)}${ed ? f('date','Data:',120)+f('dateTo','Iki:',120) : `<span class="od-f"><b>Data:</b> ${odE(d.date||'')}${d.dateTo && d.dateTo>d.date ? ' – '+odE(d.dateTo) : ''}</span>`}</div></div>`;
+  return `<div class="od-card od-title"><div class="od-h1">${odT(d,'Komercinis pasiūlymas')}</div>
+    <div class="od-meta">${f('client',odT(d,'Klientas:'),120)}${f('contact',odT(d,'Vardas:'),100)}${f('project',odT(d,'Projektas:'),130)}${f('location',odT(d,'Lokacija:'),110)}${ed ? f('date',odT(d,'Data:'),120)+f('dateTo',odT(d,'Iki:'),120) : `<span class="od-f"><b>${odT(d,'Data:')}</b> ${odE(d.date||'')}${d.dateTo && d.dateTo>d.date ? ' – '+odE(d.dateTo) : ''}</span>`}</div></div>`;
 }
 function odSection(d, s, si, mode, rows, cont){
   const ed = mode==='edit', np = mode==='noprice';
@@ -26825,9 +26831,9 @@ function odSection(d, s, si, mode, rows, cont){
   const list = rows || s.rows;
   const head = ed
     ? `<div class="od-sh" style="background:${odE(s.color)}"><button class="od-color" data-color="${si}" title="Spalva" style="background:${odE(s.color)}"></button><input class="od-st" data-st="${si}" value="${odE(s.title)}"><span class="od-sact"><button data-sup="${si}" title="Aukštyn">↑</button><button data-sdown="${si}" title="Žemyn">↓</button><button data-sdel="${si}" title="Ištrinti skiltį">✕</button></span></div>`
-    : `<div class="od-sh" style="background:${odE(s.color)}">${odE(s.title)}${cont?' (tęsinys)':''}</div>`;
-  const cols = np ? `<div class="od-tr od-th np"><span>#</span><span class="od-name">Pavadinimas</span><span>Kiekis</span></div>`
-    : `<div class="od-tr od-th"><span>#</span><span class="od-name">Pavadinimas</span><span>Kiekis</span><span>Kaina</span><span>Koef.</span><span class="od-sum">Suma</span></div>`;
+    : `<div class="od-sh" style="background:${odE(s.color)}">${odE(s.title)}${cont?' '+odT(d,'(tęsinys)'):''}</div>`;
+  const cols = np ? `<div class="od-tr od-th np"><span>#</span><span class="od-name">${odT(d,'Pavadinimas')}</span><span>${odT(d,'Kiekis')}</span></div>`
+    : `<div class="od-tr od-th"><span>#</span><span class="od-name">${odT(d,'Pavadinimas')}</span><span>${odT(d,'Kiekis')}</span><span>${odT(d,'Kaina')}</span><span>${odT(d,'Koef.')}</span><span class="od-sum">${odT(d,'Suma')}</span></div>`;
   const stockOf = {};
   const body = list.map((r)=>{
     const i = s.rows.indexOf(r);
@@ -26844,7 +26850,7 @@ function odSection(d, s, si, mode, rows, cont){
         <span class="od-ract"><button data-rup title="Aukštyn">↑</button><button data-rdown title="Žemyn">↓</button><button data-rdel title="Ištrinti">✕</button></span>
       </div>`;
     }
-    const nm = odE(r.name + odPosTxt(r)) + (odRowDesc(r) ? `<small class="od-desc">${odE(odRowDesc(r))}</small>` : ''), qt = odE(offerPlain(offerNum(r.qty)) + (ctUnitN(r.unit) ? ' '+ctUnitN(r.unit) : ''));
+    const nm = odE(r.name + odPosTxt(r)) + (odRowDesc(r) ? `<small class="od-desc">${odE(odRowDesc(r))}</small>` : ''), qt = odE(offerPlain(offerNum(r.qty)) + (ctUnitN(r.unit) ? ' '+odU(d, ctUnitN(r.unit)) : ''));
     if(np) return `<div class="od-tr np"><span>${i+1}</span><span class="od-name">${nm}</span><span>${qt}</span></div>`;
     return `<div class="od-tr"><span>${i+1}</span><span class="od-name">${nm}</span><span>${qt}</span><span>${odE(offerPlain(offerNum(r.price)))}</span><span>${odE(r.coef===''||r.coef==null?'1':offerPlain(offerNum(r.coef)))}</span><span class="od-sum">${offerMoney(offerRowSum(r))}</span></div>`;
   }).join('');
@@ -26857,20 +26863,20 @@ function odSection(d, s, si, mode, rows, cont){
   const add = ed ? `<div class="od-add"><button data-addstock="${si}">+ Iš sandėlio</button><button data-addcat="${si}">+ Grupė / paslauga</button><button data-addrow="${si}">+ Eilutė</button></div>` : '';
   const last = !rows || rows[rows.length-1]===s.rows[s.rows.length-1];
   const foot = np || !last ? '' : `<div class="od-foot">
-      <div class="od-fr"><span>Suma (BE PVM)</span><span>${offerMoney(t.sum)}</span></div>
-      ${ed ? `<div class="od-fr"><span>Nuolaida (%) <input data-disc="${si}" value="${odE(s.discount||'')}" placeholder="0" inputmode="decimal" style="width:44px"></span><span>${offerNum(s.discount) ? '- '+offerMoney(t.disc) : ''}</span></div>` : (offerNum(s.discount) ? `<div class="od-fr"><span>Nuolaida (%) &nbsp;&nbsp; ${odE(offerPlain(offerNum(s.discount)))}%</span><span>- ${offerMoney(t.disc)}</span></div>` : '')}
-      ${offerNum(s.discount) ? `<div class="od-fr"><span>Suma su nuolaida</span><b>${offerMoney(t.net)}</b></div>` : ''}
+      <div class="od-fr"><span>${odT(d,'Suma (BE PVM)')}</span><span>${offerMoney(t.sum)}</span></div>
+      ${ed ? `<div class="od-fr"><span>${odT(d,'Nuolaida (%)')} <input data-disc="${si}" value="${odE(s.discount||'')}" placeholder="0" inputmode="decimal" style="width:44px"></span><span>${offerNum(s.discount) ? '- '+offerMoney(t.disc) : ''}</span></div>` : (offerNum(s.discount) ? `<div class="od-fr"><span>${odT(d,'Nuolaida (%)')} &nbsp;&nbsp; ${odE(offerPlain(offerNum(s.discount)))}%</span><span>- ${offerMoney(t.disc)}</span></div>` : '')}
+      ${offerNum(s.discount) ? `<div class="od-fr"><span>${odT(d,'Suma su nuolaida')}</span><b>${offerMoney(t.net)}</b></div>` : ''}
     </div>`;
   return `<div class="od-card od-sec" data-sec="${si}">${head}<div class="od-tbl">${cols}${body}${blank}</div>${add}${foot}</div>`;
 }
 function odSummary(d, mode){
-  if(mode==='noprice') return `<div class="od-card od-sumcard"><div class="od-fr"><span>Pasiūlymą paruošė:</span><span>${odE(d.preparedBy)}</span></div></div>`;
+  if(mode==='noprice') return `<div class="od-card od-sumcard"><div class="od-fr"><span>${odT(d,'Pasiūlymą paruošė:')}</span><span>${odE(d.preparedBy)}</span></div></div>`;
   const t = offerTotals(d), ed = mode==='edit';
-  return `<div class="od-card od-sumcard"><div class="od-h2">Apžvalga</div>
-    <div class="od-fr od-green"><b>Viso Suma (BE PVM)</b><b>${offerMoney(t.net)}</b></div>
-    <div class="od-fr"><span>PVM (${ed ? `<input data-h="vat" value="${odE(d.vat)}" style="width:34px" inputmode="decimal">` : odE(offerPlain(offerNum(d.vat)))}%)</span><span>${offerMoney(t.vat)}</span></div>
-    <div class="od-fr od-big"><b>VISO SUMA (SU PVM)</b><b>${offerMoney(t.gross)}</b></div>
-    <div class="od-fr"><span>Pasiūlymą paruošė:</span><span>${ed ? `<input data-h="preparedBy" value="${odE(d.preparedBy)}" style="width:120px;text-align:right">` : odE(d.preparedBy)}</span></div></div>`;
+  return `<div class="od-card od-sumcard"><div class="od-h2">${odT(d,'Apžvalga')}</div>
+    <div class="od-fr od-green"><b>${odT(d,'Viso Suma (BE PVM)')}</b><b>${offerMoney(t.net)}</b></div>
+    <div class="od-fr"><span>${odT(d,'PVM')} (${ed ? `<input data-h="vat" value="${odE(d.vat)}" style="width:34px" inputmode="decimal">` : odE(offerPlain(offerNum(d.vat)))}%)</span><span>${offerMoney(t.vat)}</span></div>
+    <div class="od-fr od-big"><b>${odT(d,'VISO SUMA (SU PVM)')}</b><b>${offerMoney(t.gross)}</b></div>
+    <div class="od-fr"><span>${odT(d,'Pasiūlymą paruošė:')}</span><span>${ed ? `<input data-h="preparedBy" value="${odE(d.preparedBy)}" style="width:120px;text-align:right">` : odE(d.preparedBy)}</span></div></div>`;
 }
 function odFooter(d, mode){
   if(mode==='edit') return `<div class="od-card od-footer"><textarea data-h="footerLeft" rows="6">${odE(d.footerLeft)}</textarea><textarea data-h="footerRight" rows="6" style="text-align:right">${odE(d.footerRight)}</textarea>
@@ -27503,7 +27509,7 @@ function renderOffersTab(){
     ${OFFER.err ? `<div class="card mail-err">${odE(OFFER.err)}</div>` : ''}
     <div class="of-list">${!OFFER.loaded ? '<div class="card empty-state">Kraunama…</div>' : list.map(o=>{ const w = offerWhoText(o); return `
       <button class="card of-item" data-open="${odE(o.id)}">
-        <span class="of-main"><b>${odE(o.title||'Be pavadinimo')}</b>${offerBrand(o.data)==='sc' ? ' <span class="pill of-sc">Silent Concept</span>' : ''}
+        <span class="of-main"><b>${odE(o.title||'Be pavadinimo')}</b>${offerBrand(o.data)==='sc' ? ' <span class="pill of-sc">Silent Concept</span>' : ''}${(o.data||{}).lang==='en' ? ' <span class="pill">EN</span>' : ''}
           <small class="of-note">👤 Paruošė: <b>${odE(w.who)}</b> · 🏢 Kam: <b>${odE(w.to)}</b> · 📅 ${odE(w.date||'—')}</small>
           ${(o.data||{}).location ? `<small>📍 ${odE(o.data.location)}</small>` : ''}</span>
         <span class="of-side"><span class="of-total">${offerMoney(o.total)}</span>
@@ -27787,6 +27793,8 @@ function offerEditorBind(){
   const jb = document.getElementById('oeJob'); if(jb) jb.onclick = ()=>{ JOBS.focus = o.job_id; setTab('jobs'); };
   const mo = document.getElementById('oeMore'); if(mo) mo.onclick = e=>evPopMenu(e.currentTarget, [
     { html:'📄 Peržiūrėti PDF be kainų', fn:()=>offerMakePdf('noprice') },
+    { html:'🌐 Išversti į anglų kalbą (nauja kopija)', fn:()=>offerTranslateEN() },
+    { html:d.lang==='en' ? '🇱🇹 Antraštės lietuviškai' : '🇬🇧 Antraštės angliškai (tekstas – kaip įrašytas)', fn:()=>{ if(d.lang==='en') delete d.lang; else d.lang = 'en'; offerTouch(true); } },
     { html:'⧉ Kopijuoti kaip naują pasiūlymą', fn:()=>{ OFFER.cur = { id:null, status:'draft', job_id:null, data:JSON.parse(JSON.stringify(d)) }; ['versions','finalVersion','sentLog','clientEmail'].forEach(k=>delete OFFER.cur.data[k]); OFFER.cur.data.createdByName = offerMeName(); OFFER.cur.data.footerLeft = offerLeftFor(OFFER.cur.data.footerLeft); OFFER.cur.data.project = (d.project||'')+' (kopija)'; OFFER.dirty = true; offerEditorRender(); toast('Sukurta kopija — neužmiršk išsaugoti.'); } },
     ...(o.id ? [{ sep:true }, { html:'🗑 Ištrinti pasiūlymą', cls:'danger', fn:async ()=>{
         if(!(await uiConfirm('Ištrinti šį pasiūlymą? Projektas (jei sukurtas) liks.'))) return;
@@ -28437,6 +28445,48 @@ function offerPickCatalog(si){
   document.getElementById('pcX').onclick = closeModal; document.getElementById('pcDone').onclick = closeModal;
   if(!CT.loaded) ctLoad().then(()=>{ if(document.getElementById('pcList')) draw(); });
   draw(); if(!EV_TOUCH) document.getElementById('pcQ').focus();
+}
+// the offer in English: a new copy with the texts translated by the AI assistant (ai-chat) and English headings;
+// names of brands and models, numbers and units stay as they are; the original offer is not changed
+async function offerAskAI(prompt){
+  const token = await fnToken(); if(!token) throw new Error('Prisijunk iš naujo.');
+  const res = await fetch(SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/ai-chat', { method:'POST',
+    headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+token, apikey:SUPABASE_KEY },
+    body:JSON.stringify({ messages:[{ role:'user', content:prompt }] }) });
+  if(!res.ok){ let m = 'Serverio klaida ('+res.status+')'; try{ const j = await res.json(); if(j.error) m = j.error; }catch(e){} if(res.status===404) m = 'AI funkcija dar neįdiegta (ai-chat).'; throw new Error(m); }
+  return await res.text();
+}
+async function offerTranslateList(list){
+  const ask = async part=>{
+    const txt = await offerAskAI('Translate each string of this JSON array from Lithuanian into English. It is a commercial offer of an event technical services company (sound, lighting, video, LED screens, stages, crew). '
+      + 'Keep brand names, model names, numbers, units and sizes unchanged (e.g. "L-Acoustics K2", "4x", "50x50", "m2"). Keep line breaks and a leading "*" on a line. Lines that are only names, phone numbers, e-mails, addresses or company codes stay as they are, but translate words like "Įmonės kodas", "PVM kodas", "Pagarbiai", "direktorius". '
+      + 'Answer with ONLY a JSON array of the same length and order – no explanations.\n'+JSON.stringify(part));
+    const a = txt.indexOf('['), b = txt.lastIndexOf(']'); if(a<0 || b<a) throw new Error('AI atsakė ne taip, kaip tikėtasi.');
+    const out = JSON.parse(txt.slice(a, b+1)); if(!Array.isArray(out) || out.length!==part.length) throw new Error('AI grąžino ne visus vertimus – bandyk dar kartą.');
+    return out.map((t, k)=>typeof t==='string' && t.trim() ? t : part[k]);
+  };
+  const map = {};
+  for(let i=0; i<list.length; i+=40){ const part = list.slice(i, i+40); (await ask(part)).forEach((t, k)=>{ map[part[k]] = t; }); }
+  return map;
+}
+async function offerTranslateEN(){
+  const d = JSON.parse(JSON.stringify(OFFER.cur.data)); ['versions','finalVersion','sentLog','clientEmail'].forEach(k=>delete d[k]);
+  const texts = [], put = v=>{ v = String(v||'').trim(); if(v && /[a-ząčęėįšųūž]{2}/i.test(v) && !texts.includes(v)) texts.push(v); };
+  put(d.project); put(d.location);
+  d.sections.forEach(s=>{ put(s.title); s.rows.forEach(r=>{ put(r.name); put(r.pos); }); });
+  put(d.footerLeft); put(d.footerRight);
+  openModal(`<h3 style="margin:0 0 8px;">🌐 Verčiama į anglų kalbą…</h3><p class="section-sub" style="margin:0;">${texts.length} tekstų. Tai užtrunka kelias sekundes.</p>`);
+  let map;
+  try{ map = await offerTranslateList(texts); }
+  catch(e){ closeModal(); offerErrorModal('Išversti nepavyko', e.message || String(e)); return; }
+  closeModal();
+  const tr = v=>{ const k = String(v||'').trim(); return k && map[k]!=null ? map[k] : v; };
+  ['project','location','footerLeft','footerRight'].forEach(k=>{ if(d[k]) d[k] = tr(d[k]); });
+  d.sections.forEach(s=>{ const up = s.title===String(s.title||'').toUpperCase(); s.title = tr(s.title); if(up) s.title = String(s.title).toUpperCase();
+    s.rows.forEach(r=>{ if(r.name) r.name = tr(r.name); if(r.pos) r.pos = tr(r.pos); if(r.ln) r.ln = r.name; }); });
+  d.lang = 'en'; d.createdByName = offerMeName();
+  OFFER.cur = { id:null, status:'draft', job_id:null, data:d }; OFFER.dirty = true; OFFER.savedMsg = '';
+  offerEditorRender(); toast('🌐 Angliška kopija paruošta – peržiūrėk ir išsaugok. Originalas nepakeistas.', 6000);
 }
 function offerRemember(d){
   const p = Object.assign({}, STATE.offerPrices || {});
@@ -39547,6 +39597,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 14:51', v:'v388', k:'new', t:'Pasiūlymai: vertimas į anglų kalbą', f:'Pasiūlymo meniu ⋯ → „🌐 Išversti į anglų kalbą (nauja kopija)“: sukuriama nauja pasiūlymo kopija, kurioje projektas, lokacija, skilčių pavadinimai, eilutės, pozicijos ir apačios tekstai išversti (AI asistentu), o antraštės – angliškos (Commercial offer, Description, Qty, Total (excl. VAT)…, vnt. → pcs.). Prekių ženklai, modeliai ir skaičiai nekeičiami, originalas lieka nepakeistas. Sąraše tokie pasiūlymai pažymėti „EN“. Meniu taip pat galima tik perjungti antraštes į anglų kalbą, jei tekstą rašai pats.' },
   { d:'2026-10-07 14:25', v:'v387', k:'new', t:'Pasiūlymai: daiktų pozicija (Scena, Ambient, Aplinka…)', f:'Prie kiekvienos pasiūlymo eilutės – „+ poz.“: pasirenki poziciją (Scena, Ambient, Aplinka) arba įrašai savo – ji išsaugoma ir kitą kartą bus sąraše visiems. Pasiūlyme ir PDF rodoma skliausteliuose po pavadinimo, pvz. „Monitorius (Scena)“. Daiktai su ta pačia pozicija skiltyje savaime sustatomi vienas šalia kito.' },
   { d:'2026-10-07 14:21', v:'v386', k:'new', t:'Vienetas „m“ (metrai)', f:'Įrangos grupėms ir sandėlio daiktams prie vienetų vnt. / m2 / kompl. pridėtas ir „m“ – metrai. Pasiūlyme rodoma prie kiekio, pvz. „12 m“.' },
   { d:'2026-10-07 14:02', v:'v385', k:'fix', t:'Įrangos grupės: pogrupių pasirinkimas', f:'Pogrupio laukas grupės lange dabar visada parodo sąrašą – spustelėjus, ▾ ar pradėjus rašyti: pirma šios grupės pogrupiai, po jais – kitų grupių (pasirinkus tokį, grupė pakeičiama). Galima rinktis rodyklėmis ir Enter arba įrašyti naują.' },
