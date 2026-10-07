@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bReJe4l2ipythnRF/UmYz4UpCfR/1yQb37V27PGuUdw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-B2a56xMVyWfv8bC4YFlWFlVHJg1yqcieave4I3KAhgQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3781,6 +3781,7 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .cg-or{text-align:center;font-weight:800;color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin:6px 0;}
 .od-var{display:block;margin:2px 0 2px 3px;max-width:100%;font-size:7px;height:auto !important;padding:1px 2px;} @media (max-width:760px){ .od-edit .od-var{font-size:12px;} }
 .cg-add{position:relative;margin-top:8px;}
+.od-edit .od-blank input{background:transparent !important;border-style:dashed !important;} .od-edit .od-blank .od-n{opacity:.45;}
 .od-qw{position:relative;display:block;min-width:0;} .od-qw input{width:100%;padding-right:12px !important;} .od-qw i{position:absolute;right:2px;top:50%;transform:translateY(-50%);font-style:normal;font-size:5.5px;color:#888;pointer-events:none;}
 @media (max-width:760px){ .od-edit .od-tr>.od-qw{grid-column:2 !important;grid-row:2;} .od-edit .od-qw input{padding-right:40px !important;} .od-edit .od-qw i{font-size:12px;right:8px;} } .cg-add input{width:100%;}
 .cg-res{display:flex;flex-direction:column;max-height:220px;overflow-y:auto;} .cg-res button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 8px;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--text);font:inherit;text-align:left;cursor:pointer;}
@@ -19442,7 +19443,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v377';
+const APP_VER = 'v378';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26813,6 +26814,12 @@ function odSection(d, s, si, mode, rows, cont){
     if(np) return `<div class="od-tr np"><span>${i+1}</span><span class="od-name">${nm}</span><span>${qt}</span></div>`;
     return `<div class="od-tr"><span>${i+1}</span><span class="od-name">${nm}</span><span>${qt}</span><span>${odE(offerPlain(offerNum(r.price)))}</span><span>${odE(r.coef===''||r.coef==null?'1':offerPlain(offerNum(r.coef)))}</span><span class="od-sum">${offerMoney(offerRowSum(r))}</span></div>`;
   }).join('');
+  // an empty row ready to fill in: it becomes a real row with the first letter typed
+  const blank = ed && (!rows || rows[rows.length-1]===s.rows[s.rows.length-1]) ? `<div class="od-tr od-blank" data-blank="${si}">
+        <span class="od-n">${s.rows.length+1}</span>
+        <span class="od-name"><input data-bf="name" placeholder="Rašyk pavadinimą…" autocomplete="off"></span>
+        <input data-bf="qty" placeholder="1" inputmode="decimal"><input data-bf="price" placeholder="" inputmode="decimal"><input data-bf="coef" placeholder="1" inputmode="decimal">
+        <span class="od-sum"></span><span class="od-ract"></span></div>` : '';
   const add = ed ? `<div class="od-add"><button data-addstock="${si}">+ Iš sandėlio</button><button data-addcat="${si}">+ Grupė / paslauga</button><button data-addrow="${si}">+ Eilutė</button></div>` : '';
   const last = !rows || rows[rows.length-1]===s.rows[s.rows.length-1];
   const foot = np || !last ? '' : `<div class="od-foot">
@@ -26820,7 +26827,7 @@ function odSection(d, s, si, mode, rows, cont){
       ${ed ? `<div class="od-fr"><span>Nuolaida (%) <input data-disc="${si}" value="${odE(s.discount||'')}" placeholder="0" inputmode="decimal" style="width:44px"></span><span>${offerNum(s.discount) ? '- '+offerMoney(t.disc) : ''}</span></div>` : (offerNum(s.discount) ? `<div class="od-fr"><span>Nuolaida (%) &nbsp;&nbsp; ${odE(offerPlain(offerNum(s.discount)))}%</span><span>- ${offerMoney(t.disc)}</span></div>` : '')}
       ${offerNum(s.discount) ? `<div class="od-fr"><span>Suma su nuolaida</span><b>${offerMoney(t.net)}</b></div>` : ''}
     </div>`;
-  return `<div class="od-card od-sec" data-sec="${si}">${head}<div class="od-tbl">${cols}${body}</div>${add}${foot}</div>`;
+  return `<div class="od-card od-sec" data-sec="${si}">${head}<div class="od-tbl">${cols}${body}${blank}</div>${add}${foot}</div>`;
 }
 function odSummary(d, mode){
   if(mode==='noprice') return `<div class="od-card od-sumcard"><div class="od-fr"><span>Pasiūlymą paruošė:</span><span>${odE(d.preparedBy)}</span></div></div>`;
@@ -27798,6 +27805,14 @@ function offerEditorBind(){
   });
   root.querySelectorAll('[data-addstock]').forEach(b=>b.onclick = ()=>offerPickItems(+b.dataset.addstock));
   root.querySelectorAll('[data-addcat]').forEach(b=>b.onclick = ()=>offerPickCatalog(+b.dataset.addcat));
+  root.querySelectorAll('[data-blank]').forEach(el=>{ const si = +el.dataset.blank;
+    el.querySelectorAll('[data-bf]').forEach(inp=>inp.addEventListener('input', ()=>{
+      const f = inp.dataset.bf, sec = d.sections[si], r = { id:offerUid(), itemId:null, name:'', qty:1, price:'', coef:1 };
+      r[f] = inp.value; sec.rows.push(r); const i = sec.rows.length - 1;
+      offerTouch(true);
+      const n = document.querySelector(`#odEdit [data-row="${si}:${i}"] [data-f="${f}"]`);
+      if(n){ n.focus(); try{ n.selectionStart = n.selectionEnd = n.value.length; }catch(e){} if(f==='name') odRowSuggest(n, si, i); }
+    })); });
   root.querySelectorAll('[data-sdel]').forEach(b=>b.onclick = async ()=>{ const si = +b.dataset.sdel; if(d.sections[si].rows.length && !(await uiConfirm('Ištrinti skiltį „'+d.sections[si].title+'“ su visomis eilutėmis?'))) return; d.sections.splice(si,1); offerTouch(true); });
   root.querySelectorAll('[data-sup]').forEach(b=>b.onclick = ()=>{ const si = +b.dataset.sup; if(si>0){ d.sections.splice(si-1,0,d.sections.splice(si,1)[0]); offerTouch(true); } });
   root.querySelectorAll('[data-sdown]').forEach(b=>b.onclick = ()=>{ const si = +b.dataset.sdown; if(si<d.sections.length-1){ d.sections.splice(si+1,0,d.sections.splice(si,1)[0]); offerTouch(true); } });
@@ -39440,6 +39455,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 13:22', v:'v378', k:'new', t:'Pasiūlymuose – tuščia eilutė kiekvienoje skiltyje', f:'Kiekvienos pasiūlymo skilties apačioje visada yra tuščia eilutė – iškart rašai pavadinimą (siūloma iš įrangos, grupių ir paslaugų), kiekį ar kainą, o po ja atsiranda nauja tuščia. Tuščios eilutės į PDF nepatenka.' },
   { d:'2026-10-07 13:19', v:'v377', k:'new', t:'Įrangos grupės: bendras kiekis m2, vienetai vnt. / m2 / kompl.', f:'Grupės vienetas pasirenkamas: vnt., m2 arba kompl. – pasiūlyme jis iškart rodomas prie kiekio. Kai grupė turi kelis variantus (pvz. YesTech P2 Mu: 4× ZM arba 4× ES), sandėlio kiekiai sudedami ir rodomi grupės vienetais („sandėlyje 25 m2“); pasiūlyme grupė pagal nutylėjimą imama iš bendro kiekio – pirmiausia iš pirmo varianto, kol jo užtenka, tada iš kito. Prie eilutės matosi, kiek laisva tomis dienomis, galima pasirinkti ir tik vieną variantą. Grupės lange daiktus ir variantus galima sukeisti vietomis (↑ ↓).' },
   { d:'2026-10-07 13:12', v:'v376', k:'new', t:'Įrangos grupės pagal Audio / Video / Light / Priedai / Kita', f:'Įrangos grupių sąrašas suskirstytas į Audio, Video, Light, Priedai ir Kita, viršuje – filtrai su kiekiais. Grupės lange pasirenki, kuriai priklauso; anksčiau pažymėtos Garsas / Vaizdas / Šviesos savaime tapo Audio / Video / Light. Pasiūlyme rašant GARSO skiltyje pirmiau siūlomos Audio grupės, VAIZDO – Video, ŠVIESŲ – Light.' },
   { d:'2026-10-07 13:00', v:'v375', k:'new', t:'Įrangos grupės: „arba“, keli daiktai, tuščios grupės', f:'Vienetą rašai taip, kaip jis turi būti pasiūlyme (1m2, 1m3, komplektas…). Grupė gali turėti kelis sudėties variantus – „+ Arba“: pvz. 1m2 = 4× Infiled 50x50 arba 2× Infiled 50x100; kiekviename variante – vienas ar keli daiktai. Pasiūlyme prie grupės eilutės pasirenki, iš kurio varianto ją sudaryti, ir pagal jį skaičiuojamas sandėlio likutis. Grupė gali būti ir tuščia – tik pavadinimas ir kaina.' },
