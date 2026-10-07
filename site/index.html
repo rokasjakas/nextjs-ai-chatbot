@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-FOds9IvOhhgvZ5OOl4E8tUUoZfP2RfnbZV8XsMAVAZY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bu1tGHrhBLCBrzAPMI2u1F3yy6opzi0F+IUDdQp3th0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -6106,6 +6106,14 @@ function toast(msg, ms){
   toast._h = setTimeout(()=>t.classList.remove('show'), ms || 2400);
 }
 
+// a message with one button (e.g. „Atidaryti“ after a letter failed to go)
+function toastAction(msg, label, fn, ms){
+  const t = document.getElementById('toast'); if(!t) return;
+  t.innerHTML = esc(msg)+`<button type="button" class="nt-undo">${esc(label)}</button>`;
+  t.classList.add('show', 'act'); clearTimeout(toast._h);
+  toast._h = setTimeout(()=>t.classList.remove('show', 'act'), ms || 10000);
+  t.querySelector('.nt-undo').onclick = ()=>{ t.classList.remove('show', 'act'); fn(); };
+}
 function fmt(n,d){ if(n===null||n===undefined||isNaN(n)) return '—'; return Number(n).toLocaleString('lt-LT',{maximumFractionDigits:d===undefined?1:d}); }
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
@@ -19874,7 +19882,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v442';
+const APP_VER = 'v443';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26754,7 +26762,7 @@ function mlSigNote(k){
   return kind==='none' ? 'Be parašo.' : kind==='personal' ? '✍️ Bus pridėtas asmeninis parašas.' : '✍️ Bus pridėtas darbo parašas (su logotipu).';
 }
 function mailCompose(o){
-  const files = [];
+  const files = (o.files||[]).slice();
   const ids = mlIdents(), from0 = ids.some(x=>x.k===o.from) ? o.from : (ids[0]||{k:'work'}).k;
   const fwd = o.fwd && o.fwd.atts.length ? o.fwd : null;
   openModal(`<h3 style="margin:0 0 8px;">${o.inReplyTo ? '↩ Atsakymas' : o.fwd ? '➡ Persiųsti' : '✏️ Naujas laiškas'}</h3>
@@ -26786,24 +26794,37 @@ function mailCompose(o){
   if(fromSel) fromSel.onchange = ()=>{ document.getElementById('mcSigNote').textContent = mlSigNote(fromSel.value); };
   const ta = document.getElementById('mcText');
   if(!EV_TOUCH) (o.to ? ta : document.getElementById('mcTo')).focus();
-  document.getElementById('mcSend').onclick = async ()=>{
-    const b = document.getElementById('mcSend');
+  // „Siųsti“: the window closes at once and the letter goes in the background; the result comes as a message.
+  // If it fails, nothing is lost – „Atidaryti“ brings the same letter (text, attachments) back.
+  document.getElementById('mcSend').onclick = ()=>{
     const to = document.getElementById('mcTo').value.trim();
     if(!to){ toast('Įrašyk gavėją.'); return; }
     if(files.reduce((n,f)=>n+f.size,0) > 10*1024*1024){ toast('Priedai per dideli (iki 10 MB).'); return; }
-    b.disabled = true; b.textContent = 'Siunčiama…';
-    try{
-      const attachments = [];
-      if(fwd) for(const a of fwd.atts.filter(a=>!a.dropped)){
-        if(a.path){ attachments.push({ filename:a.filename, contentType:a.contentType, base64:await mailFileB64(await mlFwdBlob(a)) }); continue; }
-        const x = await mailCall({ action:'attachment', folder:fwd.folder, uid:fwd.uid, index:a.index }); attachments.push({ filename:x.filename, contentType:x.contentType, base64:x.base64 }); }
-      for(const f of files) attachments.push({ filename:f.name, contentType:f.type||'application/octet-stream', base64:await mailFileB64(f) });
-      const sent = await mailCall({ action:'send', from:fromSel ? fromSel.value : from0, to, cc:document.getElementById('mcCc').value.trim(), subject:document.getElementById('mcSubj').value, text:ta.value, quoted:o.quoted||'',
-        inReplyTo:o.inReplyTo||'', references:o.references||[], replyUid:o.replyUid||0, replyFolder:o.replyFolder||'', attachments });
-      closeModal(); toast('📨 Laiškas išsiųstas'+(sent && sent.accepted && sent.accepted.length ? ': '+sent.accepted.join(', ') : '')+'.');
-      if(document.getElementById('pfMail')) renderMailCard();
-    }catch(e){ toast(e.message); b.disabled = false; b.textContent = '📨 Siųsti'; }
+    const draft = Object.assign({}, o, { from:fromSel ? fromSel.value : from0, to, cc:document.getElementById('mcCc').value.trim(), subject:document.getElementById('mcSubj').value, text:ta.value, files:files.slice() });
+    closeModal();
+    toast('📨 Laiškas siunčiamas…', 1800);
+    mailSendBg(draft, fwd);
   };
+}
+const ML_SENDING = { n:0 };
+async function mailSendBg(d, fwd){
+  ML_SENDING.n++;
+  window.onbeforeunload = ()=>'Laiškas dar siunčiamas – ar tikrai išeiti?';
+  try{
+    const attachments = [];
+    if(fwd) for(const a of fwd.atts.filter(a=>!a.dropped)){
+      if(a.path){ attachments.push({ filename:a.filename, contentType:a.contentType, base64:await mailFileB64(await mlFwdBlob(a)) }); continue; }
+      const x = await mailCall({ action:'attachment', folder:fwd.folder, uid:fwd.uid, index:a.index }); attachments.push({ filename:x.filename, contentType:x.contentType, base64:x.base64 }); }
+    for(const f of d.files) attachments.push({ filename:f.name, contentType:f.type||'application/octet-stream', base64:await mailFileB64(f) });
+    const sent = await mailCall({ action:'send', from:d.from, to:d.to, cc:d.cc, subject:d.subject, text:d.text, quoted:d.quoted||'',
+      inReplyTo:d.inReplyTo||'', references:d.references||[], replyUid:d.replyUid||0, replyFolder:d.replyFolder||'', attachments });
+    toast('✓ Laiškas išsiųstas'+(sent && sent.accepted && sent.accepted.length ? ': '+sent.accepted.join(', ') : '')+'.', 3500);
+    if(document.getElementById('pfMail')) renderMailCard();
+  }catch(e){
+    toastAction('❌ Laiškas „'+(d.subject||'be temos').slice(0, 40)+'“ neišsiųstas: '+e.message, 'Atidaryti', ()=>mailCompose(d), 15000);
+  }finally{
+    if(--ML_SENDING.n <= 0){ ML_SENDING.n = 0; window.onbeforeunload = null; }
+  }
 }
 
 /* ============================================================
@@ -40708,6 +40729,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-08 04:05', v:'v443', k:'fix', t:'Laiškai siunčiami fone', f:'Paspaudus „Siųsti“ laiško langas iškart užsidaro, o laiškas siunčiamas fone – galima toliau dirbti. Kai išsiųsta, apačioje parodoma „✓ Laiškas išsiųstas“; jei nepavyko – pranešimas su mygtuku „Atidaryti“, kuris grąžina tą patį laišką (tekstas ir priedai neprarandami).' },
   { d:'2026-10-08 03:50', v:'v442', k:'new', t:'Sąskaitos atsakymas: komentaras nebūtinas, pavedimo kopija', f:'Laiške atsiųstoje sąskaitoje (Apmokėta / Suvesta apmokėjimui / Atsakyti) komentaras nebūtinas ir siunčiamas su bet kuriuo mygtuku; galima prisegti pavedimo kopiją ar kitą failą (PDF ar nuotrauka, iki 10 MB). Failas atsiranda tarp sąskaitos failų programoje („Pavedimas – …“) ir pridedamas prie atsakymo laiško.' },
   { d:'2026-10-08 03:30', v:'v441', k:'fix', t:'Pranešimai atidaro, iš kur atėjo', f:'Paspaudus pranešimą pradžios kortelėje jis ne tik dingsta, bet ir atidaro savo vietą: sąskaitą „Sąskaitose“ (net jei jos dar nebuvo įkeltos), užduotį, renginį, laišką, pokalbį ir t. t.; jei konkretaus įrašo nėra – atidaroma ta skiltis.' },
   { d:'2026-10-08 03:15', v:'v440', k:'fix', t:'Pašto skirtukų skaičiai vėl matosi', f:'Pašto skirtukų (Pagrindiniai, Reklamos…) burbuliukuose skaičiai buvo balti ant šviesaus fono – dabar rodomi kontrastinga spalva pagal temą.' },
