@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 25;
+const VERSION = 26;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -708,6 +708,64 @@ async function mirrorSave(user: string, mirror: MirrorState) {
   const [cur] = await db<{ state: Record<string, unknown> | null }[]>(`mail_accounts?select=state&user_id=eq.${user}`);
   await db(`mail_accounts?user_id=eq.${user}`, { method: "PATCH", body: JSON.stringify({ state: { ...(cur?.state ?? {}), mirror } }) });
 }
+type MirrorMsg = { uid: number; source: Buffer; flags: string[]; date?: Date; mid?: string };
+// letters into the Gmail Inbox, unless Gmail already has them (the server did forward them) – looked up by the
+// Message-ID in „All Mail“; each handled letter is reported (copied or already there)
+async function toGmail(dst: Account, msgs: MirrorMsg[], done: (m: MirrorMsg) => void = () => {}) {
+  let n = 0, skipped = 0;
+  await withImap(dst, async (g) => {
+    const gm = !!(g.capabilities as unknown as Map<string, unknown>)?.has?.("X-GM-EXT-1");
+    const allBox = (await boxes(g)).find((b) => b.specialUse === "\\All")?.path || "INBOX";
+    const lock = await g.getMailboxLock(allBox);
+    try {
+      for (const m of msgs) {
+        let there = false;
+        if (m.mid) {
+          const q = gm ? { gmraw: "rfc822msgid:" + m.mid.replace(/^<|>$/g, "") } : { header: { "message-id": m.mid } };
+          there = ((await g.search(q as never, { uid: true })) || []).length > 0;
+        }
+        // with the letter's own receive time; a server that refuses that date format gets it without one
+        if (!there) { await g.append("INBOX", m.source, m.flags, m.date).catch(() => g.append("INBOX", m.source, m.flags)); n++; }
+        else skipped++;
+        done(m);
+      }
+    } finally { lock.release(); }
+  }, false, 90_000);
+  return { n, skipped };
+}
+// the company Inbox's letters (sources) by UID, at most 25 MB
+async function companyMsgs(c: ImapFlow, uids: number[]): Promise<MirrorMsg[]> {
+  const sizes = new Map<number, number>();
+  for await (const m of c.fetch(uids.join(","), { uid: true, size: true }, { uid: true })) sizes.set(m.uid, m.size || 0);
+  const take: number[] = []; let bytes = 0;
+  for (const u of uids) { const z = sizes.get(u) || 0; if (take.length && bytes + z > 25e6) break; take.push(u); bytes += z; }
+  const out: MirrorMsg[] = [];
+  for await (const m of c.fetch(take.join(","), { uid: true, source: true, flags: true, internalDate: true, envelope: true }, { uid: true })) {
+    if (m.source) out.push({ uid: m.uid, source: m.source as Buffer, flags: [...(m.flags ?? [])].filter((f) => f !== "\\Recent"), date: m.internalDate as Date | undefined, mid: m.envelope?.messageId || undefined });
+  }
+  return out.sort((x, y) => x.uid - y.uid);
+}
+// „Perkelti paskutinių N val. laiškus“: the letters the forwarding lost before the copying was on (Gmail's own skipped)
+async function mirrorBack(row: MirrorRow, hours: number) {
+  const a = await accountOf(row), src: Account = { email: a.email, password: a.password };
+  const from = Date.now() - hours * 3600e3;
+  let more = 0;
+  const msgs = await withImap(src, async (c) => {
+    const lock = await c.getMailboxLock("INBOX");
+    try {
+      const since = new Date(from - 24 * 3600e3);   // SEARCH SINCE is by day; the exact time is checked below
+      const uids = ((await c.search({ since }, { uid: true })) || []).sort((x, y) => x - y);
+      if (!uids.length) return [] as MirrorMsg[];
+      const dates = new Map<number, number>();
+      for await (const m of c.fetch(uids.join(","), { uid: true, internalDate: true }, { uid: true })) dates.set(m.uid, new Date(m.internalDate as Date).getTime());
+      const want = uids.filter((u) => (dates.get(u) || 0) >= from);
+      more = Math.max(0, want.length - 30);
+      return want.length ? await companyMsgs(c, want.slice(0, 30)) : [] as MirrorMsg[];
+    } finally { lock.release(); }
+  }, true, 120_000);
+  const r = msgs.length ? await toGmail(a.reader!, msgs) : { n: 0, skipped: 0 };
+  return { copied: r.n, skipped: r.skipped, checked: msgs.length, more };
+}
 async function mirrorFor(row: MirrorRow, force = false) {
   if (!row.reader?.email || (!force && !row.settings?.mirror?.on)) return null;
   // one run at a time for a mailbox (the 15-second check and the minute check can meet): a 2-minute lock
@@ -723,7 +781,7 @@ async function mirrorFor(row: MirrorRow, force = false) {
   let n = 0, waiting = 0, skipped = 0, err = "";
   try {
     // 1) the company Inbox: which letters are new (the first run only notes where „now“ is)
-    type Msg = { uid: number; source: Buffer; flags: string[]; date?: Date; mid?: string };
+    type Msg = MirrorMsg;
     const msgs = await withImap(src, async (c) => {
       const lock = await c.getMailboxLock("INBOX");
       try {
@@ -736,43 +794,18 @@ async function mirrorFor(row: MirrorRow, force = false) {
         }
         const found = ((await c.search({ uid: `${st.lastUid + 1}:*` }, { uid: true })) || []).filter((u) => u > st.lastUid!).sort((x, y) => x - y);
         if (!found.length) return [] as Msg[];
-        const sizes = new Map<number, number>();
-        for await (const m of c.fetch(found.slice(0, 10).join(","), { uid: true, size: true }, { uid: true })) sizes.set(m.uid, m.size || 0);
-        const take: number[] = []; let bytes = 0;
-        for (const u of found.slice(0, 10)) { const z = sizes.get(u) || 0; if (take.length && bytes + z > 25e6) break; take.push(u); bytes += z; }
-        waiting = found.length - take.length;
-        const out: Msg[] = [];
-        for await (const m of c.fetch(take.join(","), { uid: true, source: true, flags: true, internalDate: true, envelope: true }, { uid: true })) {
-          if (m.source) out.push({ uid: m.uid, source: m.source as Buffer, flags: [...(m.flags ?? [])].filter((f) => f !== "\\Recent"), date: m.internalDate as Date | undefined, mid: m.envelope?.messageId || undefined });
-        }
-        out.sort((x, y) => x.uid - y.uid);
+        const out = await companyMsgs(c, found.slice(0, 10));
+        waiting = found.length - out.length;
         // a just-arrived letter gets a minute to come to Gmail by the server's own forwarding first
         const young = out.findIndex((m) => m.date && Date.now() - new Date(m.date).getTime() < MIRROR_WAIT_MS);
         if (young >= 0) { waiting += out.length - young; out.length = young; }
         return out;
       } finally { lock.release(); }
     }, true, 90_000);
-    // 2) into the Gmail Inbox, in order; the position moves only past what was really copied
+    // 2) into the Gmail Inbox, in order; the position moves only past what was really handled
     if (msgs.length) {
-      await withImap(dst, async (g) => {
-        // already in Gmail (the server did forward it)? – looked up by its Message-ID in „All Mail“
-        const gm = !!(g.capabilities as unknown as Map<string, unknown>)?.has?.("X-GM-EXT-1");
-        const allBox = (await boxes(g)).find((b) => b.specialUse === "\\All")?.path || "INBOX";
-        const lock = await g.getMailboxLock(allBox);
-        try {
-          for (const m of msgs) {
-            let there = false;
-            if (m.mid) {
-              const q = gm ? { gmraw: "rfc822msgid:" + m.mid.replace(/^<|>$/g, "") } : { header: { "message-id": m.mid } };
-              there = ((await g.search(q as never, { uid: true })) || []).length > 0;
-            }
-            // with the letter's own receive time; a server that refuses that date format gets it without one
-            if (!there) { await g.append("INBOX", m.source, m.flags, m.date).catch(() => g.append("INBOX", m.source, m.flags)); n++; }
-            else skipped++;
-            st.lastUid = m.uid;
-          }
-        } finally { lock.release(); }
-      }, false, 90_000);
+      const r = await toGmail(dst, msgs, (m) => { st.lastUid = m.uid; });
+      n += r.n; skipped += r.skipped;
     }
   } catch (e) {
     err = e instanceof UserError ? e.message : (e as Error).message || "klaida";
@@ -1509,6 +1542,12 @@ async function handle(me: Me, body: Record<string, unknown>) {
     };
   }
   // RainLoop → Gmail: switch on/off, or check now
+  if (action === "mirror_back") {
+    if (!a0.reader) throw new UserError("Pirmiausia prijunk Gmail.");
+    const hours = Math.min(168, Math.max(1, Number(body.hours) || 1));
+    const [row] = await db<MirrorRow[]>(`mail_accounts?select=user_id,email,secret,reader,settings,state&user_id=eq.${me.id}`);
+    return { ok: true, hours, ...(await mirrorBack(row, hours)) };
+  }
   if (action === "mirror_save" || action === "mirror_now") {
     if (!a0.reader) throw new UserError("Pirmiausia prijunk Gmail.");
     const prev = await settingsOf(me.id);
@@ -1540,6 +1579,10 @@ async function handle(me: Me, body: Record<string, unknown>) {
     }
     case "sync": {
       const st = await settingsOf(me.id);
+      if (folder === "inbox" && a0.reader && st.mirror?.on) {
+        const [row] = await db<MirrorRow[]>(`mail_accounts?select=user_id,email,secret,reader,settings,state&user_id=eq.${me.id}`);
+        if (row) await withTimeout(mirrorFor(row), 25_000, "mirror").catch((e) => console.error("mirror on sync", (e as Error).message));
+      }
       return { connected: true, email: a0.email, reader: a0.reader?.email ?? null, only: a0.reader ? await acctPref(me.id) : "all", autoOn: autoActive(st.auto), sig: st.sig !== false, ...(await syncFolder(me.id, a, folder)) };
     }
     case "read": {
