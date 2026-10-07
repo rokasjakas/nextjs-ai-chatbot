@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 23;
+const VERSION = 24;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -693,14 +693,88 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
     return res;
   });
 }
+// ---------- the company mailbox (RainLoop, koala.serveriai.lt) → Gmail ----------
+// When letters are read from Gmail but the company server does not forward them, every NEW letter that comes
+// to the company Inbox is copied into the Gmail Inbox (unread, with its own date) – then it shows in the app,
+// gives a notification and is answered by the auto reply like any other. Only letters that arrive after it
+// was switched on; each run copies up to 10 (≤ 25 MB), the rest go in the next runs.
+type MirrorState = { uidValidity?: string; lastUid?: number; copied?: number; busy?: string;
+  last?: { at: string; n: number; waiting?: number; err?: string } };
+type MirrorRow = { user_id: string; email: string; secret: string; reader?: Reader | null; settings?: Settings | null; state?: { mirror?: MirrorState } | null };
+async function mirrorSave(user: string, mirror: MirrorState) {
+  const [cur] = await db<{ state: Record<string, unknown> | null }[]>(`mail_accounts?select=state&user_id=eq.${user}`);
+  await db(`mail_accounts?user_id=eq.${user}`, { method: "PATCH", body: JSON.stringify({ state: { ...(cur?.state ?? {}), mirror } }) });
+}
+async function mirrorFor(row: MirrorRow, force = false) {
+  if (!row.reader?.email || (!force && !row.settings?.mirror?.on)) return null;
+  // one run at a time for a mailbox (the 15-second check and the minute check can meet): a 2-minute lock
+  const now = new Date().toISOString();
+  const locked = await db<{ state: { mirror?: MirrorState } | null }[]>(
+    `mail_accounts?user_id=eq.${row.user_id}&or=(state->mirror->>busy.is.null,state->mirror->>busy.lt.${now})`,
+    { method: "PATCH", headers: { Prefer: "return=representation" },
+      body: JSON.stringify({ state: { ...(row.state ?? {}), mirror: { ...(row.state?.mirror ?? {}), busy: new Date(Date.now() + 120_000).toISOString() } } }) });
+  if (!locked.length) return { busy: true };
+  const st: MirrorState = { ...(locked[0].state?.mirror ?? {}) };
+  delete st.busy;
+  const a = await accountOf(row), src: Account = { email: a.email, password: a.password }, dst = a.reader!;
+  let n = 0, waiting = 0, err = "";
+  try {
+    // 1) the company Inbox: which letters are new (the first run only notes where „now“ is)
+    type Msg = { uid: number; source: Buffer; flags: string[]; date?: Date };
+    const msgs = await withImap(src, async (c) => {
+      const lock = await c.getMailboxLock("INBOX");
+      try {
+        // (a kept connection's uidNext is not refreshed when letters come – the UIDs are searched every time)
+        const uv = String((c.mailbox as unknown as { uidValidity: bigint }).uidValidity);
+        if (st.uidValidity !== uv || st.lastUid === undefined) {
+          const all = (await c.search({ all: true }, { uid: true })) || [];
+          st.uidValidity = uv; st.lastUid = all.length ? Math.max(...all) : 0;
+          return [] as Msg[];
+        }
+        const found = ((await c.search({ uid: `${st.lastUid + 1}:*` }, { uid: true })) || []).filter((u) => u > st.lastUid!).sort((x, y) => x - y);
+        if (!found.length) return [] as Msg[];
+        const sizes = new Map<number, number>();
+        for await (const m of c.fetch(found.slice(0, 10).join(","), { uid: true, size: true }, { uid: true })) sizes.set(m.uid, m.size || 0);
+        const take: number[] = []; let bytes = 0;
+        for (const u of found.slice(0, 10)) { const z = sizes.get(u) || 0; if (take.length && bytes + z > 25e6) break; take.push(u); bytes += z; }
+        waiting = found.length - take.length;
+        const out: Msg[] = [];
+        for await (const m of c.fetch(take.join(","), { uid: true, source: true, flags: true, internalDate: true }, { uid: true })) {
+          if (m.source) out.push({ uid: m.uid, source: m.source as Buffer, flags: [...(m.flags ?? [])].filter((f) => f !== "\\Recent"), date: m.internalDate as Date | undefined });
+        }
+        return out.sort((x, y) => x.uid - y.uid);
+      } finally { lock.release(); }
+    }, true, 90_000);
+    // 2) into the Gmail Inbox, in order; the position moves only past what was really copied
+    if (msgs.length) {
+      await withImap(dst, async (g) => {
+        for (const m of msgs) {
+          // with the letter's own receive time; a server that refuses that date format gets it without one
+          await g.append("INBOX", m.source, m.flags, m.date).catch(() => g.append("INBOX", m.source, m.flags));
+          st.lastUid = m.uid; n++;
+        }
+      }, false, 90_000);
+    }
+  } catch (e) {
+    err = e instanceof UserError ? e.message : (e as Error).message || "klaida";
+    console.error("mirror", row.email, err);
+  }
+  st.copied = (st.copied ?? 0) + n;
+  st.last = { at: new Date().toISOString(), n, ...(waiting ? { waiting } : {}), ...(err ? { err: err.slice(0, 300) } : {}) };
+  await mirrorSave(row.user_id, st);
+  return { copied: n, waiting, err: err || undefined };
+}
+
 // pg_cron, every minute: Inbox for everyone (Sent every 5 min), one after another
 async function runSyncAll(quick = false) {
-  const rows = await db<{ user_id: string; email: string; secret: string; reader?: Reader | null }[]>("mail_accounts?select=user_id,email,secret,reader");
+  const rows = await db<MirrorRow[]>("mail_accounts?select=user_id,email,secret,reader,settings,state");
   const t0 = Date.now(), done: Record<string, unknown> = {};
   const sent = !quick && new Date().getMinutes() % 5 === 0;
   for (const r of rows) {
     if (Date.now() - t0 > (quick ? 12_000 : 100_000)) break;
     try {
+      // the company mailbox first: new letters copied into Gmail are seen by this same check
+      if (r.reader && r.settings?.mirror?.on) await mirrorFor(r).catch((e) => console.error("mirror", (e as Error).message));
       const a = readerOf(await accountOf(r));
       done[r.email] = await syncFolder(r.user_id, a, "inbox", quick);
       if (sent) await syncFolder(r.user_id, a, "sent").catch(() => null);
@@ -1179,6 +1253,7 @@ type Settings = {
   psig?: string; // the personal signature's own text (empty: name and phone)
   sigFor?: { work?: SigKind; personal?: SigKind }; // which signature letters from each address carry
   auto?: { on?: boolean; from?: string; to?: string; subject?: string; text?: string; since?: string };
+  mirror?: { on?: boolean; since?: string }; // new company-mailbox letters copied into Gmail (set by „mirror_save“)
 };
 const dateRe = /^\d{4}-\d{2}-\d{2}$/;
 export function cleanSettings(v: unknown, prev: Settings = {}): Settings {
@@ -1191,6 +1266,7 @@ export function cleanSettings(v: unknown, prev: Settings = {}): Settings {
   if (from && to && to < from) throw new UserError("Pabaigos data ankstesnė už pradžią.");
   const sk = (v: unknown, d: SigKind): SigKind => (["work", "personal", "none"].includes(String(v)) ? String(v) as SigKind : d);
   return {
+    ...(prev.mirror ? { mirror: prev.mirror } : {}),   // changed only by „mirror_save“
     sig: i.sig !== false,
     psig: String(i.psig ?? "").slice(0, 2000),
     sigFor: { work: sk(i.sigFor?.work, "work"), personal: sk(i.sigFor?.personal, "personal") },
@@ -1406,9 +1482,27 @@ async function handle(me: Me, body: Record<string, unknown>) {
     return {
       connected: true, email: a0.email, reader: a0.reader?.email ?? null, settings: await settingsOf(me.id),
       psignature: psigHtml(me.person, (await settingsOf(me.id)).psig || ""),
-      autoLast: ((await db<{ state: { auto?: AutoState } | null }[]>(`mail_accounts?select=state&user_id=eq.${me.id}`))[0]?.state?.auto?.last) ?? null,
+      ...(await (async () => {
+        const stt = (await db<{ state: { auto?: AutoState; mirror?: MirrorState } | null }[]>(`mail_accounts?select=state&user_id=eq.${me.id}`))[0]?.state;
+        return { autoLast: stt?.auto?.last ?? null, mirror: { last: stt?.mirror?.last ?? null, copied: stt?.mirror?.copied ?? 0 } };
+      })()),
       signature: sigHtml(me.person).replace(`cid:${LOGO_CID}`, "data:image/png;base64," + LOGO_PNG_BASE64),
     };
+  }
+  // RainLoop → Gmail: switch on/off, or check now
+  if (action === "mirror_save" || action === "mirror_now") {
+    if (!a0.reader) throw new UserError("Pirmiausia prijunk Gmail.");
+    const prev = await settingsOf(me.id);
+    if (action === "mirror_save") {
+      const on = body.on === true;
+      const settings = { ...prev, mirror: { on, since: on ? (prev.mirror?.on && prev.mirror.since ? prev.mirror.since : new Date().toISOString()) : undefined } };
+      await db(`mail_accounts?user_id=eq.${me.id}`, { method: "PATCH", body: JSON.stringify({ settings }) });
+      if (!on) { await mirrorSave(me.id, {}); return { ok: true, on }; }   // switched off: the position is forgotten (on again = from then)
+    }
+    const [row] = await db<MirrorRow[]>(`mail_accounts?select=user_id,email,secret,reader,settings,state&user_id=eq.${me.id}`);
+    const r = await mirrorFor(row, true);
+    const stt = (await db<{ state: { mirror?: MirrorState } | null }[]>(`mail_accounts?select=state&user_id=eq.${me.id}`))[0]?.state?.mirror;
+    return { ok: true, on: !!row.settings?.mirror?.on, result: r, last: stt?.last ?? null, copied: stt?.copied ?? 0 };
   }
   if (action === "settings_save") {
     const settings = cleanSettings(body.settings, await settingsOf(me.id));
