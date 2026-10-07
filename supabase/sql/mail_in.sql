@@ -1,6 +1,6 @@
 -- ============================================================
 -- El. paštas: persiųsti laiškai atsidaro iš karto (net dideli)
---  * pašto serveris kiekvieną naują laišką persiunčia į <vardas>@in.eventsolutions.lt
+--  * pašto serveris kiekvieną naują laišką persiunčia į <vardas>@esmail.lt
 --  * Cloudflare Email Routing → Email Worker (cloudflare/mail-in-worker.js) → „mail-in“ funkcija
 --  * mail_in – laiško turinys, siuntėjas, gavėjai, priedų sąrašas
 --  * saugykla „mail-in“ – priedai (<narys>/<laiškas>/<failas>)

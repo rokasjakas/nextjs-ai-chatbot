@@ -1,7 +1,7 @@
 // "mail-in": letters forwarded from the mail server arrive here at once.
 //
 // The mail server forwards every new letter of a member (e.g. rokas@eventsolutions.lt)
-// to <same name>@<MAIL_IN_DOMAIN> (e.g. rokas@in.eventsolutions.lt). Cloudflare Email
+// to <same name>@<MAIL_IN_DOMAIN> (e.g. rokas@esmail.lt). Cloudflare Email
 // Routing hands it to a small Email Worker (cloudflare/mail-in-worker.js), which POSTs the
 // raw letter here with the shared secret. The letter is parsed and kept:
 //   * mail_in            – the text (html / plain), who, when, the list of attachments

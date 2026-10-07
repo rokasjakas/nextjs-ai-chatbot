@@ -1,7 +1,7 @@
 // EventSolutions – Cloudflare Email Worker: a forwarded letter goes straight into the app.
 //
 // The mail server forwards each member's new letters to <name>@<forwarding domain>
-// (e.g. rokas@in.eventsolutions.lt). Cloudflare Email Routing gives every such letter to
+// (e.g. rokas@esmail.lt). Cloudflare Email Routing gives every such letter to
 // this worker, which sends it to the Supabase function "mail-in" (it keeps the letter
 // for the app). When the app cannot take it, a copy can go to FALLBACK (if set).
 //
