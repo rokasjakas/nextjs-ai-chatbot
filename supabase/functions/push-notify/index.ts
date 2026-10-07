@@ -398,6 +398,21 @@ export function mentionIds(body: string): string[] {
 function withNames(body: string, byId: Map<string, Profile>): string {
   return String(body || "").replace(MENTION_RE, (_, id) => "@" + name(byId.get(id)));
 }
+async function onMailNew(userId: string, items: { uid?: number; from?: string; subject?: string }[]) {
+  if (!/^[0-9a-f-]{36}$/.test(userId) || !items.length) return { sent: 0 };
+  const [p] = await db<Profile[]>(`profiles?select=id,role,first_name,last_name,full_name,nickname,email,notify_prefs&id=eq.${userId}`);
+  if (!p || !APPROVED.includes(p.role)) return { sent: 0 };
+  const pr = (p.notify_prefs ?? {}) as Prefs & { mail?: boolean };
+  if (pr.mail === false || !wants(p.notify_prefs, "other", "")) return { sent: 0, skipped: "off" };
+  let sent = 0;
+  for (const it of items.slice(-5)) {
+    const uid = Number(it.uid) || 0;
+    const r = await sendTo([userId], { title: "✉️ " + String(it.from || "Naujas laiškas").slice(0, 80), body: String(it.subject || "").slice(0, 140),
+      tag: "mail-" + uid, url: "./?mail=" + uid, kind: "mail" });
+    sent += r.sent;
+  }
+  return { sent };
+}
 async function onMessage(uid: string, messageId: string) {
   const [m] = await db<Msg[]>(`messages?select=*&id=eq.${encodeURIComponent(messageId)}`);
   if (!m || m.sender_id !== uid || m.deleted_at) return { sent: 0, skipped: "not your message" };
@@ -1288,6 +1303,12 @@ Deno.serve(async (req) => {
       if (body.mode === "guest-message") return json(await onGuestMessage(String(body.message_id ?? "")));
       if (body.mode === "guest-call") return json(await onGuestCall(String(body.call_id ?? ""), String(body.guest_id ?? "")));
       return json(await onMeetingSummary(String(body.meeting_id ?? "")));
+    }
+    // new work letters (called by the "mail" function with the cron secret): only the mailbox's owner
+    if (body?.mode === "mail-new") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      return json(await onMailNew(String(body.user_id ?? ""), Array.isArray(body.items) ? body.items : []));
     }
         if (body?.mode === "invoice-reply") {
       const secret = Deno.env.get("CRON_SECRET");

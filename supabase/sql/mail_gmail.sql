@@ -8,3 +8,8 @@
 -- ============================================================
 alter table public.mail_accounts add column if not exists reader jsonb;
 notify pgrst, 'reload schema';
+
+-- Gmail skirtukai (Pagrindiniai, Reklamos, Socialiniai, Naujienos, Forumai): kiekvieno laiško kategorija
+alter table public.mail_index add column if not exists cat text;
+create index if not exists mail_index_cat on public.mail_index (user_id, folder, cat, date desc nulls last);
+notify pgrst, 'reload schema';

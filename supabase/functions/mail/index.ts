@@ -478,8 +478,33 @@ function idxRow(user: string, folder: string, m: { uid: number; envelope?: { dat
     attachments: hasAttachments(m.bodyStructure as Node), size: m.size ?? null, updated_at: new Date().toISOString(),
   };
 }
+// Gmail's own tabs (Primary, Promotions, Social, Updates, Forums): which tab each inbox letter is in
+const GM_CATS = ["social", "promotions", "updates", "forums"];
+let catOk = true;     // mail_index.cat may not exist yet (sql/mail_gmail.sql not run)
+async function gmCats(c: ImapFlow, uids: number[]): Promise<Map<number, string>> {
+  const out = new Map<number, string>(uids.map((u) => [u, "primary"]));
+  for (let i = 0; i < uids.length; i += 300) {
+    const set = uids.slice(i, i + 300).join(",");
+    for (const cat of GM_CATS) {
+      const hit = ((await c.search({ uid: set, gmraw: "category:" + cat }, { uid: true }).catch(() => [])) || []) as number[];
+      for (const u of hit) out.set(u, cat);
+    }
+  }
+  return out;
+}
+// a new letter to a work address (…@eventsolutions.lt): a notification on the phone and the computer
+const WORK_DOMAIN = (Deno.env.get("MAIL_WORK_DOMAIN") || "eventsolutions.lt").toLowerCase();
+async function notifyNew(user: string, items: { uid: number; from: string; subject: string }[]) {
+  if (!items.length) return;
+  const secret = Deno.env.get("CRON_SECRET"); if (!secret) return;
+  await fetch(env("SUPABASE_URL") + "/functions/v1/push-notify", {
+    method: "POST", headers: { "Content-Type": "application/json", "x-cron-secret": secret },
+    body: JSON.stringify({ mode: "mail-new", user_id: user, items: items.slice(-5) }),
+  }).catch((e) => console.error("mail notify", e?.message));
+}
 async function syncFolder(user: string, a: Account, folder: string) {
   const t0 = Date.now();
+  const gmTabs = a.host === GMAIL_IMAP && folder === "inbox" && catOk;
   const [st] = await db<SyncState[]>(`mail_sync?select=uidvalidity,modseq,synced_at&user_id=eq.${user}&folder=eq.${enc(folder)}`);
   return await withImap(a, async (c) => {
     const path = await folderPath(c, folder);
@@ -511,12 +536,25 @@ async function syncFolder(user: string, a: Account, folder: string) {
         for (const u of byNew) { if (take.length >= SYNC_BATCH) break; if (!recent.has(u)) take.push(u); }
       }
       let added = 0;
+      // only letters that really just came (not the first listing of a mailbox)
+      const watch = folder === "inbox" && !!st?.synced_at && (!validity || st.uidvalidity === validity);
+      const news: { uid: number; from: string; subject: string }[] = [];
       for (let i = 0; i < take.length && Date.now() - t0 < SYNC_MS; i += 150) {
         const rows: Partial<IdxRow>[] = [];
         for await (const m of c.fetch(take.slice(i, i + 150).join(","), { uid: true, envelope: true, flags: true, bodyStructure: true, internalDate: true, size: true }, { uid: true })) {
           rows.push(idxRow(user, folder, m as never));
+          const mm = m as { uid: number; flags?: Set<string>; internalDate?: Date; envelope?: { subject?: string; from?: Addr[]; to?: Addr[]; cc?: Addr[] } };
+          const got = mm.internalDate ? new Date(mm.internalDate).getTime() : 0;
+          const work = [...(mm.envelope?.to ?? []), ...(mm.envelope?.cc ?? [])].some((x) => String(x.address || "").toLowerCase().endsWith("@" + WORK_DOMAIN));
+          if (watch && work && !mm.flags?.has("\\Seen") && Date.now() - got < 30 * 60_000) {
+            const f = mm.envelope?.from?.[0];
+            news.push({ uid: mm.uid, from: (f?.name || f?.address || "").slice(0, 80), subject: (mm.envelope?.subject || "(be temos)").slice(0, 140) });
+          }
         }
-        await idxUpsert(rows); added += rows.length;
+        if (gmTabs) { const cats = await gmCats(c, rows.map((r) => r.uid!)); rows.forEach((r) => { (r as Record<string, unknown>).cat = cats.get(r.uid!) || "primary"; }); }
+        try { await idxUpsert(rows); }
+        catch (e) { if (!gmTabs || !/cat/.test((e as Error).message)) throw e; catOk = false; rows.forEach((r) => { delete (r as Record<string, unknown>).cat; }); await idxUpsert(rows); }
+        added += rows.length;
       }
       // read / answered / star changes of the letters already listed
       let changed = 0;
@@ -539,6 +577,14 @@ async function syncFolder(user: string, a: Account, folder: string) {
         const diff = [...flagRows.values()].filter((r) => { const w = was.get(r.uid!); return !w || w.seen !== r.seen || w.answered !== r.answered || w.flagged !== r.flagged; });
         if (diff.length) { await idxUpsert(diff); changed = diff.length; }
       }
+      // letters listed before the tabs were known: a few hundred each run
+      if (gmTabs && catOk && Date.now() - t0 < SYNC_MS) {
+        try {
+          const todo = (await db<{ uid: number }[]>(`mail_index?select=uid&user_id=eq.${user}&folder=eq.inbox&cat=is.null&order=uid.desc&limit=300`)).map((r) => Number(r.uid)).filter((u) => pset.has(u));
+          if (todo.length) { const cats = await gmCats(c, todo); await idxUpsert(todo.map((u) => ({ user_id: user, folder, uid: u, cat: cats.get(u) || "primary" } as Partial<IdxRow>))); }
+        } catch (e) { if (/cat/.test((e as Error).message)) catOk = false; else console.error("gmail tabs", (e as Error).message); }
+      }
+      if (news.length) await notifyNew(user, news);
       const unseen = ((await c.search({ seen: false }, { uid: true })) || []).length;
       const remaining = fresh.length - added;
       await db("mail_sync?on_conflict=user_id,folder", {
