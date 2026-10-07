@@ -1054,7 +1054,7 @@ async function onInvoice(uid: string, id: string, ev: string) {
     return await sendTo(await wantIds(plus.filter((u) => u !== uid), "other"), { title: "🧾 Nauja sąskaita: " + invTitle(v), body: "Įkėlė " + name(me), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
   }
   if (!plus.includes(uid)) return { error: "Tik Admin+" };
-  if (v.source === "portal") return { sent: 0, mail: "trigger" };   // the database trigger sends the freelancer's e-mail
+  if (v.source === "portal") return await portalMail(v, ev === "resend");   // the freelancer's e-mail (the database trigger sends it too; claimed once)
   if (v.created_by === uid || !INV_STATUS[v.status]) return { sent: 0 };
   return await sendTo(await wantIds([v.created_by], "other"), { title: INV_STATUS[v.status], body: invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
 }
@@ -1067,13 +1067,20 @@ async function onInvoicePortal(id: string, edited: boolean) {
 // the freelancer is told by e-mail: not approved (why + „Taisyti sąskaitą“), approved and passed to accounting, paid.
 // ext_mailed keeps what was already told, so pressing the same button twice sends no second letter.
 const PORTAL_URL = Deno.env.get("FL_PORTAL_URL") || "https://saskaitos.eventsolutions.lt/";
-async function portalMail(v: Invoice) {
+// Both the app (after a decision) and the database trigger call this: the letter is claimed first (ext_mailed is
+// set only if it still holds something else), so the two never send it twice. ext_mail_log keeps the last result.
+async function portalMail(v: Invoice, force = false) {
   if (v.source !== "portal" || !v.ext_email) return { mailed: false };
   const grp = v.status === "rejected" ? "rejected" : ["approved", "sent", "queued"].includes(v.status) ? "ok" : v.status === "paid" ? "paid" : "";
-  if (!grp) return { mailed: false };
+  if (!grp) return { mailed: false, error: "Šiai būsenai laiškas nesiunčiamas." };
   const key = grp === "paid" ? "paid" : grp + "|" + (v.decision_at || "");
-  if (v.ext_mailed === key || (grp === "ok" && v.ext_mailed === "paid")) return { mailed: false, already: true };
-  const key2 = Deno.env.get("RESEND_API_KEY"); if (!key2) return { mailed: false, error: "RESEND_API_KEY" };
+  if (!force && (v.ext_mailed === key || (grp === "ok" && v.ext_mailed === "paid"))) return { mailed: false, already: true };
+  const log = (o: Record<string, unknown>) => db(`invoices?id=eq.${v.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ ext_mail_log: { at: new Date().toISOString(), to: v.ext_email, ...o } }) }).catch(() => {});
+  const key2 = Deno.env.get("RESEND_API_KEY"); if (!key2) { await log({ ok: false, error: "Nenustatytas RESEND_API_KEY" }); return { mailed: false, error: "RESEND_API_KEY" }; }
+  if (!force) {
+    const claim = await db<{ id: string }[]>(`invoices?id=eq.${v.id}&or=(ext_mailed.is.null,ext_mailed.neq.${encodeURIComponent('"' + key + '"')})`, { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ ext_mailed: key }) }).catch(() => null);
+    if (claim && !claim.length) return { mailed: false, already: true };
+  }
   const money = (n: unknown) => Number(n || 0).toFixed(2).replace(".", ",") + " €";
   const what = "sąskaita" + (v.number ? " nr. " + v.number : "") + " (" + money(v.amount) + ")";
   const lines = (v.lines || []).map((l) => `<tr><td style="padding:3px 10px 3px 0;color:#555">${escHtml(l.date || "")}</td><td style="padding:3px 10px 3px 0">${escHtml(l.event || "")}</td><td style="padding:3px 0;text-align:right">${money(l.amount)}</td></tr>`).join("");
@@ -1100,9 +1107,15 @@ async function portalMail(v: Invoice) {
     signal: AbortSignal.timeout(12000), method: "POST", headers: { Authorization: `Bearer ${key2}`, "Content-Type": "application/json" },
     body: JSON.stringify({ from: Deno.env.get("REMINDER_FROM") || "Event Solutions <onboarding@resend.dev>", to: [v.ext_email], subject, html }),
   });
-  if (!r.ok) return { mailed: false, error: (await r.text()).slice(0, 200) };
+  if (!r.ok) {
+    const error = "Resend " + r.status + ": " + (await r.text()).slice(0, 200);
+    await db(`invoices?id=eq.${v.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ ext_mailed: v.ext_mailed ?? null }) }).catch(() => {});   // not sent: may be tried again
+    await log({ ok: false, error, subject });
+    return { mailed: false, error };
+  }
   await db(`invoices?id=eq.${v.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ ext_mailed: key }) }).catch(() => {});
-  return { mailed: true, to: v.ext_email };
+  await log({ ok: true, subject });
+  return { mailed: true, to: v.ext_email, subject };
 }
 // a reply given in the e-mail (called by invoice-respond with the cron secret)
 async function onInvoiceReply(id: string) {
@@ -1384,7 +1397,7 @@ Deno.serve(async (req) => {
     if (body.kind === "mail-test") return json(await onMailTest(uid));
     if (body.kind === "tracker-pin") return json(await onTrackerPin(String(body.member_id ?? "")));
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
-    if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : "decided"));
+    if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : body.event === "resend" ? "resend" : "decided"));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
     if (body.kind === "leave") return json(await onLeave(uid, String(body.leave_id ?? ""), ["new", "decided", "cancelled"].includes(body.event) ? body.event : "new"));
     if (body.kind === "event") return json(await onEvent(uid, String(body.event_id ?? ""), Array.isArray(body.users) ? body.users : []));

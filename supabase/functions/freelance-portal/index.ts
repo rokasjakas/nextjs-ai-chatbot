@@ -11,9 +11,13 @@
 //        goes back to „Naujos“
 //   {action:"list", token}                      the invoices this e-mail sent, with their state
 //   {action:"file", token, id}                  a short-lived link to the invoice's file
+//   {action:"scan", token, file:{type,base64}}  the total written in the invoice file (read by Claude) – the page
+//                                               shows it at once; „submit“ refuses an invoice whose file says otherwise
+// ANTHROPIC_API_KEY: without it the file's total is not checked (the invoice is marked „nepatikrinta“).
 //
 // Secrets: RESEND_API_KEY, REMINDER_FROM (as for the other e-mails), CRON_SECRET (to tell Admin+).
 // Deploy: supabase functions deploy freelance-portal --no-verify-jwt
+import Anthropic from "npm:@anthropic-ai/sdk";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const SECRET = Deno.env.get("FL_PORTAL_SECRET") || SERVICE_KEY;
@@ -51,7 +55,7 @@ async function whoIs(email: string): Promise<{ name: string; contact_id: string 
 }
 async function session(token: unknown) {
   if (typeof token !== "string" || token.length < 20) throw new UserError("Prisijunk iš naujo.");
-  const [s] = await db<{ email: string; name: string; contact_id: string | null; expires_at: string }[]>(`fl_portal_sessions?select=*&token_hash=eq.${await sha(token + SECRET)}`);
+  const [s] = await db<{ email: string; name: string; contact_id: string | null; expires_at: string; token_hash: string; scans?: Record<string, Scan> }[]>(`fl_portal_sessions?select=*&token_hash=eq.${await sha(token + SECRET)}`);
   if (!s || Date.parse(s.expires_at) < Date.now()) throw new UserError("Prisijungimas baigėsi – prisijunk iš naujo.");
   return s;
 }
@@ -85,9 +89,65 @@ async function eventsOn(date: string, name: string) {
   }).sort((a, b) => Number(b.mine) - Number(a.mine) || a.name.localeCompare(b.name, "lt"));
 }
 
-type Mine = { id: string; number: string | null; amount: number; status: string; decision_note: string | null; decision_at: string | null; created_at: string; invoice_date: string | null; note: string | null; lines: unknown[]; files: { path: string; name: string; type: string; size: number }[]; responses: unknown[] };
+// the total payable (with taxes) written in the invoice file; cached per session by the file's hash
+type Scan = { checked: boolean; found: boolean; total: number | null; why?: string };
+const SCAN_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/gif", "image/webp"];
+async function readTotal(b64: string, type: string): Promise<Scan> {
+  const key = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!key) return { checked: false, found: false, total: null, why: "off" };
+  if (!SCAN_TYPES.includes(type)) return { checked: false, found: false, total: null, why: "type" };
+  const client = new Anthropic({ apiKey: key, timeout: 60_000, maxRetries: 1 });
+  const file = type === "application/pdf"
+    ? { type: "document", source: { type: "base64", media_type: "application/pdf", data: b64 } }
+    : { type: "image", source: { type: "base64", media_type: type, data: b64 } };
+  try {
+    // deno-lint-ignore no-explicit-any
+    const r: any = await (client.beta.messages.create as any)({
+      model: "claude-opus-5-5", max_tokens: 4000,
+      betas: ["server-side-fallback-2026-07-01"], fallbacks: "default",
+      output_config: {
+        effort: "low",
+        format: { type: "json_schema", schema: {
+          type: "object", additionalProperties: false, required: ["is_invoice", "total"],
+          properties: { is_invoice: { type: "boolean" }, total: { type: ["number", "null"] } },
+        } },
+      },
+      messages: [{ role: "user", content: [file, { type: "text", text:
+        "This file should be an invoice (usually Lithuanian). Give the final total amount payable INCLUDING all taxes/VAT " +
+        "(e.g. „Iš viso su PVM“, „Mokėti“, „Suma apmokėjimui“, „Iš viso“). If there is no VAT, the final total. " +
+        "As a plain number in euros (e.g. 1234.5). is_invoice=false and total=null if it is not an invoice or the total can't be read." }] }],
+    });
+    if (r.stop_reason === "refusal") return { checked: false, found: false, total: null, why: "refusal" };
+    const text = (r.content || []).filter((c: { type: string }) => c.type === "text").map((c: { text: string }) => c.text).join("");
+    const o = JSON.parse(text) as { is_invoice: boolean; total: number | null };
+    const t = typeof o.total === "number" && isFinite(o.total) && o.total > 0 ? Math.round(o.total * 100) / 100 : null;
+    return { checked: true, found: !!o.is_invoice && t != null, total: t, why: o.is_invoice ? undefined : "not-invoice" };
+  } catch (e) {
+    if (e instanceof Anthropic.APIError) console.error("anthropic", e.status, e.message);
+    else console.error("scan", e instanceof Error ? e.message : e);
+    return { checked: false, found: false, total: null, why: "error" };
+  }
+}
+async function scanCached(s: { token_hash?: string; scans?: Record<string, Scan> }, b64: string, type: string): Promise<Scan> {
+  const h = await sha(b64);
+  const hit = s.scans?.[h]; if (hit && hit.checked) return hit;
+  const r = await readTotal(b64, type);
+  if (r.checked && s.token_hash) {
+    s.scans = { ...(s.scans || {}), [h]: r };
+    await db(`fl_portal_sessions?token_hash=eq.${s.token_hash}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ scans: s.scans }) }).catch(() => {});
+  }
+  return r;
+}
+const eurTxt = (n: number) => n.toFixed(2).replace(".", ",") + " €";
+function mismatch(scan: Scan, total: number) {
+  if (scan.found && scan.total != null && Math.abs(scan.total - total) > 0.005)
+    throw new UserError(`Įkeltoje sąskaitoje nurodyta suma ${eurTxt(scan.total)}, o įvesta ${eurTxt(total)}. Pataisyk sumas arba įkelk teisingą failą.`);
+}
+const checkOf = (scan: Scan) => scan.found ? "ok" : scan.checked ? "unread" : (scan.why || "off");
+
+type Mine = { id: string; file_total?: number | null; number: string | null; amount: number; status: string; decision_note: string | null; decision_at: string | null; created_at: string; invoice_date: string | null; note: string | null; lines: unknown[]; files: { path: string; name: string; type: string; size: number }[]; responses: unknown[] };
 async function mine(email: string, id?: string) {
-  return await db<Mine[]>(`invoices?select=id,number,amount,status,decision_note,decision_at,created_at,invoice_date,note,lines,files,responses&source=eq.portal&ext_email=eq.${enc(email)}${id ? "&id=eq." + enc(id) : ""}&order=created_at.desc&limit=100`);
+  return await db<Mine[]>(`invoices?select=id,file_total,number,amount,status,decision_note,decision_at,created_at,invoice_date,note,lines,files,responses&source=eq.portal&ext_email=eq.${enc(email)}${id ? "&id=eq." + enc(id) : ""}&order=created_at.desc&limit=100`);
 }
 const EDITABLE = ["new", "rejected"];
 // what happened to the invoice, for the freelancer (inner notes and the accounting's written replies stay inside)
@@ -110,7 +170,7 @@ function history(v: Mine) {
 }
 
 type Line = { date?: string; event_id?: string; event_name?: string; type?: string; amount?: number; hours?: number; rate?: number };
-async function submit(s: { email: string; name: string }, b: { id?: string; number?: string; total?: number; lines?: Line[]; file?: { name?: string; type?: string; base64?: string }; note?: string }) {
+async function submit(s: { email: string; name: string; token_hash?: string; scans?: Record<string, Scan> }, b: { id?: string; number?: string; total?: number; lines?: Line[]; file?: { name?: string; type?: string; base64?: string }; note?: string }) {
   const lines = Array.isArray(b.lines) ? b.lines.slice(0, 80) : [];
   if (!lines.length) throw new UserError("Įrašyk bent vieną renginį.");
   const ids = [...new Set(lines.map((l) => String(l.event_id || "")).filter(Boolean))];
@@ -139,12 +199,18 @@ async function submit(s: { email: string; name: string }, b: { id?: string; numb
   if (editId && !old) throw new UserError("Sąskaita nerasta.");
   if (old && !EDITABLE.includes(old.status)) throw new UserError("Ši sąskaita jau patvirtinta – jos taisyti nebegalima.");
   const f = b.file || {};
-  if (!f.base64 && old && old.files?.length) return await saveEdit(s, old, b, clean, total, null);
+  if (!f.base64 && old && old.files?.length) {
+    if (old.file_total != null && Math.abs(Number(old.file_total) - total) > 0.005)
+      throw new UserError(`Įkeltoje sąskaitoje nurodyta suma ${eurTxt(Number(old.file_total))}, o įvesta ${eurTxt(total)}. Pataisyk sumas arba įkelk naują failą.`);
+    return await saveEdit(s, old, b, clean, total, null, null);
+  }
   if (!f.base64) throw new UserError("Įkelk sąskaitos failą.");
   const bytes = Uint8Array.from(atob(String(f.base64)), (c) => c.charCodeAt(0));
   if (bytes.length > MAX_FILE) throw new UserError("Failas per didelis (iki 10 MB).");
   const type = String(f.type || "application/octet-stream");
   if (!/^(application\/pdf|image\/)/.test(type)) throw new UserError("Įkelk sąskaitą PDF arba nuotrauka.");
+  const scan = await scanCached(s, String(f.base64), type);
+  mismatch(scan, total);
   // the invoice belongs to an Admin+ (the table needs a member as its owner); who sent it is kept in ext_*
   const owners = await db<{ id: string }[]>("profiles?select=id&role=eq.admin&level=in.(plus,super)&order=created_at&limit=1");
   const owner = owners[0]?.id || (await db<{ id: string }[]>("profiles?select=id&role=eq.admin&order=created_at&limit=1"))[0]?.id;
@@ -155,7 +221,7 @@ async function submit(s: { email: string; name: string }, b: { id?: string; numb
   const path = `${owner}/portal/${id}/saskaita${old ? "-" + Date.now() : ""}.${ext}`;
   const up = await fetch(`${SUPABASE_URL}/storage/v1/object/invoice-files/${path}`, { method: "POST", headers: hdr({ "Content-Type": type, "x-upsert": "true" }), body: bytes });
   if (!up.ok) throw new Error("upload " + up.status + " " + (await up.text()).slice(0, 200));
-  if (old) return await saveEdit(s, old, b, clean, total, { path, name: fname, type, size: bytes.length });
+  if (old) return await saveEdit(s, old, b, clean, total, { path, name: fname, type, size: bytes.length }, scan);
   await db("invoices", {
     method: "POST", headers: { Prefer: "return=minimal" },
     body: JSON.stringify({
@@ -163,6 +229,7 @@ async function submit(s: { email: string; name: string }, b: { id?: string; numb
       amount: total, invoice_date: today(), note: String(b.note || "").trim().slice(0, 1000) || null,
       files: [{ path, name: fname, type, size: bytes.length }],
       ext_email: s.email, ext_name: s.name, lines: clean, source: "portal", uploader_seen: true,
+      file_total: scan.total, file_check: checkOf(scan),
     }),
   });
   // Admin+ are told (push-notify, with the cron secret)
@@ -172,7 +239,7 @@ async function submit(s: { email: string; name: string }, b: { id?: string; numb
 }
 
 // a corrected invoice: the new lines (and file), back to „Naujos“; the old decision stays in its history
-async function saveEdit(s: { email: string; name: string }, old: Mine, b: { number?: string; note?: string }, lines: unknown[], total: number, file: { path: string; name: string; type: string; size: number } | null) {
+async function saveEdit(s: { email: string; name: string }, old: Mine, b: { number?: string; note?: string }, lines: unknown[], total: number, file: { path: string; name: string; type: string; size: number } | null, scan: Scan | null) {
   const why = old.status === "rejected" ? "Pataisė netvirtintą sąskaitą" + (old.decision_note ? " (priežastis buvo: „" + old.decision_note + "“)" : "") : "Pataisė sąskaitą";
   await db(`invoices?id=eq.${old.id}`, {
     method: "PATCH", headers: { Prefer: "return=minimal" },
@@ -181,6 +248,7 @@ async function saveEdit(s: { email: string; name: string }, old: Mine, b: { numb
       lines, ext_name: s.name, status: "new", decision_note: null, decision_by: null, decision_at: null, remind_at: null, reminded_at: null,
       responses: [...(old.responses || []), { at: new Date().toISOString(), who: s.name, kind: "reply", text: why, src: "portal", ...(old.status === "rejected" ? { rejected_at: old.decision_at, reason: old.decision_note || "" } : {}) }],
       ...(file ? { files: [file] } : {}),
+      ...(scan ? { file_total: scan.total, file_check: checkOf(scan) } : {}),
     }),
   });
   if (file && old.files?.length) await fetch(`${SUPABASE_URL}/storage/v1/object/invoice-files`, { method: "DELETE", headers: hdr({ "Content-Type": "application/json" }), body: JSON.stringify({ prefixes: old.files.map((x) => x.path) }) }).catch(() => {});
@@ -241,6 +309,13 @@ Deno.serve(async (req) => {
       const d = await r.json().catch(() => ({})) as { signedURL?: string };
       if (!r.ok || !d.signedURL) throw new Error("sign " + r.status);
       return json({ url: SUPABASE_URL + "/storage/v1" + d.signedURL });
+    }
+    if (action === "scan") {
+      const s = await session(b.token);
+      const f = (b.file || {}) as { type?: string; base64?: string };
+      if (!f.base64) throw new UserError("Nėra failo.");
+      if (f.base64.length > MAX_FILE * 1.4) throw new UserError("Failas per didelis (iki 10 MB).");
+      return json(await scanCached(s as never, f.base64, String(f.type || "")));
     }
     if (action === "submit") {
       const s = await session(b.token);

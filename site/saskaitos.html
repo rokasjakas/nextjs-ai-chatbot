@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/ShYhKa9VMW7pEwvJmU1U1U5In6I0+xj3LyuIucWtvI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-u0eVwHCaGZO4HJAvVHYIj4w13zdwUeUm+992mzmca58=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-XEoSFoeGsTtVa4VlRdq5m7Hafp7o4Qcm9sw3oCyi3Cg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-nqTOK1duBUTTi2LEfH2W+BxE+JuNtja6doeoeJ/rI80=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -149,7 +149,7 @@ async function viewHome(){
 }
 function startEdit(v){
   if(!v) return;
-  draft = { editId:v.id, wasRejected:v.status==='rejected', why:v.decision_note||'', number:v.number||'', total:String(v.amount||'').replace('.', ','), note:v.note||'', file:null, oldFile:(v.files||[])[0]||null,
+  draft = { editId:v.id, wasRejected:v.status==='rejected', why:v.decision_note||'', number:v.number||'', total:String(v.amount||'').replace('.', ','), note:v.note||'', file:null, oldFile:(v.files||[])[0]||null, oldTotal:v.file_total!=null ? Number(v.file_total) : null,
     lines:(v.lines||[]).map(l=>Object.assign(newLine(l.date), { ename:l.event||'', ev:l.event_id || '__manual', name:l.event_id ? '' : (l.event||''), type:l.type==='hourly' ? 'hourly' : 'fixed',
       amount:l.type==='hourly' ? '' : String(l.amount).replace('.', ','), hours:l.type==='hourly' ? String(l.hours).replace('.', ',') : '', rate:l.type==='hourly' ? String(l.rate).replace('.', ',') : '' })) };
   if(!draft.lines.length) draft.lines.push(newLine());
@@ -253,7 +253,8 @@ function viewForm(){
     const f = e.target.files[0]; if(!f) return;
     if(f.size > 10*1024*1024){ q('err').textContent = 'Failas per didelis (iki 10 MB).'; e.target.value = ''; return; }
     if(!/^(application\/pdf|image\/)/.test(f.type)){ q('err').textContent = 'Įkelk PDF arba nuotrauką.'; e.target.value = ''; return; }
-    draft.file = f; q('err').textContent = ''; q('fname').innerHTML = '<b>'+esc(f.name)+'</b> <span class="muted">('+Math.max(1, Math.round(f.size/1024))+' KB)</span>'; drawSum();
+    q('err').textContent = ''; q('fname').innerHTML = '<b>'+esc(f.name)+'</b> <span class="muted">('+Math.max(1, Math.round(f.size/1024))+' KB)</span>';
+    pickFile(f);
   };
   q('add').onclick = ()=>{ draft.lines.push(newLine()); drawLines(); const els = document.querySelectorAll('.l-date'); els[els.length-1].focus(); };
   q('send').onclick = submit;
@@ -296,6 +297,30 @@ function drawLines(){
   all('.l-rm').forEach(el=>el.onclick = ()=>{ draft.lines.splice(+el.dataset.i, 1); drawLines(); });
   drawSum();
 }
+// the chosen file: a big photo is made smaller first; then its total is read on the server and shown here
+async function shrinkImage(f){
+  if(!/^image\/(jpeg|png|webp)$/.test(f.type) || f.size < 2.5*1024*1024) return f;
+  try{
+    const img = await createImageBitmap(f), k = Math.min(1, 2200/Math.max(img.width, img.height));
+    const c = document.createElement('canvas'); c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    const b = await new Promise(r=>c.toBlob(r, 'image/jpeg', 0.85));
+    return b ? new File([b], f.name.replace(/\.\w+$/, '')+'.jpg', { type:'image/jpeg' }) : f;
+  }catch(e){ return f; }
+}
+async function pickFile(f0){
+  const d = draft; d.scan = { busy:true }; d.file = null; drawSum();
+  const f = await shrinkImage(f0); if(draft!==d) return;
+  d.file = f; d.b64 = await fileB64(f); if(draft!==d) return;
+  drawSum();
+  try{ const r = await call({ action:'scan', token:S.token, file:{ type:f.type, base64:d.b64 } }); if(draft!==d || d.file!==f) return; d.scan = r; }
+  catch(x){ if(draft!==d) return; if(!S.token) return render(); d.scan = { checked:false, why:'error' }; }
+  drawSum();
+}
+function fileTotal(){
+  if(draft.file) return draft.scan && draft.scan.found ? cents(draft.scan.total) : null;
+  return draft.oldFile && draft.oldTotal!=null ? cents(draft.oldTotal) : null;
+}
 function drawSum(){
   const box = document.getElementById('sum'); if(!box) return;
   const sum = draft.lines.reduce((t, l)=>t+lineCents(l), 0), tn = num(draft.total), tot = tn>0 ? cents(tn) : 0;
@@ -306,10 +331,14 @@ function drawSum(){
   else m = `<div class="match bad">✗ Sumos nesutampa: skiriasi ${eur(Math.abs(tot-sum))} (renginiuose ${sum>tot ? 'daugiau' : 'mažiau'}).</div>`;
   const miss = [];
   if(bad>=0) miss.push(`užpildyk ${bad+1} eilutę (data, renginys, suma)`);
-  if(!draft.file && !draft.oldFile) miss.push('įkelk sąskaitos failą');
+  if(!draft.file && !draft.oldFile && !(draft.scan && draft.scan.busy)) miss.push('įkelk sąskaitos failą');
+  const ft = fileTotal(), busy = !!(draft.scan && draft.scan.busy);
+  if(busy) m += '<div class="match" style="color:var(--dim);background:color-mix(in srgb,var(--dim) 12%,transparent);">⏳ Tikrinama sąskaitos faile nurodyta suma…</div>';
+  else if(ft!=null) m += ft===tot ? `<div class="match ok">✓ Faile nurodyta suma ${eur(ft)} sutampa</div>` : `<div class="match bad">✗ Įkeltoje sąskaitoje nurodyta ${eur(ft)}, o įvesta ${tot ? eur(tot) : '—'}. Pataisyk sumą arba įkelk teisingą failą.</div>`;
+  else if(draft.file && draft.scan && !draft.scan.busy && draft.scan.checked) m += '<div class="match" style="color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent);">⚠ Faile sumos rasti nepavyko – patikrink, ar įkėlei sąskaitą. Ji bus patikrinta rankiniu būdu.</div>';
   box.innerHTML = `<div class="sum"><span>Renginių (${draft.lines.length}) suma</span><b>${eur(sum)}</b></div><div class="sum"><span>Sąskaitos suma</span><b>${tot ? eur(tot) : '—'}</b></div>${m}${miss.length ? `<p class="muted">Dar: ${miss.join(', ')}.</p>` : ''}`;
   const send = document.getElementById('send');
-  if(send) send.disabled = !(tot && sum===tot && bad<0 && (draft.file || draft.oldFile));
+  if(send) send.disabled = !(tot && sum===tot && bad<0 && (draft.file || draft.oldFile) && !busy && (ft==null || ft===tot));
 }
 function fileB64(f){
   return new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = ()=>rej(new Error('Nepavyko perskaityti failo.')); r.readAsDataURL(f); });
@@ -326,7 +355,7 @@ async function submit(){
     });
     const f = draft.file;
     const d = await call({ action:'submit', token:S.token, id:draft.editId || undefined, number:draft.number.trim(), total:num(draft.total), note:draft.note.trim(), lines,
-      file: f ? { name:f.name, type:f.type, base64:await fileB64(f) } : null });
+      file: f ? { name:f.name, type:f.type, base64:draft.b64 || await fileB64(f) } : null });
     draft = null;
     $app.innerHTML = `<div class="card done"><div class="big">✅</div><h1>${d.edited ? 'Pataisyta sąskaita išsiųsta' : 'Sąskaita išsiųsta'}</h1>
       <p class="muted">Gavome jūsų sąskaitą (${eur(cents(d.total))}). Ji perduota tvirtinimui – kai bus patvirtinta, gausite el. laišką.</p>
