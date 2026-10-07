@@ -1037,13 +1037,55 @@ async function onTask(uid: string, taskId: string, ev: string) {
 // Sąskaitos: a new one goes to Admin+, the decision to its uploader, a reply
 // from the e-mail to Admin+; „Priminti vėliau“ comes back at the chosen time
 type Invoice = { id: string; created_by: string; kind: string; supplier: string | null; number: string | null; amount: number | null; status: string; decision_note: string | null; decision_at?: string | null; remind_at: string | null; reminded_at: string | null; responses: { who?: string; kind: string; text?: string }[];
-  source?: string | null; ext_email?: string | null; ext_name?: string | null; ext_mailed?: string | null; lines?: { date?: string; event?: string; amount?: number; total?: number; extras?: { what?: string; amount?: number }[] }[] | null };
+  source?: string | null; ext_email?: string | null; ext_name?: string | null; ext_mailed?: string | null; checked_at?: string | null; created_at?: string; lines?: { date?: string; event?: string; amount?: number; total?: number; extras?: { what?: string; amount?: number }[] }[] | null };
 const INV_KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos", purchase: "Pirkinių", other: "Kitos" };
 const INV_STATUS: Record<string, string> = { approved: "✅ Sąskaita patvirtinta", rejected: "✖ Sąskaita netvirtinta", later: "⏰ Sąskaita atidėta vėlesniam laikui", sent: "📤 Sąskaita patvirtinta ir išsiųsta", paid: "💶 Sąskaita apmokėta", queued: "🗂 Sąskaita suvesta apmokėjimui" };
 async function plusIds(): Promise<string[]> {
   return (await db<{ id: string }[]>(`profiles?select=id&role=eq.admin&level=in.(plus,super)`)).map((p) => p.id);
 }
 const invTitle = (v: Invoice) => [INV_KIND[v.kind] || "", v.supplier || "", v.number ? "nr. " + v.number : "", v.amount != null ? Number(v.amount).toFixed(2).replace(".", ",") + " €" : ""].filter(Boolean).join(" · ");
+// Freelance invoices are checked by the office first (Office, project managers): they are told about a new one,
+// Admin+ only when it has been checked (invoice_check.sql)
+async function checkerIds(): Promise<string[]> {
+  return (await db<{ id: string }[]>(`profiles?select=id&role=in.(office,pm)`)).map((p) => p.id);
+}
+const needsCheck = (v: Invoice) => v.kind === "freelance" && !v.checked_at;
+// the office's action on an invoice: checked (Admin+ are told) or a letter to its sender (ok / corrections)
+async function onInvoiceCheck(uid: string, id: string, ev: string, text: string, ok: boolean) {
+  const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,level,notify_prefs&id=eq.${uid}`);
+  const plus = await plusIds();
+  if (!me || !(["office", "pm", "admin"].includes(me.role) || plus.includes(uid))) return { error: "Sąskaitas tikrina Office, Projektų vadovai ir Admin." };
+  const [v] = await db<(Invoice & { check_msgs?: unknown[]; number?: string | null })[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
+  if (!v) return { error: "Sąskaita nerasta" };
+  if (ev === "checked") {
+    if (!v.checked_at) return { error: "Sąskaita dar nepažymėta kaip patikrinta." };
+    return await sendTo(await wantIds(plus.filter((u) => u !== uid), "other"), { title: "✅ Patikrinta ofise: " + invTitle(v), body: "Patikrino " + name(me) + (text ? " · " + text.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+  }
+  // a letter to the invoice's sender (the freelancer / the supplier who e-mailed it)
+  const to = String(v.ext_email || "").trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return { error: "Siuntėjo el. pašto nėra." };
+  const msg = text.trim().slice(0, 3000);
+  if (!ok && !msg) return { error: "Parašyk, ką reikia pataisyti." };
+  const key = Deno.env.get("RESEND_API_KEY"); if (!key) return { error: "Nenustatytas RESEND_API_KEY" };
+  const what = "sąskaita" + (v.number ? " nr. " + v.number : "") + (v.amount != null ? " (" + Number(v.amount).toFixed(2).replace(".", ",") + " €)" : "");
+  const editLink = v.source === "portal" && !ok ? `<p><a href="${PORTAL_URL}?edit=${encodeURIComponent(v.id)}" style="display:inline-block;padding:12px 22px;background:#1e6fd9;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold">✏️ Taisyti sąskaitą</a></p>` : "";
+  const subject = (ok ? "Sąskaita gauta – viskas tvarkoje" : "Sąskaitai reikia korekcijų") + (v.number ? ": " + v.number : "");
+  const html = `<div style="font-family:Arial,sans-serif;font-size:15px;color:#111;max-width:560px">
+    <p>Sveiki${v.ext_name ? ", " + escHtml(String(v.ext_name).split(" ")[0]) : ""},</p>
+    <p>${ok ? `Jūsų ${escHtml(what)} gauta ir patikrinta – <b style="color:#2e7d32">viskas tvarkoje</b>.` : `Jūsų ${escHtml(what)} <b style="color:#c62828">reikia pataisyti</b>.`}</p>
+    ${msg ? `<p style="padding:10px 14px;background:${ok ? "#eef7ee" : "#fdecea"};border-left:4px solid ${ok ? "#2e7d32" : "#c62828"};border-radius:4px;white-space:pre-wrap">${escHtml(msg)}</p>` : ""}
+    ${editLink}
+    <p style="color:#555">${escHtml(name(me))}<br>Event Solutions</p></div>`;
+  const r = await fetch("https://api.resend.com/emails", {
+    signal: AbortSignal.timeout(12000), method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from: Deno.env.get("REMINDER_FROM") || "Event Solutions <onboarding@resend.dev>", to: [to], ...(me.email ? { reply_to: me.email } : {}), subject, html }),
+  });
+  const error = r.ok ? "" : "Resend " + r.status + ": " + (await r.text()).slice(0, 200);
+  await db(`invoices?id=eq.${v.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({
+    check_msgs: [...((v.check_msgs as unknown[]) || []), { at: new Date().toISOString(), by: uid, who: name(me), kind: ok ? "ok" : "fix", text: msg, to, ...(error ? { error } : {}) }],
+  }) }).catch(() => {});
+  return error ? { error } : { mailed: true, to };
+}
 async function onInvoice(uid: string, id: string, ev: string) {
   const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
   if (!v) return { error: "Sąskaita nerasta" };
@@ -1051,6 +1093,8 @@ async function onInvoice(uid: string, id: string, ev: string) {
   if (ev === "new") {
     if (v.created_by !== uid) return { error: "Tik įkėlęs asmuo" };
     const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
+    // a Freelance invoice not yet checked: the office checks it first
+    if (needsCheck(v)) return await sendTo(await wantIds((await checkerIds()).filter((u) => u !== uid), "other"), { title: "🧾 Patikrink freelance sąskaitą: " + invTitle(v), body: "Įkėlė " + name(me), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
     return await sendTo(await wantIds(plus.filter((u) => u !== uid), "other"), { title: "🧾 Nauja sąskaita: " + invTitle(v), body: "Įkėlė " + name(me), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
   }
   if (!plus.includes(uid)) return { error: "Tik Admin+" };
@@ -1062,7 +1106,8 @@ async function onInvoice(uid: string, id: string, ev: string) {
 async function onInvoicePortal(id: string, edited: boolean) {
   const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
   if (!v) return { error: "Sąskaita nerasta" };
-  return await sendTo(await wantIds(await plusIds(), "other"), { title: (edited ? "✏️ Pataisyta freelance sąskaita: " : "🧾 Nauja freelance sąskaita: ") + (v.ext_name || v.supplier || ""), body: invTitle(v) + " · per saskaitos.eventsolutions.lt", tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+  // the office checks it first (Admin+ hears when it is checked)
+  return await sendTo(await wantIds(needsCheck(v) ? await checkerIds() : await plusIds(), "other"), { title: (edited ? "✏️ Pataisyta freelance sąskaita: " : "🧾 Nauja freelance sąskaita: ") + (v.ext_name || v.supplier || ""), body: invTitle(v) + " · per saskaitos.eventsolutions.lt" + (needsCheck(v) ? " · patikrink" : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
 }
 // the freelancer is told by e-mail: not approved (why + „Taisyti sąskaitą“), approved and passed to accounting, paid.
 // ext_mailed keeps what was already told, so pressing the same button twice sends no second letter.
@@ -1381,7 +1426,7 @@ Deno.serve(async (req) => {
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(String(body.invoice_id ?? ""))}`);
       if (!v) return json({ error: "Sąskaita nerasta" });
-      return json(await sendTo(await wantIds(await plusIds(), "other"), { title: "📧 Nauja sąskaita el. paštu: " + (v.supplier || v.ext_email || ""), body: invTitle(v), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" }));
+      return json(await sendTo(await wantIds(needsCheck(v) ? await checkerIds() : await plusIds(), "other"), { title: "📧 Nauja sąskaita el. paštu: " + (v.supplier || v.ext_email || ""), body: invTitle(v) + (needsCheck(v) ? " · patikrink" : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" }));
     }
     if (body?.mode === "invoice-portal") {
       const secret = Deno.env.get("CRON_SECRET");
@@ -1406,6 +1451,7 @@ Deno.serve(async (req) => {
     if (body.kind === "mail-test") return json(await onMailTest(uid));
     if (body.kind === "tracker-pin") return json(await onTrackerPin(String(body.member_id ?? "")));
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
+    if (body.kind === "invoice-check") return json(await onInvoiceCheck(uid, String(body.invoice_id ?? ""), body.event === "checked" ? "checked" : "msg", String(body.text ?? ""), body.ok === true));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : body.event === "resend" ? "resend" : "decided"));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
     if (body.kind === "leave") return json(await onLeave(uid, String(body.leave_id ?? ""), ["new", "decided", "cancelled"].includes(body.event) ? body.event : "new"));

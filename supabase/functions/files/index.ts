@@ -94,7 +94,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 async function allowed(c: Caller, bucket: string, path: string, op: Op, cache: Map<string, boolean>): Promise<boolean> {
   if (!BUCKETS.includes(bucket) || !path || path.includes("..") || path.startsWith("/") || path.length > 400) return false;
   const first = path.split("/")[0];
-  const key = bucket + "|" + op + "|" + (bucket === "equipment-photos" ? path.split("/").slice(0, 2).join("/") : first);
+  const key = bucket + "|" + op + "|" + (bucket === "equipment-photos" ? path.split("/").slice(0, 2).join("/") : bucket === "invoice-files" && op === "read" ? path : first);
   if (cache.has(key)) return cache.get(key)!;
   let ok = false;
   switch (bucket) {
@@ -117,7 +117,8 @@ async function allowed(c: Caller, bucket: string, path: string, op: Op, cache: M
     case "invoice-files":
       if (!UUID.test(first)) break;
       if (op === "write") ok = first === c.uid && await rpc(c, "can_edit", { sec: "invoices" });
-      else ok = first === c.uid || await rpc(c, "is_plus");
+      // reading: also Office / project managers, for the invoices they check (invoice_check.sql)
+      else ok = first === c.uid || await rpc(c, "is_plus") || await rpc(c, "inv_file_checkable", { p_path: path }).catch(() => false);
       break;
   }
   cache.set(key, ok);

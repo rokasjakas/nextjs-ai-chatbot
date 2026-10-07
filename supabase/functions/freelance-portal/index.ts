@@ -227,9 +227,9 @@ function mustMatch(scan: Scan, total: number) {
     throw new UserError(`Įkeltoje sąskaitoje nurodyta galutinė suma ${eurTxt(scan.total)}, o įvesta ${eurTxt(total)}. Sumos turi sutapti.`);
 }
 
-type Mine = { id: string; file_total?: number | null; number: string | null; amount: number; status: string; decision_note: string | null; decision_at: string | null; created_at: string; invoice_date: string | null; note: string | null; lines: unknown[]; files: { path: string; name: string; type: string; size: number }[]; responses: unknown[] };
+type Mine = { id: string; file_total?: number | null; check_msgs?: { at?: string; kind?: string; text?: string }[]; number: string | null; amount: number; status: string; decision_note: string | null; decision_at: string | null; created_at: string; invoice_date: string | null; note: string | null; lines: unknown[]; files: { path: string; name: string; type: string; size: number }[]; responses: unknown[] };
 async function mine(email: string, id?: string) {
-  return await db<Mine[]>(`invoices?select=id,file_total,number,amount,status,decision_note,decision_at,created_at,invoice_date,note,lines,files,responses&source=eq.portal&ext_email=eq.${enc(email)}${id ? "&id=eq." + enc(id) : ""}&order=created_at.desc&limit=100`);
+  return await db<Mine[]>(`invoices?select=id,file_total,check_msgs,number,amount,status,decision_note,decision_at,created_at,invoice_date,note,lines,files,responses&source=eq.portal&ext_email=eq.${enc(email)}${id ? "&id=eq." + enc(id) : ""}&order=created_at.desc&limit=100`);
 }
 const EDITABLE = ["new", "rejected"];
 // what happened to the invoice, for the freelancer (inner notes and the accounting's written replies stay inside)
@@ -243,6 +243,12 @@ function history(v: Mine) {
       h.push({ at: r.at, t: "Pataisyta ir pateikta iš naujo", c: "info" });
     } else if (r.kind === "paid") h.push({ at: r.at, t: "Apmokėta", c: "ok" });
     else if (r.kind === "queued") h.push({ at: r.at, t: "Suvesta apmokėjimui", c: "ok" });
+  }
+  // the office's letters to the freelancer (ok / corrections)
+  for (const m of v.check_msgs || []) {
+    if (!m.at) continue;
+    if (m.kind === "ok") h.push({ at: m.at, t: "Patikrinta – viskas tvarkoje", note: m.text || "", c: "ok" });
+    else if (m.kind === "fix") h.push({ at: m.at, t: "Reikia korekcijų", note: m.text || "", c: "bad" });
   }
   if (v.decision_at) {
     if (v.status === "rejected") h.push({ at: v.decision_at, t: "Nepatvirtinta", note: v.decision_note || "", c: "bad" });
@@ -365,6 +371,7 @@ async function submit(s: { email: string; name: string; token_hash?: string; sca
       method: "PATCH", headers: { Prefer: "return=minimal" },
       body: JSON.stringify({
         ...row, status: "new", decision_note: null, decision_by: null, decision_at: null, remind_at: null, reminded_at: null,
+        checked_at: null, checked_by: null,   // corrected: the office checks it again
         responses: [...(old.responses || []), { at: new Date().toISOString(), who: s.name, kind: "reply", text: why, src: "portal", ...(old.status === "rejected" ? { rejected_at: old.decision_at, reason: old.decision_note || "" } : {}) }],
       }),
     });
@@ -424,11 +431,16 @@ Deno.serve(async (req) => {
       const s = await session(b.token);
       const rows = await mine(s.email);
       // file paths stay on the server: a receipt is named by its place in the invoice's files
-      const fix = (v: Mine) => (v.lines || []).map((l) => {
+      const fixL = (v: Mine) => (v.lines || []).map((l) => {
         const x = l as { extras?: { file?: string | null }[] };
         return { ...x, extras: (x.extras || []).map((e) => ({ ...e, file: undefined, file_idx: e.file ? v.files.findIndex((f) => f.path === e.file) : -1 })) };
       });
-      return json({ invoices: rows.map((v) => ({ ...v, lines: fix(v), files: (v.files || []).map((f) => ({ name: f.name, type: f.type, size: f.size })), responses: undefined, history: history(v), editable: EDITABLE.includes(v.status) })) });
+      return json({ invoices: rows.map((v) => {
+        // the last word of the office: corrections asked (and not sent again since)
+        const fix = [...(v.check_msgs || [])].reverse().find((m) => m.kind === "fix" || m.kind === "ok");
+        return { ...v, lines: fixL(v), files: (v.files || []).map((f) => ({ name: f.name, type: f.type, size: f.size })), responses: undefined, check_msgs: undefined, history: history(v), editable: EDITABLE.includes(v.status),
+          ...(fix?.kind === "fix" && v.status === "new" ? { fix_note: fix.text || "" } : {}) };
+      }) });
     }
     if (action === "file") {
       const s = await session(b.token);
