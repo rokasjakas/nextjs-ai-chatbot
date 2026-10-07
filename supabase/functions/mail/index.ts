@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 15;
+const VERSION = 16;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -290,6 +290,10 @@ const SPECIAL: Record<string, { use: string; re: RegExp; name: string; create: b
   drafts:  { use: "\\Drafts",  re: /^(inbox[./])?(drafts|juodraščiai)$/i, name: "Drafts", create: false },
   junk:    { use: "\\Junk",    re: /^(inbox[./])?(junk|junk e-mail|spam|brukalas)$/i, name: "Junk", create: false },
   archive: { use: "\\Archive", re: /^(inbox[./])?(archive|archyvas)$/i, name: "Archive", create: true },
+  // Gmail's own: Starred, All Mail, Important
+  starred: { use: "\\Flagged", re: /^\[gmail\]\/(starred|pažymėti žvaigždute)$/i, name: "Starred", create: false },
+  all:     { use: "\\All",     re: /^\[gmail\]\/(all mail|visi laiškai)$/i, name: "All", create: false },
+  important: { use: "\\Important", re: /^\[gmail\]\/(important|svarbūs)$/i, name: "Important", create: false },
 };
 export function specialOf(b: { path: string; specialUse?: string }): string {
   if (b.path.toUpperCase() === "INBOX") return "inbox";
@@ -321,7 +325,7 @@ async function folders(a: Account) {
   return await withImap(a, async (c) => {
     const list = (await c.list({ statusQuery: { messages: true, unseen: true } })) as unknown as Box[];
     const p = [...pool.values()].find((x) => x.c === c); if (p) p.boxes = { at: Date.now(), list };
-    const order = ["drafts", "sent", "junk", "trash", "archive"];
+    const order = ["starred", "important", "sent", "drafts", "all", "junk", "trash", "archive"];
     // two folders of one kind (e.g. „Junk“ and „Spam“): only the one the app opens is shown as that kind,
     // the other keeps its own name (it was listed twice as „Brukalas“)
     const pick: Record<string, string> = {};
@@ -440,10 +444,12 @@ async function bodyDelete(user: string, folder: string, uids: number[]) {
   catch (e) { console.error("mail_bodies delete", (e as Error).message); }
 }
 // after a sync, on the same connection: the newest letters whose text is not kept yet
-async function bodyPrefetch(c: ImapFlow, user: string, folder: string, present: number[]) {
+async function bodyPrefetch(c: ImapFlow, user: string, folder: string, present: number[], big = false) {
   if (!bodiesOk || !present.length) return 0;
   const t0 = Date.now();
-  const newest = present.slice().sort((x, y) => y - x).slice(0, BODY_KEEP);
+  // Gmail answers fast: many more letters are kept ready (they open at once)
+  const KEEP = big ? 400 : BODY_KEEP, PER_RUN = big ? 60 : BODY_PER_RUN, MS = big ? 25_000 : BODY_MS;
+  const newest = present.slice().sort((x, y) => y - x).slice(0, KEEP);
   let have: { uid: number }[] = [];
   try { have = await db<{ uid: number }[]>(`mail_bodies?select=uid&user_id=eq.${user}&folder=eq.${enc(folder)}&limit=2000`); }
   catch (e) { if (/mail_bodies|relation|schema cache/i.test((e as Error).message)) bodiesOk = false; return 0; }
@@ -453,7 +459,7 @@ async function bodyPrefetch(c: ImapFlow, user: string, folder: string, present: 
   await bodyDelete(user, folder, [...hset].filter((u) => !keep.has(u)));
   let done = 0, failed = 0;
   for (const uid of newest) {
-    if (done >= BODY_PER_RUN || Date.now() - t0 > BODY_MS) break;
+    if (done >= PER_RUN || Date.now() - t0 > MS) break;
     if (hset.has(uid)) continue;
     if ((bodySkip.get(`${user}/${folder}/${uid}`) ?? 0) > Date.now()) continue;
     try { await bodySave(user, folder, uid, await readOn(c, folder, uid, true, true, { s: "" })); done++; failed = 0; }
@@ -596,7 +602,7 @@ async function syncFolder(user: string, a: Account, folder: string) {
       lock.release();
     }
     })();
-    (res as Record<string, unknown>).bodies = await bodyPrefetch(c, user, folder, present).catch(() => 0);
+    (res as Record<string, unknown>).bodies = await bodyPrefetch(c, user, folder, present, a.host === GMAIL_IMAP).catch(() => 0);
     return res;
   }, true, 60_000);
 }
@@ -899,7 +905,7 @@ export function parseRecipients(v: unknown): string[] {
 
 async function smtpSend(a: Account, rcpt: string[], raw: Buffer) {
   const tx = nodemailer.createTransport({
-    host: env("MAIL_SMTP_HOST", env("MAIL_IMAP_HOST", "koala.serveriai.lt")),
+    host: a.host === GMAIL_IMAP ? "smtp.gmail.com" : env("MAIL_SMTP_HOST", env("MAIL_IMAP_HOST", "koala.serveriai.lt")),
     port: Number(env("MAIL_SMTP_PORT", "465")),
     secure: true,
     auth: { user: a.email, pass: a.password },
@@ -940,6 +946,17 @@ ${row("A.", COMPANY.address.map(escHtml).join("<br>"))}
 ${row("W.", `<a href="https://${COMPANY.web}" style="color:#000;">${COMPANY.web}</a>`)}
 </table></td></tr></table>`;
 }
+// the personal signature (letters from the Gmail address): own text, or name and phone
+export function psigText(p: Person, own?: string): string {
+  return "-- \n" + (own && own.trim() ? own.trim() : [personName(p), p.phone ? "T. " + p.phone : ""].filter(Boolean).join("\n"));
+}
+export function psigHtml(p: Person, own?: string): string {
+  const f = "font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#000;";
+  if (own && own.trim()) return `<div style="${f}margin-top:22px;">${escHtml(own.trim()).replace(/\r?\n/g, "<br>")}</div>`;
+  const tel = (p.phone || "").replace(/[^\d+]/g, "");
+  return `<div style="${f}margin-top:22px;"><b>${escHtml(personName(p))}</b>${p.phone ? `<br><a href="tel:${escHtml(tel)}" style="color:#1a55c4;">${escHtml(p.phone)}</a>` : ""}</div>`;
+}
+type SigKind = "work" | "personal" | "none";
 const logoAttachment = () => ({ filename: "eventsolutions.png", content: Buffer.from(LOGO_PNG_BASE64, "base64"), contentType: "image/png", cid: LOGO_CID, contentDisposition: "inline" as const });
 // plain text -> simple HTML; "> " lines become a quote block
 export function textToHtml(text: string): string {
@@ -956,11 +973,13 @@ export function textToHtml(text: string): string {
   flush();
   return out.join("<br>").replace(/<br>(<blockquote)/g, "$1").replace(/(<\/blockquote>)<br>/g, "$1");
 }
-export function composeBody(text: string, quoted: string, p: Person | null, html = "") {
+export function composeBody(text: string, quoted: string, p: Person | null, html = "", kind: SigKind = "work", own = "") {
   const wrap = (h: string) => `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#000;">${h}</div>`;
+  const st = !p || kind === "none" ? "" : kind === "personal" ? psigText(p, own) : sigText(p);
+  const sh = !p || kind === "none" ? "" : kind === "personal" ? psigHtml(p, own) : sigHtml(p);
   return {
-    text: text + (p ? "\n\n" + sigText(p) : "") + (quoted ? "\n\n" + quoted : ""),
-    html: wrap((html ? cleanHtml(html) : textToHtml(text)) + (p ? sigHtml(p) : "") + (quoted ? "<br><br>" + textToHtml(quoted) : "")),
+    text: text + (st ? "\n\n" + st : "") + (quoted ? "\n\n" + quoted : ""),
+    html: wrap((html ? cleanHtml(html) : textToHtml(text)) + sh + (quoted ? "<br><br>" + textToHtml(quoted) : "")),
   };
 }
 // a letter built in the app (the event letter): formatted HTML. Scripts,
@@ -974,7 +993,7 @@ export function cleanHtml(h: string): string {
 }
 
 type SendBody = {
-  to?: string; cc?: string; subject?: string; text?: string; quoted?: string; html?: string; sig?: boolean;
+  to?: string; cc?: string; subject?: string; text?: string; quoted?: string; html?: string; sig?: boolean; from?: "work" | "personal";
   inReplyTo?: string; references?: string[]; replyUid?: number; replyFolder?: string;
   attachments?: { filename: string; contentType?: string; base64: string }[];
 };
@@ -988,11 +1007,16 @@ async function send(me: Me, a: Account, b: SendBody) {
     content: Buffer.from(String(x.base64 || ""), "base64"),
   }));
   if (atts.reduce((n, x) => n + x.content.length, 0) > MAX_SEND_BYTES) throw new UserError("Priedai per dideli (iki 15 MB).");
-  // the event letter always carries the sender's signature (b.sig)
-  const withSig = b.sig === true || (await settingsOf(me.id)).sig !== false;
-  const body = composeBody(String(b.text ?? ""), String(b.quoted ?? ""), withSig ? me.person : null, typeof b.html === "string" ? b.html : "");
+  // from which address: the work one (company mail server) or the personal Gmail (Gmail's own server)
+  const personal = b.from === "personal" && !!a.reader;
+  const fromAcc: Account = personal ? a.reader! : a;
+  const st = await settingsOf(me.id);
+  // which signature: the event letter always the work one (b.sig); otherwise as set for that address
+  const kind: SigKind = b.sig === true ? "work" : st.sig === false ? "none" : (st.sigFor?.[personal ? "personal" : "work"] ?? (personal ? "personal" : "work"));
+  const body = composeBody(String(b.text ?? ""), String(b.quoted ?? ""), kind === "none" ? null : me.person, typeof b.html === "string" ? b.html : "", kind, st.psig || "");
+  const withSig = kind === "work";
   const mail = {
-    from: me.name ? { name: me.name, address: a.email } : a.email,
+    from: me.name ? { name: me.name, address: fromAcc.email } : fromAcc.email,
     to, cc: cc.length ? cc : undefined,
     subject: String(b.subject ?? "").slice(0, 500),
     text: body.text,
@@ -1004,8 +1028,8 @@ async function send(me: Me, a: Account, b: SendBody) {
   const raw: Buffer = await new MailComposer(mail).compile().build();
   let server: { response: string; accepted: string[] };
   try {
-    server = await smtpSend(a, [...to, ...cc], raw);
-    console.log("sent", a.email, "->", server.accepted.join(","), server.response);
+    server = await smtpSend(fromAcc, [...to, ...cc], raw);
+    console.log("sent", fromAcc.email, "->", server.accepted.join(","), server.response);
   } catch (e) {
     console.error("smtp", (e as Error).message);
     throw new UserError("Laiško išsiųsti nepavyko: " + ((e as { response?: string }).response || (e as Error).message).slice(0, 200));
@@ -1013,9 +1037,10 @@ async function send(me: Me, a: Account, b: SendBody) {
   // a copy in "Sent" and the original marked as answered; the mail is already
   // out, so problems here are not reported as a failure
   // (read through Gmail: the copy also goes to the company mailbox's "Sent")
-  if (a.reader) withImap(a, async (c) => { await c.append(await folderPath(c, "sent"), raw, ["\\Seen"]); }, false).catch((e) => console.error("append company", e?.message));
+  // (sent through Gmail's server: Gmail keeps the copy itself)
+  if (a.reader && !personal) withImap(a, async (c) => { await c.append(await folderPath(c, "sent"), raw, ["\\Seen"]); }, false).catch((e) => console.error("append company", e?.message));
   await withImap(readerOf(a), async (c) => {
-    await c.append(await folderPath(c, "sent"), raw, ["\\Seen"]).catch((e: Error) => console.error("append", e?.message));
+    if (!personal) await c.append(await folderPath(c, "sent"), raw, ["\\Seen"]).catch((e: Error) => console.error("append", e?.message));
     if (b.replyUid && b.replyFolder) {
       const lock = await c.getMailboxLock(await folderPath(c, b.replyFolder));
       try {
@@ -1054,6 +1079,8 @@ async function account(uid: string): Promise<Account | null> {
 // ---------- settings: signature and automatic reply ----------
 type Settings = {
   sig?: boolean; // add the signature (default on)
+  psig?: string; // the personal signature's own text (empty: name and phone)
+  sigFor?: { work?: SigKind; personal?: SigKind }; // which signature letters from each address carry
   auto?: { on?: boolean; from?: string; to?: string; subject?: string; text?: string; since?: string };
 };
 const dateRe = /^\d{4}-\d{2}-\d{2}$/;
@@ -1065,8 +1092,11 @@ export function cleanSettings(v: unknown, prev: Settings = {}): Settings {
   const from = dateRe.test(String(a.from ?? "")) ? String(a.from) : "";
   const to = dateRe.test(String(a.to ?? "")) ? String(a.to) : "";
   if (from && to && to < from) throw new UserError("Pabaigos data ankstesnė už pradžią.");
+  const sk = (v: unknown, d: SigKind): SigKind => (["work", "personal", "none"].includes(String(v)) ? String(v) as SigKind : d);
   return {
     sig: i.sig !== false,
+    psig: String(i.psig ?? "").slice(0, 2000),
+    sigFor: { work: sk(i.sigFor?.work, "work"), personal: sk(i.sigFor?.personal, "personal") },
     auto: {
       on, from, to, text,
       subject: String(a.subject ?? "").slice(0, 300),
@@ -1255,6 +1285,7 @@ async function handle(me: Me, body: Record<string, unknown>) {
   if (action === "settings") {
     return {
       connected: true, email: a0.email, reader: a0.reader?.email ?? null, settings: await settingsOf(me.id),
+      psignature: psigHtml(me.person, (await settingsOf(me.id)).psig || ""),
       signature: sigHtml(me.person).replace(`cid:${LOGO_CID}`, "data:image/png;base64," + LOGO_PNG_BASE64),
     };
   }
