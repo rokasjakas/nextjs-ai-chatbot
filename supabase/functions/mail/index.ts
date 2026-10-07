@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 33;
+const VERSION = 34;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -867,7 +867,7 @@ async function mirrorFor(row: MirrorRow, force = false) {
 // twice (invoices.mail_id = its Message-ID). Checked every 15 s with the mail sync (up to 3 letters a run; 8 a minute).
 type InboxRule = { kw?: string; where?: string; kind?: string; supplier?: string };
 type InboxRow = { id: number; email: string | null; host: string | null; secret: string | null; active: boolean; rules: InboxRule[]; default_kind: string;
-  state: { uidValidity?: string; lastUid?: number; busy?: string; total?: number; last?: { at: string; n: number; skipped?: number; err?: string; items?: { subject: string; kind: string; rule?: number }[] } } };
+  state: { uidValidity?: string; lastUid?: number; busy?: string; total?: number; last?: { at: string; n: number; skipped?: number; err?: string; errors?: { uid: number; subject: string; err: string }[]; items?: { subject: string; kind: string; rule?: number }[] } } };
 const INV_KINDS_OK = ["freelance", "service", "rent", "purchase", "other"];
 const foldLt = (t: string) => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 type InboxLetter = { uid: number; mid: string; date: Date | null; subject: string; from: { name: string; address: string }; text: string;
@@ -988,6 +988,7 @@ async function runInvoiceInbox(force = false, sinceDays = 0, max = 8) {
   const a: Account = { email: row.email, password: await unseal(row.secret), host: row.host || undefined };
   let n = 0, skipped = 0, err = "", more = 0;
   const items: { subject: string; kind: string; rule?: number }[] = [];
+  const errors: { uid: number; subject: string; err: string }[] = [];
   try {
     const owner = await inboxOwner();
     await withImap(a, async (c) => {
@@ -1010,10 +1011,22 @@ async function runInvoiceInbox(force = false, sinceDays = 0, max = 8) {
         more = uids.length - take.length;
         for (const uid of take) {
           if (!sinceDays) await keep({ trying: uid });
-          const l = await inboxLetter(c, uid);
-          if (l) {
-            const r = await inboxImport(row, l, owner);
-            if (r) { n++; items.push({ subject: l.subject.slice(0, 120), kind: r.kind, ...(r.rule >= 0 ? { rule: r.rule } : {}) }); } else skipped++;
+          // one letter's trouble does not stop the others; what went wrong is shown in „Sąskaitų dėžutė“
+          let subject = "";
+          try {
+            const t0 = Date.now();
+            const l = await inboxLetter(c, uid);
+            if (l) {
+              subject = l.subject;
+              const r = await inboxImport(row, l, owner);
+              if (r) { n++; items.push({ subject: l.subject.slice(0, 120), kind: r.kind, ...(r.rule >= 0 ? { rule: r.rule } : {}) }); } else skipped++;
+            }
+            console.log("invoice inbox letter", uid, Date.now() - t0, "ms");
+          } catch (e) {
+            const m = e instanceof UserError ? e.message : (e as Error).message || String(e);
+            console.error("invoice inbox letter", uid, m);
+            errors.push({ uid, subject: subject.slice(0, 120), err: m.slice(0, 300) });
+            if (!c.usable) throw e;   // the connection is gone: the rest wait for the next run
           }
           if (!sinceDays) { st.lastUid = uid; await keep(); }
         }
@@ -1024,10 +1037,10 @@ async function runInvoiceInbox(force = false, sinceDays = 0, max = 8) {
     console.error("invoice inbox", err);
   }
   st.total = (st.total ?? 0) + n;
-  if (sinceDays > 0 && !err) delete st.failed;   // the earlier days were imported: the skipped letters are in now
-  st.last = { at: new Date().toISOString(), n, ...(skipped ? { skipped } : {}), ...(err ? { err: err.slice(0, 300) } : {}), ...(items.length ? { items } : (st.last?.items ? { items: st.last.items } : {})) };
+  if (sinceDays > 0 && !err && !errors.length) delete st.failed;   // the earlier days were imported: the skipped letters are in now
+  st.last = { at: new Date().toISOString(), n, ...(skipped ? { skipped } : {}), ...(err ? { err: err.slice(0, 300) } : {}), ...(errors.length ? { errors } : {}), ...(items.length ? { items } : (st.last?.items ? { items: st.last.items } : {})) };
   await db("invoice_inbox?id=eq.1", { method: "PATCH", body: JSON.stringify({ state: st }) });
-  return { imported: n, skipped, more, err: err || undefined };
+  return { imported: n, skipped, more, err: err || undefined, errors: errors.length ? errors : undefined };
 }
 // „Peržiūra“: how the last letters would be sorted with these rules (nothing is imported)
 async function inboxPreview(row: InboxRow, rules: InboxRule[]) {
