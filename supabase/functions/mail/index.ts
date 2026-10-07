@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 16;
+const VERSION = 17;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -444,11 +444,11 @@ async function bodyDelete(user: string, folder: string, uids: number[]) {
   catch (e) { console.error("mail_bodies delete", (e as Error).message); }
 }
 // after a sync, on the same connection: the newest letters whose text is not kept yet
-async function bodyPrefetch(c: ImapFlow, user: string, folder: string, present: number[], big = false) {
+async function bodyPrefetch(c: ImapFlow, user: string, folder: string, present: number[], big = false, quick = false) {
   if (!bodiesOk || !present.length) return 0;
   const t0 = Date.now();
   // Gmail answers fast: many more letters are kept ready (they open at once)
-  const KEEP = big ? 400 : BODY_KEEP, PER_RUN = big ? 60 : BODY_PER_RUN, MS = big ? 25_000 : BODY_MS;
+  const KEEP = big ? 400 : BODY_KEEP, PER_RUN = quick ? 5 : big ? 60 : BODY_PER_RUN, MS = quick ? 5_000 : big ? 25_000 : BODY_MS;
   const newest = present.slice().sort((x, y) => y - x).slice(0, KEEP);
   let have: { uid: number }[] = [];
   try { have = await db<{ uid: number }[]>(`mail_bodies?select=uid&user_id=eq.${user}&folder=eq.${enc(folder)}&limit=2000`); }
@@ -508,7 +508,7 @@ async function notifyNew(user: string, items: { uid: number; from: string; subje
     body: JSON.stringify({ mode: "mail-new", user_id: user, items: items.slice(-5) }),
   }).catch((e) => console.error("mail notify", e?.message));
 }
-async function syncFolder(user: string, a: Account, folder: string) {
+async function syncFolder(user: string, a: Account, folder: string, quick = false) {
   const t0 = Date.now();
   const gmTabs = a.host === GMAIL_IMAP && folder === "inbox" && catOk;
   const [st] = await db<SyncState[]>(`mail_sync?select=uidvalidity,modseq,synced_at&user_id=eq.${user}&folder=eq.${enc(folder)}`);
@@ -584,7 +584,7 @@ async function syncFolder(user: string, a: Account, folder: string) {
         if (diff.length) { await idxUpsert(diff); changed = diff.length; }
       }
       // letters listed before the tabs were known: a few hundred each run
-      if (gmTabs && catOk && Date.now() - t0 < SYNC_MS) {
+      if (gmTabs && catOk && !quick && Date.now() - t0 < SYNC_MS) {
         try {
           const todo = (await db<{ uid: number }[]>(`mail_index?select=uid&user_id=eq.${user}&folder=eq.inbox&cat=is.null&order=uid.desc&limit=300`)).map((r) => Number(r.uid)).filter((u) => pset.has(u));
           if (todo.length) { const cats = await gmCats(c, todo); await idxUpsert(todo.map((u) => ({ user_id: user, folder, uid: u, cat: cats.get(u) || "primary" } as Partial<IdxRow>))); }
@@ -602,20 +602,21 @@ async function syncFolder(user: string, a: Account, folder: string) {
       lock.release();
     }
     })();
-    (res as Record<string, unknown>).bodies = await bodyPrefetch(c, user, folder, present, a.host === GMAIL_IMAP).catch(() => 0);
+    // the quick check (every 15 s): only the few newest letters are made ready
+    (res as Record<string, unknown>).bodies = await bodyPrefetch(c, user, folder, present, a.host === GMAIL_IMAP, quick).catch(() => 0);
     return res;
   }, true, 60_000);
 }
 // pg_cron, every minute: Inbox for everyone (Sent every 5 min), one after another
-async function runSyncAll() {
+async function runSyncAll(quick = false) {
   const rows = await db<{ user_id: string; email: string; secret: string; reader?: Reader | null }[]>("mail_accounts?select=user_id,email,secret,reader");
   const t0 = Date.now(), done: Record<string, unknown> = {};
-  const sent = new Date().getMinutes() % 5 === 0;
+  const sent = !quick && new Date().getMinutes() % 5 === 0;
   for (const r of rows) {
-    if (Date.now() - t0 > 100_000) break;
+    if (Date.now() - t0 > (quick ? 12_000 : 100_000)) break;
     try {
       const a = readerOf(await accountOf(r));
-      done[r.email] = await syncFolder(r.user_id, a, "inbox");
+      done[r.email] = await syncFolder(r.user_id, a, "inbox", quick);
       if (sent) await syncFolder(r.user_id, a, "sent").catch(() => null);
     } catch (e) {
       done[r.email] = { error: (e as Error).message };
@@ -1360,7 +1361,7 @@ Deno.serve(async (req) => {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       const cb = await req.clone().json().catch(() => ({}));
-      if ((cb as { action?: string }).action === "sync_all") return json(await runSyncAll());
+      if ((cb as { action?: string }).action === "sync_all") return json(await runSyncAll((cb as { quick?: boolean }).quick === true));
       return json(await runAutoReplies());
     }
     const me = await caller(req);

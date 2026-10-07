@@ -407,6 +407,9 @@ async function onMailNew(userId: string, items: { uid?: number; from?: string; s
   let sent = 0;
   for (const it of items.slice(-5)) {
     const uid = Number(it.uid) || 0;
+    // two checks running at once may both see the same new letter: told only once
+    const seen = await db<{ id: string }[]>(`user_notifications?select=id&user_id=eq.${userId}&tag=eq.mail-${uid}&created_at=gt.${new Date(Date.now() - 6 * 3600e3).toISOString()}&limit=1`).catch(() => []);
+    if (seen.length) continue;
     const r = await sendTo([userId], { title: "✉️ " + String(it.from || "Naujas laiškas").slice(0, 80), body: String(it.subject || "").slice(0, 140),
       tag: "mail-" + uid, url: "./?mail=" + uid, kind: "mail" });
     sent += r.sent;
