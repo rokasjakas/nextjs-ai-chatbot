@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-z2P8V/RCuogdMLJtyIeiUQvjRi6qXYaCY7uNpnW2Tzc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-MDzQsyFqbcUgsFvaXceOTQqV6RD1RW5fnwlQ9Tnctuc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -19455,7 +19455,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v381';
+const APP_VER = 'v382';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27863,8 +27863,10 @@ function odRowSuggest(inp, si, ri){
   const items = allItems().filter(it=>it.name && has(normalizeText([it.name, ctItemName(it), it.code, it.folder].join(' '))));
   items.sort((a,b)=>(groups.includes(b.group)?1:0)-(groups.includes(a.group)?1:0) || (normalizeText(ctItemName(a)).startsWith(words[0])?0:1)-(normalizeText(ctItemName(b)).startsWith(words[0])?0:1) || a.name.natCmp(b.name));
   const I = items.slice(0, 8).map(it=>({ kind:'item', it }));
-  const other = CT.list.filter(e=>e.kind==='other' && has(normalizeText(e.name)) && normalizeText(e.name)!==q).sort((a,b)=>(b.offers||[]).length-(a.offers||[]).length)
-    .map(e=>({ kind:'line', l:{ name:e.name, price:e.price, unit:e.unit, n:(e.offers||[]).length, kita:true } }));
+  const apt = /^aptarn/.test(normalizeText(sec.title||''));
+  const other = CT.list.filter(e=>(e.kind==='other' || e.kind==='staff') && has(normalizeText(e.name)) && normalizeText(e.name)!==q)
+    .sort((a,b)=>(apt ? (b.kind==='staff')-(a.kind==='staff') : 0) || (b.offers||[]).length-(a.offers||[]).length)
+    .map(e=>({ kind:'line', l:{ name:e.name, price:e.price, unit:ctRealUnit(e.unit), n:(e.offers||[]).length, kita:e.kind==='staff' ? 'Aptarnavimas' : 'Kita' } }));
   const seen = new Set(other.map(x=>normalizeText(x.l.name)).concat(ce.map(e=>normalizeText(e.name))));
   const L = other.concat(odSugSources().filter(l=>has(normalizeText(l.name)) && normalizeText(l.name)!==q && !seen.has(normalizeText(l.name))).map(l=>({ kind:'line', l }))).slice(0, 5);
   // a section without Sandėlis items (e.g. APTARNAVIMAS): services and earlier lines first
@@ -27880,7 +27882,7 @@ function odRowSuggest(inp, si, ri){
     ? `<button type="button" data-k="${k}"><span class="op-g" style="background:${GROUP_COLOR[x.it.group]||'#666'}22;color:${GROUP_COLOR[x.it.group]||'#999'}">${odE(GROUP_ABBR[x.it.group]||'')}</span><span><b>${odE(ctItemName(x.it))}</b><small>${ctItemName(x.it)!==x.it.name ? 'sandėlyje „'+odE(x.it.name)+'“ · ' : ''}${odE(x.it.folder||'')}${x.it.code?' · '+odE(x.it.code):''} · sandėlyje ${+x.it.qty||0}${pr(ctItemPrice(x.it), ctItemUnit(x.it))}</small></span></button>`
     : x.kind==='group' ? `<button type="button" data-k="${k}"><span><b>${odE(x.e.name)}</b><small>grupė · ${odE(ctGroupLine(x.e))}${ctGroupStock(x.e)!=null ? ' · sandėlyje '+ctQty(ctGroupStock(x.e))+' '+odE(ctUnitN(x.e.unit) || 'vnt.') : ''}${pr(x.e.price, x.e.unit)}</small></span></button>`
     : x.kind==='svc' ? `<button type="button" data-k="${k}"><span><b>${odE(x.e.name)}</b><small>paslauga${x.e.cat ? ' · '+odE(x.e.cat) : ''}${pr(x.e.price, x.e.unit)}</small></span></button>`
-    : `<button type="button" data-k="${k}"><span class="op-g od-sug-l">↺</span><span><b>${odE(x.l.name)}</b><small>${x.l.kita ? 'Kita · ' : ''}naudota pasiūlymuose ${x.l.n}×${pr(x.l.price, x.l.unit)}</small></span></button>`).join('');
+    : `<button type="button" data-k="${k}"><span class="op-g od-sug-l">↺</span><span><b>${odE(x.l.name)}</b><small>${x.l.kita ? odE(x.l.kita)+' · ' : ''}${x.l.n ? 'naudota pasiūlymuose '+x.l.n+'×' : 'įrašyta sąraše'}${pr(x.l.price, x.l.unit)}</small></span></button>`).join('');
   box.querySelectorAll('[data-k]').forEach(b=>b.onmousedown = e=>{ e.preventDefault(); odRowPick(+b.dataset.k); });
 }
 function odRowPick(k){
@@ -28058,6 +28060,8 @@ async function ctDel(id){
 }
 const ctNewId = p=>p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 const ctHasPrice = v=>v!=='' && v!=null;
+// a unit is a word (vnt., val., m2…), not a number
+const ctRealUnit = u=>{ const t = String(u||'').trim(); return /^[\d.,\s]*$/.test(t) ? '' : t; };
 // a Sandėlis item in offers: its name, unit and price (the list → Sandėlis price → the last price used in offers)
 function ctItemName(it){ const e = ctIndex().item[String(it.id)]; return e && e.name ? e.name : it.name; }
 function ctItemUnit(it){ const e = ctIndex().item[String(it.id)]; return e && e.unit ? e.unit : ''; }
@@ -28141,12 +28145,14 @@ async function ctCaptureOther(d, offerId){
   (d.sections||[]).forEach(s=>(s.rows||[]).forEach(r=>{
     const n = String(r.name||'').trim(), k = normalizeText(n);
     if(!n || (r.itemId!=null && r.itemId!=='') || r.groupId || r.svcId || stock.has(k)) return;
-    const have = ix.byName[k]; if(have && have.kind!=='other') return;
-    const id = 'o:'+k.slice(0, 120), was = todo.get(id) || CT.list.find(e=>e.id===id) || {};
+    const kind = /^aptarn/.test(normalizeText(s.title||'')) ? 'staff' : 'other';
+    const have = ix.byName[k]; if(have && have.kind!=='other' && have.kind!=='staff') return;
+    const id = (have ? have.id : (kind==='staff' ? 'a:' : 'o:')+k.slice(0, 120)), was = todo.get(id) || CT.list.find(e=>e.id===id) || {};
     const offers = [...new Set((was.offers||[]).concat(offerId ? [offerId] : []))].slice(-100);
     const price = ctHasPrice(r.price) ? offerNum(r.price) : (was.price ?? '');
     if(was.id && !todo.has(id) && offers.length===(was.offers||[]).length && String(was.price ?? '')===String(price)) return;
-    todo.set(id, { id, kind:'other', name:n, unit:r.unit || was.unit || '', price, offers, last:calISO(new Date()) });
+    const unit = ctRealUnit(r.unit) || ctRealUnit(was.unit);
+    todo.set(id, { id, kind:was.kind || kind, name:n, unit, price, offers, last:calISO(new Date()) });
   }));
   for(const e of todo.values()) await ctPut(e);
 }
@@ -28156,7 +28162,7 @@ function ctRender(){
   const main = document.getElementById('main'), ed = canEdit('offers');
   if(!CT.loaded){ main.innerHTML = '<div class="tabpanel"><div class="card empty-state">Kraunama…</div></div>'; ctLoad().then(()=>{ if(currentTab==='offers' && OFFER.view==='catalog' && !OFFER.cur) ctRender(); }); if(ipCan() && !IP.loaded) ipLoad(); return; }
   const n = k=>CT.list.filter(e=>e.kind===k).length;
-  const tabs = [['items','Įranga', allItems().filter(it=>it.name).length], ['groups','Įrangos grupės', n('group')], ['services','Paslaugos', n('service')], ['other','Kita', n('other')]];
+  const tabs = [['items','Įranga', allItems().filter(it=>it.name).length], ['groups','Įrangos grupės', n('group')], ['services','Paslaugos', n('service')], ['staff','Aptarnavimas', n('staff')], ['other','Kita', n('other')]];
   main.innerHTML = `<div class="tabpanel">
     <div class="card"><div class="row between" style="flex-wrap:wrap;gap:8px;align-items:center;">
       <div class="row" style="gap:8px;align-items:center;"><button class="btn small" id="ctBack">‹ Pasiūlymai</button><h2 style="margin:0;font-size:18px;">Įranga / Paslaugos</h2></div>
@@ -28165,16 +28171,17 @@ function ctRender(){
         items:'Sandėlio daiktai: kaip jie vadinasi pasiūlyme, vienetas ir kaina. Tuščias laukas – imamas sandėlio pavadinimas ir kaina.',
         groups:'Kelių daiktų rinkinys kaip viena pasiūlymo eilutė, pvz. „Infiled P3 ekranas“: 1 m² = 4× Infiled P3 50x50, su savo kaina. Pasiūlyme sandėlio likutis skaičiuojamas pagal sudėtį.',
         services:'Paslaugos ir jų įkainiai – rašant pasiūlymą jos siūlomos kartu su įranga.',
-        other:'Tai, kas pasiūlymuose buvo įrašyta ranka (ne iš sandėlio ir ne iš šio sąrašo). Išsaugoma savaime – kitą kartą bus pasiūlyta rašant.' }[CT.tab]}</p>
+        staff:'Aptarnavimas: darbuotojai ir darbai (pvz. garso operatorius, montažo darbuotojas). Kas pasiūlymo skiltyje APTARNAVIMAS įrašyta ranka, išsaugoma čia savaime. Gali pridėti ir pats.',
+        other:'Tai, kas pasiūlymuose buvo įrašyta ranka (ne iš sandėlio ir ne iš šio sąrašo). Išsaugoma savaime – kitą kartą bus pasiūlyta rašant. Gali pridėti ir pats.' }[CT.tab]}</p>
       <div class="of-search"><input type="search" id="ctQ" placeholder="Ieškoti…" value="${odE(CT.q)}" autocomplete="off">
-        ${ed && CT.tab==='groups' ? '<button class="btn primary small" id="ctAdd">+ Nauja grupė</button>' : ed && CT.tab==='services' ? '<button class="btn primary small" id="ctAdd">+ Nauja paslauga</button>' : ''}</div>
+        ${ed && CT.tab!=='items' ? `<button class="btn primary small" id="ctAdd">${{ groups:'+ Nauja grupė', services:'+ Nauja paslauga', staff:'+ Naujas įrašas', other:'+ Naujas įrašas' }[CT.tab]}</button>` : ''}</div>
     </div>
     ${CT.err ? `<div class="card mail-err">${odE(CT.err)}</div>` : ''}
     <div id="ctBody"></div></div>`;
   document.getElementById('ctBack').onclick = ()=>{ OFFER.view = 'list'; renderOffersTab(); };
   main.querySelectorAll('[data-ctt]').forEach(b=>b.onclick = ()=>{ CT.tab = b.dataset.ctt; CT.q = ''; ctRender(); });
   const q = document.getElementById('ctQ'); q.addEventListener('input', ()=>{ CT.q = q.value; clearTimeout(q._t); q._t = setTimeout(ctBody, 200); });
-  const ad = document.getElementById('ctAdd'); if(ad) ad.onclick = ()=>CT.tab==='groups' ? ctGroupModal(null) : ctServiceAdd();
+  const ad = document.getElementById('ctAdd'); if(ad) ad.onclick = ()=>CT.tab==='groups' ? ctGroupModal(null) : ctEntryAdd({ services:'service', staff:'staff', other:'other' }[CT.tab]);
   ctBody();
 }
 function ctMatch(text){ const w = normalizeText(CT.q).split(/\s+/).filter(Boolean), t = normalizeText(text); return w.every(x=>t.includes(x)); }
@@ -28218,14 +28225,15 @@ function ctBody(){
     box.querySelectorAll('[data-ctgr]').forEach(b=>b.onclick = ()=>ctGroupModal(CT.list.find(e=>e.id===b.dataset.ctgr)));
     return;
   }
-  const kind = CT.tab==='services' ? 'service' : 'other';
-  const list = CT.list.filter(e=>e.kind===kind && ctMatch([e.name, e.cat].join(' '))).sort((a,b)=>kind==='other' ? (b.offers||[]).length - (a.offers||[]).length || a.name.natCmp(b.name) : a.name.natCmp(b.name));
-  box.innerHTML = `<div class="card">${list.length ? `<div class="ct-tbl ${kind==='other'?'ct-oth':'ct-svc'}"><div class="ct-r ct-h"><span>Pavadinimas</span><span>Vnt.</span><span>Kaina, €</span><span>${kind==='other' ? 'Naudota' : 'Skiltis'}</span><span></span></div>
-    ${list.map(e=>`<div class="ct-r" data-cte="${odE(e.id)}"><input data-k="name" value="${odE(e.name||'')}" placeholder="Pavadinimas" ${ro}><input data-k="unit" value="${odE(e.unit||'')}" placeholder="vnt." ${ro}>
+  const kind = { services:'service', staff:'staff', other:'other' }[CT.tab], used = kind!=='service';
+  const list = CT.list.filter(e=>e.kind===kind && ctMatch([e.name, e.cat].join(' '))).sort((a,b)=>used ? (b.offers||[]).length - (a.offers||[]).length || a.name.natCmp(b.name) : a.name.natCmp(b.name));
+  const moves = { other:[['service','→ Paslauga'], ['staff','→ Aptarnavimas']], staff:[['service','→ Paslauga'], ['other','→ Kita']], service:[] }[kind];
+  box.innerHTML = `<div class="card">${list.length ? `<div class="ct-tbl ${used?'ct-oth':'ct-svc'}"><div class="ct-r ct-h"><span>Pavadinimas</span><span>Vnt.</span><span>Kaina, €</span><span>${used ? 'Naudota' : 'Skiltis'}</span><span></span></div>
+    ${list.map(e=>`<div class="ct-r" data-cte="${odE(e.id)}"><input data-k="name" value="${odE(e.name||'')}" placeholder="Pavadinimas" ${ro}><input data-k="unit" value="${odE(ctRealUnit(e.unit))}" placeholder="vnt." ${ro}>
       <input data-k="price" value="${odE(ctHasPrice(e.price) ? offerPlain(offerNum(e.price)) : '')}" placeholder="kaina" inputmode="decimal" ${ro}>
-      ${kind==='other' ? `<span class="ct-used">${(e.offers||[]).length}× <small>${odE(e.last||'')}</small></span>` : ctCatSel(e.cat||'', 'data-k="cat" '+ro)}
-      <span class="ct-act">${ed ? (kind==='other' ? '<button type="button" class="btn small" data-tosvc title="Perkelti į paslaugas">→ Paslauga</button>' : '')+'<button type="button" class="icon-btn" data-ctdel title="Ištrinti">✕</button>' : ''}</span></div>`).join('')}</div>`
-    : `<div class="empty-state">${CT.q ? 'Nieko nerasta.' : kind==='other' ? 'Kol kas nieko – čia atsiras tai, kas pasiūlymuose įrašyta ranka.' : 'Paslaugų dar nėra.'+(ed ? ' Spausk „+ Nauja paslauga“.' : '')}</div>`}</div>`;
+      ${used ? `<span class="ct-used">${(e.offers||[]).length}× <small>${odE(e.last||'')}</small></span>` : ctCatSel(e.cat||'', 'data-k="cat" '+ro)}
+      <span class="ct-act">${ed ? moves.map(([k, l])=>`<button type="button" class="btn small" data-move="${k}" title="Perkelti">${l}</button>`).join('')+'<button type="button" class="icon-btn" data-ctdel title="Ištrinti">✕</button>' : ''}</span></div>`).join('')}</div>`
+    : `<div class="empty-state">${CT.q ? 'Nieko nerasta.' : kind==='other' ? 'Kol kas nieko – čia atsiras tai, kas pasiūlymuose įrašyta ranka.' : kind==='staff' ? 'Kol kas nieko – čia atsiras tai, kas pasiūlymų skiltyje APTARNAVIMAS įrašyta ranka.' : 'Paslaugų dar nėra.'}${ed ? ' Gali pridėti ir pats – „'+(kind==='service' ? '+ Nauja paslauga' : '+ Naujas įrašas')+'“.' : ''}</div>`}</div>`;
   box.querySelectorAll('[data-cte]').forEach(row=>{
     const e = CT.list.find(x=>x.id===row.dataset.cte); if(!e) return;
     row.querySelectorAll('[data-k]').forEach(inp=>inp.addEventListener('change', async ()=>{
@@ -28236,16 +28244,19 @@ function ctBody(){
       if(await ctPut(x)){ Object.assign(e, x); inp.classList.add('ip-ok'); setTimeout(()=>inp.classList.remove('ip-ok'), 900); }
     }));
     const del = row.querySelector('[data-ctdel]'); if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti „'+e.name+'“?'))) return; if(await ctDel(e.id)) ctBody(); };
-    const mv = row.querySelector('[data-tosvc]'); if(mv) mv.onclick = async ()=>{
-      const s = { id:ctNewId('s'), kind:'service', name:e.name, unit:e.unit||'', price:e.price ?? '', cat:'' };
-      if(await ctPut(s) && await ctDel(e.id)){ toast('✓ „'+e.name+'“ – dabar paslauga'); ctBody(); } };
+    row.querySelectorAll('[data-move]').forEach(b=>b.onclick = async ()=>{
+      const to = b.dataset.move, k = normalizeText(e.name).slice(0, 120);
+      const x = Object.assign({}, e, { id:to==='service' ? ctNewId('s') : (to==='staff' ? 'a:' : 'o:')+k, kind:to, unit:ctRealUnit(e.unit) }); if(to==='service'){ x.cat = to==='service' && kind==='staff' ? 'Aptarnavimas' : ''; delete x.offers; delete x.last; }
+      if(await ctPut(x) && await ctDel(e.id)){ toast('✓ „'+e.name+'“ perkelta į '+{ service:'paslaugas', staff:'aptarnavimą', other:'kitą' }[to]); ctRender(); } });
   });
 }
-async function ctServiceAdd(){
-  const name = await uiPrompt('Paslaugos pavadinimas', ''); if(!name || !name.trim()) return;
-  const k = normalizeText(name.trim()), had = CT.list.find(e=>e.kind==='service' && normalizeText(e.name)===k);
-  if(had){ toast('Tokia paslauga jau yra.'); return; }
-  if(await ctPut({ id:ctNewId('s'), kind:'service', name:name.trim(), unit:'', price:'', cat:'' })){ CT.q = ''; ctRender(); setTimeout(()=>{ const r = [...document.querySelectorAll('[data-cte]')].find(x=>x.querySelector('[data-k="name"]').value===name.trim()); if(r){ const p = r.querySelector('[data-k="price"]'); p.focus(); } }, 50); }
+// add an entry by hand: a service, Aptarnavimas or Kita
+async function ctEntryAdd(kind){
+  const name = await uiPrompt(kind==='service' ? 'Paslaugos pavadinimas' : 'Pavadinimas', ''); if(!name || !name.trim()) return;
+  const n = name.trim(), k = normalizeText(n);
+  if(CT.list.some(e=>e.kind===kind && normalizeText(e.name)===k)){ toast('Toks jau yra.'); return; }
+  const e = kind==='service' ? { id:ctNewId('s'), kind, name:n, unit:'', price:'', cat:'' } : { id:(kind==='staff' ? 'a:' : 'o:')+k.slice(0, 120), kind, name:n, unit:'', price:'', offers:[], last:'' };
+  if(await ctPut(e)){ CT.q = ''; ctRender(); setTimeout(()=>{ const r = document.querySelector(`[data-cte="${CSS.escape(e.id)}"]`); if(r) r.querySelector('[data-k="price"]').focus(); }, 50); }
 }
 // a group: the name in the offer, the unit (as written), the price for one unit, what one unit is made of –
 // one or several ways („arba“), each of one or several Sandėlis items
@@ -39456,6 +39467,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 13:41', v:'v382', k:'new', t:'Įranga / Paslaugos: skiltis Aptarnavimas, savi įrašai', f:'Nauja skiltis „Aptarnavimas“: kas pasiūlymo skiltyje APTARNAVIMAS įrašyta ranka (pvz. garso operatorius, montažo darbuotojas), išsaugoma čia; kas kitose skiltyse – „Kita“. Paslaugose, Aptarnavime ir Kita galima pridėti savo įrašų („+ Naujas įrašas“) ir perkelti juos tarp skilčių (→ Paslauga, → Aptarnavimas, → Kita). Pasiūlymo APTARNAVIMO skiltyje rašant pirmiausia siūloma iš Aptarnavimo.' },
   { d:'2026-10-07 13:30', v:'v381', k:'fix', t:'Pasiūlymai: švaresnės eilutės', f:'Po pasiūlymo eilutėmis nebėra papildomos informacijos (grupės sudėtis, variantas, laisvas kiekis, likutis) – kiekiai ir trūkumai matomi šone, „Sandėlio kiekiai“. Grupės pagal nutylėjimą imamos iš bendro kiekio.' },
   { d:'2026-10-07 13:26', v:'v380', k:'fix', t:'Pasiūlymai: be „GR“ ženkliukų', f:'Siūlymuose ir „+ Grupė / paslauga“ sąraše prie grupių ir paslaugų pavadinimų nebėra „GR“ / „PS“ ženkliukų.' },
   { d:'2026-10-07 13:25', v:'v379', k:'fix', t:'Pasiūlymai: aiškus siūlymų langas', f:'Rašant eilutės pavadinimą ar klientą pasiūlyme, siūlymų langas buvo permatomas ir ant balto pasiūlymo nesimatė teksto. Dabar jis vientisas tamsus (šviesioje temoje – baltas), pavadinimai aiškiai matomi.' },
