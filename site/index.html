@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-IJWs/XA1fLGCWoE8BXGAnjuYvbJPkvO86pEdgS8EPqY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QBBKQqSQAtEoVPnHv6jqFhIHynLyCcS+FTs73dsdNdg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -4750,6 +4750,46 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 @media (min-width:761px){ .vl-bg{bottom:16px;left:auto;right:16px;} }
 .vl-loc{font-size:12.5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:20px;} .vl-loc a{color:var(--accent);}
 .ml-tabs{display:flex;gap:2px;overflow-x:auto;padding:0 8px;border-bottom:1px solid var(--border);scrollbar-width:none;flex:0 0 auto;} .ml-tabs::-webkit-scrollbar{display:none;} .ml-tab{all:unset;cursor:pointer;white-space:nowrap;padding:9px 12px;font-size:13px;color:var(--text-dim);border-bottom:2px solid transparent;} .ml-tab:hover{color:var(--text);} .ml-tab.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;} .ml-tabn{font-weight:700;font-size:11px;margin-left:5px;padding:0 6px;border-radius:9px;background:var(--accent);color:#fff;} .ml-tabn:empty{display:none;}
+/* ---------- Paštas kaip Gmail: sąrašas per visą plotį, laiškas vienoje eilutėje; atidarytas laiškas – per visą plotį ---------- */
+.ml-row{gap:10px;}
+.ml-mid{min-width:0;display:flex;align-items:baseline;overflow:hidden;white-space:nowrap;}
+.ml-fromt{overflow:hidden;text-overflow:ellipsis;} .ml-dash{padding:0 6px;color:var(--text-dim);}
+.ml-tabs{padding:0;gap:0;}
+.ml-tab{display:flex;align-items:center;gap:10px;padding:0 16px;height:50px;border-bottom:3px solid transparent;}
+.ml-tab svg.sl{width:19px;height:19px;flex:none;}
+.ml-tab.on svg.sl{color:var(--accent);}
+@media (min-width:901px){
+  .ml{grid-template-columns:240px minmax(0,1fr);}
+  .ml-bar{grid-column:2;}
+  .ml-list,.ml-read{grid-column:2 !important;grid-row:2;border-right:0;border-radius:0 0 var(--ml-r) var(--ml-r);}
+  .ml-v-read .ml-list{display:none;}
+  .ml-v-list .ml-read,.ml-v-folders .ml-read{display:none;}
+  .ml-v-list #mlReply,.ml-v-list #mlReplyAll,.ml-v-list #mlFwd,.ml-v-list #mlDel,.ml-v-list #mlMove,.ml-v-list #mlMark,.ml-v-list .ml-tsep{display:none;}
+  .ml-read .ml-back{display:inline-flex !important;position:absolute;top:16px;left:12px;}
+  .ml-subject{padding-left:50px !important;}
+  .ml-tab{flex:1 1 0;max-width:250px;}
+  .ml-row{align-items:center;height:42px;padding:0 14px 0 8px;}
+  .ml-rav{display:none;}
+  .ml-rstar{opacity:1 !important;margin:0;}
+  .ml-rstar:not(.on) .ml-ri{opacity:.55;}
+  .ml-from{flex:0 0 210px;font-size:14px;}
+  .ml-mid{flex:1;font-size:14px;}
+  .ml-subj{flex:none;max-width:65%;overflow:hidden;text-overflow:ellipsis;font-size:14px;color:var(--text);}
+  .ml-snip{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:14px;color:var(--text-dim);}
+  .ml-date{min-width:52px;text-align:right;}
+  .ml-qa{margin:0;}
+}
+@media (max-width:900px){
+  .ml-row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;grid-template-areas:"av from date" "av mid star";column-gap:12px;row-gap:1px;align-items:start;}
+  .ml-rav{grid-area:av;}
+  .ml-from{grid-area:from;}
+  .ml-date{grid-area:date;}
+  .ml-mid{grid-area:mid;flex-direction:column;align-items:stretch;}
+  .ml-subj,.ml-snip{overflow:hidden;text-overflow:ellipsis;}
+  .ml-dash,.ml-clip,.ml-qa{display:none !important;}
+  .ml-rstar{grid-area:star;margin:0;}
+  .ml-tab{flex:none;padding:0 12px;height:44px;}
+}
 .ms-sigs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;} .ms-sig{display:flex;flex-direction:column;gap:4px;min-width:0;} .ms-sig .mail-sig-preview{width:100%;height:120px;} .ms-sigfor{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;} @media (max-width:640px){ .ms-sigs,.ms-sigfor{grid-template-columns:1fr;} } .ms-flash{animation:msFlash 1.6s ease 2;} @keyframes msFlash{50%{box-shadow:0 0 0 3px var(--accent);}}
 .ml-gmhint{display:flex;align-items:center;gap:8px;margin:8px 10px 0;padding:9px 10px;border-radius:10px;background:rgba(78,155,201,.12);border:1px solid rgba(78,155,201,.35);font-size:13px;} .ml-gmhint span{flex:1;} .ml-gmx{all:unset;cursor:pointer;opacity:.6;padding:0 4px;} .ml-side-foot small{display:block;opacity:.7;font-size:11px;}
 .ms-gm-on{padding:8px 10px;border-radius:8px;background:rgba(80,173,151,.12);border:1px solid rgba(80,173,151,.4);margin-bottom:8px;} .ms-gm-how{font-size:13px;color:var(--text-dim);} .ms-gm-how ol{margin:6px 0 0 18px;padding:0;}
@@ -19558,7 +19598,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v413';
+const APP_VER = 'v414';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25879,7 +25919,7 @@ async function mlDbUnseen(){
   try{ const r = await sb.from('mail_index').select('uid', { count:'exact', head:true }).eq('user_id', me).eq('folder', 'inbox').eq('seen', false); return r.error ? null : (r.count!=null ? r.count : null); }catch(e){ return null; }
 }
 // the tabs over the inbox when letters come through Gmail: work mail + Gmail's own categories
-const ML_TABS = [['primary','Pagrindiniai'],['work','💼 Darbas'],['promotions','Reklamos'],['social','Socialiniai'],['updates','Naujienos'],['forums','Forumai'],['all','Visi']];
+const ML_TABS = [['primary','Pagrindiniai','inbox'],['promotions','Reklamos','tag'],['social','Socialiniai','users'],['updates','Naujienos','bell'],['forums','Forumai','chat2'],['work','Darbas','briefcase'],['all','Visi','allinbox']];
 function mlTab(folder){
   if(folder!=='inbox' || !(MAIL.meta && MAIL.meta.reader) || MAIL.results) return null;
   if(!MAIL.tab){ try{ MAIL.tab = localStorage.getItem('mlTab2:'+teamMe()) || 'primary'; }catch(e){ MAIL.tab = 'primary'; } }
@@ -25894,7 +25934,7 @@ function mlGmailHint(d){
 function mlTabsHtml(){
   const t = mlTab(MAIL.folder); if(!t) return '';
   setTimeout(mlTabCounts, 0);
-  return `<div class="ml-tabs">${ML_TABS.map(([k,l])=>`<button type="button" class="ml-tab ${t===k?'on':''}" data-mltab="${k}">${l}<b class="ml-tabn" data-mltn="${k}"></b></button>`).join('')}</div>`;
+  return `<div class="ml-tabs">${ML_TABS.map(([k,l,ic])=>`<button type="button" class="ml-tab ${t===k?'on':''}" data-mltab="${k}">${slIcon(ic)}<span class="ml-tabl">${l}</span><b class="ml-tabn" data-mltn="${k}"></b></button>`).join('')}</div>`;
 }
 // how many unread letters each tab has (so a new letter is easy to find)
 async function mlTabCounts(){
@@ -25920,16 +25960,16 @@ function mlFromUrl(){
 async function mlDbList(folder, page){
   const st = await mlDbState(folder); if(!st) return null;
   const sb = getSb(), me = teamMe(), from = page*25;
-  let q = sb.from('mail_index').select(ML_COLS, { count:'exact' }).eq('user_id', me).eq('folder', folder);
+  let q = sb.from('mail_index').select(ML_COLS + (MAIL.noSnip ? '' : ',snippet'), { count:'exact' }).eq('user_id', me).eq('folder', folder);
   // Gmail tabs (only when letters are read through Gmail)
   const tab = mlTab(folder);
   if(tab==='work') q = q.contains('to_addr', [{ address:String((MAIL.meta||{}).email||'').toLowerCase() }]);
   else if(tab==='primary') q = q.or('cat.eq.primary,cat.is.null');
   else if(tab && tab!=='all') q = q.eq('cat', tab);
   const r = await q.order('date', { ascending:false, nullsFirst:false }).order('uid', { ascending:false }).range(from, from+24);
-  if(r.error) return null;
+  if(r.error){ if(!MAIL.noSnip && /snippet/i.test(r.error.message||'')){ MAIL.noSnip = true; return mlDbList(folder, page); } return null; }
   const total = r.count!=null ? r.count : (st.total||0);
-  const items = (r.data||[]).map(x=>({ uid:Number(x.uid), folder, date:x.date, subject:x.subject, from:x.from_addr||[], to:x.to_addr||[], seen:x.seen, answered:x.answered, flagged:x.flagged, attachments:x.attachments, size:x.size }));
+  const items = (r.data||[]).map(x=>({ uid:Number(x.uid), folder, date:x.date, subject:x.subject, from:x.from_addr||[], to:x.to_addr||[], seen:x.seen, answered:x.answered, flagged:x.flagged, attachments:x.attachments, size:x.size, snippet:x.snippet||'' }));
   const unseen = folder==='inbox' ? await mlDbUnseen() : undefined;
   return { total, page, pages:Math.max(1, Math.ceil(total/25)), items, unseen: unseen!=null ? unseen : st.unseen, syncedAt:st.synced_at, remaining:st.remaining||0, fromDb:true };
 }
@@ -25965,6 +26005,13 @@ function mlLive(){
     MAIL.live = sb.channel('mail-index-'+me)
       .on('postgres_changes', { event:'*', schema:'public', table:'mail_index', filter:'user_id=eq.'+me }, p=>{
         const n = p.new || {}, f = n.folder || (p.old||{}).folder;
+        if(p.eventType==='UPDATE' && f===MAIL.folder && MAIL.data && MAIL.data.items){
+          const it = MAIL.data.items.find(x=>x.uid===Number(n.uid));
+          if(it && it.seen===n.seen && it.flagged===n.flagged && it.answered===n.answered){
+            if(n.snippet && it.snippet!==n.snippet){ it.snippet = n.snippet; const row = document.querySelector(`#pfMail .ml-row[data-uid="${it.uid}"]`); if(row && !row.querySelector('.ml-snip')) row.querySelector('.ml-mid').insertAdjacentHTML('beforeend', `<span class="ml-snip"><span class="ml-dash">–</span>${esc(String(n.snippet).slice(0,160))}</span>`); }
+            return;
+          }
+        }
         if(p.eventType==='INSERT' && f==='inbox' && !n.seen && n.date && Date.parse(n.date) > MAIL.liveSince - 10*60000) MAIL.liveNew = n;
         MAIL.liveFolders = Object.assign(MAIL.liveFolders||{}, { [f]:1 });
         clearTimeout(MAIL.liveT); MAIL.liveT = setTimeout(mlLiveApply, 500);
@@ -26653,17 +26700,15 @@ function mlRowHtml(m){
   const sel = MAIL.open && MAIL.open.uid===m.uid && MAIL.open.folder===f;
   const who = (sentLike ? m.to : m.from || [])[0] || {};
   const c = MAIL.cache.get(mlKey(f, m.uid));
-  const snip = c ? String(c.text || (c.html ? mailHtmlText(c.html) : '')).replace(/\s+/g,' ').trim().slice(0, 140) : '';
+  const snip = (c ? String(c.text || (c.html ? mailHtmlText(c.html) : '')).replace(/\s+/g,' ').trim() : String(m.snippet||'')).slice(0, 160);
   return `<div class="ml-row ${m.seen?'':'unread'} ${sel?'sel':''}" role="button" tabindex="0" data-uid="${m.uid}" data-folder="${esc(f)}">
     <span class="ml-rav" style="--av:${mlAvHue(who.address||who.name)}">${esc(mlIni(who))}</span>
-    <span class="ml-rbody">
-      <span class="ml-r1"><span class="ml-from">${m.answered ? `<span class="ml-ans" title="Atsakyta">${mlI('reply','ml-ri')}</span>` : ''}${esc(sentLike ? 'Kam: '+mailWho(m.to) : mailWho(m.from))}</span>
-        ${m.attachments ? `<span class="ml-clip" title="Su priedais">${mlI('clip','ml-ri')}</span>` : ''}<span class="ml-date">${esc(mailDate(m.date))}</span>
-        <span class="ml-qa"><span class="ml-q" data-q="seen" title="${m.seen ? 'Pažymėti neskaitytu' : 'Pažymėti skaitytu'}">${mlI(m.seen ? 'mail' : 'mailopen','ml-ri')}</span><span class="ml-q" data-q="del" title="Pašalinti">${mlI('del','ml-ri')}</span></span></span>
-      <span class="ml-r2"><span class="ml-subj">${MAIL.results && f!==MAIL.folder ? `<small class="ml-inf">${esc(mlFolderName(f))}</small> ` : ''}${esc(m.subject||'(be temos)')}</span>
-        <span class="ml-q ml-rstar ${m.flagged?'on':''}" data-q="star" title="${m.flagged ? 'Nuimti žymą' : 'Pažymėti žyma'}">${mlI('star','ml-ri')}</span></span>
-      ${snip ? `<span class="ml-snip">${esc(snip)}</span>` : ''}
-    </span>
+    <span class="ml-q ml-rstar ${m.flagged?'on':''}" data-q="star" title="${m.flagged ? 'Nuimti žymą' : 'Pažymėti žvaigždute'}">${mlI('star','ml-ri')}</span>
+    <span class="ml-from">${m.answered ? `<span class="ml-ans" title="Atsakyta">${mlI('reply','ml-ri')}</span>` : ''}<span class="ml-fromt">${esc(sentLike ? 'Kam: '+mailWho(m.to) : mailWho(m.from))}</span></span>
+    <span class="ml-mid">${MAIL.results && f!==MAIL.folder ? `<small class="ml-inf">${esc(mlFolderName(f))}</small> ` : ''}<span class="ml-subj">${esc(m.subject||'(be temos)')}</span>${snip ? `<span class="ml-snip"><span class="ml-dash">–</span>${esc(snip)}</span>` : ''}</span>
+    ${m.attachments ? `<span class="ml-clip" title="Su priedais">${mlI('clip','ml-ri')}</span>` : ''}
+    <span class="ml-date">${esc(mailDate(m.date))}</span>
+    <span class="ml-qa"><span class="ml-q" data-q="seen" title="${m.seen ? 'Pažymėti neskaitytu' : 'Pažymėti skaitytu'}">${mlI(m.seen ? 'mail' : 'mailopen','ml-ri')}</span><span class="ml-q" data-q="del" title="Pašalinti">${mlI('del','ml-ri')}</span></span>
   </div>`;
 }
 // the quick buttons on a list row work without opening the letter
@@ -40271,6 +40316,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 20:31', v:'v414', k:'new', t:'Paštas kaip Gmail', f:'Pašto puslapis išdėstytas kaip Gmail: kairėje aplankai, dešinėje laiškų sąrašas per visą plotį – kiekvienas laiškas vienoje eilutėje: ☆, siuntėjas, tema – teksto pradžia, 📎, data. Viršuje skirtukai su ikonomis (Pagrindiniai, Reklamos, Socialiniai, Naujienos, Forumai, Darbas, Visi) ir neperskaitytų skaičiumi. Atidarytas laiškas rodomas per visą plotį, ← grįžta į sąrašą. Telefone – kaip Gmail programėlėje. Teksto pradžia sąraše atsiranda atnaujinus „mail“ funkciją (v18) ir paleidus mail_sync_fast.sql.' },
   { d:'2026-10-07 20:24', v:'v413', k:'fix', t:'Paštas: tamsūs laiškai rodomi teisingai', f:'Laiškas, kuris pats sukurtas tamsus (tamsus fonas, baltas tekstas), tamsiame režime nebeapverčiamas – rodomas toks, koks atsiųstas (anksčiau tekstas būdavo baltas ant šviesaus fono). Paprasti ir balti laiškai tamsiame režime tamsinami kaip anksčiau; ⋯ → „Originalios laiško spalvos“ – kaip atsiųsta.' },
   { d:'2026-10-07 20:23', v:'v412', k:'fix', t:'Paštas tikrinamas nuolat', f:'Kai atidarytas Paštas, nauji laiškai tikrinami kas 20 sekundžių ir atsiranda patys – nebereikia iš naujo įeiti į paštą. Kituose puslapiuose naujų laiškų skaičius atnaujinamas kas minutę.' },
   { d:'2026-10-07 20:22', v:'v411', k:'fix', t:'Paštas: atsidaro „Pagrindiniai“, skirtukuose – naujų laiškų skaičius', f:'Gautuosiuose pagal nutylėjimą atsidaro „Pagrindiniai“ (kaip Gmail), o ne „Darbas“ – todėl matosi ir laiškai, atėję į Gmail adresą. Ant kiekvieno skirtuko – neperskaitytų laiškų skaičius. „⟳ Atnaujinti“ iškart patikrina naujus laiškus.' },

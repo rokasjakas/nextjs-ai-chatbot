@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 17;
+const VERSION = 18;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -427,7 +427,24 @@ async function idxGone(user: string, folder: string, uid: number) {
 const BODY_MAX_JSON = 1_500_000, BODY_PER_RUN = 15, BODY_MS = 12_000, BODY_KEEP = 60;
 let bodiesOk = true;     // the table may not exist yet (sql/mail_bodies.sql not run): then nothing is kept
 const bodySkip = new Map<string, number>();   // letters whose text could not be kept: not tried again for a while
+// the first words of a letter, shown in the list after the subject (as Gmail does)
+let snipOk = true;
+export function snippetOf(d: { text?: string; html?: string }): string {
+  let t = String(d?.text || "");
+  if (!t.trim() && d?.html) {
+    t = String(d.html).slice(0, 200_000).replace(/<(style|script|head|title)\b[\s\S]*?<\/\1\s*>/gi, " ").replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ").replace(/&amp;/gi, "&").replace(/&lt;/gi, "<").replace(/&gt;/gi, ">").replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/&[a-z0-9#]+;/gi, " ");
+  }
+  return t.replace(/^>.*$/gm, " ").replace(/\s+/g, " ").trim().slice(0, 200);
+}
+async function snipSave(user: string, folder: string, uid: number, data: unknown) {
+  if (!snipOk) return;
+  const snippet = snippetOf(data as { text?: string; html?: string }); if (!snippet) return;
+  try { await db(`mail_index?user_id=eq.${user}&folder=eq.${enc(folder)}&uid=eq.${uid}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ snippet }) }); }
+  catch (e) { if (/snippet/.test((e as Error).message)) snipOk = false; }
+}
 async function bodySave(user: string, folder: string, uid: number, data: unknown) {
+  snipSave(user, folder, uid, data).catch(() => {});
   if (!bodiesOk) return;
   const json = JSON.stringify(data);
   if (json.length > BODY_MAX_JSON) return;

@@ -9175,3 +9175,7 @@ begin
   $job$, secret));
 end $$;
 select jobname, schedule, active from cron.job where jobname like 'mail-sync%';
+
+-- laiškų sąraše po tema – teksto pradžia (kaip Gmail)
+alter table public.mail_index add column if not exists snippet text;
+notify pgrst, 'reload schema';
