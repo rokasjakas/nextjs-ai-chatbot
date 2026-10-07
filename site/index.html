@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-KcWMzJKIxyZUGgaazZEobUk0AfXAYrcwNTF2mOMHVwg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-6oYtDw3dmRAWn25BW1NWAJCvvI4c8sS+t2lRSVGsAsI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Z4L3DPtaNv3Ufo593lWfG776Awl55i8SQwMcmVtAwhE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-6oYtDw3dmRAWn25BW1NWAJCvvI4c8sS+t2lRSVGsAsI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -19774,7 +19774,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v437';
+const APP_VER = 'v438';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26024,7 +26024,7 @@ async function fnToken(force){
 async function mailCall(body, retried){
   const token = await fnToken(retried);
   let res;
-  const ctl = new AbortController(), slow = ['send','attachment'].includes(body.action);
+  const ctl = new AbortController(), slow = ['send','attachment','inv_inbox_back','inv_inbox_now','inv_inbox_preview','mirror_back'].includes(body.action);
   const timer = setTimeout(()=>ctl.abort(), slow ? 150000 : body.action==='read' ? 45000 : 50000);
   try{ res = await fetch(MAIL_FN(), { method:'POST', headers:{'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+token}, body:JSON.stringify(body), signal:ctl.signal }); }
   catch(e){ throw new Error(e && e.name==='AbortError' ? 'Pašto serveris per ilgai neatsako. Pabandyk dar kartą.' : 'Pašto funkcija nepasiekiama (ar įdiegta „mail“ funkcija?).'); }
@@ -40608,6 +40608,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-08 02:30', v:'v438', k:'fix', t:'Sąskaitų dėžutė: laiškai paimami iš karto', f:'Įmonės pašto serveris (koala) labai lėtai atiduoda atskiras laiško dalis, todėl sąskaitų įkėlimas užstrigdavo. Dabar visas laiškas paimamas vienu kartu ir išskaidomas programoje. Įkėlimo mygtukai laukia ilgiau (iki 2,5 min.).' },
   { d:'2026-10-08 02:00', v:'v437', k:'fix', t:'Sąskaitų dėžutė: matosi, kodėl laiškas neįkeltas', f:'Jei laiško nepavyksta paversti sąskaita, „Sąskaitų dėžutėje“ rodoma to laiško tema ir tiksli priežastis; vieno laiško klaida nebestabdo kitų.' },
   { d:'2026-10-08 01:40', v:'v436', k:'fix', t:'Sąskaitų dėžutė: aiškesnė būsena', f:'„Sąskaitų dėžutė“ rodo, ar šiuo metu tikrinama, ar buvo praleistų užstrigusių laiškų; jei dėžutė užimta, mygtukai nebeparašo klaidinančio „laiškų nėra“.' },
   { d:'2026-10-08 01:20', v:'v435', k:'fix', t:'Sąskaitų dėžutė: laiškai vėl keliami', f:'Sąskaitų dėžutės tikrinimas užstrigdavo: serveris bandydavo perskaityti PDF ir viršydavo leistiną skaičiavimo laiką. Dabar dėžutė tikrinama atskirai (netrukdo paštui), užstrigęs laiškas praleidžiamas, o sumą ir numerį iš PDF nuskaito programa, kai Admin+ atsidaro „Sąskaitas“. Taip pat pataisytas sąskaitos duomenų nuskaitymas iš PDF įkeliant ranka (kartais nesuveikdavo).' },

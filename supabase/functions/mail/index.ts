@@ -37,6 +37,7 @@ import { ImapFlow } from "npm:imapflow@1.0.171";
 import nodemailer from "npm:nodemailer@6.9.16";
 import MailComposer from "npm:nodemailer@6.9.16/lib/mail-composer/index.js";
 import { Buffer } from "node:buffer";
+import PostalMime from "npm:postal-mime@2.4.4";
 import { LOGO_PNG_BASE64 } from "./logo.ts";
 
 const corsHeaders = {
@@ -46,7 +47,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 35;
+const VERSION = 36;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -889,31 +890,31 @@ export function inboxRule(rules: InboxRule[], l: { subject: string; from: { name
 }
 const htmlToText = (h: string) => h.replace(/<(script|style)[\s\S]*?<\/\1>/gi, " ").replace(/<br\s*\/?>|<\/(p|div|tr|li|h\d)>/gi, "\n").replace(/<[^>]+>/g, " ")
   .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/[ \t]+/g, " ").replace(/\n\s*\n+/g, "\n").trim();
-// one letter of the invoice mailbox: the text (for the rules) and the attachments (≤ 15 MB each, ≤ 30 MB in all)
+// one letter of the invoice mailbox: the text (for the rules) and the attachments (≤ 15 MB each).
+// The whole letter comes in ONE fetch and is split here: the company server (koala) gives single parts of a
+// letter very slowly (that is why long letters did not open), while the whole letter comes at once.
 async function inboxLetter(c: ImapFlow, uid: number): Promise<InboxLetter | null> {
-  const msg = await c.fetchOne(String(uid), { uid: true, envelope: true, bodyStructure: true, internalDate: true }, { uid: true });
-  if (!msg || !msg.envelope) return null;
-  const all = leaves(msg.bodyStructure as Node);
-  const isBody = (l: Leaf) => l.disposition !== "attachment" && !l.filename;
-  const htmlPart = all.find((l) => l.type === "text/html" && isBody(l)), textPart = all.find((l) => l.type === "text/plain" && isBody(l));
-  let text = "";
-  if (textPart && textPart.size < 400_000) text = decodeText(await partBuffer(c, uid, textPart.part, 400_000), textPart.charset);
-  else if (htmlPart && htmlPart.size < 1_000_000) text = htmlToText(decodeText(await partBuffer(c, uid, htmlPart.part, 1_000_000), htmlPart.charset));
+  const head = await c.fetchOne(String(uid), { uid: true, size: true, envelope: true, internalDate: true }, { uid: true });
+  if (!head || !head.envelope) return null;
+  const e = head.envelope, f0 = (e.from ?? [])[0] ?? {};
+  const base = { uid, mid: e.messageId || "", date: (e.date ?? head.internalDate) as Date | null, subject: e.subject || "", from: { name: f0.name || "", address: (f0.address || "").toLowerCase() } };
+  if ((head.size || 0) > 40e6) return { ...base, text: "", files: [], skippedFiles: [`visas laiškas (${Math.round((head.size || 0) / 1e6)} MB)`] };
+  const msg = await c.fetchOne(String(uid), { uid: true, source: true }, { uid: true });
+  if (!msg || !msg.source) return null;
+  const p = await PostalMime.parse(new Uint8Array(msg.source as Buffer));
+  const text = (p.text && p.text.trim()) ? p.text : p.html ? htmlToText(p.html) : "";
   const files: InboxLetter["files"] = [], skippedFiles: string[] = [];
-  let budget = 30e6;
-  for (const l of all) {
-    if (l === htmlPart || l === textPart) continue;
-    const named = l.disposition === "attachment" || !!l.filename;
-    if (!named) continue;
-    if (l.cid && l.type.startsWith("image/") && l.size < 60_000 && l.disposition !== "attachment") continue;   // logos inside the letter
-    const name = (l.filename || "priedas." + (l.type.split("/")[1] || "bin")).replace(/[\\/\u0000-\u001f]+/g, "_").slice(-120);
-    if (l.size > 15e6 * 1.37 || l.size > budget * 1.37) { skippedFiles.push(name); continue; }
-    const data = await partBuffer(c, uid, l.part, 16e6);
-    budget -= data.length;
-    files.push({ name, type: l.type || "application/octet-stream", data });
+  for (const at of p.attachments || []) {
+    const data = typeof at.content === "string" ? Buffer.from(at.content, (at as { encoding?: string }).encoding === "base64" ? "base64" : "utf8") : Buffer.from(at.content as ArrayBuffer);
+    const type = (at.mimeType || "application/octet-stream").toLowerCase();
+    // logos and pictures inside the letter's text are not invoice files
+    if (at.contentId && at.disposition !== "attachment" && type.startsWith("image/") && data.length < 60_000) continue;
+    if (!at.filename && at.disposition !== "attachment") continue;
+    const name = (at.filename || "priedas." + (type.split("/")[1] || "bin")).replace(/[\\/\u0000-\u001f]+/g, "_").slice(-120);
+    if (data.length > 15e6) { skippedFiles.push(name); continue; }
+    files.push({ name, type, data });
   }
-  const e = msg.envelope, f = (e.from ?? [])[0] ?? {};
-  return { uid, mid: e.messageId || "", date: (e.date ?? msg.internalDate) as Date | null, subject: e.subject || "", from: { name: f.name || "", address: (f.address || "").toLowerCase() }, text, files, skippedFiles };
+  return { ...base, text, files, skippedFiles };
 }
 // the invoice's number: after „Nr.“ / „No“, or a series code like LVA0390087, ES-0123, AB 0012
 export const numberOf = (t: string) => {
