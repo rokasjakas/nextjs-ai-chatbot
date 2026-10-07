@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-8Cxse/slaki0vPODO/YAsZbMrg+uy2hMamj9tvFJ6MY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-NIULau54uRDlHHBqZsSxH4+5W+/HMdgPla2OYSslhoU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3810,6 +3810,13 @@ html body .combo-pop.od-sug .op-g{filter:brightness(1.35);}
 :root[data-theme="light"] .cg-subpop{background:#fff;border-color:rgb(0 0 0 / .14);} :root[data-theme="light"] .cg-subpop button{color:#16181d;} :root[data-theme="light"] .cg-subpop button:hover,:root[data-theme="light"] .cg-subpop button.on{background:rgb(0 0 0 / .06);}
 .cg-add{position:relative;margin-top:8px;}
 .od-edit .od-blank input{background:transparent !important;border-style:dashed !important;} .od-edit .od-blank .od-n{opacity:.45;}
+.od-edit .od-name{display:flex;align-items:center;gap:3px;min-width:0;} .od-edit .od-name input{flex:1;min-width:0;}
+.od-pos{flex:none;border:0;background:transparent;color:#9aa1ad;font:inherit;font-size:6.5px;padding:1px 3px;border-radius:4px;cursor:pointer;white-space:nowrap;opacity:.55;}
+.od-tr:hover .od-pos,.od-pos:focus{opacity:1;} .od-pos.on{opacity:1;color:#4f46e5;font-weight:600;} .od-pos:hover{background:rgb(0 0 0 / .06);}
+@media (max-width:760px){ .od-edit .od-pos{font-size:12px;opacity:1;padding:4px 6px;} }
+html body .combo-pop.od-posm{background:#17181d !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;color:#f1f2f5 !important;border:1px solid rgb(255 255 255 / .14) !important;}
+html body .combo-pop.od-posm .combo-opt{color:#f1f2f5;} html body .combo-pop.od-posm .combo-opt:hover{background:rgb(255 255 255 / .09);}
+:root[data-theme="light"] body .combo-pop.od-posm{background:#fff !important;color:#16181d !important;border-color:rgb(0 0 0 / .14) !important;} :root[data-theme="light"] body .combo-pop.od-posm .combo-opt{color:#16181d;}
 .od-qw{position:relative;display:block;min-width:0;} .od-qw input{width:100%;padding-right:12px !important;} .od-qw i{position:absolute;right:2px;top:50%;transform:translateY(-50%);font-style:normal;font-size:5.5px;color:#888;pointer-events:none;}
 @media (max-width:760px){ .od-edit .od-tr>.od-qw{grid-column:2 !important;grid-row:2;} .od-edit .od-qw input{padding-right:40px !important;} .od-edit .od-qw i{font-size:12px;right:8px;} } .cg-add input{width:100%;}
 .cg-res{display:flex;flex-direction:column;max-height:220px;overflow-y:auto;} .cg-res button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 8px;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--text);font:inherit;text-align:left;cursor:pointer;}
@@ -19471,7 +19478,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v386';
+const APP_VER = 'v387';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26829,7 +26836,7 @@ function odSection(d, s, si, mode, rows, cont){
       const over = false;   // what is short is shown on the side (Sandėlio kiekiai), not under the rows
       return `<div class="od-tr ${over?'over':''}" data-row="${si}:${i}">
         <span class="od-n">${i+1}</span>
-        <span class="od-name"><input data-f="name" value="${odE(r.name)}" placeholder="Pavadinimas"></span>
+        <span class="od-name"><input data-f="name" value="${odE(r.name)}" placeholder="Pavadinimas"><button type="button" class="od-pos ${r.pos?'on':''}" data-pos title="Pozicija (Scena, Ambient, Aplinka…)">${r.pos ? '('+odE(r.pos)+')' : '+ poz.'}</button></span>
         ${ctUnitShort(r.unit) ? `<span class="od-qw"><input data-f="qty" value="${odE(r.qty)}" inputmode="decimal"><i>${odE(ctUnitShort(r.unit))}</i></span>` : `<input data-f="qty" value="${odE(r.qty)}" inputmode="decimal">`}
         <input data-f="price" value="${odE(r.price)}" inputmode="decimal">
         <input data-f="coef" value="${odE(r.coef)}" inputmode="decimal">
@@ -26837,7 +26844,7 @@ function odSection(d, s, si, mode, rows, cont){
         <span class="od-ract"><button data-rup title="Aukštyn">↑</button><button data-rdown title="Žemyn">↓</button><button data-rdel title="Ištrinti">✕</button></span>
       </div>`;
     }
-    const nm = odE(r.name) + (odRowDesc(r) ? `<small class="od-desc">${odE(odRowDesc(r))}</small>` : ''), qt = odE(offerPlain(offerNum(r.qty)) + (ctUnitN(r.unit) ? ' '+ctUnitN(r.unit) : ''));
+    const nm = odE(r.name + odPosTxt(r)) + (odRowDesc(r) ? `<small class="od-desc">${odE(odRowDesc(r))}</small>` : ''), qt = odE(offerPlain(offerNum(r.qty)) + (ctUnitN(r.unit) ? ' '+ctUnitN(r.unit) : ''));
     if(np) return `<div class="od-tr np"><span>${i+1}</span><span class="od-name">${nm}</span><span>${qt}</span></div>`;
     return `<div class="od-tr"><span>${i+1}</span><span class="od-name">${nm}</span><span>${qt}</span><span>${odE(offerPlain(offerNum(r.price)))}</span><span>${odE(r.coef===''||r.coef==null?'1':offerPlain(offerNum(r.coef)))}</span><span class="od-sum">${offerMoney(offerRowSum(r))}</span></div>`;
   }).join('');
@@ -27805,6 +27812,7 @@ function offerEditorBind(){
     rowEl.querySelectorAll('[data-f]').forEach(inp=>inp.addEventListener('input', ()=>{ r[inp.dataset.f] = inp.value; if(inp.dataset.f==='name'){ const ln = r.ln || (r.itemId ? (getItem(r.itemId)||{}).name : '');
         if((r.itemId || r.groupId || r.svcId) && normalizeText(inp.value)!==normalizeText(ln||'')){ r.itemId = null; ['groupId','svcId','parts','sp','ln'].forEach(k=>delete r[k]); }
         odRowSuggest(inp, si, i); } offerTouch(false); }));
+    const pb = rowEl.querySelector('[data-pos]'); if(pb) pb.onclick = e=>{ e.preventDefault(); odPosPick(pb, si, i); };
     const vr = rowEl.querySelector('[data-var]');
     if(vr) vr.onchange = ()=>{ const g = CT.list.find(e=>e.id===r.groupId), vars = r.vars || (g ? ctVariants(g).map(v=>(v.parts||[]).map(p=>[String(p.itemId), offerNum(p.qty)])).filter(p=>p.length) : []);
       if(vr.value==='all'){ r.vi = 'all'; r.vars = vars; } else { const p = vars[+vr.value]; if(!p) return; r.vi = +vr.value; r.parts = p; }
@@ -28101,6 +28109,27 @@ function ctGroupLine(e){ const t = ctVarsText(e); return t ? ctUnitOne(e.unit)+'
 // the unit is written as it is shown: „m²“, „1m2“, „komplektas“; „1 …“ = one unit
 const ctUnitOne = u=>!u ? '1 vnt.' : /^1(?![\d.,])/.test(String(u).trim()) ? String(u).trim() : '1 '+u;
 const ctUnitN = u=>String(u||'').trim().replace(/^1(?![\d.,])\s*/, '').replace(/^kompl\S*$/i, 'kompl.');
+// a row's position in the venue – „(Scena)“, „(Ambient)“, „(Aplinka)“ or one written by hand (kept for everybody)
+const OFFER_POS = ['Scena', 'Ambient', 'Aplinka'];
+function offerPosList(){ const own = CT.list.filter(e=>e.kind==='pos' && e.name).map(e=>e.name); return [...new Set(OFFER_POS.concat(own.sort((a,b)=>a.natCmp(b))))]; }
+// rows with the same position stand together (where the first of them is); rows without one stay where they are
+function odGroupByPos(sec){
+  const out = [], at = new Map();
+  sec.rows.forEach(r=>{ const k = r.pos ? normalizeText(r.pos) : ''; if(!k){ out.push(r); return; }
+    if(at.has(k)){ const g = at.get(k); g.push(r); } else { const g = [r]; at.set(k, g); out.push(g); } });
+  sec.rows = out.flatMap(x=>Array.isArray(x) ? x : [x]);
+}
+const odPosTxt = r=>r.pos ? ' ('+r.pos+')' : '';
+async function odPosPick(anchor, si, i){
+  const d = OFFER.cur.data, sec = d.sections[si], r = sec.rows[i]; if(!r) return;
+  const set = p=>{ if(p) r.pos = p; else delete r.pos; odGroupByPos(sec); offerTouch(true); };
+  evPopMenu(anchor, offerPosList().map(p=>({ html:`${r.pos===p ? '✓ ' : ''}${odE(p)}`, fn:()=>set(p) })).concat([{ sep:true },
+    { html:'✎ Įrašyti savo…', fn:async ()=>{ const p = await uiPrompt('Pozicija (pvz. Fojė, Lauko scena)', r.pos||''); if(p==null) return; const v = p.trim(); if(!v){ set(''); return; }
+      const have = offerPosList().find(x=>normalizeText(x)===normalizeText(v));
+      if(!have && canEdit('offers')) ctPut({ id:'p:'+normalizeText(v).slice(0, 80), kind:'pos', name:v });
+      set(have || v); } }]).concat(r.pos ? [{ html:'✕ Be pozicijos', fn:()=>set('') }] : []));
+  const m = document.getElementById('xgPop'); if(m) m.classList.add('od-posm');
+}
 // the line under a row's name in the offer: what the group is made of (when it is shown)
 // how many group units one way of making it gives from the stock (freeOf – how many of an item there is)
 function ctVarCap(parts, freeOf){ const ps = (parts||[]).map(p=>Array.isArray(p) ? p : [p.itemId, p.qty]).filter(([, k])=>offerNum(k) > 0);
@@ -28432,7 +28461,7 @@ function offerErrorModal(what, msg){
 async function offerUpsert(status){
   const o = OFFER.cur, d = o.data, me = ACCESS.profile || {};
   if(!d.createdByName) d.createdByName = offerMeName();
-  d.sections.forEach(s=>s.rows = s.rows.filter(r=>String(r.name||'').trim() || offerNum(r.price) || r.itemId));
+  d.sections.forEach(s=>{ s.rows = s.rows.filter(r=>String(r.name||'').trim() || offerNum(r.price) || r.itemId); odGroupByPos(s); });
   const row = { title:String(d.project||'').trim(), client:String(d.client||'').trim(), offer_date:d.date||null, status, data:d,
     total:Math.round(offerTotals(d).gross*100)/100, updated_by:offerMeName(), updated_at:new Date().toISOString(), job_id:o.job_id||null };
   const sb = getSb();
@@ -28452,7 +28481,7 @@ async function offerSave(status, opt){
   const btn = document.getElementById(finalNow ? 'oeFinal' : opt.version ? 'oeVer' : 'oeBack'); if(btn){ btn.disabled = true; btn.dataset.t = btn.textContent; btn.textContent = finalNow ? 'Kuriamas projektas…' : 'Saugoma…'; }
   try{
     let v = null;
-    d.sections.forEach(s=>s.rows = s.rows.filter(r=>String(r.name||'').trim() || offerNum(r.price) || r.itemId));
+    d.sections.forEach(s=>{ s.rows = s.rows.filter(r=>String(r.name||'').trim() || offerNum(r.price) || r.itemId); odGroupByPos(s); });
     if(opt.version) v = ofAddVersion(d);
     if(finalNow){ if(ofVersions(d).length && !v) v = ofAddVersion(d); d.finalVersion = v ? v.n : null; }
     await offerUpsert(status);
@@ -39518,6 +39547,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 14:25', v:'v387', k:'new', t:'Pasiūlymai: daiktų pozicija (Scena, Ambient, Aplinka…)', f:'Prie kiekvienos pasiūlymo eilutės – „+ poz.“: pasirenki poziciją (Scena, Ambient, Aplinka) arba įrašai savo – ji išsaugoma ir kitą kartą bus sąraše visiems. Pasiūlyme ir PDF rodoma skliausteliuose po pavadinimo, pvz. „Monitorius (Scena)“. Daiktai su ta pačia pozicija skiltyje savaime sustatomi vienas šalia kito.' },
   { d:'2026-10-07 14:21', v:'v386', k:'new', t:'Vienetas „m“ (metrai)', f:'Įrangos grupėms ir sandėlio daiktams prie vienetų vnt. / m2 / kompl. pridėtas ir „m“ – metrai. Pasiūlyme rodoma prie kiekio, pvz. „12 m“.' },
   { d:'2026-10-07 14:02', v:'v385', k:'fix', t:'Įrangos grupės: pogrupių pasirinkimas', f:'Pogrupio laukas grupės lange dabar visada parodo sąrašą – spustelėjus, ▾ ar pradėjus rašyti: pirma šios grupės pogrupiai, po jais – kitų grupių (pasirinkus tokį, grupė pakeičiama). Galima rinktis rodyklėmis ir Enter arba įrašyti naują.' },
   { d:'2026-10-07 13:57', v:'v384', k:'new', t:'Įrangos grupės: pogrupiai suskleidžiami', f:'Įrangos grupių pogrupiai iš pradžių suskleisti – spustelk pogrupio pavadinimą, kad išskleistum ar vėl suskleistum. Ieškant atitinkantys pogrupiai išskleidžiami savaime.' },
