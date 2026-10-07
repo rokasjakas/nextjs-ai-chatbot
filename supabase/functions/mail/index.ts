@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 18;
+const VERSION = 20;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -390,7 +390,7 @@ async function list(a: Account, folder: string, page: number) {
 // the older ones follow in the next runs (SYNC_BATCH per run).
 const SYNC_BATCH = 500, SYNC_MS = 25_000;
 type SyncState = { uidvalidity: string | null; modseq: string | null; synced_at?: string };
-type IdxRow = { user_id: string; folder: string; uid: number; date: string | null; subject: string; from_addr: unknown; to_addr: unknown; seen: boolean; answered: boolean; flagged: boolean; attachments: boolean; size: number | null; updated_at: string };
+type IdxRow = { user_id: string; folder: string; uid: number; date: string | null; subject: string; from_addr: unknown; to_addr: unknown; seen: boolean; answered: boolean; flagged: boolean; attachments: boolean; size: number | null; updated_at: string; acct?: string; cat?: string; snippet?: string };
 const enc = encodeURIComponent;
 async function dbAllUids(user: string, folder: string): Promise<number[]> {
   const out: number[] = [];
@@ -490,9 +490,17 @@ async function bodyPrefetch(c: ImapFlow, user: string, folder: string, present: 
   }
   return done;
 }
-function idxRow(user: string, folder: string, m: { uid: number; envelope?: { date?: Date; subject?: string; from?: Addr[]; to?: Addr[] }; internalDate?: Date | string; flags?: Set<string>; bodyStructure?: unknown; size?: number }): Partial<IdxRow> {
+// work or personal: a letter to (or, in Sent / Drafts, from) a …@eventsolutions.lt address is a work letter
+let acctOk = true;     // mail_index.acct may not exist yet (sql/mail_acct.sql not run)
+function acctOf(folder: string, e?: { from?: Addr[]; to?: Addr[]; cc?: Addr[] }): string {
+  const dom = "@" + (Deno.env.get("MAIL_WORK_DOMAIN") || "eventsolutions.lt").toLowerCase();
+  const list = folder === "sent" || folder === "drafts" ? (e?.from ?? []) : [...(e?.to ?? []), ...(e?.cc ?? [])];
+  return list.some((x) => String(x.address || "").toLowerCase().endsWith(dom)) ? "work" : "personal";
+}
+function idxRow(user: string, folder: string, m: { uid: number; envelope?: { date?: Date; subject?: string; from?: Addr[]; to?: Addr[]; cc?: Addr[] }; internalDate?: Date | string; flags?: Set<string>; bodyStructure?: unknown; size?: number }): Partial<IdxRow> {
   const d = m.envelope?.date ?? (m.internalDate ? new Date(m.internalDate as string) : null);
   return {
+    ...(acctOk ? { acct: acctOf(folder, m.envelope) } : {}),
     user_id: user, folder, uid: m.uid,
     date: d && !isNaN(+d) ? new Date(d).toISOString() : null,
     subject: (m.envelope?.subject || "").slice(0, 998),
@@ -525,8 +533,14 @@ async function notifyNew(user: string, items: { uid: number; from: string; subje
     body: JSON.stringify({ mode: "mail-new", user_id: user, items: items.slice(-5) }),
   }).catch((e) => console.error("mail notify", e?.message));
 }
+// „Kokius laiškus rodyti“ (Nustatymai, kept in the profile): with Gmail only the work or only the personal letters are kept
+async function acctPref(user: string): Promise<string> {
+  try { const [p] = await db<{ notify_prefs: { mlAcct?: string } | null }[]>(`profiles?select=notify_prefs&id=eq.${user}`); const v = p?.notify_prefs?.mlAcct; return v === "work" || v === "personal" ? v : "all"; }
+  catch { return "all"; }
+}
 async function syncFolder(user: string, a: Account, folder: string, quick = false) {
   const t0 = Date.now();
+  const only = a.host === GMAIL_IMAP ? await acctPref(user) : "all";
   const gmTabs = a.host === GMAIL_IMAP && folder === "inbox" && catOk;
   const [st] = await db<SyncState[]>(`mail_sync?select=uidvalidity,modseq,synced_at&user_id=eq.${user}&folder=eq.${enc(folder)}`);
   return await withImap(a, async (c) => {
@@ -543,6 +557,13 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
       } else known = await dbAllUids(user, folder);
       // a kept connection may still hold the folder's old state: ask the server for the current one
       present = ((await c.search({ all: true }, { uid: true })) || []) as number[];
+      if (only !== "all") {
+        // the work letters: to / copy (in Sent: from) …@eventsolutions.lt – asked from Gmail, not read one by one
+        const dom = (Deno.env.get("MAIL_WORK_DOMAIN") || "eventsolutions.lt").toLowerCase();
+        const q = folder === "sent" || folder === "drafts" ? { from: dom } : { or: [{ to: dom }, { cc: dom }] };
+        const work = new Set(((await c.search(q as never, { uid: true })) || []) as number[]);
+        present = present.filter((u) => only === "work" ? work.has(u) : !work.has(u));
+      }
       const now = await c.status(path, { highestModseq: true }).catch(() => null) as { highestModseq?: bigint } | null;
       const modseq = now?.highestModseq ?? mb.highestModseq;
       const pset = new Set(present), kset = new Set(known);
@@ -576,7 +597,12 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
         }
         if (gmTabs) { const cats = await gmCats(c, rows.map((r) => r.uid!)); rows.forEach((r) => { (r as Record<string, unknown>).cat = cats.get(r.uid!) || "primary"; }); }
         try { await idxUpsert(rows); }
-        catch (e) { if (!gmTabs || !/cat/.test((e as Error).message)) throw e; catOk = false; rows.forEach((r) => { delete (r as Record<string, unknown>).cat; }); await idxUpsert(rows); }
+        catch (e) {
+          const msg = (e as Error).message;
+          if (/acct/.test(msg)) acctOk = false; else if (gmTabs && /cat/.test(msg)) catOk = false; else throw e;
+          rows.forEach((r) => { if (!acctOk) delete (r as Record<string, unknown>).acct; if (!catOk) delete (r as Record<string, unknown>).cat; });
+          await idxUpsert(rows);
+        }
         added += rows.length;
       }
       // read / answered / star changes of the letters already listed
@@ -600,6 +626,20 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
         const diff = [...flagRows.values()].filter((r) => { const w = was.get(r.uid!); return !w || w.seen !== r.seen || w.answered !== r.answered || w.flagged !== r.flagged; });
         if (diff.length) { await idxUpsert(diff); changed = diff.length; }
       }
+      // letters listed before „work / personal“ was kept: up to a thousand each run (only the addresses are read)
+      if (acctOk && !quick && Date.now() - t0 < SYNC_MS) {
+        try {
+          const todo = (await db<{ uid: number }[]>(`mail_index?select=uid&user_id=eq.${user}&folder=eq.${enc(folder)}&acct=is.null&order=uid.desc&limit=1000`)).map((r) => Number(r.uid)).filter((u) => pset.has(u));
+          const rows: Partial<IdxRow>[] = [];
+          for (let i = 0; i < todo.length && Date.now() - t0 < SYNC_MS; i += 250) {
+            for await (const m of c.fetch(todo.slice(i, i + 250).join(","), { uid: true, envelope: true }, { uid: true })) {
+              const mm = m as { uid: number; envelope?: { from?: Addr[]; to?: Addr[]; cc?: Addr[] } };
+              rows.push({ user_id: user, folder, uid: mm.uid, acct: acctOf(folder, mm.envelope) } as Partial<IdxRow>);
+            }
+          }
+          if (rows.length) await idxUpsert(rows);
+        } catch (e) { if (/acct/.test((e as Error).message)) acctOk = false; else console.error("acct backfill", (e as Error).message); }
+      }
       // letters listed before the tabs were known: a few hundred each run
       if (gmTabs && catOk && !quick && Date.now() - t0 < SYNC_MS) {
         try {
@@ -608,7 +648,7 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
         } catch (e) { if (/cat/.test((e as Error).message)) catOk = false; else console.error("gmail tabs", (e as Error).message); }
       }
       if (news.length) await notifyNew(user, news);
-      const unseen = ((await c.search({ seen: false }, { uid: true })) || []).length;
+      const unseen = (((await c.search({ seen: false }, { uid: true })) || []) as number[]).filter((u) => pset.has(u)).length;
       const remaining = fresh.length - added;
       await db("mail_sync?on_conflict=user_id,folder", {
         method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
