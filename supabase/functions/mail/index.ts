@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 32;
+const VERSION = 33;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -1024,6 +1024,7 @@ async function runInvoiceInbox(force = false, sinceDays = 0, max = 8) {
     console.error("invoice inbox", err);
   }
   st.total = (st.total ?? 0) + n;
+  if (sinceDays > 0 && !err) delete st.failed;   // the earlier days were imported: the skipped letters are in now
   st.last = { at: new Date().toISOString(), n, ...(skipped ? { skipped } : {}), ...(err ? { err: err.slice(0, 300) } : {}), ...(items.length ? { items } : (st.last?.items ? { items: st.last.items } : {})) };
   await db("invoice_inbox?id=eq.1", { method: "PATCH", body: JSON.stringify({ state: st }) });
   return { imported: n, skipped, more, err: err || undefined };
