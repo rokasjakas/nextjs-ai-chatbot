@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wQ8bGum+lboNJty2buLBbu2kui4GrpFMrgiHk9gOwZg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-h6wc3OV5ueo8H9aLw0N9x5uOJYtZ8GXm4v3ILv3oPJk=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3769,6 +3769,7 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .ct-n{display:flex;gap:8px;align-items:center;min-width:0;} .ct-n .op-g{flex:0 0 30px;} .ct-n>span:last-child{display:flex;flex-direction:column;min-width:0;}
 .ct-n b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .ct-n small,.ct-used small{color:var(--text-dim);font-size:11.5px;}
 .ct-used{display:flex;flex-direction:column;font-weight:700;} .ct-act{display:flex;gap:4px;justify-content:flex-end;align-items:center;}
+.ct-gsec{margin-bottom:14px;} .ct-gsec-h{margin:0 0 8px;display:flex;gap:8px;align-items:baseline;} .ct-gsec-h .muted{font-weight:600;}
 .ct-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
 .ct-g{display:flex;flex-direction:column;gap:6px;text-align:left;cursor:pointer;font:inherit;color:var(--text);margin:0;}
 .ct-g:hover{border-color:var(--accent);} .ct-g small{color:var(--text-dim);font-size:12.5px;line-height:1.4;}
@@ -19438,7 +19439,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v375';
+const APP_VER = 'v376';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27830,7 +27831,7 @@ function odRowSuggest(inp, si, ri){
   if(q.length < 2){ if(box) box.remove(); return; }
   const words = q.split(/\s+/), has = t=>words.every(w=>t.includes(w));
   const groups = offerSecGroups(sec.title), st = normalizeText(sec.title||'');
-  const catHit = e=>!!e.cat && !!st && normalizeText(e.cat).slice(0, 4)===st.slice(0, 4);
+  const catHit = e=>ctCatHit(e, sec.title);
   // Įranga / Paslaugos: groups and services (this section's first), Sandėlis items, what was written by hand before
   const ce = CT.list.filter(e=>(e.kind==='group' || e.kind==='service') && has(normalizeText([e.name, e.cat].join(' '))))
     .sort((a,b)=>(catHit(b)?1:0)-(catHit(a)?1:0) || (normalizeText(a.name).startsWith(words[0])?0:1)-(normalizeText(b.name).startsWith(words[0])?0:1) || a.name.natCmp(b.name));
@@ -27995,6 +27996,14 @@ function offerPickItems(si){
    ============================================================ */
 const CT = { list:[], loaded:false, err:'', tab:'items', q:'', grp:'' };
 const CT_CATS = ['Garsas','Šviesos','Vaizdas','Konstrukcijos','Elektrifikacija','Gretutinės paslaugos','Aptarnavimas','Kita'];
+// equipment groups are sorted into Audio / Video / Light / Priedai / Kita (older ones: Garsas → Audio, Vaizdas → Video, Šviesos → Light)
+const CT_GCATS = ['Audio','Video','Light','Priedai','Kita'];
+function ctGCat(e){ const t = normalizeText((e && e.cat) || '');
+  if(/^(audio|gars)/.test(t)) return 'Audio'; if(/^(video|vaizd)/.test(t)) return 'Video'; if(/^(light|svies|apsviet)/.test(t)) return 'Light'; if(/^pried/.test(t)) return 'Priedai'; return 'Kita'; }
+// does a group / a service belong to this offer section (by the section's title)?
+function ctCatHit(e, title){ const st = normalizeText(title||''); if(!e || !e.cat || !st) return false;
+  if(e.kind==='group'){ const g = ctGCat(e), sg = offerSecGroups(title); return (g==='Audio' && sg.includes('garsas')) || (g==='Video' && sg.includes('video')) || (g==='Light' && sg.includes('apsvietimas')); }
+  return normalizeText(e.cat).slice(0, 4)===st.slice(0, 4); }
 const ctErr = m=>/does not exist|schema cache/i.test(m) ? 'Įrangos / paslaugų lentelės dar nėra – Supabase paleisk offer_catalog.sql.' : /row-level|permission/i.test(m) ? 'tavo lygiui neleista keisti' : m;
 async function ctLoad(force){
   if(CT.loaded && !force) return;
@@ -28132,12 +28141,17 @@ function ctBody(){
     return;
   }
   if(CT.tab==='groups'){
-    const list = CT.list.filter(e=>e.kind==='group' && ctMatch([e.name, e.cat, ctVarsText(e)].join(' '))).sort((a,b)=>a.name.natCmp(b.name));
-    box.innerHTML = list.length ? `<div class="ct-groups">${list.map(e=>`<button type="button" class="card ct-g" data-ctgr="${odE(e.id)}">
-        <span class="ct-g-h"><b>${odE(e.name)}</b><span class="ct-price">${money(e.price)}${e.unit ? ' / '+odE(e.unit) : ''}</span></span>
-        <small>${e.cat ? '<span class="pill">'+odE(e.cat)+'</span> ' : ''}${odE(ctGroupLine(e))}</small>
-        ${e.showParts ? '<small class="muted">Pasiūlyme rodoma ir sudėtis</small>' : ''}</button>`).join('')}</div>`
-      : `<div class="card empty-state">${CT.q ? 'Nieko nerasta.' : 'Grupių dar nėra.'+(ed ? ' Spausk „+ Nauja grupė“.' : '')}</div>`;
+    const all = CT.list.filter(e=>e.kind==='group' && ctMatch([e.name, e.cat, ctVarsText(e)].join(' '))).sort((a,b)=>a.name.natCmp(b.name));
+    const gc = CT.gcat && CT_GCATS.includes(CT.gcat) ? CT.gcat : '', cnt = c=>all.filter(e=>ctGCat(e)===c).length;
+    const card = e=>`<button type="button" class="card ct-g" data-ctgr="${odE(e.id)}">
+        <span class="ct-g-h"><b>${odE(e.name)}</b><span class="ct-price">${money(e.price)}${e.unit ? ' / '+odE(ctUnitN(e.unit) || e.unit) : ''}</span></span>
+        <small>${odE(ctGroupLine(e))}</small>
+        ${e.showParts ? '<small class="muted">Pasiūlyme rodoma ir sudėtis</small>' : ''}</button>`;
+    box.innerHTML = `<div class="chipbar" style="margin:0 0 10px;"><button class="chip ${!gc?'active':''}" data-gcat="">Visos <span class="count-badge">${all.length}</span></button>${CT_GCATS.map(c=>`<button class="chip ${gc===c?'active':''}" data-gcat="${c}">${c} <span class="count-badge">${cnt(c)}</span></button>`).join('')}</div>`
+      + (all.length ? CT_GCATS.filter(c=>(!gc || gc===c) && cnt(c)).map(c=>`<div class="ct-gsec"><div class="fb-sec ct-gsec-h">${c} <span class="muted">${cnt(c)}</span></div><div class="ct-groups">${all.filter(e=>ctGCat(e)===c).map(card).join('')}</div></div>`).join('')
+        || `<div class="card empty-state">Šioje grupėje nieko nėra.</div>`
+      : `<div class="card empty-state">${CT.q ? 'Nieko nerasta.' : 'Grupių dar nėra.'+(ed ? ' Spausk „+ Nauja grupė“.' : '')}</div>`);
+    box.querySelectorAll('[data-gcat]').forEach(b=>b.onclick = ()=>{ CT.gcat = b.dataset.gcat; ctBody(); });
     box.querySelectorAll('[data-ctgr]').forEach(b=>b.onclick = ()=>ctGroupModal(CT.list.find(e=>e.id===b.dataset.ctgr)));
     return;
   }
@@ -28173,14 +28187,14 @@ async function ctServiceAdd(){
 // a group: the name in the offer, the unit (as written), the price for one unit, what one unit is made of –
 // one or several ways („arba“), each of one or several Sandėlis items
 function ctGroupModal(g){
-  const ed = canEdit('offers'), x = g ? JSON.parse(JSON.stringify(g)) : { id:null, kind:'group', name:'', unit:'', price:'', cat:'', showParts:false };
+  const ed = canEdit('offers'), x = g ? JSON.parse(JSON.stringify(g)) : { id:null, kind:'group', name:'', unit:'', price:'', cat:CT.gcat || 'Kita', showParts:false };
   x.variants = JSON.parse(JSON.stringify(ctVariants(x))).map(v=>({ parts:v.parts||[] }));
   openModal(`<div class="row between" style="align-items:center;margin-bottom:10px;"><h3 style="margin:0;">${g ? 'Įrangos grupė' : 'Nauja įrangos grupė'}</h3><button class="icon-btn" id="cgX" style="font-size:20px;" aria-label="Uždaryti">✕</button></div>
     <label class="field">Pavadinimas pasiūlyme<input id="cgName" value="${odE(x.name)}" placeholder="pvz. Infiled P3 LED ekranas"></label>
     <div class="row" style="gap:8px;flex-wrap:wrap;">
       <label class="field" style="flex:1 1 120px;">Vienetas – kaip rašyti pasiūlyme<input id="cgUnit" value="${odE(x.unit)}" placeholder="pvz. 1m2, 1m3, komplektas"></label>
       <label class="field" style="flex:1 1 110px;">Kaina už vienetą, €<input id="cgPrice" value="${odE(ctHasPrice(x.price) ? offerPlain(offerNum(x.price)) : '')}" inputmode="decimal"></label>
-      <label class="field" style="flex:1 1 130px;">Skiltis${ctCatSel(x.cat||'', 'id="cgCat"')}</label></div>
+      <label class="field" style="flex:1 1 130px;">Grupė<select id="cgCat">${CT_GCATS.map(c=>`<option ${ctGCat(x)===c?'selected':''}>${c}</option>`).join('')}</select></label></div>
     <label class="row" style="gap:8px;align-items:center;margin:4px 0 10px;"><input type="checkbox" id="cgShow" ${x.showParts?'checked':''}> Pasiūlyme po pavadinimu rodyti sudėtį</label>
     <div class="fb-sec" style="margin:0 0 6px;">Sudėtis – <span id="cgU1">${odE(ctUnitOne(x.unit))}</span> sudaro:</div>
     <div id="cgVars"></div>
@@ -28243,7 +28257,7 @@ function offerPickCatalog(si){
     <div class="op-list" id="pcList"></div>
     <div class="row" style="justify-content:space-between;align-items:center;margin-top:10px;"><span class="section-sub" style="margin:0;">Sąrašą tvarkai skiltyje „Įranga / Paslaugos“.</span><button class="btn primary" id="pcDone">Baigta</button></div>`);
   document.getElementById('modalRoot').classList.add('cal-modal', 'op-modal');
-  const st = normalizeText(sec.title||''), catHit = e=>!!e.cat && !!st && normalizeText(e.cat).slice(0, 4)===st.slice(0, 4);
+  const catHit = e=>ctCatHit(e, sec.title);
   const draw = ()=>{
     const w = normalizeText(document.getElementById('pcQ').value).split(/\s+/).filter(Boolean);
     const list = CT.list.filter(e=>(e.kind==='group' || e.kind==='service') && w.every(t=>normalizeText([e.name, e.cat].join(' ')).includes(t)))
@@ -39374,6 +39388,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 13:12', v:'v376', k:'new', t:'Įrangos grupės pagal Audio / Video / Light / Priedai / Kita', f:'Įrangos grupių sąrašas suskirstytas į Audio, Video, Light, Priedai ir Kita, viršuje – filtrai su kiekiais. Grupės lange pasirenki, kuriai priklauso; anksčiau pažymėtos Garsas / Vaizdas / Šviesos savaime tapo Audio / Video / Light. Pasiūlyme rašant GARSO skiltyje pirmiau siūlomos Audio grupės, VAIZDO – Video, ŠVIESŲ – Light.' },
   { d:'2026-10-07 13:00', v:'v375', k:'new', t:'Įrangos grupės: „arba“, keli daiktai, tuščios grupės', f:'Vienetą rašai taip, kaip jis turi būti pasiūlyme (1m2, 1m3, komplektas…). Grupė gali turėti kelis sudėties variantus – „+ Arba“: pvz. 1m2 = 4× Infiled 50x50 arba 2× Infiled 50x100; kiekviename variante – vienas ar keli daiktai. Pasiūlyme prie grupės eilutės pasirenki, iš kurio varianto ją sudaryti, ir pagal jį skaičiuojamas sandėlio likutis. Grupė gali būti ir tuščia – tik pavadinimas ir kaina.' },
   { d:'2026-10-07 12:50', v:'v374', k:'new', t:'Pasiūlymai: Įranga / Paslaugos', f:'Pasiūlymų kūrime – nauja skiltis „📦 Įranga / Paslaugos“. Įranga: sandėlio daiktai – kaip vadinasi pasiūlyme, vienetas ir kaina. Įrangos grupės: keli daiktai kaip viena eilutė su savo kaina, pvz. „Infiled P3 ekranas“ – 1 m² = 4× Infiled P3 50x50; pasiūlyme sandėlio likutis skaičiuojamas pagal sudėtį, galima rodyti ir sudėtį po pavadinimu. Paslaugos – pavadinimas, vienetas, įkainis. Kita – kas pasiūlyme įrašyta ranka, išsaugoma savaime. Rašant eilutės pavadinimą pasiūlyme siūloma iš šio sąrašo, skiltyje yra ir mygtukas „+ Grupė / paslauga“. Reikia paleisti offer_catalog.sql.' },
   { d:'2026-10-06 16:48', v:'v373', k:'new', t:'Šaudyklė: nauji žmogeliukai', f:'Kontrteroristai – trys išvaizdos: kareivis smėlio spalvos apranga su šalmu, akiniais ir liemene su dėklais, juodas specialiųjų pajėgų pareigūnas su skydeliu prieš veidą ir antkeliais, policininkas su kepure, ženklu ir diržu su dėklais. Teroristai – penkios: su pakolio kepure, barzda, ilgais marškiniais ir žalia liemene; su juoda kauke, žalia striuke ir džinsais; su skarele ant veido ir dryžuotu megztiniu; su kauke ir dykumos margumo kelnėmis; su raudonai balta skara ir baltu drabužiu. Kiekvienas žaidėjas visada atrodo vienodai visuose kompiuteriuose.' },
