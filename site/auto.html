@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-GEATxVSftItzT9bTQGwTesLHa7g4YMZG0Ds2rcpyrfc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-Wdwypq7A3cT8Yu7avaNqitbe17kIIyDpudvWQDAAxT4=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-1qADn2U6/RhwIm9SCWPRZt1clUltGjWPKYueNfNsijs=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Automobilis · Event Solutions</title>
@@ -40,6 +40,7 @@ textarea{min-height:110px;resize:vertical;}
 .phs{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
 .ph{position:relative;width:76px;height:76px;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
 .ph img,.ph video{width:100%;height:100%;object-fit:cover;display:block;background:#000;}
+.loc{margin-top:10px;font-size:13px;color:var(--dim);display:flex;align-items:center;flex-wrap:wrap;gap:4px;} .loc a{color:var(--accent);}
 .vbg{margin:12px 0;text-align:left;} .vbg-row{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;margin-top:6px;font-size:14px;} .vbg-row.ok b{color:var(--ok);} .vbg-row.bad b{color:#e66;}
 .ph.busy{display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;color:var(--dim);padding:4px;box-sizing:border-box;}
 .ph button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;cursor:pointer;line-height:1;}
@@ -184,12 +185,13 @@ function draw(){
       <label for="rpText">Kas pastebėta</label><textarea id="rpText" placeholder="pvz. Dega variklio lemputė, barška priekiniai stabdžiai…"></textarea>
       <label>Kaip skubu</label>
       <div class="sev">${Object.entries(SEV).map(([k,l])=>`<label><input type="radio" name="sev" value="${k}" ${k==='soon'?'checked':''}> ${l}</label>`).join('')}</div>
+      <div class="loc" id="rpLoc"></div>
       <label>Nuotraukos ir video (nebūtina, iki 6 nuotraukų ir 3 video): nufotografuok, nufilmuok arba įkelk – video suspaudžiamas ir įkeliamas jau užregistravus – laukti nereikia</label>
       <div class="phs" id="phs"></div>
       <div class="err" id="rpErr"></div>
       <div style="margin-top:14px;"><button class="btn" id="rpGo">Registruoti problemą</button></div>
     </div>`;
-  drawPh();
+  drawPh(); getLoc();
   document.getElementById('rpGo').onclick = send;
 }
 function drawPh(){
@@ -225,6 +227,21 @@ async function shrink(file){
   const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth*k); c.height = Math.round(img.naturalHeight*k);
   c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(img.src);
   return await new Promise(r=>c.toBlob(r, 'image/jpeg', .84));
+}
+// where the problem was noticed: the phone's place (sent with the report, shown in the chat as a map link)
+let LOC = null;
+function drawLoc(st){
+  const el = document.getElementById('rpLoc'); if(!el) return;
+  el.innerHTML = LOC ? `📍 Vieta nustatyta${LOC.acc ? ' (±'+LOC.acc+' m)' : ''} · <a href="https://www.google.com/maps?q=${LOC.lat},${LOC.lng}" target="_blank" rel="noopener">žemėlapyje</a>`
+    : st==='wait' ? '📍 Nustatoma vieta…' : st ? `📍 ${esc(st)} <button type="button" class="btn ghost" id="rpLocTry" style="width:auto;padding:6px 12px;margin:0 0 0 6px;">Bandyti</button>` : '';
+  const t = document.getElementById('rpLocTry'); if(t) t.onclick = getLoc;
+}
+function getLoc(){
+  if(LOC){ drawLoc(); return; }
+  if(!navigator.geolocation){ drawLoc('vietos nustatyti nepavyko'); return; }
+  drawLoc('wait');
+  navigator.geolocation.getCurrentPosition(p=>{ LOC = { lat:+p.coords.latitude.toFixed(6), lng:+p.coords.longitude.toFixed(6), acc:Math.round(p.coords.accuracy||0) }; drawLoc(); },
+    e=>drawLoc(e && e.code===1 ? 'vietos nustatymas neleistas' : 'vietos nustatyti nepavyko'), { enableHighAccuracy:true, timeout:20000, maximumAge:60000 });
 }
 async function putFile(blob, type, ext){
   const rnd = Array.from(crypto.getRandomValues(new Uint8Array(8)), x=>(x%36).toString(36)).join('');
@@ -274,7 +291,10 @@ async function send(){
       if(path) paths.push(path);
     }
     b.textContent = 'Siunčiama…';
-    const rid = await rpc('vehicle_public_report', { p_token:T, p_name:name, p_text:text, p_severity:(document.querySelector('input[name="sev"]:checked')||{}).value || 'soon', p_files:paths });
+    const args = { p_token:T, p_name:name, p_text:text, p_severity:(document.querySelector('input[name="sev"]:checked')||{}).value || 'soon', p_files:paths, p_loc:LOC };
+    let rid;
+    try{ rid = await rpc('vehicle_public_report', args); }
+    catch(e){ if(!/p_loc|function|schema cache/i.test(e.message||'')) throw e; delete args.p_loc; rid = await rpc('vehicle_public_report', args); }   // before vehicle_loc.sql
     PH = [];
     document.getElementById('repCard').innerHTML = `<div class="done"><div class="big" style="color:var(--ok)"><svg viewBox="0 0 24 24" width="52" height="52" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/></svg></div><h2>Problema užregistruota</h2><p class="muted">Ačiū! Atsakingas asmuo gavo pranešimą${paths.length ? ' su nuotraukomis / video' : ''}.</p><button class="btn ghost" id="rpMore">Registruoti dar vieną</button></div>`;
     document.getElementById('rpMore').onclick = ()=>draw();
