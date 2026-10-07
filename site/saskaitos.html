@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-pcaxXmuPZNTmXpR12jScKSXbAzIEjLjl7s26IkjMTBE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-vQhns6wLe9ZqKyaJmd22T2FdbxUqGMdpL9W3PlOWXck=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/ShYhKa9VMW7pEwvJmU1U1U5In6I0+xj3LyuIucWtvI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-u0eVwHCaGZO4HJAvVHYIj4w13zdwUeUm+992mzmca58=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -59,6 +59,10 @@ input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(
 .st{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);margin-top:6px;}
 .why{margin-top:8px;padding:9px 11px;border-radius:8px;background:color-mix(in srgb,var(--bad) 13%,transparent);font-size:14px;}
 .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.hist{margin-top:10px;font-size:14px;} .hist summary{cursor:pointer;color:var(--accent);font-size:14px;}
+.hist ol{list-style:none;margin:8px 0 0;padding:0 0 0 14px;border-left:2px solid var(--border);}
+.hist li{position:relative;padding:3px 0 7px 10px;} .hist li::before{content:'';position:absolute;left:-21px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--c);}
+.hist li small{display:inline;margin-right:6px;} .hist li em{display:block;font-style:normal;color:var(--dim);font-size:13px;}
 .lnk{background:none;border:0;color:var(--accent);font:inherit;font-size:14px;cursor:pointer;padding:0;}
 .done{text-align:center;padding:26px 16px;}
 .done .big{font-size:48px;}
@@ -113,13 +117,15 @@ function render(){
 const ST = { new:['Pateikta – laukia patvirtinimo','#E0A030'], later:['Pateikta – laukia patvirtinimo','#E0A030'], rejected:['Nepatvirtinta','#E5484D'],
   approved:['Patvirtinta, perduota buhalterijai','#2F9E73'], sent:['Patvirtinta, perduota buhalterijai','#2F9E73'], queued:['Suvesta apmokėjimui','#2F9E73'], paid:['Apmokėta','#2F9E73'] };
 let LIST = null;
+const HC = { info:'#6BB4F5', ok:'#2F9E73', bad:'#E5484D' };
+const when = iso=>{ const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('lt-LT', { timeZone:'Europe/Vilnius', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }); };
 async function viewHome(){
   $app.innerHTML = `<div class="card"><div class="top"><h1>Sveiki${S.name ? ', '+esc(S.name.split(' ')[0]) : ''}!</h1><button class="btn small" id="new">+ Nauja sąskaita</button></div>
       <p class="muted">Čia matai visas savo pateiktas sąskaitas. Jei sąskaita nepatvirtinta – gausi el. laišką su priežastimi ir galėsi ją pataisyti.</p></div>
     <div class="card"><h2>Mano sąskaitos</h2><div id="list"><p class="muted">Kraunama…</p></div></div>`;
   document.getElementById('new').onclick = ()=>{ draft = blankDraft(); render(); };
   try{ LIST = (await call({ action:'list', token:S.token })).invoices || []; }
-  catch(x){ if(!S.token) return render(); document.getElementById('list').innerHTML = `<div class="err">${esc(x.message)}</div>`; return; }
+  catch(x){ if(!S.token) return render(); document.getElementById('list').innerHTML = `<div class="err">${esc(/Nežinomas veiksmas/.test(x.message) ? 'Sąskaitų sąrašas dar neįjungtas serveryje (reikia atnaujinti „freelance-portal“ funkciją).' : x.message)}</div>`; return; }
   const box = document.getElementById('list'); if(!box) return;
   const want = store.get('flEdit');
   if(want){ store.set('flEdit', null); const v = LIST.find(x=>x.id===want);
@@ -131,6 +137,7 @@ async function viewHome(){
         <small>Pateikta ${esc(String(v.created_at||'').slice(0,10))} · ${L.length} ${L.length===1 ? 'renginys' : 'renginiai'}${L.length ? ': '+esc(L.slice(0,3).map(l=>l.event).join(', '))+(L.length>3 ? '…' : '') : ''}</small>
         <span class="st" style="--c:${st[1]}">${st[0]}</span></div><b>${eur(cents(Number(v.amount||0)))}</b></div>
       ${v.status==='rejected' && v.decision_note ? `<div class="why"><b>Priežastis:</b> ${esc(v.decision_note)}</div>` : ''}
+      ${(v.history||[]).length ? `<details class="hist"${v.status==='rejected' ? ' open' : ''}><summary>Istorija (${v.history.length})</summary><ol>${v.history.map(h=>`<li style="--c:${HC[h.c]||HC.info}"><small>${esc(when(h.at))}</small><b>${esc(h.t)}</b>${h.note ? `<em>${esc(h.note)}</em>` : ''}</li>`).join('')}</ol></details>` : ''}
       <div class="acts">${v.editable ? `<button class="btn small${v.status==='rejected' ? '' : ' ghost'}" data-edit="${esc(v.id)}">✏️ Taisyti sąskaitą</button>` : ''}${(v.files||[]).length ? `<button class="btn small ghost" data-file="${esc(v.id)}">📎 Failas</button>` : ''}</div></div>`;
   }).join('') : '<p class="muted">Dar nepateikei nė vienos sąskaitos.</p>';
   box.querySelectorAll('[data-edit]').forEach(b=>b.onclick = ()=>startEdit(LIST.find(v=>v.id===b.dataset.edit)));

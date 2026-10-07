@@ -90,6 +90,24 @@ async function mine(email: string, id?: string) {
   return await db<Mine[]>(`invoices?select=id,number,amount,status,decision_note,decision_at,created_at,invoice_date,note,lines,files,responses&source=eq.portal&ext_email=eq.${enc(email)}${id ? "&id=eq." + enc(id) : ""}&order=created_at.desc&limit=100`);
 }
 const EDITABLE = ["new", "rejected"];
+// what happened to the invoice, for the freelancer (inner notes and the accounting's written replies stay inside)
+type Resp = { at?: string; kind?: string; text?: string; src?: string; rejected_at?: string | null; reason?: string };
+function history(v: Mine) {
+  const h: { at: string; t: string; note?: string; c: string }[] = [{ at: v.created_at, t: "Pateikta", c: "info" }];
+  for (const r of (v.responses || []) as Resp[]) {
+    if (!r.at) continue;
+    if (r.src === "portal") {
+      if (r.rejected_at) h.push({ at: r.rejected_at, t: "Nepatvirtinta", note: r.reason || "", c: "bad" });
+      h.push({ at: r.at, t: "Pataisyta ir pateikta iš naujo", c: "info" });
+    } else if (r.kind === "paid") h.push({ at: r.at, t: "Apmokėta", c: "ok" });
+    else if (r.kind === "queued") h.push({ at: r.at, t: "Suvesta apmokėjimui", c: "ok" });
+  }
+  if (v.decision_at) {
+    if (v.status === "rejected") h.push({ at: v.decision_at, t: "Nepatvirtinta", note: v.decision_note || "", c: "bad" });
+    else if (["approved", "sent", "queued", "paid"].includes(v.status)) h.push({ at: v.decision_at, t: "Patvirtinta, perduota buhalterijai", note: v.decision_note || "", c: "ok" });
+  }
+  return h.sort((a, b) => a.at.localeCompare(b.at));
+}
 
 type Line = { date?: string; event_id?: string; event_name?: string; type?: string; amount?: number; hours?: number; rate?: number };
 async function submit(s: { email: string; name: string }, b: { id?: string; number?: string; total?: number; lines?: Line[]; file?: { name?: string; type?: string; base64?: string }; note?: string }) {
@@ -161,7 +179,7 @@ async function saveEdit(s: { email: string; name: string }, old: Mine, b: { numb
     body: JSON.stringify({
       number: String(b.number || "").trim().slice(0, 80) || null, amount: total, note: String(b.note || "").trim().slice(0, 1000) || null,
       lines, ext_name: s.name, status: "new", decision_note: null, decision_by: null, decision_at: null, remind_at: null, reminded_at: null,
-      responses: [...(old.responses || []), { at: new Date().toISOString(), who: s.name, kind: "reply", text: why }],
+      responses: [...(old.responses || []), { at: new Date().toISOString(), who: s.name, kind: "reply", text: why, src: "portal", ...(old.status === "rejected" ? { rejected_at: old.decision_at, reason: old.decision_note || "" } : {}) }],
       ...(file ? { files: [file] } : {}),
     }),
   });
@@ -213,7 +231,7 @@ Deno.serve(async (req) => {
     if (action === "list") {
       const s = await session(b.token);
       const rows = await mine(s.email);
-      return json({ invoices: rows.map((v) => ({ ...v, files: (v.files || []).map((f) => ({ name: f.name, type: f.type, size: f.size })), responses: undefined, editable: EDITABLE.includes(v.status) })) });
+      return json({ invoices: rows.map((v) => ({ ...v, files: (v.files || []).map((f) => ({ name: f.name, type: f.type, size: f.size })), responses: undefined, history: history(v), editable: EDITABLE.includes(v.status) })) });
     }
     if (action === "file") {
       const s = await session(b.token);

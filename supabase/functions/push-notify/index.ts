@@ -1054,7 +1054,7 @@ async function onInvoice(uid: string, id: string, ev: string) {
     return await sendTo(await wantIds(plus.filter((u) => u !== uid), "other"), { title: "🧾 Nauja sąskaita: " + invTitle(v), body: "Įkėlė " + name(me), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
   }
   if (!plus.includes(uid)) return { error: "Tik Admin+" };
-  if (v.source === "portal") return await portalMail(v);
+  if (v.source === "portal") return { sent: 0, mail: "trigger" };   // the database trigger sends the freelancer's e-mail
   if (v.created_by === uid || !INV_STATUS[v.status]) return { sent: 0 };
   return await sendTo(await wantIds([v.created_by], "other"), { title: INV_STATUS[v.status], body: invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
 }
@@ -1109,7 +1109,6 @@ async function onInvoiceReply(id: string) {
   const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(id)}`);
   if (!v) return { error: "Sąskaita nerasta" };
   const r = (v.responses || [])[v.responses.length - 1]; if (!r) return { sent: 0 };
-  if (v.source === "portal" && v.status === "paid") await portalMail(v).catch(() => {});
   const what = r.kind === "paid" ? "💶 Apmokėta" : r.kind === "queued" ? "🗂 Suvesta apmokėjimui" : "💬 Atsakymas";
   return await sendTo(await plusIds(), { title: what + ": " + invTitle(v), body: (r.who ? r.who + ": " : "") + (r.text || ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
 }
@@ -1366,6 +1365,13 @@ Deno.serve(async (req) => {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       return json(await onInvoicePortal(String(body.invoice_id ?? ""), body.edited === true));
+    }
+    // a portal invoice changed state (database trigger invoices_portal_mail, with the cron secret): the freelancer's e-mail
+    if (body?.mode === "invoice-portal-status") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(String(body.invoice_id ?? ""))}`);
+      return json(v ? await portalMail(v) : { error: "Sąskaita nerasta" });
     }
     if (body?.mode === "invoice-reply") {
       const secret = Deno.env.get("CRON_SECRET");
