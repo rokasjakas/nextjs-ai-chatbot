@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-XEoSFoeGsTtVa4VlRdq5m7Hafp7o4Qcm9sw3oCyi3Cg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-nqTOK1duBUTTi2LEfH2W+BxE+JuNtja6doeoeJ/rI80=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-k4uzr3GcCkiK14JwDqawMN9xpjSqDXMjcfTiVFcGnP8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-F8n5lx07W97+V302lWMcM5aD0k0Z7Uo0WDe4LJ2DlUA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -64,6 +64,14 @@ input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(
 .hist li{position:relative;padding:3px 0 7px 10px;} .hist li::before{content:'';position:absolute;left:-21px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--c);}
 .hist li small{display:inline;margin-right:6px;} .hist li em{display:block;font-style:normal;color:var(--dim);font-size:13px;}
 .lnk{background:none;border:0;color:var(--accent);font:inherit;font-size:14px;cursor:pointer;padding:0;}
+.ftot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px;padding:12px 14px;border-radius:12px;font-size:14px;}
+.ftot b{font-size:22px;font-variant-numeric:tabular-nums;margin-left:auto;} .ftot small{width:100%;font-size:13px;}
+.ftot.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok);} .ftot.bad{background:color-mix(in srgb,var(--bad) 13%,transparent);color:var(--bad);}
+.ftot.wait,.match.wait{background:color-mix(in srgb,var(--dim) 12%,transparent);color:var(--dim);}
+.extras .extra{border-left:3px solid var(--warn);padding:2px 0 6px 10px;margin-top:10px;}
+.extras .extra .line-h{font-weight:600;font-size:14px;color:var(--warn);}
+.file.small{padding:9px 10px;font-size:14px;margin-top:8px;}
+.x-add{margin-top:10px;display:inline-block;}
 .done{text-align:center;padding:26px 16px;}
 .done .big{font-size:48px;}
 </style>
@@ -151,7 +159,8 @@ function startEdit(v){
   if(!v) return;
   draft = { editId:v.id, wasRejected:v.status==='rejected', why:v.decision_note||'', number:v.number||'', total:String(v.amount||'').replace('.', ','), note:v.note||'', file:null, oldFile:(v.files||[])[0]||null, oldTotal:v.file_total!=null ? Number(v.file_total) : null,
     lines:(v.lines||[]).map(l=>Object.assign(newLine(l.date), { ename:l.event||'', ev:l.event_id || '__manual', name:l.event_id ? '' : (l.event||''), type:l.type==='hourly' ? 'hourly' : 'fixed',
-      amount:l.type==='hourly' ? '' : String(l.amount).replace('.', ','), hours:l.type==='hourly' ? String(l.hours).replace('.', ',') : '', rate:l.type==='hourly' ? String(l.rate).replace('.', ',') : '' })) };
+      amount:l.type==='hourly' ? '' : (Number(l.amount) ? String(l.amount).replace('.', ',') : ''), hours:l.type==='hourly' ? String(l.hours).replace('.', ',') : '', rate:l.type==='hourly' ? String(l.rate).replace('.', ',') : '',
+      extras:(l.extras||[]).map(x=>({ what:x.what||'', amount:String(x.amount||'').replace('.', ','), file:null, keep:x.file_idx>0 ? x.file_idx : -1, keepName:x.file_idx>0 && v.files[x.file_idx] ? v.files[x.file_idx].name : '' })) })) };
   if(!draft.lines.length) draft.lines.push(newLine());
   render();
   draft.lines.forEach((l, i)=>{ if(l.date) loadEvents(i, true); });
@@ -201,16 +210,20 @@ function viewPin(){
 
 // ---- 3. the invoice ----
 let draft = null;
-const newLine = (date)=>({ date:date||'', events:null, loading:false, ev:'', name:'', type:'fixed', amount:'', hours:'', rate:'' });
-function lineCents(l){
+const newLine = (date)=>({ date:date||'', events:null, loading:false, ev:'', name:'', type:'fixed', amount:'', hours:'', rate:'', extras:[] });
+const newExtra = ()=>({ what:'', amount:'', file:null, keep:-1, keepName:'' });
+function workCents(l){
   if(l.type==='hourly'){ const h = num(l.hours), r = num(l.rate); return h>0 && r>0 ? cents(Math.round(h*r*100)/100) : 0; }
   const a = num(l.amount); return a>0 ? cents(a) : 0;
 }
+const extraCents = x=>{ const a = num(x.amount); return a>0 ? cents(a) : 0; };
+const lineCents = l=>workCents(l) + (l.extras||[]).reduce((t, x)=>t+extraCents(x), 0);
 const manual = l=>l.ev==='__manual' || (l.events && !l.events.length);
 function lineOk(l){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(l.date)) return false;
   if(manual(l) ? !l.name.trim() : !l.ev) return false;
-  return lineCents(l) > 0;
+  if((l.extras||[]).some(x=>!x.what.trim() || !extraCents(x))) return false;
+  return l.type==='hourly' ? workCents(l)>0 : (workCents(l)>0 || (l.extras||[]).length>0);
 }
 async function loadEvents(i, keepEv){
   const l = draft.lines[i]; if(!l || !l.date) return;
@@ -232,15 +245,16 @@ const blankDraft = ()=>({ number:'', total:'', note:'', file:null, lines:[newLin
 function viewForm(){
   if(!draft) draft = blankDraft();
   $app.innerHTML = `<div class="card"><div class="top"><h1>${draft.editId ? 'Sąskaitos taisymas' : 'Nauja sąskaita'}</h1><button class="btn small ghost" id="back">← Mano sąskaitos</button></div>
-      <p class="muted">Nurodyk, kuriuose renginiuose dirbai, ir įkelk sąskaitą. Visos sumos – <b>su mokesčiais</b>. Sąskaitos suma turi sutapti su renginių suma.</p>
+      <p class="muted">1) Įkelk sąskaitą – jos galutinė suma bus nuskaityta automatiškai. 2) Nurodyk renginius, kuriuose dirbai, ir papildomas išlaidas. Visos sumos – <b>su mokesčiais</b>; renginių ir išlaidų suma turi sutapti su sąskaitos galutine suma.</p>
       ${draft.wasRejected && draft.why ? `<div class="why"><b>Nepatvirtinta, nes:</b> ${esc(draft.why)}</div>` : ''}</div>
-    <div class="card"><h2>Sąskaita</h2>
-      <div class="row2"><div><label>Sąskaitos nr.</label><input id="num" value="${esc(draft.number)}" autocomplete="off"></div>
-      <div><label>Suma su mokesčiais, €</label><input id="tot" inputmode="decimal" value="${esc(draft.total)}" placeholder="0,00" autocomplete="off"></div></div>
+    <div class="card"><h2>1. Sąskaita</h2>
       <label>Sąskaitos failas (PDF arba nuotrauka)</label>
-      <label class="file" id="fl"><span>📎</span><span id="fname">${draft.file ? '<b>'+esc(draft.file.name)+'</b>' : draft.oldFile ? '<b>'+esc(draft.oldFile.name)+'</b> <span class="muted">(paliekamas – spausk, jei nori pakeisti)</span>' : 'Pasirink failą…'}</span><input id="file" type="file" accept="application/pdf,image/*"></label>
+      <label class="file" id="fl"><span>📎</span><span id="fname">${draft.file ? '<b>'+esc(draft.file.name)+'</b>' : draft.oldFile ? '<b>'+esc(draft.oldFile.name)+'</b> <span class="muted">(paliekamas – spausk, jei nori pakeisti)</span>' : 'Pasirink sąskaitos failą…'}</span><input id="file" type="file" accept="application/pdf,image/*"></label>
+      <div id="ftot"></div>
+      <div class="row2"><div><label>Sąskaitos nr.</label><input id="num" value="${esc(draft.number)}" autocomplete="off"></div>
+      <div><label>Galutinė suma su mokesčiais, €</label><input id="tot" inputmode="decimal" value="${esc(draft.total)}" placeholder="iš failo" autocomplete="off"></div></div>
     </div>
-    <div class="card"><h2>Renginiai</h2><div id="lines"></div>
+    <div class="card"><h2>2. Renginiai ir išlaidos</h2><div id="lines"></div>
       <button class="btn ghost" id="add">+ Pridėti renginį</button></div>
     <div class="card"><h2>Suvestinė</h2><div id="sum"></div>
       <label>Pastaba (nebūtina)</label><textarea id="note">${esc(draft.note)}</textarea>
@@ -262,6 +276,15 @@ function viewForm(){
   if(draft.editId) q('send').textContent = 'Siųsti pataisytą sąskaitą';
   drawLines();
 }
+function extrasHtml(l, i){
+  return `<div class="extras">${(l.extras||[]).map((x, j)=>`<div class="extra">
+      <div class="line-h"><span>➕ Papildoma išlaida</span><span class="sp"></span><button class="x x-rm" data-i="${i}" data-j="${j}" title="Pašalinti">✕</button></div>
+      <div class="row2"><div><label>Už ką</label><input class="x-f" data-k="what" data-i="${i}" data-j="${j}" value="${esc(x.what)}" placeholder="pvz. kuras, parkavimas" autocomplete="off"></div>
+      <div><label>Suma, €</label><input class="x-f" data-k="amount" data-i="${i}" data-j="${j}" inputmode="decimal" value="${esc(x.amount)}" placeholder="0,00" autocomplete="off"></div></div>
+      <label class="file small"><span>🧾</span><span>${x.file ? '<b>'+esc(x.file.name)+'</b>' : x.keepName ? '<b>'+esc(x.keepName)+'</b> <span class="muted">(paliekamas)</span>' : 'Čekio nuotrauka ar papildoma sąskaita (nebūtina)'}</span><input class="x-file" type="file" accept="application/pdf,image/*" data-i="${i}" data-j="${j}"></label>
+    </div>`).join('')}</div>
+    <button type="button" class="lnk x-add" data-i="${i}">+ Papildomos išlaidos</button>`;
+}
 function drawLines(){
   const box = document.getElementById('lines'); if(!box) return;
   box.innerHTML = draft.lines.map((l, i)=>{
@@ -282,19 +305,25 @@ function drawLines(){
       ${l.type==='hourly'
         ? `<div class="row2"><div><label>Valandos</label><input class="l-f" data-k="hours" data-i="${i}" inputmode="decimal" value="${esc(l.hours)}" placeholder="0"></div><div><label>Įkainis, €/val.</label><input class="l-f" data-k="rate" data-i="${i}" inputmode="decimal" value="${esc(l.rate)}" placeholder="0,00"></div></div>`
         : `<label>Suma su mokesčiais, €</label><input class="l-f" data-k="amount" data-i="${i}" inputmode="decimal" value="${esc(l.amount)}" placeholder="0,00">`}
+      ${extrasHtml(l, i)}
     </div>`;
   }).join('');
-  const all = s=>box.querySelectorAll(s), L = el=>draft.lines[+el.dataset.i];
-  all('.l-date').forEach(el=>el.onchange = ()=>{ const l = L(el); l.date = el.value; l.err = ''; if(l.date) loadEvents(+el.dataset.i); else { l.events = null; drawLines(); } });
+  const all = s=>box.querySelectorAll(s), L = el=>draft.lines[+el.dataset.i], X = el=>draft.lines[+el.dataset.i].extras[+el.dataset.j];
+  const amt = el=>{ el.closest('.line').querySelector('.amt').textContent = lineCents(L(el)) ? eur(lineCents(L(el))) : ''; drawSum(); };
+  all('.l-date').forEach(el=>el.onchange = ()=>{ const l = L(el); if(l.date===el.value) return; l.date = el.value; l.err = ''; if(l.date) loadEvents(+el.dataset.i); else { l.events = null; drawLines(); } });
   all('.l-ev').forEach(el=>el.onchange = ()=>{ L(el).ev = el.value; drawLines(); if(el.value==='__manual'){ const n = box.querySelector(`.l-name[data-i="${el.dataset.i}"]`); n && n.focus(); } });
   all('.l-name').forEach(el=>el.oninput = ()=>{ L(el).name = el.value; drawSum(); });
   all('.l-type').forEach(el=>el.onclick = ()=>{ L(el).type = el.dataset.t; drawLines(); });
-  all('.l-f').forEach(el=>el.oninput = ()=>{
-    L(el)[el.dataset.k] = el.value;
-    el.closest('.line').querySelector('.amt').textContent = lineCents(L(el)) ? eur(lineCents(L(el))) : '';
-    drawSum();
-  });
+  all('.l-f').forEach(el=>el.oninput = ()=>{ L(el)[el.dataset.k] = el.value; amt(el); });
   all('.l-rm').forEach(el=>el.onclick = ()=>{ draft.lines.splice(+el.dataset.i, 1); drawLines(); });
+  all('.x-add').forEach(el=>el.onclick = ()=>{ L(el).extras.push(newExtra()); drawLines(); const w = box.querySelectorAll(`.x-f[data-k="what"][data-i="${el.dataset.i}"]`); w.length && w[w.length-1].focus(); });
+  all('.x-rm').forEach(el=>el.onclick = ()=>{ L(el).extras.splice(+el.dataset.j, 1); drawLines(); });
+  all('.x-f').forEach(el=>el.oninput = ()=>{ X(el)[el.dataset.k] = el.value; amt(el); });
+  all('.x-file').forEach(el=>el.onchange = async ()=>{
+    const f = el.files[0]; if(!f) return;
+    if(f.size > 10*1024*1024 || !/^(application\/pdf|image\/)/.test(f.type)){ alert('Įkelk PDF arba nuotrauką (iki 10 MB).'); el.value = ''; return; }
+    const x = X(el); x.file = await shrinkImage(f); x.keep = -1; x.keepName = ''; drawLines();
+  });
   drawSum();
 }
 // the chosen file: a big photo is made smaller first; then its total is read on the server and shown here
@@ -314,31 +343,46 @@ async function pickFile(f0){
   d.file = f; d.b64 = await fileB64(f); if(draft!==d) return;
   drawSum();
   try{ const r = await call({ action:'scan', token:S.token, file:{ type:f.type, base64:d.b64 } }); if(draft!==d || d.file!==f) return; d.scan = r; }
-  catch(x){ if(draft!==d) return; if(!S.token) return render(); d.scan = { checked:false, why:'error' }; }
+  catch(x){ if(draft!==d) return; if(!S.token) return render(); d.scan = { checked:false, why:'error', msg:x.message }; }
+  // the total is taken from the invoice (it can still be typed)
+  if(d.scan && d.scan.found && !num(d.total)){ d.total = String(d.scan.total).replace('.', ','); const t = document.getElementById('tot'); if(t) t.value = d.total; }
   drawSum();
 }
+async function rescan(){ if(draft && draft.file) pickFile(draft.file); }
 function fileTotal(){
   if(draft.file) return draft.scan && draft.scan.found ? cents(draft.scan.total) : null;
   return draft.oldFile && draft.oldTotal!=null ? cents(draft.oldTotal) : null;
 }
+const SCAN_WHY = { off:'Sąskaitos failo tikrinimas dar neįjungtas – kreipkis į Event Solutions biurą.', type:'Sąskaitą įkelk PDF, JPG arba PNG formatu.',
+  'not-invoice':'Įkeltas failas neatrodo kaip sąskaita. Įkelk sąskaitą faktūrą (PDF arba aiškią nuotrauką).', 'no-total':'Sąskaitoje nepavyko rasti galutinės sumos. Įkelk aiškesnį failą (geriausia PDF).',
+  error:'Nepavyko patikrinti sąskaitos failo.', refusal:'Nepavyko patikrinti sąskaitos failo.' };
+function drawFileTotal(tot){
+  const box = document.getElementById('ftot'); if(!box) return;
+  const sc = draft.scan, ft = fileTotal();
+  if(sc && sc.busy) box.innerHTML = '<div class="ftot wait">⏳ Nuskaitoma sąskaitos galutinė suma…</div>';
+  else if(ft!=null) box.innerHTML = `<div class="ftot ${tot && ft!==tot ? 'bad' : 'ok'}"><span>Galutinė suma sąskaitoje</span><b>${eur(ft)}</b>${tot && ft!==tot ? `<small>Įvesta ${eur(tot)} – nesutampa</small>` : ''}</div>`;
+  else if(draft.file && sc) box.innerHTML = `<div class="ftot bad"><span>${esc(sc.msg || SCAN_WHY[sc.why] || SCAN_WHY['no-total'])}</span>${sc.why==='error' || sc.why==='refusal' ? '<button type="button" class="btn small ghost" id="rescan">Bandyti dar kartą</button>' : ''}</div>`;
+  else if(draft.oldFile && draft.oldTotal==null) box.innerHTML = '<div class="ftot bad"><span>Įkelk sąskaitos failą iš naujo – jame bus patikrinta galutinė suma.</span></div>';
+  else box.innerHTML = '';
+  const r = document.getElementById('rescan'); if(r) r.onclick = rescan;
+}
 function drawSum(){
   const box = document.getElementById('sum'); if(!box) return;
   const sum = draft.lines.reduce((t, l)=>t+lineCents(l), 0), tn = num(draft.total), tot = tn>0 ? cents(tn) : 0;
-  const bad = draft.lines.findIndex(l=>!lineOk(l));
+  const ex = draft.lines.reduce((t, l)=>t+(l.extras||[]).reduce((u, x)=>u+extraCents(x), 0), 0);
+  const bad = draft.lines.findIndex(l=>!lineOk(l)), ft = fileTotal(), busy = !!(draft.scan && draft.scan.busy);
+  drawFileTotal(tot);
   let m = '';
-  if(!tot) m = '<div class="match bad">Įrašyk sąskaitos sumą.</div>';
-  else if(sum===tot) m = '<div class="match ok">✓ Sumos sutampa</div>';
-  else m = `<div class="match bad">✗ Sumos nesutampa: skiriasi ${eur(Math.abs(tot-sum))} (renginiuose ${sum>tot ? 'daugiau' : 'mažiau'}).</div>`;
+  if(busy) m = '<div class="match wait">⏳ Laukiama sąskaitos sumos…</div>';
+  else if(ft==null) m = `<div class="match bad">${draft.file || draft.oldFile ? 'Sąskaitos galutinė suma nenuskaityta – įkelk aiškesnį sąskaitos failą.' : 'Įkelk sąskaitos failą – jo galutinė suma bus palyginta su renginiais.'}</div>`;
+  else if(tot && ft!==tot) m = `<div class="match bad">✗ Sąskaitoje nurodyta ${eur(ft)}, o įvesta ${eur(tot)}.</div>`;
+  else if(sum===ft) m = `<div class="match ok">✓ Renginių ir išlaidų suma sutampa su sąskaita (${eur(ft)})</div>`;
+  else m = `<div class="match bad">✗ Nesutampa: sąskaitoje ${eur(ft)}, renginiuose ir išlaidose ${eur(sum)} (skiriasi ${eur(Math.abs(ft-sum))}).</div>`;
   const miss = [];
-  if(bad>=0) miss.push(`užpildyk ${bad+1} eilutę (data, renginys, suma)`);
-  if(!draft.file && !draft.oldFile && !(draft.scan && draft.scan.busy)) miss.push('įkelk sąskaitos failą');
-  const ft = fileTotal(), busy = !!(draft.scan && draft.scan.busy);
-  if(busy) m += '<div class="match" style="color:var(--dim);background:color-mix(in srgb,var(--dim) 12%,transparent);">⏳ Tikrinama sąskaitos faile nurodyta suma…</div>';
-  else if(ft!=null) m += ft===tot ? `<div class="match ok">✓ Faile nurodyta suma ${eur(ft)} sutampa</div>` : `<div class="match bad">✗ Įkeltoje sąskaitoje nurodyta ${eur(ft)}, o įvesta ${tot ? eur(tot) : '—'}. Pataisyk sumą arba įkelk teisingą failą.</div>`;
-  else if(draft.file && draft.scan && !draft.scan.busy && draft.scan.checked) m += '<div class="match" style="color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent);">⚠ Faile sumos rasti nepavyko – patikrink, ar įkėlei sąskaitą. Ji bus patikrinta rankiniu būdu.</div>';
-  box.innerHTML = `<div class="sum"><span>Renginių (${draft.lines.length}) suma</span><b>${eur(sum)}</b></div><div class="sum"><span>Sąskaitos suma</span><b>${tot ? eur(tot) : '—'}</b></div>${m}${miss.length ? `<p class="muted">Dar: ${miss.join(', ')}.</p>` : ''}`;
+  if(bad>=0) miss.push(`užpildyk ${bad+1} eilutę (data, renginys, suma${(draft.lines[bad].extras||[]).length ? ', išlaidos' : ''})`);
+  box.innerHTML = `<div class="sum"><span>Renginiai (${draft.lines.length})</span><b>${eur(sum-ex)}</b></div>${ex ? `<div class="sum"><span>Papildomos išlaidos</span><b>${eur(ex)}</b></div>` : ''}<div class="sum"><span>Iš viso</span><b>${eur(sum)}</b></div><div class="sum"><span>Sąskaitoje (iš failo)</span><b>${ft!=null ? eur(ft) : '—'}</b></div>${m}${miss.length ? `<p class="muted">Dar: ${miss.join(', ')}.</p>` : ''}`;
   const send = document.getElementById('send');
-  if(send) send.disabled = !(tot && sum===tot && bad<0 && (draft.file || draft.oldFile) && !busy && (ft==null || ft===tot));
+  if(send) send.disabled = !(ft!=null && !busy && tot===ft && sum===ft && bad<0);
 }
 function fileB64(f){
   return new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = ()=>rej(new Error('Nepavyko perskaityti failo.')); r.readAsDataURL(f); });
@@ -348,11 +392,13 @@ async function submit(){
   if(b.disabled) return;
   b.disabled = true; b.textContent = 'Siunčiama…'; err.textContent = '';
   try{
-    const lines = draft.lines.map(l=>{
-      const man = manual(l), o = { date:l.date, event_id:man ? null : l.ev, event_name:man ? l.name.trim() : '', type:l.type };
-      if(l.type==='hourly'){ o.hours = num(l.hours); o.rate = num(l.rate); } else o.amount = num(l.amount);
-      return o;
-    });
+    const lines = [];
+    for(const l of draft.lines){
+      const man = manual(l), o = { date:l.date, event_id:man ? null : l.ev, event_name:man ? l.name.trim() : '', type:l.type, extras:[] };
+      if(l.type==='hourly'){ o.hours = num(l.hours); o.rate = num(l.rate); } else o.amount = num(l.amount) || 0;
+      for(const x of l.extras||[]) o.extras.push({ what:x.what.trim(), amount:num(x.amount), keep:x.keep, file: x.file ? { name:x.file.name, type:x.file.type, base64:await fileB64(x.file) } : null });
+      lines.push(o);
+    }
     const f = draft.file;
     const d = await call({ action:'submit', token:S.token, id:draft.editId || undefined, number:draft.number.trim(), total:num(draft.total), note:draft.note.trim(), lines,
       file: f ? { name:f.name, type:f.type, base64:draft.b64 || await fileB64(f) } : null });
@@ -364,7 +410,7 @@ async function submit(){
     document.getElementById('bye').onclick = ()=>{ logout(); render(); };
   }catch(x){
     if(!S.token){ render(); return; }
-    b.disabled = false; b.textContent = 'Siųsti sąskaitą'; err.textContent = x.message;
+    b.disabled = false; b.textContent = draft && draft.editId ? 'Siųsti pataisytą sąskaitą' : 'Siųsti sąskaitą'; err.textContent = x.message;
   }
 }
 

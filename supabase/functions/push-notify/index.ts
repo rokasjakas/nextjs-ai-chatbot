@@ -1037,7 +1037,7 @@ async function onTask(uid: string, taskId: string, ev: string) {
 // Sąskaitos: a new one goes to Admin+, the decision to its uploader, a reply
 // from the e-mail to Admin+; „Priminti vėliau“ comes back at the chosen time
 type Invoice = { id: string; created_by: string; kind: string; supplier: string | null; number: string | null; amount: number | null; status: string; decision_note: string | null; decision_at?: string | null; remind_at: string | null; reminded_at: string | null; responses: { who?: string; kind: string; text?: string }[];
-  source?: string | null; ext_email?: string | null; ext_name?: string | null; ext_mailed?: string | null; lines?: { date?: string; event?: string; amount?: number }[] | null };
+  source?: string | null; ext_email?: string | null; ext_name?: string | null; ext_mailed?: string | null; lines?: { date?: string; event?: string; amount?: number; total?: number; extras?: { what?: string; amount?: number }[] }[] | null };
 const INV_KIND: Record<string, string> = { freelance: "Freelance", service: "Paslaugų", rent: "Nuomos", purchase: "Pirkinių" };
 const INV_STATUS: Record<string, string> = { approved: "✅ Sąskaita patvirtinta", rejected: "✖ Sąskaita netvirtinta", later: "⏰ Sąskaita atidėta vėlesniam laikui", sent: "📤 Sąskaita patvirtinta ir išsiųsta", paid: "💶 Sąskaita apmokėta", queued: "🗂 Sąskaita suvesta apmokėjimui" };
 async function plusIds(): Promise<string[]> {
@@ -1083,7 +1083,8 @@ async function portalMail(v: Invoice, force = false) {
   }
   const money = (n: unknown) => Number(n || 0).toFixed(2).replace(".", ",") + " €";
   const what = "sąskaita" + (v.number ? " nr. " + v.number : "") + " (" + money(v.amount) + ")";
-  const lines = (v.lines || []).map((l) => `<tr><td style="padding:3px 10px 3px 0;color:#555">${escHtml(l.date || "")}</td><td style="padding:3px 10px 3px 0">${escHtml(l.event || "")}</td><td style="padding:3px 0;text-align:right">${money(l.amount)}</td></tr>`).join("");
+  const lines = (v.lines || []).map((l) => `<tr><td style="padding:3px 10px 3px 0;color:#555">${escHtml(l.date || "")}</td><td style="padding:3px 10px 3px 0">${escHtml(l.event || "")}</td><td style="padding:3px 0;text-align:right">${money(l.amount)}</td></tr>` +
+    (l.extras || []).map((x) => `<tr><td></td><td style="padding:3px 10px 3px 0;color:#555">+ ${escHtml(x.what || "")}</td><td style="padding:3px 0;text-align:right;color:#555">${money(x.amount)}</td></tr>`).join("")).join("");
   const table = lines ? `<table style="border-collapse:collapse;font-size:14px;margin:10px 0">${lines}</table>` : "";
   const hi = `<p>Sveiki${v.ext_name ? ", " + escHtml(v.ext_name.split(" ")[0]) : ""},</p>`;
   let subject = "", body = "";
