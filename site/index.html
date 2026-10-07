@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-ZOfAFfZcpyC8d3/11F4D63xSisqkbfJDSEdliXO8f4M=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-7LrHo4ysS/Mc2EngKUxJuXOw9coOK/5JNn/t1udkUAU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3816,13 +3816,19 @@ html body .combo-pop.od-sug .op-g{filter:brightness(1.35);}
 .of-lang button.on{background:var(--accent);color:var(--accent-ink,#fff);}
 .of-enbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin:0 0 10px;padding:10px 12px;border-radius:10px;background:var(--panel);border:1px solid var(--border);color:var(--text);}
 .of-enbar-b{display:flex;flex-wrap:wrap;gap:6px;}
+/* menus over the white offer page (colours, ⋯, positions…): solid */
+html body:has(.of-editor, .od, .xg-wrap, .pk-page) .combo-pop, html body:has(.of-editor, .od, .xg-wrap, .pk-page) .cal-pop, html body:has(.of-editor, .od, .xg-wrap, .pk-page) .op-pop, html body:has(.of-editor, .od, .xg-wrap, .pk-page) .help-pop, html body:has(.of-editor, .od, .xg-wrap, .pk-page) .ltd-pop{background:#17181d !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;border:1px solid rgb(255 255 255 / .14) !important;color:#f1f2f5 !important;box-shadow:0 18px 48px rgb(0 0 0 / .55) !important;}
+html body:has(.of-editor, .od, .xg-wrap, .pk-page) .combo-pop .combo-opt{color:#f1f2f5;} html body:has(.of-editor, .od, .xg-wrap, .pk-page) .combo-pop .combo-opt:hover, html body:has(.of-editor, .od, .xg-wrap, .pk-page) .combo-pop .combo-opt.hl{background:rgb(255 255 255 / .09);}
+html body:has(.of-editor, .od, .xg-wrap, .pk-page) .combo-pop .combo-sep{background:rgb(255 255 255 / .1);}
+:root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .combo-pop, :root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .cal-pop, :root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .op-pop, :root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .help-pop, :root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .ltd-pop{background:#fff !important;color:#16181d !important;border-color:rgb(0 0 0 / .14) !important;box-shadow:0 14px 40px rgb(0 0 0 / .18) !important;}
+:root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .combo-pop .combo-opt{color:#16181d;} :root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .combo-pop .combo-opt:hover{background:rgb(0 0 0 / .06);}
 /* windows over the white offer page (size, translation, pickers…): solid, so the text is clearly seen */
-html body:has(.of-editor) .modal{background:#17181d !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;border-color:rgb(255 255 255 / .14) !important;color:#f1f2f5;}
-html body:has(.of-editor) .modal input, html body:has(.of-editor) .modal select, html body:has(.of-editor) .modal textarea{background:#22242b !important;color:#f1f2f5 !important;border-color:rgb(255 255 255 / .16) !important;}
-html body:has(.of-editor) .modal .section-sub, html body:has(.of-editor) .modal small, html body:has(.of-editor) .modal .field{color:#b3b7c2;}
-:root[data-theme="light"] body:has(.of-editor) .modal{background:#fff !important;color:#16181d;border-color:rgb(0 0 0 / .14) !important;}
-:root[data-theme="light"] body:has(.of-editor) .modal input, :root[data-theme="light"] body:has(.of-editor) .modal select, :root[data-theme="light"] body:has(.of-editor) .modal textarea{background:#f4f5f7 !important;color:#16181d !important;border-color:rgb(0 0 0 / .16) !important;}
-:root[data-theme="light"] body:has(.of-editor) .modal .section-sub, :root[data-theme="light"] body:has(.of-editor) .modal small, :root[data-theme="light"] body:has(.of-editor) .modal .field{color:#5f6470;}
+html body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal{background:#17181d !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;border-color:rgb(255 255 255 / .14) !important;color:#f1f2f5;}
+html body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal input, html body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal select, html body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal textarea{background:#22242b !important;color:#f1f2f5 !important;border-color:rgb(255 255 255 / .16) !important;}
+html body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal .section-sub, html body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal small, html body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal .field{color:#b3b7c2;}
+:root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal{background:#fff !important;color:#16181d;border-color:rgb(0 0 0 / .14) !important;}
+:root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal input, :root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal select, :root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal textarea{background:#f4f5f7 !important;color:#16181d !important;border-color:rgb(0 0 0 / .16) !important;}
+:root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal .section-sub, :root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal small, :root[data-theme="light"] body:has(.of-editor, .od, .xg-wrap, .pk-page) .modal .field{color:#5f6470;}
 #modalRoot .cg-calcbox[hidden], #modalRoot #cgSizeBox[hidden], #modalRoot #cgCompo[hidden], #modalRoot .cg-propadd[hidden]{display:none !important;}
 .cg-prop-h{display:flex;justify-content:space-between;align-items:center;} .cg-propadd{width:100%;margin:2px 0;}
 .cg-calcbox{border:1px solid var(--border);border-radius:10px;padding:8px 10px;margin:4px 0 8px;display:flex;flex-direction:column;gap:6px;}
@@ -19501,7 +19507,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v395';
+const APP_VER = 'v396';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27906,7 +27912,11 @@ function offerEditorBind(){
   root.querySelectorAll('[data-sup]').forEach(b=>b.onclick = ()=>{ const si = +b.dataset.sup; if(si>0){ d.sections.splice(si-1,0,d.sections.splice(si,1)[0]); offerTouch(true); } });
   root.querySelectorAll('[data-sdown]').forEach(b=>b.onclick = ()=>{ const si = +b.dataset.sdown; if(si<d.sections.length-1){ d.sections.splice(si+1,0,d.sections.splice(si,1)[0]); offerTouch(true); } });
   root.querySelectorAll('[data-color]').forEach(b=>b.onclick = ()=>{ const si = +b.dataset.color;
-    evPopMenu(b, OFFER_COLORS.map(c=>({ html:`<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${c.v};margin-right:8px;vertical-align:-2px;border:1px solid #fff3"></span>${c.label}`, fn:()=>{ d.sections[si].color = c.v; offerTouch(true); } }))); });
+    const sw = v=>`<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${odE(v)};margin-right:8px;vertical-align:-2px;border:1px solid #fff3"></span>`;
+    const own = CT.list.filter(e=>e.kind==='color' && /^#[0-9a-f]{6}$/i.test(e.name||'')).map(e=>e.name);
+    evPopMenu(b, OFFER_COLORS.map(c=>({ html:sw(c.v)+c.label, fn:()=>{ d.sections[si].color = c.v; offerTouch(true); } }))
+      .concat(own.length ? [{ sep:true }].concat(own.map(v=>({ html:sw(v)+v.toUpperCase(), fn:()=>{ d.sections[si].color = v; offerTouch(true); } }))) : [])
+      .concat([{ sep:true }, { html:'🎨 Pasirinkti savo spalvą…', fn:()=>offerColorPick(si) }])); });
   // a new section: a ready name, or one written by hand
   const as = document.getElementById('odAddSec'); if(as) as.onclick = ()=>{
     const box = as.parentElement, add = title=>{ d.sections.push({ id:offerUid(), title, color:OFFER_COLORS[d.sections.length % OFFER_COLORS.length].v, discount:0, rows:[] }); offerTouch(true); };
@@ -28187,6 +28197,18 @@ function odGroupByPos(sec){
   sec.rows = out.flatMap(x=>Array.isArray(x) ? x : [x]);
 }
 const odPosTxt = r=>r.pos ? ' ('+r.pos+')' : '';
+// any colour from the whole palette; it is kept in the colour list for everybody
+function offerColorPick(si){
+  const d = OFFER.cur.data, sec = d.sections[si]; if(!sec) return;
+  const inp = document.createElement('input'); inp.type = 'color'; inp.value = /^#[0-9a-f]{6}$/i.test(sec.color||'') ? sec.color : '#83dacb';
+  Object.assign(inp.style, { position:'fixed', left:'50%', top:'40%', width:'1px', height:'1px', opacity:'0', pointerEvents:'none' });
+  document.body.appendChild(inp);
+  inp.addEventListener('input', ()=>{ const h = document.querySelector(`#odEdit .od-sec[data-sec="${si}"] .od-sh`); if(h) h.style.background = inp.value; });
+  inp.addEventListener('change', ()=>{ const v = inp.value.toLowerCase(); inp.remove(); sec.color = v; offerTouch(true);
+    if(canEdit('offers') && !OFFER_COLORS.some(c=>c.v.toLowerCase()===v) && !CT.list.some(e=>e.kind==='color' && String(e.name).toLowerCase()===v)) ctPut({ id:'c:'+v.slice(1), kind:'color', name:v }); });
+  inp.addEventListener('blur', ()=>setTimeout(()=>{ if(inp.isConnected && document.activeElement!==inp) inp.remove(); }, 60000));
+  inp.click();
+}
 function odPosPick(anchor, si, i){
   const d = OFFER.cur.data, sec = d.sections[si], r = sec.rows[i]; if(!r) return;
   const old = document.getElementById('odPosBox'); if(old){ old._close(); if(old._row===r) return; }
@@ -39805,6 +39827,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 15:44', v:'v396', k:'new', t:'Sava skilties spalva; meniu ant balto fono – tamsūs', f:'Pasiūlymo skilties spalvų sąraše – „🎨 Pasirinkti savo spalvą…“: atsidaro visa paletė, pasirinkta spalva pritaikoma ir išsaugoma sąraše visiems. Visi iššokantys meniu ir langai ant balto fono (pasiūlymas, renginių lentelė, krovimo lapai) dabar vientisi tamsūs (šviesioje temoje – balti), nebe pilki permatomi.' },
   { d:'2026-10-07 15:42', v:'v395', k:'fix', t:'Ypatybė „Aukštis“, tvarkingos lentelės', f:'Įrangos grupių ypatybė „Kojos (aukštis)“ supaprastinta į „↕ Aukštis“ – grupėje nieko nustatinėti nereikia. Pasiūlyme įrašai aukštį (cm), o kojos tam aukščiui parenkamos iš sandėlio savaime pagal pavadinimą (pvz. „… 40cm“, o jei tokių nėra – reguliuojamos „… 40-65cm“), po 4 vienai pakylai. Aptarnavimo ir Kita lentelėse mygtukai nebelipa ant datos.' },
   { d:'2026-10-07 15:29', v:'v394', k:'new', t:'Pasiūlymai: pozicija įrašoma iškart', f:'Paspaudus „+ poz.“ prie eilutės iškart atsiranda laukelis įrašyti poziciją, o po juo – išsaugotos pozicijos (atsirenka pagal tai, ką rašai). Enter – išsaugoti (nauja pozicija įsimenama), rodyklės ↑↓ arba spustelėjimas – pasirinkti iš sąrašo, „✕ Be pozicijos“ – pašalinti.' },
   { d:'2026-10-07 15:27', v:'v393', k:'fix', t:'Pasiūlymai: aiškūs langai', f:'Langai, atsidarantys ant pasiūlymo (dydis, aukštis, vertimas, grupės ir paslaugos, iš sandėlio ir kt.), dabar vientisame tamsiame fone (šviesioje temoje – baltame), laukeliai ir tekstas aiškiai matomi.' },
