@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 22;
+const VERSION = 23;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -542,6 +542,13 @@ async function gmCats(c: ImapFlow, uids: number[]): Promise<Map<number, string>>
 }
 // a new letter to a work address (…@eventsolutions.lt): a notification on the phone and the computer
 const WORK_DOMAIN = (Deno.env.get("MAIL_WORK_DOMAIN") || "eventsolutions.lt").toLowerCase();
+// a new work letter while the automatic reply is on: answered right away (not at the next minute), and no notification
+async function autoReplyNow(user: string) {
+  const [row] = await db<{ user_id: string; email: string; secret: string; reader?: Reader | null; settings: Settings; state: { auto?: AutoState } | null }[]>(
+    `mail_accounts?select=user_id,email,secret,reader,settings,state&user_id=eq.${user}`);
+  if (row && autoActive(row.settings?.auto)) return await autoReplyFor(row);
+  return 0;
+}
 async function notifyNew(user: string, items: { uid: number; from: string; subject: string }[]) {
   if (!items.length) return;
   const secret = Deno.env.get("CRON_SECRET"); if (!secret) return;
@@ -557,6 +564,7 @@ async function acctPref(user: string): Promise<string> {
 }
 async function syncFolder(user: string, a: Account, folder: string, quick = false) {
   const t0 = Date.now();
+  let wantAuto = false;
   const only = a.host === GMAIL_IMAP ? await acctPref(user) : "all";
   const gmTabs = a.host === GMAIL_IMAP && folder === "inbox" && catOk;
   const [st] = await db<SyncState[]>(`mail_sync?select=uidvalidity,modseq,synced_at&user_id=eq.${user}&folder=eq.${enc(folder)}`);
@@ -662,7 +670,10 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
           if (todo.length) { const cats = await gmCats(c, todo); await idxUpsert(todo.map((u) => ({ user_id: user, folder, uid: u, cat: cats.get(u) || "primary" } as Partial<IdxRow>))); }
         } catch (e) { if (/cat/.test((e as Error).message)) catOk = false; else console.error("gmail tabs", (e as Error).message); }
       }
-      if (news.length) await notifyNew(user, news);
+      if (news.length) {
+        if (autoActive((await settingsOf(user)).auto)) wantAuto = true;    // away: an automatic reply instead of a notification
+        else await notifyNew(user, news);
+      }
       const unseen = (((await c.search({ seen: false }, { uid: true })) || []) as number[]).filter((u) => pset.has(u)).length;
       const remaining = fresh.length - added;
       await db("mail_sync?on_conflict=user_id,folder", {
@@ -677,7 +688,10 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
     // the quick check (every 15 s): only the few newest letters are made ready
     (res as Record<string, unknown>).bodies = await bodyPrefetch(c, user, folder, present, a.host === GMAIL_IMAP, quick).catch(() => 0);
     return res;
-  }, true, 60_000);
+  }, true, 60_000).then(async (res) => {
+    if (wantAuto) { try { (res as Record<string, unknown>).autoSent = await autoReplyNow(user); } catch (e) { console.error("auto reply now", (e as Error).message); } }
+    return res;
+  });
 }
 // pg_cron, every minute: Inbox for everyone (Sent every 5 min), one after another
 async function runSyncAll(quick = false) {
@@ -1221,18 +1235,31 @@ export function autoSkip(from: string, own: string, headers: string): boolean {
   if (/^x-auto-response-suppress:.*\b(all|oof|autoreply)\b/m.test(h)) return true;
   return false;
 }
-type AutoState = { uidValidity?: string; lastUid?: number; replied?: Record<string, number> };
+type AutoState = { uidValidity?: string; lastUid?: number; replied?: Record<string, number>;
+  last?: { at: string; checked: number; sent: string[]; skipped: { from: string; why: string }[]; err?: string } };
 const REPLY_EVERY = 4 * 24 * 3600e3; // the same sender gets the auto reply once per 4 days
 
 async function autoReplyFor(row: { user_id: string; email: string; secret: string; reader?: Reader | null; settings: Settings; state: { auto?: AutoState } | null }) {
   const a = await accountOf(row);
   const auto = row.settings.auto!;
-  const st: AutoState = { ...(row.state?.auto ?? {}) };
+  // one run at a time for a mailbox (the instant reply and the minute check could meet): a 90-second lock
+  const now = new Date().toISOString();
+  const locked = await db<{ state: { auto?: AutoState } | null }[]>(
+    `mail_accounts?user_id=eq.${row.user_id}&or=(state->auto->>busy.is.null,state->auto->>busy.lt.${now})`,
+    { method: "PATCH", headers: { Prefer: "return=representation" },
+      body: JSON.stringify({ state: { ...(row.state ?? {}), auto: { ...(row.state?.auto ?? {}), busy: new Date(Date.now() + 90_000).toISOString() } } }) });
+  if (!locked.length) return 0;
+  row.state = locked[0].state;
+  const st: AutoState & { busy?: string } = { ...(row.state?.auto ?? {}) };
+  delete st.busy;
   const replied: Record<string, number> = {};
   for (const [k, t] of Object.entries(st.replied ?? {})) if (Date.now() - t < REPLY_EVERY) replied[k] = t;
   const [p] = await db<Person[]>(`profiles?select=*&id=eq.${row.user_id}`);
   const fromName = personName(p);
   const out: { to: string; subject: string; messageId: string; references: string[] }[] = [];
+  // what this run did – shown in Nustatymai, so it is clear why a letter got no reply
+  const diag: NonNullable<AutoState["last"]> = { at: new Date().toISOString(), checked: 0, sent: [], skipped: [] };
+  const skip = (from: string, why: string) => { if (diag.skipped.length < 10) diag.skipped.push({ from: from.slice(0, 120), why }); };
   await withImap(readerOf(a), async (c) => {
     const lock = await c.getMailboxLock("INBOX");
     try {
@@ -1257,16 +1284,18 @@ async function autoReplyFor(row: { user_id: string; email: string; secret: strin
           last = Math.max(last, m.uid);
           const got = (m.internalDate as Date | undefined)?.getTime?.() ?? 0;
           if (got < start) continue;
+          diag.checked++;
           const who = m.envelope?.replyTo?.[0]?.address || m.envelope?.from?.[0]?.address || "";
-          if (autoSkip(who, a.email, m.headers ? m.headers.toString() : "")) continue;
+          if (autoSkip(who, a.email, m.headers ? m.headers.toString() : "")) { skip(who, "automatinis laiškas, naujienlaiškis arba tavo paties adresas"); continue; }
           // read through Gmail: only letters that came to the work address get the work auto reply (not personal mail)
           if (a.reader) {
             const dom = "@" + (Deno.env.get("MAIL_WORK_DOMAIN") || "eventsolutions.lt").toLowerCase();
             const env = m.envelope as { to?: Addr[]; cc?: Addr[] } | undefined;
-            if (![...(env?.to ?? []), ...(env?.cc ?? [])].some((x) => String(x.address || "").toLowerCase().endsWith(dom))) continue;
+            if (![...(env?.to ?? []), ...(env?.cc ?? [])].some((x) => String(x.address || "").toLowerCase().endsWith(dom))) { skip(who, "laiškas ne į darbo adresą"); continue; }
           }
           const key = who.toLowerCase();
-          if (replied[key] || out.some((x) => x.to === key) || out.length >= 30) continue;
+          if (replied[key]) { skip(who, "šiam siuntėjui jau atsakyta per paskutines 4 d."); continue; }
+          if (out.some((x) => x.to === key) || out.length >= 30) continue;
           const orig = m.envelope?.subject || "";
           out.push({
             to: key,
@@ -1297,12 +1326,14 @@ async function autoReplyFor(row: { user_id: string; email: string; secret: strin
       };
       await smtpSend(a, [r.to], await new MailComposer(mail).compile().build());
       replied[r.to] = Date.now();
-      sent++;
+      sent++; diag.sent.push(r.to);
     } catch (e) {
       console.error("auto reply", row.email, (e as Error).message);
+      diag.err = "Išsiųsti nepavyko: " + (e as Error).message.slice(0, 200);
     }
   }
   st.replied = replied;
+  if (diag.checked || diag.err) st.last = diag;
   await db(`mail_accounts?user_id=eq.${row.user_id}`, { method: "PATCH", body: JSON.stringify({ state: { ...(row.state ?? {}), auto: st } }) });
   return sent;
 }
@@ -1375,6 +1406,7 @@ async function handle(me: Me, body: Record<string, unknown>) {
     return {
       connected: true, email: a0.email, reader: a0.reader?.email ?? null, settings: await settingsOf(me.id),
       psignature: psigHtml(me.person, (await settingsOf(me.id)).psig || ""),
+      autoLast: ((await db<{ state: { auto?: AutoState } | null }[]>(`mail_accounts?select=state&user_id=eq.${me.id}`))[0]?.state?.auto?.last) ?? null,
       signature: sigHtml(me.person).replace(`cid:${LOGO_CID}`, "data:image/png;base64," + LOGO_PNG_BASE64),
     };
   }
