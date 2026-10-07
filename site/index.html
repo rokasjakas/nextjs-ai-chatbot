@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-E8e5AhsbvGbc+wsvc7Bw8eR7h+RRU5FyBAs85fjnFy4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wQ8bGum+lboNJty2buLBbu2kui4GrpFMrgiHk9gOwZg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-vP6tT9ZkWnr9/XCUrWQtncINqHEE3LpNCvOQhw/0NbI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -3775,6 +3775,9 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .ct-g-h{display:flex;justify-content:space-between;gap:8px;align-items:baseline;} .ct-price{font-weight:800;color:var(--accent);white-space:nowrap;}
 .cg-p{display:grid;grid-template-columns:minmax(0,1fr) 80px 34px;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);}
 .cg-p>span{display:flex;flex-direction:column;min-width:0;} .cg-p small{color:var(--text-dim);font-size:11.5px;}
+.cg-var{border:1px solid var(--border);border-radius:10px;padding:8px 10px;} .cg-var-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.cg-or{text-align:center;font-weight:800;color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin:6px 0;}
+.od-var{display:block;margin:2px 0 2px 3px;max-width:100%;font-size:7px;height:auto !important;padding:1px 2px;} @media (max-width:760px){ .od-edit .od-var{font-size:12px;} }
 .cg-add{position:relative;margin-top:8px;} .cg-add input{width:100%;}
 .cg-res{display:flex;flex-direction:column;max-height:220px;overflow-y:auto;} .cg-res button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 8px;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--text);font:inherit;text-align:left;cursor:pointer;}
 .cg-res button:hover{background:var(--panel-2);} .cg-res small{color:var(--text-dim);font-size:11.5px;}
@@ -19435,7 +19438,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v374';
+const APP_VER = 'v375';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26794,7 +26797,7 @@ function odSection(d, s, si, mode, rows, cont){
       const over = st && st.used > st.stock;
       return `<div class="od-tr ${over?'over':''}" data-row="${si}:${i}">
         <span class="od-n">${i+1}</span>
-        <span class="od-name"><input data-f="name" value="${odE(r.name)}" placeholder="Pavadinimas">${r.groupId || r.svcId || r.unit ? `<small class="od-desc">${r.groupId ? 'grupė' : r.svcId ? 'paslauga' : ''}${r.unit ? (r.groupId || r.svcId ? ' · ' : '')+'vnt.: '+odE(r.unit) : ''}${r.groupId && r.parts && r.parts.length ? ' · '+odE(ctPartsText(r.parts, offerNum(r.qty))) : ''}</small>` : ''}${st ? `<small class="od-stock ${over?'bad':''}" title="${st.busy ? `Sandėlyje ${st.total}, kiti patvirtinti pasiūlymai tomis dienomis užima ${st.busy}` : 'Sandėlyje '+st.total}">${over?'⚠ ':''}likutis ${st.stock} iš ${st.total}</small>` : ''}</span>
+        <span class="od-name"><input data-f="name" value="${odE(r.name)}" placeholder="Pavadinimas">${r.groupId || r.svcId || r.unit ? `<small class="od-desc">${r.groupId ? 'grupė' : r.svcId ? 'paslauga' : ''}${r.unit ? (r.groupId || r.svcId ? ' · ' : '')+'vnt.: '+odE(r.unit) : ''}${r.groupId && r.parts && r.parts.length ? ' · '+odE(ctPartsText(r.parts, offerNum(r.qty))) : ''}</small>` : ''}${(()=>{ const g = r.groupId && CT.list.find(e=>e.id===r.groupId), vs = g ? ctVariants(g) : []; return vs.length > 1 ? `<select class="od-var" data-var title="Iš ko sudaryti">${vs.map((v, k)=>`<option value="${k}" ${(r.vi||0)===k?'selected':''}>${k ? 'arba ' : ''}${odE(ctPartsText(v.parts))}</option>`).join('')}</select>` : ''; })()}${st ? `<small class="od-stock ${over?'bad':''}" title="${st.busy ? `Sandėlyje ${st.total}, kiti patvirtinti pasiūlymai tomis dienomis užima ${st.busy}` : 'Sandėlyje '+st.total}">${over?'⚠ ':''}likutis ${st.stock} iš ${st.total}</small>` : ''}</span>
         <input data-f="qty" value="${odE(r.qty)}" inputmode="decimal">
         <input data-f="price" value="${odE(r.price)}" inputmode="decimal">
         <input data-f="coef" value="${odE(r.coef)}" inputmode="decimal">
@@ -26802,7 +26805,7 @@ function odSection(d, s, si, mode, rows, cont){
         <span class="od-ract"><button data-rup title="Aukštyn">↑</button><button data-rdown title="Žemyn">↓</button><button data-rdel title="Ištrinti">✕</button></span>
       </div>`;
     }
-    const nm = odE(r.name) + (odRowDesc(r) ? `<small class="od-desc">${odE(odRowDesc(r))}</small>` : ''), qt = odE(offerPlain(offerNum(r.qty)) + (r.unit ? ' '+r.unit : ''));
+    const nm = odE(r.name) + (odRowDesc(r) ? `<small class="od-desc">${odE(odRowDesc(r))}</small>` : ''), qt = odE(offerPlain(offerNum(r.qty)) + (ctUnitN(r.unit) ? ' '+ctUnitN(r.unit) : ''));
     if(np) return `<div class="od-tr np"><span>${i+1}</span><span class="od-name">${nm}</span><span>${qt}</span></div>`;
     return `<div class="od-tr"><span>${i+1}</span><span class="od-name">${nm}</span><span>${qt}</span><span>${odE(offerPlain(offerNum(r.price)))}</span><span>${odE(r.coef===''||r.coef==null?'1':offerPlain(offerNum(r.coef)))}</span><span class="od-sum">${offerMoney(offerRowSum(r))}</span></div>`;
   }).join('');
@@ -27771,6 +27774,8 @@ function offerEditorBind(){
     rowEl.querySelectorAll('[data-f]').forEach(inp=>inp.addEventListener('input', ()=>{ r[inp.dataset.f] = inp.value; if(inp.dataset.f==='name'){ const ln = r.ln || (r.itemId ? (getItem(r.itemId)||{}).name : '');
         if((r.itemId || r.groupId || r.svcId) && normalizeText(inp.value)!==normalizeText(ln||'')){ r.itemId = null; ['groupId','svcId','parts','sp','ln'].forEach(k=>delete r[k]); }
         odRowSuggest(inp, si, i); } offerTouch(false); }));
+    const vr = rowEl.querySelector('[data-var]');
+    if(vr) vr.onchange = ()=>{ const g = CT.list.find(e=>e.id===r.groupId), v = g && ctVariants(g)[+vr.value]; if(!v) return; r.vi = +vr.value; r.parts = v.parts.map(p=>[String(p.itemId), offerNum(p.qty)]); offerTouch(true); };
     const nm = rowEl.querySelector('[data-f="name"]');
     if(nm){ nm.addEventListener('keydown', e=>odRowSugKey(e)); nm.addEventListener('blur', ()=>setTimeout(()=>{ const b = document.getElementById('odSug'); if(b && document.activeElement!==nm) b.remove(); }, 150)); }
     rowEl.querySelector('[data-rdel]').onclick = ()=>{ sec.rows.splice(i,1); offerTouch(true); };
@@ -27848,7 +27853,7 @@ function odRowSuggest(inp, si, ri){
   const pr = (v, u)=>ctHasPrice(v) ? ' · kaina '+odE(offerPlain(offerNum(v)))+(u ? ' / '+odE(u) : '') : '';
   box.innerHTML = list.map((x,k)=>x.kind==='item'
     ? `<button type="button" data-k="${k}"><span class="op-g" style="background:${GROUP_COLOR[x.it.group]||'#666'}22;color:${GROUP_COLOR[x.it.group]||'#999'}">${odE(GROUP_ABBR[x.it.group]||'')}</span><span><b>${odE(ctItemName(x.it))}</b><small>${ctItemName(x.it)!==x.it.name ? 'sandėlyje „'+odE(x.it.name)+'“ · ' : ''}${odE(x.it.folder||'')}${x.it.code?' · '+odE(x.it.code):''} · sandėlyje ${+x.it.qty||0}${pr(ctItemPrice(x.it), ctItemUnit(x.it))}</small></span></button>`
-    : x.kind==='group' ? `<button type="button" data-k="${k}"><span class="op-g ct-bg">GR</span><span><b>${odE(x.e.name)}</b><small>grupė · 1 ${odE(x.e.unit||'vnt.')} = ${odE(ctPartsText(x.e.parts)||'—')}${pr(x.e.price, x.e.unit)}</small></span></button>`
+    : x.kind==='group' ? `<button type="button" data-k="${k}"><span class="op-g ct-bg">GR</span><span><b>${odE(x.e.name)}</b><small>grupė · ${odE(ctGroupLine(x.e))}${pr(x.e.price, x.e.unit)}</small></span></button>`
     : x.kind==='svc' ? `<button type="button" data-k="${k}"><span class="op-g ct-bs">PS</span><span><b>${odE(x.e.name)}</b><small>paslauga${x.e.cat ? ' · '+odE(x.e.cat) : ''}${pr(x.e.price, x.e.unit)}</small></span></button>`
     : `<button type="button" data-k="${k}"><span class="op-g od-sug-l">↺</span><span><b>${odE(x.l.name)}</b><small>${x.l.kita ? 'Kita · ' : ''}naudota pasiūlymuose ${x.l.n}×${pr(x.l.price, x.l.unit)}</small></span></button>`).join('');
   box.querySelectorAll('[data-k]').forEach(b=>b.onmousedown = e=>{ e.preventDefault(); odRowPick(+b.dataset.k); });
@@ -28033,13 +28038,21 @@ function ctPartsText(parts, k){
   return (parts||[]).map(p=>{ const id = Array.isArray(p) ? p[0] : p.itemId, q = Array.isArray(p) ? p[1] : p.qty, it = getItem(id);
     return offerPlain(offerNum(q)*(k==null ? 1 : k))+'× '+(it ? it.name : (p.name || '(ištrintas daiktas)')); }).join(', ');
 }
+// a group can be made in several ways („arba“): variants = [{ parts:[{ itemId, qty }] }]
+function ctVariants(e){ return e && Array.isArray(e.variants) && e.variants.length ? e.variants : [{ parts:(e && e.parts) || [] }]; }
+function ctVarsText(e){ return ctVariants(e).map(v=>ctPartsText(v.parts)).filter(Boolean).join(' arba '); }
+// „1m2 = 4× … arba 2× …“; a group may be just a name and a price (without what it is made of)
+function ctGroupLine(e){ const t = ctVarsText(e); return t ? ctUnitOne(e.unit)+' = '+t : (e.unit ? e.unit+' · ' : '')+'be sudėties'; }
+// the unit is written as it is shown: „m²“, „1m2“, „komplektas“; „1 …“ = one unit
+const ctUnitOne = u=>!u ? '1 vnt.' : /^1(?![\d.,])/.test(String(u).trim()) ? String(u).trim() : '1 '+u;
+const ctUnitN = u=>String(u||'').trim().replace(/^1(?![\d.,])\s*/, '');
 // the line under a row's name in the offer: what the group is made of (when it is shown)
 function odRowDesc(r){ return r.sp && r.parts && r.parts.length ? ctPartsText(r.parts, offerNum(r.qty)) : ''; }
 // a row of an offer filled from a group / a service
 function ctFill(row, e){
   row.name = e.name; row.ln = e.name; row.unit = e.unit || ''; row.itemId = null;
-  if(e.kind==='group'){ row.groupId = e.id; row.parts = (e.parts||[]).map(p=>[String(p.itemId), offerNum(p.qty)]); row.sp = !!e.showParts; delete row.svcId; }
-  else { row.svcId = e.id; delete row.groupId; delete row.parts; delete row.sp; }
+  if(e.kind==='group'){ row.groupId = e.id; row.vi = 0; row.parts = ctVariants(e)[0].parts.map(p=>[String(p.itemId), offerNum(p.qty)]); row.sp = !!e.showParts; delete row.svcId; }
+  else { row.svcId = e.id; ['groupId','parts','sp','vi'].forEach(k=>delete row[k]); }
   if(ctHasPrice(e.price)) row.price = e.price;
 }
 // the Sandėlis items an offer uses: its rows from Sandėlis and what its groups are made of
@@ -28119,10 +28132,10 @@ function ctBody(){
     return;
   }
   if(CT.tab==='groups'){
-    const list = CT.list.filter(e=>e.kind==='group' && ctMatch([e.name, e.cat, ctPartsText(e.parts)].join(' '))).sort((a,b)=>a.name.natCmp(b.name));
+    const list = CT.list.filter(e=>e.kind==='group' && ctMatch([e.name, e.cat, ctVarsText(e)].join(' '))).sort((a,b)=>a.name.natCmp(b.name));
     box.innerHTML = list.length ? `<div class="ct-groups">${list.map(e=>`<button type="button" class="card ct-g" data-ctgr="${odE(e.id)}">
         <span class="ct-g-h"><b>${odE(e.name)}</b><span class="ct-price">${money(e.price)}${e.unit ? ' / '+odE(e.unit) : ''}</span></span>
-        <small>${e.cat ? '<span class="pill">'+odE(e.cat)+'</span> ' : ''}1 ${odE(e.unit||'vnt.')} = ${odE(ctPartsText(e.parts) || '—')}</small>
+        <small>${e.cat ? '<span class="pill">'+odE(e.cat)+'</span> ' : ''}${odE(ctGroupLine(e))}</small>
         ${e.showParts ? '<small class="muted">Pasiūlyme rodoma ir sudėtis</small>' : ''}</button>`).join('')}</div>`
       : `<div class="card empty-state">${CT.q ? 'Nieko nerasta.' : 'Grupių dar nėra.'+(ed ? ' Spausk „+ Nauja grupė“.' : '')}</div>`;
     box.querySelectorAll('[data-ctgr]').forEach(b=>b.onclick = ()=>ctGroupModal(CT.list.find(e=>e.id===b.dataset.ctgr)));
@@ -28157,52 +28170,63 @@ async function ctServiceAdd(){
   if(had){ toast('Tokia paslauga jau yra.'); return; }
   if(await ctPut({ id:ctNewId('s'), kind:'service', name:name.trim(), unit:'', price:'', cat:'' })){ CT.q = ''; ctRender(); setTimeout(()=>{ const r = [...document.querySelectorAll('[data-cte]')].find(x=>x.querySelector('[data-k="name"]').value===name.trim()); if(r){ const p = r.querySelector('[data-k="price"]'); p.focus(); } }, 50); }
 }
-// a group: the name in the offer, the unit, the price for one unit, what one unit is made of
+// a group: the name in the offer, the unit (as written), the price for one unit, what one unit is made of –
+// one or several ways („arba“), each of one or several Sandėlis items
 function ctGroupModal(g){
-  const ed = canEdit('offers'), x = g ? JSON.parse(JSON.stringify(g)) : { id:null, kind:'group', name:'', unit:'', price:'', cat:'', showParts:false, parts:[] };
+  const ed = canEdit('offers'), x = g ? JSON.parse(JSON.stringify(g)) : { id:null, kind:'group', name:'', unit:'', price:'', cat:'', showParts:false };
+  x.variants = JSON.parse(JSON.stringify(ctVariants(x))).map(v=>({ parts:v.parts||[] }));
   openModal(`<div class="row between" style="align-items:center;margin-bottom:10px;"><h3 style="margin:0;">${g ? 'Įrangos grupė' : 'Nauja įrangos grupė'}</h3><button class="icon-btn" id="cgX" style="font-size:20px;" aria-label="Uždaryti">✕</button></div>
     <label class="field">Pavadinimas pasiūlyme<input id="cgName" value="${odE(x.name)}" placeholder="pvz. Infiled P3 LED ekranas"></label>
     <div class="row" style="gap:8px;flex-wrap:wrap;">
-      <label class="field" style="flex:1 1 90px;">Vienetas<input id="cgUnit" value="${odE(x.unit)}" placeholder="pvz. m², kompl."></label>
+      <label class="field" style="flex:1 1 120px;">Vienetas – kaip rašyti pasiūlyme<input id="cgUnit" value="${odE(x.unit)}" placeholder="pvz. 1m2, 1m3, komplektas"></label>
       <label class="field" style="flex:1 1 110px;">Kaina už vienetą, €<input id="cgPrice" value="${odE(ctHasPrice(x.price) ? offerPlain(offerNum(x.price)) : '')}" inputmode="decimal"></label>
       <label class="field" style="flex:1 1 130px;">Skiltis${ctCatSel(x.cat||'', 'id="cgCat"')}</label></div>
     <label class="row" style="gap:8px;align-items:center;margin:4px 0 10px;"><input type="checkbox" id="cgShow" ${x.showParts?'checked':''}> Pasiūlyme po pavadinimu rodyti sudėtį</label>
-    <div class="fb-sec" style="margin:0 0 6px;">Sudėtis – 1 <span id="cgU1">${odE(x.unit||'vnt.')}</span> sudaro:</div>
-    <div id="cgParts"></div>
-    ${ed ? `<div class="cg-add"><input type="search" id="cgQ" placeholder="+ Pridėti daiktą iš sandėlio…" autocomplete="off"><div id="cgRes" class="cg-res"></div></div>` : ''}
-    <div class="section-sub" id="cgVal" style="margin:8px 0 0;"></div>
+    <div class="fb-sec" style="margin:0 0 6px;">Sudėtis – <span id="cgU1">${odE(ctUnitOne(x.unit))}</span> sudaro:</div>
+    <div id="cgVars"></div>
+    ${ed ? '<button type="button" class="btn small" id="cgOr" style="margin-top:8px;">+ Arba – kitas sudėties variantas</button>' : ''}
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;">${g && ed ? '<button class="btn danger" id="cgDel">Ištrinti</button>' : '<span></span>'}
       <span class="row" style="gap:8px;"><button class="btn" id="cgCancel">Atšaukti</button>${ed ? '<button class="btn primary" id="cgSave">Išsaugoti</button>' : ''}</span></div>`);
-  const drawParts = ()=>{
-    const el = document.getElementById('cgParts');
-    el.innerHTML = x.parts.length ? x.parts.map((p, i)=>{ const it = getItem(p.itemId); return `<div class="cg-p"><span><b>${odE(it ? it.name : p.name || '(ištrintas daiktas)')}</b>${it && it.code ? `<small>${odE(it.code)}</small>` : ''}</span>
-      <input data-pq="${i}" value="${odE(offerPlain(offerNum(p.qty)))}" inputmode="decimal" ${ed?'':'disabled'}>${ed ? `<button type="button" class="icon-btn" data-pdel="${i}" title="Išimti">✕</button>` : ''}</div>`; }).join('') : '<div class="section-sub" style="margin:0;">Daiktų dar nėra.</div>';
-    el.querySelectorAll('[data-pq]').forEach(inp=>inp.addEventListener('input', ()=>{ x.parts[+inp.dataset.pq].qty = offerNum(inp.value); val(); }));
-    el.querySelectorAll('[data-pdel]').forEach(b=>b.onclick = ()=>{ x.parts.splice(+b.dataset.pdel, 1); drawParts(); });
-    val();
+  const unitOne = ()=>ctUnitOne(document.getElementById('cgUnit').value.trim());
+  // what a variant is worth at Sandėlis prices – for comparison
+  const worth = v=>{ let sum = 0, miss = 0; v.parts.forEach(p=>{ const it = getItem(p.itemId), pr = it ? ctItemPrice(it) : ''; if(ctHasPrice(pr)) sum += offerNum(pr)*offerNum(p.qty); else miss++; });
+    return v.parts.length ? `Atskirai pagal kainas: <b>${offerMoney(sum)}</b> už ${odE(unitOne())}${miss ? ` <small>(${miss} be kainos)</small>` : ''}` : ''; };
+  const draw = (focusV)=>{
+    const box = document.getElementById('cgVars'), many = x.variants.length > 1;
+    box.innerHTML = x.variants.map((v, vi)=>`${vi ? '<div class="cg-or">arba</div>' : ''}<div class="cg-var" data-v="${vi}">
+      ${many ? `<div class="cg-var-h"><b>${vi + 1} variantas</b>${ed ? `<button type="button" class="icon-btn" data-vdel="${vi}" title="Ištrinti variantą">✕</button>` : ''}</div>` : ''}
+      ${v.parts.length ? v.parts.map((p, i)=>{ const it = getItem(p.itemId); return `<div class="cg-p"><span><b>${odE(it ? it.name : p.name || '(ištrintas daiktas)')}</b>${it && it.code ? `<small>${odE(it.code)}</small>` : ''}</span>
+        <input data-pq="${i}" value="${odE(offerPlain(offerNum(p.qty)))}" inputmode="decimal" title="Kiek vienetų" ${ed?'':'disabled'}>${ed ? `<button type="button" class="icon-btn" data-pdel="${i}" title="Išimti">✕</button>` : ''}</div>`; }).join('') : '<div class="section-sub" style="margin:0 0 4px;">Daiktų nėra – gali palikti tuščią (grupė bus tik pavadinimas ir kaina) arba pridėti vieną ar kelis.</div>'}
+      ${ed ? `<div class="cg-add"><input type="search" data-q placeholder="+ Pridėti daiktą iš sandėlio (galima kelis)…" autocomplete="off"><div class="cg-res"></div></div>` : ''}
+      <div class="section-sub cg-val" style="margin:6px 0 0;">${worth(v)}</div></div>`).join('');
+    box.querySelectorAll('[data-v]').forEach(el=>{
+      const v = x.variants[+el.dataset.v];
+      el.querySelectorAll('[data-pq]').forEach(inp=>inp.addEventListener('input', ()=>{ v.parts[+inp.dataset.pq].qty = offerNum(inp.value); el.querySelector('.cg-val').innerHTML = worth(v); }));
+      el.querySelectorAll('[data-pdel]').forEach(b=>b.onclick = ()=>{ v.parts.splice(+b.dataset.pdel, 1); draw(); });
+      const vd = el.querySelector('[data-vdel]'); if(vd) vd.onclick = ()=>{ x.variants.splice(+vd.dataset.vdel, 1); draw(); };
+      const q = el.querySelector('[data-q]'); if(!q) return; const res = el.querySelector('.cg-res');
+      q.addEventListener('input', ()=>{ const w = normalizeText(q.value).split(/\s+/).filter(Boolean);
+        if(!w.length){ res.innerHTML = ''; return; }
+        const hit = allItems().filter(it=>it.name && w.every(t=>normalizeText([it.name, it.code, it.folder].join(' ')).includes(t))).slice(0, 8);
+        res.innerHTML = hit.map(it=>`<button type="button" data-pick="${odE(it.id)}"><b>${odE(it.name)}</b><small>${odE(it.folder||'')}${it.code?' · '+odE(it.code):''}</small></button>`).join('') || '<div class="section-sub" style="margin:4px;">Nieko nerasta.</div>';
+        res.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ const id = String(b.dataset.pick), p = v.parts.find(y=>String(y.itemId)===id);
+          if(p) p.qty = offerNum(p.qty) + 1; else v.parts.push({ itemId:id, qty:1, name:(getItem(id)||{}).name || '' });
+          draw(+el.dataset.v); }); });
+      q.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); const b = res.querySelector('[data-pick]'); if(b) b.click(); } });
+    });
+    if(focusV!=null){ const q = box.querySelector(`[data-v="${focusV}"] [data-q]`); if(q) q.focus(); }
   };
-  // what the parts are worth at Sandėlis prices – for comparison
-  const val = ()=>{ let sum = 0, miss = 0; x.parts.forEach(p=>{ const it = getItem(p.itemId), pr = it ? ctItemPrice(it) : ''; if(ctHasPrice(pr)) sum += offerNum(pr)*offerNum(p.qty); else miss++; });
-    document.getElementById('cgVal').innerHTML = x.parts.length ? `Sudėtis atskirai pagal kainas: <b>${offerMoney(sum)}</b> už 1 ${odE(document.getElementById('cgUnit').value || 'vnt.')}${miss ? ` <small>(${miss} be kainos)</small>` : ''}` : ''; };
-  document.getElementById('cgUnit').addEventListener('input', e=>{ document.getElementById('cgU1').textContent = e.target.value || 'vnt.'; val(); });
-  const q = document.getElementById('cgQ');
-  if(q){ const res = document.getElementById('cgRes');
-    q.addEventListener('input', ()=>{ const w = normalizeText(q.value).split(/\s+/).filter(Boolean);
-      if(!w.length){ res.innerHTML = ''; return; }
-      const hit = allItems().filter(it=>it.name && w.every(t=>normalizeText([it.name, it.code, it.folder].join(' ')).includes(t))).slice(0, 8);
-      res.innerHTML = hit.map(it=>`<button type="button" data-pick="${odE(it.id)}"><b>${odE(it.name)}</b><small>${odE(it.folder||'')}${it.code?' · '+odE(it.code):''}</small></button>`).join('') || '<div class="section-sub" style="margin:4px;">Nieko nerasta.</div>';
-      res.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ const id = String(b.dataset.pick), p = x.parts.find(y=>String(y.itemId)===id);
-        if(p) p.qty = offerNum(p.qty) + 1; else x.parts.push({ itemId:id, qty:1, name:(getItem(id)||{}).name || '' });
-        q.value = ''; res.innerHTML = ''; drawParts(); q.focus(); }); });
-    q.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); const b = res.querySelector('[data-pick]'); if(b) b.click(); } }); }
-  drawParts();
+  draw();
+  document.getElementById('cgUnit').addEventListener('input', ()=>{ document.getElementById('cgU1').textContent = unitOne(); x.variants.forEach((v, vi)=>{ const el = document.querySelector(`#cgVars [data-v="${vi}"] .cg-val`); if(el) el.innerHTML = worth(v); }); });
+  const or = document.getElementById('cgOr'); if(or) or.onclick = ()=>{ x.variants.push({ parts:[] }); draw(x.variants.length - 1); };
   if(!ed) document.querySelectorAll('#modalRoot input, #modalRoot select').forEach(el=>el.disabled = true);
   document.getElementById('cgX').onclick = closeModal; document.getElementById('cgCancel').onclick = closeModal;
   const del = document.getElementById('cgDel'); if(del) del.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti grupę „'+g.name+'“? Jau sukurtuose pasiūlymuose ji liks.'))) return; if(await ctDel(g.id)){ closeModal(); ctBody(); } };
   const sv = document.getElementById('cgSave'); if(sv) sv.onclick = async ()=>{
     x.name = document.getElementById('cgName').value.trim(); x.unit = document.getElementById('cgUnit').value.trim(); x.cat = document.getElementById('cgCat').value; x.showParts = document.getElementById('cgShow').checked;
     const pr = document.getElementById('cgPrice').value.trim(); x.price = pr==='' ? '' : offerNum(pr);
-    x.parts = x.parts.filter(p=>offerNum(p.qty) > 0);
+    x.variants = x.variants.map(v=>({ parts:v.parts.filter(p=>offerNum(p.qty) > 0) })).filter((v, i, a)=>v.parts.length || a.length===1);
+    x.parts = x.variants[0].parts;
     if(!x.name){ toast('Įrašyk grupės pavadinimą.'); return; }
     if(pr!=='' && !/\d/.test(pr)){ toast('Kainą įrašyk skaičiumi.'); return; }
     if(CT.list.some(e=>e.kind==='group' && e.id!==x.id && normalizeText(e.name)===normalizeText(x.name))){ toast('Grupė tokiu pavadinimu jau yra.'); return; }
@@ -28226,7 +28250,7 @@ function offerPickCatalog(si){
       .sort((a,b)=>(catHit(b)?1:0)-(catHit(a)?1:0) || (a.kind==='group' ? 0 : 1)-(b.kind==='group' ? 0 : 1) || a.name.natCmp(b.name));
     document.getElementById('pcList').innerHTML = list.map(e=>{ const r = sec.rows.find(y=>y.groupId===e.id || y.svcId===e.id);
       return `<div class="op-item ${r?'on':''}" data-ce="${odE(e.id)}"><span class="op-g ${e.kind==='group'?'ct-bg':'ct-bs'}">${e.kind==='group'?'GR':'PS'}</span>
-        <span class="op-t"><b>${odE(e.name)}</b><small>${e.kind==='group' ? '1 '+odE(e.unit||'vnt.')+' = '+odE(ctPartsText(e.parts)||'—') : 'paslauga'}${ctHasPrice(e.price) ? ' · '+odE(offerMoney(offerNum(e.price)))+(e.unit?' / '+odE(e.unit):'') : ''}</small></span>
+        <span class="op-t"><b>${odE(e.name)}</b><small>${e.kind==='group' ? odE(ctGroupLine(e)) : 'paslauga'}${ctHasPrice(e.price) ? ' · '+odE(offerMoney(offerNum(e.price)))+(e.unit?' / '+odE(e.unit):'') : ''}</small></span>
         ${r ? `<span class="op-have">✓ ${odE(offerPlain(offerNum(r.qty)))}</span>` : ''}
         <input type="number" min="0" step="any" placeholder="kiekis" inputmode="decimal" data-q><button type="button" class="op-plus" data-add aria-label="Pridėti">+</button></div>`; }).join('')
       || `<div class="section-sub">${CT.list.some(e=>e.kind==='group' || e.kind==='service') ? 'Nieko nerasta.' : 'Grupių ir paslaugų dar nėra – sukurk jas skiltyje „Įranga / Paslaugos“.'}</div>`;
@@ -39350,6 +39374,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 13:00', v:'v375', k:'new', t:'Įrangos grupės: „arba“, keli daiktai, tuščios grupės', f:'Vienetą rašai taip, kaip jis turi būti pasiūlyme (1m2, 1m3, komplektas…). Grupė gali turėti kelis sudėties variantus – „+ Arba“: pvz. 1m2 = 4× Infiled 50x50 arba 2× Infiled 50x100; kiekviename variante – vienas ar keli daiktai. Pasiūlyme prie grupės eilutės pasirenki, iš kurio varianto ją sudaryti, ir pagal jį skaičiuojamas sandėlio likutis. Grupė gali būti ir tuščia – tik pavadinimas ir kaina.' },
   { d:'2026-10-07 12:50', v:'v374', k:'new', t:'Pasiūlymai: Įranga / Paslaugos', f:'Pasiūlymų kūrime – nauja skiltis „📦 Įranga / Paslaugos“. Įranga: sandėlio daiktai – kaip vadinasi pasiūlyme, vienetas ir kaina. Įrangos grupės: keli daiktai kaip viena eilutė su savo kaina, pvz. „Infiled P3 ekranas“ – 1 m² = 4× Infiled P3 50x50; pasiūlyme sandėlio likutis skaičiuojamas pagal sudėtį, galima rodyti ir sudėtį po pavadinimu. Paslaugos – pavadinimas, vienetas, įkainis. Kita – kas pasiūlyme įrašyta ranka, išsaugoma savaime. Rašant eilutės pavadinimą pasiūlyme siūloma iš šio sąrašo, skiltyje yra ir mygtukas „+ Grupė / paslauga“. Reikia paleisti offer_catalog.sql.' },
   { d:'2026-10-06 16:48', v:'v373', k:'new', t:'Šaudyklė: nauji žmogeliukai', f:'Kontrteroristai – trys išvaizdos: kareivis smėlio spalvos apranga su šalmu, akiniais ir liemene su dėklais, juodas specialiųjų pajėgų pareigūnas su skydeliu prieš veidą ir antkeliais, policininkas su kepure, ženklu ir diržu su dėklais. Teroristai – penkios: su pakolio kepure, barzda, ilgais marškiniais ir žalia liemene; su juoda kauke, žalia striuke ir džinsais; su skarele ant veido ir dryžuotu megztiniu; su kauke ir dykumos margumo kelnėmis; su raudonai balta skara ir baltu drabužiu. Kiekvienas žaidėjas visada atrodo vienodai visuose kompiuteriuose.' },
   { d:'2026-10-06 16:45', v:'v372', k:'fix', t:'iPhone: meniu juosta nebepakyla atidarius chatą', f:'Atidarius chatą ar langą telefone apatinė meniu juosta likdavo pakilusi nuo ekrano krašto. Puslapis po chatu ir langais dabar laikomas vietoje kitaip – juosta lieka apačioje, o sąrašai viduje slenka kaip anksčiau.' },
