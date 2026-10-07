@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bu1tGHrhBLCBrzAPMI2u1F3yy6opzi0F+IUDdQp3th0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Sąskaitos · Event Solutions</title>
+<link rel="icon" href="icons/icon-192.png">
+<style>
+:root{--bg:#141414;--panel:#1f1f1f;--border:#343434;--text:#ececec;--dim:#9a9a9a;--accent:#6BB4F5;--ok:#2F9E73;--warn:#E0A030;--bad:#E5484D;}
+@media (prefers-color-scheme: light){ :root{--bg:#f3f4f6;--panel:#fff;--border:#dcdfe4;--text:#1d2229;--dim:#6b7280;--accent:#1e6fd9;} }
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+.wrap{max-width:640px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px));}
+.brand{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:13px;margin-bottom:12px;}
+.brand img{width:28px;height:28px;border-radius:7px;}
+.brand .sp{flex:1;}
+.brand a{color:var(--accent);text-decoration:none;cursor:pointer;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
+h1{font-size:22px;margin:0 0 6px;line-height:1.2;}
+h2{font-size:16px;margin:0 0 10px;}
+p{margin:6px 0;}
+.muted{color:var(--dim);font-size:14px;}
+label{display:block;font-size:13px;color:var(--dim);margin:10px 0 4px;}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;font-size:16px;}
+textarea{min-height:70px;resize:vertical;}
+input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(--accent) 50%,transparent);border-color:var(--accent);}
+.pin{font-size:26px;letter-spacing:8px;text-align:center;font-weight:700;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 16px;border:0;border-radius:12px;background:var(--accent);color:#0c1b2a;font:inherit;font-weight:700;font-size:16px;cursor:pointer;margin-top:14px;}
+.btn.ghost{background:none;border:1px solid var(--border);color:var(--text);font-weight:600;}
+.btn.small{width:auto;padding:9px 14px;font-size:14px;margin-top:0;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.err{color:var(--bad);font-size:14px;margin-top:10px;white-space:pre-line;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.row2 label{margin-top:10px;}
+.line{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:color-mix(in srgb,var(--bg) 45%,var(--panel));}
+.line-h{display:flex;align-items:center;gap:8px;font-weight:700;}
+.line-h .sp{flex:1;}
+.line-h .amt{font-variant-numeric:tabular-nums;}
+.x{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--dim);font-size:16px;cursor:pointer;line-height:1;}
+.seg{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:10px;}
+.seg button{flex:1;padding:10px 6px;border:0;background:none;color:var(--text);font:inherit;font-size:14px;cursor:pointer;}
+.seg button.on{background:var(--accent);color:#0c1b2a;font-weight:700;}
+.hint{font-size:13px;color:var(--warn);margin-top:6px;}
+.sum{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;}
+.sum:last-child{border-bottom:0;}
+.sum span{color:var(--dim);}
+.match{margin-top:10px;padding:10px 12px;border-radius:10px;font-weight:600;font-size:14px;}
+.match.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok);}
+.match.bad{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad);}
+.file{display:flex;align-items:center;gap:10px;padding:12px;border:1px dashed var(--border);border-radius:10px;cursor:pointer;margin-top:4px;}
+.file b{word-break:break-all;}
+.file input{display:none;}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;} .top h1{flex:1;margin:0;}
+.inv{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;}
+.inv-h{display:flex;align-items:flex-start;gap:10px;} .inv-h .sp{flex:1;min-width:0;} .inv-h b{font-variant-numeric:tabular-nums;white-space:nowrap;}
+.inv small{display:block;color:var(--dim);font-size:13px;}
+.st{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);margin-top:6px;}
+.why{margin-top:8px;padding:9px 11px;border-radius:8px;background:color-mix(in srgb,var(--bad) 13%,transparent);font-size:14px;}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.hist{margin-top:10px;font-size:14px;} .hist summary{cursor:pointer;color:var(--accent);font-size:14px;}
+.hist ol{list-style:none;margin:8px 0 0;padding:0 0 0 14px;border-left:2px solid var(--border);}
+.hist li{position:relative;padding:3px 0 7px 10px;} .hist li::before{content:'';position:absolute;left:-21px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--c);}
+.hist li small{display:inline;margin-right:6px;} .hist li em{display:block;font-style:normal;color:var(--dim);font-size:13px;}
+.lnk{background:none;border:0;color:var(--accent);font:inherit;font-size:14px;cursor:pointer;padding:0;}
+.ftot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px;padding:12px 14px;border-radius:12px;font-size:14px;}
+.ftot b{font-size:22px;font-variant-numeric:tabular-nums;margin-left:auto;} .ftot small{width:100%;font-size:13px;}
+.ftot.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok);} .ftot.bad{background:color-mix(in srgb,var(--bad) 13%,transparent);color:var(--bad);}
+.ftot.wait,.match.wait{background:color-mix(in srgb,var(--dim) 12%,transparent);color:var(--dim);}
+.extras .extra{border-left:3px solid var(--warn);padding:2px 0 6px 10px;margin-top:10px;}
+.extras .extra .line-h{font-weight:600;font-size:14px;color:var(--warn);}
+.file.small{padding:9px 10px;font-size:14px;margin-top:8px;}
+.x-add{margin-top:10px;display:inline-block;}
+.done{text-align:center;padding:26px 16px;}
+.done .big{font-size:48px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><img src="icons/icon-192.png" alt=""><span>Event Solutions · Freelance sąskaitos</span><span class="sp"></span><a id="out" hidden>Atsijungti</a></div>
+  <div id="app"></div>
+</div>
+<script>
+const FN = "https://yakmikxkcudwloxruhvx.supabase.co/functions/v1/freelance-portal";
+const KEY = "sb_publishable_OYVSooEWr-aPd__NPM8G3g_MQrSAXbI";
+const $app = document.getElementById('app');
+const esc = s=>String(s==null ? '' : s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store = { get(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } }, set(k, v){ try{ v==null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); }catch(e){} } };
+const keep = { get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k, v){ try{ localStorage.setItem(k, v); }catch(e){} } };
+// amounts: a comma or a dot, kept in cents so 0.1+0.2 adds up
+const num = v=>{ const n = parseFloat(String(v==null ? '' : v).replace(/\s/g, '').replace(',', '.')); return isFinite(n) ? n : NaN; };
+const cents = n=>Math.round(n*100);
+const eur = c=>(c/100).toFixed(2).replace('.', ',')+' €';
+const todayStr = ()=>new Intl.DateTimeFormat('en-CA', { timeZone:'Europe/Vilnius' }).format(new Date());
+
+async function call(body){
+  const ac = new AbortController(), to = setTimeout(()=>ac.abort(), 60000);
+  try{
+    const r = await fetch(FN, { method:'POST', headers:{ 'Content-Type':'application/json', apikey:KEY, Authorization:'Bearer '+KEY }, body:JSON.stringify(body), signal:ac.signal });
+    const d = await r.json().catch(()=>({}));
+    if(!r.ok || d.error){
+      if(/Prisijungimas baigėsi|Prisijunk iš naujo/.test(d.error||'')){ S.token = null; store.set('flTok', null); }   // the filled form stays for after signing in again
+      throw new Error(d.error || ('Klaida ('+r.status+')'));
+    }
+    return d;
+  }catch(e){ throw new Error(e.name==='AbortError' ? 'Ryšys per lėtas – pabandyk dar kartą.' : (e.message || 'Nepavyko prisijungti prie serverio.')); }
+  finally{ clearTimeout(to); }
+}
+
+let S = { token:store.get('flTok'), name:store.get('flName')||'', email:store.get('flEmail')||keep.get('flEmail')||'' };
+function logout(){ S.token = null; store.set('flTok', null); store.set('flName', null); draft = null; }
+document.getElementById('out').onclick = ()=>{ logout(); render(); };
+
+// a link from the e-mail „Taisyti sąskaitą“ (?edit=<id>): opened after signing in
+(function(){ const e = new URLSearchParams(location.search).get('edit'); if(e){ store.set('flEdit', e); history.replaceState(null, '', location.pathname); } })();
+function render(){
+  document.getElementById('out').hidden = !S.token;
+  if(!S.token) return S.pinSent ? viewPin() : viewEmail();
+  if(draft) return viewForm();
+  viewHome();
+}
+
+// ---- my invoices ----
+const ST = { new:['Pateikta – laukia patvirtinimo','#E0A030'], later:['Pateikta – laukia patvirtinimo','#E0A030'], rejected:['Nepatvirtinta','#E5484D'],
+  approved:['Patvirtinta, perduota buhalterijai','#2F9E73'], sent:['Patvirtinta, perduota buhalterijai','#2F9E73'], queued:['Suvesta apmokėjimui','#2F9E73'], paid:['Apmokėta','#2F9E73'] };
+let LIST = null;
+const HC = { info:'#6BB4F5', ok:'#2F9E73', bad:'#E5484D' };
+const when = iso=>{ const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('lt-LT', { timeZone:'Europe/Vilnius', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }); };
+async function viewHome(){
+  $app.innerHTML = `<div class="card"><div class="top"><h1>Sveiki${S.name ? ', '+esc(S.name.split(' ')[0]) : ''}!</h1><button class="btn small" id="new">+ Nauja sąskaita</button></div>
+      <p class="muted">Čia matai visas savo pateiktas sąskaitas. Jei sąskaita nepatvirtinta – gausi el. laišką su priežastimi ir galėsi ją pataisyti.</p></div>
+    <div class="card"><h2>Mano sąskaitos</h2><div id="list"><p class="muted">Kraunama…</p></div></div>`;
+  document.getElementById('new').onclick = ()=>{ draft = blankDraft(); render(); };
+  try{ LIST = (await call({ action:'list', token:S.token })).invoices || []; }
+  catch(x){ if(!S.token) return render(); document.getElementById('list').innerHTML = `<div class="err">${esc(/Nežinomas veiksmas/.test(x.message) ? 'Sąskaitų sąrašas dar neįjungtas serveryje (reikia atnaujinti „freelance-portal“ funkciją).' : x.message)}</div>`; return; }
+  const box = document.getElementById('list'); if(!box) return;
+  const want = store.get('flEdit');
+  if(want){ store.set('flEdit', null); const v = LIST.find(x=>x.id===want);
+    if(v && v.editable) return startEdit(v);
+    if(v) setTimeout(()=>alert('Ši sąskaita jau patvirtinta – jos taisyti nebereikia.'), 50); }
+  box.innerHTML = LIST.length ? LIST.map(v=>{
+    const st = ST[v.status] || ST.new, L = v.lines || [];
+    return `<div class="inv"><div class="inv-h"><div class="sp"><div><b>${v.number ? 'Nr. '+esc(v.number) : 'Sąskaita be nr.'}</b></div>
+        <small>Pateikta ${esc(String(v.created_at||'').slice(0,10))} · ${L.length} ${L.length===1 ? 'renginys' : 'renginiai'}${L.length ? ': '+esc(L.slice(0,3).map(l=>l.event).join(', '))+(L.length>3 ? '…' : '') : ''}</small>
+        <span class="st" style="--c:${st[1]}">${st[0]}</span></div><b>${eur(cents(Number(v.amount||0)))}</b></div>
+      ${v.status==='rejected' && v.decision_note ? `<div class="why"><b>Priežastis:</b> ${esc(v.decision_note)}</div>` : ''}
+      ${v.fix_note!=null && v.status==='new' ? `<div class="why"><b>Reikia korekcijų:</b> ${esc(v.fix_note||'žr. el. laišką')}</div>` : ''}
+      ${(v.history||[]).length ? `<details class="hist"${v.status==='rejected' ? ' open' : ''}><summary>Istorija (${v.history.length})</summary><ol>${v.history.map(h=>`<li style="--c:${HC[h.c]||HC.info}"><small>${esc(when(h.at))}</small><b>${esc(h.t)}</b>${h.note ? `<em>${esc(h.note)}</em>` : ''}</li>`).join('')}</ol></details>` : ''}
+      <div class="acts">${v.editable ? `<button class="btn small${v.status==='rejected' || v.fix_note!=null ? '' : ' ghost'}" data-edit="${esc(v.id)}">✏️ Taisyti sąskaitą</button>` : ''}${(v.files||[]).length ? `<button class="btn small ghost" data-file="${esc(v.id)}">📎 Failas</button>` : ''}</div></div>`;
+  }).join('') : '<p class="muted">Dar nepateikei nė vienos sąskaitos.</p>';
+  box.querySelectorAll('[data-edit]').forEach(b=>b.onclick = ()=>startEdit(LIST.find(v=>v.id===b.dataset.edit)));
+  box.querySelectorAll('[data-file]').forEach(b=>b.onclick = async ()=>{
+    const w = window.open('', '_blank');
+    try{ const d = await call({ action:'file', token:S.token, id:b.dataset.file }); if(w) w.location = d.url; else location.href = d.url; }
+    catch(x){ if(w) w.close(); alert(x.message); }
+  });
+}
+function startEdit(v){
+  if(!v) return;
+  draft = { editId:v.id, wasRejected:v.status==='rejected' || v.fix_note!=null, fixMode:v.status!=='rejected' && v.fix_note!=null, why:(v.status==='rejected' ? v.decision_note : v.fix_note)||'', number:v.number||'', total:String(v.amount||'').replace('.', ','), note:v.note||'', file:null, oldFile:(v.files||[])[0]||null, oldTotal:v.file_total!=null ? Number(v.file_total) : null,
+    lines:(v.lines||[]).map(l=>Object.assign(newLine(l.date), { ename:l.event||'', ev:l.event_id || '__manual', name:l.event_id ? '' : (l.event||''), type:l.type==='hourly' ? 'hourly' : 'fixed',
+      amount:l.type==='hourly' ? '' : (Number(l.amount) ? String(l.amount).replace('.', ',') : ''), hours:l.type==='hourly' ? String(l.hours).replace('.', ',') : '', rate:l.type==='hourly' ? String(l.rate).replace('.', ',') : '',
+      extras:(l.extras||[]).map(x=>({ what:x.what||'', amount:String(x.amount||'').replace('.', ','), file:null, keep:x.file_idx>0 ? x.file_idx : -1, keepName:x.file_idx>0 && v.files[x.file_idx] ? v.files[x.file_idx].name : '' })) })) };
+  if(!draft.lines.length) draft.lines.push(newLine());
+  render();
+  draft.lines.forEach((l, i)=>{ if(l.date) loadEvents(i, true); });
+}
+
+// ---- 1. e-mail ----
+function viewEmail(err){
+  $app.innerHTML = `<div class="card"><h1>Sąskaitų pateikimas</h1>
+    <p class="muted">Įrašyk el. paštą, kurį naudoji darbui su Event Solutions – atsiųsime vienkartinį prisijungimo kodą (galioja 1 valandą).</p>
+    <form id="f"><label>El. paštas</label><input id="em" type="email" autocomplete="email" inputmode="email" value="${esc(S.email)}" required>
+    <button class="btn" id="go">Gauti kodą</button><div class="err" id="err">${esc(err||'')}</div></form></div>`;
+  const f = document.getElementById('f'), em = document.getElementById('em');
+  if(!S.email) em.focus();
+  f.onsubmit = async e=>{
+    e.preventDefault();
+    const email = em.value.trim().toLowerCase(), b = document.getElementById('go');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ document.getElementById('err').textContent = 'Įrašyk teisingą el. paštą.'; return; }
+    b.disabled = true; b.textContent = 'Siunčiama…';
+    try{ await call({ action:'pin', email }); S.email = email; keep.set('flEmail', email); store.set('flEmail', email); S.pinSent = true; render(); }
+    catch(x){ b.disabled = false; b.textContent = 'Gauti kodą'; document.getElementById('err').textContent = x.message; }
+  };
+}
+
+// ---- 2. PIN ----
+function viewPin(){
+  $app.innerHTML = `<div class="card"><h1>Įvesk kodą</h1>
+    <p class="muted">Kodą išsiuntėme į <b>${esc(S.email)}</b>. Jei nerandi – patikrink „Šlamšto“ (Spam) aplanką.</p>
+    <form id="f"><label>6 skaitmenų kodas</label><input id="pin" class="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+    <button class="btn" id="go">Prisijungti</button><div class="err" id="err"></div></form>
+    <button class="btn ghost" id="back">← Kitas el. paštas / naujas kodas</button></div>`;
+  const pin = document.getElementById('pin'); pin.focus();
+  pin.oninput = ()=>{ pin.value = pin.value.replace(/\D/g, '').slice(0, 6); if(pin.value.length===6) document.getElementById('f').requestSubmit(); };
+  document.getElementById('back').onclick = ()=>{ S.pinSent = false; render(); };
+  document.getElementById('f').onsubmit = async e=>{
+    e.preventDefault();
+    const b = document.getElementById('go');
+    if(b.disabled) return;
+    b.disabled = true; b.textContent = 'Tikrinama…';
+    try{
+      const d = await call({ action:'login', email:S.email, pin:pin.value });
+      S.token = d.token; S.name = d.name || ''; S.pinSent = false;
+      store.set('flTok', d.token); store.set('flName', S.name);
+      render();
+    }catch(x){ b.disabled = false; b.textContent = 'Prisijungti'; document.getElementById('err').textContent = x.message; pin.select(); }
+  };
+}
+
+// ---- 3. the invoice ----
+let draft = null;
+const newLine = (date)=>({ date:date||'', events:null, loading:false, ev:'', name:'', type:'fixed', amount:'', hours:'', rate:'', extras:[] });
+const newExtra = ()=>({ what:'', amount:'', file:null, keep:-1, keepName:'' });
+function workCents(l){
+  if(l.type==='hourly'){ const h = num(l.hours), r = num(l.rate); return h>0 && r>0 ? cents(Math.round(h*r*100)/100) : 0; }
+  const a = num(l.amount); return a>0 ? cents(a) : 0;
+}
+const extraCents = x=>{ const a = num(x.amount); return a>0 ? cents(a) : 0; };
+const lineCents = l=>workCents(l) + (l.extras||[]).reduce((t, x)=>t+extraCents(x), 0);
+const manual = l=>l.ev==='__manual' || (l.events && !l.events.length);
+function lineOk(l){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(l.date)) return false;
+  if(manual(l) ? !l.name.trim() : !l.ev) return false;
+  if((l.extras||[]).some(x=>!x.what.trim() || !extraCents(x))) return false;
+  return l.type==='hourly' ? workCents(l)>0 : (workCents(l)>0 || (l.extras||[]).length>0);
+}
+async function loadEvents(i, keepEv){
+  const l = draft.lines[i]; if(!l || !l.date) return;
+  const was = keepEv ? l.ev : '';
+  l.loading = true; l.events = null; l.ev = ''; drawLines();
+  try{
+    const d = await call({ action:'events', token:S.token, date:l.date });
+    if(draft.lines[i]!==l) return;
+    l.events = d.events || [];
+    const mine = l.events.filter(e=>e.mine);
+    if(was && (was==='__manual' ? l.events.length : l.events.some(e=>e.id===was))) l.ev = was;
+    else if(was && was!=='__manual'){ l.ev = '__manual'; l.name = l.name || l.ename || ''; }   // the event is no longer in „Renginiai“: its name stays, typed
+    else if(mine.length===1) l.ev = mine[0].id;
+    else if(l.events.length===1) l.ev = l.events[0].id;
+  }catch(x){ if(!S.token) return render(); l.events = []; l.err = x.message; }
+  l.loading = false; drawLines();
+}
+const blankDraft = ()=>({ number:'', total:'', note:'', file:null, lines:[newLine()] });
+function viewForm(){
+  if(!draft) draft = blankDraft();
+  $app.innerHTML = `<div class="card"><div class="top"><h1>${draft.editId ? 'Sąskaitos taisymas' : 'Nauja sąskaita'}</h1><button class="btn small ghost" id="back">← Mano sąskaitos</button></div>
+      <p class="muted">1) Įkelk sąskaitą – jos galutinė suma bus nuskaityta automatiškai. 2) Nurodyk renginius, kuriuose dirbai, ir papildomas išlaidas. Visos sumos – <b>su mokesčiais</b>; renginių ir išlaidų suma turi sutapti su sąskaitos galutine suma.</p>
+      ${draft.wasRejected && draft.why ? `<div class="why"><b>${draft.fixMode ? 'Reikia korekcijų:' : 'Nepatvirtinta, nes:'}</b> ${esc(draft.why)}</div>` : ''}</div>
+    <div class="card"><h2>1. Sąskaita</h2>
+      <label>Sąskaitos failas (geriausia elektroninė PDF sąskaita)</label>
+      <label class="file" id="fl"><span>📎</span><span id="fname">${draft.file ? '<b>'+esc(draft.file.name)+'</b>' : draft.oldFile ? '<b>'+esc(draft.oldFile.name)+'</b> <span class="muted">(paliekamas – spausk, jei nori pakeisti)</span>' : 'Pasirink sąskaitos failą…'}</span><input id="file" type="file" accept="application/pdf,image/*"></label>
+      <div id="ftot"></div>
+      <div class="row2"><div><label>Sąskaitos nr.</label><input id="num" value="${esc(draft.number)}" autocomplete="off"></div>
+      <div><label>Galutinė suma su mokesčiais, €</label><input id="tot" inputmode="decimal" value="${esc(draft.total)}" placeholder="iš failo" autocomplete="off"></div></div>
+    </div>
+    <div class="card"><h2>2. Renginiai ir išlaidos</h2><div id="lines"></div>
+      <button class="btn ghost" id="add">+ Pridėti renginį</button></div>
+    <div class="card"><h2>Suvestinė</h2><div id="sum"></div>
+      <label>Pastaba (nebūtina)</label><textarea id="note">${esc(draft.note)}</textarea>
+      <button class="btn" id="send" disabled>Siųsti sąskaitą</button><div class="err" id="err"></div></div>`;
+  const q = id=>document.getElementById(id);
+  q('num').oninput = e=>{ draft.number = e.target.value; drawSum(); };
+  q('tot').oninput = e=>{ draft.total = e.target.value; drawSum(); };
+  q('note').oninput = e=>{ draft.note = e.target.value; };
+  q('file').onchange = e=>{
+    const f = e.target.files[0]; if(!f) return;
+    if(f.size > 10*1024*1024){ q('err').textContent = 'Failas per didelis (iki 10 MB).'; e.target.value = ''; return; }
+    if(!/^(application\/pdf|image\/)/.test(f.type)){ q('err').textContent = 'Įkelk PDF arba nuotrauką.'; e.target.value = ''; return; }
+    q('err').textContent = ''; q('fname').innerHTML = '<b>'+esc(f.name)+'</b> <span class="muted">('+Math.max(1, Math.round(f.size/1024))+' KB)</span>';
+    pickFile(f);
+  };
+  q('add').onclick = ()=>{ draft.lines.push(newLine()); drawLines(); const els = document.querySelectorAll('.l-date'); els[els.length-1].focus(); };
+  q('send').onclick = submit;
+  q('back').onclick = ()=>{ draft = null; render(); };
+  if(draft.editId) q('send').textContent = 'Siųsti pataisytą sąskaitą';
+  drawLines();
+}
+function extrasHtml(l, i){
+  return `<div class="extras">${(l.extras||[]).map((x, j)=>`<div class="extra">
+      <div class="line-h"><span>➕ Papildoma išlaida</span><span class="sp"></span><button class="x x-rm" data-i="${i}" data-j="${j}" title="Pašalinti">✕</button></div>
+      <div class="row2"><div><label>Už ką</label><input class="x-f" data-k="what" data-i="${i}" data-j="${j}" value="${esc(x.what)}" placeholder="pvz. kuras, parkavimas" autocomplete="off"></div>
+      <div><label>Suma, €</label><input class="x-f" data-k="amount" data-i="${i}" data-j="${j}" inputmode="decimal" value="${esc(x.amount)}" placeholder="0,00" autocomplete="off"></div></div>
+      <label class="file small"><span>🧾</span><span>${x.file ? '<b>'+esc(x.file.name)+'</b>' : x.keepName ? '<b>'+esc(x.keepName)+'</b> <span class="muted">(paliekamas)</span>' : 'Čekio nuotrauka ar papildoma sąskaita (nebūtina)'}</span><input class="x-file" type="file" accept="application/pdf,image/*" data-i="${i}" data-j="${j}"></label>
+    </div>`).join('')}</div>
+    <button type="button" class="lnk x-add" data-i="${i}">+ Papildomos išlaidos</button>`;
+}
+function drawLines(){
+  const box = document.getElementById('lines'); if(!box) return;
+  box.innerHTML = draft.lines.map((l, i)=>{
+    const man = manual(l);
+    let evHtml = '';
+    if(!l.date) evHtml = '<p class="muted">Pirmiausia pasirink datą.</p>';
+    else if(l.loading) evHtml = '<p class="muted">Ieškoma renginių…</p>';
+    else if(l.events){
+      if(l.events.length) evHtml = `<label>Renginys</label><select class="l-ev" data-i="${i}"><option value="">— pasirink —</option>${l.events.map(e=>`<option value="${esc(e.id)}"${l.ev===e.id ? ' selected' : ''}>${e.mine ? '★ ' : ''}${esc(e.name)}${e.location ? ' · '+esc(e.location) : ''}</option>`).join('')}<option value="__manual"${l.ev==='__manual' ? ' selected' : ''}>✏️ Nėra sąraše – įrašyti ranka</option></select>`;
+      else evHtml = `<div class="hint">${l.err ? esc(l.err) : 'Šią dieną renginių nerasta – įrašyk pavadinimą ranka.'}</div>`;
+      if(man) evHtml += `<label>Renginio pavadinimas</label><input class="l-name" data-i="${i}" value="${esc(l.name)}" placeholder="pvz. Įmonės vakarėlis, Vilnius" autocomplete="off">`;
+    }
+    const c = lineCents(l);
+    return `<div class="line"><div class="line-h"><span>${i+1}.</span><span class="sp"></span><span class="amt">${c ? eur(c) : ''}</span>${draft.lines.length>1 ? `<button class="x l-rm" data-i="${i}" title="Pašalinti">✕</button>` : ''}</div>
+      <label>Data</label><input type="date" class="l-date" data-i="${i}" value="${esc(l.date)}" max="${todayStr()}">
+      ${evHtml}
+      <div class="seg"><button type="button" class="l-type${l.type==='fixed' ? ' on' : ''}" data-i="${i}" data-t="fixed">Sutarta suma</button><button type="button" class="l-type${l.type==='hourly' ? ' on' : ''}" data-i="${i}" data-t="hourly">Valandinis</button></div>
+      ${l.type==='hourly'
+        ? `<div class="row2"><div><label>Valandos</label><input class="l-f" data-k="hours" data-i="${i}" inputmode="decimal" value="${esc(l.hours)}" placeholder="0"></div><div><label>Įkainis, €/val.</label><input class="l-f" data-k="rate" data-i="${i}" inputmode="decimal" value="${esc(l.rate)}" placeholder="0,00"></div></div>`
+        : `<label>Suma su mokesčiais, €</label><input class="l-f" data-k="amount" data-i="${i}" inputmode="decimal" value="${esc(l.amount)}" placeholder="0,00">`}
+      ${extrasHtml(l, i)}
+    </div>`;
+  }).join('');
+  const all = s=>box.querySelectorAll(s), L = el=>draft.lines[+el.dataset.i], X = el=>draft.lines[+el.dataset.i].extras[+el.dataset.j];
+  const amt = el=>{ el.closest('.line').querySelector('.amt').textContent = lineCents(L(el)) ? eur(lineCents(L(el))) : ''; drawSum(); };
+  all('.l-date').forEach(el=>el.onchange = ()=>{ const l = L(el); if(l.date===el.value) return; l.date = el.value; l.err = ''; if(l.date) loadEvents(+el.dataset.i); else { l.events = null; drawLines(); } });
+  all('.l-ev').forEach(el=>el.onchange = ()=>{ L(el).ev = el.value; drawLines(); if(el.value==='__manual'){ const n = box.querySelector(`.l-name[data-i="${el.dataset.i}"]`); n && n.focus(); } });
+  all('.l-name').forEach(el=>el.oninput = ()=>{ L(el).name = el.value; drawSum(); });
+  all('.l-type').forEach(el=>el.onclick = ()=>{ L(el).type = el.dataset.t; drawLines(); });
+  all('.l-f').forEach(el=>el.oninput = ()=>{ L(el)[el.dataset.k] = el.value; amt(el); });
+  all('.l-rm').forEach(el=>el.onclick = ()=>{ draft.lines.splice(+el.dataset.i, 1); drawLines(); });
+  all('.x-add').forEach(el=>el.onclick = ()=>{ L(el).extras.push(newExtra()); drawLines(); const w = box.querySelectorAll(`.x-f[data-k="what"][data-i="${el.dataset.i}"]`); w.length && w[w.length-1].focus(); });
+  all('.x-rm').forEach(el=>el.onclick = ()=>{ L(el).extras.splice(+el.dataset.j, 1); drawLines(); });
+  all('.x-f').forEach(el=>el.oninput = ()=>{ X(el)[el.dataset.k] = el.value; amt(el); });
+  all('.x-file').forEach(el=>el.onchange = async ()=>{
+    const f = el.files[0]; if(!f) return;
+    if(f.size > 10*1024*1024 || !/^(application\/pdf|image\/)/.test(f.type)){ alert('Įkelk PDF arba nuotrauką (iki 10 MB).'); el.value = ''; return; }
+    const x = X(el); x.file = await shrinkImage(f); x.keep = -1; x.keepName = ''; drawLines();
+  });
+  drawSum();
+}
+// the chosen file: a big photo is made smaller first; then its total is read on the server and shown here
+async function shrinkImage(f){
+  if(!/^image\/(jpeg|png|webp)$/.test(f.type) || f.size < 2.5*1024*1024) return f;
+  try{
+    const img = await createImageBitmap(f), k = Math.min(1, 2200/Math.max(img.width, img.height));
+    const c = document.createElement('canvas'); c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    const b = await new Promise(r=>c.toBlob(r, 'image/jpeg', 0.85));
+    return b ? new File([b], f.name.replace(/\.\w+$/, '')+'.jpg', { type:'image/jpeg' }) : f;
+  }catch(e){ return f; }
+}
+async function pickFile(f0){
+  const d = draft; d.scan = { busy:true }; d.file = null; drawSum();
+  const f = await shrinkImage(f0); if(draft!==d) return;
+  d.file = f; d.b64 = await fileB64(f); if(draft!==d) return;
+  drawSum();
+  try{ const r = await call({ action:'scan', token:S.token, file:{ type:f.type, base64:d.b64 } }); if(draft!==d || d.file!==f) return; d.scan = r; }
+  catch(x){ if(draft!==d) return; if(!S.token) return render(); d.scan = { checked:false, why:'error', msg:x.message }; }
+  // the total is taken from the invoice (it can still be typed)
+  if(d.scan && d.scan.found && !num(d.total)){ d.total = String(d.scan.total).replace('.', ','); const t = document.getElementById('tot'); if(t) t.value = d.total; }
+  drawSum();
+}
+async function rescan(){ if(draft && draft.file) pickFile(draft.file); }
+function fileTotal(){
+  if(draft.file) return draft.scan && draft.scan.found ? cents(draft.scan.total) : null;
+  return draft.oldFile && draft.oldTotal!=null ? cents(draft.oldTotal) : null;
+}
+const SCAN_WHY = { off:'Sąskaitos failo tikrinimas dar neįjungtas – kreipkis į Event Solutions biurą.', 'image-off':'Nuotraukos dar negalime patikrinti – įkelk sąskaitą PDF formatu.', scanned:'Šiame PDF nėra teksto (nuskenuotas). Įkelk elektroninę PDF sąskaitą.', type:'Sąskaitą įkelk PDF, JPG arba PNG formatu.',
+  'not-invoice':'Įkeltas failas neatrodo kaip sąskaita. Įkelk sąskaitą faktūrą (PDF arba aiškią nuotrauką).', 'no-total':'Sąskaitoje nepavyko rasti galutinės sumos. Įkelk aiškesnį failą (geriausia PDF).',
+  error:'Nepavyko patikrinti sąskaitos failo.', refusal:'Nepavyko patikrinti sąskaitos failo.' };
+function drawFileTotal(tot){
+  const box = document.getElementById('ftot'); if(!box) return;
+  const sc = draft.scan, ft = fileTotal();
+  if(sc && sc.busy) box.innerHTML = '<div class="ftot wait">⏳ Nuskaitoma sąskaitos galutinė suma…</div>';
+  else if(ft!=null) box.innerHTML = `<div class="ftot ${tot && ft!==tot ? 'bad' : 'ok'}"><span>Galutinė suma sąskaitoje</span><b>${eur(ft)}</b>${tot && ft!==tot ? `<small>Įvesta ${eur(tot)} – nesutampa</small>` : ''}</div>`;
+  else if(draft.file && sc) box.innerHTML = `<div class="ftot bad"><span>${esc(sc.msg || SCAN_WHY[sc.why] || SCAN_WHY['no-total'])}</span>${sc.why==='error' || sc.why==='refusal' ? '<button type="button" class="btn small ghost" id="rescan">Bandyti dar kartą</button>' : ''}</div>`;
+  else if(draft.oldFile && draft.oldTotal==null) box.innerHTML = '<div class="ftot bad"><span>Įkelk sąskaitos failą iš naujo – jame bus patikrinta galutinė suma.</span></div>';
+  else box.innerHTML = '';
+  const r = document.getElementById('rescan'); if(r) r.onclick = rescan;
+}
+function drawSum(){
+  const box = document.getElementById('sum'); if(!box) return;
+  const sum = draft.lines.reduce((t, l)=>t+lineCents(l), 0), tn = num(draft.total), tot = tn>0 ? cents(tn) : 0;
+  const ex = draft.lines.reduce((t, l)=>t+(l.extras||[]).reduce((u, x)=>u+extraCents(x), 0), 0);
+  const bad = draft.lines.findIndex(l=>!lineOk(l)), ft = fileTotal(), busy = !!(draft.scan && draft.scan.busy);
+  drawFileTotal(tot);
+  let m = '';
+  if(busy) m = '<div class="match wait">⏳ Laukiama sąskaitos sumos…</div>';
+  else if(ft==null) m = `<div class="match bad">${draft.file || draft.oldFile ? 'Sąskaitos galutinė suma nenuskaityta – įkelk aiškesnį sąskaitos failą.' : 'Įkelk sąskaitos failą – jo galutinė suma bus palyginta su renginiais.'}</div>`;
+  else if(tot && ft!==tot) m = `<div class="match bad">✗ Sąskaitoje nurodyta ${eur(ft)}, o įvesta ${eur(tot)}.</div>`;
+  else if(sum===ft) m = `<div class="match ok">✓ Renginių ir išlaidų suma sutampa su sąskaita (${eur(ft)})</div>`;
+  else m = `<div class="match bad">✗ Nesutampa: sąskaitoje ${eur(ft)}, renginiuose ir išlaidose ${eur(sum)} (skiriasi ${eur(Math.abs(ft-sum))}).</div>`;
+  const miss = [];
+  if(bad>=0) miss.push(`užpildyk ${bad+1} eilutę (data, renginys, suma${(draft.lines[bad].extras||[]).length ? ', išlaidos' : ''})`);
+  box.innerHTML = `<div class="sum"><span>Renginiai (${draft.lines.length})</span><b>${eur(sum-ex)}</b></div>${ex ? `<div class="sum"><span>Papildomos išlaidos</span><b>${eur(ex)}</b></div>` : ''}<div class="sum"><span>Iš viso</span><b>${eur(sum)}</b></div><div class="sum"><span>Sąskaitoje (iš failo)</span><b>${ft!=null ? eur(ft) : '—'}</b></div>${m}${miss.length ? `<p class="muted">Dar: ${miss.join(', ')}.</p>` : ''}`;
+  const send = document.getElementById('send');
+  if(send) send.disabled = !(ft!=null && !busy && tot===ft && sum===ft && bad<0);
+}
+function fileB64(f){
+  return new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = ()=>rej(new Error('Nepavyko perskaityti failo.')); r.readAsDataURL(f); });
+}
+async function submit(){
+  const b = document.getElementById('send'), err = document.getElementById('err');
+  if(b.disabled) return;
+  b.disabled = true; b.textContent = 'Siunčiama…'; err.textContent = '';
+  try{
+    const lines = [];
+    for(const l of draft.lines){
+      const man = manual(l), o = { date:l.date, event_id:man ? null : l.ev, event_name:man ? l.name.trim() : '', type:l.type, extras:[] };
+      if(l.type==='hourly'){ o.hours = num(l.hours); o.rate = num(l.rate); } else o.amount = num(l.amount) || 0;
+      for(const x of l.extras||[]) o.extras.push({ what:x.what.trim(), amount:num(x.amount), keep:x.keep, file: x.file ? { name:x.file.name, type:x.file.type, base64:await fileB64(x.file) } : null });
+      lines.push(o);
+    }
+    const f = draft.file;
+    const d = await call({ action:'submit', token:S.token, id:draft.editId || undefined, number:draft.number.trim(), total:num(draft.total), note:draft.note.trim(), lines,
+      file: f ? { name:f.name, type:f.type, base64:draft.b64 || await fileB64(f) } : null });
+    draft = null;
+    $app.innerHTML = `<div class="card done"><div class="big">✅</div><h1>${d.edited ? 'Pataisyta sąskaita išsiųsta' : 'Sąskaita išsiųsta'}</h1>
+      <p class="muted">Gavome jūsų sąskaitą (${eur(cents(d.total))}). Ji perduota tvirtinimui – kai bus patvirtinta, gausite el. laišką.</p>
+      <button class="btn" id="again">Mano sąskaitos</button><button class="btn ghost" id="bye">Atsijungti</button></div>`;
+    document.getElementById('again').onclick = ()=>render();
+    document.getElementById('bye').onclick = ()=>{ logout(); render(); };
+  }catch(x){
+    if(!S.token){ render(); return; }
+    b.disabled = false; b.textContent = draft && draft.editId ? 'Siųsti pataisytą sąskaitą' : 'Siųsti sąskaitą'; err.textContent = x.message;
+  }
+}
+
+render();
+</script>
+</body>
+</html>

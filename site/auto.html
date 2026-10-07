@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bu1tGHrhBLCBrzAPMI2u1F3yy6opzi0F+IUDdQp3th0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Automobilis · Event Solutions</title>
+<link rel="icon" href="icons/icon-192.png">
+<style>
+:root{--bg:#141414;--panel:#1f1f1f;--border:#343434;--text:#ececec;--dim:#9a9a9a;--accent:#6BB4F5;--ok:#2F9E73;--warn:#E0A030;--bad:#E5484D;}
+@media (prefers-color-scheme: light){ :root{--bg:#f3f4f6;--panel:#fff;--border:#dcdfe4;--text:#1d2229;--dim:#6b7280;--accent:#1e6fd9;} }
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+.wrap{max-width:560px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px));}
+.brand{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:13px;margin-bottom:12px;}
+.brand img{width:28px;height:28px;border-radius:7px;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
+h1{font-size:24px;margin:0;line-height:1.2;}
+.plate{display:inline-block;margin-top:6px;padding:3px 10px;border:2px solid var(--text);border-radius:6px;font-weight:700;letter-spacing:1px;}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.kv:last-child{border-bottom:0;}
+.kv span{color:var(--dim);}
+.kv b{text-align:right;}
+.ok{color:var(--ok);} .warn{color:var(--warn);} .bad{color:var(--bad);}
+.rep{background:color-mix(in srgb,var(--bad) 14%,var(--panel));border-color:var(--bad);font-weight:600;}
+h2{font-size:17px;margin:0 0 10px;}
+.prob{padding:8px 10px;border-radius:8px;margin-bottom:6px;background:color-mix(in srgb,var(--warn) 12%,transparent);}
+.prob.stop{background:color-mix(in srgb,var(--bad) 16%,transparent);}
+.prob small{display:block;color:var(--dim);}
+label{display:block;font-size:13px;color:var(--dim);margin:10px 0 4px;}
+input[type=text],textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;}
+textarea{min-height:110px;resize:vertical;}
+.sev{display:flex;flex-direction:column;gap:6px;}
+.sev label{display:flex;align-items:center;gap:8px;margin:0;padding:10px 12px;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;}
+.sev input{accent-color:var(--accent);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 16px;border:0;border-radius:12px;background:var(--accent);color:#0c1b2a;font:inherit;font-weight:700;font-size:16px;cursor:pointer;}
+.btn.ghost{background:none;border:1px solid var(--border);color:var(--text);font-weight:600;}
+.btn:disabled{opacity:.6;}
+.phs{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.ph{position:relative;width:76px;height:76px;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.ph img,.ph video{width:100%;height:100%;object-fit:cover;display:block;background:#000;}
+.loc{margin-top:10px;font-size:13px;color:var(--dim);display:flex;align-items:center;flex-wrap:wrap;gap:4px;} .loc a{color:var(--accent);}
+.vbg{margin:12px 0;text-align:left;} .vbg-row{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;margin-top:6px;font-size:14px;} .vbg-row.ok b{color:var(--ok);} .vbg-row.bad b{color:#e66;}
+.ph.busy{display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;color:var(--dim);padding:4px;box-sizing:border-box;}
+.ph button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;cursor:pointer;line-height:1;}
+.addph{width:96px;height:76px;border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:12px;color:var(--dim);cursor:pointer;}
+.addph span{font-size:22px;}
+.me{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--ok) 14%,transparent);font-size:14px;}
+.err{color:var(--bad);font-size:14px;margin-top:8px;}
+.done{text-align:center;padding:26px 16px;}
+.done .big{font-size:46px;}
+.muted{color:var(--dim);font-size:13px;}
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><img src="icons/icon-192.png" alt=""><span>Event Solutions · automobilis</span></div>
+  <div id="app"><div class="card muted">Kraunama…</div></div>
+</div>
+<script>
+const SUPABASE_URL = "https://yakmikxkcudwloxruhvx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OYVSooEWr-aPd__NPM8G3g_MQrSAXbI";
+const T = new URLSearchParams(location.search).get('t') || '';
+const esc = s=>String(s==null ? '' : s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// a member signed in to the app on this phone: the problem is reported in their name
+function session(){
+  try{ const ref = SUPABASE_URL.split('//')[1].split('.')[0]; const s = JSON.parse(localStorage.getItem('sb-'+ref+'-auth-token')||'null');
+    return s && s.access_token && (s.expires_at||0)*1000 > Date.now() + 60000 ? s.access_token : ''; }catch(e){ return ''; }
+}
+const TOKEN = session();
+const hdr = (extra)=>Object.assign({ apikey:SUPABASE_KEY, Authorization:'Bearer '+(TOKEN || SUPABASE_KEY) }, extra||{});
+async function rpc(name, args){
+  const ac = new AbortController(), to = setTimeout(()=>ac.abort(), 15000);
+  try{
+    const r = await fetch(SUPABASE_URL+'/rest/v1/rpc/'+name, { method:'POST', headers:hdr({ 'Content-Type':'application/json' }), body:JSON.stringify(args||{}), signal:ac.signal });
+    const t = await r.text(); let j = null; try{ j = t ? JSON.parse(t) : null; }catch(e){}
+    if(!r.ok) throw new Error((j && (j.message || j.error)) || ('Klaida '+r.status));
+    return j;
+  } finally { clearTimeout(to); }
+}
+const day = d=>d ? String(d).slice(0,10).replace(/-/g, '.') : '';
+const num = (n, d)=>n==null ? '' : Number(n).toLocaleString('lt-LT', { maximumFractionDigits:d||0 });
+function docRow(label, date){
+  if(!date) return `<div class="kv"><span>${label}</span><b class="bad">neįvesta</b></div>`;
+  const days = Math.round((new Date(String(date).slice(0,10)) - new Date(new Date().toISOString().slice(0,10)))/864e5);
+  const cls = days < 0 ? 'bad' : days <= 14 ? 'warn' : 'ok';
+  return `<div class="kv"><span>${label}</span><b class="${cls}">${days < 0 ? 'baigėsi ' : 'iki '}${day(date)}${days >= 0 && days <= 14 ? ' · liko '+days+' d.' : ''}</b></div>`;
+}
+const SEV = { low:'Galima važiuoti', soon:'Reikia greitai sutvarkyti', stop:'Negalima važiuoti' };
+const COND = { good:['Gera','ok'], fair:['Patenkinama','warn'], bad:['Bloga','bad'] };
+let V = null, PH = [], BUSY = '';
+const VID_MAX = 45*1024*1024;
+function vidExt(type){ return /webm/.test(type) ? 'webm' : /quicktime/.test(type) ? 'mov' : 'mp4'; }
+// called right in the tap (Išsaugoti / Registruoti): phones let a video play with sound later only when it was started in a tap
+function vidPrep(file){
+  const p = { url:URL.createObjectURL(file), v:document.createElement('video'), src:null, ac:null };
+  const v = p.v; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'auto'; v.src = p.url;
+  v.style.cssText = 'position:fixed;left:-9999px;top:0;width:2px;height:2px;opacity:0;pointer-events:none;';
+  document.body.appendChild(v);
+  try{ const AC = window.AudioContext || window.webkitAudioContext;
+    if(AC){ p.ac = window.__vidAC || (window.__vidAC = new AC()); if(p.ac.state==='suspended') p.ac.resume().catch(()=>{});
+      p.src = p.ac.createMediaElementSource(v); } }catch(e){ p.src = null; }
+  if(!p.src) v.muted = true;   // no sound out loud while it is being made smaller
+  try{ const pr = v.play(); if(pr) pr.then(()=>v.pause()).catch(()=>{}); }catch(e){}
+  return p;
+}
+function vidDrop(p){ if(!p) return; try{ p.v.pause(); p.v.remove(); if(p.src) p.src.disconnect(); }catch(e){} URL.revokeObjectURL(p.url); }
+// a video made smaller on the phone before sending: played once (silently) into a canvas
+// and recorded again with a bitrate that fits maxBytes; a small video goes as it is
+async function vidShrink(file, maxBytes, onProg, prep){
+  maxBytes = maxBytes || VID_MAX;
+  const type0 = file.type || 'video/mp4';
+  if(file.size <= maxBytes && /mp4|webm|quicktime/.test(type0)){ vidDrop(prep); return { blob:file, type:type0, ext:vidExt(type0) }; }
+  if(!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){ vidDrop(prep); throw new Error('šis telefonas nemoka suspausti video – pasirink trumpesnį'); }
+  const mime = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']
+    .find(m=>{ try{ return MediaRecorder.isTypeSupported(m); }catch(e){ return false; } });
+  if(!mime){ vidDrop(prep); throw new Error('šis telefonas nemoka suspausti video'); }
+  const p = prep || vidPrep(file), v = p.v;
+  try{
+    v.pause();
+    if(v.readyState < 1) await new Promise((res, rej)=>{ v.onloadedmetadata = res; v.onerror = ()=>rej(new Error('video neatsidaro')); });
+    let dur = v.duration;
+    if(!isFinite(dur) || !dur){ v.currentTime = 1e7; await new Promise(r=>{ v.ontimeupdate = r; setTimeout(r, 1500); }); dur = v.duration; v.currentTime = 0; }
+    if(!isFinite(dur) || !dur) dur = 60;
+    let audio = null;
+    if(p.src && p.ac){ try{ if(p.ac.state==='suspended') await Promise.race([p.ac.resume(), new Promise(r=>setTimeout(r, 700))]);
+      if(p.ac.state==='running'){ const dst = p.ac.createMediaStreamDestination(); p.src.connect(dst); audio = dst.stream.getAudioTracks()[0] || null; } }catch(e){ audio = null; } }
+    if(!audio) v.muted = true;
+    let factor = 0.88;
+    for(let attempt=0; attempt<3; attempt++){
+      const aBits = audio ? 64000 : 0;
+      const vBits = Math.max(120000, Math.floor(maxBytes*8*factor/dur) - aBits);
+      const maxDim = vBits > 2500000 ? 1280 : vBits > 900000 ? 960 : vBits > 400000 ? 720 : 480;
+      const k = Math.min(1, maxDim / Math.max(v.videoWidth||maxDim, v.videoHeight||maxDim));
+      const c = document.createElement('canvas'); c.width = Math.max(2, Math.round((v.videoWidth||640)*k/2)*2); c.height = Math.max(2, Math.round((v.videoHeight||360)*k/2)*2);
+      const g = c.getContext('2d');
+      const stream = c.captureStream(30); if(audio) stream.addTrack(audio);
+      const rec = new MediaRecorder(stream, { mimeType:mime, videoBitsPerSecond:vBits, audioBitsPerSecond:aBits || undefined });
+      const parts = []; rec.ondataavailable = e=>{ if(e.data && e.data.size) parts.push(e.data); };
+      const done = new Promise(r=>{ rec.onstop = r; });
+      v.currentTime = 0; await new Promise(r=>{ if(v.readyState >= 2 && !v.seeking) r(); else { v.onseeked = r; setTimeout(r, 800); } });
+      let alive = true;
+      const draw = ()=>{ if(!alive) return; try{ g.drawImage(v, 0, 0, c.width, c.height); }catch(e){} onProg && onProg(Math.min(99, Math.round(v.currentTime/dur*100)), attempt);
+        if(v.requestVideoFrameCallback) v.requestVideoFrameCallback(draw); else requestAnimationFrame(draw); };
+      draw(); rec.start(1000);
+      try{ await v.play(); }catch(e){ v.muted = true; await v.play(); }
+      await new Promise(r=>{ v.onended = r; });
+      alive = false; rec.stop(); await done;
+      const type = mime.split(';')[0], blob = new Blob(parts, { type });
+      if(blob.size <= maxBytes && blob.size > 0) return { blob, type, ext:vidExt(type) };
+      factor *= Math.min(0.8, maxBytes / blob.size * 0.9);
+    }
+    throw new Error('video per ilgas – nepavyko suspausti iki '+Math.round(maxBytes/1048576)+' MB');
+  } finally { vidDrop(p); }
+}
+async function load(){
+  const app = document.getElementById('app');
+  if(!/^[0-9a-f]{24,64}$/.test(T)){ app.innerHTML = '<div class="card">QR kodas neteisingas.</div>'; return; }
+  try{ V = await rpc('vehicle_public', { p_token:T }); }
+  catch(e){ app.innerHTML = `<div class="card">Nepavyko įkelti: ${esc(e.message)}</div><button class="btn ghost" onclick="location.reload()">Bandyti dar kartą</button>`; return; }
+  if(!V){ app.innerHTML = '<div class="card">Šis QR kodas nebegalioja.</div>'; return; }
+  draw();
+}
+function draw(){
+  const v = V, d = v.docs || {}, o = v.oil, c = v.check, rp = v.repair && v.repair.on;
+  const nx = o && o.next ? [o.next.next_km!=null ? 'ties '+num(o.next.next_km)+' km' : '', o.next.next_hours!=null ? 'ties '+num(o.next.next_hours)+' mval.' : '', o.next.next_date ? 'iki '+day(o.next.next_date) : ''].filter(Boolean).join(' / ') : '';
+  document.title = (v.name || 'Automobilis') + (v.plate ? ' · '+v.plate : '');
+  document.getElementById('app').innerHTML = `
+    <div class="card"><h1>${esc(v.name || 'Automobilis')}</h1>${v.plate ? `<span class="plate">${esc(v.plate)}</span>` : ''}</div>
+    ${rp ? `<div class="card rep"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M705-128 447-388q-23 8-46 13t-47 5q-97 0-165-67.5T121-602q0-31 8-60.5t23-55.5l145 145 92-86-149-149q26-15 55-23.5t59-8.5q99 0 168.5 69.5T592-602q0 24-5 47t-13 46l259 258q11 11 11 26.5T833-198l-76 70q-11 11-26 11t-26-11Z"/></svg> Automobilis remonte${v.repair.to ? ' iki '+day(v.repair.to) : ''}${v.repair.note ? ' · '+esc(v.repair.note) : ''}</div>` : ''}
+    <div class="card"><h2>Svarbiausia</h2>
+      ${v.km!=null ? `<div class="kv"><span>Rida</span><b>${num(v.km)} km</b></div>` : ''}
+      ${v.hours!=null ? `<div class="kv"><span>Moto valandos</span><b>${num(v.hours, 1)}</b></div>` : ''}
+      ${docRow('Draudimas', d.insurance)}${docRow('Tech. apžiūra', d.inspection)}${docRow('Kelių mokestis (vinjetė)', d.roadPermit)}
+      <div class="kv"><span>Tepalo keitimas</span><b>${o ? day(o.date)+(o.km!=null ? ' · '+num(o.km)+' km' : '') : '<span class="muted">neįrašyta</span>'}</b></div>
+      ${nx ? `<div class="kv"><span>Kitas tepalo keitimas</span><b>${esc(nx)}</b></div>` : ''}
+      <div class="kv"><span>Profilaktika</span><b>${c ? day(c.date)+(COND[c.condition] ? ` · <span class="${COND[c.condition][1]}">${COND[c.condition][0]}</span>` : '') : '<span class="muted">neįrašyta</span>'}</b></div>
+    </div>
+    ${(v.problems||[]).length ? `<div class="card"><h2>Žinomos problemos</h2>${v.problems.map(p=>`<div class="prob ${p.severity==='stop' ? 'stop' : ''}">${esc(p.title)}<small>${day(p.date)} · ${SEV[p.severity]||''}</small></div>`).join('')}</div>` : ''}
+    <div class="card" id="repCard">
+      <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="m40-120 440-760 440 760H40Zm465.5-125.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Z"/></svg> Registruoti problemą</h2>
+      ${v.me ? `<div class="me">Registruoji kaip <b>${esc(v.me)}</b> (įmonės narys)</div>` : `<label for="rpName">Kas registruoja: vardas ir pavardė</label><input type="text" id="rpName" autocomplete="name" placeholder="pvz. Jonas Jonaitis">`}
+      <label for="rpText">Kas pastebėta</label><textarea id="rpText" placeholder="pvz. Dega variklio lemputė, barška priekiniai stabdžiai…"></textarea>
+      <label>Kaip skubu</label>
+      <div class="sev">${Object.entries(SEV).map(([k,l])=>`<label><input type="radio" name="sev" value="${k}" ${k==='soon'?'checked':''}> ${l}</label>`).join('')}</div>
+      <div class="loc" id="rpLoc"></div>
+      <label>Nuotraukos ir video (nebūtina, iki 6 nuotraukų ir 3 video): nufotografuok, nufilmuok arba įkelk – video suspaudžiamas ir įkeliamas jau užregistravus – laukti nereikia</label>
+      <div class="phs" id="phs"></div>
+      <div class="err" id="rpErr"></div>
+      <div style="margin-top:14px;"><button class="btn" id="rpGo">Registruoti problemą</button></div>
+    </div>`;
+  drawPh(); getLoc();
+  document.getElementById('rpGo').onclick = send;
+}
+function drawPh(){
+  const box = document.getElementById('phs'); if(!box) return;
+  const nI = PH.filter(p=>!p.vid).length, nV = PH.filter(p=>p.vid).length;
+  box.innerHTML = PH.map((p,i)=>`<div class="ph">${p.vid ? `<video src="${p.url}#t=0.1" muted playsinline preload="metadata"></video>` : `<img src="${p.url}" alt="">`}<button type="button" data-x="${i}" aria-label="Pašalinti">✕</button></div>`).join('')
+    + (BUSY ? `<div class="ph busy" id="phBusy">${esc(BUSY)}</div>` : '')
+    + (BUSY ? '' : (nI < 6 ? '<label class="addph"><input type="file" accept="image/*" capture="environment" hidden data-ph><span><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M480-267q72 0 121-49t49-121q0-73-49-121.5T480-607q-73 0-121.5 48.5T310-437q0 72 48.5 121T480-267Zm0-60q-48 0-79-31.5T370-437q0-48 31-79t79-31q47 0 78.5 31t31.5 79q0 47-31.5 78.5T480-327ZM140-120q-24 0-42-18t-18-42v-513q0-23 18-41.5t42-18.5h147l73-87h240l73 87h147q23 0 41.5 18.5T880-693v513q0 24-18.5 42T820-120H140Z"/></svg></span>Fotografuoti</label>' : '')
+      + (nV < 3 ? '<label class="addph"><input type="file" accept="video/*" capture="environment" hidden data-ph><span>🎬</span>Filmuoti</label>' : '')
+      + '<label class="addph"><input type="file" accept="image/*,video/*" multiple hidden data-ph><span><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm56-157h489L578-473 446-302l-93-127-117 152Z"/></svg></span>Įkelti</label>');
+  box.querySelectorAll('[data-x]').forEach(b=>b.onclick = ()=>{ const x = PH[+b.dataset.x]; URL.revokeObjectURL(x.url); if(x.prep) vidDrop(x.prep); PH.splice(+b.dataset.x, 1); drawPh(); });
+  box.querySelectorAll('[data-ph]').forEach(inp=>inp.onchange = ()=>addFiles([...inp.files], inp));
+}
+// photos made smaller (max 1600 px, JPEG); a video squeezed on the phone to fit (up to ~45 MB)
+async function addFiles(files, inp){
+  if(inp) inp.value = '';
+  for(const f of files){
+    const isVid = /^video\//.test(f.type||'') || /\.(mp4|m4v|mov|webm|3gp)$/i.test(f.name||'');
+    if(isVid){
+      if(PH.filter(p=>p.vid).length >= 3) continue;
+      PH.push({ file:f, url:URL.createObjectURL(f), vid:true });   // made smaller and sent after „Registruoti“ – no waiting here
+    } else {
+      if(PH.filter(p=>!p.vid).length >= 6) continue;
+      try{ const blob = await shrink(f); PH.push({ blob, url:URL.createObjectURL(blob), type:'image/jpeg', ext:'jpg' }); }catch(e){}
+    }
+  }
+  drawPh();
+}
+// pictures made smaller before sending (max 1600 px, JPEG)
+async function shrink(file){
+  const img = await new Promise((res, rej)=>{ const i = new Image(); i.onload = ()=>res(i); i.onerror = rej; i.src = URL.createObjectURL(file); });
+  const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth*k); c.height = Math.round(img.naturalHeight*k);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(img.src);
+  return await new Promise(r=>c.toBlob(r, 'image/jpeg', .84));
+}
+// where the problem was noticed: the phone's place (sent with the report, shown in the chat as a map link)
+let LOC = null;
+function drawLoc(st){
+  const el = document.getElementById('rpLoc'); if(!el) return;
+  el.innerHTML = LOC ? `📍 Vieta nustatyta${LOC.acc ? ' (±'+LOC.acc+' m)' : ''} · <a href="https://www.google.com/maps?q=${LOC.lat},${LOC.lng}" target="_blank" rel="noopener">žemėlapyje</a>`
+    : st==='wait' ? '📍 Nustatoma vieta…' : st ? `📍 ${esc(st)} <button type="button" class="btn ghost" id="rpLocTry" style="width:auto;padding:6px 12px;margin:0 0 0 6px;">Bandyti</button>` : '';
+  const t = document.getElementById('rpLocTry'); if(t) t.onclick = getLoc;
+}
+function getLoc(){
+  if(LOC){ drawLoc(); return; }
+  if(!navigator.geolocation){ drawLoc('vietos nustatyti nepavyko'); return; }
+  drawLoc('wait');
+  navigator.geolocation.getCurrentPosition(p=>{ LOC = { lat:+p.coords.latitude.toFixed(6), lng:+p.coords.longitude.toFixed(6), acc:Math.round(p.coords.accuracy||0) }; drawLoc(); },
+    e=>drawLoc(e && e.code===1 ? 'vietos nustatymas neleistas' : 'vietos nustatyti nepavyko'), { enableHighAccuracy:true, timeout:20000, maximumAge:60000 });
+}
+async function putFile(blob, type, ext){
+  const rnd = Array.from(crypto.getRandomValues(new Uint8Array(8)), x=>(x%36).toString(36)).join('');
+  const path = V.channel+'/qr-'+T+'-'+Date.now().toString(36)+rnd+'.'+ext;
+  const r = await fetch(SUPABASE_URL+'/storage/v1/object/chat-files/'+path, { method:'POST', headers:hdr({ 'Content-Type':type, 'x-upsert':'false' }), body:blob });
+  return r.ok ? path : null;
+}
+// the report is already sent: its videos are made smaller and added one by one (to the report and the chat)
+let VBUSY = false;
+window.addEventListener('beforeunload', e=>{ if(VBUSY){ e.preventDefault(); e.returnValue = ''; } });
+async function sendVideos(rid, vids){
+  const card = document.querySelector('#repCard .done'); if(!card) return;
+  const box = document.createElement('div'); box.className = 'vbg'; card.insertBefore(box, card.querySelector('#rpMore'));
+  const more = document.getElementById('rpMore'); more.hidden = true;
+  const st = vids.map(()=>({ t:'laukia eilėje', cls:'' }));
+  const draw = ()=>{ box.innerHTML = vids.map((v,i)=>`<div class="vbg-row ${st[i].cls}"><span>🎬 Video ${vids.length>1 ? i+1 : ''}</span><b>${esc(st[i].t)}</b></div>`).join('')
+    + (VBUSY ? '<p class="muted" style="margin:8px 0 0;font-size:13px;">Neuždaryk šio puslapio, kol video įkeliamas.</p>' : ''); };
+  VBUSY = true; draw();
+  for(let i=0;i<vids.length;i++){
+    try{
+      st[i].t = 'suspaudžiamas…'; draw();
+      const prep = vids[i].prep; vids[i].prep = null;
+      const sh = await vidShrink(vids[i].file, VID_MAX, pc=>{ st[i].t = 'suspaudžiamas '+pc+'%'; draw(); }, prep);
+      st[i].t = 'įkeliamas…'; draw();
+      const path = await putFile(sh.blob, sh.type, sh.ext);
+      if(!path) throw new Error('įkelti nepavyko');
+      await rpc('vehicle_public_report_media', { p_token:T, p_report:rid, p_files:[path] });
+      st[i] = { t:'✓ įkeltas ir įdėtas į chatą', cls:'ok' };
+    }catch(e){ st[i] = { t:'nepavyko: '+(e.message||e), cls:'bad' }; }
+    URL.revokeObjectURL(vids[i].url); draw();
+  }
+  VBUSY = false; draw(); more.hidden = false;
+}
+async function send(){
+  const err = m=>{ document.getElementById('rpErr').textContent = m || ''; };
+  const name = V.me ? '' : document.getElementById('rpName').value.trim(), text = document.getElementById('rpText').value.trim();
+  if(!V.me && (name.length < 3 || !/\s/.test(name))){ err('Įrašyk vardą ir pavardę.'); document.getElementById('rpName').focus(); return; }
+  if(text.length < 3){ err('Aprašyk, kas pastebėta.'); document.getElementById('rpText').focus(); return; }
+  if(BUSY){ err('Palauk, kol paruošiamas video.'); return; }
+  PH.forEach(p=>{ if(p.vid && !p.prep) p.prep = vidPrep(p.file); });   // still within the tap: later the video may play with sound
+  err(''); const b = document.getElementById('rpGo'); b.disabled = true; b.textContent = PH.length ? 'Siunčiami failai…' : 'Siunčiama…';
+  try{
+    const paths = [], pics = PH.filter(p=>!p.vid), vids = PH.filter(p=>p.vid);
+    for(let i=0;i<pics.length;i++){ const p = pics[i];
+      if(pics.length > 1) b.textContent = 'Siunčiama '+(i+1)+'/'+pics.length+'…';
+      const path = await putFile(p.blob, p.type||'image/jpeg', p.ext||'jpg');
+      if(path) paths.push(path);
+    }
+    b.textContent = 'Siunčiama…';
+    const args = { p_token:T, p_name:name, p_text:text, p_severity:(document.querySelector('input[name="sev"]:checked')||{}).value || 'soon', p_files:paths, p_loc:LOC };
+    let rid;
+    try{ rid = await rpc('vehicle_public_report', args); }
+    catch(e){ if(!/p_loc|function|schema cache/i.test(e.message||'')) throw e; delete args.p_loc; rid = await rpc('vehicle_public_report', args); }   // before vehicle_loc.sql
+    PH = [];
+    document.getElementById('repCard').innerHTML = `<div class="done"><div class="big" style="color:var(--ok)"><svg viewBox="0 0 24 24" width="52" height="52" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/></svg></div><h2>Problema užregistruota</h2><p class="muted">Ačiū! Atsakingas asmuo gavo pranešimą${paths.length ? ' su nuotraukomis / video' : ''}.</p><button class="btn ghost" id="rpMore">Registruoti dar vieną</button></div>`;
+    document.getElementById('rpMore').onclick = ()=>draw();
+    if(vids.length && rid) sendVideos(rid, vids);
+  }catch(e){ b.disabled = false; b.textContent = 'Registruoti problemą'; err('Nepavyko: '+e.message); }
+}
+load();
+</script>
+</body>
+</html>
