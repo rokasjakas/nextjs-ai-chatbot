@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-us3h6vNIqhBfXAvbL32rZc4CvwjyFZhDMw/dnvrVz3Q=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FqO/nMyGex/prA7CrMxU3cymQyJMxHIuyu5CamVvFRY=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-hawk6P4UCXZyCPgXeTeREkas5XD4clzSM2DrXSK90FU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
@@ -17793,7 +17793,15 @@ if('serviceWorker' in navigator && (location.protocol==='https:' || location.hos
   }).catch(()=>{}); });
   // a new version took over while this page runs old code: offer to reload
   const hadSw = !!navigator.serviceWorker.controller;
-  navigator.serviceWorker.addEventListener('controllerchange', ()=>{ if(hadSw) appUpdatePop('web'); });
+  navigator.serviceWorker.addEventListener('controllerchange', ()=>{ if(hadSw){ window.__appStale = true; appUpdatePop('web'); } });
+  // a phone keeps the app in the background for days: the new version is put in by itself the moment the app
+  // comes back to the screen – only when nothing is being typed and everything is saved
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState!=='visible' || !window.__appStale) return;
+    const busy = (typeof cloudState!=='undefined' && (cloudState==='pending' || cloudState==='saving'))
+      || document.getElementById('modalBackdrop') || (document.activeElement && document.activeElement.matches && document.activeElement.matches('input,textarea,select,[contenteditable]'));
+    if(!busy) location.reload();
+  });
 }
 window.addEventListener('load', ()=>setTimeout(pwaRefresh, 1200));
 window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); PWA.prompt = e; pwaRefresh(); });
@@ -19598,7 +19606,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v417';
+const APP_VER = 'v418';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -40356,6 +40364,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-07 20:56', v:'v418', k:'fix', t:'Programa atsinaujina pati', f:'Telefone programa ilgai gyvena fone, todėl likdavo sena versija, kol nepaspaudi „Perkrauti“. Dabar, kai nauja versija atsisiunčia, programa persikrauna pati, kai tik į ją grįžti (tik jei niekas neredaguojama ir viskas išsaugota).' },
   { d:'2026-10-07 20:54', v:'v417', k:'fix', t:'Pranešimas apie laišką atidaro tą laišką', f:'Paspaudus pranešimą apie naują laišką, kai programa telefone buvo uždaryta, atsidarydavo paskutinis buvęs puslapis. Dabar atsidaro Paštas ir būtent tas laiškas.' },
   { d:'2026-10-07 20:44', v:'v416', k:'fix', t:'Paštas: „Tik darbo“ – visam paštui', f:'Nustatymuose pasirinkus „Tik darbo“ visas paštas rodo tik darbo laiškus: sąraše – ir senesni darbo laiškai (užsikrauna per kelias minutes, naujausi pirmi), kairėje – tik darbo laiškų skaičiai, paieška – tik tarp darbo laiškų, siunčiama ir atsakoma tik iš darbo adreso. Ženkliuko „Tik darbo ✕“ viršuje nebeliko. Reikia „mail“ funkcijos v21.' },
   { d:'2026-10-07 20:37', v:'v415', k:'new', t:'Paštas: rodyti visus, tik darbo arba tik asmeninius laiškus', f:'Pašto nustatymuose (⚙️) – „Kokius laiškus rodyti“: visus, tik darbo (į / iš @eventsolutions.lt, įskaitant kopiją) arba tik asmeninius (Gmail). Pasirinkus „Tik darbo“, iš Gmail tikrinami ir iš anksto paruošiami tik darbo laiškai – greičiau. Kai rodoma tik dalis, sąrašo viršuje matyti ženkliukas „💼 Tik darbo ✕“ (✕ – rodyti visus). Skirtukas „Darbas“ pakeistas šiuo pasirinkimu. Pasirinkimas išsaugomas profilyje – galioja ir telefone. Reikia: mail_acct.sql ir „mail“ funkcijos v20.' },
