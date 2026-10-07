@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 28;
+const VERSION = 29;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -864,7 +864,7 @@ async function mirrorFor(row: MirrorRow, force = false) {
 // Every new letter to the invoice mailbox becomes an invoice: its attachments are the invoice's files, the
 // total is found in a PDF's text, the sender is the supplier, and the kind comes from Admin+'s keyword rules
 // (the first rule whose words are found wins; none – the default kind). The same letter is never imported
-// twice (invoices.mail_id = its Message-ID). Checked with the minute sync; up to 8 letters per run.
+// twice (invoices.mail_id = its Message-ID). Checked every 15 s with the mail sync (up to 3 letters a run; 8 a minute).
 type InboxRule = { kw?: string; where?: string; kind?: string; supplier?: string };
 type InboxRow = { id: number; email: string | null; host: string | null; secret: string | null; active: boolean; rules: InboxRule[]; default_kind: string;
   state: { uidValidity?: string; lastUid?: number; busy?: string; total?: number; last?: { at: string; n: number; skipped?: number; err?: string; items?: { subject: string; kind: string; rule?: number }[] } } };
@@ -1009,7 +1009,7 @@ async function inboxRow(): Promise<InboxRow | null> {
   return r ?? null;
 }
 // one run: new letters (since=days: the letters of the last days, those not imported yet)
-async function runInvoiceInbox(force = false, sinceDays = 0) {
+async function runInvoiceInbox(force = false, sinceDays = 0, max = 8) {
   const row = await inboxRow();
   if (!row || !row.email || !row.secret || (!row.active && !force)) return null;
   const now = new Date().toISOString();
@@ -1039,7 +1039,7 @@ async function runInvoiceInbox(force = false, sinceDays = 0) {
           uids = ((await c.search({ uid: `${st.lastUid + 1}:*` }, { uid: true })) || []).filter((u) => u > st.lastUid!).sort((x, y) => x - y);
         }
         st.uidValidity = uv;
-        const take = uids.slice(0, sinceDays > 0 ? 25 : 8);
+        const take = uids.slice(0, sinceDays > 0 ? 25 : max);
         more = uids.length - take.length;
         for (const uid of take) {
           const l = await inboxLetter(c, uid);
@@ -1150,7 +1150,8 @@ async function runSyncAll(quick = false) {
   let auto: unknown = null, inbox: unknown = null;
   if (!quick) { try { auto = await runAutoReplies(); } catch (e) { auto = { error: (e as Error).message }; } }
   // the invoice mailbox (saskaitos@) → „Sąskaitos“
-  if (!quick) { try { inbox = await runInvoiceInbox(); } catch (e) { inbox = { error: (e as Error).message }; } }
+  // (every 15 s too: the quick run takes up to 3 letters, the minute run up to 8)
+  try { inbox = await runInvoiceInbox(false, 0, quick ? 3 : 8); } catch (e) { inbox = { error: (e as Error).message }; }
   return { synced: Object.keys(done).length, ms: Date.now() - t0, auto, inbox };
 }
 
