@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 21;
+const VERSION = 22;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -694,7 +694,10 @@ async function runSyncAll(quick = false) {
       done[r.email] = { error: (e as Error).message };
     }
   }
-  return { synced: Object.keys(done).length, ms: Date.now() - t0 };
+  // automatic replies („out of office“) – every minute now, right after the letters are checked
+  let auto: unknown = null;
+  if (!quick) { try { auto = await runAutoReplies(); } catch (e) { auto = { error: (e as Error).message }; } }
+  return { synced: Object.keys(done).length, ms: Date.now() - t0, auto };
 }
 
 // ---------- reading a message: only the parts that are needed ----------
@@ -1256,6 +1259,12 @@ async function autoReplyFor(row: { user_id: string; email: string; secret: strin
           if (got < start) continue;
           const who = m.envelope?.replyTo?.[0]?.address || m.envelope?.from?.[0]?.address || "";
           if (autoSkip(who, a.email, m.headers ? m.headers.toString() : "")) continue;
+          // read through Gmail: only letters that came to the work address get the work auto reply (not personal mail)
+          if (a.reader) {
+            const dom = "@" + (Deno.env.get("MAIL_WORK_DOMAIN") || "eventsolutions.lt").toLowerCase();
+            const env = m.envelope as { to?: Addr[]; cc?: Addr[] } | undefined;
+            if (![...(env?.to ?? []), ...(env?.cc ?? [])].some((x) => String(x.address || "").toLowerCase().endsWith(dom))) continue;
+          }
           const key = who.toLowerCase();
           if (replied[key] || out.some((x) => x.to === key) || out.length >= 30) continue;
           const orig = m.envelope?.subject || "";
@@ -1441,6 +1450,7 @@ Deno.serve(async (req) => {
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       const cb = await req.clone().json().catch(() => ({}));
       if ((cb as { action?: string }).action === "sync_all") return json(await runSyncAll((cb as { quick?: boolean }).quick === true));
+      // (the old 10-minute job – sql/mail_auto.sql switches it off: the replies now go with the minute sync)
       return json(await runAutoReplies());
     }
     const me = await caller(req);
