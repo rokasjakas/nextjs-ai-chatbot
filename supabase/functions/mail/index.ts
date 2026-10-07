@@ -46,7 +46,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 31;
+const VERSION = 32;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -1123,9 +1123,14 @@ async function runSyncAll(quick = false) {
   // (every 15 s too, in its own call of this function – a slow letter does not hold up the mail sync)
   const cs = Deno.env.get("CRON_SECRET");
   if (cs) {
-    await fetch(`${env("SUPABASE_URL")}/functions/v1/mail`, { method: "POST", signal: AbortSignal.timeout(2500),
-      headers: { "Content-Type": "application/json", "x-cron-secret": cs }, body: JSON.stringify({ action: "invoice_inbox", quick }) }).catch(() => null);
-    inbox = "started";
+    // the call is not cut short (that could stop the run on the other side): this one stays alive until it is
+    // answered (EdgeRuntime.waitUntil), while the sync's own answer goes back at once
+    const call = fetch(`${env("SUPABASE_URL")}/functions/v1/mail`, { method: "POST", signal: AbortSignal.timeout(120_000),
+      headers: { "Content-Type": "application/json", "x-cron-secret": cs }, body: JSON.stringify({ action: "invoice_inbox", quick }) })
+      .then((r) => r.text()).then((t) => { if (!/"imported":0|"off"|"busy"|^null$/.test(t)) console.log("invoice inbox:", t.slice(0, 300)); })
+      .catch((e) => console.error("invoice inbox call", (e as Error).message));
+    const er = (globalThis as unknown as { EdgeRuntime?: { waitUntil?: (p: Promise<unknown>) => void } }).EdgeRuntime;
+    if (er?.waitUntil) { er.waitUntil(call); inbox = "started"; } else { await call; inbox = "done"; }
   }
   return { synced: Object.keys(done).length, ms: Date.now() - t0, auto, inbox };
 }
