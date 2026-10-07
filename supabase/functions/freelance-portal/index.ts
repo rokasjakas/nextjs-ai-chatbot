@@ -18,6 +18,7 @@
 // Secrets: RESEND_API_KEY, REMINDER_FROM (as for the other e-mails), CRON_SECRET (to tell Admin+).
 // Deploy: supabase functions deploy freelance-portal --no-verify-jwt
 import Anthropic from "npm:@anthropic-ai/sdk";
+import { extractText, getDocumentProxy } from "npm:unpdf@1.8.1";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const SECRET = Deno.env.get("FL_PORTAL_SECRET") || SERVICE_KEY;
@@ -43,7 +44,7 @@ const emailRe = /^[^\s@<>,;"]+@[^\s@<>,;"]+\.[^\s@<>,;"]+$/;
 const esc = (t: string) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 const round2 = (n: number) => Math.round(n * 100) / 100;
 const today = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Vilnius" }).format(new Date());
-const norm = (s: string) => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim();
+const norm = (s: string) => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim();
 
 // who is this e-mail: a person in „Žmonės“ or an app member
 async function whoIs(email: string): Promise<{ name: string; contact_id: string | null } | null> {
@@ -136,17 +137,70 @@ async function readGemini(key: string, b64: string, type: string): Promise<Scan>
   const d = await r.json() as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
   return scanOf(JSON.parse((d.candidates?.[0]?.content?.parts || []).map((x) => x.text || "").join("")));
 }
-async function readTotal(b64: string, type: string): Promise<Scan> {
-  if (!SCAN_TYPES.includes(type)) return { checked: false, found: false, total: null, why: "type" };
-  const ck = Deno.env.get("ANTHROPIC_API_KEY"), gk = Deno.env.get("GEMINI_API_KEY");
-  if (!ck && !gk) return { checked: false, found: false, total: null, why: "off" };
-  try { return ck ? await readClaude(ck, b64, type) : await readGemini(gk!, b64, type); }
-  catch (e) {
-    if (e instanceof Anthropic.APIError) console.error("anthropic", e.status, e.message);
-    else console.error("scan", e instanceof Error ? e.message : e);
-    if (ck && gk) { try { return await readGemini(gk, b64, type); } catch (e2) { console.error("scan2", e2 instanceof Error ? e2.message : e2); } }
+// without an AI key (or when it can't tell): an electronic PDF's own text is searched for the total
+// the final total (with taxes) in an invoice's text: the strongest keyword wins, its last number on that line
+function findTotal(raw: string): number | null {
+  const text = String(raw || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\u00a0/g, " ");
+  const NUM = /(\d{1,3}(?:[ .]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)(?!\d)/g;
+  const parse = (s: string) => {
+    let t = s.replace(/ /g, "");
+    if (/[.,]\d{1,2}$/.test(t)) { const d = t.slice(-3).replace(/^[.,]/, ""); t = t.slice(0, t.length - (t.match(/[.,]\d{1,2}$/)![0].length)).replace(/[.,]/g, "") + "." + d; }
+    else t = t.replace(/[.,]/g, "");
+    const n = Number(t); return isFinite(n) ? n : NaN;
+  };
+  const levels = [
+    /(moketina suma|suma apmoke?jimui|suma moketi|is viso moketi|viso moketi|moketi is viso|moketi|apmoketi|amount due|total due|to pay)/,
+    /(is viso su pvm|viso su pvm|suma su pvm|bendra suma su pvm|su pvm is viso|total incl|total with vat|grand total)/,
+    /(is viso|viso|bendra suma|galutine suma|total|suma)/,
+  ];
+  const lines = text.split(/\n+/);
+  for (const [li, re] of levels.entries()) {
+    const found: number[] = [];
+    for (const [i, line0] of lines.entries()) {
+      const m = line0.match(re); if (!m) continue;
+      if (li === 2 && /be pvm|pvm \d|pvm suma|zodziais|kiekis|kaina/.test(line0)) continue;
+      if (li < 2 && /zodziais/.test(line0)) continue;
+      // the amount after the keyword on that line, or on the next line (tables)
+      let rest = line0.slice(m.index + m[0].length).replace(/\d{4}-\d{2}-\d{2}/g, " ").replace(/\d{1,3}\s?%/g, " ");
+      let nums = [...rest.matchAll(NUM)].map((x) => parse(x[1])).filter((n) => n > 0);
+      if (!nums.length && lines[i + 1]) nums = [...lines[i + 1].replace(/\d{4}-\d{2}-\d{2}/g, " ").matchAll(NUM)].map((x) => parse(x[1])).filter((n) => n > 0);
+      if (nums.length) found.push(nums[nums.length - 1]);
+    }
+    if (found.length) return Math.round((li === 2 ? Math.max(...found) : found[found.length - 1]) * 100) / 100;
+  }
+  return null;
+}
+async function readPdfText(b64: string): Promise<Scan> {
+  try {
+    const pdf = await getDocumentProxy(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)));
+    const { text } = await extractText(pdf, { mergePages: true });
+    const body = String(text || "");
+    if (body.replace(/\s+/g, "").length < 20) return { checked: true, found: false, total: null, why: "scanned" };
+    const t = findTotal(body);
+    return t != null && t > 0 ? { checked: true, found: true, total: t, why: "pdf-text" } : { checked: true, found: false, total: null, why: "no-total" };
+  } catch (e) {
+    console.error("pdf", e instanceof Error ? e.message : e);
     return { checked: false, found: false, total: null, why: "error" };
   }
+}
+async function readTotal(b64: string, type: string): Promise<Scan> {
+  if (!SCAN_TYPES.includes(type)) return { checked: false, found: false, total: null, why: "type" };
+  const ck = Deno.env.get("ANTHROPIC_API_KEY"), gk = Deno.env.get("GEMINI_API_KEY"), pdf = type === "application/pdf";
+  let ai: Scan | null = null;
+  if (ck || gk) {
+    try { ai = ck ? await readClaude(ck, b64, type) : await readGemini(gk!, b64, type); }
+    catch (e) {
+      if (e instanceof Anthropic.APIError) console.error("anthropic", e.status, e.message);
+      else console.error("scan", e instanceof Error ? e.message : e);
+      if (ck && gk) { try { ai = await readGemini(gk, b64, type); } catch (e2) { console.error("scan2", e2 instanceof Error ? e2.message : e2); } }
+    }
+    if (ai && ai.found) return ai;
+  }
+  if (pdf) {
+    const t = await readPdfText(b64);
+    if (t.found || !ai) return t;
+  }
+  return ai || { checked: false, found: false, total: null, why: "image-off" };
 }
 async function scanCached(s: { token_hash?: string; scans?: Record<string, Scan> }, b64: string, type: string): Promise<Scan> {
   const h = await sha(b64);
@@ -162,7 +216,8 @@ const eurTxt = (n: number) => n.toFixed(2).replace(".", ",") + " €";
 // the invoice's total must be read from the file and be the same as the entered one
 function mustMatch(scan: Scan, total: number) {
   if (!scan.found || scan.total == null) {
-    throw new UserError(scan.why === "off" ? "Sąskaitos failo tikrinimas dar neįjungtas – kreipkis į Event Solutions biurą."
+    throw new UserError(scan.why === "image-off" ? "Nuotraukos dar negalime patikrinti – įkelk sąskaitą PDF formatu."
+      : scan.why === "scanned" ? "Šiame PDF nėra teksto (nuskenuotas). Įkelk elektroninę PDF sąskaitą."
       : scan.why === "not-invoice" ? "Įkeltas failas neatrodo kaip sąskaita. Įkelk sąskaitą faktūrą (PDF arba aiškią nuotrauką)."
       : scan.why === "type" ? "Sąskaitą įkelk PDF, JPG arba PNG formatu."
       : scan.checked ? "Įkeltoje sąskaitoje nepavyko rasti galutinės sumos. Įkelk aiškesnį failą (geriausia PDF)."

@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-k4uzr3GcCkiK14JwDqawMN9xpjSqDXMjcfTiVFcGnP8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-F8n5lx07W97+V302lWMcM5aD0k0Z7Uo0WDe4LJ2DlUA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-gwpDMfuIDSfRq2nYLA2zmCeYFQuSjQQC9DF3OMteX3A=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-6oYtDw3dmRAWn25BW1NWAJCvvI4c8sS+t2lRSVGsAsI=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -248,7 +248,7 @@ function viewForm(){
       <p class="muted">1) Įkelk sąskaitą – jos galutinė suma bus nuskaityta automatiškai. 2) Nurodyk renginius, kuriuose dirbai, ir papildomas išlaidas. Visos sumos – <b>su mokesčiais</b>; renginių ir išlaidų suma turi sutapti su sąskaitos galutine suma.</p>
       ${draft.wasRejected && draft.why ? `<div class="why"><b>Nepatvirtinta, nes:</b> ${esc(draft.why)}</div>` : ''}</div>
     <div class="card"><h2>1. Sąskaita</h2>
-      <label>Sąskaitos failas (PDF arba nuotrauka)</label>
+      <label>Sąskaitos failas (geriausia elektroninė PDF sąskaita)</label>
       <label class="file" id="fl"><span>📎</span><span id="fname">${draft.file ? '<b>'+esc(draft.file.name)+'</b>' : draft.oldFile ? '<b>'+esc(draft.oldFile.name)+'</b> <span class="muted">(paliekamas – spausk, jei nori pakeisti)</span>' : 'Pasirink sąskaitos failą…'}</span><input id="file" type="file" accept="application/pdf,image/*"></label>
       <div id="ftot"></div>
       <div class="row2"><div><label>Sąskaitos nr.</label><input id="num" value="${esc(draft.number)}" autocomplete="off"></div>
@@ -353,7 +353,7 @@ function fileTotal(){
   if(draft.file) return draft.scan && draft.scan.found ? cents(draft.scan.total) : null;
   return draft.oldFile && draft.oldTotal!=null ? cents(draft.oldTotal) : null;
 }
-const SCAN_WHY = { off:'Sąskaitos failo tikrinimas dar neįjungtas – kreipkis į Event Solutions biurą.', type:'Sąskaitą įkelk PDF, JPG arba PNG formatu.',
+const SCAN_WHY = { off:'Sąskaitos failo tikrinimas dar neįjungtas – kreipkis į Event Solutions biurą.', 'image-off':'Nuotraukos dar negalime patikrinti – įkelk sąskaitą PDF formatu.', scanned:'Šiame PDF nėra teksto (nuskenuotas). Įkelk elektroninę PDF sąskaitą.', type:'Sąskaitą įkelk PDF, JPG arba PNG formatu.',
   'not-invoice':'Įkeltas failas neatrodo kaip sąskaita. Įkelk sąskaitą faktūrą (PDF arba aiškią nuotrauką).', 'no-total':'Sąskaitoje nepavyko rasti galutinės sumos. Įkelk aiškesnį failą (geriausia PDF).',
   error:'Nepavyko patikrinti sąskaitos failo.', refusal:'Nepavyko patikrinti sąskaitos failo.' };
 function drawFileTotal(tot){
