@@ -72,7 +72,7 @@ function r2Url(method: string, key: string, expires: number, query: Record<strin
 }
 
 // ---------- who may do what (the same rules as the Supabase buckets) ----------
-const BUCKETS = ["chat-files", "equipment-photos", "avatars", "venue-photos", "job-files", "invoice-files", "fleet-files"];
+const BUCKETS = ["chat-files", "equipment-photos", "avatars", "venue-photos", "job-files", "invoice-files", "fleet-files", "bolt-files"];
 type Op = "read" | "write" | "delete";
 type Caller = { uid: string; token: string; apikey: string };
 async function rpc(c: Caller, fn: string, args: Record<string, unknown> = {}): Promise<boolean> {
@@ -81,6 +81,14 @@ async function rpc(c: Caller, fn: string, args: Record<string, unknown> = {}): P
   });
   if (!res.ok) return false;
   return (await res.json()) === true;
+}
+// a function that returns a value (not a yes / no)
+async function rpcVal(c: Caller, fn: string, args: Record<string, unknown> = {}): Promise<unknown> {
+  const res = await fetch(`${env("SUPABASE_URL")}/rest/v1/rpc/${fn}`, {
+    method: "POST", headers: { apikey: c.apikey, Authorization: `Bearer ${c.token}`, "Content-Type": "application/json" }, body: JSON.stringify(args),
+  }).catch(() => null);
+  if (!res || !res.ok) return null;
+  return await res.json().catch(() => null);
 }
 async function convOwner(c: Caller, cid: string): Promise<string | null> {
   const res = await fetch(`${env("SUPABASE_URL")}/rest/v1/conversations?select=created_by&id=eq.${encodeURIComponent(cid)}`, {
@@ -94,7 +102,9 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 async function allowed(c: Caller, bucket: string, path: string, op: Op, cache: Map<string, boolean>): Promise<boolean> {
   if (!BUCKETS.includes(bucket) || !path || path.includes("..") || path.startsWith("/") || path.length > 400) return false;
   const first = path.split("/")[0];
-  const key = bucket + "|" + op + "|" + (bucket === "equipment-photos" ? path.split("/").slice(0, 2).join("/") : bucket === "invoice-files" && op === "read" ? path : first);
+  // #automobiliai photos / videos of a vehicle problem (<channel>/vl-…, qr-…): anyone who sees „Transportas“, member of the channel or not
+  const vehMedia = bucket === "chat-files" && /^(vl|qr)-/.test(path.split("/")[1] || "");
+  const key = bucket + "|" + op + "|" + (bucket === "equipment-photos" ? path.split("/").slice(0, 2).join("/") : bucket === "invoice-files" && op === "read" ? path : first) + (vehMedia ? "|veh" : "");
   if (cache.has(key)) return cache.get(key)!;
   let ok = false;
   switch (bucket) {
@@ -103,6 +113,7 @@ async function allowed(c: Caller, bucket: string, path: string, op: Op, cache: M
       if (!UUID.test(first)) break;
       if (op === "delete") ok = (await convOwner(c, first)) === c.uid || await rpc(c, "is_admin");
       else ok = await rpc(c, "is_conv_member", { cid: first });
+      if (!ok && vehMedia && op !== "delete") ok = (await rpcVal(c, "vehicles_channel_mine")) === first;
       break;
     case "equipment-photos": ok = await rpc(c, "equipment_photo_access", { obj_name: path, edit: op !== "read" }); break;
     case "venue-photos": ok = await rpc(c, op === "read" ? "can_view" : "can_edit", { sec: "venues" }); break;
@@ -120,6 +131,8 @@ async function allowed(c: Caller, bucket: string, path: string, op: Op, cache: M
       // reading: also Office / project managers, for the invoices they check (invoice_check.sql)
       else ok = first === c.uid || await rpc(c, "is_plus") || await rpc(c, "inv_file_checkable", { p_path: path }).catch(() => false);
       break;
+    // Bolt / Wolt / Uta reports (office_bolt.sql): Admin and Office
+    case "bolt-files": ok = await rpc(c, "office_admin"); break;
   }
   cache.set(key, ok);
   return ok;

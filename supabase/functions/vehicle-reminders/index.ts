@@ -30,12 +30,13 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-type DocKey = "insurance" | "inspection" | "road_tax";
+type DocKey = "insurance" | "inspection" | "road_tax" | "kasko";
 
 const DOCS: { key: DocKey; column: string; label: string }[] = [
   { key: "insurance", column: "insurance_until", label: "Draudimas" },
   { key: "inspection", column: "inspection_until", label: "Techninė apžiūra" },
   { key: "road_tax", column: "road_tax_until", label: "Kelių mokestis" },
+  { key: "kasko", column: "kasko_until", label: "KASKO" },   // not required: shown only when filled in (vehicle_kasko.sql)
 ];
 
 type Vehicle = {
@@ -45,6 +46,7 @@ type Vehicle = {
   insurance_until: string | null;
   inspection_until: string | null;
   road_tax_until: string | null;
+  kasko_until?: string | null;
   lead_days: number;
   // per document, e.g. {"insurance": 30, "inspection": 14, "road_tax": 7};
   // a missing document falls back to lead_days
@@ -110,9 +112,9 @@ function daysBetween(from: string, to: string): number {
 
 function docStatuses(v: Vehicle, today: string): DocStatus[] {
   return DOCS.map(({ key, column, label }) => {
-    const until = (v as unknown as Record<string, string | null>)[column];
+    const until = (v as unknown as Record<string, string | null>)[column] ?? null;
     return { key, label, until, days: until ? daysBetween(today, until) : null };
-  });
+  }).filter((d) => d.key !== "kasko" || d.until);
 }
 
 function leadDays(v: Vehicle, key: DocKey): number {

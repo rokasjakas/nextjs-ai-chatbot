@@ -155,7 +155,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 18;
+const PUSH_FN_VERSION = 19;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -1183,6 +1183,75 @@ async function invoiceReminders() {
   return { invoices: due.length };
 }
 
+// Uta / Wolt / Bolt ataskaitų priminimai (sql/report_reminders.sql): from „days_before“ days before the due day,
+// once a day, „times“ times in all, about 8 o'clock (Vilnius); a monthly one stops once last month's report is in
+type RepRem = { id: string; kind: string; to_email: string | null; to_user: string | null; period: string; due_day: number; days_before: number; times: number; note: string | null; sent: Record<string, string> | null };
+const REP_NAME: Record<string, string> = { uta: "UTA kuro", wolt: "Wolt", bolt: "Bolt" };
+const MONTHS_LT = ["sausio", "vasario", "kovo", "balandžio", "gegužės", "birželio", "liepos", "rugpjūčio", "rugsėjo", "spalio", "lapkričio", "gruodžio"];
+const MONTHS_NOM = ["sausis", "vasaris", "kovas", "balandis", "gegužė", "birželis", "liepa", "rugpjūtis", "rugsėjis", "spalis", "lapkritis", "gruodis"];
+const ymd = (d: Date) => d.toISOString().slice(0, 10);
+const dayAdd = (iso: string, n: number) => ymd(new Date(Date.parse(iso + "T00:00:00Z") + n * 86400000));
+function repDues(r: RepRem, today: string): string[] {
+  const t = new Date(today + "T00:00:00Z"), y = t.getUTCFullYear(), m = t.getUTCMonth(), dd = Math.min(28, Math.max(1, r.due_day));
+  if (r.period === "week") {
+    const wd = ((t.getUTCDay() + 6) % 7) + 1, want = Math.min(7, dd);   // 1 = Monday
+    const thisWeek = dayAdd(today, want - wd);
+    return [thisWeek, dayAdd(thisWeek, 7), dayAdd(thisWeek, 14)];
+  }
+  if (r.period === "quarter") {
+    const q = Math.floor(m / 3) * 3;
+    return [0, 3, 6].map((k) => ymd(new Date(Date.UTC(y, q + k, dd))));
+  }
+  return [0, 1, 2].map((k) => ymd(new Date(Date.UTC(y, m + k, dd))));
+}
+async function repUploaded(kind: string, due: string): Promise<boolean> {
+  const d = new Date(due + "T00:00:00Z"), prev = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - 1, 1)), ym = ymd(prev).slice(0, 7);
+  const q = kind === "uta" ? `uta_reports?select=id&month=eq.${ym}-01&limit=1` : `${kind}_reports?select=id&month=eq.${ym}&limit=1`;
+  const rows = await db<unknown[]>(q).catch(() => []);
+  return rows.length > 0;
+}
+async function reportReminders() {
+  const local = new Date().toLocaleString("sv-SE", { timeZone: "Europe/Vilnius" }), today = local.slice(0, 10), hour = +local.slice(11, 13);
+  if (hour < 8) return { wait: true };
+  const list = await db<RepRem[]>(`report_reminders?select=*&active=eq.true`);
+  const out: unknown[] = [];
+  for (const r of list) {
+    let hit: { due: string; i: number } | null = null;
+    for (const due of repDues(r, today)) {
+      for (let i = 0; i < Math.max(1, r.times); i++) {
+        const before = r.days_before - i; if (before < 0) break;
+        if (dayAdd(due, -before) === today) { hit = { due, i }; break; }
+      }
+      if (hit) break;
+    }
+    if (!hit) continue;
+    const key = hit.due + "|" + hit.i, sent = { ...(r.sent ?? {}) };
+    if (sent[key]) continue;
+    sent[key] = new Date().toISOString();
+    for (const k of Object.keys(sent)) if (Date.parse(sent[k]) < Date.now() - 200 * 86400000) delete sent[k];
+    await db(`report_reminders?id=eq.${r.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ sent }) });
+    if (r.period === "month" && await repUploaded(r.kind, hit.due)) { out.push({ id: r.id, skip: "uploaded" }); continue; }
+    const d = new Date(hit.due + "T00:00:00Z"), prev = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - 1, 1));
+    const what = REP_NAME[r.kind] ?? r.kind;
+    const forWhat = r.period === "month" ? ` už ${MONTHS_NOM[prev.getUTCMonth()]} (${prev.getUTCFullYear()})` : r.period === "quarter" ? " už praėjusį ketvirtį" : " už praėjusią savaitę";
+    const by = `${MONTHS_LT[d.getUTCMonth()]} ${d.getUTCDate()} d.`;
+    const left = Math.round((Date.parse(hit.due) - Date.parse(today)) / 86400000);
+    const title = `⏰ ${what} ataskaita`;
+    const body = `Įkelk ${what} ataskaitą${forWhat} iki ${by}${left === 0 ? " (šiandien)" : left === 1 ? " (rytoj)" : ` (liko ${left} d.)`}.${r.note ? " " + r.note : ""}`;
+    const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;"><p><b>${esc(title.replace("⏰ ", ""))}</b></p><p>${esc(body)}</p>
+      <p style="color:#777;font-size:12px;margin-top:18px;">EventSolutions App · ataskaitų priminimas.</p></div>`;
+    let pushed = 0, mailErr = "";
+    if (r.to_user) {
+      pushed = (await sendTo([r.to_user], { title, body, tag: "rep-" + r.id, url: "./", kind: "other" }, 86400)).sent;
+      const [p] = await db<Profile[]>(`profiles?select=id,email&id=eq.${r.to_user}`).catch(() => []);
+      if (p?.email) mailErr = await mailTo([p.email], "Priminimas: " + what + " ataskaita", html);
+    }
+    if (r.to_email) mailErr = (await mailTo([r.to_email], "Priminimas: " + what + " ataskaita", html)) || mailErr;
+    out.push({ id: r.id, key, pushed, ...(mailErr ? { mailErr } : {}) });
+  }
+  return { checked: list.length, sent: out };
+}
+
 // Klaidos / pasiūlymai: a new one goes to the admins, an answer to its author
 type Feedback = { id: string; created_by: string; kind: string; text: string; status: string; admin_note: string | null };
 const FB_STATUS: Record<string, string> = {
@@ -1396,8 +1465,10 @@ Deno.serve(async (req) => {
       let ir: unknown = null, tt: unknown = null;
       try { ir = await invoiceReminders(); } catch (e) { ir = { error: String(e) }; }   // before invoices.sql the table is missing
       try { tt = await trackerReminders(); } catch (e) { tt = { error: String(e) }; }   // before tracker.sql the tables are missing
+      let rr: unknown = null;
+      try { rr = await reportReminders(); } catch (e) { rr = { error: String(e) }; }   // before report_reminders.sql the table is missing
       if (new Date().getUTCMinutes() < 5) await db(`user_notifications?created_at=lt.${new Date(Date.now() - 30 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
-      return json({ ...tr, inv: ir, tracker: tt });
+      return json({ ...tr, inv: ir, tracker: tt, reports: rr });
     }
     // a new member signed up (called by user-access with the cron secret): every admin is told
     if (body?.mode === "new-user") {
