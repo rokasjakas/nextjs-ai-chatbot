@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-nbDbgJF6m6vE9WUb2uzlMuGgzja7NdmzrAgt5MzBn8Y=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-4MyPU3ZdC7mnpZtPdJ3PdQOR7WbSyFxFSQ/kYCOYrfw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -511,6 +511,7 @@ body.gside-peek .gside-bd{display:block;position:fixed;inset:0;z-index:44;backgr
   .gside-tab .gsd-open{margin:0;} .gside-tab .gsd-date{margin:0;}
   .gside-p, body.gside-peek .gside-p{top:0;right:0;width:100%;max-width:100%;padding-top:env(safe-area-inset-top,0px);z-index:95;}
   body.gside-open .gside-bd, body.gside-peek .gside-bd{display:block;position:fixed;inset:0;z-index:94;background:rgb(0 0 0 / .3);} }
+.sk-msg.pending .sk-body{opacity:.6;}
 .doc-box{display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--border);border-radius:10px;}
 .doc-lead input{max-width:110px;}
 .plate-copy{cursor:pointer;border:1px dashed var(--border);border-radius:8px;padding:4px 10px;background:var(--panel);}
@@ -20140,7 +20141,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v453';
+const APP_VER = 'v454';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -30900,6 +30901,7 @@ function chatBindReactions(box){
   box.querySelectorAll('[data-rx-e]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); chatToggleReaction(b.dataset.rxMid, b.dataset.rxE); });
   box.querySelectorAll('[data-react]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); chatReactPicker(b, b.dataset.react); });
   box.querySelectorAll('[data-bubble]').forEach(bub=>{
+    if(bub._rxb) return; bub._rxb = 1;
     const mid = bub.dataset.bubble;
     bub.addEventListener('dblclick', e=>{ if(!e.target.closest('a,.chat-ph')){ e.preventDefault(); chatReactPicker(bub, mid); } });
     // phones: hold the message for half a second
@@ -32092,6 +32094,7 @@ async function chatLoadThreadStats(ids){
   (data||[]).filter(r=>!r.deleted_at).forEach(r=>chatStatAdd(r));
 }
 function chatStatAdd(r){
+  if(r.pending) return;
   const s = TEAM.tstats[r.parent_id] = TEAM.tstats[r.parent_id] || { n:0, last:'', users:[], ids:{} };
   if(s.ids[r.id]) return;
   s.ids[r.id] = 1; s.n++; if(String(r.created_at) > s.last) s.last = r.created_at;
@@ -32112,9 +32115,9 @@ function chatMsgHtml(m, o){
     : (m.body ? `<div class="sk-text">${chatFormat(m.body)}${m.edited_at ? ' <small class="sk-edited">(redaguota)</small>' : ''}</div>` : '')
       + (att.length ? `<div class="chat-att sk-att n${Math.min(att.length,4)}">${att.map((a,i)=>a.type==='gif'
             ? `<button class="chat-ph" data-mid="${esc(m.id)}" data-i="${i}"><img src="${esc(a.url)}" alt="GIF" loading="lazy"></button>`
-            : `<button class="chat-ph" data-mid="${esc(m.id)}" data-i="${i}"><img data-bucket="chat-files" data-path="${esc(a.path)}" alt="" draggable="false"></button>`).join('')}</div>` : '')
+            : `<button class="chat-ph" data-mid="${esc(m.id)}" data-i="${i}"><img data-bucket="chat-files" data-path="${esc(a.path)}" ${TEAM.urls && TEAM.urls['chat-files/'+a.path] ? `src="${esc(TEAM.urls['chat-files/'+a.path].url)}"` : ''} alt="" draggable="false"></button>`).join('')}</div>` : '')
       + files.map(a=>chatIsVideo(a) ? chatVideoHtml(a) : `<button class="chat-file sk-file" data-fpath="${esc(a.path)}" data-fname="${esc(a.name||'failas')}" title="Atsisiųsti"><span class="chat-file-ic">${chatFileIcon(a.name, a.mime)}</span><span class="chat-file-t"><b>${esc(a.name||'failas')}</b><small>${esc(chatSize(a.size))} · atsisiųsti</small></span></button>`).join('');
-  return `<div class="sk-msg ${o.cont?'cont':''} ${mine?'mine':''}" data-mid="${esc(m.id)}">
+  return `<div class="sk-msg ${o.cont?'cont':''} ${mine?'mine':''} ${m.pending?'pending':''}" data-mid="${esc(m.id)}">
     <div class="sk-av">${o.cont ? `<span class="sk-ctime">${esc(chatHM(m.created_at))}</span>` : teamAvatar(who || {id:m.sender_id}, 36)}</div>
     <div class="sk-body">
       ${o.cont ? '' : `<div class="sk-meta"><b class="sk-name">${esc(teamName(who))}</b>${g ? `<span class="sk-guest">${m.guest_id ? 'svečias' : 'ne narys · QR'}</span>` : ''}<span class="sk-time" title="${esc(d.toLocaleString('lt-LT'))}">${esc(chatHM(m.created_at))}</span></div>`}
@@ -32124,7 +32127,7 @@ function chatMsgHtml(m, o){
       <div class="chat-reacts sk-reacts" data-rx="${esc(m.id)}">${chatReactsHtml(m.id)}</div>
       ${st && st.n ? `<button class="sk-thr" data-thread="${esc(m.id)}"><span class="sk-thr-av">${st.users.slice(0,4).map(u=>teamAvatar(teamMember(u)||{id:u}, 20)).join('')}</span><b>${ltPlural(st.n,'atsakymas','atsakymai','atsakymų')}</b><small>Paskutinis atsakymas ${esc(chatTime(st.last))}</small></button>` : ''}
     </div>
-    ${m.deleted_at ? '' : `<div class="sk-hover">
+    ${m.deleted_at || m.pending ? '' : `<div class="sk-hover">
       <button data-react="${esc(m.id)}" title="Reaguoti">${SK_ICON.smile}</button>
       ${o.inThread || TEAM.noThreads ? '' : `<button data-thread="${esc(m.id)}" title="Atsakyti gijoje">${SK_ICON.thread}</button>`}
       <button data-save="${esc(m.id)}" title="${saved?'Pašalinti iš „Vėliau“':'Išsaugoti vėlesniam'}" class="${saved?'on':''}">${saved ? SK_ICON.saved : SK_ICON.save}</button>
@@ -32150,11 +32153,24 @@ function chatRenderMessages(cid, toBottom){
   const list = TEAM.msgs[cid]||[];
   const prevH = box.scrollHeight, prevTop = box.scrollTop;
   const intro = !TEAM.more[cid] ? `<div class="sk-intro">${chatIsChannel(c) ? `<b>${chatHash(c)} ${esc(chatTitle(c))}</b><span>${c.kind==='general' ? 'Visos komandos kanalas.' : 'Kanalo pradžia.'} ${esc(c.topic||'')}</span>` : `${chatIcon(c, 56)}<b>${esc(chatTitle(c))}</b><span>Jūsų pokalbio pradžia.</span>`}</div>` : '<button class="btn small chat-older" id="chOlder">Ankstesnės žinutės</button>';
-  box.innerHTML = intro + (chatListHtml(list) || '');
+  chatPatch(box, intro + (chatListHtml(list) || ''));
   const older = document.getElementById('chOlder'); if(older) older.onclick = ()=>chatLoadMessages(cid, true);
   chatBindMsgs(box);
   if(toBottom){ box.scrollTop = box.scrollHeight; box.querySelectorAll('img').forEach(i=>i.addEventListener('load', ()=>{ if(box.scrollHeight - box.scrollTop - box.clientHeight < 400) box.scrollTop = box.scrollHeight; }, {once:true})); }
   else box.scrollTop = prevTop + (box.scrollHeight - prevH);
+}
+// the list is drawn again without touching the messages that did not change: their photos and videos stay as
+// they are (no reloading, a playing video keeps playing), only new / changed messages are made
+function chatPatch(box, html){
+  const tpl = document.createElement('template'); tpl.innerHTML = html;
+  const old = new Map(); box.querySelectorAll(':scope > .sk-msg[data-mid]').forEach(el=>{ if(el._h) old.set(el.dataset.mid, el); });
+  [...tpl.content.children].forEach(nw=>{
+    if(!nw.matches('.sk-msg[data-mid]')) return;
+    const h = nw.outerHTML, o = old.get(nw.dataset.mid);
+    if(o && o._h===h){ old.delete(nw.dataset.mid); nw.replaceWith(o); }
+    else nw._h = h;
+  });
+  box.replaceChildren(...tpl.content.childNodes);
 }
 function chatBindMsgs(box){
   chatBindReactions(box);
@@ -32227,9 +32243,9 @@ async function chatOpenThread(pid, flashMid){
 function chatRenderThread(){
   const box = document.getElementById('thMsgs'); if(!box || !TEAM.thread) return;
   const p = TEAM.threadParent, list = (TEAM.replies[TEAM.thread]||[]);
-  box.innerHTML = (p ? chatMsgHtml(p, { inThread:true }) : '')
+  chatPatch(box, (p ? chatMsgHtml(p, { inThread:true }) : '')
     + `<div class="sk-tdiv"><span>${list.length ? ltPlural(list.length,'atsakymas','atsakymai','atsakymų') : 'Atsakymų dar nėra'}</span></div>`
-    + chatListHtml(list, { inThread:true, noDays:true });
+    + chatListHtml(list, { inThread:true, noDays:true }));
   chatBindMsgs(box);
   box.scrollTop = box.scrollHeight;
 }
@@ -32385,11 +32401,15 @@ async function chatQueueRun(){
     while(CHAT_Q.list.length){
       const j = CHAT_Q.list[0];
       let ok = false;
+      const tmp = { id:'tmp-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), conversation_id:j.cid, sender_id:teamMe(), body:j.body, attachments:[],
+        created_at:new Date().toISOString(), parent_id:j.parent || null, also_channel:!!j.also, pending:true };
+      chatAddMessage(tmp);
       for(let t = 0; t < 3 && !ok; t++){
         if(t) await new Promise(r=>setTimeout(r, 900*t));
         ok = await chatInsert({ body:j.body, attachments:[], parent_id:j.parent, also_channel:j.also }, j.cid, { quiet:t<2 }).catch(()=>false);
       }
       CHAT_Q.list.shift();
+      chatDropTemp(tmp);
       if(!ok){
         const ta = document.getElementById(j.p+'Text');
         if(ta){ ta.value = ta.value.trim() ? j.body+'\n'+ta.value : j.body; ta.dispatchEvent(new Event('input')); }
@@ -32415,8 +32435,20 @@ async function chatInsert(msg, toCid, opts){
   if(!(opts && opts.noPush)) notifyCall({ kind:'message', message_id:data.id });
   return true;
 }
+// a message shown before the server had it goes away when the real one comes (or the sending failed)
+function chatDropTemp(t){
+  let hit = false;
+  const l = TEAM.msgs[t.conversation_id]; if(l){ const i = l.indexOf(t); if(i>=0){ l.splice(i, 1); hit = true; } }
+  if(t.parent_id){ const r = TEAM.replies[t.parent_id]; if(r){ const i = r.indexOf(t); if(i>=0){ r.splice(i, 1); hit = true; } } }
+  if(!hit) return;
+  if(TEAM.open===t.conversation_id) chatRenderMessages(t.conversation_id, false);
+  if(t.parent_id && TEAM.thread===t.parent_id) chatRenderThread();
+}
 function chatAddMessage(m){
   const inThreadOnly = m.parent_id && !m.also_channel;
+  // the real one of a message still shown as „sending“ (it can come through the live connection first)
+  if(!m.pending && m.sender_id===teamMe()){ const all = (TEAM.msgs[m.conversation_id]||[]).concat(m.parent_id ? TEAM.replies[m.parent_id]||[] : []);
+    const t = all.find(x=>x.pending && x.body===m.body && (x.parent_id||null)===(m.parent_id||null)); if(t){ const l = TEAM.msgs[m.conversation_id]; if(l && l.indexOf(t)>=0) l.splice(l.indexOf(t), 1); const r = m.parent_id && TEAM.replies[m.parent_id]; if(r && r.indexOf(t)>=0) r.splice(r.indexOf(t), 1); } }
   if(TEAM.open===m.conversation_id && TEAM.pins && ('pinned_at' in m)){ const had = (TEAM.pins[m.conversation_id]||[]).some(x=>x.id===m.id);
     if(had!==!!(m.pinned_at && !m.deleted_at)){ clearTimeout(chatAddMessage._pt); chatAddMessage._pt = setTimeout(()=>chatLoadPins(m.conversation_id), 300); } }
   if(m.parent_id){
@@ -41349,6 +41381,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 15:30', v:'v454', k:'fix', t:'Chatas: žinutės atsiranda iškart, kanalas nebepersikrauna', f:'Parašyta žinutė pokalbyje atsiranda iš karto (kol serveris ją priima – šiek tiek blankesnė), o ne po akimirkos. Atsiradus naujai žinutei, kanalas nebeperpiešiamas visas: nuotraukos ir video nebeperkraunami, grojantis video negroja iš naujo – pridedama tik nauja žinutė.' },
   { d:'2026-10-11 15:00', v:'v453', k:'fix', t:'Dešinysis skydelis: atidarius greitųjų mygtukų juosta nebelieka šone', f:'Atidarius dešinįjį skydelį greitųjų mygtukų juosta paslepiama – skydelis užima visą dešinį kraštą (kaip ir užrakintas).' },
   { d:'2026-10-11 14:45', v:'v452', k:'new', t:'Dešinė juosta: stiklas, šiandienos data, pranešimai ir greiti mygtukai; Material ikonos', f:'Suskleistas dešinysis skydelis – stiklinė juosta be teksto: šiandienos data (taškas, jei tą dieną kas nors suplanuota; paspaudus – dienos informacija), pranešimai su naujų skaičiumi ir mygtukas kiekvienai skydelio daliai (sąskaitos, kalendorius, klaidos, užduotys, AI) – paspaudus ta dalis parodoma virš puslapio. Skydelį galima užrakinti išskleistą (smeigtuko ženklas) – tada jis stovi šalia puslapio. Visos programos ikonos patikrintos – tik Material Symbols (Google, Outlined · Fill): pakeistos Pirkinių, Išlaidų, meniu užrakinimo, failų tipų chate ir kelios kitos.' },
   { d:'2026-10-11 14:10', v:'v451', k:'fix', t:'iPhone chatas: slenka ir braukiant per nuotrauką', f:'Telefone (ypač iPhone) braukiant pirštu per nuotrauką ar video chatas nesislinkdavo – reikėdavo braukti per tuščią vietą. Nuotraukų rėmelis nebelaikomas atskira slenkama sritimi, todėl visas pokalbis slenka, kad ir kur brauktum.' },
