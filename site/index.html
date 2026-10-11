@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wrCRnyT4BCWtEV2NDZExkZ0NIhgTp9uVMZplmrHsr6w=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-eIuDHY3JwkzOVYGHPVtjSaWs+fhVMijDuQ00G82bIBE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5745,7 +5745,24 @@ body.ev-full-on{overflow:hidden;}
   :root[data-ui="v2"] body.v2-fold .rail-fold{justify-content:center;padding:0;}
   :root[data-ui="v2"] .rail-fold{display:flex;}
 }
-.rail-fold{display:none;} .rail-fold[hidden]{display:none !important;}
+.rail-ha,.rail-lockb2{display:none;}
+@media (min-width:761px){
+:root[data-ui="v2"] .rail-ha{display:flex;justify-content:center;gap:6px;margin:2px 0 6px;flex-shrink:0;}
+:root[data-ui="v2"] .rail-ha.open{justify-content:flex-end;padding:0 12px;}
+:root[data-ui="v2"] .rail-hb{width:34px;height:34px;border-radius:50%;border:1px solid rgb(var(--hi-rgb, 255 255 255) / .16);background:transparent;color:var(--v2-rail-ink, var(--text));
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;padding:0;margin:0;}
+:root[data-ui="v2"] .rail-hb:hover{background:rgb(var(--hi-rgb, 255 255 255) / .08);}
+:root[data-ui="v2"] .rail-hb svg,:root[data-ui="v2"] .rail-hb svg.sl{width:22px !important;height:22px !important;}
+:root[data-ui="v2"] .rail-hb.on{color:var(--accent);}
+:root[data-ui="v2"] .rail-ha.open .rail-hb{border-radius:4px;border-color:var(--border);color:var(--text-dim);}
+:root[data-ui="v2"] .rail-ha.open .rail-hb:hover{color:var(--text);}
+:root[data-ui="v2"] .rail-ha.open .rail-hb.on{color:var(--accent);}
+:root[data-ui="v2"] .rail-ha.open .rail-hb svg,:root[data-ui="v2"] .rail-ha.open .rail-hb svg.sl{width:19px !important;height:19px !important;}
+:root[data-ui="v2"] .rail-lockb2{display:flex;margin:auto auto 12px;width:40px;height:40px;border-radius:12px;border:0;background:transparent;color:color-mix(in srgb, var(--v2-rail-ink, var(--text)) 70%, transparent);align-items:center;justify-content:center;cursor:pointer;flex:none;padding:0;color:var(--text-dim);}
+:root[data-ui="v2"] .rail-lockb2:hover{background:rgb(var(--hi-rgb, 255 255 255) / .08);color:var(--text);}
+:root[data-ui="v2"] .rail-lockb2 svg,:root[data-ui="v2"] .rail-lockb2 svg.sl{width:24px !important;height:24px !important;}
+}
+.rail-ha [hidden],.rail-lockb2[hidden]{display:none !important;}
 .side-hint{position:fixed;z-index:4000;pointer-events:none;display:flex;flex-direction:column;gap:1px;max-width:260px;padding:7px 11px;border-radius:9px;
   background:var(--gl-base, var(--panel));border:1px solid var(--border-2, var(--border));box-shadow:0 8px 24px rgb(0 0 0 / .35);color:var(--text);font-size:13px;line-height:1.3;
   opacity:0;transform:translateX(-4px);transition:opacity .12s, transform .12s;}
@@ -12014,23 +12031,27 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape' && document.body.c
 document.addEventListener('click', e=>{ if(!document.body.classList.contains('rail-hover') || !(e.target instanceof Element)) return; if(e.target.closest('aside.rail .rail-btn[data-tab], aside.rail nav.rail-nav a')) setTimeout(()=>railPeek(false), 0); });
 function uiFoldInit(){
   const rail = document.querySelector('aside.rail'); if(!rail) return;
-  let b = document.getElementById('railFold'), k = document.getElementById('railLock');
-  if(!b){ b = document.createElement('button'); b.type = 'button'; b.id = 'railFold'; b.className = 'rail-fold';
-    const t = document.getElementById('railToggle'); if(t && t.nextSibling) rail.insertBefore(b, t.nextSibling); else rail.appendChild(b);
-    b.onclick = ()=>railPeek(!document.body.classList.contains('rail-hover')); }
-  if(!k){ k = document.createElement('button'); k.type = 'button'; k.id = 'railLock'; k.className = 'rail-fold rail-lockb'; b.after(k);
-    k.onclick = ()=>{ let lock = false; try{ lock = localStorage.getItem('es-rail-lock')==='1'; }catch(e){} try{ localStorage.setItem('es-rail-lock', lock ? '' : '1'); }catch(e){} document.body.classList.remove('rail-hover'); uiFoldInit(); }; }
+  // the same buttons as the right panel: folded – a round › at the top and the pin at the bottom; open – round pin + ‹ at the top
+  let ha = document.getElementById('railHa'), b = document.getElementById('railFold'), k = document.getElementById('railLock'), kb = document.getElementById('railLockB');
+  const lockToggle = ()=>{ let lock = false; try{ lock = localStorage.getItem('es-rail-lock')==='1'; }catch(e){} try{ localStorage.setItem('es-rail-lock', lock ? '' : '1'); }catch(e){} document.body.classList.remove('rail-hover'); uiFoldInit(); };
+  if(!ha){ ha = document.createElement('div'); ha.id = 'railHa'; ha.className = 'rail-ha';
+    const t = document.getElementById('railToggle'); if(t && t.nextSibling) rail.insertBefore(ha, t.nextSibling); else rail.appendChild(ha);
+    k = document.createElement('button'); k.type = 'button'; k.id = 'railLock'; k.className = 'rail-hb'; k.onclick = lockToggle;
+    b = document.createElement('button'); b.type = 'button'; b.id = 'railFold'; b.className = 'rail-hb'; b.onclick = ()=>{
+      let lock = false; try{ lock = localStorage.getItem('es-rail-lock')==='1'; }catch(e){}
+      if(lock) lockToggle(); else railPeek(!document.body.classList.contains('rail-hover')); };
+    ha.append(k, b);
+    kb = document.createElement('button'); kb.type = 'button'; kb.id = 'railLockB'; kb.className = 'rail-lockb2'; kb.onclick = lockToggle; rail.appendChild(kb); }
   let lock = false; try{ lock = localStorage.getItem('es-rail-lock')==='1'; }catch(e){}
   document.body.classList.toggle('v2-fold', !lock);
   document.body.classList.toggle('rail-lock', lock);
   if(lock) document.body.classList.remove('rail-hover');
-  const peek = document.body.classList.contains('rail-hover');
-  b.hidden = lock;
-  b.innerHTML = peek ? '<span class="rf-ic">'+slIcon('chevl')+'</span><span class="rf-t">Suskleisti meniu</span>' : '<span class="rf-ic">'+slIcon('chevr')+'</span><span class="rf-t">Išskleisti meniu</span>';
-  b.title = peek ? 'Suskleisti meniu' : 'Išskleisti meniu';
-  k.hidden = !lock && !peek;
-  k.innerHTML = lock ? '<span class="rf-ic">'+slIcon('keepoff')+'</span><span class="rf-t">Atrakinti (suskleisti)</span>' : '<span class="rf-ic">'+slIcon('keep')+'</span><span class="rf-t">Užrakinti išskleistą</span>';
-  k.title = lock ? 'Atrakinti – meniu susiskleis iki ikonų (išskleidžiamas mygtuku ›)' : 'Užrakinti meniu išskleistą';
+  const open = lock || document.body.classList.contains('rail-hover');
+  ha.classList.toggle('open', open);
+  b.innerHTML = slIcon(open ? 'chevl' : 'chevr'); b.title = open ? 'Suskleisti' : 'Išskleisti'; b.setAttribute('aria-label', b.title);
+  k.hidden = !open; k.innerHTML = slIcon(lock ? 'keepoff' : 'keep'); k.classList.toggle('on', lock);
+  k.title = lock ? 'Atrakinti – meniu susiskleis' : 'Užrakinti išskleistą (šalia puslapio)'; k.setAttribute('aria-label', k.title);
+  kb.hidden = open; kb.innerHTML = slIcon('keep'); kb.title = 'Užrakinti išskleistą (šalia puslapio)'; kb.setAttribute('aria-label', kb.title);
 }
 function themeNow(){ return document.documentElement.getAttribute('data-theme')==='light' ? 'light' : 'dark'; }
 function themeSet(t){
@@ -20188,7 +20209,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v474';
+const APP_VER = 'v475';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -41340,7 +41361,7 @@ function sideHintText(b){
 }
 (function(){
   let tip = null, cur = null;
-  const SEL = 'body.v2-fold:not(.rail-hover) aside.rail .rail-btn, body.v2-fold:not(.rail-hover) aside.rail .rail-fold, #gSideTab [data-gsd]';
+  const SEL = 'body.v2-fold:not(.rail-hover) aside.rail .rail-btn, body.v2-fold:not(.rail-hover) #railFold, #railLockB, #gSideTab [data-gsd]';
   const hide = ()=>{ if(cur && cur.dataset.t!=null){ cur.title = cur.dataset.t; delete cur.dataset.t; } cur = null; if(tip) tip.classList.remove('on'); };
   document.addEventListener('mouseover', e=>{
     const b = e.target instanceof Element ? e.target.closest(SEL) : null;
@@ -41689,6 +41710,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 00:40', v:'v475', k:'fix', t:'Kairio ir dešinio meniu išskleidimo mygtukai – vienodi', f:'Kairiame meniu – tokie pat mygtukai kaip dešiniame: suskleistame apvalus › viršuje ir smeigtukas apačioje, išskleistame – apvalūs smeigtukas ir ‹ viršuje.' },
   { d:'2026-10-12 00:15', v:'v474', k:'new', t:'Šoniniuose meniu – užuominos užvedus pelę', f:'Suskleistame kairiame meniu užvedus pelę ant ikonos iškart parodomas programos pavadinimas (ir kiek naujų), dešiniame – kas tai ir kas ten dabar (pranešimų skaičius, šiandienos įrašai, data).' },
   { d:'2026-10-11 23:55', v:'v473', k:'fix', t:'Kairys meniu – kaip dešinys: atsidaro paspaudus, ne užvedus pelę', f:'Suskleistas kairys meniu nebeišsiskleidžia užvedus pelę. Mygtukas › jį išskleidžia virš puslapio, ‹ (arba pasirinkus puslapį, paspaudus šalia, Esc) – suskleidžia; „Užrakinti išskleistą“ palieka nuolat atidarytą.' },
   { d:'2026-10-11 23:30', v:'v472', k:'fix', t:'Time tracker: pradžią ir pabaigą galima keisti laisvai', f:'Laiką galima keisti kaip nori – būtinas tik komentaras. Lieka tik: pabaiga po pradžios, ne ateityje ir pamainos neuždengia viena kitos (parodoma su kuria). Veiklos prisitaiko prie naujų ribų. Taisyti ir ištrinti galima ir senesnes nei 30 d. pamainas. Reikia paleisti supabase/sql/tracker_edit3.sql ir tracker_delete_shift.sql.' },
