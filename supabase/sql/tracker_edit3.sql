@@ -4,7 +4,8 @@
 --  * tt_edit_shift: keičiant tik pradžią arba tik pabaigą, kitas laikas lieka tiksliai toks, koks buvo
 --    (nebeapvalinamas iki minutės ir nebeįrašomas į žurnalą kaip pakeistas)
 --  * persidengimo klaida nurodo, su kuria pamaina (diena ir laikas)
---  * tikrinamas tik keičiamas laikas (keičiant pradžią nebetikrinama pabaiga ir atvirkščiai)
+--  * tikrinamas tik keičiamas laikas (keičiant pradžią nebetikrinama pabaiga ir atvirkščiai);
+--    programa laiką siunčia milisekundžių tikslumu, todėl laikas, besiskiriantis < 1 ms, laikomas nepakeistu
 -- Reikia: tracker_edit.sql, tracker_edit2.sql. Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
 -- ============================================================
 
@@ -60,6 +61,9 @@ begin
   if s.started_at < now() - interval '30 days' then return jsonb_build_object('error', 'Taisyti galima tik pastarųjų 30 d. pamainas.'); end if;
   if p_start is null or p_end is null then return jsonb_build_object('error', 'Nurodyk pradžios ir pabaigos laiką.'); end if;
   if char_length(nt) < 3 then return jsonb_build_object('error', 'Parašyk komentarą – kodėl keiti laiką.'); end if;
+  -- the app sends times to the millisecond, the database keeps microseconds: a time within 1 ms of the saved one is not changed
+  if abs(extract(epoch from p_start - s.started_at)) < 0.001 then p_start := s.started_at; end if;
+  if abs(extract(epoch from p_end - s.ended_at)) < 0.001 then p_end := s.ended_at; end if;
   -- only a time that is really changed is rounded to the minute (the other one stays exactly as it was)
   if p_start <> s.started_at then p_start := date_trunc('minute', p_start); end if;
   if p_end <> s.ended_at then p_end := date_trunc('minute', p_end); end if;
