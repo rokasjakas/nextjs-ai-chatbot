@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-UVjibt8pNyk/y/Hk0EIHn76czl3uyGdKg4xx7kdBwa0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-vT17lTON9jxTbTqC1h0XXroeV1uWRfP/QJlGiO+/xGw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -19913,7 +19913,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v445';
+const APP_VER = 'v446';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -38540,21 +38540,30 @@ function ttLocHtml(l, what){
   return `<a class="tt-loc" href="${esc(url)}" target="_blank" rel="noopener" title="Atidaryti žemėlapyje${l.acc ? ' (tikslumas ±'+l.acc+' m)' : ''}">${slIcon('pin')} ${what}: <b>${esc(l.addr || (l.lat+', '+l.lng))}</b>${l.late ? ' <small>(užfiksuota vėliau)</small>' : ''}</a>`;
 }
 // the work start changed afterwards (sql/tracker_edit.sql): from → to, the comment and where the phone was
+// the work start / end changed afterwards (sql/tracker_edit.sql, tracker_edit2.sql): from → to, the comment and where the phone was
+function ttEditWhat(e){
+  return [e.from && e.to ? ['Pradžia', e.from, e.to] : null, e.end_from && e.end_to ? ['Pabaiga', e.end_from, e.end_to] : null].filter(Boolean);
+}
 function ttEditsHtml(s){
   const ed = (s && s.start_edits) || []; if(!ed.length) return '';
-  return `<div class="tt-edits">${ed.map(e=>`<div class="tt-edit">✎ Pradžia pakeista <b>${esc(ttTime(e.from))} → ${esc(ttTime(e.to))}</b> <small>${esc(new Date(e.at).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }))}</small>${e.note ? `<div class="tt-edit-n">„${esc(e.note)}“</div>` : ''}${e.loc ? ttLocHtml(e.loc, 'Pakeista') : ''}</div>`).join('')}</div>`;
+  return `<div class="tt-edits">${ed.map(e=>`<div class="tt-edit">${ttEditWhat(e).map(([k, a, z])=>`✎ ${k} pakeista <b>${esc(ttTime(a))} → ${esc(ttTime(z))}</b>`).join(' · ')} <small>${esc(new Date(e.at).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }))}</small>${e.note ? `<div class="tt-edit-n">„${esc(e.note)}“</div>` : ''}${e.loc ? ttLocHtml(e.loc, 'Pakeista') : ''}</div>`).join('')}</div>`;
 }
-const ttEditsTxt = s=>((s && s.start_edits) || []).map(e=>ttTime(e.from)+'→'+ttTime(e.to)+(e.note ? ' „'+e.note+'“' : '')+(e.loc ? ' ['+ttLocTxt(e.loc)+']' : '')).join('; ');
+const ttEditsTxt = s=>((s && s.start_edits) || []).map(e=>ttEditWhat(e).map(([k, a, z])=>k+' '+ttTime(a)+'→'+ttTime(z)).join(', ')+(e.note ? ' „'+e.note+'“' : '')+(e.loc ? ' ['+ttLocTxt(e.loc)+']' : '')).join('; ');
+// a shift of the member signed in on this device that can still be corrected: the running one, or an ended one of the last 30 days
+const ttCanEdit = (s, clock)=>{ const d = ttDev(); return !!(s && d.cur && ttTok(d.cur) && (clock || TT.view==null || TT.view===d.cur) && (!s.ended_at || Date.parse(s.started_at) > Date.now() - 30*864e5)); };
 async function ttEditStart(s){
   const d = ttDev(), m = d.cur; if(!m || !s) return;
-  const fe = s.entries[0], lim = fe && fe.ended_at ? new Date(fe.ended_at) : new Date();
+  const ended = !!s.ended_at, fe = s.entries[0], le = s.entries[s.entries.length-1], many = s.entries.length > 1;
+  const lim = ended ? (many && fe.ended_at ? new Date(fe.ended_at) : new Date(s.ended_at)) : fe && fe.ended_at ? new Date(fe.ended_at) : new Date();
   const loc = x=>{ const t = new Date(x); return new Date(t.getTime() - t.getTimezoneOffset()*60000).toISOString().slice(0, 16); };
-  openModal(`<h3>✎ Pataisyti darbo pradžią</h3>
-    <div class="section-sub" style="margin:-4px 0 12px;">Dabar pradėta: <b>${esc(ttDay(s.started_at))} ${esc(ttTime(s.started_at))}</b>. Pakeitimas išsaugomas su komentaru ir vieta, kurioje esi – jį matys vadovai.</div>
+  openModal(`<h3>✎ ${ended ? 'Pataisyti pamainos laiką' : 'Pataisyti darbo pradžią'}</h3>
+    <div class="section-sub" style="margin:-4px 0 12px;">${ended ? `Pamaina: <b>${esc(ttDay(s.started_at))} ${esc(ttTime(s.started_at))} – ${esc(ttTime(s.ended_at))}</b>` : `Dabar pradėta: <b>${esc(ttDay(s.started_at))} ${esc(ttTime(s.started_at))}</b>`}. Pakeitimas išsaugomas su komentaru ir vieta, kurioje esi – jį matys vadovai.</div>
     <label class="tt-lbl">Tikrasis pradžios laikas</label>
-    <input type="datetime-local" id="ttEdAt" value="${loc(s.started_at)}" max="${loc(lim)}" min="${loc(Date.now() - 864e5)}" style="width:100%;">
+    <input type="datetime-local" id="ttEdAt" value="${loc(s.started_at)}" ${ended ? '' : `max="${loc(lim)}" min="${loc(Date.now() - 864e5)}"`} style="width:100%;">
+    ${ended ? `<label class="tt-lbl" style="margin-top:10px;">Tikrasis pabaigos laikas</label>
+    <input type="datetime-local" id="ttEdEnd" value="${loc(s.ended_at)}" max="${loc(Date.now())}" style="width:100%;">` : ''}
     <label class="tt-lbl" style="margin-top:10px;">Komentaras</label>
-    <textarea id="ttEdNote" rows="3" maxlength="500" placeholder="Pvz. pamiršau paspausti „Pradėti darbą“ atvykęs į sandėlį" style="width:100%;"></textarea>
+    <textarea id="ttEdNote" rows="3" maxlength="500" placeholder="${ended ? 'Pvz. pamiršau paspausti „Baigti darbą“ – baigiau 17:30' : 'Pvz. pamiršau paspausti „Pradėti darbą“ atvykęs į sandėlį'}" style="width:100%;"></textarea>
     <div class="section-sub" style="margin-top:8px;">📍 Bus užfiksuota, kur pakeitimas padarytas.</div>
     <div class="modal-actions" style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;"><button class="btn" id="ttEdCancel">Atšaukti</button><button class="btn primary" id="ttEdSave">Išsaugoti</button></div>`);
   document.getElementById('ttEdCancel').onclick = ()=>closeModal();
@@ -38562,12 +38571,22 @@ async function ttEditStart(s){
     const v = document.getElementById('ttEdAt').value, note = document.getElementById('ttEdNote').value.trim();
     if(!v){ toast('Nurodyk pradžios laiką.'); return; }
     const at = new Date(v); if(isNaN(at)){ toast('Neteisingas laikas.'); return; }
-    if(at > lim){ toast(fe && fe.ended_at ? 'Pradžia negali būti vėlesnė nei pirmos veiklos pabaiga ('+ttTime(fe.ended_at)+').' : 'Pradžia negali būti vėlesnė nei dabar.'); return; }
+    let end = null;
+    if(ended){
+      const ev = document.getElementById('ttEdEnd').value; end = ev ? new Date(ev) : null;
+      if(!end || isNaN(end)){ toast('Nurodyk pabaigos laiką.'); return; }
+      if(end <= at){ toast('Pabaiga turi būti vėlesnė nei pradžia.'); return; }
+      if(end > new Date()){ toast('Pabaiga negali būti vėlesnė nei dabar.'); return; }
+      if(many && at >= new Date(fe.ended_at)){ toast('Pradžia negali būti vėlesnė nei pirmos veiklos pabaiga ('+ttTime(fe.ended_at)+').'); return; }
+      if(many && end <= new Date(le.started_at)){ toast('Pabaiga negali būti ankstesnė nei paskutinės veiklos pradžia ('+ttTime(le.started_at)+').'); return; }
+    } else if(at > lim){ toast(fe && fe.ended_at ? 'Pradžia negali būti vėlesnė nei pirmos veiklos pabaiga ('+ttTime(fe.ended_at)+').' : 'Pradžia negali būti vėlesnė nei dabar.'); return; }
     const b = e.currentTarget; b.disabled = true; b.textContent = 'Fiksuojama vieta…';
     const g = await Promise.race([ttLocTake(), new Promise(r=>setTimeout(()=>r({ err:'fail' }), 12000))]);
-    try{ TT.state = await ttRpc('tt_set_start', { m, p_token:ttTok(m), p_at:at.toISOString(), p_note:note, p_loc:g }); }
-    catch(err){ b.disabled = false; b.textContent = 'Išsaugoti'; if(/tt_set_start|neįjungtas/.test(err.message)) toast('Paleisk Supabase SQL: supabase/sql/tracker_edit.sql'); else { if(err.auth) ttForget(m); toast(err.message); } return; }
-    closeModal(); toast('✎ Darbo pradžia pakeista į '+ttTime(at.toISOString())+'.');
+    try{
+      TT.state = ended ? await ttRpc('tt_edit_shift', { m, p_token:ttTok(m), p_shift:s.id, p_start:at.toISOString(), p_end:end.toISOString(), p_note:note, p_loc:g })
+        : await ttRpc('tt_set_start', { m, p_token:ttTok(m), p_at:at.toISOString(), p_note:note, p_loc:g });
+    }catch(err){ b.disabled = false; b.textContent = 'Išsaugoti'; if(/tt_set_start|tt_edit_shift|neįjungtas/.test(err.message)) toast('Paleisk Supabase SQL: supabase/sql/'+(ended ? 'tracker_edit2.sql' : 'tracker_edit.sql')); else { if(err.auth) ttForget(m); toast(err.message); } return; }
+    closeModal(); toast(ended ? '✎ Pamaina pataisyta: '+ttTime(at.toISOString())+' – '+ttTime(end.toISOString())+'.' : '✎ Darbo pradžia pakeista į '+ttTime(at.toISOString())+'.');
     if(g.err==='denied') toast('📍 Vieta neužfiksuota – leisk naršyklei naudoti tavo vietą.', 5000);
     ttPill(); ttRenderClock(true); if(TT.view===m){ await ttLoadReport(); ttRenderReport(); }
   };
@@ -38729,10 +38748,12 @@ function ttRenderClock(full){
       <h2 class="tt-h">Ką pradedi daryti?</h2>
       ${ttKindBtns(pick, 'data-pick')}
       <button class="tt-go" id="ttStart" style="--tc:${TT_K[pick].c}">${slIcon('play')}<span>Pradėti darbą</span><small>${esc(TT_K[pick].t)}</small></button>
-      ${last ? `<div class="tt-last"><div class="tt-last-h"><b>Paskutinė pamaina</b><span>${esc(ttDay(last.started_at))} · ${esc(ttTime(last.started_at))} – ${esc(ttTime(last.ended_at))}</span></div>
+      ${last ? `<div class="tt-last"><div class="tt-last-h"><b>Paskutinė pamaina</b><span>${esc(ttDay(last.started_at))} · ${esc(ttTime(last.started_at))} – ${esc(ttTime(last.ended_at))}</span>${ttCanEdit(last, true) ? '<button type="button" class="tt-edit-b" id="ttEditLast" title="Pataisyti pradžios ir pabaigos laiką">✎ Pataisyti</button>' : ''}</div>
         <div class="tt-big2"><div><small>Pradirbta</small><b>${esc(ttHm(sm.work))}</b></div>${sm.brk ? `<div><small>Pertraukos</small><b>${esc(ttHm(sm.brk))}</b></div>` : ''}</div>
         ${ttBars(sm.by, sm.work + sm.brk)}
-        ${last.start_loc || last.end_loc ? `<div class="tt-locs" style="padding:8px 0 0;">${ttLocHtml(last.start_loc, 'Pradėta')}${ttLocHtml(last.end_loc, 'Baigta')}</div>` : ''}</div>` : ''}`;
+        ${last.start_loc || last.end_loc ? `<div class="tt-locs" style="padding:8px 0 0;">${ttLocHtml(last.start_loc, 'Pradėta')}${ttLocHtml(last.end_loc, 'Baigta')}</div>` : ''}
+        ${ttEditsHtml(last)}</div>` : ''}`;
+    const el = document.getElementById('ttEditLast'); if(el) el.onclick = ()=>ttEditStart(last);
     box.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ TT.pick = b.dataset.pick; ttRenderClock(true); });
     document.getElementById('ttStart').onclick = async e=>{
       e.currentTarget.disabled = true;
@@ -38870,6 +38891,7 @@ function ttRenderReport(){
           <span class="tt-stack sm">${TT_KINDS.filter(k=>sm.by[k.k]).map(k=>`<span style="flex:${sm.by[k.k]};background:${k.c}"></span>`).join('')}</span><b>${esc(ttHm(sm.work))}</b></summary>
           ${s.start_loc || s.end_loc ? `<div class="tt-locs">${ttLocHtml(s.start_loc, 'Pradėta')}${ttLocHtml(s.end_loc, 'Baigta')}</div>` : ''}
           ${ttEditsHtml(s)}
+          ${ttCanEdit(s) && s.ended_at ? `<button type="button" class="tt-edit-b" data-ttedit="${esc(s.id)}" style="margin:6px 0 0;">✎ Pataisyti pradžią / pabaigą</button>` : ''}
           ${ttSegs(s.entries)}</details>`; }).join('') || '<div class="tt-none">Šiuo laikotarpiu pamainų nėra.</div>'}</div>`;
   }
   const mine = m && (ttTok(m) || admin || ((TT.members||[]).find(x=>x.id===m)||{}).mine);
@@ -38903,6 +38925,7 @@ function ttRenderReport(){
     try{ await ttRpc('tt_delete', { m, p_token:ttTok(m), p_pin:null }); }catch(e){ toast(e.message); return; }
     ttForget(m); TT.view = ttDev().cur; toast('Narys ištrintas.'); renderTrackerTab(); ttPill();
   };
+  box.querySelectorAll('[data-ttedit]').forEach(b=>b.onclick = ()=>{ const sh = ((TT.report && TT.report.shifts) || []).find(x=>x.id===b.dataset.ttedit); if(sh) ttEditStart(sh); });
   const xls = document.getElementById('ttXls');
   if(xls) xls.onclick = ()=>libNeed('xlsx').then(ok=>{
     if(!ok){ toast('Nepavyko įkelti Excel įrankio.'); return; }
@@ -40900,6 +40923,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 11:00', v:'v446', k:'fix', t:'Team Tracker: taisyti galima ir baigtą pamainą; vienas ✕', f:'Team Tracker: jau baigtos pamainos pradžią ir pabaigą galima pataisyti – „✎ Pataisyti“ prie paskutinės pamainos ir „✎ Pataisyti pradžią / pabaigą“ suvestinėje (pastarųjų 30 d. savo pamainos). Kaip ir vykstančios pamainos atveju, išsaugoma iš kokio į kokį laiką pakeista, komentaras ir vieta. Telefone languose su savo uždarymo mygtuku (pvz. Ofiso, Sandėlio grupės) nebėra antro ✕.' },
   { d:'2026-10-11 10:30', v:'v445', k:'new', t:'Darbo pradžios taisymas, ataskaitų priminimai, KASKO ir įvykiai', f:'Team Tracker: vykstančios pamainos pradžios laiką galima pataisyti (✎ Pataisyti) su komentaru – išsaugoma, kada, kur (vieta) ir iš kokio į kokį laiką pakeista; tai matosi suvestinėse ir Excel. Uta, Wolt ir Bolt puslapiuose – „🔔 Priminimai“: kam (įrašytas el. paštas arba narys), periodas, termino diena, kiek dienų prieš ir kiek kartų priminti. Išlaidose darbo išlaidoms (kuras ir kitos) būtinas komentaras; nuėmus pylimo žymą „asmeninis“ iškart prašoma nurodyti priežastį, o Bolt kelionę pažymint „Darbo“ – komentaro. Transporte – KASKO galiojimas (nebūtinas, su priminimais) ir paspaudus automobilį trečias pasirinkimas „Registruoti įvykį“ (data, laikas, aprašymas, komentaras, vieta, nuotraukos ir video). Ištaisyta: Uta / Wolt / Bolt ataskaitų ir automobilio gedimų nuotraukų įkėlimas („Nėra teisės įkelti šio failo“); iPhone chate rašymo laukelis nebeiššoka į ekrano viršų; visi langai telefone turi uždarymo ✕.' },
   { d:'2026-10-11 10:00', v:'v444', k:'fix', t:'Transporto lange vėl yra uždarymo mygtukas', f:'Nariams, kurie Transportą gali tik peržiūrėti, automobilio lange (ypač telefone) dingdavo ✕ – nebuvo kaip išeiti. Uždarymo mygtukai dabar niekada neslepiami.' },
   { d:'2026-10-08 04:05', v:'v443', k:'fix', t:'Laiškai siunčiami fone', f:'Paspaudus „Siųsti“ laiško langas iškart užsidaro, o laiškas siunčiamas fone – galima toliau dirbti. Kai išsiųsta, apačioje parodoma „✓ Laiškas išsiųstas“; jei nepavyko – pranešimas su mygtuku „Atidaryti“, kuris grąžina tą patį laišką (tekstas ir priedai neprarandami).' },
@@ -41294,9 +41318,12 @@ function popSafeClose(){
   if(!window.matchMedia('(max-width:760px), (pointer:coarse)').matches) return;
   document.querySelectorAll('.modal-backdrop:not(.docked-left) > .modal, .nt-ov, .gs-pop, .of-pop, .veh-pop-bd, .ven-lightbox, .fb-lb, .gm-ov, .pp-dial').forEach(box=>{
     if(!box.getClientRects().length) return;
-    const shown = [...box.querySelectorAll(POP_X_SEL)].some(b=>b.getClientRects().length && getComputedStyle(b).visibility!=='hidden')
-      || [...box.querySelectorAll('button')].some(b=>/^(✕|×|✖|x|X)$/.test(b.textContent.trim()) && b.getClientRects().length);
-    if(shown) return;
+    // the window's own close button: marked as one, an ✕ / × button, or a button whose id ends with „X“ (hgX, cuX, vlvX…)
+    const own = [...box.querySelectorAll(POP_X_SEL.replace(', .pop-safe-x', '')+', button, [role=button]')].some(b=>!b.classList.contains('pop-safe-x')
+      && (b.matches(POP_X_SEL) || /^(✕|×|✖|x|X|╳)$/.test(b.textContent.trim()) || /(^|[a-z])X$/.test(b.id||'')) && b.getClientRects().length);
+    const mine = box.querySelector(':scope > .pop-safe-x');
+    if(own){ if(mine) mine.remove(); return; }
+    if(mine) return;
     const x = document.createElement('button');
     x.type = 'button'; x.className = 'pop-safe-x'; x.textContent = '✕'; x.setAttribute('aria-label', 'Uždaryti');
     x.onclick = e=>{
