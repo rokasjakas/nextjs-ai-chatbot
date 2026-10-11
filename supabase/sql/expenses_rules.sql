@@ -3,8 +3,7 @@
 --  * expense_allowance.unit – nario balansas asmeniniams pylimams: 'eur' arba 'l' (kas mėnesį pridedama,
 --    nepanaudotas likutis pereina į kitą mėnesį); balansą priskiria Admin+ narys
 --  * uta_personal.receipts / note – asmeninis UTA pylimas pagrindžiamas kvitu (nuotrauka) ir, jei reikia, komentaru
---  * exp_month_open(d) – mėnesio išlaidas ir pylimų pagrindimus narys pateikia / taiso iki kito mėnesio 10 d.
---    (pvz. už spalį – iki lapkričio 10 d. imtinai, Lietuvos laiku); Admin+ – visada
+--  * exp_month_open(d) – termino nėra: narys pateikia / taiso bet kada
 --  * išlaidą patvirtinti / atmesti ir kompensaciją (€ arba l) priskirti gali tik Admin+ narys
 -- Reikia: expenses.sql, expense_allowance.sql, expenses_liters.sql, invoices.sql (is_plus).
 -- Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
@@ -19,7 +18,7 @@ grant execute on function public.is_plus() to authenticated;
 -- the month of day d can still be filled in by the member: until the 10th of the next month (Vilnius time)
 create or replace function public.exp_month_open(d date) returns boolean
   language sql stable as $$
-  select d is not null and (now() at time zone 'Europe/Vilnius')::date <= (date_trunc('month', d) + interval '1 month' + interval '9 days')::date
+  select d is not null   -- no deadline any more (expenses_no_deadline.sql)
 $$;
 grant execute on function public.exp_month_open(date) to authenticated;
 create or replace function public.exp_tx_open(tx uuid) returns boolean

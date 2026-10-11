@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-6U8HpSEATeONsd8BZ5KfvPXp+fYF7GyxbJ3uB/srDIg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-R/LMhblu2dkqvIlaNixHK97emundK4Z2Esj1zT30q8M=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20322,7 +20322,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v480';
+const APP_VER = 'v481';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -39805,8 +39805,8 @@ const expHasBal = d=>!!(d.allow && d.allow.monthly > 0) || d.now.eur.comp > 0 ||
 // the unit a personal fill is taken from: the allowance's; else where something is left; else euros
 function expPersUnitDefault(d){ if(d.allow) return d.allow.unit; if(d.now.l.bal > 0.0001 && d.now.eur.bal <= 0.0001) return 'l'; return 'eur'; }
 // the month's deadline: its expenses and fill explanations – until the 10th of the next month (then only Admin+)
-function expDeadline(month){ const [y, m] = String(month).slice(0,7).split('-').map(Number), t = new Date(y, m, 10); return calISO(t); }
-const expOpen = month=>calISO(new Date()) <= expDeadline(month);
+// no deadline: a month's expenses and fill explanations can be filled in at any time
+const expOpen = ()=>true;
 const expApprover = ()=>typeof grIsPlus==='function' && grIsPlus();
 const expCanFix = month=>expOpen(month) || expApprover();
 // each UTA fill → the expense that explains it: the one linked to it, else a UTA-paid fuel expense of the same day (closest litres)
@@ -39889,7 +39889,7 @@ async function expLateCheck(){
   }
   if(!document.getElementById('expLate')) return;
   box.innerHTML = out.map(x=>`<div class="exp-late"><span>${slIcon('alert')}</span><span><b>${esc(utaMonthName(x.m))}: ${ltPlural(x.n, 'nepagrįstas pylimas', 'nepagrįsti pylimai', 'nepagrįstų pylimų')} (${esc(expMoney(x.sum))})</b>
-    <small>Paaiškink kiekvieną – darbo (komentaras ir kvitas) arba asmeninis (kvitas) – iki <b>${esc(rpWhen(expDeadline(x.m)))}</b>.</small></span>${x.m!==EXP.month ? `<button type="button" class="btn small" data-xm="${x.m}">Atidaryti</button>` : ''}</div>`).join('');
+    <small>Paaiškink kiekvieną – darbo (komentaras ir kvitas) arba asmeninis (kvitas).</small></span>${x.m!==EXP.month ? `<button type="button" class="btn small" data-xm="${x.m}">Atidaryti</button>` : ''}</div>`).join('');
   box.querySelectorAll('[data-xm]').forEach(b=>b.onclick = ()=>{ EXP.month = b.dataset.xm; renderExpensesTab(); });
 }
 function expDrawLists(){
@@ -39929,7 +39929,6 @@ function expBalHtml(d, match){
       <div class="exp-bls">${rows.join('')}<div class="exp-bl tot"><span>Viso likutis</span><b class="${N.bal < -0.004 ? 'neg' : ''}">${fmtU(u, N.bal)}</b></div></div></div>`;
   };
   const persNoBal = !hasBal ? ['l','eur'].map(u=>({ u, v:d.now[u].pers - d.prev[u].pers + d.now[u].use - d.prev[u].use })).filter(x=>x.v > 0.004) : [];
-  const dl = expDeadline(d.from.slice(0,7)), open = calISO(new Date()) <= dl;
   return `<div class="exp-bal-h">Balansas asmeniniams pylimams · ${esc(monL)}</div>
     ${hasBal ? `<div class="exp-bal-two2">${(units.length ? units : ['eur']).map(unitBox).join('')}</div>
       ${d.allow ? `<small class="muted">Kas mėnesį pridedama ${fmtU(d.allow.unit, d.allow.monthly)} (nuo ${esc(String(d.allow.start).slice(0,7))}). Nepanaudotas likutis pereina į kitą mėnesį.</small>` : ''}
@@ -39944,7 +39943,6 @@ function expBalHtml(d, match){
       <span><small>Darbo kelionės</small>${expTripHtml(T.work)}</span>
       <span><small>Asmeninės kelionės</small>${expTripHtml(T.pers)}</span>
       <span class="${T.miss.n ? 'bad' : ''}"><small>Nepagrįsti${T.miss.n ? ' ('+T.miss.n+')' : ''}</small>${expTripHtml(T.miss)}</span></div>`; })() : ''}
-    ${one && d.tx.length ? `<div class="exp-dl ${open ? '' : 'late'}">${open ? `Šio mėnesio pylimus ir išlaidas pagrįsk iki <b>${esc(rpWhen(dl))}</b>.` : `Terminas baigėsi ${esc(rpWhen(dl))} – keisti gali tik Admin+.`}</div>` : ''}
     ${d.cards.length ? '' : '<small class="muted">Nepriskirta nė viena UTA kortelė (priskiria Transportas → UTA kortelės).</small>'}`;
 }
 // Admin+: the member's balance for personal fills – euros or litres a month, the unused part moves on
@@ -40038,7 +40036,7 @@ function expBindTx(box, d, mgr, after){
       if(d.persSet.has(t.id)){
         if(!(await uiConfirm('Nuimti žymą „asmeninis“? Tada tai bus darbo pylimas – reikės nurodyti jo priežastį.', { yes:'Nuimti', no:'Ne' }))) return;
         const r = await getSb().from('uta_personal').delete().eq('tx_id', t.id);
-        if(r.error){ toast('Nepavyko: '+(/row-level/i.test(r.error.message) ? 'terminas baigėsi – keisti gali tik Admin+' : expSqlErr(r.error))); return; }
+        if(r.error){ toast('Nepavyko: '+(/row-level/i.test(r.error.message) ? 'nėra teisės – paleisk supabase/sql/expenses_no_deadline.sql' : expSqlErr(r.error))); return; }
         const P0 = d.persOf && d.persOf.get(t.id), paths = ((P0 && P0.receipts) || []).map(x=>x.path).filter(Boolean); if(paths.length) getSb().storage.from('expense-files').remove(paths).then(()=>{}, ()=>{});
         toast('Žyma nuimta – nurodyk šio pylimo darbo priežastį.', 5000);
         await done();
@@ -40087,7 +40085,7 @@ function expPersForm(d, t, after){
       const row = { tx_id:t.id, user_id:d.uid, unit, receipts:up, note:document.getElementById('ppNote').value.trim() };
       let r = await sb.from('uta_personal').insert(row);
       if(r.error && /receipts|note|schema cache/i.test(r.error.message)) throw new Error('paleisk supabase/sql/expenses_rules.sql');
-      if(r.error) throw new Error(/row-level/i.test(r.error.message) ? 'terminas baigėsi – keisti gali tik Admin+' : expSqlErr(r.error));
+      if(r.error) throw new Error(/row-level/i.test(r.error.message) ? 'nėra teisės – paleisk supabase/sql/expenses_no_deadline.sql' : expSqlErr(r.error));
       closeModal(); toast('Pažymėta: asmeninis pylimas'+(expHasBal(d) ? ' – atimta iš balanso ('+take(unit)+').' : '.'), 4000);
       if(after) after();
     }catch(err){
@@ -40178,7 +40176,7 @@ async function expSave(e){
   if(k==='fuel' && !liters){ toast('Nurodyk, kiek litrų.'); return; }
   if((k!=='fuel' || EXP.paid==='own') && !amount){ toast('Nurodyk sumą eurais.'); return; }
   // the month's expenses are filled in until the 10th of the next month (then only Admin+)
-  if(!expCanFix(date.slice(0,7))){ toast('Terminas baigėsi: '+utaMonthName(date.slice(0,7))+' išlaidas buvo galima pateikti iki '+rpWhen(expDeadline(date.slice(0,7)))+'. Kreipkis į Admin+.', 7000); return; }
+  if(!expCanFix(date.slice(0,7))){ toast('Šio mėnesio išlaidų keisti negalima.', 7000); return; }
   const had = EXP.edit ? (EXP.edit.receipts||[]).length : 0;
   if(EXP.paid!=='tank' && !had && !EXP.files.length){ toast('Būtinas kvitas – nufotografuok arba įkelk jį.', 5000); document.querySelector('.exp-rec-box').classList.add('flash'); return; }
   btn.disabled = true; btn.textContent = 'Saugoma…';
@@ -41985,6 +41983,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 04:00', v:'v481', k:'fix', t:'Išlaidų pateikimo termino nebėra', f:'Išlaidas ir UTA pylimų pagrindimus (darbo / asmeninis) galima pateikti, taisyti ir trinti bet kada – nebėra „iki kito mėnesio 10 d.“. Tvirtina vis tiek Admin+. Reikia paleisti supabase/sql/expenses_no_deadline.sql.' },
   { d:'2026-10-12 03:40', v:'v480', k:'fix', t:'Balansas – aiškus išskaidymas', f:'Balanso kortelėje kiekviena dalis atskirai: Šį mėnesį priskirta, Nepanaudotas likutis iš praėjusių mėnesių arba Viršytas balansas praėjusiais mėnesiais (nuskaičiuojama iš šio), Kompensacijos, Asmeniniai UTA pylimai, Pasipildyta iš likučio ir Viso likutis. Senos išlaidos „apmokėti iš sukaupto € limito“ nebeatimamos, kai balansas litrais.' },
   { d:'2026-10-12 03:10', v:'v479', k:'fix', t:'Balansas – priskirtu vienetu; darbo ir asmeninės kelionės', f:'Jei nariui priskirtas balansas litrais, asmeniniai pylimai atimami litrais (nepriklausomai nuo to, kaip buvo pažymėti). Narių lentelėse (UTA → Narių kuras, Išlaidos → Narių išlaidos) ir nario lange – stulpeliai: Balanso likutis (priskirtu vienetu), Darbo kelionės (l ir €), Asmeninės kelionės (l ir €), Nepagrįsti. Įspėjama, jei asmeninių pylimų yra anksčiau nei balansas galioja.' },
   { d:'2026-10-12 02:30', v:'v478', k:'new', t:'Išlaidų ir UTA taisyklės', f:'Balansas asmeniniams pylimams litrais arba eurais (priskiria Admin+): asmeniniai UTA pylimai atimami automatiškai, likutis pereina į kitą mėnesį; be balanso rodoma, kiek išnaudota asmeniniams. Kiekvienas nario kortelės pylimas pagrindžiamas: Darbo (komentaras ir kvitas) arba Asmeninis (kvitas); kitaip – nepagrįstas (rodoma suma, prašoma paaiškinti). Mėnesio išlaidos ir pagrindimai – iki kito mėnesio 10 d. Kvitai privalomi visoms išlaidoms. Admin+ – grafa „Narių išlaidos“ (tvirtinimas, kompensacija € / l, balansas). UTA ataskaitoje – „Narių kuras“ (darbo / asmeniniai / nepagrįsti) ir nario pasirinkimas su likučiu pasirinktam mėnesiui. Reikia paleisti supabase/sql/expenses_rules.sql.' },
