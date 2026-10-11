@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-eIuDHY3JwkzOVYGHPVtjSaWs+fhVMijDuQ00G82bIBE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-N5i/BJrQzMiSozjMVwsrH9PVWNLc30KYTBcvp9Gq2SE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -19072,6 +19072,15 @@ function fadeAway(el){
   el.replaceWith(ghost);
   scrolls.forEach(([n, y])=>{ const g = map.get(n); if(g) g.scrollTop = y; });
   ghost.classList.add('anim-out');
+  // a node put into the page starts its CSS animations again: the window's opening animation (fade / rise in) would play
+  // once more and the window would blink while closing – those are finished at once; only the closing ones run
+  try{
+    const out = n=>/out$/i.test(n||'');
+    let own = false;
+    ghost.getAnimations({ subtree:true }).forEach(an=>{ const n = an.animationName;
+      if(out(n)){ if(an.effect && an.effect.target===ghost) own = true; } else if(n){ try{ an.finish(); }catch(e){ an.cancel(); } } });
+    if(!own) ghost.style.animation = 'fadeOut var(--t-out, .18s) ease-in forwards';   // a window without its own closing animation just fades
+  }catch(e){}
   let done = false; const kill = ()=>{ if(done) return; done = true; ghost.remove(); };
   ghost.addEventListener('animationend', e=>{ if(e.target===ghost) kill(); });
   setTimeout(kill, 600*animK() + 50);
@@ -20209,7 +20218,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v475';
+const APP_VER = 'v476';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -41710,6 +41719,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 01:00', v:'v476', k:'fix', t:'Langai nebemirksi uždarant', f:'Uždarant langą (pvz. automobilio kortelę) jis nebedingsta ir vėl neišryškėja – sklandžiai išblunka. Pataisyta visiems langams, kurie užsidaro su animacija.' },
   { d:'2026-10-12 00:40', v:'v475', k:'fix', t:'Kairio ir dešinio meniu išskleidimo mygtukai – vienodi', f:'Kairiame meniu – tokie pat mygtukai kaip dešiniame: suskleistame apvalus › viršuje ir smeigtukas apačioje, išskleistame – apvalūs smeigtukas ir ‹ viršuje.' },
   { d:'2026-10-12 00:15', v:'v474', k:'new', t:'Šoniniuose meniu – užuominos užvedus pelę', f:'Suskleistame kairiame meniu užvedus pelę ant ikonos iškart parodomas programos pavadinimas (ir kiek naujų), dešiniame – kas tai ir kas ten dabar (pranešimų skaičius, šiandienos įrašai, data).' },
   { d:'2026-10-11 23:55', v:'v473', k:'fix', t:'Kairys meniu – kaip dešinys: atsidaro paspaudus, ne užvedus pelę', f:'Suskleistas kairys meniu nebeišsiskleidžia užvedus pelę. Mygtukas › jį išskleidžia virš puslapio, ‹ (arba pasirinkus puslapį, paspaudus šalia, Esc) – suskleidžia; „Užrakinti išskleistą“ palieka nuolat atidarytą.' },
