@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-D6t+iFe3VxGO3QAHUhJC2gBBNW5k1nkBGoR9pAeybvY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-f0NiwhXsJtllf5Yz6rQeE5QRqAAwzeZvzGTroMCacyg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -4958,6 +4958,9 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 .modal.grd-modal{max-width:760px;}
 .modal.uil-modal{max-width:940px;width:calc(100vw - 32px);}
 .ed-on .ed-hl{outline:2px dashed var(--accent) !important;outline-offset:2px;cursor:pointer !important;}
+.ed-on .ed-dragging{opacity:.6;outline:2px solid var(--accent) !important;}
+.ed-drag-on, .ed-drag-on *{cursor:grabbing !important;user-select:none !important;}
+.ed-on #main, .ed-on #gSide{touch-action:pan-y;}
 .ed-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:3000;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;border-radius:14px;background:var(--panel);border:1px solid var(--accent);box-shadow:0 12px 40px rgba(0,0,0,.45);max-width:calc(100vw - 24px);font-size:14px;}
 .ed-bar svg{width:16px;height:16px;vertical-align:-3px;color:var(--accent);}
 .ed-bar small{color:var(--text-dim);}
@@ -20099,10 +20102,19 @@ function uilGroupsEdit(groups){ if(!Array.isArray(UIL_ED.D.groups)) UIL_ED.D.gro
    galima pakeisti jo pavadinimą, ikoną, vietą tarp gretimų, o suskleidžiamą – visada išskleisti / suskleisti.
    Taisyklės laikomos pagal puslapį (ar langą) ir pradinį pavadinimą: ed[scope] = { t:{raktas:tekstas}, i:{raktas:ikona}, o:{sąrašas:[raktai]}, f:{raktas:'open'|'closed'} } */
 const ED_SEL = '.card, .chip, .pf-nav-b, .hg-item, .home-tile, .fc-opt, [role="tab"], .tab-btn, .exp-tabs > button, .gr-show > button, .hs-item, .pb-sec, .sk-sec, .ct-sub, details, .section-title, #main h2, #main h3, .modal h3';
-const ED_FOLD = '[aria-expanded], [data-hsfold], [data-tog], [data-subtog], [data-stkfold], [data-stfold], [data-ptog], [data-gfold], [data-fold], [data-act="toggle"], [data-hva="toggle"], .pb-fold, .np-gfold, .inv-foldbtn, .xg-fold, .hs-fold, .stk-fold, .inv-fold-h, details > summary';
-const ED = { on:false, forcing:false, pick:false, tries:new Map() };
+const ED_FOLD = 'button[aria-expanded], [role="button"][aria-expanded], summary, [data-hsfold], [data-subtog], [data-stkfold], [data-stfold], [data-gfold], .pb-fold[data-fold], [data-act="toggle"], [data-hva="toggle"], .pb-fold, .np-gfold, .inv-foldbtn, .xg-fold, .hs-fold, .stk-fold, .inv-fold-h, details > summary';
+const ED = { on:false, forcing:false, pick:false, tries:new Map(), drag:null };
+const ED_POPS = '.modal-backdrop, .hdr-pop, .of-pop, .veh-pop-bd';
+// grafos: buttons side by side in a bar (tabs, segments, filters) – any such row on any page
+const ED_BAR = '[class*="tabs"], [class*="seg"], [class*="toggle"], [class*="subs"], .chipbar, [class*="kinds"], [class*="filters"], [role="tablist"], .gr-show, .fc-opts, .pf-nav';
+const ED_TABKID = 'button, a, [role="button"], [role="tab"]';
+function edIsTab(el){
+  const p = el && el.parentElement; if(!p || !el.matches(ED_TABKID) || !p.matches(ED_BAR) || p.closest('.ed-ui')) return false;
+  let n = 0; for(const c of p.children) if(c.matches(ED_TABKID) && ++n >= 2) return true; return false;
+}
+function edTabs(root){ const out = []; root.querySelectorAll(ED_BAR).forEach(p=>{ if(p.closest('.ed-ui')) return; const k = [...p.children].filter(c=>c.matches(ED_TABKID)); if(k.length >= 2) out.push(...k); }); return out; }
 const edRulesAll = ()=>uil().ed || {};
-const edKind = el=>el.matches('.card') ? 'card' : el.matches('h2,h3,.section-title') ? 'h' : el.matches('.chip') ? 'chip' : el.matches('.hs-item,.pb-sec,.sk-sec,.ct-sub,details') ? 'sec' : 'btn';
+const edKind = el=>edIsTab(el) && !el.matches('.card') ? 'tab' : el.matches('.card') ? 'card' : el.matches('h2,h3,.section-title') ? 'h' : el.matches('.chip') ? 'chip' : el.matches('.hs-item,.pb-sec,.sk-sec,.ct-sub,details') ? 'sec' : 'btn';
 // where the name is: a card's (or section's) heading, otherwise the element itself
 function edLabelEl(el){ const k = edKind(el); if(k==='card' || k==='sec'){ const h = el.querySelector('h2,h3,.section-title,summary,b,.hs-t,.ct-sub-h'); return h || null; } return el; }
 function edLabelNode(el){
@@ -20118,12 +20130,14 @@ const edKey = el=>{ const o = normalizeText(edOrig(edLabelEl(el))).slice(0, 60);
 function edRootScope(root){
   if(root.id==='main') return currentTab;
   if(root.id==='gSide') return 'side';
+  if(root.id==='ofPop') return 'offer';
+  if(root.id==='gpPop') return 'gearplan';
   const h = root.querySelector('h3, h2, .hdr-pop-h b'); return 'm:'+normalizeText(h ? edOrig(h) : '').slice(0, 40);
 }
-const edScopeOf = el=>{ const r = el.closest('.modal-backdrop, .hdr-pop, #gSide'); return r ? edRootScope(r) : currentTab; };
+const edScopeOf = el=>{ const r = el.closest(ED_POPS+', #gSide'); return r ? edRootScope(r) : currentTab; };
 const edCKey = (el)=>{ const p = el.parentElement; const c = p.id || [...p.classList].filter(x=>!/^(ed-|active$|on$|open$|fold|hidden)/.test(x))[0] || p.tagName.toLowerCase(); return edKind(el)+'|'+c; };
 const edOrderable = el=>!el.matches('.home-tile,.hg-item') && edKind(el)!=='h';
-function edSiblings(el){ const p = el.parentElement, k = edKind(el); return [...p.children].filter(x=>x.matches(ED_SEL) && edKind(x)===k && edKey(x)); }
+function edSiblings(el){ const p = el.parentElement, k = edKind(el); return [...p.children].filter(x=>(x.matches(ED_SEL) || edIsTab(x)) && edKind(x)===k && edKey(x)); }
 // fold: the toggle and whether it is open now
 const ED_BOX = '.card, .hs-item, .pb-sec, .sk-sec, .ct-sub, details';
 // the item's own toggle: the first one that is not inside a smaller foldable box of its own
@@ -20160,11 +20174,12 @@ function edUnIcon(el){ const s = el && el.querySelector('svg[data-edic]'); if(!s
 let ED_RAF = 0;
 function edApplyAll(){
   ED_RAF = 0;
+  if(ED.drag) return;   // not while a grafa is being dragged (it would jump back)
   const R = edRulesAll(); if(!Object.keys(R).length && !ED.dirty) return;
-  [document.getElementById('main'), document.getElementById('gSide'), ...document.querySelectorAll('.modal-backdrop, .hdr-pop')].forEach(root=>{
+  [document.getElementById('main'), document.getElementById('gSide'), ...document.querySelectorAll(ED_POPS)].forEach(root=>{
     if(!root || root.classList.contains('ed-ui')) return;
     const rr = R[edRootScope(root)]; if(!rr && !ED.dirty) return;
-    const r = rr || {}, items = [...root.querySelectorAll(ED_SEL)].filter(el=>!el.closest('.ed-ui'));
+    const r = rr || {}, items = [...new Set([...root.querySelectorAll(ED_SEL), ...edTabs(root)])].filter(el=>!el.closest('.ed-ui'));
     items.forEach(el=>{
       const lab = edLabelEl(el), tk = edTextKey(el); if(!tk) return;
       const t = (r.t||{})[tk], n = edLabelNode(lab);
@@ -20185,7 +20200,54 @@ function edApplyAll(){
   });
   ED.dirty = false;
 }
-function edSoon(){ if(!ED_RAF) ED_RAF = requestAnimationFrame(edApplyAll); }
+function edSoon(){ if(!ED_RAF) ED_RAF = requestAnimationFrame(()=>{ edApplyAll(); afApply(); }); }
+/* ---------- visur, kur galima suskleisti / išskleisti – pradžioje suskleista ----------
+   Kiekvieną kartą atidarius programėlę kiekviena suskleidžiama vieta (grupės, skiltys, sąrašai, filtrai)
+   pirmą kartą pasirodžiusi suskleidžiama; narys ją gali išskleisti – iki programėlės uždarymo ji lieka taip,
+   kaip paliko. Super Admin „Visada išskleista / suskleista“ (redagavimo režime) yra svarbiau.
+   Išjungti: Super Admin → „Visur pradžioje suskleista“. */
+const AF = { done:new Set(), at:0 };
+const AF_ATTR = ['data-hsfold','data-subtog','data-stkfold','data-stfold','data-gfold','data-fold'];
+function afOn(){ return !uil().noAutoFold; }
+function afOpen(tog){
+  if(tog.matches('summary')) return tog.parentElement.open;
+  if(tog.hasAttribute('aria-expanded')) return tog.getAttribute('aria-expanded')==='true';
+  const t = (tog.getAttribute('title') || tog.getAttribute('aria-label') || '').trim().toLowerCase();
+  if(/^(išskleisti|rodyti)/.test(t)) return false;
+  if(/^(suskleisti|sutraukti)/.test(t) && !/išskleisti/.test(t)) return true;
+  for(let n = tog, i = 0; n && i < 5; n = n.parentElement, i++){
+    const c = n.classList; if(['fold','folded','shut','collapsed','xg-folded'].some(x=>c.contains(x))) return false;
+    if(c.contains('open')) return true;
+    if(n.matches('.tabpanel, #main, #gSideB')) break;
+  }
+  return !tog.matches('[data-subtog],[data-stkfold],[data-stfold],.stk-fold,.ct-sub-h');   // these mark only the open state
+}
+function afKey(tog, scope){
+  for(const a of AF_ATTR) if(tog.hasAttribute(a)) return scope+'|'+a+'='+tog.getAttribute(a);
+  if(tog.id) return scope+'|#'+tog.id;
+  const box = tog.closest('tr, .rt, .card, details') || tog.parentElement, n = edLabelNode(tog) || edLabelNode(box);
+  return n ? scope+'|'+normalizeText(n.nodeValue).slice(0, 60) : '';
+}
+function afApply(){
+  if(!afOn() || ED.drag || ED.on) return;
+  let clicks = 0;
+  for(const root of [document.getElementById('main'), document.getElementById('gSide'), ...document.querySelectorAll(ED_POPS)]){
+    if(!root || root.classList.contains('hdr-pop')) continue;
+    const scope = edRootScope(root);
+    for(const tog of root.querySelectorAll(AF_SEL)){
+      if(tog.closest('.ed-ui') || tog.dataset.edlock || tog.matches('input, select, textarea, [role="combobox"]')) continue;
+      const k = afKey(tog, scope); if(!k || AF.done.has(k)) continue;
+      AF.done.add(k);
+      if(tog.matches('summary')){ tog.parentElement.open = false; continue; }
+      if(!afOpen(tog)) continue;
+      ED.forcing = true; try{ tog.click(); }catch(e){} finally{ ED.forcing = false; }
+      // the list was drawn again (the other buttons are gone) or many at once: the rest in the next frame
+      if(!tog.isConnected || ++clicks >= 12){ edSoon(); return; }
+    }
+  }
+}
+// only real fold buttons (not „pažymėti kaip pakrautą“ and other toggles)
+const AF_SEL = '[data-hsfold], [data-subtog], [data-stkfold], [data-stfold], [data-gfold], .pb-fold[data-fold], .xg-fold[data-act="fold"], [data-act="toggle"][aria-expanded], [data-hva="toggle"][aria-expanded], details > summary';
 function edSave(scope, part, key, val){
   const L = JSON.parse(JSON.stringify(uil())), E = L.ed = L.ed || {}, r = E[scope] = E[scope] || {}, p = r[part] = r[part] || {};
   if(val==null || val==='') delete p[key]; else p[key] = val;
@@ -20199,24 +20261,54 @@ function edToggle(on){
   let bar = document.getElementById('edBar'); const pop = document.getElementById('edPop'); if(pop) pop.remove();
   if(!on){ if(bar) bar.remove(); document.querySelectorAll('.ed-hl').forEach(x=>x.classList.remove('ed-hl')); return; }
   if(!bar){ bar = document.createElement('div'); bar.id = 'edBar'; bar.className = 'ed-bar ed-ui'; document.body.appendChild(bar); }
-  bar.innerHTML = `<span>${slIcon('pencil')} <b>Redagavimo režimas</b> – paspausk antraštę, kortelę, grafą ar mygtuką. <small>Alt + paspaudimas – įprastas veiksmas. Pakeitimai galioja visiems.</small></span><button type="button" class="btn small primary" id="edDone">Baigti</button>`;
+  bar.innerHTML = `<span>${slIcon('pencil')} <b>Redagavimo režimas</b> – paspausk antraštę, kortelę, grafą ar mygtuką; grafą ar kortelę gali nutempti į kitą vietą. <small>Alt + paspaudimas – įprastas veiksmas. Pakeitimai galioja visiems.</small></span><button type="button" class="btn small primary" id="edDone">Baigti</button>`;
   document.getElementById('edDone').onclick = ()=>edToggle(false);
 }
-function edItemAt(t){ if(!t || t.closest('.ed-ui') || !t.closest('#main, #gSide, .modal-backdrop, .hdr-pop')) return null; return t.closest(ED_SEL); }
+function edItemAt(t){
+  if(!t || !t.closest || t.closest('.ed-ui') || !t.closest('#main, #gSide, '+ED_POPS)) return null;
+  const b = t.closest(ED_TABKID); if(b && edIsTab(b)) return b;
+  return t.closest(ED_SEL);
+}
 document.addEventListener('click', e=>{
   if(ED.forcing) return;
   if(!ED.on){ const lk = e.target.closest && e.target.closest('[data-edlock]'); if(lk){ e.preventDefault(); e.stopImmediatePropagation(); } return; }
   if(e.altKey) return;
+  if(ED.justDragged && Date.now() - ED.justDragged < 400){ e.preventDefault(); e.stopImmediatePropagation(); ED.justDragged = 0; return; }
   const pop = document.getElementById('edPop'); if(pop && !pop.contains(e.target) && !e.target.closest('.ed-ui')) pop.remove();
   const it = edItemAt(e.target); if(!it) return;
   e.preventDefault(); e.stopImmediatePropagation(); edPop(it);
 }, true);
-document.addEventListener('mouseover', e=>{ if(!ED.on) return; const it = edItemAt(e.target); document.querySelectorAll('.ed-hl').forEach(x=>{ if(x!==it) x.classList.remove('ed-hl'); }); if(it) it.classList.add('ed-hl'); }, true);
+document.addEventListener('mouseover', e=>{ if(!ED.on || ED.drag) return; const it = edItemAt(e.target); document.querySelectorAll('.ed-hl').forEach(x=>{ if(x!==it) x.classList.remove('ed-hl'); }); if(it) it.classList.add('ed-hl'); }, true);
+// a grafa / card dragged to another place among its neighbours (mouse or finger): press, move, let go
+document.addEventListener('pointerdown', e=>{
+  if(!ED.on || e.button>0 || e.altKey) return;
+  const it = edItemAt(e.target); if(!it || !edOrderable(it) || edSiblings(it).length < 2) return;
+  const x0 = e.clientX, y0 = e.clientY, id = e.pointerId; let on = false;
+  const move = ev=>{
+    if(ev.pointerId!==id) return;
+    if(!on){ if(Math.abs(ev.clientX - x0) + Math.abs(ev.clientY - y0) < 8) return; on = true; ED.drag = it; it.classList.add('ed-dragging'); document.body.classList.add('ed-drag-on'); const pop = document.getElementById('edPop'); if(pop) pop.remove(); }
+    ev.preventDefault();
+    const under = document.elementFromPoint(ev.clientX, ev.clientY), t = under && edItemAt(under);
+    if(!t || t===it || t.parentElement!==it.parentElement || edKind(t)!==edKind(it)) return;
+    const r = t.getBoundingClientRect(), inRow = r.top < ev.clientY && ev.clientY < r.bottom && Math.abs(r.top - it.getBoundingClientRect().top) < r.height/2;
+    const after = inRow ? ev.clientX > r.left + r.width/2 : ev.clientY > r.top + r.height/2;
+    it.parentElement.insertBefore(it, after ? t.nextSibling : t);
+  };
+  const up = ev=>{
+    if(ev.pointerId!==id) return;
+    window.removeEventListener('pointermove', move, true); window.removeEventListener('pointerup', up, true); window.removeEventListener('pointercancel', up, true);
+    if(!on) return;
+    ED.drag = null; it.classList.remove('ed-dragging'); document.body.classList.remove('ed-drag-on');
+    ED.justDragged = Date.now();
+    if(it.isConnected){ edSave(edScopeOf(it), 'o', edCKey(it), edSiblings(it).map(edKey)); toast('✓ Vieta pakeista – galioja visiems.'); }
+  };
+  window.addEventListener('pointermove', move, true); window.addEventListener('pointerup', up, true); window.addEventListener('pointercancel', up, true);
+}, true);
 function edPop(el){
   const old = document.getElementById('edPop'); if(old) old.remove();
   const scope = edScopeOf(el), r = edRulesAll()[scope] || {}, lab = edLabelEl(el), tk = edTextKey(el), key = edKey(el);
   if(!tk){ toast('Šis elementas neturi pavadinimo – jo redaguoti negalima.'); return; }
-  const orig = edOrig(lab), kindT = { card:'Kortelė', h:'Antraštė', chip:'Grafa / filtras', sec:'Skiltis', btn:'Mygtukas / grafa' }[edKind(el)];
+  const orig = edOrig(lab), kindT = { card:'Kortelė', h:'Antraštė', chip:'Grafa / filtras', sec:'Skiltis', btn:'Mygtukas / grafa', tab:'Grafa' }[edKind(el)];
   const sibs = edOrderable(el) ? edSiblings(el) : [], idx = sibs.indexOf(el);
   // a card that only fills a foldable box (e.g. the right panel's sections): the box's fold
   let foldEl = el, tog = edFoldTog(el);
@@ -20227,7 +20319,7 @@ function edPop(el){
     <label class="field">Pavadinimas<input type="text" id="edT" value="${esc((r.t||{})[tk] || '')}" placeholder="${esc(orig)}"></label>
     <div class="ed-row"><span>Ikona</span><button type="button" class="ed-ic" id="edIc">${(r.i||{})[tk] ? slIcon(r.i[tk]) : '<small>keisti</small>'}</button>${(r.i||{})[tk] ? '<button type="button" class="btn small" id="edIc0">Pradinė</button>' : ''}</div>
     <div class="uil-icons" id="edIcons" hidden></div>
-    ${sibs.length > 1 ? `<div class="ed-row"><span>Vieta (${idx+1} iš ${sibs.length})</span><span class="uil-mv"><button type="button" id="edL" ${idx===0?'disabled':''} title="Anksčiau">${slIcon('arrowup')}</button><button type="button" id="edR" ${idx===sibs.length-1?'disabled':''} title="Vėliau">${slIcon('arrowdown')}</button></span>${(r.o||{})[edCKey(el)] ? '<button type="button" class="btn small" id="edO0">Pradinė tvarka</button>' : ''}</div>` : ''}
+    ${sibs.length > 1 ? `<div class="ed-row"><span>Vieta (${idx+1} iš ${sibs.length}) <small>arba nutempk pele</small></span><span class="uil-mv"><button type="button" id="edL" ${idx===0?'disabled':''} title="Anksčiau">${slIcon('arrowup')}</button><button type="button" id="edR" ${idx===sibs.length-1?'disabled':''} title="Vėliau">${slIcon('arrowdown')}</button></span>${(r.o||{})[edCKey(el)] ? '<button type="button" class="btn small" id="edO0">Pradinė tvarka</button>' : ''}</div>` : ''}
     ${tog ? `<label class="field">Suskleidimas<select id="edF"><option value="">Kaip nori narys</option><option value="open" ${(r.f||{})[fkey]==='open'?'selected':''}>Visada išskleista</option><option value="closed" ${(r.f||{})[fkey]==='closed'?'selected':''}>Visada suskleista</option></select></label>` : ''}
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:8px;"><button type="button" class="btn small" id="edReset">Atstatyti</button><button type="button" class="btn small primary" id="edOk">Gerai</button></div>`;
   document.body.appendChild(p);
@@ -20259,6 +20351,7 @@ function supHdrOpen(btn){
       <div class="section-sub" style="margin:0 0 6px;">Kuriuo lygiu dirbti (lieka ir prisijungus iš naujo):</div>
       ${SUPER_VIEWS.map(([v,l])=>`<button type="button" class="sup-lv ${now===v?'on':''}" data-lv="${v}">${now===v ? slIcon('check') : '<i></i>'}<span>${esc(l)}</span></button>`).join('')}
       <label class="field" style="margin:8px 0 0;">Numatytasis lygis (įsijungia atidarius programėlę)${superDefPickHtml('supDef')}</label>
+      ${uilCan() ? `<label class="checkbox-row" style="margin-top:8px;"><input type="checkbox" id="supAf" ${afOn() ? 'checked' : ''}> Visur pradžioje suskleista (visiems)</label>` : ''}
       <hr>
       <button type="button" class="btn small ${uilCan() ? 'primary' : ''}" id="supEd" style="width:100%;margin-bottom:6px;" ${uilCan() ? '' : 'disabled'}>${slIcon('pencil')} ${ED.on ? 'Baigti redaguoti puslapius' : 'Redaguoti puslapius (pavadinimai, ikonos, vietos, suskleidimas)'}</button>
       <button type="button" class="btn small" id="supLay" style="width:100%;" ${uilCan() ? '' : 'disabled'}>${slIcon('palette')} Išdėstymas: pavadinimai, ikonos, grupės, tvarka</button>
@@ -20269,6 +20362,7 @@ function supHdrOpen(btn){
   const lay = p.querySelector('#supLay'); if(lay) lay.onclick = ()=>{ p.remove(); uilEditor(); };
   const ed = p.querySelector('#supEd'); if(ed) ed.onclick = ()=>{ p.remove(); edToggle(!ED.on); };
   const df = p.querySelector('#supDef'); if(df) df.onchange = ()=>{ superDefSet(df.value); };
+  const af = p.querySelector('#supAf'); if(af) af.onchange = ()=>{ const L = JSON.parse(JSON.stringify(uil())); if(af.checked) delete L.noAutoFold; else L.noAutoFold = true; STATE.uiLayout = L; saveState(); AF.done.clear(); edSoon(); toast(af.checked ? 'Visur pradžioje suskleista – galioja visiems.' : 'Automatinis suskleidimas išjungtas.'); };
 }
 // tiles on the home screen: the two groups, then everything else as before
 function homeTileList(){
@@ -20747,7 +20841,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v484';
+const APP_VER = 'v485';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -42434,6 +42528,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 07:20', v:'v485', k:'new', t:'Grafų vietų keitimas ir visur suskleista', f:'Redagavimo režime (Super Admin → „Redaguoti puslapius“) grafas – pvz. Įranga / Įrangos grupės / Paslaugos, Ataskaitų skirtukus, filtrus – ir korteles galima nutempti pele (ar pirštu) į kitą vietą arba perkelti rodyklėmis; tvarka galioja visiems. Visur, kur galima suskleisti / išskleisti (pasiūlymo „Likutis“ grupės, dešinio skydelio kortelės, projektų grupės, sąrašai), atidarius programėlę viskas suskleista; narys išsiskleidžia, ko reikia. Išjungti galima Super Admin meniu („Visur pradžioje suskleista“).' },
   { d:'2026-10-12 06:30', v:'v484', k:'new', t:'Super Admin: numatytasis lygis ir redagavimas tiesiog puslapyje', f:'Mano erdvė → Paskyra (ir viršuje „Super Admin“): „Numatytasis lygis“ – įsijungia kiekvieną kartą atidarius programėlę, jame apačioje „Žiūri kaip“ juosta nerodoma; perjungti į Super Admin galima bet kada. „Super Admin“ → „Redaguoti puslapius“: bet kuriame puslapyje, lange ar dešiniame skydelyje paspaudus antraštę, kortelę, grafą ar mygtuką galima pakeisti pavadinimą, ikoną, vietą tarp gretimų, o suskleidžiamą – „Visada išskleista“ / „Visada suskleista“. Pakeitimai iš karto galioja visiems nariams.' },
   { d:'2026-10-12 05:30', v:'v483', k:'new', t:'Lygių apribojimai ir Super Admin išdėstymo redaktorius', f:'Runner ir Freelance nebemato „Prašymų“ (Mano erdvė) ir „Pirkinių“. Freelance nemato „Inventorizacijos“, o „Renginiuose“ ir kalendoriuje mato tik tuos renginius, kuriuose pats įrašytas. Tech „Sąskaitose“ mato tik savo įkeltas sąskaitas (įkelti gali), „Renginius“ tik mato. Super Admin viršuje turi mygtuką „Super Admin“: kuriuo lygiu dirbti (lieka ir prisijungus iš naujo) ir „Išdėstymas“ – puslapių pavadinimai, aprašymai, ikonos, spalvos, pradžios grupės ir kas jose, plytelių ir meniu tvarka, „Mano erdvė“ grafos; galioja visiems. Reikia paleisti supabase/sql/level_limits.sql.' },
   { d:'2026-10-12 04:30', v:'v482', k:'new', t:'Transportas: „Kuro pylimas“ ir tie patys pasirinkimai per QR', f:'Paspaudus automobilį yra naujas pasirinkimas „Kuro pylimas“: komentaras dėl pylimo, kvito nuotrauka, nebūtina – litrai, suma, rida. Įrašas matosi automobilio istorijoje (filtras „Kuro pylimai“). Nuskenavus automobilio QR kodą rodomi tie patys pasirinkimai: Pranešti apie problemą, Registruoti įvykį, Kuro pylimas, Apie automobilį. Jei QR atidaręs žmogus nėra prisijungęs įmonės narys, privalo įrašyti vardą, pavardę ir el. paštą. Reikia paleisti supabase/sql/vehicle_fuel.sql.' },
