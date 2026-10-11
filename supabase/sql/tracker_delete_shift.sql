@@ -1,6 +1,6 @@
 -- ============================================================
 -- Team Tracker: savo pamainos ištrynimas
---  * tt_delete_shift(...) – narys (savo raktu) ištrina savo BAIGTĄ pamainą (ne senesnę nei 30 d.);
+--  * tt_delete_shift(...) – narys (savo raktu) ištrina savo BAIGTĄ pamainą;
 --    komentaras būtinas, užfiksuojama vieta
 --  * ištrinta pamaina (su visomis veiklomis), komentaras, vieta, kada ir kas – lieka žurnale time_shift_deletions
 --  * tt_report grąžina ir to laikotarpio ištrintas pamainas ('deleted') – vadovai mato, kas ištrinta ir kodėl
@@ -28,7 +28,6 @@ begin
   select * into s from public.time_shifts where id = p_shift and member_id = m;
   if s.id is null then return jsonb_build_object('error', 'Tokios pamainos nėra.'); end if;
   if s.ended_at is null then return jsonb_build_object('error', 'Vykstančios pamainos ištrinti negalima – pirma baik darbą.'); end if;
-  if s.started_at < now() - interval '30 days' then return jsonb_build_object('error', 'Ištrinti galima tik pastarųjų 30 d. pamainas.'); end if;
   if char_length(nt) < 3 then return jsonb_build_object('error', 'Parašyk komentarą – kodėl trini pamainą.'); end if;
   loc := jsonb_strip_nulls(jsonb_build_object(
     'lat', case when jsonb_typeof(p_loc->'lat') = 'number' then round((p_loc->>'lat')::numeric, 6) end,

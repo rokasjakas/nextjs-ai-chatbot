@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-LB6eClhuQeIlZdGwGyh/+oPlliiqYNxlgZd8X2ezrKk=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-oW7BD2cSCXhHZhxPKMhMBtEKwKyxkQjRrhdI3EsIwIU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20185,7 +20185,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v471';
+const APP_VER = 'v472';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -39136,18 +39136,18 @@ function ttEditsHtml(s){
   return `<div class="tt-edits">${ed.map(e=>`<div class="tt-edit">${ttEditWhat(e).map(([k, a, z])=>`✎ ${k} pakeista <b>${esc(ttTime(a))} → ${esc(ttTime(z))}</b>`).join(' · ')} <small>${esc(new Date(e.at).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }))}</small>${e.note ? `<div class="tt-edit-n">„${esc(e.note)}“</div>` : ''}${e.loc ? ttLocHtml(e.loc, 'Pakeista') : ''}</div>`).join('')}</div>`;
 }
 const ttEditsTxt = s=>((s && s.start_edits) || []).map(e=>ttEditWhat(e).map(([k, a, z])=>k+' '+ttTime(a)+'→'+ttTime(z)).join(', ')+(e.note ? ' „'+e.note+'“' : '')+(e.loc ? ' ['+ttLocTxt(e.loc)+']' : '')).join('; ');
-// a shift of the member signed in on this device that can still be corrected: the running one, or an ended one of the last 30 days
-const ttCanEdit = (s, clock)=>{ const d = ttDev(); return !!(s && d.cur && ttTok(d.cur) && (clock || TT.view==null || TT.view===d.cur) && (!s.ended_at || Date.parse(s.started_at) > Date.now() - 30*864e5)); };
+// a shift of the member signed in on this device (any of them can be corrected or deleted – with a comment)
+const ttCanEdit = (s, clock)=>{ const d = ttDev(); return !!(s && d.cur && ttTok(d.cur) && (clock || TT.view==null || TT.view===d.cur)); };
 // part: 'start' or 'end' – a finished shift's start and end are changed separately (the other one stays as it was)
 async function ttEditStart(s, part){
   const d = ttDev(), m = d.cur; if(!m || !s) return;
-  const ended = !!s.ended_at, isEnd = ended && part==='end', fe = s.entries[0], le = s.entries[s.entries.length-1], many = s.entries.length > 1;
-  const lim = ended ? (many && fe.ended_at ? new Date(fe.ended_at) : new Date(s.ended_at)) : fe && fe.ended_at ? new Date(fe.ended_at) : new Date();
+  // the time can be changed freely (the activities follow it); only a comment is a must
+  const ended = !!s.ended_at, isEnd = ended && part==='end';
   const loc = x=>{ const t = new Date(x); return new Date(t.getTime() - t.getTimezoneOffset()*60000).toISOString().slice(0, 16); };
   openModal(`<h3>✎ ${isEnd ? 'Pakeisti pabaigos laiką' : 'Pakeisti pradžios laiką'}</h3>
     <div class="section-sub" style="margin:-4px 0 12px;">${ended ? `Pamaina: <b>${esc(ttDay(s.started_at))} ${esc(ttTime(s.started_at))} – ${esc(ttTime(s.ended_at))}</b>` : `Dabar pradėta: <b>${esc(ttDay(s.started_at))} ${esc(ttTime(s.started_at))}</b>`}. Pakeitimas išsaugomas su komentaru ir vieta, kurioje esi – jį matys vadovai.</div>
     <div ${isEnd ? 'hidden' : ''}><label class="tt-lbl">Tikrasis pradžios laikas</label>
-    <input type="datetime-local" id="ttEdAt" value="${loc(s.started_at)}" ${ended ? '' : `max="${loc(lim)}" min="${loc(Date.now() - 864e5)}"`} style="width:100%;"></div>
+    <input type="datetime-local" id="ttEdAt" value="${loc(s.started_at)}" max="${loc(Date.now())}" style="width:100%;"></div>
     ${ended ? `<div ${isEnd ? '' : 'hidden'}><label class="tt-lbl">Tikrasis pabaigos laikas</label>
     <input type="datetime-local" id="ttEdEnd" value="${loc(s.ended_at)}" max="${loc(Date.now())}" style="width:100%;"></div>` : ''}
     <label class="tt-lbl" style="margin-top:10px;">Komentaras <span style="color:var(--danger);">*</span> <small class="muted">(būtinas – kodėl keiti)</small></label>
@@ -39167,13 +39167,10 @@ async function ttEditStart(s, part){
       if(!end || isNaN(end)){ toast('Nurodyk pabaigos laiką.'); return; }
       if(end <= at){ toast(isEnd ? 'Pabaiga turi būti vėlesnė nei pradžia ('+ttTime(s.started_at)+').' : 'Pradžia turi būti ankstesnė nei pabaiga ('+ttTime(s.ended_at)+').'); return; }
       if(isEnd && end > new Date()){ toast('Pabaiga negali būti vėlesnė nei dabar.'); return; }
-      // only the time being changed is checked against the activities (the other one stays as it was)
-      if(!isEnd && many && at >= new Date(fe.ended_at)){ toast('Pradžia negali būti vėlesnė nei pirmos veiklos pabaiga ('+ttTime(fe.ended_at)+').'); return; }
-      if(isEnd && many && end <= new Date(le.started_at)){ toast('Pabaiga negali būti ankstesnė nei paskutinės veiklos pradžia ('+ttTime(le.started_at)+').'); return; }
       // say with which shift it overlaps (the ones of the report that is open)
       const ov = ((TT.report && TT.report.shifts) || []).find(o=>o.id!==s.id && Date.parse(o.started_at) < end.getTime() && (o.ended_at ? Date.parse(o.ended_at) : Date.now()) > at.getTime());
       if(ov){ toast('Persidengia su kita tavo pamaina: '+ttDay(ov.started_at)+' '+ttTime(ov.started_at)+' – '+(ov.ended_at ? ttTime(ov.ended_at) : 'vyksta')+'. Pirma pataisyk tą pamainą (jos pabaigą ar pradžią).', 7000); return; }
-    } else if(at > lim){ toast(fe && fe.ended_at ? 'Pradžia negali būti vėlesnė nei pirmos veiklos pabaiga ('+ttTime(fe.ended_at)+').' : 'Pradžia negali būti vėlesnė nei dabar.'); return; }
+    } else if(at > new Date()){ toast('Pradžia negali būti vėlesnė nei dabar.'); return; }
     const b = e.currentTarget; b.disabled = true; b.textContent = 'Fiksuojama vieta…';
     const g = await Promise.race([ttLocTake(), new Promise(r=>setTimeout(()=>r({ err:'fail' }), 12000))]);
     try{
@@ -41651,6 +41648,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 23:30', v:'v472', k:'fix', t:'Time tracker: pradžią ir pabaigą galima keisti laisvai', f:'Laiką galima keisti kaip nori – būtinas tik komentaras. Lieka tik: pabaiga po pradžios, ne ateityje ir pamainos neuždengia viena kitos (parodoma su kuria). Veiklos prisitaiko prie naujų ribų. Taisyti ir ištrinti galima ir senesnes nei 30 d. pamainas. Reikia paleisti supabase/sql/tracker_edit3.sql ir tracker_delete_shift.sql.' },
   { d:'2026-10-11 22:50', v:'v471', k:'fix', t:'Time tracker: keičiant pradžią nebetikrinama pabaiga (ir atvirkščiai)', f:'Keičiant tik pradžios laiką, nebeiššoka pranešimas apie pabaigą (pvz. „Pabaiga negali būti ankstesnė nei paskutinės veiklos pradžia“) – tikrinamas tik keičiamas laikas. Tas pats pataisyta ir duomenų bazėje (tracker_edit3.sql).' },
   { d:'2026-10-11 22:30', v:'v470', k:'new', t:'Time tracker: savo pamainos ištrynimas', f:'Prie baigtos pamainos (paskutinė pamaina ir ataskaita) – „Ištrinti pamainą“: komentaras būtinas, užfiksuojama vieta. Ištrinta pamaina dingsta iš suvestinių, bet ataskaitoje rodoma skiltyje „Ištrintos pamainos“ su priežastimi. Reikia paleisti supabase/sql/tracker_delete_shift.sql.' },
   { d:'2026-10-11 22:00', v:'v469', k:'fix', t:'Time tracker: aišku, su kuria pamaina persidengia', f:'Keičiant pamainos laiką, jei jis uždengia kitą tavo pamainą, parodoma tos pamainos diena ir laikas.' },
