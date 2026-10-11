@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-L7kaIuCH5Xr3JeB7rt4qBJQsdJPQXTRAtemjsPxDwWw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-2nyyahnnlEJn47EuOEaizf56baDdcQ3k698N9bp6gGQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20159,7 +20159,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v462';
+const APP_VER = 'v463';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -28082,7 +28082,10 @@ async function clSave(list){
 }
 function clSearch(q){
   const w = normalizeText(q).split(/\s+/).filter(Boolean);
-  return CL.list.filter(c=>{ if(!w.length) return true; const t = normalizeText([c.name,c.contact,c.email,c.phone,c.address,c.code,c.vat].join(' ')); return w.every(x=>t.includes(x)); });
+  const out = CL.list.filter(c=>{ if(!w.length) return true; const t = normalizeText([c.name,c.contact,c.email,c.phone,c.address,c.code,c.vat].join(' ')); return w.every(x=>t.includes(x)); });
+  // a client whose name (without UAB / MB…) starts with the letters first
+  const nm = c=>String(c.name||'').replace(/^(UAB|MB|VšĮ|AB|IĮ)\s+/i, '').replace(/[„“"]/g, '');
+  return w.length ? out.map((c, k)=>({ c, k, r:Math.min(srchRank(nm(c), w[0]), srchRank(c.contact, w[0]) + 1) })).sort((a, b)=>a.r - b.r || a.k - b.k).map(x=>x.c) : out;
 }
 function clLine(c){ return [c.contact, c.email, c.phone].filter(Boolean).join(' · '); }
 function clRowHtml(c, pick){
@@ -28985,6 +28988,14 @@ function odSugSources(){
   OFFER._lines = [...m.values()].sort((a,b)=>b.n-a.n); OFFER._linesAt = OFFER.list;
   return OFFER._lines;
 }
+/* the order of every search result on the offers page: the name starts with what was typed → one of its words starts so →
+   it only has it somewhere inside (then, at the same level, what belongs to the section / group comes first) */
+function srchRank(name, q){
+  const w = normalizeText(String(q||'')).trim().split(/\s+/)[0], n = normalizeText(String(name||'')).trim(); if(!w) return 0;
+  return n.startsWith(w) ? 0 : n.split(/[\s(),/\-–„“"'.+:;]+/).some(x=>x.startsWith(w)) ? 1 : 2;
+}
+// the Sandėlis groups a catalogue group's category stands for (Audio → garsas…)
+function ctCatGroups(cat){ const g = ctGCat({ cat }); return g==='Audio' ? ['garsas'] : g==='Video' ? ['video'] : g==='Light' ? ['apsvietimas'] : g==='Konstrukcijos/Pakylos' ? ['santvaros','pakylos'] : []; }
 function odRowSuggest(inp, si, ri){
   const d = OFFER.cur.data, sec = d.sections[si], q = normalizeText(inp.value.trim());
   let box = document.getElementById('odSug');
@@ -28998,7 +29009,7 @@ function odRowSuggest(inp, si, ri){
   const G = ce.filter(e=>e.kind==='group').map(e=>({ kind:'group', e })), Sv = ce.filter(e=>e.kind==='service').map(e=>({ kind:'svc', e }));
   const items = allItems().filter(it=>it.name && has(normalizeText([it.name, ctItemName(it), it.code, it.folder].join(' '))));
   items.sort((a,b)=>(groups.includes(b.group)?1:0)-(groups.includes(a.group)?1:0) || (normalizeText(ctItemName(a)).startsWith(words[0])?0:1)-(normalizeText(ctItemName(b)).startsWith(words[0])?0:1) || a.name.natCmp(b.name));
-  const I = items.slice(0, 14).map(it=>({ kind:'item', it }));
+  const I = items.map(it=>({ kind:'item', it }));
   const apt = /^aptarn/.test(normalizeText(sec.title||''));
   const other = CT.list.filter(e=>(e.kind==='other' || e.kind==='staff') && has(normalizeText(e.name)) && normalizeText(e.name)!==q)
     .sort((a,b)=>(apt ? (b.kind==='staff')-(a.kind==='staff') : 0) || (b.offers||[]).length-(a.offers||[]).length)
@@ -29007,14 +29018,15 @@ function odRowSuggest(inp, si, ri){
   const L = other.concat(odSugSources().filter(l=>has(normalizeText(l.name)) && normalizeText(l.name)!==q && !seen.has(normalizeText(l.name))).map(l=>({ kind:'line', l }))).slice(0, 5);
   // a section without Sandėlis items (e.g. APTARNAVIMAS): services and earlier lines first
   const order = groups.length ? [G, I, Sv, L] : [Sv, L, G, I];
-  // first everything that belongs to this section (Garsas → sound groups, sound equipment, sound services), then the rest
+  // what belongs to this section (Garsas → sound groups, groups made of sound equipment, sound equipment, sound services)
   const byId = groups.length ? new Map(allItems().map(it=>[String(it.id), it])) : null;
   const partsHit = e=>!!byId && ctVariants(e).some(v=>(v.parts||[]).some(p=>{ const it = byId.get(String(Array.isArray(p) ? p[0] : p.itemId)); return it && groups.includes(it.group); }));
   const mine = x=>x.kind==='item' ? groups.includes(x.it.group) : x.kind==='group' ? catHit(x.e) || partsHit(x.e) : x.kind==='svc' ? catHit(x.e) : false;
-  const pre = x=>{ const n = normalizeText(x.kind==='item' ? ctItemName(x.it) : x.kind==='line' ? x.l.name : x.e.name); return n.startsWith(words[0]) ? 0 : n.split(/[\s(,/-]+/).some(w=>w.startsWith(words[0])) ? 1 : 2; };
-  const all = [].concat(...order.map(x=>x.filter(mine).slice(0, 12).concat(x.filter(y=>!mine(y)).slice(0, 12))));
-  const own = all.filter(mine).sort((a, b)=>pre(a)-pre(b));
-  const list = own.slice(0, 10).concat([].concat(...order.map(o=>o.filter(x=>!mine(x)).slice(0, 6)))).slice(0, 14);
+  const rk = x=>x.kind==='item' ? Math.min(srchRank(ctItemName(x.it), q), srchRank(x.it.name, q)) : srchRank(x.kind==='line' ? x.l.name : x.e.name, q);
+  const all = [].concat(...order.map((o, k)=>o.map((x, n)=>({ x, k, n, r:rk(x) }))));
+  // starts with the letters first; at the same level this section's own first; then the usual order (groups, equipment, services, earlier lines)
+  all.sort((a, b)=>a.r - b.r || (mine(a.x) ? 0 : 1) - (mine(b.x) ? 0 : 1) || a.k - b.k || a.n - b.n);
+  const list = all.slice(0, 14).map(a=>a.x);
   if(!list.length){ if(box) box.remove(); return; }
   if(!box){ box = document.createElement('div'); box.id = 'odSug'; box.className = 'combo-pop od-sug'; document.body.appendChild(box); }
   box._si = si; box._ri = ri; box._idx = -1; box._inp = inp; box._list = list;
@@ -29115,7 +29127,9 @@ function offerPickItems(si){
     const q = normalizeText(document.getElementById('opQ').value), used = usedMap();
     const inGrp = it=>!grp ? true : grp==='sec' ? secGroups.includes(it.group) : it.group===grp;
     const hit = it=>!q || normalizeText([it.name, it.code, it.folder, GROUP_LABEL[it.group]].join(' ')).includes(q);
-    const list = items.filter(it=>inGrp(it) && hit(it)).slice(0, 300);
+    const list = items.filter(it=>inGrp(it) && hit(it));
+    if(q) list.sort((a, b)=>srchRank(a.name, q) - srchRank(b.name, q) || (secGroups.includes(a.group) ? 0 : 1) - (secGroups.includes(b.group) ? 0 : 1));
+    list.length = Math.min(list.length, 300);
     const cnt = g=>items.filter(it=>(g==='sec' ? secGroups.includes(it.group) : !g || it.group===g) && hit(it)).length;
     const present = GROUP_ORDER.filter(g=>items.some(it=>it.group===g));
     document.getElementById('opGrp').innerHTML = (secGroups.length ? `<button class="chip ${grp==='sec'?'active':''}" data-g="sec">${odE(sec.title||'Skilties')} <span class="count-badge">${cnt('sec')}</span></button>` : '')
@@ -29302,7 +29316,7 @@ function odPosPick(anchor, si, i){
     else delete r.pos;
     odGroupByPos(sec); offerTouch(true); };
   const draw = ()=>{ const q = normalizeText(inp.value.trim()); k = -1;
-    shown = offerPosList().filter(p=>!q || normalizeText(p).includes(q));
+    shown = offerPosList().filter(p=>!q || normalizeText(p).includes(q)); if(q) shown.sort((a, b)=>srchRank(a, q) - srchRank(b, q));
     list.innerHTML = (shown.length ? '<div class="od-poshd">Išsaugotos pozicijos</div>' : '') + shown.map((p, n)=>`<button type="button" data-pn="${n}">${r.pos===p ? '✓ ' : ''}${odE(p)}</button>`).join('')
       + (q && !shown.some(p=>normalizeText(p)===q) ? `<div class="od-poshd">Enter – išsaugoti naują „${odE(inp.value.trim())}“</div>` : '')
       + (r.pos ? '<button type="button" data-pnone class="od-posnone">✕ Be pozicijos</button>' : '');
@@ -29434,11 +29448,13 @@ function odCompose(row, e){
   let lines = (row.compose && row.compose.length ? row.compose : (row.parts||[]).map(([id, n])=>({ id:String(id), qty:n }))).map(l=>Object.assign({}, l));
   if(!lines.length) lines = [{ id:'', qty:1 }];
   const items = allItems().filter(it=>it && it.name).sort((a, b)=>a.name.natCmp(b.name));
+  // whose equipment comes first in the list: the section's (GARSAS → sound), else the group's own category
+  const sec = ((OFFER.cur && OFFER.cur.data.sections) || []).find(x=>x.rows.includes(row));
+  const own = (sec && offerSecGroups(sec.title).length) ? offerSecGroups(sec.title) : ctCatGroups(e.cat);
   const short = it=>{ const n = ctItemName(it), b = String(it.brand||'').trim(); return b && normalizeText(n).startsWith(normalizeText(b)+' ') ? n.slice(b.length).trim() : n; };
   const priceOf = l=>{ const it = l.id ? getItem(l.id) : null; return l.price!=null && l.price!=='' ? offerNum(l.price) : it ? offerNum(ctItemPrice(it)) : 0; };
   openModal(`<div class="row between" style="align-items:center;gap:8px;"><h3 style="margin:0;">🧩 ${odE(base)}</h3><button type="button" class="icon-btn" id="ocX" aria-label="Uždaryti">✕</button></div>
     <div class="section-sub" style="margin:4px 0 10px;">Pasirink įrangą ir kiekį – pavadinime susidės skliausteliuose, kaina – visų sudėtų suma.</div>
-    <datalist id="ocItems">${items.map(it=>`<option value="${odE(it.name)}">`).join('')}</datalist>
     <div class="oc-t" id="ocT"></div>
     <button type="button" class="btn small" id="ocAdd" style="margin-top:8px;">+ Pridėti eilutę</button>
     <div class="oc-prev" id="ocPrev"></div>
@@ -29449,13 +29465,19 @@ function odCompose(row, e){
   const prev = ()=>{ $('ocPrev').innerHTML = `<div><b>${odE(base)}${text() ? ' ('+odE(text())+')' : ''}</b></div><div>Kaina: <b>${offerMoney(total())}</b></div>`; };
   const draw = ()=>{
     $('ocT').innerHTML = `<div class="oc-h"><span>Įranga</span><span>Kiekis</span><span>Kaina vnt.</span><span>Suma</span><span></span></div>` + lines.map((l, i)=>{ const it = l.id ? getItem(l.id) : null;
-      return `<div class="oc-r" data-i="${i}"><input type="text" list="ocItems" data-oc="name" value="${odE(it ? it.name : l.name||'')}" placeholder="Pradėk rašyti pavadinimą…">
+      return `<div class="oc-r" data-i="${i}"><input type="text" autocomplete="off" data-oc="name" value="${odE(it ? it.name : l.name||'')}" placeholder="Pradėk rašyti pavadinimą…">
         <input type="number" min="0" step="1" data-oc="qty" value="${odE(String(l.qty??1))}">
         <input type="text" inputmode="decimal" data-oc="price" value="${l.price!=null && l.price!=='' ? odE(offerPlain(offerNum(l.price))) : ''}" placeholder="${it ? odE(offerPlain(offerNum(ctItemPrice(it)))) : '—'}">
         <span class="oc-sum">${it ? offerMoney(offerNum(l.qty)*priceOf(l)) : ''}</span><button type="button" class="icon-btn" data-ocx="${i}" title="Pašalinti">✕</button></div>`; }).join('');
     $('ocT').querySelectorAll('.oc-r').forEach(rw=>{ const l = lines[+rw.dataset.i];
-      rw.querySelector('[data-oc="name"]').addEventListener('change', ev=>{ const v = normalizeText(ev.target.value.trim()), it = items.find(x=>normalizeText(x.name)===v) || items.find(x=>normalizeText(x.name).includes(v));
-        if(it){ l.id = String(it.id); delete l.name; } else { l.id = ''; l.name = ev.target.value.trim(); toast('Tokios įrangos sandėlyje nerasta – pasirink iš sąrašo.'); } draw(); });
+      const ni = rw.querySelector('[data-oc="name"]');
+      const pick = it=>{ ocSugClose(); if(it){ l.id = String(it.id); delete l.name; } else { l.id = ''; l.name = ni.value.trim(); toast('Tokios įrangos sandėlyje nerasta – pasirink iš sąrašo.'); } draw(); };
+      ni.addEventListener('input', ()=>ocSug(ni, items, own, pick)); ni.addEventListener('focus', ()=>{ if(ni.value.trim() && !l.id) ocSug(ni, items, own, pick); });
+      ni.addEventListener('keydown', ev=>ocSugKey(ev, ni));
+      // leaving the field takes the best match (like Enter); a click in the list does not leave it
+      ni.addEventListener('blur', ()=>{ const b = document.getElementById('ocSug'); if(b && b._inp===ni) ocSugClose();
+        const v = normalizeText(ni.value.trim()), cur = l.id ? getItem(l.id) : null; if(cur && normalizeText(cur.name)===v) return; if(!v){ if(l.id || l.name){ l.id = ''; delete l.name; draw(); } return; }
+        pick(items.find(x=>normalizeText(x.name)===v) || ocSugList(items, own, ni.value)[0]); });
       rw.querySelector('[data-oc="qty"]').addEventListener('input', ev=>{ l.qty = ev.target.value; rw.querySelector('.oc-sum').textContent = l.id ? offerMoney(offerNum(l.qty)*priceOf(l)) : ''; prev(); });
       rw.querySelector('[data-oc="price"]').addEventListener('input', ev=>{ l.price = ev.target.value.trim(); rw.querySelector('.oc-sum').textContent = l.id ? offerMoney(offerNum(l.qty)*priceOf(l)) : ''; prev(); });
     });
@@ -29464,8 +29486,8 @@ function odCompose(row, e){
   };
   draw();
   $('ocAdd').onclick = ()=>{ lines.push({ id:'', qty:1 }); draw(); const ins = $('ocT').querySelectorAll('[data-oc="name"]'); ins[ins.length-1].focus(); };
-  $('ocX').onclick = $('ocNo').onclick = ()=>closeModal();
-  $('ocOk').onclick = ()=>{
+  $('ocX').onclick = $('ocNo').onclick = ()=>{ ocSugClose(); closeModal(); };
+  $('ocOk').onclick = ()=>{ ocSugClose();
     const ok = lines.filter(l=>l.id && offerNum(l.qty) > 0);
     if(!ok.length){ toast('Pridėk bent vieną įrangą su kiekiu.'); return; }
     row.composeBase = base; row.compose = ok.map(l=>({ id:l.id, qty:offerNum(l.qty), ...(l.price!=null && l.price!=='' ? { price:offerNum(l.price) } : {}) }));
@@ -29474,6 +29496,31 @@ function odCompose(row, e){
     row.qty = 1; row.unit = 'kompl.'; row.price = Math.round(total()*100)/100;
     closeModal(); offerTouch(true);
   };
+}
+// the „()“ table's equipment list under the field: starts with the letters first, the section's own equipment first at the same level
+function ocSugList(items, own, val){
+  const w = normalizeText(String(val||'')).trim().split(/\s+/).filter(Boolean); if(!w.length) return [];
+  return items.filter(it=>{ const t = normalizeText([it.name, ctItemName(it), it.code, it.folder].join(' ')); return w.every(x=>t.includes(x)); })
+    .map(it=>({ it, r:Math.min(srchRank(it.name, val), srchRank(ctItemName(it), val)), m:own.includes(it.group) ? 0 : 1 }))
+    .sort((a, b)=>a.r - b.r || a.m - b.m || a.it.name.natCmp(b.it.name)).slice(0, 40).map(x=>x.it);
+}
+function ocSug(inp, items, own, pick){
+  const list = ocSugList(items, own, inp.value); let box = document.getElementById('ocSug');
+  if(!list.length){ ocSugClose(); return; }
+  if(!box){ box = document.createElement('div'); box.id = 'ocSug'; box.className = 'combo-pop od-sug'; document.body.appendChild(box); }
+  box._inp = inp; box._idx = -1; box._pick = k=>pick(list[k]);
+  const r = inp.getBoundingClientRect();
+  Object.assign(box.style, { display:'block', left:Math.round(r.left)+'px', top:Math.round(r.bottom+3)+'px', minWidth:Math.max(300, r.width)+'px', maxHeight:Math.max(160, innerHeight - r.bottom - 16)/appZ()+'px' });
+  box.innerHTML = list.map((it, k)=>`<button type="button" data-k="${k}"><span class="op-g" style="background:${GROUP_COLOR[it.group]||'#666'}22;color:${GROUP_COLOR[it.group]||'#999'}">${odE(GROUP_ABBR[it.group]||'')}</span><span><b>${odE(it.name)}</b><small>${odE([it.folder, it.code, 'sandėlyje '+(+it.qty||0)].filter(Boolean).join(' · '))}</small></span></button>`).join('');
+  box.querySelectorAll('[data-k]').forEach(b=>b.onmousedown = ev=>{ ev.preventDefault(); box._pick(+b.dataset.k); });
+}
+function ocSugClose(){ const b = document.getElementById('ocSug'); if(b) b.remove(); }
+function ocSugKey(e, inp){
+  const box = document.getElementById('ocSug'); if(!box || box._inp!==inp) return;
+  const bs = box.querySelectorAll('[data-k]');
+  if(e.key==='ArrowDown' || e.key==='ArrowUp'){ e.preventDefault(); box._idx = (box._idx + (e.key==='ArrowDown' ? 1 : -1) + bs.length) % bs.length; bs.forEach((b, k)=>b.classList.toggle('on', k===box._idx)); bs[box._idx].scrollIntoView({ block:'nearest' }); }
+  else if(e.key==='Enter'){ e.preventDefault(); box._pick(box._idx >= 0 ? box._idx : 0); }
+  else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); ocSugClose(); }
 }
 // the Sandėlis items an offer uses: its rows from Sandėlis and what its groups are made of
 function offerGearRows(d){
@@ -29530,13 +29577,14 @@ function ctRender(){
   ctBody();
 }
 function ctMatch(text){ const w = normalizeText(CT.q).split(/\s+/).filter(Boolean), t = normalizeText(text); return w.every(x=>t.includes(x)); }
+const ctRk = (...names)=>Math.min(...names.map(n=>srchRank(n, CT.q)));
 function ctCatSel(v, attr){ return `<select ${attr}><option value="">—</option>${CT_CATS.map(c=>`<option ${v===c?'selected':''}>${odE(c)}</option>`).join('')}</select>`; }
 function ctBody(){
   const box = document.getElementById('ctBody'); if(!box) return;
   const ed = canEdit('offers'), ro = ed ? '' : 'disabled', money = v=>ctHasPrice(v) ? offerMoney(offerNum(v)) : '—';
   if(CT.tab==='items'){
     const items = allItems().filter(it=>it.name), present = GROUP_ORDER.filter(g=>items.some(it=>it.group===g));
-    const list = items.filter(it=>(!CT.grp || it.group===CT.grp) && ctMatch([it.name, ctItemName(it), it.code, it.folder].join(' '))).sort((a,b)=>a.name.natCmp(b.name));
+    const list = items.filter(it=>(!CT.grp || it.group===CT.grp) && ctMatch([it.name, ctItemName(it), it.code, it.folder].join(' '))).sort((a,b)=>ctRk(a.name, ctItemName(a)) - ctRk(b.name, ctItemName(b)) || a.name.natCmp(b.name));
     box.innerHTML = `<div class="card"><div class="chipbar" style="margin-bottom:8px;"><button class="chip ${!CT.grp?'active':''}" data-ctg="">Visos</button>${present.map(g=>`<button class="chip small-chip ${CT.grp===g?'active':''}" data-ctg="${g}">${odE(GROUP_LABEL[g]||g)}</button>`).join('')}</div>
       <div class="ct-tbl"><div class="ct-r ct-h"><span>Sandėlyje</span><span>Pavadinimas pasiūlyme</span><span>Vnt.</span><span>Kaina, €</span></div>
       ${list.slice(0, 300).map(it=>{ const e = ctIndex().item[String(it.id)] || {}, sp = IP.map[String(it.id)];
@@ -29555,7 +29603,7 @@ function ctBody(){
     return;
   }
   if(CT.tab==='groups'){
-    const all = CT.list.filter(e=>e.kind==='group' && ctMatch([e.name, e.cat, e.sub, ctVarsText(e)].join(' '))).sort((a,b)=>a.name.natCmp(b.name));
+    const all = CT.list.filter(e=>e.kind==='group' && ctMatch([e.name, e.cat, e.sub, ctVarsText(e)].join(' '))).sort((a,b)=>ctRk(a.name) - ctRk(b.name) || a.name.natCmp(b.name));
     const gc = CT.gcat && CT_GCATS.includes(CT.gcat) ? CT.gcat : '', cnt = c=>all.filter(e=>ctGCat(e)===c).length;
     const row = e=>{ const st = ctGroupStock(e), u = ctUnitN(e.unit) || 'vnt.';
       return `<button type="button" class="ct-gr" data-ctgr="${odE(e.id)}"><b>${odE(e.name)}</b><small>${odE(ctGroupLine(e))}${e.showParts ? ' · <i>sudėtis rodoma pasiūlyme</i>' : ''}</small>
@@ -29582,7 +29630,7 @@ function ctBody(){
     return;
   }
   const kind = { services:'service', staff:'staff', other:'other' }[CT.tab], used = kind!=='service';
-  const list = CT.list.filter(e=>e.kind===kind && ctMatch([e.name, e.cat].join(' '))).sort((a,b)=>used ? (b.offers||[]).length - (a.offers||[]).length || a.name.natCmp(b.name) : a.name.natCmp(b.name));
+  const list = CT.list.filter(e=>e.kind===kind && ctMatch([e.name, e.cat].join(' '))).sort((a,b)=>ctRk(a.name) - ctRk(b.name) || (used ? (b.offers||[]).length - (a.offers||[]).length || a.name.natCmp(b.name) : a.name.natCmp(b.name)));
   const moves = { other:[['service','→ Paslauga'], ['staff','→ Aptarnavimas']], staff:[['service','→ Paslauga'], ['other','→ Kita']], service:[] }[kind];
   box.innerHTML = `<div class="card">${list.length ? `<div class="ct-tbl ${used?'ct-oth':'ct-svc'}"><div class="ct-r ct-h"><span>Pavadinimas</span><span>Vnt.</span><span>Kaina, €</span><span>${used ? 'Naudota' : 'Skiltis'}</span><span></span></div>
     ${list.map(e=>`<div class="ct-r" data-cte="${odE(e.id)}"><input data-k="name" value="${odE(e.name||'')}" placeholder="Pavadinimas" ${ro}><input data-k="unit" value="${odE(ctRealUnit(e.unit))}" placeholder="vnt." ${ro}>
@@ -29651,7 +29699,8 @@ function ctGroupModal(g){
   const subs = (all)=>{ const c = document.getElementById('cgCat').value, q = normalizeText(subIn.value.trim()), list = ctSubsOf(c);
     const fit = v=>all || !q || normalizeText(v).includes(q);
     // this group's sub-groups first, then the ones used in the other groups (picking one moves the group there)
-    const hit = list.filter(fit).map(v=>[v, c]).concat(CT_GCATS.filter(o=>o!==c).flatMap(o=>ctSubsOf(o).filter(fit).map(v=>[v, o])));
+    const rs = (a, b)=>all || !q ? 0 : srchRank(a, q) - srchRank(b, q);
+    const hit = list.filter(fit).sort(rs).map(v=>[v, c]).concat(CT_GCATS.filter(o=>o!==c).flatMap(o=>ctSubsOf(o).filter(fit).map(v=>[v, o])).sort((a, b)=>rs(a[0], b[0])));
     subK = -1;
     const mine = hit.filter(h=>h[1]===c).length;
     subPop.innerHTML = hit.length ? hit.map(([v, o], k)=>(k===mine ? '<div class="cg-subsep">'+(mine ? 'Kitose grupėse' : 'Šioje grupėje pogrupių nėra – kitose grupėse')+'</div>' : '')+`<button type="button" data-sk="${k}" class="${normalizeText(v)===q?'on':''}">${odE(v)}${o!==c ? ` <small>${odE(o)}</small>` : ''}</button>`).join('')
@@ -29673,7 +29722,9 @@ function ctGroupModal(g){
       const x0 = el.querySelector('[data-x]'); if(x0) x0.onclick = ()=>{ set(null); draw(); const i = el.querySelector('input'); if(i) i.focus(); };
       const q = el.querySelector('input'); if(!q) return; const res = el.querySelector('.cg-res');
       q.addEventListener('input', ()=>{ const w = normalizeText(q.value).split(/\s+/).filter(Boolean); if(!w.length){ res.innerHTML = ''; return; }
-        const hit = allItems().filter(i=>i.name && w.every(t=>normalizeText([i.name, i.code, i.folder].join(' ')).includes(t))).slice(0, 8);
+        const own = ctCatGroups((document.getElementById('cgCat')||{}).value);
+        const hit = allItems().filter(i=>i.name && w.every(t=>normalizeText([i.name, i.code, i.folder].join(' ')).includes(t)))
+          .sort((a, b)=>srchRank(a.name, w[0]) - srchRank(b.name, w[0]) || (own.includes(a.group) ? 0 : 1) - (own.includes(b.group) ? 0 : 1) || a.name.natCmp(b.name)).slice(0, 8);
         res.innerHTML = hit.map(i=>`<button type="button" data-pick="${odE(i.id)}"><b>${odE(i.name)}</b><small>${odE(i.folder||'')}${i.code?' · '+odE(i.code):''}</small></button>`).join('') || '<div class="section-sub" style="margin:4px;">Nieko nerasta.</div>';
         res.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ set(String(b.dataset.pick)); draw(); }); });
       q.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); const b = res.querySelector('[data-pick]'); if(b) b.click(); } }); };
@@ -29722,7 +29773,9 @@ function ctGroupModal(g){
       const q = el.querySelector('[data-q]'); if(!q) return; const res = el.querySelector('.cg-res');
       q.addEventListener('input', ()=>{ const w = normalizeText(q.value).split(/\s+/).filter(Boolean);
         if(!w.length){ res.innerHTML = ''; return; }
-        const hit = allItems().filter(it=>it.name && w.every(t=>normalizeText([it.name, it.code, it.folder].join(' ')).includes(t))).slice(0, 8);
+        const own = ctCatGroups((document.getElementById('cgCat')||{}).value);
+        const hit = allItems().filter(it=>it.name && w.every(t=>normalizeText([it.name, it.code, it.folder].join(' ')).includes(t)))
+          .sort((a, b)=>srchRank(a.name, w[0]) - srchRank(b.name, w[0]) || (own.includes(a.group) ? 0 : 1) - (own.includes(b.group) ? 0 : 1) || a.name.natCmp(b.name)).slice(0, 8);
         res.innerHTML = hit.map(it=>`<button type="button" data-pick="${odE(it.id)}"><b>${odE(it.name)}</b><small>${odE(it.folder||'')}${it.code?' · '+odE(it.code):''}</small></button>`).join('') || '<div class="section-sub" style="margin:4px;">Nieko nerasta.</div>';
         res.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ const id = String(b.dataset.pick), p = v.parts.find(y=>String(y.itemId)===id);
           if(p) p.qty = offerNum(p.qty) + 1; else v.parts.push({ itemId:id, qty:1, name:(getItem(id)||{}).name || '' });
@@ -29766,7 +29819,7 @@ function offerPickCatalog(si){
   const draw = ()=>{
     const w = normalizeText(document.getElementById('pcQ').value).split(/\s+/).filter(Boolean);
     const list = CT.list.filter(e=>(e.kind==='group' || e.kind==='service') && w.every(t=>normalizeText([e.name, e.cat].join(' ')).includes(t)))
-      .sort((a,b)=>(catHit(b)?1:0)-(catHit(a)?1:0) || (a.kind==='group' ? 0 : 1)-(b.kind==='group' ? 0 : 1) || a.name.natCmp(b.name));
+      .sort((a,b)=>srchRank(a.name, w[0]) - srchRank(b.name, w[0]) || (catHit(b)?1:0)-(catHit(a)?1:0) || (a.kind==='group' ? 0 : 1)-(b.kind==='group' ? 0 : 1) || a.name.natCmp(b.name));
     document.getElementById('pcList').innerHTML = list.map(e=>{ const r = sec.rows.find(y=>y.groupId===e.id || y.svcId===e.id);
       return `<div class="op-item ${r?'on':''}" data-ce="${odE(e.id)}"><span></span>
         <span class="op-t"><b>${odE(e.name)}</b><small>${e.kind==='group' ? odE(ctGroupLine(e))+(ctGroupStock(e)!=null ? ' · sandėlyje '+ctQty(ctGroupStock(e))+' '+odE(ctUnitN(e.unit) || 'vnt.') : '') : 'paslauga'}${ctHasPrice(e.price) ? ' · '+odE(offerMoney(offerNum(e.price)))+(e.unit?' / '+odE(e.unit):'') : ''}</small></span>
@@ -41498,6 +41551,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 19:10', v:'v463', k:'fix', t:'Pasiūlymai: paieška pirmiausia rodo tai, kas prasideda įrašytomis raidėmis', f:'Visose pasiūlymų paieškose (eilutė, „()“ lentelė, Iš sandėlio, Grupė / paslauga, Įranga / Paslaugos, klientai, pozicijos) pirmiausia rodoma tai, kieno pavadinimas prasideda įrašytomis raidėmis, tada – kur tokiomis raidėmis prasideda žodis, ir tik tada – kur jos yra viduryje. Tame pačiame lygyje pirmi – tos skilties (pvz. GARSAS → garso) daiktai. „()“ lentelėje – naujas įrangos sąrašas po laukeliu.' },
   { d:'2026-10-11 18:35', v:'v462', k:'new', t:'Pasiūlymas atsidaro tarp meniu', f:'Kuriant ar atidarant pasiūlymą (ir įrangos planą) lieka viršutinis, kairys ir dešinys meniu. Perėjus į kitą puslapį, pasiūlymas išsaugomas kaip juodraštis ir uždaromas.' },
   { d:'2026-10-11 18:05', v:'v461', k:'fix', t:'Pasiūlymas: elektros poreikis tik šone', f:'Pačiame pasiūlyme elektros poreikis nebėra rodomas; šoniniame skydelyje rodomas tik apskaičiuotas maksimalus poreikis pagal įdėtus daiktus.' },
   { d:'2026-10-11 17:40', v:'v460', k:'fix', t:'Pasiūlymas: paieška pirmiausia rodo skilties įrangą', f:'Rašant eilutėje (pvz. skiltyje GARSAS) pirmiausia rodomos tos skilties grupės, įranga ir paslaugos (ir grupės, sudarytos iš tos skilties įrangos), tik po to – visos kitos.' },
