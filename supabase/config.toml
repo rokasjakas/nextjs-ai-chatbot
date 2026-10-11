@@ -38,3 +38,19 @@ verify_jwt = false
 [functions.freelance-portal]
 # saskaitos.eventsolutions.lt: freelancers have no app account; the one-time PIN session is checked inside the function.
 verify_jwt = false
+
+[functions.guest]
+# Guests have no login: the guest token is checked inside.
+verify_jwt = false
+
+[functions.meet]
+# Google's redirect carries no token: checked inside.
+verify_jwt = false
+
+[functions.booking-reminders]
+# Hourly from pg_cron with the CRON_SECRET header; „Siųsti dabar“ checks the user's token itself.
+verify_jwt = false
+
+[functions.files]
+# Checks the user's session itself (auth/v1/user).
+verify_jwt = false
