@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-oW7BD2cSCXhHZhxPKMhMBtEKwKyxkQjRrhdI3EsIwIU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-taFVHzZJ765+y+ImRxkcGkQV05XROn0Sr4RXK9aRCOY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5745,11 +5745,11 @@ body.ev-full-on{overflow:hidden;}
   :root[data-ui="v2"] body.v2-fold .rail-fold{justify-content:center;padding:0;}
   :root[data-ui="v2"] .rail-fold{display:flex;}
 }
-.rail-fold{display:none;}
+.rail-fold{display:none;} .rail-fold[hidden]{display:none !important;}
 @media (min-width:761px){
   /* folded rail: the mouse over it opens it above the page (the page does not move) */
   :root[data-ui="v2"] body.v2-fold aside.rail{transition:width .16s ease, margin-right .16s ease, box-shadow .16s;}
-  :root[data-ui="v2"] body.v2-fold.rail-hover aside.rail{width:236px;margin-right:-172px;box-shadow:8px 0 30px rgba(0,0,0,.35);transition-delay:.12s;}
+  :root[data-ui="v2"] body.v2-fold.rail-hover aside.rail{width:236px;margin-right:-172px;box-shadow:8px 0 30px rgba(0,0,0,.35);}
   :root[data-ui="v2"] body.v2-fold.rail-hover aside.rail .rail-logo::after,:root[data-ui="v2"] body.v2-fold.rail-hover aside.rail .rail-toggle::after{display:block;}
   :root[data-ui="v2"] body.v2-fold.rail-hover aside.rail .rail-btn .rail-tip{display:inline;}
   :root[data-ui="v2"] body.v2-fold.rail-hover aside.rail .rail-btn{padding:0 18px;justify-content:flex-start;}
@@ -12001,33 +12001,31 @@ function uiSet(patch){
   if(typeof currentTab!=='undefined' && ['stats','load','home'].includes(currentTab) && typeof setTab==='function') setTab(currentTab);
   if(typeof currentTab!=='undefined' && currentTab==='mail' && typeof MAIL!=='undefined' && MAIL.open) mlShowMessage(MAIL.open);   // the open letter takes the new colours
 }
-// V2: the side menu can be folded to icons only (remembered)
-// the folded menu opens when the mouse comes onto the page buttons (not the logo at the top) and stays open while it is inside the menu
-(function(){
-  let t = 0;
-  const on = ()=>{ clearTimeout(t); if(document.body.classList.contains('v2-fold')) document.body.classList.add('rail-hover'); };
-  const off = ()=>{ clearTimeout(t); t = setTimeout(()=>document.body.classList.remove('rail-hover'), 120); };
-  document.addEventListener('mouseover', e=>{
-    if(!(e.target instanceof Element)) return;
-    const rail = e.target.closest('aside.rail');
-    if(!rail){ if(document.body.classList.contains('rail-hover')) off(); return; }
-    if(e.target.closest('nav.rail-nav')) on();
-    else if(document.body.classList.contains('rail-hover')) clearTimeout(t);
-  });
-  document.addEventListener('mouseleave', off);
-})();
+// V2: the side menu is folded to icons by default (like the right panel): › opens it over the page, ‹ / a page chosen /
+// a click beside it / Esc folds it back; the lock keeps it open (remembered)
+function railPeek(on){ document.body.classList.toggle('rail-hover', !!on && document.body.classList.contains('v2-fold')); uiFoldInit(); }
+document.addEventListener('pointerdown', e=>{ if(!document.body.classList.contains('rail-hover')) return; if(e.target instanceof Element && e.target.closest('aside.rail')) return; railPeek(false); }, true);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && document.body.classList.contains('rail-hover')) railPeek(false); });
+document.addEventListener('click', e=>{ if(!document.body.classList.contains('rail-hover') || !(e.target instanceof Element)) return; if(e.target.closest('aside.rail .rail-btn[data-tab], aside.rail nav.rail-nav a')) setTimeout(()=>railPeek(false), 0); });
 function uiFoldInit(){
   const rail = document.querySelector('aside.rail'); if(!rail) return;
-  let b = document.getElementById('railFold');
+  let b = document.getElementById('railFold'), k = document.getElementById('railLock');
   if(!b){ b = document.createElement('button'); b.type = 'button'; b.id = 'railFold'; b.className = 'rail-fold';
     const t = document.getElementById('railToggle'); if(t && t.nextSibling) rail.insertBefore(b, t.nextSibling); else rail.appendChild(b);
-    b.onclick = ()=>{ let lock = false; try{ lock = localStorage.getItem('es-rail-lock')==='1'; }catch(e){} try{ localStorage.setItem('es-rail-lock', lock ? '' : '1'); }catch(e){} uiFoldInit(); }; }
-  // folded to icons by default; the mouse over it opens it above the page; 📌 keeps it open (remembered)
+    b.onclick = ()=>railPeek(!document.body.classList.contains('rail-hover')); }
+  if(!k){ k = document.createElement('button'); k.type = 'button'; k.id = 'railLock'; k.className = 'rail-fold rail-lockb'; b.after(k);
+    k.onclick = ()=>{ let lock = false; try{ lock = localStorage.getItem('es-rail-lock')==='1'; }catch(e){} try{ localStorage.setItem('es-rail-lock', lock ? '' : '1'); }catch(e){} document.body.classList.remove('rail-hover'); uiFoldInit(); }; }
   let lock = false; try{ lock = localStorage.getItem('es-rail-lock')==='1'; }catch(e){}
   document.body.classList.toggle('v2-fold', !lock);
   document.body.classList.toggle('rail-lock', lock);
-  b.innerHTML = lock ? '<span class="rf-ic">'+slIcon('keepoff')+'</span><span class="rf-t">Atrakinti (suskleisti)</span>' : '<span class="rf-ic">'+slIcon('keep')+'</span><span class="rf-t">Užrakinti meniu</span>';
-  b.title = lock ? 'Atrakinti – meniu susiskleis iki ikonų ir išsiskleis užvedus pelę' : 'Užrakinti meniu išskleistą';
+  if(lock) document.body.classList.remove('rail-hover');
+  const peek = document.body.classList.contains('rail-hover');
+  b.hidden = lock;
+  b.innerHTML = peek ? '<span class="rf-ic">'+slIcon('chevl')+'</span><span class="rf-t">Suskleisti meniu</span>' : '<span class="rf-ic">'+slIcon('chevr')+'</span><span class="rf-t">Išskleisti meniu</span>';
+  b.title = peek ? 'Suskleisti meniu' : 'Išskleisti meniu';
+  k.hidden = !lock && !peek;
+  k.innerHTML = lock ? '<span class="rf-ic">'+slIcon('keepoff')+'</span><span class="rf-t">Atrakinti (suskleisti)</span>' : '<span class="rf-ic">'+slIcon('keep')+'</span><span class="rf-t">Užrakinti išskleistą</span>';
+  k.title = lock ? 'Atrakinti – meniu susiskleis iki ikonų (išskleidžiamas mygtuku ›)' : 'Užrakinti meniu išskleistą';
 }
 function themeNow(){ return document.documentElement.getAttribute('data-theme')==='light' ? 'light' : 'dark'; }
 function themeSet(t){
@@ -20185,7 +20183,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v472';
+const APP_VER = 'v473';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -41648,6 +41646,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 23:55', v:'v473', k:'fix', t:'Kairys meniu – kaip dešinys: atsidaro paspaudus, ne užvedus pelę', f:'Suskleistas kairys meniu nebeišsiskleidžia užvedus pelę. Mygtukas › jį išskleidžia virš puslapio, ‹ (arba pasirinkus puslapį, paspaudus šalia, Esc) – suskleidžia; „Užrakinti išskleistą“ palieka nuolat atidarytą.' },
   { d:'2026-10-11 23:30', v:'v472', k:'fix', t:'Time tracker: pradžią ir pabaigą galima keisti laisvai', f:'Laiką galima keisti kaip nori – būtinas tik komentaras. Lieka tik: pabaiga po pradžios, ne ateityje ir pamainos neuždengia viena kitos (parodoma su kuria). Veiklos prisitaiko prie naujų ribų. Taisyti ir ištrinti galima ir senesnes nei 30 d. pamainas. Reikia paleisti supabase/sql/tracker_edit3.sql ir tracker_delete_shift.sql.' },
   { d:'2026-10-11 22:50', v:'v471', k:'fix', t:'Time tracker: keičiant pradžią nebetikrinama pabaiga (ir atvirkščiai)', f:'Keičiant tik pradžios laiką, nebeiššoka pranešimas apie pabaigą (pvz. „Pabaiga negali būti ankstesnė nei paskutinės veiklos pradžia“) – tikrinamas tik keičiamas laikas. Tas pats pataisyta ir duomenų bazėje (tracker_edit3.sql).' },
   { d:'2026-10-11 22:30', v:'v470', k:'new', t:'Time tracker: savo pamainos ištrynimas', f:'Prie baigtos pamainos (paskutinė pamaina ir ataskaita) – „Ištrinti pamainą“: komentaras būtinas, užfiksuojama vieta. Ištrinta pamaina dingsta iš suvestinių, bet ataskaitoje rodoma skiltyje „Ištrintos pamainos“ su priežastimi. Reikia paleisti supabase/sql/tracker_delete_shift.sql.' },
