@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-RSSaYOIbt3inB1AteVqGfphWKOLhKvVG6XdnElZ6oyQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-C8oYum3TeaUiKVj8Js4DEwufhLny4z3Z7qnulsU8HQE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -459,17 +459,32 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 /* phone chat: a finger on a photo or a video scrolls the conversation like anywhere else (iPhone took it as dragging the picture) */
 .sk-msgs img,.sk-msgs .chat-ph,.sk-msgs video,.chat-msgs img{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none;touch-action:pan-x pan-y;}
 .sk-msgs .chat-att,.sk-msgs .chat-vid{touch-action:pan-x pan-y;}
-.gside-tab{position:fixed;right:0;top:calc(var(--gs-top,60px) + 70px);z-index:45;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border:1px solid var(--border);border-right:0;border-radius:12px 0 0 12px;background:var(--panel);color:var(--text-dim);cursor:pointer;box-shadow:-4px 4px 14px rgba(0,0,0,.18);}
-.gside-tab:hover{color:var(--text);background:var(--panel-2);} .gside-tab svg{width:20px;height:20px;} .gside-tab span{font-size:15px;line-height:1;}
-.gside-p{position:fixed;right:0;top:var(--gs-top,60px);bottom:0;width:370px;max-width:92vw;z-index:46;background:var(--bg);border-left:1px solid var(--border);display:none;flex-direction:column;box-shadow:-10px 0 30px rgba(0,0,0,.25);}
+.gside{--gs-w:370px;--gs-strip:46px;}
+/* folded: a clear strip on the right edge (the page keeps clear of it) */
+.gside-tab{position:fixed;right:0;top:var(--gs-top,60px);bottom:0;width:var(--gs-strip,46px);z-index:45;display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 0;border:0;border-left:1px solid var(--border);background:var(--panel);color:var(--text-dim);cursor:pointer;transition:background .15s,color .15s,opacity .2s;}
+.gside-tab:hover{color:var(--text);background:var(--panel-2);}
+.gside-tab svg{width:22px;height:22px;flex:none;}
+.gside-tab .gs-arrow{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;color:var(--text);background:var(--bg);}
+.gside-tab:hover .gs-arrow{border-color:var(--accent);color:var(--accent);}
+.gside-tab .gs-lbl{writing-mode:vertical-rl;transform:rotate(180deg);font-size:12.5px;font-weight:600;letter-spacing:.3px;white-space:nowrap;}
+.gside-tab .gs-n{min-width:18px;height:18px;border-radius:9px;background:var(--accent);color:var(--accent-ink,#fff);font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+.gside-tab .gs-n:empty{display:none;}
+.gside-p{position:fixed;right:0;top:var(--gs-top,60px);bottom:0;width:var(--gs-w,370px);max-width:92vw;z-index:46;background:var(--bg);border-left:1px solid var(--border);display:flex;flex-direction:column;
+  transform:translateX(105%);visibility:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear .32s;}
 .gside-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px 8px 14px;border-bottom:1px solid var(--border);}
 .gside-h b{display:flex;align-items:center;gap:8px;font-size:14px;} .gside-h b svg{width:18px;height:18px;}
+.gside-h .icon-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);font-size:16px;}
 .gside-b{flex:1;min-height:0;overflow-y:auto;padding:10px;overscroll-behavior:contain;scrollbar-width:thin;}
 .gside-bd{display:none;}
-body.gside-open .gside-p{display:flex;} body.gside-open .gside-tab{display:none;}
-@media (min-width:1280px){ body.gside-open main{margin-right:370px;width:auto;} body.gside-open .gside-p{box-shadow:none;} }
-@media (max-width:1279px){ body.gside-open .gside-bd{display:block;position:fixed;inset:0;z-index:45;background:rgb(0 0 0 / .3);} }
-@media (max-width:760px){ .gside-tab{top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));padding:8px 5px;} .gside-p{top:0;width:100%;max-width:100%;padding-top:env(safe-area-inset-top,0px);z-index:95;} body.gside-open .gside-bd{z-index:94;} }
+body.gside-open .gside-p{transform:none;visibility:visible;transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s;}
+body.gside-open .gside-tab{opacity:0;pointer-events:none;}
+@media (min-width:1100px){
+  body.gside-has main{margin-left:0 !important;margin-right:var(--gs-strip,46px);width:auto;}
+  body.gside-open main{margin-right:var(--gs-w,370px);}
+}
+@media (min-width:761px) and (max-width:1099px){ body.gside-has main{margin-left:0 !important;margin-right:var(--gs-strip,46px);width:auto;} body.gside-open .gside-bd{display:block;position:fixed;inset:0;z-index:45;background:rgb(0 0 0 / .3);} }
+@media (max-width:760px){ .gside-tab{top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));height:auto;width:auto;padding:10px 6px;border:1px solid var(--border);border-right:0;border-radius:12px 0 0 12px;box-shadow:-4px 4px 14px rgba(0,0,0,.2);} .gside-tab .gs-lbl{display:none;}
+  .gside-p{top:0;width:100%;max-width:100%;padding-top:env(safe-area-inset-top,0px);z-index:95;} body.gside-open .gside-bd{display:block;position:fixed;inset:0;z-index:94;background:rgb(0 0 0 / .3);} }
 .doc-box{display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--border);border-radius:10px;}
 .doc-lead input{max-width:110px;}
 .plate-copy{cursor:pointer;border:1px dashed var(--border);border-radius:8px;padding:4px 10px;background:var(--panel);}
@@ -12555,6 +12570,7 @@ function ntfRows(){
 }
 function ntfCardRender(){
   const box = document.getElementById('homeNtf'); if(!box) return;
+  if(typeof gsideCount==='function') gsideCount();
   const rows = ntfRows(), unread = (NTF.list||[]).filter(n=>!n.read_at).length, shown = NTF.all ? rows : rows.slice(0, 6);
   box.innerHTML = `<div class="cal-head"><b style="display:inline-flex;align-items:center;gap:8px;">${slIcon('bell')}Pranešimai</b>${unread ? `<span class="ntf-n">${unread > 99 ? '99+' : unread}</span>` : ''}<span style="flex:1"></span>
       ${unread ? '<button type="button" class="btn small" id="ntfAll" title="Pažymėti visus perskaitytais">✓ Visi</button>' : ''}</div>
@@ -20068,7 +20084,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v448';
+const APP_VER = 'v449';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -40877,21 +40893,23 @@ function setTab(key){
 function gsideRender(force){
   const on = typeof calEnabled==='function' && calEnabled() && !!ACCESS.profile && !(document.getElementById('guestView') && !document.getElementById('guestView').classList.contains('hidden'));
   let root = document.getElementById('gSide');
-  if(!on){ if(root) root.remove(); document.body.classList.remove('gside-open'); return; }
+  if(!on){ if(root) root.remove(); document.body.classList.remove('gside-open', 'gside-has'); return; }
   const open = prefGet('gSideOpen')===true;
   if(!root){
     root = document.createElement('div'); root.id = 'gSide'; root.className = 'gside';
-    root.innerHTML = `<button type="button" class="gside-tab" id="gSideTab" title="Kalendorius, užduotys, pranešimai" aria-label="Atidaryti dešinį skydelį">${slIcon('calendar')}<span>‹</span></button>
+    root.innerHTML = `<button type="button" class="gside-tab" id="gSideTab" title="Išskleisti: pranešimai, kalendorius, užduotys" aria-label="Išskleisti dešinį skydelį"><span class="gs-arrow">‹</span>${slIcon('calendar')}<span class="gs-n" id="gSideN"></span><span class="gs-lbl">Kalendorius, užduotys, pranešimai</span></button>
       <div class="gside-bd" id="gSideBd"></div>
       <aside class="gside-p" aria-label="Dešinysis skydelis"><div class="gside-h"><b>${slIcon('calendar')} Kalendorius ir kt.</b><button type="button" class="icon-btn" id="gSideX" title="Suskleisti" aria-label="Suskleisti">›</button></div>
         <div class="home-side gside-b" id="gSideB"></div></aside>`;
     document.body.appendChild(root);
-    const set = v=>{ prefSet('gSideOpen', v); gsideRender(); };
+    const set = v=>{ prefSet('gSideOpen', v); gsideFlip(()=>gsideRender()); };
     root.querySelector('#gSideTab').onclick = ()=>set(true);
     root.querySelector('#gSideX').onclick = ()=>set(false);
     root.querySelector('#gSideBd').onclick = ()=>set(false);
   }
+  document.body.classList.add('gside-has');
   document.body.classList.toggle('gside-open', open);
+  gsideCount();
   const hb = document.querySelector('header.pageheader'); if(hb) document.documentElement.style.setProperty('--gs-top', Math.max(0, hb.getBoundingClientRect().bottom)+'px');
   const box = document.getElementById('gSideB');
   if(open && (force || !box.childElementCount)){
@@ -40903,6 +40921,20 @@ function gsideRender(force){
     calRender(); todoRender(); calLoad(); fbCardRender(); invCard();
   }
   if(currentTab==='chat' && typeof chatFit==='function') setTimeout(chatFit, 60);
+}
+function gsideCount(){ const n = document.getElementById('gSideN'), k = typeof NTF!=='undefined' && NTF.list ? NTF.list.filter(x=>!x.read_at).length : 0; if(n) n.textContent = k ? (k > 9 ? '9+' : String(k)) : ''; }
+// the page's cards glide to their new places when the panel opens / folds (instead of jumping)
+function gsideFlip(change){
+  const els = [...document.querySelectorAll('main .home-tile, main .card, main .ev-card, main .sk')].filter(el=>el.getClientRects().length).slice(0, 80);
+  const before = new Map(els.map(el=>[el, el.getBoundingClientRect()]));
+  change();
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  els.forEach(el=>{
+    const a = before.get(el), b = el.getBoundingClientRect(); if(!a || !b.width) return;
+    const dx = a.left - b.left, dy = a.top - b.top, sx = a.width / b.width;
+    if(Math.abs(dx) < 1 && Math.abs(dy) < 1 && Math.abs(sx - 1) < .01) return;
+    el.animate([{ transform:`translate(${dx}px, ${dy}px) scaleX(${sx})`, transformOrigin:'0 0' }, { transform:'none', transformOrigin:'0 0' }], { duration:340, easing:'cubic-bezier(.2,.8,.2,1)' });
+  });
 }
 window.addEventListener('resize', ()=>{ const hb = document.querySelector('header.pageheader'); if(hb && document.getElementById('gSide')) document.documentElement.style.setProperty('--gs-top', Math.max(0, hb.getBoundingClientRect().bottom)+'px'); });
 function resetTransientUiState(){
@@ -41221,6 +41253,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 13:30', v:'v449', k:'fix', t:'Dešinysis skydelis: aiškesnis mygtukas ir sklandus išskleidimas', f:'Suskleistas dešinysis skydelis – aiški juosta dešiniame krašte (rodyklė, kalendoriaus ženklas, neperskaitytų pranešimų skaičius ir užrašas); puslapis jos nebeuždengia. Išskleidus plytelės nebeperšoka į dešinę – skydelis įslenka, o plytelės sklandžiai persitvarko (taip pat ir suskleidžiant).' },
   { d:'2026-10-11 13:00', v:'v448', k:'new', t:'Galia, elektros poreikis, sudėtinės grupės, prisegtos žinutės, išleidimas, skydeliai ir mastelis', f:'Įrangoje – stulpelis „Galia (W)“; pasiūlyme po daiktais ir šone rodomas maksimalus elektros poreikis (kW ir A). Pasiūlyme pasirinkus grupę, kurios pavadinimas baigiasi „()“, atsidaro lentelė: įranga ir kiekiai sudedami į skliaustelius (pvz. „(4vnt. X8; 2vnt. KS21)“), kaina – visų suma; 🧩 – keisti sudėtį. Chate žinutę galima prisegti (⋯ → 📌 Prisegti) – prisegtos visada rodomos pokalbio viršuje. Atnaujinimai pirma rodomi tik Super Admin: „Atnaujinimuose“ – „🚀 Išleisti visiems“. Dešinysis skydelis (pranešimai, kalendorius, užduotys ir kt.) – visuose puslapiuose, pagal nutylėjimą suskleistas (skirtukas dešiniame krašte). Kairysis meniu suskleistas iki ikonų, užvedus pelę išsiskleidžia, 📌 – užrakinti. „Dydis“ → „Visa programa“ – mažinti ar didinti visą programą. Ištaisyta: kompiuteryje nebebūna užstrigęs pelės paspaudimas (tekstą galima žymėti), Windows/Mac programoje – dešinio pelės mygtuko meniu (kopijuoti, įklijuoti…), telefone chatą galima slinkti ir per nuotraukas, vinjetės ir kitų dokumentų priminimai neprarandami, jei numatytą valandą patikra nepavyko.' },
   { d:'2026-10-11 11:30', v:'v447', k:'new', t:'Transportas: „Registruoti taisymą“', f:'Paspaudus automobilį – naujas pasirinkimas „Registruoti taisymą“ su dviem variantais: „Įvykęs taisymas“ (kas atlikta, data, kaina, servisas, aprašymas, sąskaitos, aktai ir nuotraukos) arba „Išvežtas taisymui“ ilgesniam laikui (nuo kada, planuojama grąžinti, kur ir ką taiso – automobilis pažymimas „🔧 Remonte“). Kai automobilis remonte, ten pat – „Grąžintas iš remonto“ ir pasiūlymas iškart įrašyti atliktą taisymą su dokumentais.' },
   { d:'2026-10-11 11:00', v:'v446', k:'fix', t:'Team Tracker: taisyti galima ir baigtą pamainą; vienas ✕', f:'Team Tracker: jau baigtos pamainos pradžią ir pabaigą galima pataisyti – „✎ Pataisyti“ prie paskutinės pamainos ir „✎ Pataisyti pradžią / pabaigą“ suvestinėje (pastarųjų 30 d. savo pamainos). Kaip ir vykstančios pamainos atveju, išsaugoma iš kokio į kokį laiką pakeista, komentaras ir vieta. Telefone languose su savo uždarymo mygtuku (pvz. Ofiso, Sandėlio grupės) nebėra antro ✕.' },
