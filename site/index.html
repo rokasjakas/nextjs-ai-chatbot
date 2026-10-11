@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-mZ81jpdnikXna3+cBOxqVu13d93ArfAqoLD84ztamMw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-kJhJupNKGPsc/+WRHsOZhNY7mqjugs90jl9X57JXx/k=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -19386,6 +19386,19 @@ function twWheel(opt){
       if(v!==sel[k]){ sel[k] = v; mark(c); } clearTimeout(t); t = setTimeout(()=>{ if(opt.onChange) opt.onChange(val()); }, 90); }, { passive:true });
     c.addEventListener('click', e=>{ const i = e.target.closest('.tw-i'); if(i) go(+i.dataset.v, true); });
     c.addEventListener('keydown', e=>{ if(e.key==='ArrowDown' || e.key==='ArrowUp'){ e.preventDefault(); go(sel[k] + (e.key==='ArrowDown' ? 1 : -1), true); } });
+    // a mouse wheel / trackpad moves one number at a time: a wheel notch = 1, a trackpad – 1 per ~40 px of the swipe
+    // (and not faster than one every 70 ms, so the swipe's run-on does not fly through the list)
+    let acc = 0, last = 0, lastEv = 0, tgt = null, rt = 0;
+    c.addEventListener('wheel', e=>{
+      if(Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; e.preventDefault();
+      const dy = e.deltaMode===1 ? e.deltaY*40 : e.deltaMode===2 ? e.deltaY*400 : e.deltaY, notch = e.deltaMode!==0 || Math.abs(dy) >= 50;
+      const now = performance.now(); if(now - lastEv > 250) acc = 0; lastEv = now;
+      acc += dy; if(!notch && Math.abs(acc) < 40) return;
+      if(now - last < (notch ? 30 : 70)) return;
+      const dir = (notch ? dy : acc) > 0 ? 1 : -1; acc = 0; last = now;
+      tgt = Math.max(0, Math.min(max, (tgt==null ? sel[k] : tgt) + dir)); go(tgt, true);
+      clearTimeout(rt); rt = setTimeout(()=>{ tgt = null; }, 300);
+    }, { passive:false });
   });
   const init = ()=>el.querySelectorAll('.tw-col').forEach(c=>c._go(sel[c.dataset.k], false));
   requestAnimationFrame(init); setTimeout(init, 60);
@@ -20167,7 +20180,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v466';
+const APP_VER = 'v467';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -41594,6 +41607,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 21:10', v:'v467', k:'fix', t:'Laiko ratukai: pele ir trackpadu – po vieną skaičių', f:'Valandos ir minutės ratukuose vienas pelės ratuko spragtelėjimas keičia reikšmę vienu, trackpadu – po vieną maždaug kas 40 px braukimo (inercija nebeprasuka per daug).' },
   { d:'2026-10-11 20:50', v:'v466', k:'fix', t:'„()“ lentelė nebeima pirmo rasto daikto; nuomojami daiktai – apačioje', f:'Sudėtinės grupės lentelėje daiktas įsideda tik pasirinkus iš sąrašo (Enter – pažymėtas pirmas), įrašius tikslų pavadinimą arba kai randamas vienintelis; kitaip laukelis raudonas ir „Gerai“ neleidžia išsaugoti. Pradėjus taisyti tekstą, senas pasirinkimas iškart dingsta iš skliaustelių. Sandėlio daiktai su (…) pavadinime (nuoma, pvz. „LA4X (Jurijus)“) visada savo grupės apačioje, o paieškose – po visų savų daiktų.' },
   { d:'2026-10-11 20:15', v:'v465', k:'fix', t:'„()“ lentelė: matosi, kuo daiktas vadinasi pasiūlyme', f:'Lentelėje ir sąraše rodomas pavadinimas, kuris bus skliausteliuose, o jei jis kitoks – ir sandėlio pavadinimas. Įranga / Paslaugos → Įranga įspėja, kai pavadinimas pasiūlyme yra kito sandėlio daikto pavadinimas (pvz. LA12X → „125A 3m“).' },
   { d:'2026-10-11 19:45', v:'v464', k:'fix', t:'Paieška visur: pirmiausia tai, kas prasideda įrašytomis raidėmis', f:'Ta pati tvarka kaip pasiūlymuose dabar ir Sandėlyje (sąrašas, priedai, rinkiniai), Įrangos plane ir užimtume, įrangos pasirinkime renginyje, Atliktuose darbuose, Inventorizacijoje, Projektų sąraše, Žmonėse, Komandoje, Admin vartotojuose ir narių pasirinkime (susitikimas, kanalai, renginio žmonės): pirma – pavadinimas / vardas ar pavardė prasideda raidėmis, tada – žodis prasideda, tada – viduryje.' },
