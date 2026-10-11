@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-2nyyahnnlEJn47EuOEaizf56baDdcQ3k698N9bp6gGQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-+4ZmiUa6RrsKiZ7PyuyxWY8hB6di/RnCi7Z5BANhJXc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -7183,13 +7183,15 @@ function itemPassesBase(it){
 }
 
 function filteredInvItems(){
-  return allItems().filter(it=>{
+  const out = allItems().filter(it=>{
     if(!itemPassesBase(it)) return false;
     if(invFilter.group && it.group!==invFilter.group) return false;
     if(invFilter.folder && (it.folder||'—')!==invFilter.folder) return false;
     if(invFilter.brand!=null && invBrand(it)!==invFilter.brand) return false;
     return true;
   }).sort((a,b)=> GROUP_ORDER.indexOf(a.group)-GROUP_ORDER.indexOf(b.group) || (invBrand(a)||'\uffff').natCmp(invBrand(b)||'\uffff') || a.name.natCmp(b.name));
+  // searching: the names starting with the letters first (the group / brand order stays among equals)
+  return srchSort(out, invFilter.q, it=>[it.name, it.code]);
 }
 
 function updateBulkCount(){
@@ -13544,6 +13546,7 @@ function npListRender(){
     return true;
   }).sort((a,b)=>{ const x = npProjSpan(a.data), y = npProjSpan(b.data), xa = x ? x[0] : Infinity, ya = y ? y[0] : Infinity;
     return P.k==='past' || P.k==='all' ? (ya===Infinity ? -1 : xa===Infinity ? 1 : ya - xa) : xa - ya; });
+  if(words.length) list.splice(0, list.length, ...srchSort(list, NP.q, p=>[p.data.name, p.data.number, (p.data.client||{}).name, (p.data.location||{}).name]));
   const cnt = k=>inPer.filter(p=>npStatus(p.data)===k).length;
   const perText = range[0] || range[1] ? `${range[0] || '…'} – ${range[1] || '…'}` : 'visi laikai';
   main.innerHTML = `<div class="tabpanel np">
@@ -14633,7 +14636,7 @@ function invBundles(){ return Array.isArray(STATE.bundles) ? STATE.bundles : [];
 function invPickHtml(q, skip){
   const w = normalizeText(q).split(/\s+/).filter(Boolean);
   if(!w.length) return '<div class="section-sub" style="margin:4px 0;">Įrašyk pavadinimą arba kodą.</div>';
-  const list = allItems().filter(it=>!skip.has(String(it.id)) && w.every(x=>normalizeText([it.name, it.code, it.folder, invBrand(it)].join(' ')).includes(x))).slice(0, 30);
+  const list = srchSort(allItems().filter(it=>!skip.has(String(it.id)) && w.every(x=>normalizeText([it.name, it.code, it.folder, invBrand(it)].join(' ')).includes(x))), q, it=>[it.name, it.code]).slice(0, 30);
   return list.map(it=>`<button type="button" class="inv-pick" data-pick="${esc(String(it.id))}"><b>${esc(it.name)}</b><small>${esc(GROUP_LABEL[it.group]||'')} · ${esc(it.folder||'')}${it.code?' · '+esc(it.code):''}</small><span>+</span></button>`).join('') || '<div class="section-sub" style="margin:4px 0;">Nieko nerasta.</div>';
 }
 // a list of items with quantities + a search to add more (used by both dialogs)
@@ -14799,7 +14802,7 @@ function iwForm(w){
   $('iwfKinds').querySelectorAll('[data-k]').forEach(b=>b.onclick = ()=>{ $('iwfKind').value = b.dataset.k; });
   // items: search
   $('iwfQ').oninput = ()=>{ const q = normalizeText($('iwfQ').value); if(q.length < 2){ $('iwfRes').innerHTML = ''; return; }
-    const ws = q.split(' ').filter(Boolean), hits = allItems().filter(it=>{ const h = normalizeText([it.name, it.code, it.folder].join(' ')); return ws.every(w=>h.includes(w)); }).slice(0, 30);
+    const ws = q.split(' ').filter(Boolean), hits = srchSort(allItems().filter(it=>{ const h = normalizeText([it.name, it.code, it.folder].join(' ')); return ws.every(w=>h.includes(w)); }), q, it=>[it.name, it.code]).slice(0, 30);
     $('iwfRes').innerHTML = hits.length ? hits.map(it=>`<button type="button" class="iw-hit ${D.item_ids.includes(String(it.id)) ? 'on' : ''}" data-it="${esc(String(it.id))}"><b>${esc(it.name)}</b><small>${esc([GROUP_LABEL[it.group], it.folder, it.code].filter(Boolean).join(' · '))}</small></button>`).join('') : '<div class="muted">Nerasta.</div>';
     $('iwfRes').querySelectorAll('[data-it]').forEach(b=>b.onclick = ()=>{ const it = getItem(b.dataset.it); if(!it) return; if(D.scope){ D.scope = ''; D.item_ids = []; D.item_names = []; }
       const i = D.item_ids.indexOf(String(it.id)); if(i>=0){ D.item_ids.splice(i, 1); D.item_names.splice(i, 1); } else { D.item_ids.push(String(it.id)); D.item_names.push(it.name); }
@@ -17930,6 +17933,7 @@ function renderAdminUsers(){
   const q = normalizeText((document.getElementById('admQ')||{}).value||'');
   const rows = ADM.users.filter(u=> ADM.filter==='all' || (ADM.filter==='active' ? !['pending','blocked'].includes(u.role) : u.role===ADM.filter))
     .filter(u=>!q || normalizeText((u.full_name||'')+' '+u.email).includes(q));
+  rows.splice(0, rows.length, ...srchSort(rows, q, u=>[u.full_name, u.email]));
   const me = ACCESS.profile && ACCESS.profile.id;
   el.innerHTML = rows.length ? rows.map(u=>`
     <div class="adm-user ${u.role==='pending'?'pending':''}" data-id="${esc(u.id)}">
@@ -19922,7 +19926,7 @@ function calMeetingForm(m, iso){
   document.getElementById('modalRoot').classList.add('cal-modal');
   teamFillImages(document.getElementById('modalRoot'));
   document.getElementById('mtX').onclick = closeModal;
-  document.getElementById('mtQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); document.querySelectorAll('.mt-members [data-s]').forEach(l=>l.classList.toggle('hidden', !!q && !l.dataset.s.includes(q))); });
+  document.getElementById('mtQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); document.querySelectorAll('.mt-members [data-s]').forEach(l=>l.classList.toggle('hidden', !!q && !l.dataset.s.includes(q))); srchSortDom(document.querySelectorAll('.mt-members [data-s]'), q, l=>l.dataset.s); });
   if(!EV_TOUCH) document.getElementById('mtTitle').focus();
   const was = editing ? { d:m.meet_date, f:calHM(m.start_time), t:calHM(m.end_time), l:m.location||'' } : null;
   const autoAll = ()=>{ if(!editing) return; const c = document.getElementById('mtNotifyAll');
@@ -20159,7 +20163,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v463';
+const APP_VER = 'v464';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -20937,7 +20941,7 @@ function gearPick(ev, [a, b], back){
   const drawG = ()=>{ document.getElementById('gpG').innerHTML = [['', 'Visos'], ...groups.map(g=>[g, GROUP_LABEL[g]||g])].map(([v,l])=>`<button type="button" class="chip ${grp===v?'active':''}" data-gg="${esc(v)}">${esc(l)}</button>`).join(''); };
   const draw = ()=>{
     const q = normalizeText(document.getElementById('gpQ').value);
-    const list = items.filter(it=>(!grp || it.group===grp) && (!q || normalizeText([it.name, it.code, it.folder, GROUP_LABEL[it.group]].join(' ')).includes(q))).slice(0, 200);
+    const list = srchSort(items.filter(it=>(!grp || it.group===grp) && (!q || normalizeText([it.name, it.code, it.folder, GROUP_LABEL[it.group]].join(' ')).includes(q))), q, it=>[it.name, it.code]).slice(0, 200);
     document.getElementById('gpList').innerHTML = list.map(it=>{ const f = gearFree(idx, it.id, a, b), left = f.free-(mine[it.id]||0), c = chosen.get(String(it.id));
       return `<div class="op-item ${c?'on':''}" data-id="${esc(it.id)}">
         <span class="op-g" style="background:${GROUP_COLOR[it.group]||'#666'}22;color:${GROUP_COLOR[it.group]||'#999'}">${esc(GROUP_ABBR[it.group]||'')}</span>
@@ -21017,6 +21021,7 @@ function gearPlan(start){
   const shortOf = it=>days.some(d=>gearUse(idx, String(it.id), d) > stockOf(it));
   if(GP.onlyShort) items = items.filter(shortOf);
   items.sort((x,y)=>String(GROUP_LABEL[x.group]||'').natCmp(String(GROUP_LABEL[y.group]||'')) || x.name.natCmp(y.name));
+  items = srchSort(items, GP.q, it=>[it.name, it.code]);
   const totalShort = allItems().filter(it=>used.has(String(it.id)) && shortOf(it)).length;
   const groups = [...new Set(allItems().map(i=>i.group).filter(Boolean))];
   const dh = d=>{ const x = calParse(d); return `<th class="gp-d ${d===today?'today':''} ${[0,6].includes(x.getDay())?'we':''}"><small>${CAL_DAYS[(x.getDay()+6)%7]}</small><b>${x.getDate()}</b></th>`; };
@@ -22108,7 +22113,8 @@ function evPeoplePop(ev, gi){
     <div class="ev-ppl" id="pp_l">${names.map((x,i)=>`<label class="ev-ppi ${have.has(normalizeText(x.n)) ? 'had' : ''}" data-i="${i}"><input type="checkbox" data-n="${esc(x.n)}" ${have.has(normalizeText(x.n)) ? 'checked disabled' : ''}><b>${esc(x.n)}</b>${x.l ? `<small>${esc(x.l)}</small>` : ''}</label>`).join('') || '<div class="section-sub">Žmonių sąrašas tuščias.</div>'}</div>
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;align-items:center;"><button type="button" class="btn small" id="pp_own">+ Įrašyti ranka</button><span class="row" style="gap:8px;"><button type="button" class="btn" id="pp_x">Atšaukti</button><button type="button" class="btn primary" id="pp_ok">Pridėti</button></span></div>`);
   const q = document.getElementById('pp_q'); setTimeout(()=>q.focus(), 30);
-  q.oninput = ()=>{ const s = normalizeText(q.value); document.querySelectorAll('#pp_l .ev-ppi').forEach(l=>{ l.hidden = !!s && !normalizeText(l.textContent).includes(s); }); };
+  q.oninput = ()=>{ const s = normalizeText(q.value); document.querySelectorAll('#pp_l .ev-ppi').forEach(l=>{ l.hidden = !!s && !normalizeText(l.textContent).includes(s); });
+    srchSortDom(document.querySelectorAll('#pp_l .ev-ppi'), s, l=>(l.querySelector('b')||l).textContent); };
   document.querySelectorAll('#pp_l input:not(:disabled)').forEach(c=>c.onchange = ()=>{ if(c.checked) pick.add(c.dataset.n); else pick.delete(c.dataset.n); });
   document.getElementById('pp_x').onclick = closeModal;
   const add = list=>{ if(!list.length){ closeModal(); return; } evUndoPush(ev.id, JSON.stringify(ev));
@@ -23003,13 +23009,15 @@ function ppSections(list){
   out.push({ title:'Be grupės', list:list.filter(c=>!(c.groups||[]).length) });
   return out.filter(s=>s.list.length);
 }
-function ppSort(list){ return list.slice().sort((a,b)=>ppName(a).natCmp(ppName(b))); }
+function ppSort(list){ return ppQSort(list.slice().sort((a,b)=>ppName(a).natCmp(ppName(b)))); }
+// searching: the first or last name starting with the letters first
+function ppQSort(list){ return srchSort(list, PP.q, c=>[c.first, c.last, ppName(c)]); }
 // inside a group: people for whom it is their 1st position first, then by level (Pro → Crew)
 function ppRank(list, g){
-  if(!g || g==='-' || g==='Be grupės') return list;
+  if(!g || g==='-' || g==='Be grupės') return ppQSort(list);
   const pos = c=>{ const i = (c.groups||[]).indexOf(g); return i<0 ? 9 : i; };
   const lvl = c=>{ const i = PP_LEVELS.indexOf((c.levels||{})[g]); return i<0 ? 9 : i; };
-  return list.slice().sort((a,b)=>pos(a)-pos(b) || lvl(a)-lvl(b) || ppName(a).natCmp(ppName(b)));
+  return ppQSort(list.slice().sort((a,b)=>pos(a)-pos(b) || lvl(a)-lvl(b) || ppName(a).natCmp(ppName(b))));
 }
 function ppRenderBody(){
   const box = document.getElementById('ppBody'); if(!box) return;
@@ -28994,6 +29002,18 @@ function srchRank(name, q){
   const w = normalizeText(String(q||'')).trim().split(/\s+/)[0], n = normalizeText(String(name||'')).trim(); if(!w) return 0;
   return n.startsWith(w) ? 0 : n.split(/[\s(),/\-–„“"'.+:;]+/).some(x=>x.startsWith(w)) ? 1 : 2;
 }
+// a found list in that order (stable – what is equal keeps its own order); names(x): the texts to rank by, the best counts
+function srchSort(list, q, names){
+  if(!normalizeText(String(q||'')).trim()) return list;
+  return list.map((x, k)=>({ x, k, r:Math.min(...[].concat(names(x)).map(n=>srchRank(n, q))) })).sort((a, b)=>a.r - b.r || a.k - b.k).map(o=>o.x);
+}
+// a list already drawn, filtered by hiding rows: the rows put in the same order (back to the first one when the search is empty)
+function srchSortDom(nodes, q, nameOf){
+  nodes = [...nodes]; if(!nodes.length) return;
+  nodes.forEach((n, k)=>{ if(n._so==null) n._so = k; });
+  const r = n=>normalizeText(String(q||'')).trim() ? srchRank(nameOf(n), q) : 0;
+  nodes.slice().sort((a, b)=>r(a) - r(b) || a._so - b._so).forEach(n=>n.parentNode && n.parentNode.appendChild(n));
+}
 // the Sandėlis groups a catalogue group's category stands for (Audio → garsas…)
 function ctCatGroups(cat){ const g = ctGCat({ cat }); return g==='Audio' ? ['garsas'] : g==='Video' ? ['video'] : g==='Light' ? ['apsvietimas'] : g==='Konstrukcijos/Pakylos' ? ['santvaros','pakylos'] : []; }
 function odRowSuggest(inp, si, ri){
@@ -30754,7 +30774,7 @@ function renderMemberList(){
     .map(([k,l,n])=>`<button class="chip ${TEAM.memberFilter===k?'active':''}" data-f="${k}">${l} <span class="count-badge">${n}</span></button>`).join('');
   document.querySelectorAll('#tmFilters [data-f]').forEach(b=>b.onclick = ()=>{ TEAM.memberFilter = b.dataset.f; renderMemberList(); });
   const q = normalizeText(TEAM.q);
-  const rows = (TEAM.memberFilter==='online' ? online : all).filter(m=>!q || normalizeText([teamName(m), m.nickname, m.phone, m.contact_email, m.email, roleLabel(m.role)].join(' ')).includes(q));
+  const rows = srchSort((TEAM.memberFilter==='online' ? online : all).filter(m=>!q || normalizeText([teamName(m), m.nickname, m.phone, m.contact_email, m.email, roleLabel(m.role)].join(' ')).includes(q)), q, m=>[teamName(m), m.nickname, m.email]);
   el.innerHTML = rows.length ? rows.map(m=>`
     <button class="tm-card" data-member="${esc(m.id)}">
       ${teamAvatar(m, 52, true)}
@@ -31706,7 +31726,7 @@ function chatPickMember(){
   const root = document.getElementById('modalRoot');
   teamFillImages(root);
   document.getElementById('pmX').onclick = closeModal;
-  document.getElementById('pmQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); root.querySelectorAll('[data-s]').forEach(b=>b.classList.toggle('hidden', !!q && !b.dataset.s.includes(q))); });
+  document.getElementById('pmQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); root.querySelectorAll('[data-s]').forEach(b=>b.classList.toggle('hidden', !!q && !b.dataset.s.includes(q))); srchSortDom(root.querySelectorAll('[data-s]'), q, b=>b.dataset.s); });
   root.querySelectorAll('[data-id]').forEach(b=>b.onclick = ()=>{ closeModal(); chatOpenDirect(b.dataset.id); });
 }
 function chatGroupModal(conv){
@@ -32807,7 +32827,7 @@ function chatChannelModal(){
     <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button class="btn" id="ncX">Atšaukti</button><button class="btn primary" id="ncGo">Sukurti kanalą</button></div>`);
   const root = document.getElementById('modalRoot'); teamFillImages(root);
   root.querySelectorAll('#ncList .chat-pick').forEach(l=>{ l.dataset.s = normalizeText(l.textContent); });
-  document.getElementById('ncQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); root.querySelectorAll('#ncList .chat-pick').forEach(l=>l.classList.toggle('hidden', !!q && !l.dataset.s.includes(q))); });
+  document.getElementById('ncQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); root.querySelectorAll('#ncList .chat-pick').forEach(l=>l.classList.toggle('hidden', !!q && !l.dataset.s.includes(q))); srchSortDom(root.querySelectorAll('#ncList .chat-pick'), q, l=>l.dataset.s); });
   const nm = document.getElementById('ncName'); nm.addEventListener('input', ()=>{ const p = nm.selectionStart; nm.value = nm.value.toLowerCase().replace(/\s+/g,'-'); nm.selectionStart = nm.selectionEnd = p; });
   if(!EV_TOUCH) nm.focus();
   document.getElementById('ncX').onclick = closeModal;
@@ -32891,7 +32911,7 @@ function chatPickMember(){
     <div class="row" style="justify-content:flex-end;gap:8px;margin-top:10px;"><button class="btn" id="pmX">Atšaukti</button><button class="btn primary" id="pmGo">Rašyti</button></div>`);
   const root = document.getElementById('modalRoot'); teamFillImages(root);
   document.getElementById('pmX').onclick = closeModal;
-  document.getElementById('pmQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); root.querySelectorAll('[data-s]').forEach(b=>b.classList.toggle('hidden', !!q && !b.dataset.s.includes(q))); });
+  document.getElementById('pmQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); root.querySelectorAll('[data-s]').forEach(b=>b.classList.toggle('hidden', !!q && !b.dataset.s.includes(q))); srchSortDom(root.querySelectorAll('[data-s]'), q, b=>b.dataset.s); });
   document.getElementById('pmGo').onclick = async ()=>{
     const ids = Array.from(root.querySelectorAll('input:checked')).map(x=>x.value);
     if(!ids.length){ toast('Pasirink narį.'); return; }
@@ -33959,6 +33979,7 @@ function stkRenderTable(box){
   // archive view: archived models and units whose model is still active
   const items = all.filter(i=>(!i.parent_id && !!i.archived===STK.arch) || (STK.arch && i.parent_id && i.archived && !all.some(p=>p.id===i.parent_id && p.archived)))
     .filter(i=>stkMatchQ(i) || (kidsOf[i.id]||[]).some(stkMatchQ)).sort((a,b)=>a.sort-b.sort);
+  if(STK.q){ const so = srchSort(items, STK.q, i=>[i.name].concat((kidsOf[i.id]||[]).map(k=>k.name))); items.splice(0, items.length, ...so); }
   if(!items.length){ box.innerHTML = `<div class="card empty-state">${STK.arch ? 'Archyvuotų daiktų nėra.' : STK.q ? 'Nieko nerasta.' : 'Šiame skyriuje daiktų nėra.'}</div>`; return; }
   const cols = sess, span = 6 + cols.length + (STK.arch ? 1 : 0);
   const row = (it, kid)=>{
@@ -36903,6 +36924,7 @@ function grStockPanel(box){
   if(GRS.only==='busy') rows = rows.filter(r=>r.busy > 0 || r.out > 0);
   if(GRS.only==='short') rows = rows.filter(r=>r.free < 0);
   rows.sort((x,y)=>String(GROUP_LABEL[x.it.group]||'').natCmp(String(GROUP_LABEL[y.it.group]||'')) || x.it.name.natCmp(y.it.name));
+  rows = srchSort(rows, GRS.q, r=>[r.it.name, r.it.code]);
   const capped = gearDaysOf(GRS.from, GRS.to, 400).length > days.length;
   const today = calISO(new Date()), wk = (()=>{ const d = new Date(); const m = new Date(d); m.setDate(d.getDate() - ((d.getDay()+6)%7)); return [calISO(m), lmDay(calISO(m), 6)]; })();
   const quick = [['Šiandien', today, today], ['Rytoj', lmDay(today,1), lmDay(today,1)], ['Ši savaitė', wk[0], wk[1]], ['7 d.', today, lmDay(today,6)], ['14 d.', today, lmDay(today,13)], ['30 d.', today, lmDay(today,29)]];
@@ -41551,6 +41573,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 19:45', v:'v464', k:'fix', t:'Paieška visur: pirmiausia tai, kas prasideda įrašytomis raidėmis', f:'Ta pati tvarka kaip pasiūlymuose dabar ir Sandėlyje (sąrašas, priedai, rinkiniai), Įrangos plane ir užimtume, įrangos pasirinkime renginyje, Atliktuose darbuose, Inventorizacijoje, Projektų sąraše, Žmonėse, Komandoje, Admin vartotojuose ir narių pasirinkime (susitikimas, kanalai, renginio žmonės): pirma – pavadinimas / vardas ar pavardė prasideda raidėmis, tada – žodis prasideda, tada – viduryje.' },
   { d:'2026-10-11 19:10', v:'v463', k:'fix', t:'Pasiūlymai: paieška pirmiausia rodo tai, kas prasideda įrašytomis raidėmis', f:'Visose pasiūlymų paieškose (eilutė, „()“ lentelė, Iš sandėlio, Grupė / paslauga, Įranga / Paslaugos, klientai, pozicijos) pirmiausia rodoma tai, kieno pavadinimas prasideda įrašytomis raidėmis, tada – kur tokiomis raidėmis prasideda žodis, ir tik tada – kur jos yra viduryje. Tame pačiame lygyje pirmi – tos skilties (pvz. GARSAS → garso) daiktai. „()“ lentelėje – naujas įrangos sąrašas po laukeliu.' },
   { d:'2026-10-11 18:35', v:'v462', k:'new', t:'Pasiūlymas atsidaro tarp meniu', f:'Kuriant ar atidarant pasiūlymą (ir įrangos planą) lieka viršutinis, kairys ir dešinys meniu. Perėjus į kitą puslapį, pasiūlymas išsaugomas kaip juodraštis ir uždaromas.' },
   { d:'2026-10-11 18:05', v:'v461', k:'fix', t:'Pasiūlymas: elektros poreikis tik šone', f:'Pačiame pasiūlyme elektros poreikis nebėra rodomas; šoniniame skydelyje rodomas tik apskaičiuotas maksimalus poreikis pagal įdėtus daiktus.' },
