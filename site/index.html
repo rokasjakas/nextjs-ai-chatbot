@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-N5i/BJrQzMiSozjMVwsrH9PVWNLc30KYTBcvp9Gq2SE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-+l13b7oGI66zFL9/RroptCkNaG+KROIsTJbrJd8dLIM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -14456,7 +14456,7 @@ function npAccAsk(it, acc, qty){
       <button type="button" class="icon-btn np-acc-x" data-a="no" aria-label="Atšaukti" title="Atšaukti">✕</button></div>`;
     const tot = ()=>acc.forEach((a, i)=>{ const on = el.querySelector(`[data-ai="${i}"]`).checked, q = offerNum(el.querySelector(`[data-aq="${i}"]`).value); el.querySelector(`[data-at="${i}"]`).textContent = on && q>0 ? '= '+fmt(q*qty,2) : ''; el.querySelector(`[data-aq="${i}"]`).disabled = !on; });
     const pick = ()=>acc.map((a, i)=>({ id:a.id, qty:offerNum(el.querySelector(`[data-aq="${i}"]`).value) })).filter((a, i)=>el.querySelector(`[data-ai="${i}"]`).checked && a.qty>0);
-    const done = v=>{ doc.removeEventListener('keydown', key, true); el.classList.add('out'); setTimeout(()=>el.remove(), 120); res(v); };
+    const done = v=>{ doc.removeEventListener('keydown', key, true); el.classList.add('out'); el.__instant = true; setTimeout(()=>el.remove(), 120); res(v); };   // it already faded (.out)
     const key = e=>{ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done(null); } else if(e.key==='Enter'){ e.preventDefault(); e.stopPropagation(); done(pick()); } };
     el.addEventListener('input', tot); el.addEventListener('change', tot);
     el.addEventListener('click', e=>{ const b = e.target.closest('[data-a]'); if(b) done(b.dataset.a==='yes' ? pick() : b.dataset.a==='none' ? [] : null); else if(e.target===el) done(null); });
@@ -18987,7 +18987,7 @@ function uiAsk(msg, opt){
       <div class="ui-ask-b"><button type="button" class="btn" data-a="no">${esc(opt.no || 'Atšaukti')}</button><button type="button" class="btn ${danger ? 'danger' : 'primary'}" data-a="yes">${esc(opt.yes || (danger ? (String(msg).trim().split(/\s/)[0].replace(/[^A-Za-zĄČĘĖĮŠŲŪŽąčęėįšųūž]/g,'') || 'Taip') : 'Gerai'))}</button></div></div>`;
     el.querySelector('.ui-ask-msg').textContent = String(msg);
     const inp = el.querySelector('.ui-ask-in'); if(inp) inp.value = opt.value==null ? '' : String(opt.value);
-    const done = v=>{ doc.removeEventListener('keydown', key, true); el.classList.add('out'); setTimeout(()=>el.remove(), 120); res(v); };
+    const done = v=>{ doc.removeEventListener('keydown', key, true); el.classList.add('out'); el.__instant = true; setTimeout(()=>el.remove(), 120); res(v); };   // it already faded (.out)
     const key = e=>{ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done(opt.input ? null : false); } else if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); e.stopPropagation(); done(opt.input ? inp.value : true); } };
     el.addEventListener('click', e=>{ const b = e.target.closest('[data-a]'); if(b) done(b.dataset.a==='yes' ? (opt.input ? inp.value : true) : (opt.input ? null : false)); else if(e.target===el) done(opt.input ? null : false); });
     doc.addEventListener('keydown', key, true);
@@ -19061,12 +19061,53 @@ function animK(){
 function animApply(){ document.documentElement.style.setProperty('--anim-k', String(animK())); }
 // Something that closes leaves the page at once (the code carries on as
 // before), and a look-alike copy without ids fades out in its place.
+/* the closing copy of a window has no ids, so the styles written for #id would no longer reach it (the window jumped:
+   wider, moved, without its glass): once, every #id rule gets a twin for [data-was-id="id"] */
+// the pop-ups' own classes: the closing copy carries g-<class> instead
+const GHOST_CLS = ['modal-backdrop','nav-menu','veh-pop-bd','ven-lightbox','of-pop','gp-pop','ui-ask','ltd-pop','gs-pop','hdr-pop','help-pop','np-menu-pop','nt-ov','pp-dial','size-pop','stk-menu','cal-pop','cp-pop','fb-lb','gm-ov','vl-bg','op-pop','sel-pop','xg-pop','ev-more-sheet','app-upd'];
+function ghostIdCss(){
+  if(ghostIdCss.done) return; ghostIdCss.done = true;
+  // :is(#id, [data-was-id]) keeps the rule exactly as strong as it was (an id's weight), so it wins where it won before;
+  // the same for a pop-up's own class: .ltd-pop → :is(.ltd-pop, .g-ltd-pop) (the copy carries g-… so code no longer finds it)
+  const cre = new RegExp('\\.('+GHOST_CLS.map(c=>c.replace(/-/g, '\\-')).join('|')+')(?![\\w-])', 'g');
+  const conv = sel=>sel.replace(/#([A-Za-z_][\w-]*)/g, (m, id)=>':is(#'+id+',[data-was-id="'+id+'"])').replace(cre, (m, c)=>':is(.'+c+',.g-'+c+')');
+  const walk = list=>{
+    const add = [];
+    for(let i = 0; i < list.cssRules.length; i++){
+      const r = list.cssRules[i];
+      if(r.cssRules && !(r instanceof CSSStyleRule)) { try{ walk(r); }catch(e){} continue; }
+      if(!(r instanceof CSSStyleRule)) continue;
+      cre.lastIndex = 0; if(r.selectorText.indexOf('#') < 0 && !cre.test(r.selectorText)) continue; cre.lastIndex = 0;
+      add.push([i + 1, conv(r.selectorText)+'{'+r.style.cssText+'}']);
+    }
+    for(let k = add.length - 1; k >= 0; k--){ try{ list.insertRule(add[k][1], add[k][0]); }catch(e){} }
+  };
+  for(const sh of document.styleSheets){ try{ if(sh.ownerNode && sh.ownerNode.tagName==='STYLE') walk(sh); }catch(e){} }
+}
+(window.requestIdleCallback || (f=>setTimeout(f, 1500)))(()=>{ try{ ghostIdCss(); }catch(e){} });
+/* every pop-up window or menu closes nicely: removing one (el.remove()) lets its copy fade out instead of it vanishing at once.
+   Suggestion lists under fields are not here – they go at once, as they should. */
+const POP_FADE_SEL = '.ui-ask, .ltd-pop, .gs-pop, .hdr-pop, .help-pop, .np-menu-pop, .nt-ov, .of-pop, .pp-dial, .size-pop, .stk-menu, .cal-pop, .cp-pop, .fb-lb, .gm-ov, .vl-bg, .op-pop, .sel-pop, .xg-pop, .ev-more-sheet, #railMoreSheet, .veh-pop-bd, .ven-lightbox, .app-upd, .modal-backdrop:not(.swap-out)';
+const RM = Element.prototype.remove;
+Element.prototype.remove = function(){
+  try{ if(this.isConnected && this.nodeType===1 && !this.classList.contains('anim-out') && !this.__instant && this.matches(POP_FADE_SEL)){ fadeAway(this); return; } }catch(e){}
+  return RM.call(this);
+};
 function fadeAway(el){
   if(!el || !el.isConnected) return;
-  if(animK() < .05){ el.remove(); return; }
+  if(animK() < .05){ RM.call(el); return; }
   const scrolls = [el, ...el.querySelectorAll('*')].filter(n=>n.scrollTop>0).map(n=>[n, n.scrollTop]);
   const ghost = el.cloneNode(true);
-  ghost.removeAttribute('id'); ghost.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+  // the copy gives up its ids (a new window with the same id may open at once) but keeps every #id style – see ghostIdCss
+  ghostIdCss();
+  [ghost, ...ghost.querySelectorAll('[id]')].forEach(n=>{ if(n.id){ n.setAttribute('data-was-id', n.id); n.removeAttribute('id'); } });
+  [ghost, ...ghost.querySelectorAll('[class]')].forEach(n=>{ if(n.classList) GHOST_CLS.forEach(c=>{ if(n.classList.contains(c)) n.classList.replace(c, 'g-'+c); }); });
+  // what plays or loads (a video, a game, an embedded page) is not started again in the copy – a calm block of the same size instead
+  const media = [...el.querySelectorAll('iframe, video, audio, canvas, object, embed')];
+  if(media.length){ const gm = [...ghost.querySelectorAll('iframe, video, audio, canvas, object, embed')];
+    gm.forEach((g, i)=>{ const o = media[i], r = o && o.getBoundingClientRect(), d = document.createElement('div');
+      d.style.cssText = 'width:'+(r ? r.width : 0)+'px;height:'+(r ? r.height : 0)+'px;background:#000;border-radius:inherit;display:'+(r && r.width ? 'block' : 'none');
+      g.replaceWith(d); }); }
   ghost.setAttribute('inert', ''); ghost.setAttribute('aria-hidden', 'true');
   const map = new Map(); const a = [el, ...el.querySelectorAll('*')], b = [ghost, ...ghost.querySelectorAll('*')]; a.forEach((n,i)=>map.set(n, b[i]));
   el.replaceWith(ghost);
@@ -19081,7 +19122,7 @@ function fadeAway(el){
       if(out(n)){ if(an.effect && an.effect.target===ghost) own = true; } else if(n){ try{ an.finish(); }catch(e){ an.cancel(); } } });
     if(!own) ghost.style.animation = 'fadeOut var(--t-out, .18s) ease-in forwards';   // a window without its own closing animation just fades
   }catch(e){}
-  let done = false; const kill = ()=>{ if(done) return; done = true; ghost.remove(); };
+  let done = false; const kill = ()=>{ if(done) return; done = true; RM.call(ghost); };
   ghost.addEventListener('animationend', e=>{ if(e.target===ghost) kill(); });
   setTimeout(kill, 600*animK() + 50);
 }
@@ -19091,7 +19132,7 @@ function modalOnClose(f){ MODAL_CLEAN.push(f); }
 function closeModal(instant){
   MODAL_CLEAN.splice(0).forEach(f=>{ try{ f(); }catch(e){} });
   const bd = document.getElementById('modalBackdrop');
-  if(bd){ if(instant===true) bd.remove(); else fadeAway(bd); }
+  if(bd){ if(instant===true) RM.call(bd); else fadeAway(bd); }
   setTimeout(()=>{ if(!document.getElementById('modalBackdrop')) for(const k of [...KEEP.pos.keys()]) if(k.startsWith('modal:')) KEEP.pos.delete(k); }, 1500);
 }
 
@@ -20218,7 +20259,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v476';
+const APP_VER = 'v477';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -41719,6 +41760,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 01:40', v:'v477', k:'fix', t:'Visi langai užsidaro gražiai', f:'Uždarant langą jis nebepašoka (nebeišplatėja, nepasislenka, nedingsta stiklo efektas) – sklandžiai išblunka toje pačioje vietoje. Su animacija dabar užsidaro visi iššokantys langai ir meniu: dialogai, patvirtinimai, paieška, datos pasirinkimas, viršaus langai, nuotraukų peržiūra, skambinimas, žaidimai, atnaujinimo pranešimas, automobilio, pasiūlymo ir įrangos plano langai.' },
   { d:'2026-10-12 01:00', v:'v476', k:'fix', t:'Langai nebemirksi uždarant', f:'Uždarant langą (pvz. automobilio kortelę) jis nebedingsta ir vėl neišryškėja – sklandžiai išblunka. Pataisyta visiems langams, kurie užsidaro su animacija.' },
   { d:'2026-10-12 00:40', v:'v475', k:'fix', t:'Kairio ir dešinio meniu išskleidimo mygtukai – vienodi', f:'Kairiame meniu – tokie pat mygtukai kaip dešiniame: suskleistame apvalus › viršuje ir smeigtukas apačioje, išskleistame – apvalūs smeigtukas ir ‹ viršuje.' },
   { d:'2026-10-12 00:15', v:'v474', k:'new', t:'Šoniniuose meniu – užuominos užvedus pelę', f:'Suskleistame kairiame meniu užvedus pelę ant ikonos iškart parodomas programos pavadinimas (ir kiek naujų), dešiniame – kas tai ir kas ten dabar (pranešimų skaičius, šiandienos įrašai, data).' },
