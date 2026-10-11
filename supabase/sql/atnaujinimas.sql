@@ -9784,11 +9784,12 @@ begin
   select count(*) into n from public.time_entries where shift_id = s.id;
   select * into fe from public.time_entries where shift_id = s.id order by started_at limit 1;
   select * into le from public.time_entries where shift_id = s.id order by started_at desc limit 1;
+  -- only the time that is changed is checked against the activities (the other one stays as it was)
   if n > 1 then
-    if p_start >= fe.ended_at then
+    if p_start <> s.started_at and p_start >= fe.ended_at then
       return jsonb_build_object('error', 'Pradžia negali būti vėlesnė nei pirmos veiklos pabaiga ('||to_char(fe.ended_at at time zone 'Europe/Vilnius', 'HH24:MI')||').');
     end if;
-    if p_end <= le.started_at then
+    if p_end <> s.ended_at and p_end <= le.started_at then
       return jsonb_build_object('error', 'Pabaiga negali būti ankstesnė nei paskutinės veiklos pradžia ('||to_char(le.started_at at time zone 'Europe/Vilnius', 'HH24:MI')||').');
     end if;
   end if;
