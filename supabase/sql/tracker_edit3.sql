@@ -3,6 +3,7 @@
 --  * tt_set_start ir tt_edit_shift atmeta pakeitimą be komentaro (bent 3 simboliai)
 --  * tt_edit_shift: keičiant tik pradžią arba tik pabaigą, kitas laikas lieka tiksliai toks, koks buvo
 --    (nebeapvalinamas iki minutės ir nebeįrašomas į žurnalą kaip pakeistas)
+--  * persidengimo klaida nurodo, su kuria pamaina (diena ir laikas)
 -- Reikia: tracker_edit.sql, tracker_edit2.sql. Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
 -- ============================================================
 
@@ -64,9 +65,11 @@ begin
   if p_end <= p_start then return jsonb_build_object('error', 'Pabaiga turi būti vėlesnė nei pradžia.'); end if;
   if p_end > now() then return jsonb_build_object('error', 'Pabaiga negali būti vėlesnė nei dabar.'); end if;
   if p_end - p_start > interval '36 hours' then return jsonb_build_object('error', 'Pamaina negali būti ilgesnė nei 36 val.'); end if;
-  if exists (select 1 from public.time_shifts o where o.member_id = m and o.id <> s.id
-             and o.started_at < p_end and coalesce(o.ended_at, now()) > p_start) then
-    return jsonb_build_object('error', 'Šis laikas persidengia su kita tavo pamaina.');
+  select string_agg(to_char(o.started_at at time zone 'Europe/Vilnius', 'MM-DD HH24:MI')||' – '||coalesce(to_char(o.ended_at at time zone 'Europe/Vilnius', 'HH24:MI'), 'vyksta'), ', ' order by o.started_at)
+    into vs from public.time_shifts o where o.member_id = m and o.id <> s.id
+             and o.started_at < p_end and coalesce(o.ended_at, now()) > p_start;
+  if vs is not null then
+    return jsonb_build_object('error', 'Šis laikas persidengia su kita tavo pamaina: '||vs||'. Pirma pataisyk tą pamainą.');
   end if;
   select count(*) into n from public.time_entries where shift_id = s.id;
   select * into fe from public.time_entries where shift_id = s.id order by started_at limit 1;

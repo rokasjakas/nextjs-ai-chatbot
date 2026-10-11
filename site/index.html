@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-gai31m6qUODcTgMzNT9q2C9tdsNIW59blenpJAZCoRo=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-X9QFyPymr3UODVCZIFOKe+/DQsESR+rv4mY7ye/aN2Q=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20182,7 +20182,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v468';
+const APP_VER = 'v469';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -39166,6 +39166,9 @@ async function ttEditStart(s, part){
       if(end > new Date()){ toast('Pabaiga negali būti vėlesnė nei dabar.'); return; }
       if(many && at >= new Date(fe.ended_at)){ toast('Pradžia negali būti vėlesnė nei pirmos veiklos pabaiga ('+ttTime(fe.ended_at)+').'); return; }
       if(many && end <= new Date(le.started_at)){ toast('Pabaiga negali būti ankstesnė nei paskutinės veiklos pradžia ('+ttTime(le.started_at)+').'); return; }
+      // say with which shift it overlaps (the ones of the report that is open)
+      const ov = ((TT.report && TT.report.shifts) || []).find(o=>o.id!==s.id && Date.parse(o.started_at) < end.getTime() && (o.ended_at ? Date.parse(o.ended_at) : Date.now()) > at.getTime());
+      if(ov){ toast('Persidengia su kita tavo pamaina: '+ttDay(ov.started_at)+' '+ttTime(ov.started_at)+' – '+(ov.ended_at ? ttTime(ov.ended_at) : 'vyksta')+'. Pirma pataisyk tą pamainą (jos pabaigą ar pradžią).', 7000); return; }
     } else if(at > lim){ toast(fe && fe.ended_at ? 'Pradžia negali būti vėlesnė nei pirmos veiklos pabaiga ('+ttTime(fe.ended_at)+').' : 'Pradžia negali būti vėlesnė nei dabar.'); return; }
     const b = e.currentTarget; b.disabled = true; b.textContent = 'Fiksuojama vieta…';
     const g = await Promise.race([ttLocTake(), new Promise(r=>setTimeout(()=>r({ err:'fail' }), 12000))]);
@@ -41613,6 +41616,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 22:00', v:'v469', k:'fix', t:'Time tracker: aišku, su kuria pamaina persidengia', f:'Keičiant pamainos laiką, jei jis uždengia kitą tavo pamainą, parodoma tos pamainos diena ir laikas.' },
   { d:'2026-10-11 21:35', v:'v468', k:'fix', t:'Time tracker: atskirai „Pakeisti pradžios laiką“ ir „Pakeisti pabaigos laiką“, komentaras būtinas', f:'Baigtos pamainos pradžia ir pabaiga keičiamos atskirais mygtukais (kitas laikas lieka koks buvo); vykstančios – „Pakeisti pradžios laiką“. Be komentaro pakeitimas neišsaugomas.' },
   { d:'2026-10-11 21:10', v:'v467', k:'fix', t:'Laiko ratukai: pele ir trackpadu – po vieną skaičių', f:'Valandos ir minutės ratukuose vienas pelės ratuko spragtelėjimas keičia reikšmę vienu, trackpadu – po vieną maždaug kas 40 px braukimo (inercija nebeprasuka per daug).' },
   { d:'2026-10-11 20:50', v:'v466', k:'fix', t:'„()“ lentelė nebeima pirmo rasto daikto; nuomojami daiktai – apačioje', f:'Sudėtinės grupės lentelėje daiktas įsideda tik pasirinkus iš sąrašo (Enter – pažymėtas pirmas), įrašius tikslų pavadinimą arba kai randamas vienintelis; kitaip laukelis raudonas ir „Gerai“ neleidžia išsaugoti. Pradėjus taisyti tekstą, senas pasirinkimas iškart dingsta iš skliaustelių. Sandėlio daiktai su (…) pavadinime (nuoma, pvz. „LA4X (Jurijus)“) visada savo grupės apačioje, o paieškose – po visų savų daiktų.' },
