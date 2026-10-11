@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-taFVHzZJ765+y+ImRxkcGkQV05XROn0Sr4RXK9aRCOY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wrCRnyT4BCWtEV2NDZExkZ0NIhgTp9uVMZplmrHsr6w=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5746,6 +5746,11 @@ body.ev-full-on{overflow:hidden;}
   :root[data-ui="v2"] .rail-fold{display:flex;}
 }
 .rail-fold{display:none;} .rail-fold[hidden]{display:none !important;}
+.side-hint{position:fixed;z-index:4000;pointer-events:none;display:flex;flex-direction:column;gap:1px;max-width:260px;padding:7px 11px;border-radius:9px;
+  background:var(--gl-base, var(--panel));border:1px solid var(--border-2, var(--border));box-shadow:0 8px 24px rgb(0 0 0 / .35);color:var(--text);font-size:13px;line-height:1.3;
+  opacity:0;transform:translateX(-4px);transition:opacity .12s, transform .12s;}
+.side-hint.to-l{transform:translateX(4px);} .side-hint.on{opacity:1;transform:none;}
+.side-hint b{font-weight:600;white-space:nowrap;} .side-hint small{color:var(--text-dim);font-size:11.5px;}
 @media (min-width:761px){
   /* folded rail: the mouse over it opens it above the page (the page does not move) */
   :root[data-ui="v2"] body.v2-fold aside.rail{transition:width .16s ease, margin-right .16s ease, box-shadow .16s;}
@@ -20183,7 +20188,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v473';
+const APP_VER = 'v474';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -41314,6 +41319,44 @@ function gsideAct(a){
   gsidePeek(true, a);
 }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && GSD.peek && !document.getElementById('modalBackdrop')){ gsidePeek(false); } });
+/* a hint at once next to a side menu button: the left menu (folded) – the program's name (and how many new);
+   the right strip – what the button is and what is on it now */
+const GS_INFO = { ntf:'Naujausi pranešimai', inv:'Gautos sąskaitos', cal:'Šiandienos ir artimiausi įrašai', fb:'Pranešk apie klaidą ar pasiūlyk', todo:'Tavo užduočių sąrašas', ai:'Klausk AI asistento' };
+function sideHintText(b){
+  if(b.matches('aside.rail .rail-btn')){
+    const n = b.dataset.label || (b.querySelector('.rail-tip')||{}).textContent || '', k = b.getAttribute('data-badge');
+    return [n, k ? k+' nauj'+(k==='1' ? 'as' : 'i') : ''];
+  }
+  if(b.matches('#gSideTab [data-gsd]')){
+    const k = b.dataset.gsd;
+    if(k==='today'){ const t = (b.dataset.t || b.title || '').split(' · '); return [t[0], t.slice(1).join(' · ')]; }
+    if(k==='open' || k==='lock') return [b.dataset.t || b.title || '', ''];
+    let info = GS_INFO[k] || '';
+    if(k==='ntf'){ const c = typeof NTF!=='undefined' && NTF.list ? NTF.list.filter(x=>!x.read_at).length : 0; info = c ? c+' nauj'+(c===1 ? 'as' : 'i')+' pranešim'+(c===1 ? 'as' : 'ai') : 'Naujų pranešimų nėra'; }
+    if(k==='cal'){ try{ const iso = calISO(new Date()), it = calDayItems(iso), x = calxAll(iso), c = (it.meetings||[]).length + (x.mine||[]).length; info = c ? 'Šiandien įrašų: '+c : 'Šiandien nieko nesuplanuota'; }catch(e){} }
+    return [GS_NAME[k] || b.dataset.t || b.title || k, info];
+  }
+  return [b.dataset.t || b.title || '', ''];
+}
+(function(){
+  let tip = null, cur = null;
+  const SEL = 'body.v2-fold:not(.rail-hover) aside.rail .rail-btn, body.v2-fold:not(.rail-hover) aside.rail .rail-fold, #gSideTab [data-gsd]';
+  const hide = ()=>{ if(cur && cur.dataset.t!=null){ cur.title = cur.dataset.t; delete cur.dataset.t; } cur = null; if(tip) tip.classList.remove('on'); };
+  document.addEventListener('mouseover', e=>{
+    const b = e.target instanceof Element ? e.target.closest(SEL) : null;
+    if(b===cur) return; hide(); if(!b || matchMedia('(hover: none)').matches) return;
+    cur = b; if(b.title){ b.dataset.t = b.title; b.title = ''; }   // no browser tooltip on top of this one
+    const [h, i] = sideHintText(b); if(!h) return;
+    if(!tip){ tip = document.createElement('div'); tip.className = 'side-hint'; tip.setAttribute('role', 'tooltip'); document.body.appendChild(tip); }
+    tip.innerHTML = `<b>${esc(h)}</b>${i ? `<small>${esc(i)}</small>` : ''}`;
+    const r = b.getBoundingClientRect(), right = !!b.closest('#gSideTab');
+    tip.classList.toggle('to-l', right); tip.classList.add('on');
+    const w = tip.offsetWidth, hh = tip.offsetHeight;
+    tip.style.left = Math.round(right ? r.left - w - 10 : r.right + 10)+'px';
+    tip.style.top = Math.round(Math.max(6, Math.min(innerHeight - hh - 6, r.top + r.height/2 - hh/2)))+'px';
+  });
+  document.addEventListener('mouseleave', hide); window.addEventListener('scroll', hide, true); document.addEventListener('pointerdown', hide, true);
+})();
 function gsideCount(){ const n = document.getElementById('gSideN'), k = typeof NTF!=='undefined' && NTF.list ? NTF.list.filter(x=>!x.read_at).length : 0; if(n) n.textContent = k ? (k > 9 ? '9+' : String(k)) : ''; }
 // the page's cards glide to their new places when the panel opens / folds (instead of jumping)
 function gsideFlip(change){
@@ -41646,6 +41689,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 00:15', v:'v474', k:'new', t:'Šoniniuose meniu – užuominos užvedus pelę', f:'Suskleistame kairiame meniu užvedus pelę ant ikonos iškart parodomas programos pavadinimas (ir kiek naujų), dešiniame – kas tai ir kas ten dabar (pranešimų skaičius, šiandienos įrašai, data).' },
   { d:'2026-10-11 23:55', v:'v473', k:'fix', t:'Kairys meniu – kaip dešinys: atsidaro paspaudus, ne užvedus pelę', f:'Suskleistas kairys meniu nebeišsiskleidžia užvedus pelę. Mygtukas › jį išskleidžia virš puslapio, ‹ (arba pasirinkus puslapį, paspaudus šalia, Esc) – suskleidžia; „Užrakinti išskleistą“ palieka nuolat atidarytą.' },
   { d:'2026-10-11 23:30', v:'v472', k:'fix', t:'Time tracker: pradžią ir pabaigą galima keisti laisvai', f:'Laiką galima keisti kaip nori – būtinas tik komentaras. Lieka tik: pabaiga po pradžios, ne ateityje ir pamainos neuždengia viena kitos (parodoma su kuria). Veiklos prisitaiko prie naujų ribų. Taisyti ir ištrinti galima ir senesnes nei 30 d. pamainas. Reikia paleisti supabase/sql/tracker_edit3.sql ir tracker_delete_shift.sql.' },
   { d:'2026-10-11 22:50', v:'v471', k:'fix', t:'Time tracker: keičiant pradžią nebetikrinama pabaiga (ir atvirkščiai)', f:'Keičiant tik pradžios laiką, nebeiššoka pranešimas apie pabaigą (pvz. „Pabaiga negali būti ankstesnė nei paskutinės veiklos pradžia“) – tikrinamas tik keičiamas laikas. Tas pats pataisyta ir duomenų bazėje (tracker_edit3.sql).' },
