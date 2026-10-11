@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-P+qC7l+TxRGxqT3PeNqoa7ZP/hH/B7NeI1e2qtR8E1U=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-mZ81jpdnikXna3+cBOxqVu13d93ArfAqoLD84ztamMw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -3872,6 +3872,7 @@ html body .combo-pop.od-sug .op-g{filter:brightness(1.35);}
 .ct-r input.ip-ok{border-color:var(--ok) !important;box-shadow:0 0 0 2px rgb(80 173 151 / .25);}
 .ct-nmw{display:flex;flex-direction:column;gap:2px;min-width:0;} .ct-nmw input{width:100%;} .ct-warn{color:var(--danger);font-size:11px;display:flex;gap:4px;align-items:center;} .ct-warn svg{width:13px;height:13px;flex:0 0 13px;}
 .ct-bad{border-color:var(--danger) !important;}
+.oc-nm .oc-bad{border-color:var(--danger) !important;}
 .oc-nm{display:flex;flex-direction:column;gap:2px;min-width:0;} .oc-nm input{width:100%;} .oc-nm small{color:var(--text-dim);font-size:11px;}
 .ct-n{display:flex;gap:8px;align-items:center;min-width:0;} .ct-n .op-g{flex:0 0 30px;} .ct-n>span:last-child{display:flex;flex-direction:column;min-width:0;}
 .ct-n b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .ct-n small,.ct-used small{color:var(--text-dim);font-size:11.5px;}
@@ -7192,9 +7193,9 @@ function filteredInvItems(){
     if(invFilter.folder && (it.folder||'—')!==invFilter.folder) return false;
     if(invFilter.brand!=null && invBrand(it)!==invFilter.brand) return false;
     return true;
-  }).sort((a,b)=> GROUP_ORDER.indexOf(a.group)-GROUP_ORDER.indexOf(b.group) || (invBrand(a)||'\uffff').natCmp(invBrand(b)||'\uffff') || a.name.natCmp(b.name));
+  }).sort((a,b)=> GROUP_ORDER.indexOf(a.group)-GROUP_ORDER.indexOf(b.group) || (invBrand(a)||'\uffff').natCmp(invBrand(b)||'\uffff') || itRent(a) - itRent(b) || a.name.natCmp(b.name));
   // searching: the names starting with the letters first (the group / brand order stays among equals)
-  return srchSort(out, invFilter.q, it=>[it.name, it.code]);
+  return srchSort(out, invFilter.q, it=>[it.name, it.code], itRent);
 }
 
 function updateBulkCount(){
@@ -14271,7 +14272,7 @@ function npTree(idx){
   // while searching the items come first (Enter goes to the first item), rinkiniai after them
   const itemsHtml = order.map(k=>{ const folders = byG[k], n = Object.values(folders).reduce((a,x)=>a+x.length,0);
     return `<div class="np-tg ${open(k)?'open':''}"><button class="np-tgh" data-ro-ok data-tg="${npE(k)}" style="--c:${npE(GROUP_COLOR[k]||'#888')}"><i class="np-dot"></i>${npE(GROUP_LABEL[k]||k)} <span class="count-badge">${n}</span><span class="np-car">›</span></button>
-      ${open(k) ? Object.keys(folders).sort((a,b)=>(q ? fRel(a) - fRel(b) : 0) || a.natCmp(b)).map(f=>`<div class="np-tf"><div class="np-tfh">${npE(f)}</div>${folders[f].sort((a,b)=>(q ? itRel(a) - itRel(b) : 0) || a.name.natCmp(b.name)).map(it=>{
+      ${open(k) ? Object.keys(folders).sort((a,b)=>(q ? fRel(a) - fRel(b) : 0) || a.natCmp(b)).map(f=>`<div class="np-tf"><div class="np-tfh">${npE(f)}</div>${folders[f].sort((a,b)=>itRent(a) - itRent(b) || (q ? itRel(a) - itRel(b) : 0) || a.name.natCmp(b.name)).map(it=>{
         const fr = npFree(it.id, sp, idx, null, pr), have = inGrp[it.id]||0, acc = invAcc(it);
         return `<div class="np-ti ${fr.free<0?'bad':fr.free===0?'zero':''}"><span class="np-tin"><b>${npE(it.name)}${fr.inv && !fr.inv.ok ? ` <em class="np-invw" title="${npE(stkInvText(fr.inv)+(fr.inv.inv < fr.inv.wh ? ' – rezervuoti galima tik '+stkFmt(fr.inv.inv) : ''))}">⚠ inv. ${fmt(fr.inv.inv,0)}/${fmt(fr.inv.wh,0)}</em>` : ''}</b><small>${it.code?npE(it.code)+' · ':''}${fr.sub ? 'subnuoma'+(it.pack ? ' · '+npE(it.pack) : '') : `liko <b>${fmt(fr.free,0)}</b> / ${fmt(fr.all,0)}`}${have ? ` · grupėje ${fmt(have,0)}` : ''}${acc.length ? ` · <span class="np-acchint" title="${npE(acc.map(a=>{ const x = getItem(a.id); return (x?x.name:'?')+' × '+a.qty; }).join('\n'))}">🔗 +${acc.length} pried.</span>` : ''}</small></span>
           ${qtyAdd(it.id, 'Pridėti į „'+(g?g.name:'')+'“')}</div>`; }).join('')}</div>`).join('') : ''}</div>`; }).join('');
@@ -14639,7 +14640,7 @@ function invBundles(){ return Array.isArray(STATE.bundles) ? STATE.bundles : [];
 function invPickHtml(q, skip){
   const w = normalizeText(q).split(/\s+/).filter(Boolean);
   if(!w.length) return '<div class="section-sub" style="margin:4px 0;">Įrašyk pavadinimą arba kodą.</div>';
-  const list = srchSort(allItems().filter(it=>!skip.has(String(it.id)) && w.every(x=>normalizeText([it.name, it.code, it.folder, invBrand(it)].join(' ')).includes(x))), q, it=>[it.name, it.code]).slice(0, 30);
+  const list = srchSort(allItems().filter(it=>!skip.has(String(it.id)) && w.every(x=>normalizeText([it.name, it.code, it.folder, invBrand(it)].join(' ')).includes(x))).sort((a, b)=>itRent(a) - itRent(b)), q, it=>[it.name, it.code], itRent).slice(0, 30);
   return list.map(it=>`<button type="button" class="inv-pick" data-pick="${esc(String(it.id))}"><b>${esc(it.name)}</b><small>${esc(GROUP_LABEL[it.group]||'')} · ${esc(it.folder||'')}${it.code?' · '+esc(it.code):''}</small><span>+</span></button>`).join('') || '<div class="section-sub" style="margin:4px 0;">Nieko nerasta.</div>';
 }
 // a list of items with quantities + a search to add more (used by both dialogs)
@@ -14805,7 +14806,7 @@ function iwForm(w){
   $('iwfKinds').querySelectorAll('[data-k]').forEach(b=>b.onclick = ()=>{ $('iwfKind').value = b.dataset.k; });
   // items: search
   $('iwfQ').oninput = ()=>{ const q = normalizeText($('iwfQ').value); if(q.length < 2){ $('iwfRes').innerHTML = ''; return; }
-    const ws = q.split(' ').filter(Boolean), hits = srchSort(allItems().filter(it=>{ const h = normalizeText([it.name, it.code, it.folder].join(' ')); return ws.every(w=>h.includes(w)); }), q, it=>[it.name, it.code]).slice(0, 30);
+    const ws = q.split(' ').filter(Boolean), hits = srchSort(allItems().filter(it=>{ const h = normalizeText([it.name, it.code, it.folder].join(' ')); return ws.every(w=>h.includes(w)); }), q, it=>[it.name, it.code], itRent).slice(0, 30);
     $('iwfRes').innerHTML = hits.length ? hits.map(it=>`<button type="button" class="iw-hit ${D.item_ids.includes(String(it.id)) ? 'on' : ''}" data-it="${esc(String(it.id))}"><b>${esc(it.name)}</b><small>${esc([GROUP_LABEL[it.group], it.folder, it.code].filter(Boolean).join(' · '))}</small></button>`).join('') : '<div class="muted">Nerasta.</div>';
     $('iwfRes').querySelectorAll('[data-it]').forEach(b=>b.onclick = ()=>{ const it = getItem(b.dataset.it); if(!it) return; if(D.scope){ D.scope = ''; D.item_ids = []; D.item_names = []; }
       const i = D.item_ids.indexOf(String(it.id)); if(i>=0){ D.item_ids.splice(i, 1); D.item_names.splice(i, 1); } else { D.item_ids.push(String(it.id)); D.item_names.push(it.name); }
@@ -20166,7 +20167,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v465';
+const APP_VER = 'v466';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -20944,7 +20945,7 @@ function gearPick(ev, [a, b], back){
   const drawG = ()=>{ document.getElementById('gpG').innerHTML = [['', 'Visos'], ...groups.map(g=>[g, GROUP_LABEL[g]||g])].map(([v,l])=>`<button type="button" class="chip ${grp===v?'active':''}" data-gg="${esc(v)}">${esc(l)}</button>`).join(''); };
   const draw = ()=>{
     const q = normalizeText(document.getElementById('gpQ').value);
-    const list = srchSort(items.filter(it=>(!grp || it.group===grp) && (!q || normalizeText([it.name, it.code, it.folder, GROUP_LABEL[it.group]].join(' ')).includes(q))), q, it=>[it.name, it.code]).slice(0, 200);
+    const list = srchSort(items.filter(it=>(!grp || it.group===grp) && (!q || normalizeText([it.name, it.code, it.folder, GROUP_LABEL[it.group]].join(' ')).includes(q))).sort((a, b)=>itRent(a) - itRent(b)), q, it=>[it.name, it.code], itRent).slice(0, 200);
     document.getElementById('gpList').innerHTML = list.map(it=>{ const f = gearFree(idx, it.id, a, b), left = f.free-(mine[it.id]||0), c = chosen.get(String(it.id));
       return `<div class="op-item ${c?'on':''}" data-id="${esc(it.id)}">
         <span class="op-g" style="background:${GROUP_COLOR[it.group]||'#666'}22;color:${GROUP_COLOR[it.group]||'#999'}">${esc(GROUP_ABBR[it.group]||'')}</span>
@@ -21023,8 +21024,8 @@ function gearPlan(start){
   let items = allItems().filter(it=>it.name && (!GP.onlyUsed || used.has(String(it.id))) && (!GP.group || it.group===GP.group) && (!words.length || words.every(w=>normalizeText([it.name, it.code, it.folder].join(' ')).includes(w))));
   const shortOf = it=>days.some(d=>gearUse(idx, String(it.id), d) > stockOf(it));
   if(GP.onlyShort) items = items.filter(shortOf);
-  items.sort((x,y)=>String(GROUP_LABEL[x.group]||'').natCmp(String(GROUP_LABEL[y.group]||'')) || x.name.natCmp(y.name));
-  items = srchSort(items, GP.q, it=>[it.name, it.code]);
+  items.sort((x,y)=>String(GROUP_LABEL[x.group]||'').natCmp(String(GROUP_LABEL[y.group]||'')) || itRent(x) - itRent(y) || x.name.natCmp(y.name));
+  items = srchSort(items, GP.q, it=>[it.name, it.code], itRent);
   const totalShort = allItems().filter(it=>used.has(String(it.id)) && shortOf(it)).length;
   const groups = [...new Set(allItems().map(i=>i.group).filter(Boolean))];
   const dh = d=>{ const x = calParse(d); return `<th class="gp-d ${d===today?'today':''} ${[0,6].includes(x.getDay())?'we':''}"><small>${CAL_DAYS[(x.getDay()+6)%7]}</small><b>${x.getDate()}</b></th>`; };
@@ -29006,10 +29007,13 @@ function srchRank(name, q){
   return n.startsWith(w) ? 0 : n.split(/[\s(),/\-–„“"'.+:;]+/).some(x=>x.startsWith(w)) ? 1 : 2;
 }
 // a found list in that order (stable – what is equal keeps its own order); names(x): the texts to rank by, the best counts
-function srchSort(list, q, names){
+function srchSort(list, q, names, last){
   if(!normalizeText(String(q||'')).trim()) return list;
-  return list.map((x, k)=>({ x, k, r:Math.min(...[].concat(names(x)).map(n=>srchRank(n, q))) })).sort((a, b)=>a.r - b.r || a.k - b.k).map(o=>o.x);
+  return list.map((x, k)=>({ x, k, r:(last && last(x) ? 10 : 0) + Math.min(...[].concat(names(x)).map(n=>srchRank(n, q))) })).sort((a, b)=>a.r - b.r || a.k - b.k).map(o=>o.x);
 }
+// a Sandėlis item with a note in brackets („LA4X (Jurijus)“, „(Luko) 3m Shucko“) is hired in – always at the bottom of its group,
+// and in a search after all our own items
+function itRent(it){ return /\([^()]*[^\s()][^()]*\)/.test(String((it && (it.it || it).name) || '')) ? 1 : 0; }
 // a list already drawn, filtered by hiding rows: the rows put in the same order (back to the first one when the search is empty)
 function srchSortDom(nodes, q, nameOf){
   nodes = [...nodes]; if(!nodes.length) return;
@@ -29048,7 +29052,7 @@ function odRowSuggest(inp, si, ri){
   const rk = x=>x.kind==='item' ? Math.min(srchRank(ctItemName(x.it), q), srchRank(x.it.name, q)) : srchRank(x.kind==='line' ? x.l.name : x.e.name, q);
   const all = [].concat(...order.map((o, k)=>o.map((x, n)=>({ x, k, n, r:rk(x) }))));
   // starts with the letters first; at the same level this section's own first; then the usual order (groups, equipment, services, earlier lines)
-  all.sort((a, b)=>a.r - b.r || (mine(a.x) ? 0 : 1) - (mine(b.x) ? 0 : 1) || a.k - b.k || a.n - b.n);
+  all.sort((a, b)=>(a.x.kind==='item' ? itRent(a.x.it) : 0) - (b.x.kind==='item' ? itRent(b.x.it) : 0) || a.r - b.r || (mine(a.x) ? 0 : 1) - (mine(b.x) ? 0 : 1) || a.k - b.k || a.n - b.n);
   const list = all.slice(0, 14).map(a=>a.x);
   if(!list.length){ if(box) box.remove(); return; }
   if(!box){ box = document.createElement('div'); box.id = 'odSug'; box.className = 'combo-pop od-sug'; document.body.appendChild(box); }
@@ -29151,7 +29155,7 @@ function offerPickItems(si){
     const inGrp = it=>!grp ? true : grp==='sec' ? secGroups.includes(it.group) : it.group===grp;
     const hit = it=>!q || normalizeText([it.name, it.code, it.folder, GROUP_LABEL[it.group]].join(' ')).includes(q);
     const list = items.filter(it=>inGrp(it) && hit(it));
-    if(q) list.sort((a, b)=>srchRank(a.name, q) - srchRank(b.name, q) || (secGroups.includes(a.group) ? 0 : 1) - (secGroups.includes(b.group) ? 0 : 1));
+    list.sort((a, b)=>itRent(a) - itRent(b) || (q ? srchRank(a.name, q) - srchRank(b.name, q) || (secGroups.includes(a.group) ? 0 : 1) - (secGroups.includes(b.group) ? 0 : 1) : 0));
     list.length = Math.min(list.length, 300);
     const cnt = g=>items.filter(it=>(g==='sec' ? secGroups.includes(it.group) : !g || it.group===g) && hit(it)).length;
     const present = GROUP_ORDER.filter(g=>items.some(it=>it.group===g));
@@ -29473,7 +29477,7 @@ function odCompose(row, e){
   const base = String(row.composeBase || e.name || '').replace(/\s*\([^()]*\)\s*$/, '').trim();
   let lines = (row.compose && row.compose.length ? row.compose : (row.parts||[]).map(([id, n])=>({ id:String(id), qty:n }))).map(l=>Object.assign({}, l));
   if(!lines.length) lines = [{ id:'', qty:1 }];
-  const items = allItems().filter(it=>it && it.name).sort((a, b)=>a.name.natCmp(b.name));
+  const items = allItems().filter(it=>it && it.name).sort((a, b)=>itRent(a) - itRent(b) || a.name.natCmp(b.name));
   // whose equipment comes first in the list: the section's (GARSAS → sound), else the group's own category
   const sec = ((OFFER.cur && OFFER.cur.data.sections) || []).find(x=>x.rows.includes(row));
   const own = (sec && offerSecGroups(sec.title).length) ? offerSecGroups(sec.title) : ctCatGroups(e.cat);
@@ -29492,19 +29496,25 @@ function odCompose(row, e){
   const draw = ()=>{
     $('ocT').innerHTML = `<div class="oc-h"><span>Įranga</span><span>Kiekis</span><span>Kaina vnt.</span><span>Suma</span><span></span></div>` + lines.map((l, i)=>{ const it = l.id ? getItem(l.id) : null;
       const on = it ? ctItemName(it) : '';
-      return `<div class="oc-r" data-i="${i}"><span class="oc-nm"><input type="text" autocomplete="off" data-oc="name" value="${odE(it ? on : l.name||'')}" placeholder="Pradėk rašyti pavadinimą…">${it && on!==it.name ? `<small>sandėlyje „${odE(it.name)}“ · pavadinimas pasiūlymui – Įranga / Paslaugos</small>` : ''}</span>
+      return `<div class="oc-r" data-i="${i}"><span class="oc-nm"><input type="text" autocomplete="off" data-oc="name" class="${!it && l.name ? 'oc-bad' : ''}" value="${odE(it ? on : l.name||'')}" placeholder="Pradėk rašyti pavadinimą…">${it && on!==it.name ? `<small>sandėlyje „${odE(it.name)}“ · pavadinimas pasiūlymui – Įranga / Paslaugos</small>` : ''}</span>
         <input type="number" min="0" step="1" data-oc="qty" value="${odE(String(l.qty??1))}">
         <input type="text" inputmode="decimal" data-oc="price" value="${l.price!=null && l.price!=='' ? odE(offerPlain(offerNum(l.price))) : ''}" placeholder="${it ? odE(offerPlain(offerNum(ctItemPrice(it)))) : '—'}">
         <span class="oc-sum">${it ? offerMoney(offerNum(l.qty)*priceOf(l)) : ''}</span><button type="button" class="icon-btn" data-ocx="${i}" title="Pašalinti">✕</button></div>`; }).join('');
     $('ocT').querySelectorAll('.oc-r').forEach(rw=>{ const l = lines[+rw.dataset.i];
       const ni = rw.querySelector('[data-oc="name"]');
       const pick = it=>{ ocSugClose(); if(it){ l.id = String(it.id); delete l.name; } else { l.id = ''; l.name = ni.value.trim(); toast('Tokios įrangos sandėlyje nerasta – pasirink iš sąrašo.'); } draw(); };
-      ni.addEventListener('input', ()=>ocSug(ni, items, own, pick)); ni.addEventListener('focus', ()=>{ if(ni.value.trim() && !l.id) ocSug(ni, items, own, pick); });
+      // typing again drops the earlier choice at once (the brackets never show an item the field no longer says)
+      ni.addEventListener('input', ()=>{ ni.classList.remove('oc-bad');
+        if(l.id){ const it = getItem(l.id), v = normalizeText(ni.value.trim()); if(!it || (v!==normalizeText(it.name) && v!==normalizeText(ctItemName(it)))){ l.id = ''; rw.querySelector('.oc-sum').textContent = ''; const h = rw.querySelector('.oc-nm small'); if(h) h.remove(); } }
+        if(!l.id) l.name = ni.value.trim();
+        prev(); ocSug(ni, items, own, pick); }); ni.addEventListener('focus', ()=>{ if(ni.value.trim() && !l.id) ocSug(ni, items, own, pick); });
       ni.addEventListener('keydown', ev=>ocSugKey(ev, ni));
-      // leaving the field takes the best match (like Enter); a click in the list does not leave it
+      // leaving the field: only the exact name (or the only item found) is taken – never just the first one in the list
       ni.addEventListener('blur', ()=>{ const b = document.getElementById('ocSug'); if(b && b._inp===ni) ocSugClose();
-        const v = normalizeText(ni.value.trim()), cur = l.id ? getItem(l.id) : null; if(cur && (normalizeText(cur.name)===v || normalizeText(ctItemName(cur))===v)) return; if(!v){ if(l.id || l.name){ l.id = ''; delete l.name; draw(); } return; }
-        pick(items.find(x=>normalizeText(x.name)===v) || items.find(x=>normalizeText(ctItemName(x))===v) || ocSugList(items, own, ni.value)[0]); });
+        const v = normalizeText(ni.value.trim()); if(l.id || !v) return;
+        const all = ocSugList(items, own, ni.value), it = items.find(x=>normalizeText(x.name)===v) || items.find(x=>normalizeText(ctItemName(x))===v) || (all.length===1 ? all[0] : null);
+        if(it){ pick(it); return; }
+        ni.classList.add('oc-bad'); ni.title = all.length ? 'Pasirink daiktą iš sąrašo' : 'Tokios įrangos sandėlyje nėra'; });
       rw.querySelector('[data-oc="qty"]').addEventListener('input', ev=>{ l.qty = ev.target.value; rw.querySelector('.oc-sum').textContent = l.id ? offerMoney(offerNum(l.qty)*priceOf(l)) : ''; prev(); });
       rw.querySelector('[data-oc="price"]').addEventListener('input', ev=>{ l.price = ev.target.value.trim(); rw.querySelector('.oc-sum').textContent = l.id ? offerMoney(offerNum(l.qty)*priceOf(l)) : ''; prev(); });
     });
@@ -29515,6 +29525,8 @@ function odCompose(row, e){
   $('ocAdd').onclick = ()=>{ lines.push({ id:'', qty:1 }); draw(); const ins = $('ocT').querySelectorAll('[data-oc="name"]'); ins[ins.length-1].focus(); };
   $('ocX').onclick = $('ocNo').onclick = ()=>{ ocSugClose(); closeModal(); };
   $('ocOk').onclick = ()=>{ ocSugClose();
+    const loose = lines.find(l=>!l.id && String(l.name||'').trim());
+    if(loose){ toast('„'+loose.name+'“ – pasirink daiktą iš sąrašo (arba ištrink eilutę).'); const el = $('ocT').querySelector('.oc-bad'); if(el) el.focus(); return; }
     const ok = lines.filter(l=>l.id && offerNum(l.qty) > 0);
     if(!ok.length){ toast('Pridėk bent vieną įrangą su kiekiu.'); return; }
     row.composeBase = base; row.compose = ok.map(l=>({ id:l.id, qty:offerNum(l.qty), ...(l.price!=null && l.price!=='' ? { price:offerNum(l.price) } : {}) }));
@@ -29529,24 +29541,25 @@ function ocSugList(items, own, val){
   const w = normalizeText(String(val||'')).trim().split(/\s+/).filter(Boolean); if(!w.length) return [];
   return items.filter(it=>{ const t = normalizeText([it.name, ctItemName(it), it.code, it.folder].join(' ')); return w.every(x=>t.includes(x)); })
     .map(it=>({ it, r:Math.min(srchRank(it.name, val), srchRank(ctItemName(it), val)), m:own.includes(it.group) ? 0 : 1 }))
-    .sort((a, b)=>a.r - b.r || a.m - b.m || a.it.name.natCmp(b.it.name)).slice(0, 40).map(x=>x.it);
+    .sort((a, b)=>itRent(a.it) - itRent(b.it) || a.r - b.r || a.m - b.m || a.it.name.natCmp(b.it.name)).slice(0, 40).map(x=>x.it);
 }
 function ocSug(inp, items, own, pick){
   const list = ocSugList(items, own, inp.value); let box = document.getElementById('ocSug');
   if(!list.length){ ocSugClose(); return; }
   if(!box){ box = document.createElement('div'); box.id = 'ocSug'; box.className = 'combo-pop od-sug'; document.body.appendChild(box); }
-  box._inp = inp; box._idx = -1; box._pick = k=>pick(list[k]);
+  box._inp = inp; box._idx = 0; box._pick = k=>pick(list[k]);
   const r = inp.getBoundingClientRect();
   Object.assign(box.style, { display:'block', left:Math.round(r.left)+'px', top:Math.round(r.bottom+3)+'px', minWidth:Math.max(300, r.width)+'px', maxHeight:Math.max(160, innerHeight - r.bottom - 16)/appZ()+'px' });
   box.innerHTML = list.map((it, k)=>`<button type="button" data-k="${k}"><span class="op-g" style="background:${GROUP_COLOR[it.group]||'#666'}22;color:${GROUP_COLOR[it.group]||'#999'}">${odE(GROUP_ABBR[it.group]||'')}</span><span><b>${odE(ctItemName(it))}</b><small>${odE([ctItemName(it)!==it.name ? 'sandėlyje „'+it.name+'“' : '', it.folder, it.code, 'sandėlyje '+(+it.qty||0)+' vnt.'].filter(Boolean).join(' · '))}</small></span></button>`).join('');
   box.querySelectorAll('[data-k]').forEach(b=>b.onmousedown = ev=>{ ev.preventDefault(); box._pick(+b.dataset.k); });
+  const f = box.querySelector('[data-k]'); if(f) f.classList.add('on');   // Enter takes the marked one
 }
 function ocSugClose(){ const b = document.getElementById('ocSug'); if(b) b.remove(); }
 function ocSugKey(e, inp){
   const box = document.getElementById('ocSug'); if(!box || box._inp!==inp) return;
   const bs = box.querySelectorAll('[data-k]');
   if(e.key==='ArrowDown' || e.key==='ArrowUp'){ e.preventDefault(); box._idx = (box._idx + (e.key==='ArrowDown' ? 1 : -1) + bs.length) % bs.length; bs.forEach((b, k)=>b.classList.toggle('on', k===box._idx)); bs[box._idx].scrollIntoView({ block:'nearest' }); }
-  else if(e.key==='Enter'){ e.preventDefault(); box._pick(box._idx >= 0 ? box._idx : 0); }
+  else if(e.key==='Enter'){ e.preventDefault(); box._pick(Math.max(0, box._idx)); }
   else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); ocSugClose(); }
 }
 // the Sandėlis items an offer uses: its rows from Sandėlis and what its groups are made of
@@ -29611,7 +29624,7 @@ function ctBody(){
   const ed = canEdit('offers'), ro = ed ? '' : 'disabled', money = v=>ctHasPrice(v) ? offerMoney(offerNum(v)) : '—';
   if(CT.tab==='items'){
     const items = allItems().filter(it=>it.name), present = GROUP_ORDER.filter(g=>items.some(it=>it.group===g));
-    const list = items.filter(it=>(!CT.grp || it.group===CT.grp) && ctMatch([it.name, ctItemName(it), it.code, it.folder].join(' '))).sort((a,b)=>ctRk(a.name, ctItemName(a)) - ctRk(b.name, ctItemName(b)) || a.name.natCmp(b.name));
+    const list = items.filter(it=>(!CT.grp || it.group===CT.grp) && ctMatch([it.name, ctItemName(it), it.code, it.folder].join(' '))).sort((a,b)=>itRent(a) - itRent(b) || ctRk(a.name, ctItemName(a)) - ctRk(b.name, ctItemName(b)) || a.name.natCmp(b.name));
     box.innerHTML = `<div class="card"><div class="chipbar" style="margin-bottom:8px;"><button class="chip ${!CT.grp?'active':''}" data-ctg="">Visos</button>${present.map(g=>`<button class="chip small-chip ${CT.grp===g?'active':''}" data-ctg="${g}">${odE(GROUP_LABEL[g]||g)}</button>`).join('')}</div>
       <div class="ct-tbl"><div class="ct-r ct-h"><span>Sandėlyje</span><span>Pavadinimas pasiūlyme</span><span>Vnt.</span><span>Kaina, €</span></div>
       ${list.slice(0, 300).map(it=>{ const e = ctIndex().item[String(it.id)] || {}, sp = IP.map[String(it.id)];
@@ -29752,7 +29765,7 @@ function ctGroupModal(g){
       q.addEventListener('input', ()=>{ const w = normalizeText(q.value).split(/\s+/).filter(Boolean); if(!w.length){ res.innerHTML = ''; return; }
         const own = ctCatGroups((document.getElementById('cgCat')||{}).value);
         const hit = allItems().filter(i=>i.name && w.every(t=>normalizeText([i.name, i.code, i.folder].join(' ')).includes(t)))
-          .sort((a, b)=>srchRank(a.name, w[0]) - srchRank(b.name, w[0]) || (own.includes(a.group) ? 0 : 1) - (own.includes(b.group) ? 0 : 1) || a.name.natCmp(b.name)).slice(0, 8);
+          .sort((a, b)=>itRent(a) - itRent(b) || srchRank(a.name, w[0]) - srchRank(b.name, w[0]) || (own.includes(a.group) ? 0 : 1) - (own.includes(b.group) ? 0 : 1) || a.name.natCmp(b.name)).slice(0, 8);
         res.innerHTML = hit.map(i=>`<button type="button" data-pick="${odE(i.id)}"><b>${odE(i.name)}</b><small>${odE(i.folder||'')}${i.code?' · '+odE(i.code):''}</small></button>`).join('') || '<div class="section-sub" style="margin:4px;">Nieko nerasta.</div>';
         res.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ set(String(b.dataset.pick)); draw(); }); });
       q.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); const b = res.querySelector('[data-pick]'); if(b) b.click(); } }); };
@@ -29803,7 +29816,7 @@ function ctGroupModal(g){
         if(!w.length){ res.innerHTML = ''; return; }
         const own = ctCatGroups((document.getElementById('cgCat')||{}).value);
         const hit = allItems().filter(it=>it.name && w.every(t=>normalizeText([it.name, it.code, it.folder].join(' ')).includes(t)))
-          .sort((a, b)=>srchRank(a.name, w[0]) - srchRank(b.name, w[0]) || (own.includes(a.group) ? 0 : 1) - (own.includes(b.group) ? 0 : 1) || a.name.natCmp(b.name)).slice(0, 8);
+          .sort((a, b)=>itRent(a) - itRent(b) || srchRank(a.name, w[0]) - srchRank(b.name, w[0]) || (own.includes(a.group) ? 0 : 1) - (own.includes(b.group) ? 0 : 1) || a.name.natCmp(b.name)).slice(0, 8);
         res.innerHTML = hit.map(it=>`<button type="button" data-pick="${odE(it.id)}"><b>${odE(it.name)}</b><small>${odE(it.folder||'')}${it.code?' · '+odE(it.code):''}</small></button>`).join('') || '<div class="section-sub" style="margin:4px;">Nieko nerasta.</div>';
         res.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ const id = String(b.dataset.pick), p = v.parts.find(y=>String(y.itemId)===id);
           if(p) p.qty = offerNum(p.qty) + 1; else v.parts.push({ itemId:id, qty:1, name:(getItem(id)||{}).name || '' });
@@ -36931,8 +36944,8 @@ function grStockPanel(box){
   let rows = all.filter(r=>(!GRS.group || r.it.group===GRS.group) && (!words.length || words.every(w=>normalizeText([r.it.name, r.it.code, r.it.folder, GROUP_LABEL[r.it.group]].join(' ')).includes(w))));
   if(GRS.only==='busy') rows = rows.filter(r=>r.busy > 0 || r.out > 0);
   if(GRS.only==='short') rows = rows.filter(r=>r.free < 0);
-  rows.sort((x,y)=>String(GROUP_LABEL[x.it.group]||'').natCmp(String(GROUP_LABEL[y.it.group]||'')) || x.it.name.natCmp(y.it.name));
-  rows = srchSort(rows, GRS.q, r=>[r.it.name, r.it.code]);
+  rows.sort((x,y)=>String(GROUP_LABEL[x.it.group]||'').natCmp(String(GROUP_LABEL[y.it.group]||'')) || itRent(x.it) - itRent(y.it) || x.it.name.natCmp(y.it.name));
+  rows = srchSort(rows, GRS.q, r=>[r.it.name, r.it.code], r=>itRent(r.it));
   const capped = gearDaysOf(GRS.from, GRS.to, 400).length > days.length;
   const today = calISO(new Date()), wk = (()=>{ const d = new Date(); const m = new Date(d); m.setDate(d.getDate() - ((d.getDay()+6)%7)); return [calISO(m), lmDay(calISO(m), 6)]; })();
   const quick = [['Šiandien', today, today], ['Rytoj', lmDay(today,1), lmDay(today,1)], ['Ši savaitė', wk[0], wk[1]], ['7 d.', today, lmDay(today,6)], ['14 d.', today, lmDay(today,13)], ['30 d.', today, lmDay(today,29)]];
@@ -41581,6 +41594,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 20:50', v:'v466', k:'fix', t:'„()“ lentelė nebeima pirmo rasto daikto; nuomojami daiktai – apačioje', f:'Sudėtinės grupės lentelėje daiktas įsideda tik pasirinkus iš sąrašo (Enter – pažymėtas pirmas), įrašius tikslų pavadinimą arba kai randamas vienintelis; kitaip laukelis raudonas ir „Gerai“ neleidžia išsaugoti. Pradėjus taisyti tekstą, senas pasirinkimas iškart dingsta iš skliaustelių. Sandėlio daiktai su (…) pavadinime (nuoma, pvz. „LA4X (Jurijus)“) visada savo grupės apačioje, o paieškose – po visų savų daiktų.' },
   { d:'2026-10-11 20:15', v:'v465', k:'fix', t:'„()“ lentelė: matosi, kuo daiktas vadinasi pasiūlyme', f:'Lentelėje ir sąraše rodomas pavadinimas, kuris bus skliausteliuose, o jei jis kitoks – ir sandėlio pavadinimas. Įranga / Paslaugos → Įranga įspėja, kai pavadinimas pasiūlyme yra kito sandėlio daikto pavadinimas (pvz. LA12X → „125A 3m“).' },
   { d:'2026-10-11 19:45', v:'v464', k:'fix', t:'Paieška visur: pirmiausia tai, kas prasideda įrašytomis raidėmis', f:'Ta pati tvarka kaip pasiūlymuose dabar ir Sandėlyje (sąrašas, priedai, rinkiniai), Įrangos plane ir užimtume, įrangos pasirinkime renginyje, Atliktuose darbuose, Inventorizacijoje, Projektų sąraše, Žmonėse, Komandoje, Admin vartotojuose ir narių pasirinkime (susitikimas, kanalai, renginio žmonės): pirma – pavadinimas / vardas ar pavardė prasideda raidėmis, tada – žodis prasideda, tada – viduryje.' },
   { d:'2026-10-11 19:10', v:'v463', k:'fix', t:'Pasiūlymai: paieška pirmiausia rodo tai, kas prasideda įrašytomis raidėmis', f:'Visose pasiūlymų paieškose (eilutė, „()“ lentelė, Iš sandėlio, Grupė / paslauga, Įranga / Paslaugos, klientai, pozicijos) pirmiausia rodoma tai, kieno pavadinimas prasideda įrašytomis raidėmis, tada – kur tokiomis raidėmis prasideda žodis, ir tik tada – kur jos yra viduryje. Tame pačiame lygyje pirmi – tos skilties (pvz. GARSAS → garso) daiktai. „()“ lentelėje – naujas įrangos sąrašas po laukeliu.' },
