@@ -16,7 +16,7 @@ const { spawn } = require('child_process');
 
 // the version of this program; EventSolutions-Setup.json / EventSolutions-Mac-<arch>.json
 // in Supabase Storage (bucket "desktop") say which is the newest
-const DESK_VERSION = 9;
+const DESK_VERSION = 10;
 const MAC = process.platform === 'darwin';
 // what this computer downloads when it updates itself
 const PKG = MAC ? { manifest: `EventSolutions-Mac-${process.arch}.json`, file: `EventSolutions-Mac-${process.arch}.zip` }
@@ -116,6 +116,43 @@ function keys(wc) {
   });
 }
 
+// the usual right-click menu (an app window has none of its own): copy / paste / cut / select all,
+// spelling suggestions, links and pictures
+function contextMenu(wc) {
+  wc.on('context-menu', (_e, p) => {
+    const t = [];
+    if (p.misspelledWord && p.dictionarySuggestions && p.dictionarySuggestions.length) {
+      p.dictionarySuggestions.slice(0, 5).forEach((w) => t.push({ label: w, click: () => wc.replaceMisspelling(w) }));
+      t.push({ type: 'separator' });
+    }
+    if (p.isEditable) {
+      t.push({ label: 'Atšaukti', role: 'undo', enabled: p.editFlags.canUndo },
+        { label: 'Pakartoti', role: 'redo', enabled: p.editFlags.canRedo },
+        { type: 'separator' },
+        { label: 'Iškirpti', role: 'cut', enabled: p.editFlags.canCut },
+        { label: 'Kopijuoti', role: 'copy', enabled: p.editFlags.canCopy },
+        { label: 'Įklijuoti', role: 'paste', enabled: p.editFlags.canPaste },
+        { label: 'Įklijuoti be formato', role: 'pasteAndMatchStyle', enabled: p.editFlags.canPaste },
+        { type: 'separator' },
+        { label: 'Pažymėti viską', role: 'selectAll' });
+    } else if (p.selectionText && p.selectionText.trim()) {
+      t.push({ label: 'Kopijuoti', role: 'copy' });
+    }
+    if (p.linkURL && /^https?:/i.test(p.linkURL)) {
+      if (t.length) t.push({ type: 'separator' });
+      t.push({ label: 'Atidaryti nuorodą naršyklėje', click: () => shell.openExternal(p.linkURL) },
+        { label: 'Kopijuoti nuorodą', click: () => require('electron').clipboard.writeText(p.linkURL) });
+    }
+    if (p.mediaType === 'image' && p.srcURL) {
+      if (t.length) t.push({ type: 'separator' });
+      t.push({ label: 'Kopijuoti paveikslėlį', click: () => wc.copyImageAt(p.x, p.y) },
+        { label: 'Išsaugoti paveikslėlį…', click: () => wc.downloadURL(p.srcURL) });
+    }
+    if (!t.length) t.push({ label: 'Pažymėti viską', role: 'selectAll' });
+    Menu.buildFromTemplate(t).popup({ window: BrowserWindow.fromWebContents(wc) || undefined });
+  });
+}
+
 function createWindow(show) {
   win = new BrowserWindow({
     ...savedBounds(),
@@ -132,6 +169,7 @@ function createWindow(show) {
   if (settings.maximized) win.maximize();
   guard(win.webContents);
   keys(win.webContents);
+  contextMenu(win.webContents);
   win.once('ready-to-show', () => { if (show || !startHidden) win.show(); });
   win.webContents.on('render-process-gone', () => { setTimeout(() => { if (win && !win.isDestroyed()) win.reload(); }, 1000); });
   win.on('focus', () => win.flashFrame(false));

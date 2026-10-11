@@ -5,7 +5,7 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v447';
+const CACHE = 'es-app-v448';
 const SHELL = ['./vendor/supabase-2.117.2.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png', './fonts/Barlow-Regular.woff2', './fonts/Barlow-Medium.woff2'];
 
 // Cloudflare Pages redirects /index.html to /: a redirected response can't answer a page load (the browser shows
@@ -17,11 +17,46 @@ function plain(res){
 function savePage(c){
   return fetch('./', { cache:'reload' }).then(plain).then(res=>{ if(res && res.ok) return c.put('./index.html', res); });
 }
+// Staged releases (sql/app_release.sql): a new version reaches the Super Admin first. Everyone else keeps the copy
+// of the page they have until the Super Admin presses „Išleisti visiems“ – the open app then asks for the new page
+// ('refresh-page'). The page tells this worker who is signed in (es-meta → /__meta: { super }).
+const META = 'es-meta';
+const SB_URL = 'https://yakmikxkcudwloxruhvx.supabase.co', SB_KEY = 'sb_publishable_OYVSooEWr-aPd__NPM8G3g_MQrSAXbI';
+const vnum = v=>+((String(v||'').match(/\d+/)||[0])[0]);
+function metaGet(){ return caches.open(META).then(c=>c.match('/__meta')).then(r=>r ? r.json() : {}).catch(()=>({})); }
+function metaSet(patch){ return caches.open(META).then(c=>c.match('/__meta').then(r=>r ? r.json() : {}).catch(()=>({})).then(m=>c.put('/__meta', new Response(JSON.stringify(Object.assign(m, patch)), { headers:{ 'Content-Type':'application/json' } })))).catch(()=>{}); }
+function released(){
+  const ctl = new AbortController(), t = setTimeout(()=>ctl.abort(), 6000);
+  return fetch(SB_URL+'/rest/v1/app_release?select=version&id=eq.1', { headers:{ apikey:SB_KEY, Authorization:'Bearer '+SB_KEY }, signal:ctl.signal, cache:'no-store' })
+    .then(r=>r.ok ? r.json() : null).then(a=>a && a[0] ? a[0].version : null).catch(()=>null).finally(()=>clearTimeout(t));
+}
+// the page this device already has (from the previous version's cache)
+function oldPage(){
+  return caches.keys().then(keys=>Promise.all(keys.filter(k=>/^es-app-/.test(k) && k!==CACHE).map(k=>caches.open(k).then(c=>c.match('./index.html'))))).then(l=>l.find(Boolean) || null).catch(()=>null);
+}
+async function pageFor(c){
+  const m = await metaGet();
+  if(!m.super){
+    const rel = await released();
+    if(rel && vnum(rel) < vnum(CACHE)){
+      const old = await oldPage();
+      if(old){ await c.put('./index.html', await plain(old)); await metaSet({ gated:CACHE }); return; }
+    }
+  }
+  await metaSet({ gated:'' });
+  return savePage(c);
+}
 self.addEventListener('install', e=>{
-  e.waitUntil(caches.open(CACHE).then(c=>Promise.all([savePage(c), c.addAll(SHELL.map(u=>new Request(u, { cache:'reload' })))])).then(()=>self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c=>Promise.all([pageFor(c), c.addAll(SHELL.map(u=>new Request(u, { cache:'reload' })))])).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate', e=>{
-  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE && k!==META).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+});
+// the version was released to everyone (or this is the Super Admin): take the newest page now
+self.addEventListener('message', e=>{
+  const d = e.data || {};
+  if(d.type!=='refresh-page') return;
+  e.waitUntil(caches.open(CACHE).then(c=>savePage(c)).then(()=>metaSet({ gated:'' })).then(()=>{ if(e.source) e.source.postMessage({ type:'page-refreshed' }); }).catch(()=>{}));
 });
 self.addEventListener('fetch', e=>{
   const req = e.request;

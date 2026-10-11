@@ -1,6 +1,6 @@
 'use strict';
 // What the page sees of the desktop app: window.esDesktop (only on the app's own site)
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, webFrame } = require('electron');
 
 const argOf = (k) => { const a = process.argv.find((x) => x.startsWith(`--${k}=`)); return a ? a.slice(k.length + 3) : ''; };
 const ORIGIN = argOf('es-origin') || 'https://app.eventsolutions.lt';
@@ -22,6 +22,8 @@ if (location.origin === ORIGIN) {
       try { id = await cb(r.sources); } catch {}
       ipcRenderer.send('es:picked', { reqId: r.reqId, id: typeof id === 'string' ? id : null });
     })),
+    // the whole window's size (top menu → Dydis → Visa programa), 30–130 %
+    setZoom: (z) => { const n = Number(z); if (n >= 0.3 && n <= 1.3) webFrame.setZoomFactor(n); },
     onUpdateProgress: (cb) => ipcRenderer.on('es:update-progress', (_e, p) => { try { cb({ got: Number(p.got) || 0, size: Number(p.size) || 0 }); } catch {} }),
   });
 }

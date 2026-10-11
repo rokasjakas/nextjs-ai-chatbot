@@ -122,14 +122,21 @@ function leadDays(v: Vehicle, key: DocKey): number {
   return typeof n === "number" && n >= 0 ? n : v.lead_days;
 }
 
+// The chosen hours that have already come today. A run that was missed (the hourly job did not
+// get through at 9:00) is caught up by the next run the same day – the reminder is not lost for days.
+function hoursSoFar(v: Vehicle, hour: number): number[] {
+  return reminderHours(v).filter((h) => h <= hour);
+}
+
 function isDue(v: Vehicle, doc: DocStatus, today: string, hour: number): boolean {
   if (!doc.until || doc.days === null || doc.days > leadDays(v, doc.key)) return false;
-  if (!reminderHours(v).includes(hour)) return false;
+  const passed = hoursSoFar(v, hour);
+  if (!passed.length) return false;
   const last = v.last_sent?.[doc.key];
   // A new expiry date (document renewed) starts the reminders over.
   if (!last || last.until !== doc.until) return true;
-  // Same day: once for every chosen hour.
-  if (last.date === today) return !(last.hours ?? []).includes(hour);
+  // Same day: once for every chosen hour that has come (a missed one is sent once, late).
+  if (last.date === today) return passed.some((h) => !(last.hours ?? []).includes(h));
   return daysBetween(last.date, today) >= Math.max(1, v.frequency_days);
 }
 
@@ -139,7 +146,7 @@ function markSent(v: Vehicle, doc: DocStatus, today: string, hour: number): Sent
   return {
     date: today,
     until: doc.until as string,
-    hours: [...(sameDay ? last.hours ?? [] : []), hour],
+    hours: [...new Set([...(sameDay ? last.hours ?? [] : []), ...hoursSoFar(v, hour)])],
   };
 }
 
