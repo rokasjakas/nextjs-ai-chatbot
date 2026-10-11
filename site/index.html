@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-NQPP2KacM8SWGVY9/ZP6hZkM5XBTuvTCvEWCaSEdN5s=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-4IlOlABacyd+qgn7geG+wYxvc+Bv8ebu6hpDcgOc+Zo=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20155,7 +20155,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v458';
+const APP_VER = 'v459';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26246,7 +26246,8 @@ async function teamFillImages(root){
   root.querySelectorAll('img[data-bucket][data-path], video[data-bucket][data-path]:not([src])').forEach(i=>{ (groups[i.dataset.bucket] = groups[i.dataset.bucket]||[]).push(i); });
   for(const b of Object.keys(groups)){
     const imgs = groups[b], urls = await sbSignedUrls(b, imgs.map(i=>i.dataset.path));
-    imgs.forEach((img,i)=>{ if(urls[i]) img.src = img.tagName==='VIDEO' ? urls[i]+'#t=0.1' : urls[i]; });   // a video: its first frame shows
+    imgs.forEach((img,i)=>{ if(!urls[i]) return; const want = img.tagName==='VIDEO' ? urls[i]+'#t=0.1' : urls[i];   // a video: its first frame shows
+      if(img.getAttribute('src')!==want) img.src = want; });   // the same address is not set again (no reload / flash)
   }
 }
 function teamAvatar(p, size, withDot){
@@ -32238,20 +32239,28 @@ function chatStick(box, on){
 function chatPatch(box, html){
   const tpl = document.createElement('template'); tpl.innerHTML = html;
   const old = new Map(); box.querySelectorAll(':scope > .sk-msg[data-mid]').forEach(el=>{ if(el._h) old.set(el.dataset.mid, el); });
-  [...tpl.content.children].forEach(nw=>{
-    if(!nw.matches('.sk-msg[data-mid]')) return;
+  const keep = new Set();
+  const final = [...tpl.content.childNodes].map(nw=>{
+    if(nw.nodeType!==1 || !nw.matches('.sk-msg[data-mid]')) return nw;
     const h = nw.outerHTML, o = old.get(nw.dataset.mid);
-    if(o && o._h===h){ old.delete(nw.dataset.mid); nw.replaceWith(o); }
-    else {
-      nw._h = h;
-      // a changed message (a reaction, an edit …) keeps its loaded video (still playing) and photos – they are moved, not reloaded
-      if(o){
-        nw.querySelectorAll('video[data-path]').forEach(v=>{ const ov = [...o.querySelectorAll('video[data-path]')].find(x=>x.dataset.path===v.dataset.path && x.getAttribute('src')); if(ov) v.replaceWith(ov); });
-        nw.querySelectorAll('img[data-path]').forEach(i=>{ const oi = [...o.querySelectorAll('img[data-path]')].find(x=>x.dataset.path===i.dataset.path && x.getAttribute('src')); if(oi && !i.getAttribute('src')) i.setAttribute('src', oi.getAttribute('src')); });
-      }
+    if(o && o._h===h){ old.delete(nw.dataset.mid); keep.add(o); return o; }
+    nw._h = h;
+    // a changed message (a reaction, an edit …) keeps its loaded video and photos
+    if(o){
+      nw.querySelectorAll('video[data-path]').forEach(v=>{ const ov = [...o.querySelectorAll('video[data-path]')].find(x=>x.dataset.path===v.dataset.path && x.getAttribute('src')); if(ov){ v.replaceWith(ov); } });
+      nw.querySelectorAll('img[data-path]').forEach(i=>{ const oi = [...o.querySelectorAll('img[data-path]')].find(x=>x.dataset.path===i.dataset.path && x.getAttribute('src')); if(oi && !i.getAttribute('src')) i.setAttribute('src', oi.getAttribute('src')); });
     }
+    return nw;
   });
-  box.replaceChildren(...tpl.content.childNodes);
+  // the messages that did not change are never taken out of the page (taking a video or a photo out and putting it
+  // back makes the browser load / draw it again – the white circle and the flash): the rest is removed / put around them
+  [...box.childNodes].forEach(n=>{ if(!keep.has(n)) box.removeChild(n); });
+  let cur = box.firstChild;
+  for(const node of final){
+    if(node===cur){ cur = cur.nextSibling; continue; }
+    box.insertBefore(node, cur);
+  }
+  while(cur){ const n = cur.nextSibling; box.removeChild(cur); cur = n; }
 }
 function chatBindMsgs(box){
   chatBindReactions(box);
@@ -41466,6 +41475,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 17:05', v:'v459', k:'fix', t:'Chatas: parašius žinutę video ir nuotraukos nebemirksi', f:'Parašius ar gavus žinutę, kanale esantys video ir nuotraukos nebeišimami iš puslapio ir nededami atgal (dėl to video rodydavo baltą krovimosi ratuką, o nuotraukos – trumpą „artefaktą“). Nepakitusios žinutės lieka visiškai nepaliestos, pridedama tik nauja.' },
   { d:'2026-10-11 16:45', v:'v458', k:'fix', t:'Chatas atsidaro iškart', f:'Chatas nebelaukia serverio: pokalbių sąrašas, nariai, paskutinės kiekvieno pokalbio žinutės ir nuotraukų adresai laikomi šiame įrenginyje, todėl atidarius chatą ar kanalą (ir po programos perkrovimo) viskas rodoma iš karto, o naujienos atsisiunčia fone ir pasikeičia nepastebimai. Nuotraukos ir video, kurie jau buvo matyti, rodomi be laukimo. Atsijungus ši kopija iš įrenginio ištrinama.' },
   { d:'2026-10-11 16:25', v:'v457', k:'fix', t:'Chatas: video ir nuotraukos nebeperkraunami', f:'Rašant ar gavus žinutę kanale esantys video ir nuotraukos nebeperkraunami (video nebepradeda krautis iš naujo ir nesumažėja iki pilko rėmelio) – net jei pati žinutė pasikeičia (reakcija, taisymas), jos video ir nuotraukos paliekami tie patys.' },
   { d:'2026-10-11 16:10', v:'v456', k:'fix', t:'Chatas: atidarius kanalą rodoma susirašinėjimo apačia', f:'Atidarius bet kurį kanalą ar pokalbį iškart rodoma pati apačia (naujausios žinutės) ir ji išlieka, kol kraunasi nuotraukos, video ar prisegtų žinučių juosta – nebenušoka į atsitiktinę vietą. Paslinkus aukštyn, vieta nebekeičiama; nuslinkus iki apačios – vėl laikoma apačia.' },
