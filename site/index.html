@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bu1tGHrhBLCBrzAPMI2u1F3yy6opzi0F+IUDdQp3th0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-ViSAvzNrbn07zBMBxkmIsg8a71c90TsxBMnd2LpABdM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -4969,6 +4969,7 @@ body .tabpanel.xg-panel.ev-full{padding-top:calc(10px + env(safe-area-inset-top,
 @media (max-width:640px){
   .veh-pop-bd{padding-top:env(safe-area-inset-top,0px) !important;}
   .veh-pop-bd .veh-pop-h{top:0;}
+  .veh-pop-h [data-vclose]{margin-left:auto;min-width:44px;min-height:44px;font-size:22px;display:inline-flex;align-items:center;justify-content:center;}
   .veh-pop-bd::before{content:'';position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:6;}
 }
 </style>
@@ -7617,7 +7618,7 @@ function fleetOpen(id){
     pop.innerHTML = `<div class="veh-pop" role="dialog" aria-modal="true">
       <div class="veh-pop-h"><b id="vehPopT"></b><span class="fleet-save-status" style="font-size:12px;"></span>
         ${canEdit('fleet') ? '<button type="button" class="btn primary small fleet-save">💾 Išsaugoti</button>' : ''}
-        <button type="button" class="icon-btn" data-vclose title="Uždaryti">✕</button></div>
+        <button type="button" class="icon-btn" data-vclose data-ro-ok title="Uždaryti" aria-label="Uždaryti">✕</button></div>
       <div class="veh-pop-b"><div id="fleetList"></div><div id="vehUta"></div><div id="vehRm"></div></div></div>`;
     document.body.appendChild(pop);
     pop.addEventListener('click', e=>{ if(e.target===pop || e.target.closest('[data-vclose]')) fleetClose(); });
@@ -12829,6 +12830,8 @@ let roObserver = null, roTab = null;
 function roAllowed(el, tab){
   if(el.closest('#modalRoot')) return true;
   if(el.matches('input[type=search], #evQ, #evFrom, #evTo, #rtQ, #rtFrom, #rtTo, [data-ro-ok]') || el.closest('[data-ro-ok]')) return true;
+  // closing / going back is never an edit (a view-only member could not leave the vehicle window on a phone)
+  if(el.matches('[data-vclose], [data-close], [title="Uždaryti"], [aria-label="Uždaryti"], [aria-label="Atgal"]')) return true;
   const allow = RO_ALLOW[tab];
   if(allow) return el.matches(allow);
   return !RO_BLOCK_TEXT.test((el.textContent||'').trim() || el.getAttribute('title') || '') && !el.matches('.btn.danger,.del-project');
@@ -19882,7 +19885,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v443';
+const APP_VER = 'v444';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -40729,6 +40732,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 10:00', v:'v444', k:'fix', t:'Transporto lange vėl yra uždarymo mygtukas', f:'Nariams, kurie Transportą gali tik peržiūrėti, automobilio lange (ypač telefone) dingdavo ✕ – nebuvo kaip išeiti. Uždarymo mygtukai dabar niekada neslepiami.' },
   { d:'2026-10-08 04:05', v:'v443', k:'fix', t:'Laiškai siunčiami fone', f:'Paspaudus „Siųsti“ laiško langas iškart užsidaro, o laiškas siunčiamas fone – galima toliau dirbti. Kai išsiųsta, apačioje parodoma „✓ Laiškas išsiųstas“; jei nepavyko – pranešimas su mygtuku „Atidaryti“, kuris grąžina tą patį laišką (tekstas ir priedai neprarandami).' },
   { d:'2026-10-08 03:50', v:'v442', k:'new', t:'Sąskaitos atsakymas: komentaras nebūtinas, pavedimo kopija', f:'Laiške atsiųstoje sąskaitoje (Apmokėta / Suvesta apmokėjimui / Atsakyti) komentaras nebūtinas ir siunčiamas su bet kuriuo mygtuku; galima prisegti pavedimo kopiją ar kitą failą (PDF ar nuotrauka, iki 10 MB). Failas atsiranda tarp sąskaitos failų programoje („Pavedimas – …“) ir pridedamas prie atsakymo laiško.' },
   { d:'2026-10-08 03:30', v:'v441', k:'fix', t:'Pranešimai atidaro, iš kur atėjo', f:'Paspaudus pranešimą pradžios kortelėje jis ne tik dingsta, bet ir atidaro savo vietą: sąskaitą „Sąskaitose“ (net jei jos dar nebuvo įkeltos), užduotį, renginį, laišką, pokalbį ir t. t.; jei konkretaus įrašo nėra – atidaroma ta skiltis.' },
