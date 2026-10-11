@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-tOVSE7P63AEUltwNrnaJD6wm+Jg5l+ExY1GSVXssIvE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-NQPP2KacM8SWGVY9/ZP6hZkM5XBTuvTCvEWCaSEdN5s=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20155,7 +20155,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v457';
+const APP_VER = 'v458';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26309,9 +26309,42 @@ async function teamTouchLastSeen(){
 }
 
 /* ---------- start after sign-in ---------- */
+/* the chat opens at once: the conversations, the members, the last messages of each conversation and the
+   photo addresses are kept on this device (only for the signed-in member, removed on signing out) and shown
+   straight away; the server's fresh copy replaces them a moment later */
+const CHAT_CACHE_V = 1;
+function chatCacheKey(){ return 'chatCache:'+teamMe(); }
+function chatCacheLoad(){
+  if(TEAM.cacheLoaded || !teamMe()) return; TEAM.cacheLoaded = true;
+  let c = null; try{ c = JSON.parse(localStorage.getItem(chatCacheKey())||'null'); }catch(e){}
+  if(!c || c.v!==CHAT_CACHE_V) return;
+  if(!TEAM.members.length && Array.isArray(c.members)) TEAM.members = c.members;
+  if(!TEAM.convLoaded && Array.isArray(c.convs)){ TEAM.convs = c.convs; TEAM.convLoaded = true; TEAM.convFromCache = true; }
+  Object.entries(c.msgs||{}).forEach(([cid, l])=>{ if(!TEAM.msgs[cid] && Array.isArray(l)) TEAM.msgs[cid] = l; });
+  const now = Date.now(); Object.entries(c.urls||{}).forEach(([k, u])=>{ if(u && u.exp > now+120000 && !TEAM.urls[k]) TEAM.urls[k] = u; });
+  if(c.reacts){ TEAM.reacts = TEAM.reacts || {}; Object.entries(c.reacts).forEach(([id, l])=>{ if(!TEAM.reacts[id]) TEAM.reacts[id] = l; }); }
+}
+function chatCacheSave(){
+  clearTimeout(chatCacheSave._t);
+  chatCacheSave._t = setTimeout(()=>{
+    if(!teamMe() || !TEAM.convLoaded) return;
+    const ids = TEAM.convs.slice().sort((a, b)=>String(b.last_message_at||'').localeCompare(String(a.last_message_at||''))).slice(0, 14).map(c=>c.id);
+    if(TEAM.open && !ids.includes(TEAM.open)) ids.push(TEAM.open);
+    const msgs = {}, mids = new Set();
+    ids.forEach(cid=>{ const l = (TEAM.msgs[cid]||[]).filter(m=>!m.pending).slice(-40); if(l.length){ msgs[cid] = l; l.forEach(m=>mids.add(m.id)); } });
+    const now = Date.now(), urls = {};
+    Object.entries(TEAM.urls||{}).forEach(([k, u])=>{ if(u && u.exp > now+300000 && /^(chat-files|avatars)\//.test(k)) urls[k] = u; });
+    const reacts = {}; mids.forEach(id=>{ if(TEAM.reacts && TEAM.reacts[id] && TEAM.reacts[id].length) reacts[id] = TEAM.reacts[id]; });
+    const data = { v:CHAT_CACHE_V, at:now, convs:TEAM.convs, members:TEAM.members, msgs, urls, reacts };
+    try{ localStorage.setItem(chatCacheKey(), JSON.stringify(data)); }
+    catch(e){ try{ data.msgs = {}; data.reacts = {}; localStorage.setItem(chatCacheKey(), JSON.stringify(data)); }catch(e2){} }
+  }, 1200);
+}
 async function teamStart(){
   if(TEAM.started || !teamMe() || ACCESS.fallback) return;
   TEAM.started = true;
+  chatCacheLoad();
+  if(currentTab==='chat' && TEAM.convFromCache) try{ renderChatTab(); }catch(e){}
   const sb = getSb(); if(!sb) return;
   await teamLoadMembers();
   // online lamps
@@ -30715,10 +30748,12 @@ function chatIcon(c, size){
 async function teamLoadConvs(){
   const sb = getSb(); if(!sb || !teamMe()) return;
   const { data, error } = await sb.rpc('chat_overview');
-  if(error){ TEAM.convError = error.message+' (ar paleistas members_chat.sql?)'; TEAM.convLoaded = true; if(currentTab==='chat') chatRenderList(); return; }
+  if(error){ if(TEAM.convFromCache){ console.warn('chat_overview', error.message); return; }   // the kept copy stays on screen
+    TEAM.convError = error.message+' (ar paleistas members_chat.sql?)'; TEAM.convLoaded = true; if(currentTab==='chat') chatRenderList(); return; }
   TEAM.convError = '';
   TEAM.convs = data||[];
-  TEAM.convLoaded = true;
+  TEAM.convLoaded = true; TEAM.convFromCache = false;
+  chatCacheSave();
   TEAM.unread = TEAM.convs.reduce((a,c)=>a+(c.id===TEAM.open && currentTab==='chat' ? 0 : (c.unread||0)), 0);
   teamHeaderRefresh();
   if(currentTab==='chat') chatRenderList();
@@ -31363,7 +31398,8 @@ function chatAttLabel(att){ const f = (att||[]).find(a=>a.type==='file'); return
 /* videos in the chat: watched right there, and downloaded */
 function chatIsVideo(a){ return !!a && (String(a.mime||'').startsWith('video/') || /\.(mp4|m4v|mov|webm|ogv|3gp)$/i.test(String(a.name||a.path||''))); }
 function chatVideoHtml(a, cls){
-  return `<div class="chat-vid"><video controls playsinline preload="metadata" data-bucket="chat-files" data-path="${esc(a.path)}"></video>
+  const u = TEAM.urls && TEAM.urls['chat-files/'+a.path];
+  return `<div class="chat-vid"><video controls playsinline preload="metadata" data-bucket="chat-files" data-path="${esc(a.path)}" ${u ? `src="${esc(u.url)}#t=0.1"` : ''}></video>
     <button type="button" class="chat-vid-dl ${cls||''}" data-fpath="${esc(a.path)}" data-fname="${esc(a.name||'video')}" title="Atsisiųsti">${slIcon('download')}<span>${esc(a.name||'video')}</span><small>${esc(chatSize(a.size))}</small></button></div>`;
 }
 function chatFileIcon(name, mime){
@@ -31731,6 +31767,7 @@ function chatLinkify(t){ return chatFormat(t); }
 
 /* ---------- screen ---------- */
 function renderChatTab(){
+  if(!TEAM.convLoaded) chatCacheLoad();
   const actN = chatActivityUnread();
   document.getElementById('main').innerHTML = `
   <div class="sk ${TEAM.open ? 'open-conv' : ''} ${TEAM.thread ? 'open-thread' : ''}" id="chatShell">
@@ -31951,7 +31988,7 @@ async function chatOpen(cid, opts){
   chatRenderList();
   if(c.kind!=='direct') chatTasksLoad(cid);
   if(TEAM.convTab==='files' || TEAM.convTab==='tasks'){ chatShowConvTab(cid); }
-  else { await chatLoadMessages(cid); if(opts.mid) chatFlash(opts.mid); }
+  else { if((TEAM.msgs[cid]||[]).length) chatRenderMessages(cid, true); await chatLoadMessages(cid); if(opts.mid) chatFlash(opts.mid); }
   if(TEAM.thread) chatOpenThread(TEAM.thread, opts.mid); else chatCloseThread(true);
   chatCallBar(); chatCallPlace();
   if(joined) chatMarkRead(cid);
@@ -32061,9 +32098,12 @@ async function chatLoadMessages(cid, older){
   if(error){ const box = document.getElementById('chMsgs'); if(box) box.innerHTML = `<div class="empty-state" style="color:var(--danger);">${esc(error.message)}</div>`; return; }
   const rows = (data||[]).slice().reverse();
   TEAM.more[cid] = (data||[]).length===60;
-  TEAM.msgs[cid] = older ? rows.concat(have) : rows;
+  // the newest page replaces the kept one; messages still being sent stay
+  TEAM.msgs[cid] = older ? rows.concat(have) : rows.concat(have.filter(m=>m.pending));
+  if(!older) chatRenderMessages(cid, !TEAM.msgs[cid].length || !document.querySelector('#chMsgs .sk-msg'));
   await Promise.all([chatLoadReactions(rows.map(r=>r.id)), chatLoadThreadStats(rows.map(r=>r.id))]);
-  chatRenderMessages(cid, !older);
+  chatRenderMessages(cid, false);
+  chatCacheSave();
   if(!older) chatLoadPins(cid);
 }
 /* 📌 pinned messages (sql/chat_pins.sql): always on top of the conversation, newest pin first */
@@ -32489,6 +32529,7 @@ function chatDropTemp(t){
 }
 function chatAddMessage(m){
   const inThreadOnly = m.parent_id && !m.also_channel;
+  if(!m.pending) chatCacheSave();
   // the real one of a message still shown as „sending“ (it can come through the live connection first)
   if(!m.pending && m.sender_id===teamMe()){ const all = (TEAM.msgs[m.conversation_id]||[]).concat(m.parent_id ? TEAM.replies[m.parent_id]||[] : []);
     const t = all.find(x=>x.pending && x.body===m.body && (x.parent_id||null)===(m.parent_id||null)); if(t){ const l = TEAM.msgs[m.conversation_id]; if(l && l.indexOf(t)>=0) l.splice(l.indexOf(t), 1); const r = m.parent_id && TEAM.replies[m.parent_id]; if(r && r.indexOf(t)>=0) r.splice(r.indexOf(t), 1); } }
@@ -41211,6 +41252,7 @@ function initApp(){
 document.getElementById('fbHdr').addEventListener('click', ()=>{ if(fbAdmin() && fbCounts().fresh) fbAdminOpen(); else fbOpen(); });
   document.getElementById('tkHdrAssign').addEventListener('click', ()=>tkHdr('assign'));
   document.getElementById('signOutBtn').addEventListener('click', async ()=>{
+    try{ Object.keys(localStorage).filter(k=>k.startsWith('chatCache:')).forEach(k=>localStorage.removeItem(k)); }catch(e){}
     const sb = getSb();
     if(sb) await sb.auth.signOut();
     location.reload();
@@ -41424,6 +41466,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 16:45', v:'v458', k:'fix', t:'Chatas atsidaro iškart', f:'Chatas nebelaukia serverio: pokalbių sąrašas, nariai, paskutinės kiekvieno pokalbio žinutės ir nuotraukų adresai laikomi šiame įrenginyje, todėl atidarius chatą ar kanalą (ir po programos perkrovimo) viskas rodoma iš karto, o naujienos atsisiunčia fone ir pasikeičia nepastebimai. Nuotraukos ir video, kurie jau buvo matyti, rodomi be laukimo. Atsijungus ši kopija iš įrenginio ištrinama.' },
   { d:'2026-10-11 16:25', v:'v457', k:'fix', t:'Chatas: video ir nuotraukos nebeperkraunami', f:'Rašant ar gavus žinutę kanale esantys video ir nuotraukos nebeperkraunami (video nebepradeda krautis iš naujo ir nesumažėja iki pilko rėmelio) – net jei pati žinutė pasikeičia (reakcija, taisymas), jos video ir nuotraukos paliekami tie patys.' },
   { d:'2026-10-11 16:10', v:'v456', k:'fix', t:'Chatas: atidarius kanalą rodoma susirašinėjimo apačia', f:'Atidarius bet kurį kanalą ar pokalbį iškart rodoma pati apačia (naujausios žinutės) ir ji išlieka, kol kraunasi nuotraukos, video ar prisegtų žinučių juosta – nebenušoka į atsitiktinę vietą. Paslinkus aukštyn, vieta nebekeičiama; nuslinkus iki apačios – vėl laikoma apačia.' },
   { d:'2026-10-11 15:50', v:'v455', k:'fix', t:'Kairysis meniu išsiskleidžia tik ties programomis', f:'Suskleistas kairysis meniu nebeišsiskleidžia užvedus pelę ant logotipo viršuje – tik užvedus ant programų mygtukų. Išsiskleidęs lieka atviras, kol pelė meniu viduje.' },
