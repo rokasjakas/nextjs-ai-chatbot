@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-V9kUrg+DiFBL44m6laswceLJK6MfS6GzHxDjW0R3ksE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-lHSf7lEin6L8sp0d4NhHdaV+q3+uvManJdWaeYXCMRI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-i8ZdpwYMXknI0bzPLf2cY26F9DdL9Z01JYNGTjSgrXo=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20155,7 +20155,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v455';
+const APP_VER = 'v456';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32170,8 +32170,28 @@ function chatRenderMessages(cid, toBottom){
   chatPatch(box, intro + (chatListHtml(list) || ''));
   const older = document.getElementById('chOlder'); if(older) older.onclick = ()=>chatLoadMessages(cid, true);
   chatBindMsgs(box);
-  if(toBottom){ box.scrollTop = box.scrollHeight; box.querySelectorAll('img').forEach(i=>i.addEventListener('load', ()=>{ if(box.scrollHeight - box.scrollTop - box.clientHeight < 400) box.scrollTop = box.scrollHeight; }, {once:true})); }
+  if(toBottom){ chatStick(box, true); box.scrollTop = box.scrollHeight; }
+  else if(box._stick) box.scrollTop = box.scrollHeight;
   else box.scrollTop = prevTop + (box.scrollHeight - prevH);
+}
+/* an opened conversation shows its end and stays there while photos, videos, the pinned bar … come in and change
+   the height; a finger / wheel moving up lets go (scrolling back down to the end holds on again) */
+function chatStick(box, on){
+  box._stick = on;
+  if(box._stickBound) return; box._stickBound = true;
+  const down = ()=>{ if(box._stick) box.scrollTop = box.scrollHeight; };
+  box.addEventListener('load', down, true);                 // a photo came in
+  box.addEventListener('loadedmetadata', down, true);       // a video knows its size
+  if(window.ResizeObserver){ const ro = new ResizeObserver(down); ro.observe(box); }
+  new MutationObserver(down).observe(box, { childList:true, subtree:true });
+  const user = ()=>{ box._userAt = Date.now(); };
+  ['wheel','touchstart','touchmove','pointerdown','keydown'].forEach(ev=>box.addEventListener(ev, user, { passive:true }));
+  box.addEventListener('scroll', ()=>{
+    const atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
+    if(atEnd) box._stick = true;
+    else if(Date.now() - (box._userAt||0) < 1500) box._stick = false;   // only the person lets go, never the layout
+    else if(box._stick) box.scrollTop = box.scrollHeight;
+  }, { passive:true });
 }
 // the list is drawn again without touching the messages that did not change: their photos and videos stay as
 // they are (no reloading, a playing video keeps playing), only new / changed messages are made
@@ -32199,6 +32219,7 @@ function chatBindMsgs(box){
 function chatFindMsg(mid){ return Object.values(TEAM.msgs).flat().concat(Object.values(TEAM.replies).flat(), TEAM.savedList||[]).find(x=>x.id===mid); }
 function chatFlash(mid){
   const el = document.querySelector(`.sk-msg[data-mid="${CSS.escape(mid)}"]`); if(!el) return;
+  { const b = el.closest('.sk-msgs'); if(b) b._stick = false; }
   el.scrollIntoView({ block:'center' }); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'), 2200);
 }
 function chatMsgMenu(anchor, mid){
@@ -32261,7 +32282,8 @@ function chatRenderThread(){
     + `<div class="sk-tdiv"><span>${list.length ? ltPlural(list.length,'atsakymas','atsakymai','atsakymų') : 'Atsakymų dar nėra'}</span></div>`
     + chatListHtml(list, { inThread:true, noDays:true }));
   chatBindMsgs(box);
-  box.scrollTop = box.scrollHeight;
+  if(box._stick===undefined) chatStick(box, true);
+  if(box._stick) box.scrollTop = box.scrollHeight;
 }
 function chatCloseThread(quiet){
   TEAM.thread = null;
@@ -41395,6 +41417,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-11 16:10', v:'v456', k:'fix', t:'Chatas: atidarius kanalą rodoma susirašinėjimo apačia', f:'Atidarius bet kurį kanalą ar pokalbį iškart rodoma pati apačia (naujausios žinutės) ir ji išlieka, kol kraunasi nuotraukos, video ar prisegtų žinučių juosta – nebenušoka į atsitiktinę vietą. Paslinkus aukštyn, vieta nebekeičiama; nuslinkus iki apačios – vėl laikoma apačia.' },
   { d:'2026-10-11 15:50', v:'v455', k:'fix', t:'Kairysis meniu išsiskleidžia tik ties programomis', f:'Suskleistas kairysis meniu nebeišsiskleidžia užvedus pelę ant logotipo viršuje – tik užvedus ant programų mygtukų. Išsiskleidęs lieka atviras, kol pelė meniu viduje.' },
   { d:'2026-10-11 15:30', v:'v454', k:'fix', t:'Chatas: žinutės atsiranda iškart, kanalas nebepersikrauna', f:'Parašyta žinutė pokalbyje atsiranda iš karto (kol serveris ją priima – šiek tiek blankesnė), o ne po akimirkos. Atsiradus naujai žinutei, kanalas nebeperpiešiamas visas: nuotraukos ir video nebeperkraunami, grojantis video negroja iš naujo – pridedama tik nauja žinutė.' },
   { d:'2026-10-11 15:00', v:'v453', k:'fix', t:'Dešinysis skydelis: atidarius greitųjų mygtukų juosta nebelieka šone', f:'Atidarius dešinįjį skydelį greitųjų mygtukų juosta paslepiama – skydelis užima visą dešinį kraštą (kaip ir užrakintas).' },
