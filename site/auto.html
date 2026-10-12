@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bs1/iBl+C+yjshKPi8+UYrp+We0wGYSAP36f9MyqY+o=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-pCHdEZfNdik96NYo2P0ngJg+FHdNHWR1HcL3gf99B3A=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-BZM4iY2i77deOv7PkeMXkSJTJq811SfFGT8QRQrxru4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Automobilis · Event Solutions</title>
@@ -22,6 +22,11 @@ h1{font-size:24px;margin:0;line-height:1.2;}
 .kv:last-child{border-bottom:0;}
 .kv span{color:var(--dim);}
 .kv b{text-align:right;}
+.kv-doc{flex-wrap:wrap;} .kv-doc > b{margin-left:auto;}
+.docs{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;}
+.dl{display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:none;color:var(--accent);font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+.dl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;}
+.dl:disabled{opacity:.6;}
 .ok{color:var(--ok);} .warn{color:var(--warn);} .bad{color:var(--bad);}
 .rep{background:color-mix(in srgb,var(--bad) 14%,var(--panel));border-color:var(--bad);font-weight:600;}
 h2{font-size:17px;margin:0 0 10px;}
@@ -96,15 +101,34 @@ async function rpc(name, args){
 }
 const day = d=>d ? String(d).slice(0,10).replace(/-/g, '.') : '';
 const num = (n, d)=>n==null ? '' : Number(n).toLocaleString('lt-LT', { maximumFractionDigits:d||0 });
-function docRow(label, date){
-  if(!date) return `<div class="kv"><span>${label}</span><b class="bad">neįvesta</b></div>`;
+// the documents uploaded in the app (Transportas → automobilis → Dokumentai): opened from here too
+let DOCF = {};
+const FILES_FN = SUPABASE_URL+'/functions/v1/files';
+async function filesCall(body){
+  const r = await fetch(FILES_FN, { method:'POST', headers:hdr({ 'Content-Type':'application/json' }), body:JSON.stringify(body) });
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok || j.error) throw new Error(j.error || ('Klaida '+r.status));
+  return j;
+}
+async function loadDocs(){ try{ DOCF = (await filesCall({ action:'qr-docs', t:T })).files || {}; if(Object.keys(DOCF).length) draw(); }catch(e){ DOCF = {}; } }
+async function openDoc(b){
+  const w = window.open('', '_blank'); b.disabled = true;
+  try{ const j = await filesCall({ action:'qr-doc', t:T, doc:b.dataset.doc, i:+b.dataset.i }); if(w) w.location.href = j.url; else location.href = j.url; }
+  catch(e){ if(w) w.close(); alert('Dokumento atidaryti nepavyko: '+e.message); }
+  b.disabled = false;
+}
+document.addEventListener('click', e=>{ const b = e.target.closest && e.target.closest('[data-doc]'); if(b){ e.preventDefault(); openDoc(b); } });
+const docBtns = key=>(DOCF[key]||[]).length ? `<div class="docs">${DOCF[key].map((f, i)=>`<button type="button" class="dl" data-doc="${key}" data-i="${i}" title="Atidaryti dokumentą">${ic('doc', 16)}<span>${esc(f.name)}</span></button>`).join('')}</div>` : '';
+function docRow(label, date, key, optional){
+  const files = docBtns(key);
+  if(!date){ if(optional && !files) return ''; return `<div class="kv kv-doc"><span>${label}</span><b class="${optional ? 'muted' : 'bad'}">${optional ? '' : 'neįvesta'}</b>${files}</div>`; }
   const days = Math.round((new Date(String(date).slice(0,10)) - new Date(new Date().toISOString().slice(0,10)))/864e5);
   const cls = days < 0 ? 'bad' : days <= 14 ? 'warn' : 'ok';
-  return `<div class="kv"><span>${label}</span><b class="${cls}">${days < 0 ? 'baigėsi ' : 'iki '}${day(date)}${days >= 0 && days <= 14 ? ' · liko '+days+' d.' : ''}</b></div>`;
+  return `<div class="kv kv-doc"><span>${label}</span><b class="${cls}">${days < 0 ? 'baigėsi ' : 'iki '}${day(date)}${days >= 0 && days <= 14 ? ' · liko '+days+' d.' : ''}</b>${files}</div>`;
 }
 const SEV = { low:'Galima važiuoti', soon:'Reikia greitai sutvarkyti', stop:'Negalima važiuoti' };
 const COND = { good:['Gera','ok'], fair:['Patenkinama','warn'], bad:['Bloga','bad'] };
-const P = { warn:'m40-120 440-760 440 760H40Zm465.5-125.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Z', crash:'M636.76-274q23.24 0 38.74-15.75Q691-305.5 691-328q0-23.33-15.75-39.67Q659.5-384 637-384q-23.33 0-39.67 16.26Q581-351.47 581-328.24q0 23.24 16.26 38.74 16.27 15.5 39.5 15.5Zm-391 0q23.24 0 38.74-15.75Q300-305.5 300-328q0-23.33-15.75-39.67Q268.5-384 246-384q-23.33 0-39.67 16.26Q190-351.47 190-328.24q0 23.24 16.26 38.74 16.27 15.5 39.5 15.5Zm443.43-224Q610-498 554-554.01t-56-135.48Q498-768 554-824q56-56 135-56 80 0 135.5 55.5T880-689q0 80-55.81 135.5-55.82 55.5-135 55.5ZM674-659h35v-143h-35v143Zm17.5 85q9.5 0 16-6t6.5-16q0-10-6.6-16t-15.4-6q-11 1-16.5 7t-5.5 15.5q0 9.5 6 15.5t15.5 6ZM110-80q-12.75 0-21.37-8.63Q80-97.25 80-110v-324l85-256q5-14 16.78-22 11.78-8 26.22-8h228q-2 15-2 30t2 30H218l-55 166h362q36 30 79.5 46.5T695-431q27.29 0 53.65-5.5Q775-442 800-454v344q0 12.75-8.62 21.37Q782.75-80 770-80h-21q-12.33 0-20.66-9-8.34-9-8.34-21v-54H160v54q0 12.75-8.62 21.37Q142.75-80 130-80h-20Z', fuel:'M160-120v-660q0-24 18-42t42-18h269q24 0 42 18t18 42v288h65q20.63 0 35.31 14.69Q664-462.63 664-442v219q0 21.68 15.5 36.34Q695-172 717-172t37.5-14.66Q770-201.32 770-223v-295q-11 6-23 9t-24 3q-39.48 0-66.74-27.26Q629-560.52 629-600q0-31.61 18-56.81Q665-682 695-690l-95-95 36-35 153 153q14 14 22.5 30.5T820-600v377q0 43.26-29.82 73.13-29.81 29.87-73 29.87Q674-120 644-149.87q-30-29.87-30-73.13v-219h-65v322H160Zm60-432h269v-228H220v228Zm503-4q18 0 31-13t13-31q0-18-13-31t-31-13q-18 0-31 13t-13 31q0 18 13 31t31 13Z', info:'M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z', back:'m274-450 248 248-42 42-320-320 320-320 42 42-248 248h526v60H274Z', next:'M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z', ok:'m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z', repair:'M705-128 447-388q-23 8-46 13t-47 5q-97 0-165-67.5T121-602q0-31 8-60.5t23-55.5l145 145 92-86-149-149q26-15 55-23.5t59-8.5q99 0 168.5 69.5T592-602q0 24-5 47t-13 46l259 258q11 11 11 26.5T833-198l-76 70q-11 11-26 11t-26-11Z' };
+const P = { doc:'M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554h189L551-820v186Z', warn:'m40-120 440-760 440 760H40Zm465.5-125.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Z', crash:'M636.76-274q23.24 0 38.74-15.75Q691-305.5 691-328q0-23.33-15.75-39.67Q659.5-384 637-384q-23.33 0-39.67 16.26Q581-351.47 581-328.24q0 23.24 16.26 38.74 16.27 15.5 39.5 15.5Zm-391 0q23.24 0 38.74-15.75Q300-305.5 300-328q0-23.33-15.75-39.67Q268.5-384 246-384q-23.33 0-39.67 16.26Q190-351.47 190-328.24q0 23.24 16.26 38.74 16.27 15.5 39.5 15.5Zm443.43-224Q610-498 554-554.01t-56-135.48Q498-768 554-824q56-56 135-56 80 0 135.5 55.5T880-689q0 80-55.81 135.5-55.82 55.5-135 55.5ZM674-659h35v-143h-35v143Zm17.5 85q9.5 0 16-6t6.5-16q0-10-6.6-16t-15.4-6q-11 1-16.5 7t-5.5 15.5q0 9.5 6 15.5t15.5 6ZM110-80q-12.75 0-21.37-8.63Q80-97.25 80-110v-324l85-256q5-14 16.78-22 11.78-8 26.22-8h228q-2 15-2 30t2 30H218l-55 166h362q36 30 79.5 46.5T695-431q27.29 0 53.65-5.5Q775-442 800-454v344q0 12.75-8.62 21.37Q782.75-80 770-80h-21q-12.33 0-20.66-9-8.34-9-8.34-21v-54H160v54q0 12.75-8.62 21.37Q142.75-80 130-80h-20Z', fuel:'M160-120v-660q0-24 18-42t42-18h269q24 0 42 18t18 42v288h65q20.63 0 35.31 14.69Q664-462.63 664-442v219q0 21.68 15.5 36.34Q695-172 717-172t37.5-14.66Q770-201.32 770-223v-295q-11 6-23 9t-24 3q-39.48 0-66.74-27.26Q629-560.52 629-600q0-31.61 18-56.81Q665-682 695-690l-95-95 36-35 153 153q14 14 22.5 30.5T820-600v377q0 43.26-29.82 73.13-29.81 29.87-73 29.87Q674-120 644-149.87q-30-29.87-30-73.13v-219h-65v322H160Zm60-432h269v-228H220v228Zm503-4q18 0 31-13t13-31q0-18-13-31t-31-13q-18 0-31 13t-13 31q0 18 13 31t31 13Z', info:'M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z', back:'m274-450 248 248-42 42-320-320 320-320 42 42-248 248h526v60H274Z', next:'M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z', ok:'m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z', repair:'M705-128 447-388q-23 8-46 13t-47 5q-97 0-165-67.5T121-602q0-31 8-60.5t23-55.5l145 145 92-86-149-149q26-15 55-23.5t59-8.5q99 0 168.5 69.5T592-602q0 24-5 47t-13 46l259 258q11 11 11 26.5T833-198l-76 70q-11 11-26 11t-26-11Z' };
 const ic = (k, n)=>`<svg viewBox="0 0 24 24" width="${n||20}" height="${n||20}" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="${P[k]}"/></svg>`;
 // the same choices as tapping the vehicle in the app
 const MODES = {
@@ -187,7 +211,7 @@ async function load(){
   try{ V = await rpc('vehicle_public', { p_token:T }); }
   catch(e){ app.innerHTML = `<div class="card">Nepavyko įkelti: ${esc(e.message)}</div><button class="btn ghost" onclick="location.reload()">Bandyti dar kartą</button>`; return; }
   if(!V){ app.innerHTML = '<div class="card">Šis QR kodas nebegalioja.</div>'; return; }
-  draw();
+  draw(); loadDocs();
 }
 function go(m){
   if(VBUSY) return;
@@ -200,7 +224,8 @@ function infoHtml(){
   return `<div class="card"><h2>Svarbiausia</h2>
       ${v.km!=null ? `<div class="kv"><span>Rida</span><b>${num(v.km)} km</b></div>` : ''}
       ${v.hours!=null ? `<div class="kv"><span>Moto valandos</span><b>${num(v.hours, 1)}</b></div>` : ''}
-      ${docRow('Draudimas', d.insurance)}${docRow('Tech. apžiūra', d.inspection)}${docRow('Kelių mokestis (vinjetė)', d.roadPermit)}
+      ${(DOCF.registration||[]).length ? `<div class="kv kv-doc"><span>Registracijos liudijimas</span>${docBtns('registration')}</div>` : ''}
+      ${docRow('Draudimas', d.insurance, 'insurance')}${docRow('Tech. apžiūra', d.inspection, 'inspection')}${docRow('Kelių mokestis (vinjetė)', d.roadPermit, 'roadPermit')}${docRow('KASKO', d.kasko, 'kasko', true)}
       <div class="kv"><span>Tepalo keitimas</span><b>${o ? day(o.date)+(o.km!=null ? ' · '+num(o.km)+' km' : '') : '<span class="muted">neįrašyta</span>'}</b></div>
       ${nx ? `<div class="kv"><span>Kitas tepalo keitimas</span><b>${esc(nx)}</b></div>` : ''}
       <div class="kv"><span>Profilaktika</span><b>${c ? day(c.date)+(COND[c.condition] ? ` · <span class="${COND[c.condition][1]}">${COND[c.condition][0]}</span>` : '') : '<span class="muted">neįrašyta</span>'}</b></div>

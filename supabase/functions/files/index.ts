@@ -16,13 +16,16 @@
 // POST {action:"get", bucket, path}           -> the file itself (for PDFs made in the browser: no R2 CORS needed);
 //        404 { error:"not_found" } when it is not in R2 (an older file: download it from Supabase)
 // POST {action:"usage"}                       -> { bytes, files, folders } admins: how much R2 holds
+// POST {action:"qr-docs", t}                   -> { files: { insurance:[{name,type}], … } }   no login: the vehicle's QR token
+// POST {action:"qr-doc", t, doc, i}            -> { url, name }   a short link to that document (R2 or Supabase Storage)
+//        the QR page (auto.html) opens the vehicle's documents (registration, insurance, inspection, vignette, KASKO)
 //
 // Secrets: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET
 // (Cloudflare → R2 → Manage API tokens: Object Read & Write for the bucket).
 import { sha256 } from "npm:@noble/hashes@1.4.0/sha256";
 import { hmac } from "npm:@noble/hashes@1.4.0/hmac";
 
-const VERSION = 6;
+const VERSION = 7;
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -244,10 +247,62 @@ export async function r2Usage(list: (q: Record<string, string>) => Promise<strin
   return { bytes, files, folders };
 }
 
+// ---------- the QR page: a vehicle's documents, for whoever holds its QR code ----------
+const QR_DOCS = ["registration", "insurance", "inspection", "roadPermit", "kasko"];
+type DocFile = { path?: string; name?: string; type?: string };
+async function qrVehicle(t: string): Promise<{ id: string; docFiles: Record<string, DocFile[]> } | null> {
+  if (!/^[0-9a-f]{24,64}$/.test(t)) return null;
+  const key = env("SUPABASE_SERVICE_ROLE_KEY");
+  const r = await fetch(`${env("SUPABASE_URL")}/rest/v1/rpc/vehicle_by_token`, {
+    method: "POST", headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ p_token: t }),
+  });
+  if (!r.ok) { console.error("qr vehicle", r.status, (await r.text()).slice(0, 200)); return null; }
+  const v = await r.json();
+  if (!v || !v.id) return null;
+  const docFiles: Record<string, DocFile[]> = {};
+  for (const d of QR_DOCS) {
+    const list = v.docFiles && Array.isArray(v.docFiles[d]) ? v.docFiles[d] : [];
+    // only the vehicle's own document folder
+    docFiles[d] = list.filter((f: DocFile) => typeof f?.path === "string" && f.path.startsWith(`docs/${v.id}/${d}/`) && !f.path.includes(".."));
+  }
+  return { id: String(v.id), docFiles };
+}
+async function qrDocs(b: Record<string, unknown>) {
+  const v = await qrVehicle(String(b.t ?? ""));
+  if (!v) throw new UserError("QR kodas nebegalioja.");
+  if (b.action === "qr-docs") {
+    const files: Record<string, { name: string; type: string }[]> = {};
+    for (const d of QR_DOCS) if (v.docFiles[d].length) files[d] = v.docFiles[d].map((f) => ({ name: String(f.name || "dokumentas"), type: String(f.type || "") }));
+    return { files };
+  }
+  const d = String(b.doc ?? ""), i = Number(b.i ?? 0);
+  if (!QR_DOCS.includes(d) || !Number.isInteger(i) || i < 0) throw new UserError("Tokio dokumento nėra.");
+  const f = v.docFiles[d][i];
+  if (!f) throw new UserError("Tokio dokumento nėra.");
+  const path = f.path!, name = String(f.name || "dokumentas");
+  if (r2On()) {
+    const head = await fetch(r2Url("HEAD", "fleet-files/" + path, 60), { method: "HEAD" }).catch(() => null);
+    if (head && head.ok) return { url: r2Url("GET", "fleet-files/" + path, 600, { "response-content-disposition": `inline; filename="${safeName(name)}"; filename*=UTF-8''${rfc3986(name)}` }), name };
+  }
+  // an older file / no R2: Supabase Storage
+  const key = env("SUPABASE_SERVICE_ROLE_KEY");
+  const s = await fetch(`${env("SUPABASE_URL")}/storage/v1/object/sign/fleet-files/${encPath(path)}`, {
+    method: "POST", headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ expiresIn: 600 }),
+  });
+  const j = await s.json().catch(() => ({}));
+  const signed = j.signedURL || j.signedUrl;
+  if (!s.ok || !signed) throw new UserError("Dokumento rasti nepavyko.");
+  return { url: `${env("SUPABASE_URL")}/storage/v1${String(signed).startsWith("/") ? "" : "/"}${signed}`, name };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
     if (req.method === "GET") return json({ v: VERSION, r2: r2On() });
+    if (req.method === "POST") {
+      const peek = await req.clone().json().catch(() => ({}));
+      if (peek && (peek.action === "qr-docs" || peek.action === "qr-doc")) return json({ v: VERSION, ...(await qrDocs(peek)) });
+    }
     if (!r2On()) return json({ v: VERSION, r2: false, error: "R2 neprijungtas." }, 400);
     const c = await caller(req);
     if (!c) return json({ error: "Reikia prisijungti." }, 401);
