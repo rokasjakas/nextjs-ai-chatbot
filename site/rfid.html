@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-f/fwMLrLn+/z1+uJN9T5FGBCksyNmSrNeEgBTVwtaUU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-p38WqnYAAnfDEw1fmau5SxKlj09CVfar7dohJ7FnWvA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-3cj8q5Jb0Hjnly/cJrsVelpYPzA2UPqTcmh5W4Puv0M=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-r7a7KZW6GUcsH9xLRV+Od24wiebNlTnFk2SIl6hYS7g=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>RFID skeneris · Event Solutions</title>
@@ -41,6 +41,7 @@ input[type=text],input[type=email],input[type=password],input[type=search],selec
 .ok{color:#3fbf8f;} .bad{color:#ff7b7f;} .warn{color:#E0A030;}
 .tabs.sub button{padding:8px 4px;font-size:14px;}
 .code{display:inline-block;padding:1px 6px;border-radius:6px;background:#203246;color:#9fd0ff;font-weight:700;font-size:13px;letter-spacing:.5px;}
+details.help{margin-top:8px;} details.help summary{color:#6BB4F5;font-weight:700;cursor:pointer;} details.help ol{margin:8px 0 0;padding-left:20px;line-height:1.5;}
 .big{font-size:20px;font-weight:700;margin:4px 0;}
 .row{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:9px 0;border-top:1px solid #2c2c2c;}
 .row:first-child{border-top:0;}
@@ -311,6 +312,17 @@ function tagLine(epc, n){
   var t = D.tags[epc];
   return '<div class="row"><div class="t">'+(t ? '<b>'+codeHtml(t)+(t.unit ? 'Vnt. '+esc(t.unit) : 'Be numerio')+'</b>' : '<b class="warn">Nežinoma žyma</b>')+'<small>'+esc(epc)+'</small></div>'+(n > 1 ? '<span class="n muted">×'+n+'</span>' : '')+'</div>';
 }
+// reading many tags with one press is a setting of the scanner itself (Keyboard Emulator), not of this page
+function contHelp(open){
+  return '<details class="help"'+(open ? ' open' : '')+'><summary>Skaito tik po vieną žymą? Įjunk nepertraukiamą skaitymą</summary><ol>'
+    + '<li>Atidaryk programą <b>Keyboard Emulator</b> (Keyboardemulator).</li>'
+    + '<li>Nustatymuose (<b>Settings</b> / <b>Function</b>) pažymėk <b>UHF</b> (RFID).</li>'
+    + '<li>Įjunk <b>Continuous scan</b> (gali vadintis <b>Continuous</b>, <b>Continuous mode</b>, <b>Loop</b>). Jei yra <b>Interval</b> – 100–300 ms.</li>'
+    + '<li><b>Process mode</b> / <b>Output mode</b> – <b>Keyboard</b> (klaviatūra, NE „Broadcast“), <b>End mark</b> / <b>Suffix</b> – <b>Enter</b>.</li>'
+    + '<li><b>Power</b> / <b>Output power</b> – didesnė (pvz. 25–30), kad skaitytų toliau ir daugiau žymų.</li>'
+    + '<li>Išsaugok, grįžk čia ir <b>laikyk</b> skaitytuvo mygtuką – žymos plauks be perstojo (kai kuriose versijose: paspausk – pradeda, paspausk dar kartą – sustoja).</li>'
+    + '</ol><p class="muted">Ta pati žyma skaičiuojama tik kartą, todėl nesvarbu, kiek kartų skaitytuvas ją nuskaito.</p></details>';
+}
 function drawFind(){
   var html = '<div class="tabs sub"><button data-m="one" class="'+(V.cont ? '' : 'on')+'">Po vieną</button><button data-m="cont" class="'+(V.cont ? 'on' : '')+'">Nepertraukiamai</button></div>';
   if(!V.cont){
@@ -329,7 +341,7 @@ function drawFind(){
     var ids = Object.keys(per).sort(function(a,b){ return itemName(a).localeCompare(itemName(b)); });
     var lastE = V.seenLast, lt = lastE ? D.tags[lastE] : null;
     html += '<div class="card"><div class="row" style="border-top:0;padding-top:0;"><div class="t"><b>Nuskenuota: '+total+' žym.</b><small>'+ids.length+' daikt.'+(unknown.length ? ' · nežinomų '+unknown.length : '')+'</small></div><button class="btn ghost sm" id="clr">Išvalyti</button></div>'
-      + (lastE ? (lt ? '<div class="flash ok">'+ic('ok')+' '+codeHtml(lt)+esc(itemName(lt.item_id, lt.item_name))+'</div>' : '<div class="flash warn">'+ic('err')+' Nežinoma: '+esc(lastE)+'</div>') : '<p class="muted">Laikyk skaitytuvo mygtuką – čia atsiras visos nuskaitytos žymos.</p>')+'</div>'
+      + (lastE ? (lt ? '<div class="flash ok">'+ic('ok')+' '+codeHtml(lt)+esc(itemName(lt.item_id, lt.item_name))+'</div>' : '<div class="flash warn">'+ic('err')+' Nežinoma: '+esc(lastE)+'</div>') : '<p class="muted">Laikyk skaitytuvo mygtuką – čia atsiras visos nuskaitytos žymos.</p>')+contHelp(total < 2)+'</div>'
       + ids.map(function(id){ var it = D.byId[id] || {}, list = per[id], all = tagsOf(id).length;
           return '<div class="card"><div class="row" style="border-top:0;padding-top:0;"><div class="t"><b>'+esc(itemName(id, D.tags[list[0]].item_name))+'</b><small>'+esc(groupName(it.group))+(it.qty ? ' · sandėlyje '+it.qty+' vnt.' : '')+'</small></div><span class="n '+(list.length>=all ? 'ok' : 'warn')+'">'+list.length+' / '+all+'</span></div>'
             + '<div class="list">'+list.sort(function(a,b){ return String(D.tags[a].code||D.tags[a].unit).localeCompare(String(D.tags[b].code||D.tags[b].unit), undefined, { numeric:true }); }).map(function(x){ return tagLine(x, V.seen[x]); }).join('')+'</div></div>'; }).join('')
@@ -418,11 +430,11 @@ function drawInv(){
   for(var e in I.tags) if(I.tags.hasOwnProperty(e)){ total++; var t = D.tags[e]; if(t){ var k = String(t.item_id); (per[k] = per[k] || []).push(t); } else unknown.push(e); }
   var ids = Object.keys(per).sort(function(a,b){ return itemName(a).localeCompare(itemName(b)); });
   $('body').innerHTML = '<div class="card"><div class="row"><div class="t"><b>'+esc(I.title || 'Inventorizacija')+'</b><small>pradėta '+esc(when(I.started))+'</small></div><span class="big">'+total+'</span></div>'
-    + '<button class="btn wide" id="fin">'+ic('ok')+' Baigti ir išsaugoti</button><button class="btn ghost wide" id="drop">Atšaukti</button></div>'
+    + contHelp(total < 2) + '<button class="btn wide" id="fin">'+ic('ok')+' Baigti ir išsaugoti</button><button class="btn ghost wide" id="drop">Atšaukti</button></div>'
     + '<div class="card"><b>Rasta pagal daiktus</b><div class="list" id="per">'+(ids.map(function(id){ var it = D.byId[id] || {}, n = per[id].length, q = it.qty;
         return '<div class="row"><div class="t"><b>'+esc(itemName(id, per[id][0].item_name))+'</b><small>'+esc(groupName(it.group))+(q ? ' · sandėlyje '+q+' vnt. · žymų priskirta '+tagsOf(id).length : '')+'</small></div><span class="n '+(q && n>=tagsOf(id).length ? 'ok' : 'warn')+'">'+n+(tagsOf(id).length ? ' / '+tagsOf(id).length : '')+'</span></div>'; }).join('') || '<p class="muted">Dar nieko.</p>')+'</div></div>'
     + (unknown.length ? '<div class="card"><b class="warn">Nežinomos žymos ('+unknown.length+')</b><div class="muted">'+unknown.slice(0, 50).map(esc).join('<br>')+'</div></div>' : '');
-  setScan('Inventorizacija – skenuok', 'Laikyk skaitytuvo mygtuką ir eik pro daiktus. Ta pati žyma skaičiuojama vieną kartą.', function(epc){ if(!I.tags[epc]){ I.tags[epc] = new Date().toISOString(); invSave(); beep(!!D.tags[epc]); drawInv(); } });
+  setScan('Inventorizacija – skenuok', 'Laikyk skaitytuvo mygtuką ir eik pro daiktus – skaitytuvas turi būti nepertraukiamo skaitymo režime (žr. žemiau). Ta pati žyma skaičiuojama vieną kartą.', function(epc){ if(!I.tags[epc]){ I.tags[epc] = new Date().toISOString(); invSave(); beep(!!D.tags[epc]); drawInv(); } });
   $('drop').onclick = function(){ if(!confirm('Atšaukti šį skenavimą? Nuskaitytos žymos nebus išsaugotos.')) return; V.inv = null; invSave(); drawInv(); };
   $('fin').onclick = function(){ var b = this; b.disabled = true; b.textContent = 'Saugoma…';
     var tags = []; for(var e in I.tags) if(I.tags.hasOwnProperty(e)) tags.push({ epc:e, at:I.tags[e] });
