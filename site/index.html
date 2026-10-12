@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-c//ZZxCkgW/pejOvWi99Dz4C/+zzvOXO/pb3xiQAb2w=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bs1/iBl+C+yjshKPi8+UYrp+We0wGYSAP36f9MyqY+o=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -9305,19 +9305,35 @@ async function fdAsk(prompt, img){
   return await res.text();
 }
 const fdOkDate = s=>{ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s||'')); if(!m) return ''; const d = new Date(+m[1], +m[2]-1, +m[3]); return d.getMonth()===+m[2]-1 && +m[1]>=2000 && +m[1]<=2100 ? m[0] : ''; };
-// without AI: the date written after „galioja iki“ / „pabaiga“ / „valid until“, else the latest one
-function fdGuessDate(text){
+// every date in the text, marked: +2 an end („galioja iki“, „pabaiga“, „valid until“, the second date of
+// „2025-11-01 – 2026-10-31“), −2 a start („nuo“, „išduota“, „sudaryta“, „apžiūros data“…), 0 – unknown
+const FD_END = /(iki|galioja|galiojimo\s+pabaig|pabaig|baigiasi|kita\s+(?:apžiūra|tikrinimas)|kitos\s+apžiūros|until|expir|valid\s*(?:to|thru|through)|end\s*date|\bto\b)/gi;
+const FD_START = /(nuo|from|išduot|išdav|sudaryt|pasirašyt|įsigalioj|pradži|apžiūros\s+data|atlikimo|atlikta|mokėj|apmokėt|issue|start|data\s*:)/gi;
+function fdDates(text){
   const MON = { sausio:1, vasario:2, kovo:3, balandžio:4, gegužės:5, birželio:6, liepos:7, rugpjūčio:8, rugsėjo:9, spalio:10, lapkričio:11, gruodžio:12 };
   const t = String(text||''), found = [], z = n=>String(n).padStart(2,'0');
-  const add = (i, y, m, d)=>{ const iso = fdOkDate(y+'-'+z(m)+'-'+z(d)); if(iso) found.push({ i, iso }); };
+  const add = (i, len, y, m, d)=>{ const iso = fdOkDate(y+'-'+z(m)+'-'+z(d)); if(iso) found.push({ i, end:i+len, iso }); };
   let m; const r1 = /(\d{4})[-./](\d{1,2})[-./](\d{1,2})/g, r2 = /(\d{1,2})[./](\d{1,2})[./](\d{4})/g, r3 = /(\d{4})\s*m\.?\s*([a-ząčęėįšųūž]+)\s+(\d{1,2})\s*d/gi;
-  while((m = r1.exec(t))) add(m.index, m[1], m[2], m[3]);
-  while((m = r2.exec(t))) add(m.index, m[3], m[2], m[1]);
-  while((m = r3.exec(t))) if(MON[m[2].toLowerCase()]) add(m.index, m[1], MON[m[2].toLowerCase()], m[3]);
-  if(!found.length) return '';
+  while((m = r1.exec(t))) add(m.index, m[0].length, m[1], m[2], m[3]);
+  while((m = r2.exec(t))) add(m.index, m[0].length, m[3], m[2], m[1]);
+  while((m = r3.exec(t))) if(MON[m[2].toLowerCase()]) add(m.index, m[0].length, m[1], MON[m[2].toLowerCase()], m[3]);
+  found.sort((a,b)=>a.i-b.i);
+  found.forEach((f, k)=>{
+    // the nearest word before the date decides
+    const w = t.slice(Math.max(0, f.i-50), f.i); let last = -1, kind = 0, x;
+    FD_END.lastIndex = 0; while((x = FD_END.exec(w))) if(x.index >= last){ last = x.index; kind = 2; }
+    FD_START.lastIndex = 0; while((x = FD_START.exec(w))) if(x.index > last){ last = x.index; kind = -2; }
+    f.s = kind;
+    // „date – date“: the first is the start, the second the end
+    const p = found[k-1];
+    if(p && f.i - p.end <= 6 && /^\s*(?:[-–—]|iki|to)\s*$/i.test(t.slice(p.end, f.i)) && p.iso < f.iso){ f.s = 2; if(p.s >= 0) p.s = -2; }
+  });
+  return found;
+}
+// without AI: the end date – one marked as an end, else the latest (an end is never before the start)
+function fdGuessDate(text){
   const lo = calISO(new Date(Date.now() - 400*864e5)), hi = calISO(new Date(Date.now() + 6*365*864e5));
-  const ok = found.filter(f=>f.iso>=lo && f.iso<=hi); if(!ok.length) return '';
-  ok.forEach(f=>{ f.s = /(iki|galioj|pabaig|until|expir|valid|end)/i.test(t.slice(Math.max(0, f.i-45), f.i)) ? 2 : 0; });
+  const ok = fdDates(text).filter(f=>f.iso>=lo && f.iso<=hi && f.s >= 0); if(!ok.length) return '';
   ok.sort((a,b)=>b.s-a.s || b.iso.localeCompare(a.iso));
   return ok[0].iso;
 }
@@ -9343,13 +9359,24 @@ async function fdReadDate(file, d, v){
   }catch(e){ console.warn('fdReadDate', e); }
   if(!text && !img) return { until:'', err:'failo perskaityti nepavyko' };
   const prompt = `Tai Lietuvos transporto priemonės dokumentas – ${FD_NAMES[d]}${v.plate ? ' (automobilio valst. nr. '+v.plate+')' : ''}. Šiandien ${calISO(new Date())}.
-Rask, iki kurios dienos šis dokumentas galioja: draudimo / galiojimo laikotarpio pabaiga („galioja iki“, „draudimo laikotarpis … iki“, „kita apžiūra iki“, „valid until“, „expiry date“). Jei nurodytas laikotarpis – imk paskutinę jo dieną.
-Atsakyk TIK JSON, be jokių paaiškinimų: {"until":"YYYY-MM-DD" arba null, "plate":"valstybinis numeris arba null"}`
+Reikia datos, IKI KURIOS dokumentas galioja – galiojimo PABAIGOS, ne pradžios. Ieškok: „galioja iki“, „galiojimo pabaiga“, „draudimo laikotarpis nuo … iki …“ (imk datą po „iki“), „kita techninė apžiūra iki“, „valid until“, „expiry date“.
+NEIMK: išdavimo, sudarymo, pasirašymo, apmokėjimo, įsigaliojimo, apžiūros atlikimo datų ir datos po „nuo“ – tai pradžios datos.
+Jei nurodyta tik pradžia ir trukmė (pvz. „12 mėn. nuo 2025-11-01“), pabaiga = pradžia + trukmė − 1 diena (2026-10-31).
+Atsakyk TIK JSON, be jokių paaiškinimų: {"from":"YYYY-MM-DD" arba null, "until":"YYYY-MM-DD" arba null, "plate":"valstybinis numeris arba null"}`
     + (text ? '\n\nDokumento tekstas:\n'+text.slice(0, 9000) : '');
   try{
     const a = await fdAsk(prompt, img), i = a.indexOf('{'), j = a.lastIndexOf('}');
-    if(i >= 0 && j > i){ const o = JSON.parse(a.slice(i, j+1)); const u = fdOkDate(o.until); if(u) return { until:u, plate: o.plate ? String(o.plate).trim() : '' }; }
-    return { until: fdGuessDate(text), err: text ? '' : 'AI datos nerado' };
+    if(i >= 0 && j > i){
+      const o = JSON.parse(a.slice(i, j+1)), plate = o.plate ? String(o.plate).trim() : '', from = fdOkDate(o.from);
+      let u = fdOkDate(o.until);
+      // not the end: the same as or before the start, or a date the text marks as a start → the end from the text
+      const marked = text ? fdDates(text).filter(f=>f.iso===u) : [];
+      if(u && ((from && u <= from) || (marked.length && marked.every(f=>f.s < 0)))) u = '';
+      if(!u && text) u = fdGuessDate(text);
+      if(u && from && u <= from) u = '';
+      if(u) return { until:u, plate };
+    }
+    return { until: fdGuessDate(text), err: text ? '' : 'AI pabaigos datos nerado' };
   }catch(e){ return { until: fdGuessDate(text), err: e.message || String(e) }; }
 }
 
@@ -21118,7 +21145,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v501';
+const APP_VER = 'v502';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -43226,6 +43253,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 17:05', v:'v502', k:'fix', t:'Transporto dokumentai: imama data IKI kada galioja', f:'Skaitant įkeltą draudimo, tech. apžiūros, vinjetės ar KASKO dokumentą visada ieškoma galiojimo pabaigos („galioja iki“, „laikotarpis nuo … iki …“ – data po „iki“, „kita apžiūra iki“, „valid until“), o ne išdavimo, sudarymo, apmokėjimo ar „nuo“ datos. Jei AI vis tiek grąžintų pradžios datą – ji pakeičiama pabaigos data iš dokumento teksto.' },
   { d:'2026-10-12 16:45', v:'v501', k:'fix', t:'Transportas: datos su metais', f:'Prie automobilių dokumentų datos rodomos su metais (pvz. „Draudimas iki 2027.01.25“, ne „01.25“), taip pat remonto laikotarpis ir dokumentų santrauka; Pradžios lange prie artimiausios pabaigos – ir pati data.' },
   { d:'2026-10-12 16:30', v:'v500', k:'fix', t:'Kalendorius: mėnuo ir metai mygtukais', f:'iPhone pasirinkus metus ir mėnesį kalendorius užsidarydavo ir nebuvo galima pažymėti dienos (pvz. draudimo galiojimo datos). Dabar paspaudus „Spalis 2026“ atsiveria 12 mėnesių mygtukų ir metų rodyklės ‹ ›; pasirinkus mėnesį grįžtama į dienas – lieka paspausti dieną. Rodyklės per mėnesius veikia kaip anksčiau.' },
   { d:'2026-10-12 16:05', v:'v499', k:'fix', t:'Teksto žymėjimas neuždaro kortelių', f:'Pele pažymint tekstą (pvz. Klaidos / pasiūlymai įraše) kortelė nebeužsidaro ir neatsidaro – tekstą galima ramiai pažymėti ir nukopijuoti. Paprastas paspaudimas veikia kaip anksčiau. Galioja visoje programėlėje.' },
