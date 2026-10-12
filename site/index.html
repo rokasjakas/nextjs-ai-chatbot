@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-ONUHG+0agyaW8yrqaglAJxZ0JRgzle4eNOY11OmH5NQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-FMoJg9lgQlsfzOlf9s4wa84MYWMWdDbuZ1+mkoblQKA=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -372,6 +372,15 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .fl-plate{font-family:monospace;font-size:12px;letter-spacing:1px;padding:2px 6px;border:1px solid var(--border-2);border-radius:5px;background:var(--panel-2);}
 .fl-tile-m{font-size:12px;color:var(--text-dim);}
 .fl-tile-s{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px;}
+.fd-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;}
+.fd-chip{display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:4px 9px;border-radius:999px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);font:inherit;font-size:12px;cursor:pointer;}
+.fd-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;} .fd-chip svg{width:14px;height:14px;color:var(--accent);flex:none;}
+.fd-chip:hover{border-color:var(--accent);}
+.fd-x{border:0;background:none;color:var(--text-faint);cursor:pointer;padding:2px;margin-left:-4px;} .fd-x svg{width:13px;height:13px;}
+.fd-up{cursor:pointer;} .fd-up svg{width:14px;height:14px;}
+.fd-st{font-size:11.5px;color:var(--text-dim);}
+input.fd-auto{outline:2px solid #3fbf8f;outline-offset:1px;}
+.fl-chip.has-doc{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px;}
 .fl-chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:3px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--border);color:var(--text-dim);}
 .fl-chip svg{width:13px;height:13px;}
 .fl-chip.ok{color:var(--ok);} .fl-chip.warn{color:var(--warn);border-color:color-mix(in srgb, var(--warn) 40%, var(--border));} .fl-chip.danger{color:var(--danger);border-color:color-mix(in srgb, var(--danger) 45%, var(--border));}
@@ -7908,7 +7917,8 @@ function fleetDocShort(v){
 function fleetDocChip(v, d, name){
   const st = docStatus(v.docs && v.docs[d], docLead(v, d));
   const t = st.level==='none' ? name+(name==='Draudimas' ? ' neįvestas' : ' neįvesta') : st.level==='danger' ? name+' baigėsi' : st.level==='warn' ? (st.days===0 ? name+' baigiasi šiandien' : name+' – liko '+st.days+' d.') : name+' iki '+String(v.docs[d]).slice(5).replace('-', '.');
-  return { level:st.level, html:`<span class="fl-chip ${st.level==='none' ? 'danger' : st.level}">${slIcon('file')} ${esc(t)}</span>` };
+  const doc = fdFiles(v, d).length;
+  return { level:st.level, html:`<span class="fl-chip ${st.level==='none' ? 'danger' : st.level}${doc ? ' has-doc' : ''}"${doc ? ` data-fdoc="${d}" title="Atidaryti dokumentą"` : ''}>${slIcon('file')} ${esc(t)}</span>` };
 }
 function fleetRepPeriod(r){ const f = x=>String(x).slice(5).replace('-', '.'); return r.from || r.to ? ' '+(r.from ? f(r.from) : '…')+'–'+(r.to ? f(r.to) : '…') : ''; }
 function fleetModel(v){ const t = vehicleTemplates().find(x=>x.key===v.templateKey); return t && t.name!==v.name ? t.name : ''; }
@@ -7942,7 +7952,11 @@ function renderFleetList(){
       const plusWait = grIsPlus() ? FLEET.rm.filter(r=>r.status==='pending' && r.requested_by!==teamMe() && STATE.vehicles.some(v=>v.id===r.vehicle_id)) : [];
       box.innerHTML = (plusWait.length ? `<div class="fl-rmbar">🗑 Laukia tavo patvirtinimo: ${plusWait.map(r=>`<button type="button" class="btn small" data-vopen="${esc(r.vehicle_id)}">${esc(r.vehicle_name)}${r.plate ? ' · '+esc(r.plate) : ''}</button>`).join('')}</div>` : '')
         + `<div class="fl-grid">${STATE.vehicles.map(fleetTileHtml).join('')}</div>`;
-      box.querySelectorAll('[data-vopen]').forEach(b=>b.onclick = ()=>b.classList.contains('fl-tile') ? fleetChoose(b.dataset.vopen) : fleetOpen(b.dataset.vopen));
+      box.querySelectorAll('[data-vopen]').forEach(b=>b.onclick = e=>{
+        // a document chip on the tile: the document itself opens
+        const fd = b.classList.contains('fl-tile') && e.target.closest && e.target.closest('[data-fdoc]');
+        if(fd){ e.stopPropagation(); const v = STATE.vehicles.find(x=>x.id===b.dataset.vopen); if(v) fdOpen(v, fd.dataset.fdoc, 0); return; }
+        b.classList.contains('fl-tile') ? fleetChoose(b.dataset.vopen) : fleetOpen(b.dataset.vopen); });
     }
   }
   fleetPopRender();
@@ -9224,6 +9238,110 @@ function openVignetteCheck(v){
   };
 }
 
+/* ---------- the documents themselves (policy, inspection certificate, vignette, KASKO) ----------
+   A PDF or a photo is kept in 'fleet-files' (docs/<vehicle>/<document>/<file>), listed in v.docFiles.
+   Its end date is read at once: the PDF's text (or a picture of its first page, or the photo) goes to the
+   AI assistant (ai-chat); without AI – dates found in the text. The date can always be written by hand. */
+const FD_NAMES = { insurance:'privalomojo draudimo (TPVCA) polisas', inspection:'techninės apžiūros pažyma', roadPermit:'vinjetė (kelių naudotojo mokesčio kvitas)', kasko:'KASKO draudimo polisas' };
+function fdFiles(v, d){ return ((v && v.docFiles) || {})[d] || []; }
+function fdHtml(v, d){
+  const fs = fdFiles(v, d), ed = canEdit('fleet');
+  return `<div class="fd-row">${fs.map((f, i)=>`<button type="button" class="fd-chip" data-fdopen="${d}" data-i="${i}" data-ro-ok title="Atidaryti: ${esc(f.name)}">${slIcon('file')}<span>${esc(f.name)}</span></button>${ed ? `<button type="button" class="fd-x" data-fdx="${d}" data-i="${i}" title="Pašalinti dokumentą" aria-label="Pašalinti dokumentą">${slIcon('close')}</button>` : ''}`).join('')}
+    ${ed ? `<label class="btn small fd-up" title="Įkelk PDF ar nuotrauką – galiojimo pabaiga nuskaitoma automatiškai">${slIcon('attach')} ${fs.length ? 'Naujas dokumentas' : 'Įkelti dokumentą'}<input type="file" accept="application/pdf,image/*" data-fdup="${d}" hidden></label>` : ''}<span class="fd-st" data-fdst="${d}"></span></div>`;
+}
+async function fdOpen(v, d, i){
+  const f = fdFiles(v, d)[i || 0]; if(!f) return;
+  const w = window.open('', '_blank');
+  const [u] = await sbSignedUrls(VL_BUCKET, [f.path]);
+  if(!u){ if(w) w.close(); toast('Dokumento atidaryti nepavyko.'); return; }
+  if(w) w.location.href = u; else location.href = u;
+}
+async function fdUpload(v, d, file){
+  const st = ()=>document.querySelector(`.doc-card[data-id="${CSS.escape(v.id)}"] [data-fdst="${d}"]`), say = t=>{ const e = st(); if(e) e.textContent = t; };
+  let blob = file, type = file.type || 'application/octet-stream', name = file.name || 'dokumentas';
+  if(!/^image\//.test(type) && type!=='application/pdf'){ toast('Įkelk PDF arba nuotrauką.'); return; }
+  say('Keliama…');
+  try{
+    if(/^image\//.test(type) && !/gif/.test(type)){ try{ const sh = await venShrink(file); blob = sh.blob; type = 'image/jpeg'; name = name.replace(/\.[a-z0-9]+$/i, '')+'.jpg'; }catch(e){} }
+    if(blob.size > 20*1024*1024) throw new Error('failas didesnis nei 20 MB');
+    const ext = (name.match(/\.([a-z0-9]{2,5})$/i)||[])[1] || (type==='application/pdf' ? 'pdf' : 'jpg');
+    const path = `docs/${v.id}/${d}/${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}.${ext.toLowerCase()}`;
+    const { error } = await stFrom(VL_BUCKET).upload(path, blob, { contentType:type, upsert:false });
+    if(error) throw error;
+    v.docFiles = Object.assign({}, v.docFiles || {}, { [d]: [{ path, name, type, size:blob.size, at:new Date().toISOString() }].concat(fdFiles(v, d)) });
+    saveState();
+  }catch(e){ say(''); toast('Nepavyko įkelti: '+(e.message||e), 6000); return; }
+  renderDocsTable(); say('Skaitoma galiojimo pabaiga…');
+  const r = await fdReadDate(file, d, v);
+  say('');
+  if(r.until){
+    const was = v.docs[d]; v.docs[d] = r.until; saveState(); scheduleReminderSync(); renderDocsTable();
+    const inp = document.querySelector(`.doc-card[data-id="${CSS.escape(v.id)}"] .doc-f[data-f="${d}"]`); if(inp){ inp.classList.add('fd-auto'); setTimeout(()=>inp.classList.remove('fd-auto'), 5000); }
+    toast(`✓ ${FLEET_DOCS[d]}: galioja iki ${r.until}${was && was!==r.until ? ' (buvo '+was+')' : ''} – nuskaityta iš dokumento, patikrink.`, 7000);
+    if(r.plate && v.plate && utaNorm(r.plate)!==utaNorm(v.plate)) toast(`Dėmesio: dokumente valst. nr. ${r.plate}, o šio automobilio – ${v.plate}.`, 9000);
+  } else {
+    toast('Dokumentas įkeltas, bet galiojimo pabaigos nuskaityti nepavyko'+(r.err ? ' ('+r.err+')' : '')+' – įrašyk datą ranka.', 8000);
+    const inp = document.querySelector(`.doc-card[data-id="${CSS.escape(v.id)}"] .doc-f[data-f="${d}"]`); if(inp) inp.focus();
+  }
+}
+const fdB64 = blob=>new Promise((res, rej)=>{ const fr = new FileReader(); fr.onload = ()=>res(String(fr.result).split(',')[1] || ''); fr.onerror = ()=>rej(fr.error); fr.readAsDataURL(blob); });
+async function fdAsk(prompt, img){
+  const token = await fnToken(); if(!token) throw new Error('prisijunk iš naujo');
+  const res = await fetch(SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/ai-chat', { method:'POST',
+    headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+token, apikey:SUPABASE_KEY },
+    body:JSON.stringify(Object.assign({ messages:[{ role:'user', content:prompt }] }, img ? { image:img } : {})) });
+  if(!res.ok){ let m = 'AI klaida '+res.status; try{ const j = await res.json(); if(j.error) m = j.error; }catch(e){} throw new Error(m); }
+  return await res.text();
+}
+const fdOkDate = s=>{ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s||'')); if(!m) return ''; const d = new Date(+m[1], +m[2]-1, +m[3]); return d.getMonth()===+m[2]-1 && +m[1]>=2000 && +m[1]<=2100 ? m[0] : ''; };
+// without AI: the date written after „galioja iki“ / „pabaiga“ / „valid until“, else the latest one
+function fdGuessDate(text){
+  const MON = { sausio:1, vasario:2, kovo:3, balandžio:4, gegužės:5, birželio:6, liepos:7, rugpjūčio:8, rugsėjo:9, spalio:10, lapkričio:11, gruodžio:12 };
+  const t = String(text||''), found = [], z = n=>String(n).padStart(2,'0');
+  const add = (i, y, m, d)=>{ const iso = fdOkDate(y+'-'+z(m)+'-'+z(d)); if(iso) found.push({ i, iso }); };
+  let m; const r1 = /(\d{4})[-./](\d{1,2})[-./](\d{1,2})/g, r2 = /(\d{1,2})[./](\d{1,2})[./](\d{4})/g, r3 = /(\d{4})\s*m\.?\s*([a-ząčęėįšųūž]+)\s+(\d{1,2})\s*d/gi;
+  while((m = r1.exec(t))) add(m.index, m[1], m[2], m[3]);
+  while((m = r2.exec(t))) add(m.index, m[3], m[2], m[1]);
+  while((m = r3.exec(t))) if(MON[m[2].toLowerCase()]) add(m.index, m[1], MON[m[2].toLowerCase()], m[3]);
+  if(!found.length) return '';
+  const lo = calISO(new Date(Date.now() - 400*864e5)), hi = calISO(new Date(Date.now() + 6*365*864e5));
+  const ok = found.filter(f=>f.iso>=lo && f.iso<=hi); if(!ok.length) return '';
+  ok.forEach(f=>{ f.s = /(iki|galioj|pabaig|until|expir|valid|end)/i.test(t.slice(Math.max(0, f.i-45), f.i)) ? 2 : 0; });
+  ok.sort((a,b)=>b.s-a.s || b.iso.localeCompare(a.iso));
+  return ok[0].iso;
+}
+async function fdReadDate(file, d, v){
+  let text = '', img = null;
+  try{
+    if(file.type==='application/pdf' || /\.pdf$/i.test(file.name||'')){
+      if(typeof pdfjsLib==='undefined') await loadScriptOnce('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js', ()=>typeof pdfjsLib!=='undefined');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+      const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      for(let p = 1; p <= Math.min(3, pdf.numPages); p++) text += (await (await pdf.getPage(p)).getTextContent()).items.map(it=>it.str).join(' ')+'\n';
+      // a scanned PDF (no text): a picture of its first page
+      if(text.replace(/\s+/g, '').length < 40){
+        text = '';
+        const pg = await pdf.getPage(1), vp0 = pg.getViewport({ scale:1 }), k = Math.min(2.5, 1800/Math.max(vp0.width, vp0.height)), vp = pg.getViewport({ scale:k });
+        const c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+        await pg.render({ canvasContext:c.getContext('2d'), viewport:vp }).promise;
+        img = { mime:'image/jpeg', data: await fdB64(await new Promise(r=>c.toBlob(r, 'image/jpeg', 0.85))) };
+      }
+    } else if(/^image\//.test(file.type)){
+      const sh = await venShrink(file); img = { mime:'image/jpeg', data: await fdB64(sh.blob) };
+    }
+  }catch(e){ console.warn('fdReadDate', e); }
+  if(!text && !img) return { until:'', err:'failo perskaityti nepavyko' };
+  const prompt = `Tai Lietuvos transporto priemonės dokumentas – ${FD_NAMES[d]}${v.plate ? ' (automobilio valst. nr. '+v.plate+')' : ''}. Šiandien ${calISO(new Date())}.
+Rask, iki kurios dienos šis dokumentas galioja: draudimo / galiojimo laikotarpio pabaiga („galioja iki“, „draudimo laikotarpis … iki“, „kita apžiūra iki“, „valid until“, „expiry date“). Jei nurodytas laikotarpis – imk paskutinę jo dieną.
+Atsakyk TIK JSON, be jokių paaiškinimų: {"until":"YYYY-MM-DD" arba null, "plate":"valstybinis numeris arba null"}`
+    + (text ? '\n\nDokumento tekstas:\n'+text.slice(0, 9000) : '');
+  try{
+    const a = await fdAsk(prompt, img), i = a.indexOf('{'), j = a.lastIndexOf('}');
+    if(i >= 0 && j > i){ const o = JSON.parse(a.slice(i, j+1)); const u = fdOkDate(o.until); if(u) return { until:u, plate: o.plate ? String(o.plate).trim() : '' }; }
+    return { until: fdGuessDate(text), err: text ? '' : 'AI datos nerado' };
+  }catch(e){ return { until: fdGuessDate(text), err: e.message || String(e) }; }
+}
+
 // each vehicle's documents (insurance, inspection, road tax / vignette, reminders) sit in its own card
 function renderDocsTable(){
   const el = document.getElementById('fleetList');
@@ -9245,10 +9363,12 @@ function docCardHtml(v){ return [v].map(v=>{
       <div class="grid cols-3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
         <div class="doc-box">
           <label class="field">Draudimas galioja iki<input type="date" class="doc-f" data-f="insurance" value="${v.docs.insurance||''}"></label>
+          ${fdHtml(v, 'insurance')}
           <label class="field doc-lead">Priminti likus (d.)<input type="number" min="0" class="lead-f" data-doc="insurance" value="${docLead(v,'insurance')}"></label>
         </div>
         <div class="doc-box">
           <label class="field">Tech. apžiūra galioja iki<input type="date" class="doc-f" data-f="inspection" value="${v.docs.inspection||''}"></label>
+          ${fdHtml(v, 'inspection')}
           <label class="field doc-lead">Priminti likus (d.)<input type="number" min="0" class="lead-f" data-doc="inspection" value="${docLead(v,'inspection')}"></label>
         </div>
         <div class="doc-box">
@@ -9258,10 +9378,12 @@ function docCardHtml(v){ return [v].map(v=>{
               <button type="button" class="btn small check-vignette" style="white-space:nowrap;" title="Atidaryti keliumokestis.lt patikrinimą (valst. nr. nukopijuojamas)">🔎 Tikrinti</button>
             </div>
           </div>
+          ${fdHtml(v, 'roadPermit')}
           <label class="field doc-lead">Priminti likus (d.)<input type="number" min="0" class="lead-f" data-doc="roadPermit" value="${docLead(v,'roadPermit')}"></label>
         </div>
         <div class="doc-box">
           <label class="field">KASKO galioja iki <small class="muted">(nebūtina)</small><input type="date" class="doc-f" data-f="kasko" value="${v.docs.kasko||''}"></label>
+          ${fdHtml(v, 'kasko')}
           <label class="field doc-lead">Priminti likus (d.)<input type="number" min="0" class="lead-f" data-doc="kasko" value="${docLead(v,'kasko')}"></label>
         </div>
       </div>
@@ -9286,6 +9408,11 @@ function docCardHtml(v){ return [v].map(v=>{
   }).join(''); }
 function docCardsBind(el){
   const vehicleOf = el2=> STATE.vehicles.find(x=>x.id===el2.closest('.doc-card[data-id]').getAttribute('data-id'));
+  el.querySelectorAll('[data-fdup]').forEach(inp=>inp.onchange = ()=>{ const f = inp.files && inp.files[0]; inp.value = ''; const v = vehicleOf(inp); if(f && v) fdUpload(v, inp.dataset.fdup, f); });
+  el.querySelectorAll('[data-fdopen]').forEach(b=>b.onclick = ()=>{ const v = vehicleOf(b); if(v) fdOpen(v, b.dataset.fdopen, +b.dataset.i); });
+  el.querySelectorAll('[data-fdx]').forEach(b=>b.onclick = async ()=>{ const v = vehicleOf(b), d = b.dataset.fdx, f = v && fdFiles(v, d)[+b.dataset.i]; if(!f) return;
+    if(!(await uiConfirm(`Pašalinti dokumentą „${f.name}“? Galiojimo data lieka.`))) return;
+    v.docFiles[d] = fdFiles(v, d).filter(x=>x!==f); saveState(); stFrom(VL_BUCKET).remove([f.path]).catch(()=>{}); renderDocsTable(); });
   // chips (hours, e-mails) re-render; plain fields only refresh the card header
   const changed = ()=>{ saveState(); renderDocsTable(); scheduleReminderSync(); };
   const fieldChanged = v=>{ saveState(); updateDocCardHeader(v); scheduleReminderSync(); };
@@ -20966,7 +21093,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v496';
+const APP_VER = 'v497';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -43061,6 +43188,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 15:30', v:'v497', k:'new', t:'Transportas: dokumentų įkėlimas ir automatinė galiojimo data', f:'Automobilio kortelėje prie draudimo, tech. apžiūros, vinjetės ir KASKO – „Įkelti dokumentą“ (PDF ar nuotrauka). Įkėlus galiojimo pabaiga nuskaitoma automatiškai ir įrašoma (laukelis trumpam pažaliuoja – patikrink); jei nuskaityti nepavyksta – įrašai ranka, kaip ir anksčiau. Paspaudus dokumentą – jis atsidaro; plytelėje paspaudus draudimo / tech. apžiūros / vinjetės / KASKO žymą, kur yra įkeltas dokumentas – atsidaro pats dokumentas.' },
   { d:'2026-10-12 14:45', v:'v496', k:'new', t:'Team Tracker be PIN ir registracijos', f:'Team Tracker naudojasi visi patvirtinti nariai savo paskyra: nebereikia registruotis ir vesti PIN kodo. Atidarius Team Tracker iškart matai save ir gali pradėti darbą; jau užregistruotas narys su tuo pačiu vardu ir pavarde susiejamas automatiškai, sukauptas laikas lieka. Kitų narių laiką, kaip ir anksčiau, mato Admin, Office ir Projektų vadovai. Reikia paleisti supabase/sql/tracker_nopin.sql.' },
   { d:'2026-10-12 14:00', v:'v495', k:'fix', t:'RFID: nepertraukiamas skaitymas įtraukia žymas', f:'Kai skaitytuvas skaito be perstojo, jis rašo žymą po žymos be Enter ir be pauzės – anksčiau puslapis laukė pauzės ir žymų neįtraukdavo. Dabar žymos atskiriamos iš karto (pagal įprastą žymos ilgį), kol dar skenuojama.' },
   { d:'2026-10-12 13:30', v:'v494', k:'fix', t:'RFID: kaip skaityti daug žymų iš karto', f:'Inventorizacijoje ir nepertraukiamoje paieškoje – instrukcija, kaip skaitytuvo programoje Keyboard Emulator įjungti nepertraukiamą skaitymą (Continuous scan), kad vienu mygtuko laikymu būtų nuskaitomos visos aplinkui esančios žymos.' },

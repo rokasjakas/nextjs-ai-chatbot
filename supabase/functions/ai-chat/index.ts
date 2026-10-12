@@ -6,6 +6,10 @@
 //
 // POST { messages: [{ role:"user"|"assistant", content:"…" }, …] }   (the last one is the user's)
 //   -> text/plain stream with the answer
+// POST { messages, image: { mime:"image/jpeg"|"image/png"|"application/pdf", data:"<base64>" } }
+//   the picture goes with the last question (e.g. Transportas: read a document's end date). Groq answers it
+//   with a vision model (GROQ_VISION_MODEL, default meta-llama/llama-4-scout-17b-16e-instruct; pictures only),
+//   Gemini with its usual model (pictures and PDF)
 //
 // Only a signed-in, approved member may ask (the public anon key alone is not enough).
 // The AI service is the one whose key is set (first found):
@@ -17,7 +21,8 @@
 // Deploy:  supabase functions deploy ai-chat
 // On free plans the service may use the questions to improve its models – the card says so.
 
-export const VERSION = 3;
+export const VERSION = 4;
+const MAX_IMAGE = 5_500_000;   // base64 signs (~4 MB file)
 const MAX_TURNS = 40;          // messages kept from the conversation
 const MAX_CHARS = 12000;       // per message
 
@@ -51,6 +56,7 @@ async function approvedMember(req: Request): Promise<boolean> {
 }
 
 type Turn = { role: "user" | "model"; parts: { text: string }[] };
+type Img = { mime: string; data: string } | null;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -60,7 +66,7 @@ Deno.serve(async (req) => {
   const provider = E("GROQ_API_KEY") ? "groq" : E("GEMINI_API_KEY") ? "gemini" : E("AI_API_KEY") && E("AI_BASE_URL") && E("AI_MODEL") ? "openai" : "";
   if (!provider) return json({ error: "AI dar nesukonfigūruotas: Supabase → Edge Functions → Secrets → GROQ_API_KEY (nemokamas raktas: console.groq.com)." }, 503);
 
-  let body: { messages?: { role?: string; content?: string }[] };
+  let body: { messages?: { role?: string; content?: string }[]; image?: { mime?: string; data?: string } };
   try { body = await req.json(); } catch { return json({ error: "Blogas užklausos formatas." }, 400); }
   // only plain user/assistant text, alternating, starting and ending with the user
   const turns: Turn[] = [];
@@ -73,6 +79,14 @@ Deno.serve(async (req) => {
   }
   while (turns.length && turns[0].role !== "user") turns.shift();
   if (!turns.length || turns[turns.length - 1].role !== "user") return json({ error: "Nėra klausimo." }, 400);
+  let img: Img = null;
+  if (body.image && typeof body.image.data === "string") {
+    const mime = String(body.image.mime ?? "");
+    if (!/^(image\/(jpeg|png|webp)|application\/pdf)$/.test(mime)) return json({ error: "Netinkamas failo tipas (tik nuotrauka arba PDF)." }, 400);
+    if (body.image.data.length > MAX_IMAGE) return json({ error: "Failas per didelis AI skaitymui." }, 413);
+    if (mime === "application/pdf" && provider !== "gemini") return json({ error: "Šis AI PDF neskaito – siųsk puslapio nuotrauką." }, 400);
+    img = { mime, data: body.image.data.replace(/\s+/g, "") };
+  }
 
   let api: Response, model: string;
   if (provider === "gemini") {
@@ -80,16 +94,19 @@ Deno.serve(async (req) => {
     api = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": E("GEMINI_API_KEY") },
-      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, contents: turns, generationConfig: { maxOutputTokens: 4096 } }),
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] },
+        contents: img ? turns.map((t, i) => i === turns.length - 1 ? { role: t.role, parts: [...t.parts, { inline_data: { mime_type: img!.mime, data: img!.data } }] } : t) : turns,
+        generationConfig: { maxOutputTokens: 4096 } }),
     });
   } else {
     // Groq and the other OpenAI-compatible services: /chat/completions with stream:true
     const base = provider === "groq" ? "https://api.groq.com/openai/v1" : E("AI_BASE_URL").replace(/\/$/, "");
     const key = provider === "groq" ? E("GROQ_API_KEY") : E("AI_API_KEY");
-    model = provider === "groq" ? (E("GROQ_MODEL") || "openai/gpt-oss-120b") : E("AI_MODEL");
+    model = provider === "groq" ? (img ? E("GROQ_VISION_MODEL") || "meta-llama/llama-4-scout-17b-16e-instruct" : E("GROQ_MODEL") || "openai/gpt-oss-120b") : E("AI_MODEL");
     const req: Record<string, unknown> = {
       model, stream: true, max_tokens: 4096,
-      messages: [{ role: "system", content: SYSTEM }, ...turns.map((t) => ({ role: t.role === "model" ? "assistant" : "user", content: t.parts[0].text }))],
+      messages: [{ role: "system", content: SYSTEM }, ...turns.map((t, i) => ({ role: t.role === "model" ? "assistant" : "user",
+        content: img && i === turns.length - 1 ? [{ type: "text", text: t.parts[0].text }, { type: "image_url", image_url: { url: `data:${img.mime};base64,${img.data}` } }] : t.parts[0].text }))],
     };
     if (provider === "groq" && /gpt-oss/.test(model)) req.reasoning_effort = "low";   // everyday questions: quick answers
     api = await fetch(`${base}/chat/completions`, {
