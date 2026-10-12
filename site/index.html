@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-f0NiwhXsJtllf5Yz6rQeE5QRqAAwzeZvzGTroMCacyg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-NN62/8jcg0gKFINTAkwbG6FBh2z4BjDXy+l2kRz+lcw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20841,7 +20841,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v485';
+const APP_VER = 'v486';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27063,20 +27063,14 @@ async function teamStart(){
   admWatch(); admFromUrl();   // new members waiting for access
   appUpdateCheck();           // an older Android app on this phone (or Windows app)
   deskStart();                // Windows app: notifications from desktop_inbox
+  setTimeout(notifyOutFlush, 3000);   // notices that did not go out last time (no connection)
   iosRegister();              // iPhone app: this phone gets Apple notifications
-  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible'){ teamActivity(); teamTrack(); if(canView('chat')) teamLoadConvs(); mailPoll(true); } else teamTouchLastSeen(); });
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible'){ teamActivity(); teamTrack(); if(canView('chat')){ teamLoadConvs(); teamMsgCheck(); } mailPoll(true); notifyOutFlush(); } else teamTouchLastSeen(); });
   setInterval(()=>{ teamRefreshDots(); }, 30000);
   setInterval(teamTouchLastSeen, 5*60000);
   teamTouchLastSeen();
   // new messages (only for levels that may use the chat)
-  if(canView('chat')) try{
-    TEAM.msgCh = sb.channel('team-messages')
-      .on('postgres_changes', { event:'*', schema:'public', table:'messages' }, chatOnChange)
-      .on('postgres_changes', { event:'*', schema:'public', table:'message_reactions' }, chatOnReaction)
-      .on('postgres_changes', { event:'*', schema:'public', table:'calls' }, p=>chatOnCall(p))
-      .on('postgres_changes', { event:'*', schema:'public', table:'call_responses' }, p=>chatOnCallResponse(p))
-      .subscribe();
-  }catch(e){}
+  if(canView('chat')) teamMsgSubscribe();
   if(canView('chat')){ await teamLoadConvs(); notifyOpenFromUrl(); notifyRefreshDevice(); }
   mailPoll();
   try{ ttInit(); }catch(e){}
@@ -27087,6 +27081,30 @@ async function teamStart(){
     setTimeout(()=>{ if(currentTab==='home'){ pfOpen('about'); toast('Sveiki! Užpildyk savo profilį — jį matys kiti komandos nariai.'); } }, 600);
   }
 }
+// the chat's live connection: when it breaks (sleep, network, expired sign-in) it is made again,
+// and the conversations are read again so nothing that came meanwhile is missed
+function teamMsgSubscribe(){
+  const sb = getSb(); if(!sb) return;
+  try{ if(TEAM.msgCh){ const old = TEAM.msgCh; TEAM.msgCh = null; sb.removeChannel(old); } }catch(e){}
+  try{
+    const ch = sb.channel('team-messages-'+Date.now().toString(36))
+      .on('postgres_changes', { event:'*', schema:'public', table:'messages' }, chatOnChange)
+      .on('postgres_changes', { event:'*', schema:'public', table:'message_reactions' }, chatOnReaction)
+      .on('postgres_changes', { event:'*', schema:'public', table:'calls' }, p=>chatOnCall(p))
+      .on('postgres_changes', { event:'*', schema:'public', table:'call_responses' }, p=>chatOnCallResponse(p));
+    TEAM.msgCh = ch; TEAM.msgSt = 'JOINING';
+    ch.subscribe(st=>{
+      if(TEAM.msgCh!==ch) return;                 // an old one being closed
+      const was = TEAM.msgSt; TEAM.msgSt = st;
+      if(st==='SUBSCRIBED' && was && was!=='JOINING' && was!=='SUBSCRIBED') teamLoadConvs();
+      if(st==='CHANNEL_ERROR' || st==='TIMED_OUT' || st==='CLOSED') teamMsgRetry();
+    });
+  }catch(e){ teamMsgRetry(); }
+}
+let teamMsgT = 0;
+function teamMsgRetry(){ clearTimeout(teamMsgT); teamMsgT = setTimeout(()=>{ if(canView('chat')){ teamMsgSubscribe(); teamLoadConvs(); } }, document.visibilityState==='visible' ? 2000 : 15000); }
+function teamMsgCheck(){ if(canView('chat') && TEAM.msgCh && TEAM.msgSt!=='SUBSCRIBED' && TEAM.msgSt!=='JOINING') teamMsgRetry(); }
+window.addEventListener('online', ()=>{ teamMsgCheck(); });
 async function teamLoadMembers(){
   const sb = getSb(); if(!sb) return;
   const { data, error } = await sb.from('profiles').select('*');
@@ -31906,17 +31924,42 @@ async function notifySavePrefs(p){
   if(error){ toast('Nepavyko išsaugoti: '+error.message); return false; }
   return true;
 }
-async function notifyCall(body){
-  try{
-    const { data } = await getSb().auth.getSession();
-    const token = data && data.session ? data.session.access_token : '';
-    const res = await fetch(NOTIFY_FN(), { method:'POST', headers:{'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+token}, body:JSON.stringify(body) });
-    if(res.ok){ window.NOTIFY_LAST = null; return await res.json(); }
-    const t = await res.text().catch(()=>''); let msg = t; try{ const j = JSON.parse(t); msg = j.error || j.message || j.msg || t; }catch(e){}
-    window.NOTIFY_LAST = { status:res.status, error:String(msg||'').slice(0,160) };
-    return null;
-  }catch(e){ window.NOTIFY_LAST = { status:0, error:e.message }; return null; }
+// A notice to others goes through the server (push-notify). The request survives the page being closed
+// (keepalive), is tried again when the connection broke, and what still did not go is kept and sent when
+// the app is online again (up to 20 min). Chat messages are also sent by the database itself (push_server.sql) –
+// the server sends each one only once.
+const NOTIFY_OUT = 'esNotifyOut';
+const NOTIFY_KEEP = new Set(['message','reaction','task','gear','leave','feedback','event','vehicle_rm']);   // safe to send later
+async function notifyCall(body, opt){
+  const json = JSON.stringify(body), waits = [700, 2000, 5000];
+  for(let i=0; i<=waits.length; i++){
+    try{
+      let { data } = await getSb().auth.getSession();
+      if(i && data && data.session && (data.session.expires_at||0)*1000 < Date.now() + 30000){ try{ ({ data } = await getSb().auth.refreshSession()); }catch(e){} }
+      const token = data && data.session ? data.session.access_token : '';
+      const res = await fetch(NOTIFY_FN(), { method:'POST', keepalive:json.length < 60000, headers:{'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+token}, body:json });
+      if(res.ok){ window.NOTIFY_LAST = null; return await res.json(); }
+      const t = await res.text().catch(()=>''); let msg = t; try{ const j = JSON.parse(t); msg = j.error || j.message || j.msg || t; }catch(e){}
+      window.NOTIFY_LAST = { status:res.status, error:String(msg||'').slice(0,160) };
+      if(res.status < 500 && res.status!==401 && res.status!==429) return null;     // a real answer (not allowed, bad request): no point trying again
+    }catch(e){ window.NOTIFY_LAST = { status:0, error:e.message }; }
+    if(i===waits.length || (opt && opt.once)) break;
+    await new Promise(r=>setTimeout(r, waits[i]));
+  }
+  if(NOTIFY_KEEP.has(body && body.kind)) notifyOutAdd(body);
+  return null;
 }
+function notifyOutGet(){ try{ const a = JSON.parse(localStorage.getItem(NOTIFY_OUT)||'[]'); return Array.isArray(a) ? a.filter(x=>x && x.b && Date.now() - x.at < 20*60000) : []; }catch(e){ return []; } }
+function notifyOutAdd(b){ try{ const a = notifyOutGet(); a.push({ b, at:Date.now() }); localStorage.setItem(NOTIFY_OUT, JSON.stringify(a.slice(-40))); }catch(e){} }
+let notifyOutBusy = false;
+async function notifyOutFlush(){
+  if(notifyOutBusy || !navigator.onLine || !getSb()) return;
+  const a = notifyOutGet(); try{ localStorage.removeItem(NOTIFY_OUT); }catch(e){}
+  if(!a.length) return;
+  notifyOutBusy = true;
+  try{ for(const x of a) await notifyCall(x.b, { once:true }); } finally { notifyOutBusy = false; }
+}
+window.addEventListener('online', ()=>setTimeout(notifyOutFlush, 1500));
 function notifySupport(){
   if(DESK || IOSAPP) return 'yes';
   if(!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return PWA_IOS && !pwaStandalone() ? 'ios-install' : 'no';
@@ -32111,6 +32154,7 @@ function swMsg(d){
     if(d.type==='open-call' && d.call && canView('chat')) chatOpenCall(d.call);
     if(d.type==='call-join' && d.call && canView('chat')) chatOpenCall(d.call, null, true);
     if(d.type==='call-answer' && d.call && ['accepted','declined'].includes(d.status)) chatCallAnswer(d.call, d.status, true);
+    if(d.type==='push-in' && d.d) pushInApp(d.d);
 }
 
 /* ---------- conversation menu: mute, add members, leave, delete group ---------- */
@@ -33378,6 +33422,7 @@ async function chatOnChange(payload){
   }
   chatAddMessage(m);
   if(m.sender_id===teamMe() || before) return;
+  CHAT_RT_AT[m.conversation_id] = Date.now();
   const threadOnly = m.parent_id && !m.also_channel;
   const viewing = currentTab==='chat' && document.visibilityState==='visible' && (threadOnly ? TEAM.thread===m.parent_id : TEAM.open===m.conversation_id);
   const mentioned = String(m.body||'').includes('<@'+teamMe()+'>');
@@ -33397,6 +33442,28 @@ async function chatOnChange(payload){
   const who = teamShort(teamMember(m.sender_id));
   chatNotify(mentioned ? who+' paminėjo tave'+(c ? ' · '+chatLabel(c) : '') : who+(c && c.kind!=='direct' ? ' · '+chatLabel(c) : ''), chatPlain(m.body) || chatAttLabel(m.attachments), m.conversation_id,
     mentioned ? null : (c ? (c.kind==='channel' ? 'group' : c.kind) : 'group'));
+}
+const CHAT_RT_AT = {};
+// a push that came while this window is in front (the service worker hands it here instead of the system):
+// shown as the app's own notice, unless the chat already showed that message
+function pushInApp(d){
+  if(!d || !d.title) return;
+  // a call: rings here, unless the live connection already brought it
+  if(d.kind==='call' && d.call_id){
+    if(TEAM.calls && TEAM.calls[d.call_id]) return;
+    if(canView('chat')) getSb().from('calls').select('*').eq('id', d.call_id).maybeSingle().then(r=>{ if(r && r.data && !TEAM.calls[d.call_id]) chatOnCall({ eventType:'INSERT', new:r.data }); }).catch(()=>{});
+    return;
+  }
+  const cid = (String(d.url||'').match(/[?&]chat=([0-9a-f-]{36})/)||[])[1];
+  if(cid && (Date.now() - (CHAT_RT_AT[cid]||0) < 20000 || (currentTab==='chat' && TEAM.open===cid))) return;
+  let n = document.getElementById('chatToast');
+  if(!n){ n = document.createElement('button'); n.id = 'chatToast'; n.className = 'chat-toast'; document.body.appendChild(n); }
+  n.innerHTML = `<b>${cid ? '💬 ' : '🔔 '}${esc(d.title)}</b><span>${esc(String(d.body||'').slice(0,120))}</span>`;
+  n.onclick = ()=>{ n.classList.remove('show'); if(cid && canView('chat')){ TEAM.open = cid; TEAM.thread = (String(d.url).match(/[?&]thread=([0-9a-f-]{36})/)||[])[1] || null; if(TEAM.view==='files') TEAM.view = 'home'; setTab('chat'); } else if(d.url) appOpenFromUrl(d.url); };
+  n.classList.add('show');
+  clearTimeout(n._t); n._t = setTimeout(()=>n.classList.remove('show'), 6000);
+  if(cid) teamLoadConvs();     // the live connection may have missed it: unread counts are read again
+  if(typeof ntfLoad==='function') try{ ntfLoad().then(()=>{ try{ ntfCardRender(); gsideCount(); }catch(e){} }); }catch(e){}
 }
 function chatNotify(title, text, cid, kind, thread){
   if(currentTab==='chat' && TEAM.open===cid && document.visibilityState==='visible' && (!thread || TEAM.thread===thread)) return;   // already on screen
@@ -42528,6 +42595,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 08:30', v:'v486', k:'fix', t:'Pranešimai ateina patikimai ir iškart', f:'Chato žinučių pranešimus dabar siunčia serveris, kai tik žinutė išsaugoma – jie ateina ir tada, kai siuntėjas tuoj pat uždarė programėlę ar dingo ryšys, taip pat iš QR pranešimų ir automatinių žinučių (pvz. naujas rakto kodas). Kiekviena žinutė praneša tik vieną kartą. Kiti pranešimai (užduotys, įranga, prašymai, renginiai…) bandomi siųsti iš naujo, o be ryšio – išsiunčiami, kai ryšys atsiranda. Kompiuteryje sistemos pranešimas nebeslopinamas, kai programos langas tik matomas (pvz. kitame monitoriuje) – tik kai jis aktyvus; tada pranešimą parodo pati programa. Nutrūkęs chato ryšys (po miego, be interneto) atkuriamas savaime. Reikia paleisti supabase/sql/push_server.sql.' },
   { d:'2026-10-12 07:20', v:'v485', k:'new', t:'Grafų vietų keitimas ir visur suskleista', f:'Redagavimo režime (Super Admin → „Redaguoti puslapius“) grafas – pvz. Įranga / Įrangos grupės / Paslaugos, Ataskaitų skirtukus, filtrus – ir korteles galima nutempti pele (ar pirštu) į kitą vietą arba perkelti rodyklėmis; tvarka galioja visiems. Visur, kur galima suskleisti / išskleisti (pasiūlymo „Likutis“ grupės, dešinio skydelio kortelės, projektų grupės, sąrašai), atidarius programėlę viskas suskleista; narys išsiskleidžia, ko reikia. Išjungti galima Super Admin meniu („Visur pradžioje suskleista“).' },
   { d:'2026-10-12 06:30', v:'v484', k:'new', t:'Super Admin: numatytasis lygis ir redagavimas tiesiog puslapyje', f:'Mano erdvė → Paskyra (ir viršuje „Super Admin“): „Numatytasis lygis“ – įsijungia kiekvieną kartą atidarius programėlę, jame apačioje „Žiūri kaip“ juosta nerodoma; perjungti į Super Admin galima bet kada. „Super Admin“ → „Redaguoti puslapius“: bet kuriame puslapyje, lange ar dešiniame skydelyje paspaudus antraštę, kortelę, grafą ar mygtuką galima pakeisti pavadinimą, ikoną, vietą tarp gretimų, o suskleidžiamą – „Visada išskleista“ / „Visada suskleista“. Pakeitimai iš karto galioja visiems nariams.' },
   { d:'2026-10-12 05:30', v:'v483', k:'new', t:'Lygių apribojimai ir Super Admin išdėstymo redaktorius', f:'Runner ir Freelance nebemato „Prašymų“ (Mano erdvė) ir „Pirkinių“. Freelance nemato „Inventorizacijos“, o „Renginiuose“ ir kalendoriuje mato tik tuos renginius, kuriuose pats įrašytas. Tech „Sąskaitose“ mato tik savo įkeltas sąskaitas (įkelti gali), „Renginius“ tik mato. Super Admin viršuje turi mygtuką „Super Admin“: kuriuo lygiu dirbti (lieka ir prisijungus iš naujo) ir „Išdėstymas“ – puslapių pavadinimai, aprašymai, ikonos, spalvos, pradžios grupės ir kas jose, plytelių ir meniu tvarka, „Mano erdvė“ grafos; galioja visiems. Reikia paleisti supabase/sql/level_limits.sql.' },

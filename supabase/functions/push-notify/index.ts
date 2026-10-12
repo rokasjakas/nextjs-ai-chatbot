@@ -155,7 +155,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 19;
+const PUSH_FN_VERSION = 20;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -416,9 +416,32 @@ async function onMailNew(userId: string, items: { uid?: number; from?: string; s
   }
   return { sent };
 }
-async function onMessage(uid: string, messageId: string) {
-  const [m] = await db<Msg[]>(`messages?select=*&id=eq.${encodeURIComponent(messageId)}`);
-  if (!m || m.sender_id !== uid || m.deleted_at) return { sent: 0, skipped: "not your message" };
+// one notice per chat message: the database trigger (push_server.sql) and the sender's app both ask –
+// whichever comes first sends it (before push_server.sql there is no table: always sent)
+async function claimMessage(id: string): Promise<boolean> {
+  try {
+    const rows = await db<{ message_id: string }[]>("message_push?on_conflict=message_id", {
+      method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=representation" }, body: JSON.stringify([{ message_id: id }]),
+    });
+    return Array.isArray(rows) && rows.length > 0;
+  } catch (e) {
+    console.error("claim", (e as Error).message);
+    return true;
+  }
+}
+// server = called by the database right after the message was saved (any message: the app's, a QR report, a system one)
+async function onMessage(uid: string, messageId: string, server = false) {
+  const [m] = await db<(Msg & { guest_name?: string | null; guest_id?: string | null; created_at?: string })[]>(`messages?select=*&id=eq.${encodeURIComponent(messageId)}`);
+  if (!m || m.deleted_at) return { sent: 0, skipped: "no message" };
+  if (server) {
+    if (m.guest_id) return { sent: 0, skipped: "meeting guest (guest-message)" };
+    if (m.created_at && Date.now() - new Date(m.created_at).getTime() > 15 * 60e3) return { sent: 0, skipped: "too old" };
+    uid = m.sender_id;
+  } else if (m.sender_id !== uid) return { sent: 0, skipped: "not your message" };
+  if (!(await claimMessage(m.id))) return { sent: 0, skipped: "already sent" };
+  // someone who is not a member (QR page): written in a member's name, who is told too
+  const guest = !!m.guest_name;
+  const self = guest ? "" : uid;
   const [c] = await db<{ id: string; kind: "general" | "direct" | "group" | "channel"; title: string | null; is_private?: boolean }[]>(
     `conversations?select=*&id=eq.${m.conversation_id}`,
   );
@@ -439,10 +462,10 @@ async function onMessage(uid: string, messageId: string) {
     );
     recipients = [...new Set(rows.map((r) => r.sender_id))];
   } else recipients = c.kind === "general" ? users.map((u) => u.id) : members;
-  const mentioned = mentionIds(m.body).filter((id) => id !== uid && canSee(id));
+  const mentioned = mentionIds(m.body).filter((id) => id !== self && canSee(id));
   const pref = thread ? "threads" : c.kind === "channel" ? "group" : c.kind;
-  const to = recipients.filter((id) => id !== uid && canSee(id) && !mentioned.includes(id) && wants(byId.get(id)!.notify_prefs, pref as never, c.id));
-  const sender = byId.get(uid);
+  const to = recipients.filter((id) => id !== self && canSee(id) && !mentioned.includes(id) && wants(byId.get(id)!.notify_prefs, pref as never, c.id));
+  const sender: Profile | undefined = guest ? ({ nickname: m.guest_name + " (per QR)" } as unknown as Profile) : byId.get(uid);
   const text = preview({ ...m, body: withNames(m.body, byId) });
   const where = c.kind === "direct" ? "" : c.kind === "general" ? "Bendras chatas" : "#" + (c.title || "kanalas");
   const url = `./?chat=${c.id}${m.parent_id ? "&thread=" + m.parent_id : ""}`;
@@ -1467,7 +1490,10 @@ Deno.serve(async (req) => {
       try { tt = await trackerReminders(); } catch (e) { tt = { error: String(e) }; }   // before tracker.sql the tables are missing
       let rr: unknown = null;
       try { rr = await reportReminders(); } catch (e) { rr = { error: String(e) }; }   // before report_reminders.sql the table is missing
-      if (new Date().getUTCMinutes() < 5) await db(`user_notifications?created_at=lt.${new Date(Date.now() - 30 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
+      if (new Date().getUTCMinutes() < 5) {
+        await db(`user_notifications?created_at=lt.${new Date(Date.now() - 30 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
+        await db(`message_push?at=lt.${new Date(Date.now() - 3 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
+      }
       return json({ ...tr, inv: ir, tracker: tt, reports: rr });
     }
     // a new member signed up (called by user-access with the cron secret): every admin is told
@@ -1510,6 +1536,12 @@ Deno.serve(async (req) => {
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
       const [v] = await db<Invoice[]>(`invoices?select=*&id=eq.${encodeURIComponent(String(body.invoice_id ?? ""))}`);
       return json(v ? await portalMail(v) : { error: "Sąskaita nerasta" });
+    }
+    // a chat message was saved (database trigger messages_push_notify, push_server.sql)
+    if (body?.mode === "message-db") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      return json(await onMessage("", String(body.message_id ?? ""), true));
     }
     if (body?.mode === "invoice-reply") {
       const secret = Deno.env.get("CRON_SECRET");

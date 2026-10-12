@@ -5,7 +5,7 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v485';
+const CACHE = 'es-app-v486';
 const SHELL = ['./vendor/supabase-2.117.2.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png', './fonts/Barlow-Regular.woff2', './fonts/Barlow-Medium.woff2'];
 
 // Cloudflare Pages redirects /index.html to /: a redirected response can't answer a page load (the browser shows
@@ -91,9 +91,10 @@ self.addEventListener('fetch', e=>{
   })));
 });
 
-// Pranešimai (push). Kai programa atidaryta ir matoma, pranešimą parodo pati
-// programa, todėl čia jo nekartojame. iPhone reikalauja kiekvieną push
-// parodyti, tad ten rodome visada.
+// Pranešimai (push). Kai programos langas yra priekyje (aktyvus), pranešimą
+// jis parodo pats (perduodame jam) – sistemos pranešimo nekartojame. Kitais
+// atvejais (langas fone, kitame monitoriuje, uždarytas) – visada sistemos
+// pranešimas. iPhone reikalauja kiekvieną push parodyti, tad ten rodome visada.
 const IOS = /iPhone|iPad|iPod/.test(self.navigator.userAgent||'');
 // the small icon in the phone's status bar must be a white silhouette on transparent (otherwise a white square);
 // on a phone the notification shows only the app icon, no big picture on the right
@@ -104,7 +105,8 @@ self.addEventListener('push', e=>{
   try{ d = e.data ? e.data.json() : {}; }catch(_){ d = {body: e.data ? e.data.text() : ''}; }
   const title = d.title || 'EventSolutions App';
   e.waitUntil(self.clients.matchAll({type:'window', includeUncontrolled:true}).then(list=>{
-    if(d.kind!=='dial' && !IOS && list.some(c=>c.visibilityState==='visible')) return;
+    const front = list.filter(c=>c.focused && c.visibilityState==='visible');
+    if(d.kind!=='dial' && !IOS && front.length){ front.forEach(c=>c.postMessage({ type:'push-in', d })); return; }
     const call = d.kind==='call' && d.call_id;
     // „skambinti šiam žmogui“ iš kompiuterio: rodoma net programai esant atidarytai
     if(d.kind==='dial') return self.registration.showNotification(title, {
