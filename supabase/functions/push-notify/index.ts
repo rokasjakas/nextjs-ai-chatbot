@@ -155,7 +155,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 20;
+const PUSH_FN_VERSION = 21;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -959,6 +959,64 @@ async function taskReminders() {
 // Team Tracker: every hour of an open shift the app account that started it is reminded that the tracker runs
 const TT_KIND: Record<string, string> = { warehouse: "Sandėlis", driving: "Vairavimas", standby: "Budėjimas", setup: "Montažas", teardown: "Demontažas", operator: "Operatorius", break: "Pertrauka" };
 type OpenShift = { id: string; member_id: string; started_by: string | null; started_at: string; reminded_at: string | null; tracker_members: { name: string } | null; time_entries: { kind: string; ended_at: string | null }[] };
+// ---------- Darbų planas (work_plans.sql): a member whose assigned work is past its deadline is told,
+// once a day for each such work, until it is done (same period rules as the app)
+type WPlan = { id: string; title: string; freq: string; weekday: number | null; month_day: number | null; every_days: number | null; start_date: string; due_time: string; assignees: string[]; active: boolean };
+const isoWd = (d: string) => ((new Date(d + "T12:00:00Z").getUTCDay() + 6) % 7) + 1;
+const addDays = (d: string, n: number) => new Date(Date.parse(d + "T12:00:00Z") + n * 864e5).toISOString().slice(0, 10);
+const dayDiff = (a: string, b: string) => Math.round((Date.parse(b + "T12:00:00Z") - Date.parse(a + "T12:00:00Z")) / 864e5);
+function monthDay(y: number, m: number, day: number) { const last = new Date(Date.UTC(y, m, 0)).getUTCDate(); return `${y}-${String(m).padStart(2, "0")}-${String(Math.min(day, last)).padStart(2, "0")}`; }
+export function wpPeriod(p: WPlan, day: string): string {
+  let d = "";
+  if (p.freq === "daily") d = day;
+  else if (p.freq === "workdays") { const w = isoWd(day); d = w > 5 ? addDays(day, -(w - 5)) : day; }
+  else if (p.freq === "weekly") { const w = isoWd(day), t = p.weekday || 1; d = addDays(day, -((w - t + 7) % 7)); }
+  else if (p.freq === "monthly") { const [y, m] = day.split("-").map(Number); d = monthDay(y, m, p.month_day || 1); if (d > day) d = m === 1 ? monthDay(y - 1, 12, p.month_day || 1) : monthDay(y, m - 1, p.month_day || 1); }
+  else if (p.freq === "every_n") { const n = Math.max(1, p.every_days || 7); if (!p.start_date || day < p.start_date) return ""; d = addDays(p.start_date, Math.floor(dayDiff(p.start_date, day) / n) * n); }
+  else if (p.freq === "once") return p.start_date && day >= p.start_date ? p.start_date : "";
+  return d && (!p.start_date || d >= p.start_date) ? d : "";
+}
+// a Vilnius date and time as a moment
+export function vilniusAt(d: string, hm: string): number {
+  const [y, m, dd] = d.split("-").map(Number), [h, mi] = String(hm || "23:59").split(":").map(Number), want = Date.UTC(y, m - 1, dd, h, mi);
+  let t = want;
+  for (let i = 0; i < 2; i++) {
+    const pr = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(t));
+    const g = (k: string) => Number(pr.find((x) => x.type === k)?.value);
+    t += want - Date.UTC(g("year"), g("month") - 1, g("day"), g("hour"), g("minute"));
+  }
+  return t;
+}
+async function workPlanReminders() {
+  const plans = await db<WPlan[]>("work_plans?select=id,title,freq,weekday,month_day,every_days,start_date,due_time,assignees,active&active=eq.true");
+  if (!plans.length) return { sent: 0 };
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date());
+  const late: { p: WPlan; period: string; due: number }[] = [];
+  for (const p of plans) {
+    const period = wpPeriod(p, today); if (!period || !(p.assignees || []).length) continue;
+    const due = vilniusAt(period, p.due_time); if (Date.now() <= due) continue;
+    late.push({ p, period, due });
+  }
+  if (!late.length) return { sent: 0 };
+  const runs = await db<{ plan_id: string; user_id: string; period: string; status: string }[]>(
+    `work_plan_runs?select=plan_id,user_id,period,status&status=eq.done&plan_id=in.${inList(late.map((x) => x.p.id))}&period=in.${inList([...new Set(late.map((x) => x.period))])}`);
+  const done = new Set(runs.map((r) => r.plan_id + "|" + r.user_id + "|" + r.period));
+  const users = new Map((await db<Profile[]>(`profiles?select=id,role,notify_prefs,first_name,last_name,full_name,nickname,email&role=in.(${APPROVED.join(",")})`)).map((u) => [u.id, u]));
+  let sent = 0;
+  for (const x of late) {
+    for (const u of x.p.assignees) {
+      if (done.has(x.p.id + "|" + u + "|" + x.period) || !users.has(u)) continue;
+      if (!wants(users.get(u)!.notify_prefs, "tasks", "workplans")) continue;
+      const tag = `wp-${x.p.id}-${x.period}-${today}`;           // once a day for each late work
+      const seen = await db<{ id: string }[]>(`user_notifications?select=id&user_id=eq.${u}&tag=eq.${encodeURIComponent(tag)}&limit=1`).catch(() => []);
+      if (seen.length) continue;
+      const when = new Intl.DateTimeFormat("lt-LT", { timeZone: TZ, month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(x.due));
+      const r = await sendTo([u], { title: "⚠ Neatlikti darbai: " + x.p.title, body: "Terminas buvo " + when + ". Atidaryk ir užpildyk darbų planą.", tag, url: `./?workplan=${x.p.id}`, kind: "workplan" });
+      sent += r.sent;
+    }
+  }
+  return { sent, late: late.length };
+}
 async function trackerReminders() {
   const now = Date.now();
   const open = await db<OpenShift[]>(`time_shifts?select=id,member_id,started_by,started_at,reminded_at,tracker_members(name),time_entries(kind,ended_at)&ended_at=is.null`);
@@ -1488,13 +1546,14 @@ Deno.serve(async (req) => {
       let ir: unknown = null, tt: unknown = null;
       try { ir = await invoiceReminders(); } catch (e) { ir = { error: String(e) }; }   // before invoices.sql the table is missing
       try { tt = await trackerReminders(); } catch (e) { tt = { error: String(e) }; }   // before tracker.sql the tables are missing
-      let rr: unknown = null;
+      let rr: unknown = null, wp: unknown = null;
       try { rr = await reportReminders(); } catch (e) { rr = { error: String(e) }; }   // before report_reminders.sql the table is missing
+      try { wp = await workPlanReminders(); } catch (e) { wp = { error: String(e) }; }   // before work_plans.sql the tables are missing
       if (new Date().getUTCMinutes() < 5) {
         await db(`user_notifications?created_at=lt.${new Date(Date.now() - 30 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
         await db(`message_push?at=lt.${new Date(Date.now() - 3 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
       }
-      return json({ ...tr, inv: ir, tracker: tt, reports: rr });
+      return json({ ...tr, inv: ir, tracker: tt, reports: rr, workplans: wp });
     }
     // a new member signed up (called by user-access with the cron secret): every admin is told
     if (body?.mode === "new-user") {
