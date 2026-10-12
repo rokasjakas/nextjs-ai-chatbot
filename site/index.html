@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-InWCpk2St7w12mPOoW45i/rY/3Asrm/aKicoU14VnlA=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-0gfptO+UVOB7LLRDW6xgwJ9myMQERWNEX2nHK7dtwP0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-9yLk/qIboi03RqUdPEnXdd+Zq67zzqXZhviFGs60oA4=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -19950,7 +19950,12 @@ const HOME_GROUPS = [
   {id:'warehouse', title:'Sandėlis', color:'#4E9BC9', tabs:['projects','newproj','sort','load','rentals','handovers','inventory','works','stocktake','gear','rules'],
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-5 9 5v12"/><path d="M7 21v-8h10v8"/><path d="M7 17h10"/></svg>'},
 ];
-const HOME_GROUP_EXTRA = {};
+const HOME_GROUP_EXTRA = {
+  // RFID skeneris (rfid.html): a light page for old Android scanners (Chainway C72) – tags, search, stocktaking
+  warehouse:[{ key:'rfid', after:'stocktake', title:'RFID skeneris', color:'#6FB7A8', desc:'Chainway C72 ir kiti skaitytuvai: žymų priskyrimas daiktams, paieška, inventorizacija.',
+    can:()=>canView('inventory'), icon:()=>slIcon('tag'), stat:()=>'',
+    go:()=>{ const w = window.open('rfid.html', '_blank', 'noopener'); if(!w) location.href = 'rfid.html'; } }],
+};
 const homeRailIcon = tab=>{ const b = document.querySelector('.rail-btn[data-tab="'+tab+'"] svg'); return b ? b.outerHTML : ''; };
 let HG_FROM = null;   // the group window was opened from its tile (so it shrinks back into it)
 // the window grows out of the tile that was pressed, and shrinks back into it when closed
@@ -20925,7 +20930,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v488';
+const APP_VER = 'v489';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -43086,6 +43091,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 11:00', v:'v489', k:'new', t:'RFID skeneris (Chainway C72)', f:'Naujas lengvas puslapis rfid.html, veikiantis ir senuose skaitytuvuose (Android 6): Sandėlis → „RFID skeneris“. Prisijungi tuo pačiu el. paštu ir slaptažodžiu. Paieška – nuskaitai žymą ir matai, kuris tai daiktas (ir vieneto nr.). Priskirti – pasirenki daiktą ir skenuoji žymas, numeriai didėja patys. Inventorizacija – laikai skaitytuvo mygtuką ir eini pro daiktus: kiekviena žyma skaičiuojama kartą, matai kiek rasta pagal daiktus ir nežinomas žymas, išsaugoma istorijoje. Skaitytuve „Keyboard Emulator“ turi būti įjungtas UHF/RFID ir Enter po žymos. Reikia paleisti supabase/sql/rfid.sql.' },
   { d:'2026-10-12 10:40', v:'v488', k:'new', t:'Naujas puslapis – Darbų planas', f:'Admin nariai kuria darbų planus (pvz. „Automobilių priežiūra“ kas pirmadienį): grupės (pvz. „Dokumentai ir privaloma įranga“) su teiginiais (Tech. pasas, Draudimo polisas…), kaip dažnai (kas dieną, darbo dienomis, kas savaitę, kas mėnesį, kas N dienų, kartą), iki kada ir kam priskirta. Narys mato tik jam priskirtus darbus: kiekvieną teiginį pažymi Taip / Ne, gali pridėti komentarą ir nuotrauką – kiekvieno pažymėjimo laiką įrašo serveris – ir pateikia. Neatlikus iki termino per visą ekraną (telefone, kompiuteryje, naršyklėje) iššoka „Yra neatliktų darbų“, o į telefoną ir kompiuterį ateina pranešimas (kartą per dieną, kol neatlikta). Admin mato „Priskirti darbai“ (kas atlikta, kas ne, ankstesni kartai) ir „Archyvas“ (kaip buvo tikrinta, su laikais, komentarais ir nuotraukomis), gali grąžinti taisyti. Reikia paleisti supabase/sql/work_plans.sql.' },
   { d:'2026-10-12 08:45', v:'v487', k:'new', t:'Žmonės → Bookingas – sąrašu', f:'Bookinge žmonės rodomi sąrašu kaip Archyve: viena eilutė žmogui – vardas ir grupės, skambučio žyma (paspaudus – keisti), kas ir kada skambino, dienų juosta (kai ieškai kelioms dienoms), įkainis, telefonas ir mygtukai Skambinti / Laiškas / Priminimai. Skambinant po eilute atsiranda „Kuo baigėsi?“. Paspaudus eilutę – visa žmogaus informacija.' },
   { d:'2026-10-12 08:30', v:'v486', k:'fix', t:'Pranešimai ateina patikimai ir iškart', f:'Chato žinučių pranešimus dabar siunčia serveris, kai tik žinutė išsaugoma – jie ateina ir tada, kai siuntėjas tuoj pat uždarė programėlę ar dingo ryšys, taip pat iš QR pranešimų ir automatinių žinučių (pvz. naujas rakto kodas). Kiekviena žinutė praneša tik vieną kartą. Kiti pranešimai (užduotys, įranga, prašymai, renginiai…) bandomi siųsti iš naujo, o be ryšio – išsiunčiami, kai ryšys atsiranda. Kompiuteryje sistemos pranešimas nebeslopinamas, kai programos langas tik matomas (pvz. kitame monitoriuje) – tik kai jis aktyvus; tada pranešimą parodo pati programa. Nutrūkęs chato ryšys (po miego, be interneto) atkuriamas savaime. Reikia paleisti supabase/sql/push_server.sql.' },

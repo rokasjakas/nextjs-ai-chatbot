@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-0gfptO+UVOB7LLRDW6xgwJ9myMQERWNEX2nHK7dtwP0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-9yLk/qIboi03RqUdPEnXdd+Zq67zzqXZhviFGs60oA4=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>RFID skeneris · Event Solutions</title>
+<link rel="icon" href="icons/icon-192.png">
+<style>
+/* written for old Android scanners (Chainway C72, Android 6): no CSS variables, no modern selectors */
+*{box-sizing:border-box;}
+html,body{margin:0;background:#141414;color:#ececec;font:16px/1.4 Roboto,"Segoe UI",Arial,sans-serif;-webkit-text-size-adjust:100%;}
+.wrap{max-width:720px;margin:0 auto;padding:10px 12px 40px;}
+.top{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;margin-bottom:10px;}
+.top h1{-webkit-flex:1;flex:1;font-size:19px;margin:0;}
+.top small{color:#9a9a9a;display:block;font-size:12px;font-weight:400;}
+.card{background:#1f1f1f;border:1px solid #343434;border-radius:12px;padding:12px;margin-bottom:10px;}
+.tabs{display:-webkit-box;display:-webkit-flex;display:flex;margin-bottom:10px;border:1px solid #343434;border-radius:12px;overflow:hidden;}
+.tabs button{-webkit-flex:1;flex:1;border:0;background:#1f1f1f;color:#ececec;padding:12px 4px;font:inherit;font-size:15px;font-weight:700;border-left:1px solid #343434;}
+.tabs button:first-child{border-left:0;}
+.tabs button.on{background:#6BB4F5;color:#0c1b2a;}
+svg.i{width:20px;height:20px;vertical-align:-5px;fill:currentColor;}
+label{display:block;font-size:13px;color:#9a9a9a;margin:8px 0 4px;}
+input[type=text],input[type=email],input[type=password],input[type=search],select{width:100%;padding:12px;border:1px solid #343434;border-radius:10px;background:#141414;color:#ececec;font:inherit;}
+.scan{border:2px solid #6BB4F5;font-size:18px !important;letter-spacing:1px;}
+.scan:focus{outline:0;background:#0f1d2a;}
+.btn{display:inline-block;padding:12px 16px;border:0;border-radius:10px;background:#6BB4F5;color:#0c1b2a;font:inherit;font-weight:700;text-align:center;}
+.btn.wide{display:block;width:100%;margin-top:10px;}
+.btn.ghost{background:transparent;border:1px solid #343434;color:#ececec;}
+.btn.red{background:#E5484D;color:#fff;}
+.btn.sm{padding:7px 11px;font-size:14px;}
+.muted{color:#9a9a9a;font-size:13px;}
+.err{color:#ff7b7f;font-size:14px;margin-top:8px;}
+.ok{color:#3fbf8f;} .bad{color:#ff7b7f;} .warn{color:#E0A030;}
+.big{font-size:20px;font-weight:700;margin:4px 0;}
+.row{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:9px 0;border-top:1px solid #2c2c2c;}
+.row:first-child{border-top:0;}
+.row .t{-webkit-flex:1;flex:1;min-width:0;}
+.row .t b{display:block;}
+.row .t small{color:#9a9a9a;font-size:12.5px;}
+.row .n{font-weight:700;margin-left:8px;white-space:nowrap;}
+.list{max-height:46vh;overflow:auto;-webkit-overflow-scrolling:touch;}
+.pick{display:block;width:100%;text-align:left;border:0;border-top:1px solid #2c2c2c;background:transparent;color:#ececec;font:inherit;padding:10px 4px;}
+.pick small{color:#9a9a9a;}
+.flash{padding:10px 12px;border-radius:10px;margin-top:8px;font-weight:700;}
+.flash.ok{background:#173a2d;color:#7fe0b9;} .flash.bad{background:#3a1717;color:#ffb0b2;} .flash.warn{background:#3a2c12;color:#f5c97a;}
+.pill{display:inline-block;padding:2px 8px;border-radius:8px;background:#2a2a2a;font-size:12.5px;font-weight:700;margin-left:4px;}
+.hint{font-size:12.5px;color:#9a9a9a;margin-top:6px;}
+.x{border:0;background:transparent;color:#9a9a9a;padding:6px;}
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="card muted">Kraunama…</div></div>
+<script>
+// RFID skeneris: Chainway C72 (ar kitas skaitytuvas) „Keyboard Emulator“ režimu įrašo nuskaitytą žymą (EPC) į laukelį
+// ir paspaudžia Enter. Šis puslapis parašytas senoms naršyklėms (Android 6): tik ES5, XMLHttpRequest.
+var SUPABASE_URL = "https://yakmikxkcudwloxruhvx.supabase.co";
+var SUPABASE_KEY = "sb_publishable_OYVSooEWr-aPd__NPM8G3g_MQrSAXbI";
+var AUTH_KEY = 'es-rfid-auth', INV_KEY = 'es-rfid-inv';
+var P = {
+  search:'M796-121 533-384q-30 26-70 40.5T378-329q-108 0-183-75t-75-181q0-106 75-181t182-75q106 0 180.5 75T632-585q0 43-14 83t-42 75l264 262-44 44ZM377-389q81 0 138-57.5T572-585q0-81-57-138.5T377-781q-82 0-139.5 57.5T180-585q0 81 57.5 138.5T377-389Z',
+  tag:'M863-404 557-97q-9 8.5-20.25 12.75T514.25-80Q503-80 492-84.5T472-97L98-472q-8-8-13-18.96-5-10.95-5-23.04v-306q0-24.75 17.63-42.38Q115.25-880 140-880h307q12.07 0 23.39 4.87Q481.7-870.25 490-862l373 373q9.39 9 13.7 20.25 4.3 11.25 4.3 22.5t-4.5 22.75Q872-412 863-404ZM245-664q21 0 36.5-15.5T297-716q0-21-15.5-36.5T245-768q-21 0-36.5 15.5T193-716q0 21 15.5 36.5T245-664Z',
+  list:'M222-214 80-356l42-42 100 99 179-179 42 43-221 221Zm0-320L80-676l42-42 100 99 179-179 42 43-221 221Zm298 244v-60h360v60H520Zm0-320v-60h360v60H520Z',
+  out:'M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h299v60H180v600h299v60H180Zm486-185-43-43 102-102H360v-60h363L621-612l43-43 176 176-174 174Z',
+  ok:'m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z',
+  close:'m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z',
+  box:'M180-80q-24.75 0-42.37-17.63Q120-115.25 120-140v-483q-17-6-28.5-21.39T80-680v-140q0-24.75 17.63-42.38Q115.25-880 140-880h680q24.75 0 42.38 17.62Q880-844.75 880-820v140q0 20.22-11.5 35.61T840-623v483q0 24.75-17.62 42.37Q804.75-80 780-80H180Zm-40-600h680v-140H140v140Zm220 260h240v-60H360v60Z',
+  err:'M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z'
+};
+function ic(k){ return '<svg class="i" viewBox="0 -960 960 960" aria-hidden="true"><path d="'+P[k]+'"/></svg>'; }
+function esc(s){ return String(s==null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function $(id){ return document.getElementById(id); }
+function norm(s){ return String(s||'').toLowerCase().replace(/[ąčęėįšųūž]/g, function(c){ return {'ą':'a','č':'c','ę':'e','ė':'e','į':'i','š':'s','ų':'u','ū':'u','ž':'z'}[c]; }); }
+function epcOf(s){ return String(s||'').replace(/\s+/g, '').replace(/[^0-9A-Za-z:_-]/g, '').toUpperCase(); }
+function when(iso){ var d = new Date(iso); if(isNaN(d)) return ''; function z(n){ return (n<10?'0':'')+n; } return z(d.getMonth()+1)+'-'+z(d.getDate())+' '+z(d.getHours())+':'+z(d.getMinutes()); }
+function beep(ok){ try{ var A = window.AudioContext || window.webkitAudioContext; if(!A) return; var a = beep.a || (beep.a = new A()), o = a.createOscillator(), g = a.createGain(); o.frequency.value = ok ? 1500 : 420; g.gain.value = .08; o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime + (ok ? .07 : .25)); }catch(e){} }
+
+// ---------- sign-in (Supabase Auth, without the library) ----------
+var AUTH = null;
+try{ AUTH = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); }catch(e){ AUTH = null; }
+function authSave(j){ AUTH = { token:j.access_token, refresh:j.refresh_token, exp:Date.now() + (j.expires_in || 3600)*1000, email:(j.user && j.user.email) || (AUTH && AUTH.email) || '', id:(j.user && j.user.id) || (AUTH && AUTH.id) || '' }; try{ localStorage.setItem(AUTH_KEY, JSON.stringify(AUTH)); }catch(e){} }
+function xhr(method, url, body, headers, cb){
+  var x = new XMLHttpRequest(); x.open(method, url, true); x.timeout = 20000;
+  x.setRequestHeader('apikey', SUPABASE_KEY);
+  for(var k in headers) if(headers.hasOwnProperty(k)) x.setRequestHeader(k, headers[k]);
+  if(body!=null) x.setRequestHeader('Content-Type', 'application/json');
+  x.onload = function(){ var j = null; try{ j = x.responseText ? JSON.parse(x.responseText) : null; }catch(e){} cb(x.status, j, x.responseText); };
+  x.onerror = function(){ cb(0, null, 'Nėra ryšio'); };
+  x.ontimeout = function(){ cb(0, null, 'Serveris neatsako'); };
+  x.send(body!=null ? JSON.stringify(body) : null);
+}
+function signIn(email, pass, cb){
+  xhr('POST', SUPABASE_URL+'/auth/v1/token?grant_type=password', { email:email, password:pass }, {}, function(st, j){
+    if(st===200 && j && j.access_token){ authSave(j); cb(null); } else cb((j && (j.error_description || j.msg || j.message)) || 'Nepavyko prisijungti ('+st+')');
+  });
+}
+function refresh(cb){
+  if(!AUTH || !AUTH.refresh){ cb('no'); return; }
+  xhr('POST', SUPABASE_URL+'/auth/v1/token?grant_type=refresh_token', { refresh_token:AUTH.refresh }, {}, function(st, j){
+    if(st===200 && j && j.access_token){ authSave(j); cb(null); } else cb('expired');
+  });
+}
+// the database (PostgREST): a fresh sign-in is taken when the old one ran out
+function api(method, path, body, cb, prefer){
+  function go(again){
+    var h = { Authorization:'Bearer '+(AUTH ? AUTH.token : SUPABASE_KEY) }; if(prefer) h.Prefer = prefer;
+    xhr(method, SUPABASE_URL+'/rest/v1/'+path, body, h, function(st, j, t){
+      if(st===401 && !again){ refresh(function(e){ if(e){ signOut(); return; } go(true); }); return; }
+      if(st>=200 && st<300) cb(null, j); else cb((j && (j.message || j.error)) || t || ('Klaida '+st), j);
+    });
+  }
+  if(AUTH && AUTH.exp < Date.now() + 60000) refresh(function(e){ if(e){ signOut(); return; } go(false); }); else go(false);
+}
+function signOut(){ AUTH = null; try{ localStorage.removeItem(AUTH_KEY); }catch(e){} drawLogin(); }
+
+// ---------- data ----------
+var D = { items:[], byId:{}, groups:{}, tags:{}, canEdit:false, me:null, loaded:false };
+var GROUP_LEGACY = { riggingas:'santvaros', elektrifikacija:'kabeliai', papildomai:'kita', converted_containers:'kita' };
+function load(cb){
+  var left = 5, err = '';
+  var perms = [];
+  function done(e){ if(e && !err) err = e; if(--left) return;
+    var role = D.me ? D.me.role : '';
+    D.canEdit = role==='admin' || perms.some(function(r){ return r.role===role && r.can_edit; });
+    if(err){ cb(err); return; } D.loaded = true; cb(null); }
+  var base = null, ov = {}, custom = [];
+  xhr('GET', 'rfid-items.json?v='+Date.now(), null, {}, function(st, j){ if(st===200 && j){ base = j; D.groups = j.groups || {}; } else err = err || 'Nepavyko įkelti įrangos sąrašo'; build(); done(); });
+  api('GET', 'app_state?select=key,data&key=in.(itemOverrides,customItems)', null, function(e, rows){
+    (rows || []).forEach(function(r){ if(r.key==='itemOverrides') ov = r.data || {}; if(r.key==='customItems') custom = r.data || []; }); build(); done(e); });
+  api('GET', 'rfid_tags?select=epc,item_id,item_name,unit,note,created_by_name,created_at&limit=20000', null, function(e, rows){
+    D.tags = {}; (rows || []).forEach(function(r){ D.tags[r.epc] = r; });
+    done(e && /does not exist|schema cache/i.test(e) ? 'RFID lentelių dar nėra – Supabase paleisk supabase/sql/rfid.sql' : e); });
+  api('GET', 'profiles?select=id,role,first_name,last_name&id=eq.'+encodeURIComponent(AUTH.id), null, function(e, rows){ D.me = rows && rows[0] || null; done(e); });
+  api('GET', 'role_permissions?select=role,section,can_edit&section=eq.inventory', null, function(e, rows){ perms = rows || []; done(); });
+  var built = 0;
+  function build(){
+    if(++built < 2 || !base) return;
+    var map = {}, out = [];
+    base.items.forEach(function(it){ var o = ov[it.id] || {}, m = {}; for(var k in it) m[k] = it[k]; for(var k2 in o) if(o.hasOwnProperty(k2)) m[k2] = o[k2]; m.id = String(it.id); out.push(m); });
+    (custom || []).forEach(function(it){ if(!it || it.id==null) return; var m = {}; for(var k in it) m[k] = it[k]; m.id = String(it.id); out.push(m); });
+    out.forEach(function(m){ m.group = GROUP_LEGACY[m.group] || m.group || 'kita'; m._s = norm([m.name, m.code, m.folder].join(' ')); map[m.id] = m; });
+    out.sort(function(a,b){ return String(a.name).localeCompare(String(b.name)); });
+    D.items = out; D.byId = map;
+  }
+}
+function itemName(id, fallback){ var it = D.byId[String(id)]; return it ? it.name : (fallback || 'Nežinomas daiktas'); }
+function groupName(g){ return D.groups[g] || (g==='kita' ? 'Kita' : g==='santvaros' ? 'Santvaros' : g==='kabeliai' ? 'Kabeliai' : g || ''); }
+function tagsOf(id){ var out = []; for(var e in D.tags) if(D.tags.hasOwnProperty(e) && String(D.tags[e].item_id)===String(id)) out.push(D.tags[e]); return out; }
+
+// ---------- screens ----------
+var V = { tab:'find', item:null, unit:'', autoUnit:true, last:null, inv:null };
+try{ V.inv = JSON.parse(localStorage.getItem(INV_KEY) || 'null'); }catch(e){}
+function drawLogin(msg){
+  $('app').innerHTML = '<div class="top"><h1>'+ic('tag')+' RFID skeneris<small>Event Solutions</small></h1></div>'
+    + '<div class="card"><label for="lgE">El. paštas</label><input type="email" id="lgE" autocomplete="username">'
+    + '<label for="lgP">Slaptažodis</label><input type="password" id="lgP" autocomplete="current-password">'
+    + '<div class="err" id="lgErr">'+esc(msg||'')+'</div><button class="btn wide" id="lgGo">Prisijungti</button>'
+    + '<p class="hint">Tas pats el. paštas ir slaptažodis kaip programėlėje.</p></div>';
+  $('lgGo').onclick = function(){ var b = this; b.disabled = true; b.textContent = 'Jungiamasi…';
+    signIn($('lgE').value.trim(), $('lgP').value, function(e){ if(e){ b.disabled = false; b.textContent = 'Prisijungti'; $('lgErr').textContent = e; return; } start(); }); };
+  $('lgP').onkeydown = function(e){ if(e.keyCode===13) $('lgGo').click(); };
+}
+function start(){
+  $('app').innerHTML = '<div class="card muted">Kraunama…</div>';
+  load(function(e){ if(e && !D.items.length){ $('app').innerHTML = '<div class="card"><div class="err">'+esc(e)+'</div><button class="btn wide" id="again">Bandyti dar kartą</button></div>'; $('again').onclick = start; return; } D.err = e || ''; draw(); });
+}
+function draw(){
+  var who = D.me ? [D.me.first_name, D.me.last_name].join(' ') : (AUTH && AUTH.email) || '';
+  $('app').innerHTML = '<div class="top"><h1>'+ic('tag')+' RFID skeneris<small>'+esc(who)+'</small></h1><button class="btn ghost sm" id="out">'+ic('out')+'</button></div>'
+    + (D.err ? '<div class="card err">'+esc(D.err)+'</div>' : '')
+    + '<div class="tabs"><button data-t="find" class="'+(V.tab==='find'?'on':'')+'">'+ic('search')+' Paieška</button>'
+    + '<button data-t="assign" class="'+(V.tab==='assign'?'on':'')+'">'+ic('tag')+' Priskirti</button>'
+    + '<button data-t="inv" class="'+(V.tab==='inv'?'on':'')+'">'+ic('list')+' Inventorizacija</button></div>'
+    + '<div id="body"></div>';
+  $('out').onclick = function(){ if(confirm('Atsijungti?')) signOut(); };
+  var bs = document.querySelectorAll('[data-t]');
+  for(var i=0;i<bs.length;i++) bs[i].onclick = function(){ V.tab = this.getAttribute('data-t'); V.last = null; draw(); };
+  if(V.tab==='assign') drawAssign(); else if(V.tab==='inv') drawInv(); else drawFind();
+}
+// the field the scanner types into; Enter (or a short pause) ends one tag
+function scanField(id, ph, onTag){
+  var el = $(id), t = 0;
+  function take(){ clearTimeout(t); var v = epcOf(el.value); el.value = ''; if(v.length >= 4) onTag(v); }
+  el.onkeydown = function(e){ if(e.keyCode===13 || e.keyCode===9){ e.preventDefault(); take(); } };
+  el.oninput = function(){ clearTimeout(t); t = setTimeout(take, 400); };
+  el.placeholder = ph;
+  setTimeout(function(){ el.focus(); }, 50);
+}
+function keepFocus(id){ document.body.onclick = function(e){ var t = e.target; if(t && /INPUT|SELECT|TEXTAREA|BUTTON/.test(t.tagName)) return; var el = $(id); if(el) el.focus(); }; }
+
+// Paieška: a tag scanned – what it is
+function drawFind(){
+  var L = V.last, html = '';
+  if(L){ var t = D.tags[L];
+    html = t ? '<div class="flash ok">'+ic('ok')+' '+esc(itemName(t.item_id, t.item_name))+'</div><div class="card"><div class="big">'+esc(itemName(t.item_id, t.item_name))+'</div>'
+        + '<div class="muted">'+esc(groupName((D.byId[String(t.item_id)]||{}).group))+(t.unit ? ' · vienetas <b>'+esc(t.unit)+'</b>' : '')+'</div>'
+        + (t.note ? '<p>'+esc(t.note)+'</p>' : '')
+        + '<div class="muted">Žyma '+esc(L)+' · priskyrė '+esc(t.created_by_name||'')+' '+esc(when(t.created_at))+'</div>'
+        + '<div class="muted">Šiam daiktui priskirta žymų: '+tagsOf(t.item_id).length+(D.byId[String(t.item_id)] && D.byId[String(t.item_id)].qty ? ' (sandėlyje '+D.byId[String(t.item_id)].qty+' vnt.)' : '')+'</div></div>'
+      : '<div class="flash warn">'+ic('err')+' Nežinoma žyma</div><div class="card"><div class="muted">'+esc(L)+'</div>'+(D.canEdit ? '<button class="btn wide" id="fAssign">'+ic('tag')+' Priskirti šią žymą daiktui</button>' : '<p class="muted">Priskirti gali tie, kas redaguoja „Įrangą“.</p>')+'</div>';
+  }
+  $('body').innerHTML = '<div class="card"><label for="scan">Nuskaityk žymą</label><input type="text" id="scan" class="scan" autocomplete="off" autocapitalize="off" spellcheck="false">'
+    + '<div class="hint">Paspausk skaitytuvo mygtuką – žyma atsiras čia.</div></div>' + html;
+  scanField('scan', 'laukiama žymos…', function(epc){ V.last = epc; beep(!!D.tags[epc]); drawFind(); });
+  keepFocus('scan');
+  var fa = $('fAssign'); if(fa) fa.onclick = function(){ V.tab = 'assign'; V.pending = L; draw(); };
+}
+
+// Priskirti: choose a thing, then every scanned tag is written to it
+function drawAssign(){
+  if(!D.canEdit){ $('body').innerHTML = '<div class="card muted">Priskirti žymas gali tie, kas redaguoja „Įrangą“.</div>'; return; }
+  var it = V.item ? D.byId[V.item] : null;
+  if(!it){
+    $('body').innerHTML = '<div class="card">'+(V.pending ? '<div class="flash warn">Žyma '+esc(V.pending)+' bus priskirta pasirinktam daiktui</div>' : '')
+      + '<label for="q">Kuriam daiktui priskirti?</label><input type="search" id="q" placeholder="Ieškoti: pavadinimas, kodas…" autocomplete="off"><div class="list" id="res"></div></div>';
+    var q = $('q'), res = $('res');
+    var show = function(){ var w = norm(q.value).split(/\s+/).filter(Boolean), n = 0, h = '';
+      for(var i=0;i<D.items.length && n<60;i++){ var x = D.items[i], okk = true; for(var k=0;k<w.length;k++) if(x._s.indexOf(w[k])<0){ okk = false; break; }
+        if(!okk) continue; n++; var c = tagsOf(x.id).length;
+        h += '<button class="pick" data-id="'+esc(x.id)+'"><b>'+esc(x.name)+'</b><br><small>'+esc(groupName(x.group))+(x.code ? ' · kodas '+esc(x.code) : '')+(x.qty ? ' · '+x.qty+' vnt.' : '')+(c ? ' · žymų '+c : '')+'</small></button>'; }
+      res.innerHTML = h || '<p class="muted">Nieko nerasta.</p>';
+      var ps = res.querySelectorAll('[data-id]'); for(var j=0;j<ps.length;j++) ps[j].onclick = function(){ V.item = this.getAttribute('data-id'); V.unit = String(tagsOf(V.item).length + 1); drawAssign(); }; };
+    q.oninput = show; show(); setTimeout(function(){ q.focus(); }, 50);
+    document.body.onclick = null;
+    return;
+  }
+  var tags = tagsOf(it.id).sort(function(a,b){ return String(a.unit).localeCompare(String(b.unit), undefined, { numeric:true }); });
+  $('body').innerHTML = '<div class="card"><div class="row"><div class="t"><b>'+esc(it.name)+'</b><small>'+esc(groupName(it.group))+(it.qty ? ' · sandėlyje '+it.qty+' vnt.' : '')+'</small></div><button class="btn ghost sm" id="chg">Keisti</button></div></div>'
+    + '<div class="card"><label for="unit">Vieneto nr. (nebūtina)</label><input type="text" id="unit" value="'+esc(V.unit)+'" autocomplete="off">'
+    + '<label><input type="checkbox" id="auto" '+(V.autoUnit ? 'checked' : '')+'> po kiekvienos žymos – kitas numeris</label>'
+    + '<label for="scan">Skenuok žymas – kiekviena priskiriama šiam daiktui</label><input type="text" id="scan" class="scan" autocomplete="off" autocapitalize="off" spellcheck="false"><div id="msg"></div></div>'
+    + '<div class="card"><b>Priskirtos žymos ('+tags.length+')</b><div class="list">'+(tags.map(function(t){ return '<div class="row"><div class="t"><b>'+(t.unit ? 'Vnt. '+esc(t.unit) : 'Be numerio')+'</b><small>'+esc(t.epc)+' · '+esc(when(t.created_at))+'</small></div><button class="x" data-del="'+esc(t.epc)+'" aria-label="Pašalinti">'+ic('close')+'</button></div>'; }).join('') || '<p class="muted">Dar nėra.</p>')+'</div></div>';
+  $('chg').onclick = function(){ V.item = null; drawAssign(); };
+  $('unit').onchange = function(){ V.unit = this.value.trim(); };
+  $('auto').onchange = function(){ V.autoUnit = this.checked; };
+  var dels = document.querySelectorAll('[data-del]');
+  for(var i=0;i<dels.length;i++) dels[i].onclick = function(){ var e = this.getAttribute('data-del'); if(!confirm('Pašalinti žymą '+e+' nuo šio daikto?')) return;
+    api('DELETE', 'rfid_tags?epc=eq.'+encodeURIComponent(e), null, function(er){ if(er){ alert('Nepavyko: '+er); return; } delete D.tags[e]; drawAssign(); }); };
+  var assign = function(epc){
+    var old = D.tags[epc], msg = $('msg');
+    if(old && String(old.item_id)===String(it.id)){ beep(false); msg.innerHTML = '<div class="flash warn">Ši žyma jau priskirta šiam daiktui'+(old.unit ? ' (vnt. '+esc(old.unit)+')' : '')+'</div>'; return; }
+    if(old && !confirm('Žyma jau priskirta: '+itemName(old.item_id, old.item_name)+(old.unit ? ' (vnt. '+old.unit+')' : '')+'. Perkelti šiam daiktui?')) return;
+    var row = { epc:epc, item_id:String(it.id), item_name:it.name, unit:V.unit || '', note:'' };
+    api('POST', 'rfid_tags?on_conflict=epc', [row], function(er, rows){
+      if(er){ beep(false); msg.innerHTML = '<div class="flash bad">Nepavyko: '+esc(er)+'</div>'; return; }
+      D.tags[epc] = rows && rows[0] || row; beep(true);
+      if(V.autoUnit && /^\d+$/.test(V.unit)) V.unit = String(+V.unit + 1);
+      V.pending = null; drawAssign(); $('msg').innerHTML = '<div class="flash ok">'+ic('ok')+' Priskirta: '+esc(epc)+'</div>';
+    }, 'resolution=merge-duplicates,return=representation');
+  };
+  scanField('scan', 'laukiama žymos…', assign);
+  keepFocus('scan');
+  if(V.pending){ var p = V.pending; V.pending = null; assign(p); }
+}
+
+// Inventorizacija: walk with the trigger held – every tag counted once, then compared with the warehouse
+function invSave(){ try{ localStorage.setItem(INV_KEY, JSON.stringify(V.inv)); }catch(e){} }
+function drawInv(){
+  if(!V.inv){
+    $('body').innerHTML = '<div class="card"><label for="ttl">Pavadinimas (nebūtina)</label><input type="text" id="ttl" placeholder="pvz. Sandėlis, A lentyna"><button class="btn wide" id="go">'+ic('list')+' Pradėti skenavimą</button></div><div class="card"><b>Ankstesni</b><div id="hist" class="muted">Kraunama…</div></div>';
+    $('go').onclick = function(){ V.inv = { title:$('ttl').value.trim(), started:new Date().toISOString(), tags:{} }; invSave(); drawInv(); };
+    document.body.onclick = null;
+    api('GET', 'rfid_inventories?select=id,title,created_by_name,created_at,finished_at,tags&order=created_at.desc&limit=15', null, function(e, rows){
+      var h = $('hist'); if(!h) return;
+      if(e){ h.textContent = e; return; }
+      h.innerHTML = (rows||[]).map(function(r){ return '<div class="row"><div class="t"><b>'+esc(r.title || 'Inventorizacija')+'</b><small>'+esc(r.created_by_name||'')+' · '+esc(when(r.finished_at || r.created_at))+'</small></div><span class="n">'+((r.tags||[]).length)+' žym.</span></div>'; }).join('') || 'Dar nėra.';
+    });
+    return;
+  }
+  var I = V.inv, per = {}, unknown = [], total = 0;
+  for(var e in I.tags) if(I.tags.hasOwnProperty(e)){ total++; var t = D.tags[e]; if(t){ var k = String(t.item_id); (per[k] = per[k] || []).push(t); } else unknown.push(e); }
+  var ids = Object.keys(per).sort(function(a,b){ return itemName(a).localeCompare(itemName(b)); });
+  $('body').innerHTML = '<div class="card"><div class="row"><div class="t"><b>'+esc(I.title || 'Inventorizacija')+'</b><small>pradėta '+esc(when(I.started))+'</small></div><span class="big">'+total+'</span></div>'
+    + '<input type="text" id="scan" class="scan" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="hint">Laikyk skaitytuvo mygtuką ir eik pro daiktus. Ta pati žyma skaičiuojama vieną kartą.</div>'
+    + '<button class="btn wide" id="fin">'+ic('ok')+' Baigti ir išsaugoti</button><button class="btn ghost wide" id="drop">Atšaukti</button></div>'
+    + '<div class="card"><b>Rasta pagal daiktus</b><div class="list" id="per">'+(ids.map(function(id){ var it = D.byId[id] || {}, n = per[id].length, q = it.qty;
+        return '<div class="row"><div class="t"><b>'+esc(itemName(id, per[id][0].item_name))+'</b><small>'+esc(groupName(it.group))+(q ? ' · sandėlyje '+q+' vnt. · žymų priskirta '+tagsOf(id).length : '')+'</small></div><span class="n '+(q && n>=tagsOf(id).length ? 'ok' : 'warn')+'">'+n+(tagsOf(id).length ? ' / '+tagsOf(id).length : '')+'</span></div>'; }).join('') || '<p class="muted">Dar nieko.</p>')+'</div></div>'
+    + (unknown.length ? '<div class="card"><b class="warn">Nežinomos žymos ('+unknown.length+')</b><div class="muted">'+unknown.slice(0, 50).map(esc).join('<br>')+'</div></div>' : '');
+  scanField('scan', 'skenuok…', function(epc){ if(!I.tags[epc]){ I.tags[epc] = new Date().toISOString(); invSave(); beep(!!D.tags[epc]); drawInv(); } });
+  keepFocus('scan');
+  $('drop').onclick = function(){ if(!confirm('Atšaukti šį skenavimą? Nuskaitytos žymos nebus išsaugotos.')) return; V.inv = null; invSave(); drawInv(); };
+  $('fin').onclick = function(){ var b = this; b.disabled = true; b.textContent = 'Saugoma…';
+    var tags = []; for(var e in I.tags) if(I.tags.hasOwnProperty(e)) tags.push({ epc:e, at:I.tags[e] });
+    api('POST', 'rfid_inventories', [{ title:I.title, tags:tags, finished_at:new Date().toISOString() }], function(er){
+      if(er){ b.disabled = false; b.textContent = 'Baigti ir išsaugoti'; alert('Nepavyko išsaugoti: '+er+' (skenavimas liko telefone – bandyk dar kartą)'); return; }
+      V.inv = null; invSave(); alert('Išsaugota: '+tags.length+' žym.'); drawInv(); }, 'return=minimal'); };
+}
+
+if(AUTH && AUTH.token) start(); else drawLogin();
+</script>
+</body>
+</html>

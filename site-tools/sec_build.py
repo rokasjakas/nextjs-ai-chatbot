@@ -66,6 +66,12 @@ open(headers_out, 'w').write(f"""/*
   Cache-Control: no-cache
 /saskaitos.html
   Cache-Control: no-cache
+/rfid
+  Cache-Control: no-cache
+/rfid.html
+  Cache-Control: no-cache
+/rfid-items.json
+  Cache-Control: no-cache
 /.well-known/assetlinks.json
   Content-Type: application/json
 /EventSolutions.apk
