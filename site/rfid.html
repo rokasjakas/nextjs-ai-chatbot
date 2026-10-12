@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-cEhH9iYnrg1MNACoGVaoznUrgG2TS3drbep3vMA/Gog=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-xVfbGSlJ0HkCsroi+mzwzvjz0K9CryF/ikEX5NlklEU=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QLV2YGqKCCObhsQI7XXgJ3wXp3E0Nfq4xIomhX4d9lY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-WQ1FNy7O/27/0yO4n3jsmOmWmoK+p+C6et3ZLnTanq4=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>RFID skeneris · Event Solutions</title>
@@ -55,7 +55,8 @@ input[type=text],input[type=email],input[type=password],input[type=search],selec
 .hint{font-size:12.5px;color:#9a9a9a;margin-top:6px;}
 .x{border:0;background:transparent;color:#9a9a9a;padding:6px;}
 .hidden{display:none !important;}
-.sst{margin-top:8px;font-size:14px;font-weight:700;} .sst.ok{color:#3fbf8f;} .sst.bad{color:#ff9a7a;}
+.sst{margin-top:8px;font-size:14px;font-weight:700;}
+.card.nudge{border-color:#ff7b7f;background:#3a1717;} .sst.ok{color:#3fbf8f;} .sst.bad{color:#ff9a7a;}
 .dbg{font:12px/1.5 monospace;color:#cfcfcf;}
 </style>
 </head>
@@ -215,6 +216,15 @@ function draw(){
 // works however the scanner sends it: text into the field (input), key presses, or – when the field
 // is not in focus – key presses to the page; Enter (or a short pause) ends one tag
 var SCAN = { fn:null, buf:'', gbuf:'', t:0, gt:0 };
+// scanner trigger keys (Chainway: F9 = 120 and others, depending on the model and settings)
+var TRIGGER = { 120:1, 121:1, 122:1, 123:1, 139:1, 280:1, 293:1, 294:1 };
+function scanNudge(){
+  var el = $('scan'); if(!el) return;
+  try{ el.focus(); }catch(e){}
+  var st = $('scanSt'); if(st){ st.className = 'sst bad nudge'; st.innerHTML = ic('err')+' Laukelis neaktyvus – PASPAUSK PIRŠTU mėlyną laukelį ir skenuok dar kartą'; }
+  var box = $('scanbox'); if(box){ box.className = 'card nudge'; setTimeout(function(){ if(box.className==='card nudge') box.className = 'card'; }, 1600); }
+  beep(false);
+}
 var DBG = { on:false, log:[] };
 function dbg(m){ DBG.log.unshift(new Date().toTimeString().slice(0,8)+'  '+m); if(DBG.log.length > 14) DBG.log.length = 14; if(DBG.on) dbgDraw(); }
 function dbgDraw(){ var d = $('dbg'); if(!d) return; d.className = DBG.on ? 'card dbg' : 'card dbg hidden';
@@ -233,7 +243,7 @@ function scanState(){
 function scanInit(){
   var el = $('scan');
   el.onkeydown = function(e){
-    dbg('keydown '+e.keyCode+(e.key ? ' "'+e.key+'"' : ''));
+    dbg('keydown '+e.keyCode+(e.key ? ' "'+e.key+'"' : '')+(TRIGGER[e.keyCode] ? ' (skaitytuvo mygtukas)' : ''));
     if(e.keyCode===13 || e.keyCode===9){ e.preventDefault(); scanTake(el.value || SCAN.buf, el.value ? 'laukelis' : 'klavišai'); el.value = ''; }
   };
   el.onkeypress = function(e){ var c = e.charCode || e.which; if(c > 32){ SCAN.buf += String.fromCharCode(c); } };
@@ -242,8 +252,10 @@ function scanInit(){
   // the field is not in focus: key presses to the page are collected too
   document.addEventListener('keydown', function(e){
     var t = e.target; if(t===el || (t && /INPUT|TEXTAREA|SELECT/.test(t.tagName))) return;
-    dbg('puslapis keydown '+e.keyCode);
+    dbg('puslapis keydown '+e.keyCode+(TRIGGER[e.keyCode] ? ' (skaitytuvo mygtukas)' : ''));
     if(!SCAN.fn) return;
+    // the scanner's trigger pressed while the field is not active: the emulator has nowhere to write the tag
+    if(TRIGGER[e.keyCode]){ scanNudge(); return; }
     if(e.keyCode===13 || e.keyCode===9){ if(SCAN.gbuf){ e.preventDefault(); scanTake(SCAN.gbuf, 'puslapis'); } return; }
     var k = e.keyCode, ch = k>=48 && k<=57 ? String.fromCharCode(k) : k>=96 && k<=105 ? String(k-96) : k>=65 && k<=90 ? String.fromCharCode(k) : '';
     if(ch){ SCAN.gbuf += ch; clearTimeout(SCAN.gt); SCAN.gt = setTimeout(function(){ if(SCAN.gbuf.length >= 8) scanTake(SCAN.gbuf, 'puslapis, pauzė'); SCAN.gbuf = ''; }, 500); }
