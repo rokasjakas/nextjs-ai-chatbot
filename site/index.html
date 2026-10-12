@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-eB8+tWFRgfb5u9VKWEo+7GYTGFndyctPoqo1h3XvZQU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-ONUHG+0agyaW8yrqaglAJxZ0JRgzle4eNOY11OmH5NQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20966,7 +20966,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v495';
+const APP_VER = 'v496';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -40333,9 +40333,9 @@ function pbFromSheet(R){
 
 /* ============================================================
    TAB: Team Tracker — work time, like Connecteam's time clock.
-   Members of the tracker have their own name + PIN (several can work from one
-   phone); everyone sees only how many are registered. A member signs in with
-   the PIN (this device then keeps a sign-in key, not the PIN), starts work with
+   Every approved app member uses the tracker with their own account – no PIN,
+   no registration: the member is made on first use (sql/tracker_nopin.sql,
+   tt_me). A member starts work with
    an activity, switches activity any time (the previous one is saved with its
    time) and finishes work: the shift's total and the time of every activity are
    shown. A member's hours for a period are seen after signing in (an admin sees
@@ -40362,7 +40362,7 @@ const ttTok = m=>ttDev().tokens[m] || null;
 // Admin, Office and Projektų vadovai see every member's time; the others only their own (and the demo)
 const ttManager = ()=>['admin','office','pm'].includes(ACCESS.role);
 const ttMine = ()=>(TT.members||[]).find(m=>m.mine) || null;
-const ttViewable = ()=>(TT.members||[]).filter(m=>ttManager() || m.mine || m.demo || ttTok(m.id));
+const ttViewable = ()=>(TT.members||[]).filter(m=>ttManager() || m.mine || m.demo);
 const ttName = m=>((TT.members||[]).find(x=>x.id===m)||{}).name || '';
 async function ttRpc(fn, args){
   const sb = getSb(); if(!sb) throw new Error('Nėra ryšio.');
@@ -40416,7 +40416,7 @@ function ttEditsHtml(s){
 }
 const ttEditsTxt = s=>((s && s.start_edits) || []).map(e=>ttEditWhat(e).map(([k, a, z])=>k+' '+ttTime(a)+'→'+ttTime(z)).join(', ')+(e.note ? ' „'+e.note+'“' : '')+(e.loc ? ' ['+ttLocTxt(e.loc)+']' : '')).join('; ');
 // a shift of the member signed in on this device (any of them can be corrected or deleted – with a comment)
-const ttCanEdit = (s, clock)=>{ const d = ttDev(); return !!(s && d.cur && ttTok(d.cur) && (clock || TT.view==null || TT.view===d.cur)); };
+const ttCanEdit = (s, clock)=>{ const d = ttDev(); return !!(s && d.cur && (clock || TT.view==null || TT.view===d.cur)); };
 // part: 'start' or 'end' – a finished shift's start and end are changed separately (the other one stays as it was)
 async function ttEditStart(s, part){
   const d = ttDev(), m = d.cur; if(!m || !s) return;
@@ -40531,28 +40531,36 @@ function ttRange(){
 /* ---------- data ---------- */
 async function ttLoadMembers(){
   // a member registered before members were tied to accounts is tied to this account (same first and last name)
-  if(!TT.claimed){ TT.claimed = true; try{ const c = await ttRpc('tt_claim'); if(c && c.linked) toast('Team Tracker narys susietas su tavo paskyra.'); }catch(e){} }
+  await ttMe();
   try{ TT.members = (await ttRpc('tt_members')) || []; TT.err = ''; }
   catch(e){ TT.err = e.message; TT.members = TT.members || []; }
   // keys of members that were deleted are forgotten
   const ids = new Set(TT.members.map(m=>m.id)); if(!TT.err) Object.keys(ttDev().tokens).forEach(m=>{ if(!ids.has(m)) ttForget(m); });
 }
+// my member (the signed-in account; made on first use) – no PIN, no registration
+async function ttMe(){
+  try{ const r = await ttRpc('tt_me'); const d = ttDev(); d.cur = r.id; d.tokens = {}; ttDevSave(); TT.state = r.state; TT.meErr = ''; }
+  catch(e){ TT.meErr = /neįjungtas|tt_me/i.test(e.message) ? 'Team Tracker be PIN dar neįjungtas: Supabase → SQL Editor → paleisk supabase/sql/tracker_nopin.sql.' : e.message; }
+}
 async function ttLoadState(){
   const m = ttDev().cur; if(!m){ TT.state = null; return; }
   try{ TT.state = await ttRpc('tt_state', { m, p_token:ttTok(m) }); }
-  catch(e){ if(e.auth){ ttForget(m); toast('Team Tracker: prisijunk iš naujo.'); } else TT.err = e.message; }
+  catch(e){ if(e.auth){ ttForget(m); TT.state = null; } else TT.err = e.message; }
 }
 async function ttLoadReport(){
   const m = TT.view; TT.report = null; TT.repErr = '';
   if(!m) return;
   const [f, t] = ttRange();
   try{ TT.report = await ttRpc('tt_report', { m, p_token:ttTok(m), p_from:f.toISOString(), p_to:t.toISOString() }); }
-  catch(e){ TT.repErr = e.auth ? 'pin' : e.message; }
+  catch(e){ TT.repErr = e.message; }
 }
 // any page: the running shift of this device's member is shown in the header (and refreshed every minute)
 async function ttInit(){
+  // my member is taken from the account (a key left from the PIN times is replaced)
+  if(canView('tracker')) await ttMe();
   if(!ttDev().cur) { ttPill(); return; }
-  await ttLoadState(); ttPill();
+  if(!TT.state) await ttLoadState();
+  ttPill();
   clearInterval(TT.poll);
   TT.poll = setInterval(async ()=>{ if(document.visibilityState!=='visible' || !ttDev().cur) return; await ttLoadState(); ttPill(); if(currentTab==='tracker') ttRenderClock(); }, 60000);
   if(new URLSearchParams(location.search).get('tracker')){ history.replaceState(null, '', location.pathname); setTab('tracker'); }
@@ -40593,15 +40601,12 @@ function ttRender(){
   sh.innerHTML = `
     <div class="tt-top">
       <div class="tt-count"><span class="tt-count-n">${n}</span><span>${n===1 ? 'narys užregistruotas' : (n%10>=2 && n%10<=9 && !(n%100>=12 && n%100<=19)) ? 'nariai užregistruoti' : 'narių užregistruota'}</span></div>
-      <span style="flex:1"></span>
-      ${ttMine() ? '' : `<button class="btn" id="ttReg">${slIcon('plus')} Registruotis</button>`}
     </div>
-    ${TT.err ? `<div class="mail-err">${esc(TT.err)}</div>` : ''}
+    ${TT.err || TT.meErr ? `<div class="mail-err">${esc(TT.err || TT.meErr)}</div>` : ''}
     <div class="tt-grid">
       <section class="tt-card tt-clockcard" id="ttClock"></section>
       <section class="tt-card tt-repcard" id="ttRep"></section>
     </div>`;
-  const rg = document.getElementById('ttReg'); if(rg) rg.onclick = ttRegister;
   ttRenderClock(true); ttRenderReport();
 }
 const ttKindBtns = (cur, attr)=>`<div class="tt-kinds">${TT_KINDS.map(k=>`<button class="tt-kind ${cur===k.k?'on':''}" ${attr}="${k.k}" style="--tc:${k.c}">${slIcon(k.i)}<span>${k.t}</span></button>`).join('')}</div>`;
@@ -40628,15 +40633,12 @@ function ttRenderClock(full){
     ttPill(); return;
   }
   if(!full) return;
-  const others = Object.keys(d.tokens).filter(m=>m!==d.cur && ttName(m));
-  const who = me ? `<div class="tt-who"><span class="tt-av">${esc(String(me.name||'?').split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase())}</span><div><b>${esc(me.name)}</b>${me.demo ? ' <small class="tt-demo">demo</small>' : ''}<small>Prisijungta šiame įrenginyje</small></div>
-      <span style="flex:1"></span>${others.length ? `<select id="ttSwitchMember" title="Kitas šio įrenginio narys"><option value="">Keisti narį…</option>${others.map(m=>`<option value="${esc(m)}">${esc(ttName(m))}</option>`).join('')}</select>` : ''}
-      <button class="btn small" id="ttOut">Atsijungti</button></div>` : '';
+  const who = me ? `<div class="tt-who"><span class="tt-av">${esc(String(me.name||'?').split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase())}</span><div><b>${esc(me.name)}</b>${me.demo ? ' <small class="tt-demo">demo</small>' : ''}<small>Tavo paskyra</small></div></div>` : '';
   if(!me){
     box.innerHTML = `<h2 class="tt-h">${slIcon('clock')} Pradėti darbą</h2>
-      <div class="section-sub" style="margin:0 0 12px;">Pasirink save ir įvesk savo PIN kodą. Pirmą kartą – „Registruotis“.</div>
-      ${ttLoginForm('ttL', '')}`;
-    ttLoginWire('ttL', m=>{ TT.view = m; renderTrackerTab(); });
+      <div class="section-sub" style="margin:0 0 12px;">${esc(TT.meErr || 'Nepavyko įkelti tavo Team Tracker.')}</div>
+      <button class="btn primary" id="ttRetry">Bandyti dar kartą</button>`;
+    document.getElementById('ttRetry').onclick = ()=>renderTrackerTab();
     return;
   }
   if(!s){
@@ -40705,65 +40707,6 @@ function ttRenderClock(full){
       stop(t.toISOString());
     };
   }
-  const out = document.getElementById('ttOut');
-  if(out) out.onclick = async ()=>{ const m = d.cur; try{ await ttRpc('tt_logout', { m, p_token:ttTok(m) }); }catch(e){} ttForget(m); TT.state = null; await ttLoadState(); ttPill(); ttRenderClock(true); ttRenderReport(); };
-  const swm = document.getElementById('ttSwitchMember');
-  if(swm) swm.onchange = async ()=>{ if(!swm.value) return; d.cur = swm.value; ttDevSave(); TT.view = d.cur; await Promise.all([ttLoadState(), ttLoadReport()]); ttPill(); ttRenderClock(true); ttRenderReport(); };
-}
-function ttLoginForm(p, preset){
-  const ms = TT.members || [];
-  return `<div class="tt-login">
-    ${(()=>{ if(!preset && ttMine()) preset = ttMine().id; return ''; })()}<label class="field">Narys<select id="${p}M">${preset ? '' : '<option value="">— pasirink —</option>'}${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===preset?'selected':''}>${esc(m.name)}${m.demo?' (demo, PIN 0000)':''}</option>`).join('')}</select></label>
-    <label class="field">PIN kodas<input type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" id="${p}P" placeholder="••••"></label>
-    <button class="btn primary" id="${p}Go">Prisijungti</button>
-    <button type="button" class="tt-forgot tt-forgotpin" id="${p}F">Pamiršau PIN kodą</button><div class="tt-fpst" id="${p}FS" aria-live="polite"></div></div>`;
-}
-function ttLoginWire(p, done){
-  const go = document.getElementById(p+'Go'), pin = document.getElementById(p+'P'), sel = document.getElementById(p+'M');
-  const run = async ()=>{
-    const m = sel.value; if(!m){ toast('Pasirink narį.'); return; }
-    if(!/^\d{4,8}$/.test(pin.value)){ toast('PIN – 4–8 skaitmenys.'); return; }
-    go.disabled = true;
-    try{ const r = await ttRpc('tt_login', { m, p_pin:pin.value }); const d = ttDev(); d.tokens[m] = r.token; d.cur = m; ttDevSave(); TT.state = r.state; toast('Prisijungta: '+r.state.member.name+'.'); ttPill(); done(m); }
-    catch(e){ toast(e.message); go.disabled = false; pin.select(); }
-  };
-  go.onclick = run;
-  pin.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); run(); } });
-  const fg = document.getElementById(p+'F');
-  if(fg) fg.onclick = async ()=>{
-    const m = sel.value; if(!m){ toast('Pasirink narį.'); return; }
-    const mm = (TT.members||[]).find(x=>x.id===m) || {};
-    if(mm.demo){ toast('Demo darbuotojo PIN – 0000.'); return; }
-    if(!(await uiConfirm(`Išsiųsti „${mm.name}“ nuorodą PIN kodui pakeisti? Ji ateis į to nario paskyros el. paštą ir galios 1 valandą.`, { yes:'Siųsti nuorodą', danger:false }))) return;
-    const st = document.getElementById(p+'FS'), show = (t, bad)=>{ if(st){ st.textContent = t; st.className = 'tt-fpst '+(bad ? 'bad' : 'ok'); } toast(t, 9000); };
-    fg.disabled = true; if(st){ st.textContent = 'Siunčiama…'; st.className = 'tt-fpst'; }
-    const r = await Promise.race([notifyCall({ kind:'tracker-pin', member_id:m }), new Promise(res=>setTimeout(()=>res({ error:'Serveris neatsako (45 s): Supabase → Edge Functions → push-notify → Logs parodys, kur stringa.' }), 45000))]);
-    fg.disabled = false;
-    if(r && r.ok) show('📧 Nuoroda išsiųsta į '+r.to+'. Ji galioja 1 valandą (patikrink ir „Spam“).');
-    else { const nl = window.NOTIFY_LAST || {}, er = (r && r.error) || nl.error || (nl.status ? 'Klaida '+nl.status : '');
-      show(/unknown kind/i.test(er) ? 'PIN keitimo laiškai dar neįjungti: Supabase → Edge Functions → push-notify → Code → Deploy updates.' : (er || 'Nepavyko išsiųsti nuorodos.'), true); }
-  };
-}
-function ttRegister(){
-  openModal(`<h3>Registracija Team Tracker</h3>
-    <div class="section-sub" style="margin:0 0 10px;">Registruojiesi vieną kartą – narys susiejamas su tavo paskyra (${esc((ACCESS.profile||{}).email||'')}). Savo PIN kodu prisijungsi bet kuriame įrenginyje; pamiršus PIN, nuoroda jam pakeisti ateis į šį el. paštą.</div>
-    <label class="field">Vardas ir pavardė<input type="text" id="ttRName" maxlength="60" placeholder="pvz. Jonas Jonaitis" value="${esc([(ACCESS.profile||{}).first_name, (ACCESS.profile||{}).last_name].filter(Boolean).join(' '))}"></label>
-    <div class="grid cols-2" style="gap:10px;">
-      <label class="field">PIN kodas (4–8 skaitmenys)<input type="password" inputmode="numeric" maxlength="8" id="ttRPin"></label>
-      <label class="field">Pakartok PIN<input type="password" inputmode="numeric" maxlength="8" id="ttRPin2"></label>
-    </div>
-    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button class="btn" id="ttRNo">Atšaukti</button><button class="btn primary" id="ttRGo">Registruoti ir prisijungti</button></div>`);
-  setTimeout(()=>document.getElementById('ttRName').focus(), 30);
-  document.getElementById('ttRNo').onclick = ()=>closeModal();
-  document.getElementById('ttRGo').onclick = async ()=>{
-    const name = document.getElementById('ttRName').value.trim(), p1 = document.getElementById('ttRPin').value, p2 = document.getElementById('ttRPin2').value;
-    if(name.length < 2){ toast('Įrašyk vardą ir pavardę.'); return; }
-    if(!/^\d{4,8}$/.test(p1)){ toast('PIN – 4–8 skaitmenys.'); return; }
-    if(p1!==p2){ toast('PIN kodai nesutampa.'); return; }
-    const b = document.getElementById('ttRGo'); b.disabled = true;
-    try{ const r = await ttRpc('tt_register', { p_name:name, p_pin:p1 }); const d = ttDev(); d.tokens[r.state.member.id] = r.token; d.cur = r.state.member.id; ttDevSave(); TT.state = r.state; TT.view = d.cur; closeModal(); toast('Narys užregistruotas.'); renderTrackerTab(); }
-    catch(e){ toast(e.message); b.disabled = false; }
-  };
 }
 // the right card: a member's hours for a period
 function ttRenderReport(){
@@ -40771,8 +40714,7 @@ function ttRenderReport(){
   const ms = ttViewable(), m = TT.view, admin = ACCESS.role==='admin' || isSuper();
   const [f, t] = ttRange();
   let body = '';
-  if(!m) body = `<div class="tt-none">${ttManager() ? 'Pasirink narį – matysi, kiek jis pradirbo per pasirinktą laikotarpį.' : ttMine() ? 'Pasirink save – matysi, kiek pradirbai per pasirinktą laikotarpį.' : 'Užsiregistruok – matysi savo pradirbtą laiką. Kitų narių laiką mato tik administracija.'}</div>`;
-  else if(TT.repErr==='pin') body = `<div class="tt-pinask"><div class="section-sub" style="margin:0 0 8px;">„${esc(ttName(m))}“ laiką mato tik pats narys – prisijunk jo PIN kodu.</div>${ttLoginForm('ttV', m)}</div>`;
+  if(!m) body = `<div class="tt-none">${ttManager() ? 'Pasirink narį – matysi, kiek jis pradirbo per pasirinktą laikotarpį.' : 'Pasirink save – matysi, kiek pradirbai per pasirinktą laikotarpį. Kitų narių laiką mato tik administracija.'}</div>`;
   else if(TT.repErr) body = `<div class="mail-err">${esc(TT.repErr)}</div>`;
   else if(TT.report){
     const shifts = TT.report.shifts || [];
@@ -40795,10 +40737,9 @@ function ttRenderReport(){
           ${ttSegs(s.entries)}</details>`; }).join('') || '<div class="tt-none">Šiuo laikotarpiu pamainų nėra.</div>'}</div>
       ${ttDeletedHtml(TT.report.deleted)}`;
   }
-  const mine = m && (ttTok(m) || admin || ((TT.members||[]).find(x=>x.id===m)||{}).mine);
+  const mine = m && (admin || ((TT.members||[]).find(x=>x.id===m)||{}).mine);
   box.innerHTML = `<div class="tt-rep-h"><h2 class="tt-h">${slIcon('chart')} Pradirbtas laikas</h2>
       ${m && TT.report && !TT.repErr ? `<button class="btn small" id="ttXls" title="Atsisiųsti Excel">${slIcon('download')} Excel</button>` : ''}
-      ${m && admin && !((ms.find(x=>x.id===m)||{}).demo) ? `<button class="btn small" id="ttSetPin" title="Nustatyti nariui naują PIN kodą">PIN</button>` : ''}
       ${mine ? `<button class="btn small tt-delbtn" id="ttDel" title="Ištrinti narį su visu jo laiku">${slIcon('bin')}</button>` : ''}</div>
     <div class="tt-filters">
       <select id="ttView"><option value="">— narys —</option>${ms.map(x=>`<option value="${esc(x.id)}" ${x.id===m?'selected':''}>${esc(x.name)}${x.demo?' (demo)':''}</option>`).join('')}</select>
@@ -40813,13 +40754,6 @@ function ttRenderReport(){
   const fr = document.getElementById('ttFrom'), to = document.getElementById('ttTo');
   if(fr) fr.onchange = ()=>{ TT.from = fr.value; reload(); };
   if(to) to.onchange = ()=>{ TT.to = to.value; reload(); };
-  if(document.getElementById('ttVGo')) ttLoginWire('ttV', async mm=>{ TT.view = mm; await ttLoadReport(); ttRenderClock(true); ttRenderReport(); });
-  const sp = document.getElementById('ttSetPin');
-  if(sp) sp.onclick = async ()=>{
-    const v = await uiPrompt(`Naujas „${ttName(m)}“ PIN kodas (4–8 skaitmenys). Visuose įrenginiuose reikės prisijungti iš naujo.`, '', { yes:'Nustatyti' });
-    if(v==null) return; if(!/^\d{4,8}$/.test(v.trim())){ toast('PIN – 4–8 skaitmenys.'); return; }
-    try{ await ttRpc('tt_set_pin', { m, p_pin:v.trim() }); toast('PIN pakeistas.'); }catch(e){ toast(e.message); }
-  };
   const del = document.getElementById('ttDel');
   if(del) del.onclick = async ()=>{
     if(!(await uiConfirm(`Ištrinti narį „${ttName(m)}“ su visomis jo pamainomis?`))) return;
@@ -43127,6 +43061,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 14:45', v:'v496', k:'new', t:'Team Tracker be PIN ir registracijos', f:'Team Tracker naudojasi visi patvirtinti nariai savo paskyra: nebereikia registruotis ir vesti PIN kodo. Atidarius Team Tracker iškart matai save ir gali pradėti darbą; jau užregistruotas narys su tuo pačiu vardu ir pavarde susiejamas automatiškai, sukauptas laikas lieka. Kitų narių laiką, kaip ir anksčiau, mato Admin, Office ir Projektų vadovai. Reikia paleisti supabase/sql/tracker_nopin.sql.' },
   { d:'2026-10-12 14:00', v:'v495', k:'fix', t:'RFID: nepertraukiamas skaitymas įtraukia žymas', f:'Kai skaitytuvas skaito be perstojo, jis rašo žymą po žymos be Enter ir be pauzės – anksčiau puslapis laukė pauzės ir žymų neįtraukdavo. Dabar žymos atskiriamos iš karto (pagal įprastą žymos ilgį), kol dar skenuojama.' },
   { d:'2026-10-12 13:30', v:'v494', k:'fix', t:'RFID: kaip skaityti daug žymų iš karto', f:'Inventorizacijoje ir nepertraukiamoje paieškoje – instrukcija, kaip skaitytuvo programoje Keyboard Emulator įjungti nepertraukiamą skaitymą (Continuous scan), kad vienu mygtuko laikymu būtų nuskaitomos visos aplinkui esančios žymos.' },
   { d:'2026-10-12 13:00', v:'v493', k:'new', t:'RFID: nepertraukiamas skenavimas ir unikalūs vienetų kodai', f:'RFID skeneryje Paieškoje – režimas „Nepertraukiamai“: laikai skaitytuvo mygtuką ir matai viską, kas nuskaityta, sugrupuota pagal daiktus (su vienetų kodais), ir nežinomas žymas. Priskiriant daug žymų iš eilės jos įrašomos viena po kitos. Kiekvienas pažymėtas vienetas gauna unikalų kodą (pvz. ES-00042) – „Įrangoje“ stulpelyje Kodas matai RFID vienetų skaičių, paspaudus – kodus, vieneto nr. ir žymas; paieška randa ir pagal RFID kodą. Reikia paleisti supabase/sql/rfid_codes.sql.' },
