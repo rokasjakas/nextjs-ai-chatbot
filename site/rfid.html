@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-3cj8q5Jb0Hjnly/cJrsVelpYPzA2UPqTcmh5W4Puv0M=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-r7a7KZW6GUcsH9xLRV+Od24wiebNlTnFk2SIl6hYS7g=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-eB8+tWFRgfb5u9VKWEo+7GYTGFndyctPoqo1h3XvZQU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>RFID skeneris · Event Solutions</title>
@@ -224,7 +224,13 @@ function draw(){
 // ---------- the scan field: the scanner's Keyboard Emulator types the tag and Enter into it ----------
 // works however the scanner sends it: text into the field (input), key presses, or – when the field
 // is not in focus – key presses to the page; Enter (or a short pause) ends one tag
-var SCAN = { fn:null, buf:'', gbuf:'', t:0, gt:0 };
+var SCAN = { fn:null, buf:'', gbuf:'', t:0, gt:0, first:0, got:0 };
+// the usual tag length: the most common among the tags already given (24 signs = 96-bit EPC, if none yet)
+function epcLen(){
+  var c = {}, best = 24, n = 0;
+  for(var e in D.tags) if(D.tags.hasOwnProperty(e)){ var l = e.length; c[l] = (c[l] || 0) + 1; if(c[l] > n && l >= 8){ n = c[l]; best = l; } }
+  return best;
+}
 // scanner trigger keys (Chainway: F9 = 120 and others, depending on the model and settings)
 var TRIGGER = { 120:1, 121:1, 122:1, 123:1, 139:1, 280:1, 293:1, 294:1 };
 function scanNudge(){
@@ -252,11 +258,13 @@ function dbg(m){ DBG.log.unshift(new Date().toTimeString().slice(0,8)+'  '+m); i
 function dbgDraw(){ var d = $('dbg'); if(!d) return; d.className = DBG.on ? 'card dbg' : 'card dbg hidden';
   d.innerHTML = '<b>Ką gauna puslapis</b> <small class="muted">(nuskaityk žymą ir pažiūrėk)</small><br>'+(DBG.log.map(esc).join('<br>') || '<span class="muted">dar nieko</span>'); }
 function scanTake(v, how){
-  clearTimeout(SCAN.t); SCAN.buf = ''; SCAN.gbuf = '';
-  // continuous reading can bring several tags at once: split by spaces / new lines, or by the usual 24-sign EPC
-  var parts = String(v||'').split(/[\s,;]+/), list = [];
+  clearTimeout(SCAN.t); SCAN.buf = ''; SCAN.gbuf = ''; SCAN.first = 0;
+  // continuous reading can bring several tags at once: split by new lines / commas, or by the usual tag length
+  // (spaces inside are part of one tag – some scanners write the EPC in groups)
+  var parts = String(v||'').split(/[\r\n\t,;]+/), list = [];
   for(var i=0;i<parts.length;i++){ var e = epcOf(parts[i]); if(!e) continue;
-    if(e.length > 24 && e.length % 24 === 0 && /^[0-9A-F]+$/.test(e)){ for(var j=0;j<e.length;j+=24) list.push(e.slice(j, j+24)); } else list.push(e); }
+    var L = epcLen();
+    if(e.length > L && e.length % L === 0 && /^[0-9A-F]+$/.test(e)){ for(var j=0;j<e.length;j+=L) list.push(e.slice(j, j+L)); } else list.push(e); }
   dbg('žyma ('+how+'): "'+String(v).slice(0,40)+'" → '+(list.join(', ') || 'tuščia'));
   for(var k=0;k<list.length;k++) if(list[k].length >= 4 && SCAN.fn) SCAN.fn(list[k]);
 }
@@ -273,7 +281,21 @@ function scanInit(){
     if(e.keyCode===13 || e.keyCode===9){ e.preventDefault(); var kb = SCAN.buf.length > el.value.length; scanTake(kb ? SCAN.buf : el.value, kb ? 'klavišai' : 'laukelis'); el.value = ''; }
   };
   el.onkeypress = function(e){ var c = e.charCode || e.which; if(c > 32){ SCAN.buf += String.fromCharCode(c); } };
-  el.oninput = function(){ dbg('input: '+el.value.length+' simb.'); clearTimeout(SCAN.t); SCAN.t = setTimeout(function(){ if(el.value){ var v = el.value; el.value = ''; scanTake(v, 'pauzė'); } }, 400); };
+  // continuous reading: the scanner may type tag after tag without Enter and without a pause –
+  // whole tags are taken out of the field while it is still typing
+  el.oninput = function(){
+    var v = el.value; SCAN.got++;
+    dbg('input: '+v.length+' simb. „…'+v.slice(-26)+'“');
+    clearTimeout(SCAN.t);
+    if(/[\r\n\t,;]/.test(v)){ var cut = v.search(/[^\r\n\t,;]*$/); el.value = v.slice(cut); scanTake(v.slice(0, cut), 'skirtukas'); v = el.value; }
+    var L = epcLen(), h = epcOf(v), hex = /^[0-9A-F]+$/.test(h);
+    if(hex && h.length >= 2*L && h.length % L === 0){ el.value = ''; SCAN.first = 0; scanTake(h, 'srautas'); return; }
+    if(!el.value){ SCAN.first = 0; return; }
+    if(!SCAN.first) SCAN.first = Date.now();
+    // typing for over a second without a break: take the whole tags so far, keep the unfinished end
+    if(hex && Date.now() - SCAN.first > 1000 && h.length >= L){ var n = h.length - h.length % L; el.value = h.slice(n); SCAN.first = el.value ? Date.now() : 0; scanTake(h.slice(0, n), 'srautas'); if(!el.value) return; }
+    SCAN.t = setTimeout(function(){ SCAN.first = 0; if(el.value){ var w = el.value; el.value = ''; scanTake(w, 'pauzė'); } }, 400);
+  };
   el.onfocus = el.onblur = function(e){ dbg(e.type==='focus' ? 'laukelis aktyvus' : 'laukelis neaktyvus'); scanState(); };
   // the field is not in focus: key presses to the page are collected too
   document.addEventListener('keydown', function(e){
@@ -413,6 +435,7 @@ function drawAssign(){
 }
 
 // Inventorizacija: walk with the trigger held – every tag counted once, then compared with the warehouse
+var INV_T = 0;
 function invSave(){ try{ localStorage.setItem(INV_KEY, JSON.stringify(V.inv)); }catch(e){} }
 function drawInv(){
   if(!V.inv){
@@ -434,7 +457,7 @@ function drawInv(){
     + '<div class="card"><b>Rasta pagal daiktus</b><div class="list" id="per">'+(ids.map(function(id){ var it = D.byId[id] || {}, n = per[id].length, q = it.qty;
         return '<div class="row"><div class="t"><b>'+esc(itemName(id, per[id][0].item_name))+'</b><small>'+esc(groupName(it.group))+(q ? ' · sandėlyje '+q+' vnt. · žymų priskirta '+tagsOf(id).length : '')+'</small></div><span class="n '+(q && n>=tagsOf(id).length ? 'ok' : 'warn')+'">'+n+(tagsOf(id).length ? ' / '+tagsOf(id).length : '')+'</span></div>'; }).join('') || '<p class="muted">Dar nieko.</p>')+'</div></div>'
     + (unknown.length ? '<div class="card"><b class="warn">Nežinomos žymos ('+unknown.length+')</b><div class="muted">'+unknown.slice(0, 50).map(esc).join('<br>')+'</div></div>' : '');
-  setScan('Inventorizacija – skenuok', 'Laikyk skaitytuvo mygtuką ir eik pro daiktus – skaitytuvas turi būti nepertraukiamo skaitymo režime (žr. žemiau). Ta pati žyma skaičiuojama vieną kartą.', function(epc){ if(!I.tags[epc]){ I.tags[epc] = new Date().toISOString(); invSave(); beep(!!D.tags[epc]); drawInv(); } });
+  setScan('Inventorizacija – skenuok', 'Laikyk skaitytuvo mygtuką ir eik pro daiktus – skaitytuvas turi būti nepertraukiamo skaitymo režime (žr. žemiau). Ta pati žyma skaičiuojama vieną kartą.', function(epc){ if(!I.tags[epc]){ I.tags[epc] = new Date().toISOString(); invSave(); beep(!!D.tags[epc]); clearTimeout(INV_T); INV_T = setTimeout(function(){ if(V.tab==='inv' && V.inv===I) drawInv(); }, 150); } });
   $('drop').onclick = function(){ if(!confirm('Atšaukti šį skenavimą? Nuskaitytos žymos nebus išsaugotos.')) return; V.inv = null; invSave(); drawInv(); };
   $('fin').onclick = function(){ var b = this; b.disabled = true; b.textContent = 'Saugoma…';
     var tags = []; for(var e in I.tags) if(I.tags.hasOwnProperty(e)) tags.push({ epc:e, at:I.tags[e] });

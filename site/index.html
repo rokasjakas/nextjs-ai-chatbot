@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-3cj8q5Jb0Hjnly/cJrsVelpYPzA2UPqTcmh5W4Puv0M=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-r7a7KZW6GUcsH9xLRV+Od24wiebNlTnFk2SIl6hYS7g=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-eB8+tWFRgfb5u9VKWEo+7GYTGFndyctPoqo1h3XvZQU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -20966,7 +20966,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v494';
+const APP_VER = 'v495';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -43127,6 +43127,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 14:00', v:'v495', k:'fix', t:'RFID: nepertraukiamas skaitymas įtraukia žymas', f:'Kai skaitytuvas skaito be perstojo, jis rašo žymą po žymos be Enter ir be pauzės – anksčiau puslapis laukė pauzės ir žymų neįtraukdavo. Dabar žymos atskiriamos iš karto (pagal įprastą žymos ilgį), kol dar skenuojama.' },
   { d:'2026-10-12 13:30', v:'v494', k:'fix', t:'RFID: kaip skaityti daug žymų iš karto', f:'Inventorizacijoje ir nepertraukiamoje paieškoje – instrukcija, kaip skaitytuvo programoje Keyboard Emulator įjungti nepertraukiamą skaitymą (Continuous scan), kad vienu mygtuko laikymu būtų nuskaitomos visos aplinkui esančios žymos.' },
   { d:'2026-10-12 13:00', v:'v493', k:'new', t:'RFID: nepertraukiamas skenavimas ir unikalūs vienetų kodai', f:'RFID skeneryje Paieškoje – režimas „Nepertraukiamai“: laikai skaitytuvo mygtuką ir matai viską, kas nuskaityta, sugrupuota pagal daiktus (su vienetų kodais), ir nežinomas žymas. Priskiriant daug žymų iš eilės jos įrašomos viena po kitos. Kiekvienas pažymėtas vienetas gauna unikalų kodą (pvz. ES-00042) – „Įrangoje“ stulpelyje Kodas matai RFID vienetų skaičių, paspaudus – kodus, vieneto nr. ir žymas; paieška randa ir pagal RFID kodą. Reikia paleisti supabase/sql/rfid_codes.sql.' },
   { d:'2026-10-12 12:15', v:'v492', k:'fix', t:'RFID skeneris: nebeiššoka klaviatūra', f:'Paspaudus skenavimo laukelį telefono klaviatūra nebeatsidaro – žymą įrašo skaitytuvas. Jei reikia įvesti ranka, laukelio kampe yra klaviatūros mygtukas.' },
