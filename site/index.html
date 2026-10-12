@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-7ewBBVBFK+reV+VEUpCDBLobWQ6TLWTjNDxESxEjp9w=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-c//ZZxCkgW/pejOvWi99Dz4C/+zzvOXO/pb3xiQAb2w=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -7915,17 +7915,19 @@ function fleetDocShort(v){
   if(none.length===st.length) return { level:'none', text:'Dokumentai neįvesti' };
   if(none.length) return { level:'warn', text:'Neįvesta: '+none.map(s=>FLEET_DOCS[s.d].toLowerCase()).join(', ') };
   const next = st.slice().sort((a,b)=>a.days-b.days)[0];
-  return { level:'ok', text:'Dokumentai galioja · '+FLEET_DOCS[next.d].toLowerCase()+' iki '+String(v.docs[next.d]).slice(5).replace('-', '.') };
+  return { level:'ok', text:'Dokumentai galioja · '+FLEET_DOCS[next.d].toLowerCase()+' iki '+fleetDate(v.docs[next.d]) };
 }
 // the tile shows the vignette (kelių mokestis) and the technical inspection; a tile turns red when one of them
 // ends soon / has ended, or when the vehicle is away for repair
 function fleetDocChip(v, d, name){
   const st = docStatus(v.docs && v.docs[d], docLead(v, d));
-  const t = st.level==='none' ? name+(name==='Draudimas' ? ' neįvestas' : ' neįvesta') : st.level==='danger' ? name+' baigėsi' : st.level==='warn' ? (st.days===0 ? name+' baigiasi šiandien' : name+' – liko '+st.days+' d.') : name+' iki '+String(v.docs[d]).slice(5).replace('-', '.');
+  const t = st.level==='none' ? name+(name==='Draudimas' ? ' neįvestas' : ' neįvesta') : st.level==='danger' ? name+' baigėsi' : st.level==='warn' ? (st.days===0 ? name+' baigiasi šiandien' : name+' – liko '+st.days+' d.') : name+' iki '+fleetDate(v.docs[d]);
   const doc = fdFiles(v, d).length;
   return { level:st.level, html:`<span class="fl-chip ${st.level==='none' ? 'danger' : st.level}${doc ? ' has-doc' : ''}"${doc ? ` data-fdoc="${d}" title="Atidaryti dokumentą"` : ''}>${slIcon('file')} ${esc(t)}</span>` };
 }
-function fleetRepPeriod(r){ const f = x=>String(x).slice(5).replace('-', '.'); return r.from || r.to ? ' '+(r.from ? f(r.from) : '…')+'–'+(r.to ? f(r.to) : '…') : ''; }
+// dates on the tiles: always with the year (2027.01.25)
+function fleetDate(x){ return String(x||'').slice(0, 10).replace(/-/g, '.'); }
+function fleetRepPeriod(r){ const f = fleetDate; return r.from || r.to ? ' '+(r.from ? f(r.from) : '…')+'–'+(r.to ? f(r.to) : '…') : ''; }
 function fleetModel(v){ const t = vehicleTemplates().find(x=>x.key===v.templateKey); return t && t.name!==v.name ? t.name : ''; }
 function fleetRmOf(vid){ return FLEET.rm.find(r=>r.vehicle_id===vid && (r.status==='pending' || r.status==='approved')) || null; }
 function fleetTileHtml(v){
@@ -19703,7 +19705,7 @@ function homeTileInfo(tab){
       }));
       const label = {insurance:'draudimas', inspection:'tech. apžiūra', roadPermit:'kelių mokestis', kasko:'KASKO'};
       if(next){
-        const when = next.days<0 ? '<span style="color:var(--danger);">baigėsi prieš '+(-next.days)+' d.</span>' : next.days===0 ? 'baigiasi šiandien' : 'po '+next.days+' d.';
+        const when = (next.days<0 ? '<span style="color:var(--danger);">baigėsi prieš '+(-next.days)+' d.</span>' : next.days===0 ? 'baigiasi šiandien' : 'po '+next.days+' d.')+(next.v.docs && next.v.docs[next.d] ? ' ('+fleetDate(next.v.docs[next.d])+')' : '');
         lines.push('Artimiausia pabaiga:');
         lines.push(esc(next.v.name)+' — '+label[next.d]+' '+when);
       } else lines.push('Įvesk dokumentų galiojimo datas');
@@ -21116,7 +21118,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v500';
+const APP_VER = 'v501';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -43224,6 +43226,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-12 16:45', v:'v501', k:'fix', t:'Transportas: datos su metais', f:'Prie automobilių dokumentų datos rodomos su metais (pvz. „Draudimas iki 2027.01.25“, ne „01.25“), taip pat remonto laikotarpis ir dokumentų santrauka; Pradžios lange prie artimiausios pabaigos – ir pati data.' },
   { d:'2026-10-12 16:30', v:'v500', k:'fix', t:'Kalendorius: mėnuo ir metai mygtukais', f:'iPhone pasirinkus metus ir mėnesį kalendorius užsidarydavo ir nebuvo galima pažymėti dienos (pvz. draudimo galiojimo datos). Dabar paspaudus „Spalis 2026“ atsiveria 12 mėnesių mygtukų ir metų rodyklės ‹ ›; pasirinkus mėnesį grįžtama į dienas – lieka paspausti dieną. Rodyklės per mėnesius veikia kaip anksčiau.' },
   { d:'2026-10-12 16:05', v:'v499', k:'fix', t:'Teksto žymėjimas neuždaro kortelių', f:'Pele pažymint tekstą (pvz. Klaidos / pasiūlymai įraše) kortelė nebeužsidaro ir neatsidaro – tekstą galima ramiai pažymėti ir nukopijuoti. Paprastas paspaudimas veikia kaip anksčiau. Galioja visoje programėlėje.' },
   { d:'2026-10-12 15:50', v:'v498', k:'new', t:'Transportas: registracijos liudijimas', f:'Automobilio dokumentuose – „Registracijos liudijimas“: įkeli PDF ar nuotrauką (galiojimo datos neturi). Įkeltas liudijimas matomas Transporto puslapyje prie automobilio („Reg. liudijimas“) – paspaudus atsidaro pats dokumentas.' },
