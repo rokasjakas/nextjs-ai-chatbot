@@ -72,6 +72,8 @@ open(headers_out, 'w').write(f"""/*
   Cache-Control: no-cache
 /rfid-items.json
   Cache-Control: no-cache
+/rfid.webmanifest
+  Content-Type: application/manifest+json
 /.well-known/assetlinks.json
   Content-Type: application/json
 /EventSolutions.apk

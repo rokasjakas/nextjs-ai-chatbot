@@ -2,11 +2,17 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-0gfptO+UVOB7LLRDW6xgwJ9myMQERWNEX2nHK7dtwP0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-9yLk/qIboi03RqUdPEnXdd+Zq67zzqXZhviFGs60oA4=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-cEhH9iYnrg1MNACoGVaoznUrgG2TS3drbep3vMA/Gog=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-q0WRbydt41mnBMCplzYe/MhpuGwXwY5Kjhgu0KqRbQQ=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-xVfbGSlJ0HkCsroi+mzwzvjz0K9CryF/ikEX5NlklEU=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>RFID skeneris · Event Solutions</title>
 <link rel="icon" href="icons/icon-192.png">
+<link rel="manifest" href="rfid.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#141414">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RFID">
 <style>
 /* written for old Android scanners (Chainway C72, Android 6): no CSS variables, no modern selectors */
 *{box-sizing:border-box;}
@@ -49,6 +55,8 @@ input[type=text],input[type=email],input[type=password],input[type=search],selec
 .hint{font-size:12.5px;color:#9a9a9a;margin-top:6px;}
 .x{border:0;background:transparent;color:#9a9a9a;padding:6px;}
 .hidden{display:none !important;}
+.sst{margin-top:8px;font-size:14px;font-weight:700;} .sst.ok{color:#3fbf8f;} .sst.bad{color:#ff9a7a;}
+.dbg{font:12px/1.5 monospace;color:#cfcfcf;}
 </style>
 </head>
 <body>
@@ -149,6 +157,19 @@ function itemName(id, fallback){ var it = D.byId[String(id)]; return it ? it.nam
 function groupName(g){ return D.groups[g] || (g==='kita' ? 'Kita' : g==='santvaros' ? 'Santvaros' : g==='kabeliai' ? 'Kabeliai' : g || ''); }
 function tagsOf(id){ var out = []; for(var e in D.tags) if(D.tags.hasOwnProperty(e) && String(D.tags[e].item_id)===String(id)) out.push(D.tags[e]); return out; }
 
+// ---------- installed as an app on the home screen (opens full screen, without the browser bar) ----------
+var INSTALL = null;
+window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); INSTALL = e; var b = $('inst'); if(b) b.className = 'btn ghost wide'; });
+function standalone(){ try{ return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true; }catch(e){ return false; } }
+function installHtml(){ return standalone() ? '' : '<button class="btn ghost wide" id="inst">'+ic('box')+' Įdiegti kaip programėlę</button>'; }
+function installBind(){
+  var b = $('inst'); if(!b) return;
+  b.onclick = function(){
+    if(INSTALL){ INSTALL.prompt(); INSTALL = null; return; }
+    alert('Įdiegti į pradžios ekraną:\n\n1. Naršyklės meniu – trys taškai viršuje dešinėje.\n2. „Pridėti prie pradžios ekrano“ (Add to Home screen).\n3. „Pridėti“.\n\nPradžios ekrane atsiras „RFID“ ikona – ji atsidaro per visą ekraną, be naršyklės juostos.');
+  };
+}
+
 // ---------- screens ----------
 var V = { tab:'find', item:null, unit:'', autoUnit:true, last:null, inv:null };
 try{ V.inv = JSON.parse(localStorage.getItem(INV_KEY) || 'null'); }catch(e){}
@@ -157,10 +178,11 @@ function drawLogin(msg){
     + '<div class="card"><label for="lgE">El. paštas</label><input type="email" id="lgE" autocomplete="username">'
     + '<label for="lgP">Slaptažodis</label><input type="password" id="lgP" autocomplete="current-password">'
     + '<div class="err" id="lgErr">'+esc(msg||'')+'</div><button class="btn wide" id="lgGo">Prisijungti</button>'
-    + '<p class="hint">Tas pats el. paštas ir slaptažodis kaip programėlėje.</p></div>';
+    + '<p class="hint">Tas pats el. paštas ir slaptažodis kaip programėlėje.</p></div>' + installHtml();
   $('lgGo').onclick = function(){ var b = this; b.disabled = true; b.textContent = 'Jungiamasi…';
     signIn($('lgE').value.trim(), $('lgP').value, function(e){ if(e){ b.disabled = false; b.textContent = 'Prisijungti'; $('lgErr').textContent = e; return; } start(); }); };
   $('lgP').onkeydown = function(e){ if(e.keyCode===13) $('lgGo').click(); };
+  installBind();
 }
 function start(){
   $('app').innerHTML = '<div class="card muted">Kraunama…</div>';
@@ -168,27 +190,74 @@ function start(){
 }
 function draw(){
   var who = D.me ? [D.me.first_name, D.me.last_name].join(' ') : (AUTH && AUTH.email) || '';
-  $('app').innerHTML = '<div class="top"><h1>'+ic('tag')+' RFID skeneris<small>'+esc(who)+'</small></h1><button class="btn ghost sm" id="out">'+ic('out')+'</button></div>'
-    + (D.err ? '<div class="card err">'+esc(D.err)+'</div>' : '')
-    + '<div class="tabs"><button data-t="find" class="'+(V.tab==='find'?'on':'')+'">'+ic('search')+' Paieška</button>'
-    + '<button data-t="assign" class="'+(V.tab==='assign'?'on':'')+'">'+ic('tag')+' Priskirti</button>'
-    + '<button data-t="inv" class="'+(V.tab==='inv'?'on':'')+'">'+ic('list')+' Inventorizacija</button></div>'
-    + '<div id="body"></div>';
-  $('out').onclick = function(){ if(confirm('Atsijungti?')) signOut(); };
-  var bs = document.querySelectorAll('[data-t]');
-  for(var i=0;i<bs.length;i++) bs[i].onclick = function(){ V.tab = this.getAttribute('data-t'); V.last = null; draw(); };
+  if(!$('scan')){
+    $('app').innerHTML = '<div class="top"><h1>'+ic('tag')+' RFID skeneris<small id="who"></small></h1><button class="btn ghost sm" id="out">'+ic('out')+'</button></div>'
+      + (D.err ? '<div class="card err">'+esc(D.err)+'</div>' : '')
+      + '<div class="tabs"><button data-t="find">'+ic('search')+' Paieška</button><button data-t="assign">'+ic('tag')+' Priskirti</button><button data-t="inv">'+ic('list')+' Inventorizacija</button></div>'
+      + '<div class="card" id="scanbox"><label for="scan" id="scanL">Nuskaityk žymą</label>'
+      + '<input type="text" id="scan" class="scan" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="laukiama žymos…">'
+      + '<div class="sst" id="scanSt"></div><div class="hint" id="scanH"></div></div>'
+      + '<div id="body"></div>'
+      + installHtml() + '<p class="muted" style="text-align:center;margin-top:16px;"><a href="#" id="dbgT" style="color:#9a9a9a;">Diagnostika</a></p><div class="card dbg hidden" id="dbg"></div>';
+    $('out').onclick = function(){ if(confirm('Atsijungti?')) signOut(); };
+    var bs = document.querySelectorAll('[data-t]');
+    for(var i=0;i<bs.length;i++) bs[i].onclick = function(){ V.tab = this.getAttribute('data-t'); V.last = null; draw(); };
+    $('dbgT').onclick = function(e){ e.preventDefault(); DBG.on = !DBG.on; dbgDraw(); };
+    installBind();
+    scanInit();
+  }
+  $('who').textContent = who;
+  var bs2 = document.querySelectorAll('[data-t]');
+  for(var j=0;j<bs2.length;j++) bs2[j].className = bs2[j].getAttribute('data-t')===V.tab ? 'on' : '';
   if(V.tab==='assign') drawAssign(); else if(V.tab==='inv') drawInv(); else drawFind();
 }
-// the field the scanner types into; Enter (or a short pause) ends one tag
-function scanField(id, ph, onTag){
-  var el = $(id), t = 0;
-  function take(){ clearTimeout(t); var v = epcOf(el.value); el.value = ''; if(v.length >= 4) onTag(v); }
-  el.onkeydown = function(e){ if(e.keyCode===13 || e.keyCode===9){ e.preventDefault(); take(); } };
-  el.oninput = function(){ clearTimeout(t); t = setTimeout(take, 400); };
-  el.placeholder = ph;
-  setTimeout(function(){ el.focus(); }, 50);
+// ---------- the scan field: the scanner's Keyboard Emulator types the tag and Enter into it ----------
+// works however the scanner sends it: text into the field (input), key presses, or – when the field
+// is not in focus – key presses to the page; Enter (or a short pause) ends one tag
+var SCAN = { fn:null, buf:'', gbuf:'', t:0, gt:0 };
+var DBG = { on:false, log:[] };
+function dbg(m){ DBG.log.unshift(new Date().toTimeString().slice(0,8)+'  '+m); if(DBG.log.length > 14) DBG.log.length = 14; if(DBG.on) dbgDraw(); }
+function dbgDraw(){ var d = $('dbg'); if(!d) return; d.className = DBG.on ? 'card dbg' : 'card dbg hidden';
+  d.innerHTML = '<b>Ką gauna puslapis</b> <small class="muted">(nuskaityk žymą ir pažiūrėk)</small><br>'+(DBG.log.map(esc).join('<br>') || '<span class="muted">dar nieko</span>'); }
+function scanTake(v, how){
+  clearTimeout(SCAN.t); var e = epcOf(v); SCAN.buf = ''; SCAN.gbuf = '';
+  dbg('žyma ('+how+'): "'+String(v).slice(0,40)+'" → '+(e || 'tuščia'));
+  if(e.length >= 4 && SCAN.fn) SCAN.fn(e);
 }
-function keepFocus(id){ document.body.onclick = function(e){ var t = e.target; if(t && /INPUT|SELECT|TEXTAREA|BUTTON/.test(t.tagName)) return; var el = $(id); if(el) el.focus(); }; }
+function scanState(){
+  var el = $('scan'), st = $('scanSt'); if(!el || !st) return;
+  var on = document.activeElement===el;
+  st.className = 'sst '+(on ? 'ok' : 'bad');
+  st.innerHTML = on ? ic('ok')+' Pasiruošęs – spausk skaitytuvo mygtuką' : ic('err')+' Paspausk mėlyną laukelį, tada skenuok';
+}
+function scanInit(){
+  var el = $('scan');
+  el.onkeydown = function(e){
+    dbg('keydown '+e.keyCode+(e.key ? ' "'+e.key+'"' : ''));
+    if(e.keyCode===13 || e.keyCode===9){ e.preventDefault(); scanTake(el.value || SCAN.buf, el.value ? 'laukelis' : 'klavišai'); el.value = ''; }
+  };
+  el.onkeypress = function(e){ var c = e.charCode || e.which; if(c > 32){ SCAN.buf += String.fromCharCode(c); } };
+  el.oninput = function(){ dbg('input: '+el.value.length+' simb.'); clearTimeout(SCAN.t); SCAN.t = setTimeout(function(){ if(el.value){ var v = el.value; el.value = ''; scanTake(v, 'pauzė'); } }, 400); };
+  el.onfocus = el.onblur = function(e){ dbg(e.type==='focus' ? 'laukelis aktyvus' : 'laukelis neaktyvus'); scanState(); };
+  // the field is not in focus: key presses to the page are collected too
+  document.addEventListener('keydown', function(e){
+    var t = e.target; if(t===el || (t && /INPUT|TEXTAREA|SELECT/.test(t.tagName))) return;
+    dbg('puslapis keydown '+e.keyCode);
+    if(!SCAN.fn) return;
+    if(e.keyCode===13 || e.keyCode===9){ if(SCAN.gbuf){ e.preventDefault(); scanTake(SCAN.gbuf, 'puslapis'); } return; }
+    var k = e.keyCode, ch = k>=48 && k<=57 ? String.fromCharCode(k) : k>=96 && k<=105 ? String(k-96) : k>=65 && k<=90 ? String.fromCharCode(k) : '';
+    if(ch){ SCAN.gbuf += ch; clearTimeout(SCAN.gt); SCAN.gt = setTimeout(function(){ if(SCAN.gbuf.length >= 8) scanTake(SCAN.gbuf, 'puslapis, pauzė'); SCAN.gbuf = ''; }, 500); }
+  }, true);
+  document.body.onclick = function(e){ var t = e.target; if(!SCAN.fn || (t && /INPUT|SELECT|TEXTAREA|BUTTON|A/.test(t.tagName)) || (t && t.closest && t.closest('button'))) return; el.focus(); };
+  setTimeout(function(){ el.focus(); scanState(); }, 60);
+}
+// which tab uses the field (null – hidden, e.g. while choosing a thing)
+function setScan(label, hint, fn){
+  SCAN.fn = fn; var box = $('scanbox'); if(!box) return;
+  box.className = fn ? 'card' : 'card hidden';
+  $('scanL').textContent = label || 'Nuskaityk žymą'; $('scanH').textContent = hint || '';
+  if(fn) setTimeout(function(){ var el = $('scan'); if(el && document.activeElement!==el && !(document.activeElement && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))) el.focus(); scanState(); }, 60);
+}
 
 // Paieška: a tag scanned – what it is
 function drawFind(){
@@ -201,10 +270,8 @@ function drawFind(){
         + '<div class="muted">Šiam daiktui priskirta žymų: '+tagsOf(t.item_id).length+(D.byId[String(t.item_id)] && D.byId[String(t.item_id)].qty ? ' (sandėlyje '+D.byId[String(t.item_id)].qty+' vnt.)' : '')+'</div></div>'
       : '<div class="flash warn">'+ic('err')+' Nežinoma žyma</div><div class="card"><div class="muted">'+esc(L)+'</div>'+(D.canEdit ? '<button class="btn wide" id="fAssign">'+ic('tag')+' Priskirti šią žymą daiktui</button>' : '<p class="muted">Priskirti gali tie, kas redaguoja „Įrangą“.</p>')+'</div>';
   }
-  $('body').innerHTML = '<div class="card"><label for="scan">Nuskaityk žymą</label><input type="text" id="scan" class="scan" autocomplete="off" autocapitalize="off" spellcheck="false">'
-    + '<div class="hint">Paspausk skaitytuvo mygtuką – žyma atsiras čia.</div></div>' + html;
-  scanField('scan', 'laukiama žymos…', function(epc){ V.last = epc; beep(!!D.tags[epc]); drawFind(); });
-  keepFocus('scan');
+  $('body').innerHTML = html;
+  setScan('Nuskaityk žymą', 'Paspausk skaitytuvo mygtuką – parodysiu, kuris tai daiktas.', function(epc){ V.last = epc; beep(!!D.tags[epc]); drawFind(); });
   var fa = $('fAssign'); if(fa) fa.onclick = function(){ V.tab = 'assign'; V.pending = L; draw(); };
 }
 
@@ -222,15 +289,14 @@ function drawAssign(){
         h += '<button class="pick" data-id="'+esc(x.id)+'"><b>'+esc(x.name)+'</b><br><small>'+esc(groupName(x.group))+(x.code ? ' · kodas '+esc(x.code) : '')+(x.qty ? ' · '+x.qty+' vnt.' : '')+(c ? ' · žymų '+c : '')+'</small></button>'; }
       res.innerHTML = h || '<p class="muted">Nieko nerasta.</p>';
       var ps = res.querySelectorAll('[data-id]'); for(var j=0;j<ps.length;j++) ps[j].onclick = function(){ V.item = this.getAttribute('data-id'); V.unit = String(tagsOf(V.item).length + 1); drawAssign(); }; };
-    q.oninput = show; show(); setTimeout(function(){ q.focus(); }, 50);
-    document.body.onclick = null;
+    q.oninput = show; show(); setScan(null);
     return;
   }
   var tags = tagsOf(it.id).sort(function(a,b){ return String(a.unit).localeCompare(String(b.unit), undefined, { numeric:true }); });
   $('body').innerHTML = '<div class="card"><div class="row"><div class="t"><b>'+esc(it.name)+'</b><small>'+esc(groupName(it.group))+(it.qty ? ' · sandėlyje '+it.qty+' vnt.' : '')+'</small></div><button class="btn ghost sm" id="chg">Keisti</button></div></div>'
     + '<div class="card"><label for="unit">Vieneto nr. (nebūtina)</label><input type="text" id="unit" value="'+esc(V.unit)+'" autocomplete="off">'
     + '<label><input type="checkbox" id="auto" '+(V.autoUnit ? 'checked' : '')+'> po kiekvienos žymos – kitas numeris</label>'
-    + '<label for="scan">Skenuok žymas – kiekviena priskiriama šiam daiktui</label><input type="text" id="scan" class="scan" autocomplete="off" autocapitalize="off" spellcheck="false"><div id="msg"></div></div>'
+    + '<div id="msg"></div></div>'
     + '<div class="card"><b>Priskirtos žymos ('+tags.length+')</b><div class="list">'+(tags.map(function(t){ return '<div class="row"><div class="t"><b>'+(t.unit ? 'Vnt. '+esc(t.unit) : 'Be numerio')+'</b><small>'+esc(t.epc)+' · '+esc(when(t.created_at))+'</small></div><button class="x" data-del="'+esc(t.epc)+'" aria-label="Pašalinti">'+ic('close')+'</button></div>'; }).join('') || '<p class="muted">Dar nėra.</p>')+'</div></div>';
   $('chg').onclick = function(){ V.item = null; drawAssign(); };
   $('unit').onchange = function(){ V.unit = this.value.trim(); };
@@ -250,8 +316,7 @@ function drawAssign(){
       V.pending = null; drawAssign(); $('msg').innerHTML = '<div class="flash ok">'+ic('ok')+' Priskirta: '+esc(epc)+'</div>';
     }, 'resolution=merge-duplicates,return=representation');
   };
-  scanField('scan', 'laukiama žymos…', assign);
-  keepFocus('scan');
+  setScan('Skenuok žymas – kiekviena priskiriama šiam daiktui', it.name, assign);
   if(V.pending){ var p = V.pending; V.pending = null; assign(p); }
 }
 
@@ -261,7 +326,7 @@ function drawInv(){
   if(!V.inv){
     $('body').innerHTML = '<div class="card"><label for="ttl">Pavadinimas (nebūtina)</label><input type="text" id="ttl" placeholder="pvz. Sandėlis, A lentyna"><button class="btn wide" id="go">'+ic('list')+' Pradėti skenavimą</button></div><div class="card"><b>Ankstesni</b><div id="hist" class="muted">Kraunama…</div></div>';
     $('go').onclick = function(){ V.inv = { title:$('ttl').value.trim(), started:new Date().toISOString(), tags:{} }; invSave(); drawInv(); };
-    document.body.onclick = null;
+    setScan(null);
     api('GET', 'rfid_inventories?select=id,title,created_by_name,created_at,finished_at,tags&order=created_at.desc&limit=15', null, function(e, rows){
       var h = $('hist'); if(!h) return;
       if(e){ h.textContent = e; return; }
@@ -273,13 +338,11 @@ function drawInv(){
   for(var e in I.tags) if(I.tags.hasOwnProperty(e)){ total++; var t = D.tags[e]; if(t){ var k = String(t.item_id); (per[k] = per[k] || []).push(t); } else unknown.push(e); }
   var ids = Object.keys(per).sort(function(a,b){ return itemName(a).localeCompare(itemName(b)); });
   $('body').innerHTML = '<div class="card"><div class="row"><div class="t"><b>'+esc(I.title || 'Inventorizacija')+'</b><small>pradėta '+esc(when(I.started))+'</small></div><span class="big">'+total+'</span></div>'
-    + '<input type="text" id="scan" class="scan" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="hint">Laikyk skaitytuvo mygtuką ir eik pro daiktus. Ta pati žyma skaičiuojama vieną kartą.</div>'
     + '<button class="btn wide" id="fin">'+ic('ok')+' Baigti ir išsaugoti</button><button class="btn ghost wide" id="drop">Atšaukti</button></div>'
     + '<div class="card"><b>Rasta pagal daiktus</b><div class="list" id="per">'+(ids.map(function(id){ var it = D.byId[id] || {}, n = per[id].length, q = it.qty;
         return '<div class="row"><div class="t"><b>'+esc(itemName(id, per[id][0].item_name))+'</b><small>'+esc(groupName(it.group))+(q ? ' · sandėlyje '+q+' vnt. · žymų priskirta '+tagsOf(id).length : '')+'</small></div><span class="n '+(q && n>=tagsOf(id).length ? 'ok' : 'warn')+'">'+n+(tagsOf(id).length ? ' / '+tagsOf(id).length : '')+'</span></div>'; }).join('') || '<p class="muted">Dar nieko.</p>')+'</div></div>'
     + (unknown.length ? '<div class="card"><b class="warn">Nežinomos žymos ('+unknown.length+')</b><div class="muted">'+unknown.slice(0, 50).map(esc).join('<br>')+'</div></div>' : '');
-  scanField('scan', 'skenuok…', function(epc){ if(!I.tags[epc]){ I.tags[epc] = new Date().toISOString(); invSave(); beep(!!D.tags[epc]); drawInv(); } });
-  keepFocus('scan');
+  setScan('Inventorizacija – skenuok', 'Laikyk skaitytuvo mygtuką ir eik pro daiktus. Ta pati žyma skaičiuojama vieną kartą.', function(epc){ if(!I.tags[epc]){ I.tags[epc] = new Date().toISOString(); invSave(); beep(!!D.tags[epc]); drawInv(); } });
   $('drop').onclick = function(){ if(!confirm('Atšaukti šį skenavimą? Nuskaitytos žymos nebus išsaugotos.')) return; V.inv = null; invSave(); drawInv(); };
   $('fin').onclick = function(){ var b = this; b.disabled = true; b.textContent = 'Saugoma…';
     var tags = []; for(var e in I.tags) if(I.tags.hasOwnProperty(e)) tags.push({ epc:e, at:I.tags[e] });
