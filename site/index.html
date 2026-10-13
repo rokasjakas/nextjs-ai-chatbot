@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-P/BAbtZgPD9yjkB/VRs6I3quF3lx6gY5x7EkprTzF0c=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-vb5DWB6vzrxrsuGFpawzERe47N8VM2fn7J1x0kSyEQQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -3597,6 +3597,9 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .pp-star{display:inline-flex;padding:0 1px;border:0;background:none;color:var(--text-faint);cursor:pointer;line-height:0;}
 .pp-star svg{width:13px;height:13px;}
 .pp-star.on{color:#D9B44A;opacity:.85;}
+.pp-star.pp-red.on{color:#E0524F;opacity:.95;}
+.pp-stars.can.red .pp-star.pp-red{opacity:.95;}
+.pp-stars:has(.pp-red){margin-right:1px;}
 .pp-stars.can:not(.set) .pp-star{opacity:0;transition:opacity .15s;}
 .pp-row:hover .pp-stars.can .pp-star,.pp-card:hover .pp-stars.can .pp-star{opacity:.45;}
 .pp-row:hover .pp-stars.can .pp-star.on,.pp-card:hover .pp-stars.can .pp-star.on{opacity:.9;}
@@ -22099,7 +22102,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v551';
+const APP_VER = 'v552';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24969,7 +24972,7 @@ function ppStickTop(){
 }
 function ppMatches(c){
   const t = normalizeText(PP.q).split(' ').filter(Boolean); if(!t.length) return true;
-  const h = ' '+normalizeText([ppName(c), c.phone, c.email, c.address, c.note, (c.groups||[]).join(' '), Object.values(c.levels||{}).join(' '), (c.license||[]).join(' '), (c.skills||[]).join(' '), c.desks, c.inactive ? 'nebeaktyvus' : '', ppStarsOf(c) ? PP_STARS[ppStarsOf(c)] : '', c.ban ? 'ban' : '', c.worked ? 'dirbome' : ''].filter(Boolean).join(' '))+' ';
+  const h = ' '+normalizeText([ppName(c), c.phone, c.email, c.address, c.note, (c.groups||[]).join(' '), Object.values(c.levels||{}).join(' '), (c.license||[]).join(' '), (c.skills||[]).join(' '), c.desks, c.inactive ? 'nebeaktyvus' : '', ppStarsOf(c) ? PP_STARS[ppStarsOf(c)] : '', c.red ? 'pirmumo teise raudona' : '', c.ban ? 'ban' : '', c.worked ? 'dirbome' : ''].filter(Boolean).join(' '))+' ';
   const digits = PP.q.replace(/\D/g,'');
   return t.every(x=>h.includes(x)) || (digits.length>=4 && ppTel(c.phone).includes(digits));
 }
@@ -25005,15 +25008,17 @@ function ppSections(list){
 }
 function ppSort(list){ return ppQSort(list.slice().sort((a,b)=>ppName(a).natCmp(ppName(b)))); }
 // searching: the first or last name starting with the letters first
-function ppQSort(list){ const l = srchSort(list, PP.q, c=>[c.first, c.last, ppName(c)]); return [...l.filter(c=>!c.inactive).sort((a, b)=>ppStarsOf(b) - ppStarsOf(a)), ...l.filter(c=>c.inactive)]; }
+function ppQSort(list){ const l = srchSort(list, PP.q, c=>[c.first, c.last, ppName(c)]); return [...l.filter(c=>!c.inactive).sort((a, b)=>(b.red ? 10 : 0) + ppStarsOf(b) - (a.red ? 10 : 0) - ppStarsOf(a)), ...l.filter(c=>c.inactive)]; }
 // stars: 3 – visiška pirmenybė, 2 – labai dažnai dirbame, 1 – dirbome; the people with stars go first in their group
 const PP_STARS = ['', 'Dirbome', 'Labai dažnai dirbame', 'Visiška pirmenybė'];
 function ppStarsHtml(c){
   const n = ppStarsOf(c), can = canEdit('people'), man = ppStarsHand(c);
   const ev = EV.loaded ? ppEvOf(c) : null;
-  const evn = ev ? `<span class="pp-evn" title="Įrašytas ${ev.n} ${ev.n%10===1 && ev.n%100!==11 ? 'renginyje' : 'renginiuose'}${ev.last ? ', paskutinis '+esc(ev.last) : ''}">${ev.n}×</span>` : '';
-  if(!n && !can) return evn;
-  return evn + `<span class="pp-stars ${n ? 'set' : ''} ${can ? 'can' : ''}" title="${n ? esc(PP_STARS[n])+(man ? ' (nustatyta rankomis)' : ' (pagal renginius)') : 'Pirmenybė: 1 – dirbome, 2 – labai dažnai dirbame, 3 – visiška pirmenybė'}">${[1,2,3].map(i=>can
+  const evn = ev && ev.y ? `<span class="pp-evn" title="Per paskutinius 12 mėn. – ${ev.y} ${ev.y%10===1 && ev.y%100!==11 ? 'renginys' : 'renginiai (-ių)'} (iš viso ${ev.n})${ev.last ? ', paskutinis '+esc(ev.last) : ''}">${ev.y}×</span>` : '';
+  const red = c.red ? `<span class="pp-star pp-red on" title="Pirmumo teisė visiems renginiams">${slIcon('star')}</span>` : '';
+  const redB = can ? `<button type="button" class="pp-star pp-red ${c.red ? 'on' : ''}" data-pact="redstar" data-id="${esc(c.id)}" title="${c.red ? 'Pirmumo teisė visiems renginiams – spausk, kad nuimtum' : 'Raudona žvaigždutė – pirmumo teisė visiems renginiams'}">${slIcon('star')}</button>` : red;
+  if(!n && !can) return evn + (red ? `<span class="pp-stars set">${red}</span>` : '');
+  return evn + `<span class="pp-stars ${c.red ? 'red' : ''}">${redB}</span><span class="pp-stars ${n ? 'set' : ''} ${can ? 'can' : ''}" title="${n ? esc(PP_STARS[n])+(man ? ' (nustatyta rankomis)' : ' (pagal renginius)') : 'Pirmenybė: 1 – dirbome, 2 – labai dažnai dirbame, 3 – visiška pirmenybė'}">${[1,2,3].map(i=>can
     ? `<button type="button" class="pp-star ${i<=n ? 'on' : ''}" data-pact="star" data-id="${esc(c.id)}" data-v="${i}" title="${esc(PP_STARS[i])}${i===n ? ' – spausk, kad nuimtum' : ''}">${slIcon('star')}</button>`
     : (i<=n ? `<span class="pp-star on">${slIcon('star')}</span>` : '')).join('')}</span>`;
 }
@@ -25021,26 +25026,24 @@ function ppStarsHtml(c){
 function ppEvCounts(){
   if(PP.evn) return PP.evn.map;   // counted once per drawing (ppRenderBody clears it)
   const evs = (EV.events||[]).filter(ev=>ev && !ev.deletedAt && !ev.handoverId && ev.status!=='cancel');
-  const by = new Map();
-  evs.forEach(ev=>{ const seen = new Set();
+  const by = new Map(), to = ppToday(), from = lmDay(to, -365);
+  evs.forEach(ev=>{ const seen = new Set(), y = ev.date && ev.date >= from && ev.date <= to;
     (ev.crew||[]).forEach(g=>(g.entries||[]).forEach(e=>{ const n = normalizeText(String(e.person||'').replace(/\(.*?\)/g, ' ')).replace(/\s+/g, ' ').trim(); if(n && n.includes(' ')) seen.add(n); }));
-    seen.forEach(n=>{ const x = by.get(n) || { n:0, last:'' }; x.n++; if((ev.date||'') > x.last) x.last = ev.date||''; by.set(n, x); }); });
+    seen.forEach(n=>{ const x = by.get(n) || { n:0, y:0, last:'' }; x.n++; if(y) x.y++; if((ev.date||'') > x.last) x.last = ev.date||''; by.set(n, x); }); });
   PP.evn = { map:by };
   return by;
 }
 function ppEvOf(c){
   const m = ppEvCounts(), n = normalizeText(ppName(c)).replace(/\s+/g, ' ').trim(), r = normalizeText([c.last, c.first].filter(Boolean).join(' ')).replace(/\s+/g, ' ').trim();
   const a = m.get(n), b = r!==n ? m.get(r) : null;
-  return a && b ? { n:a.n + b.n, last:a.last > b.last ? a.last : b.last } : a || b || null;
+  return a && b ? { n:a.n + b.n, y:a.y + b.y, last:a.last > b.last ? a.last : b.last } : a || b || null;
 }
-// stars by the events (by themselves): 1 – was in an event, 2 – the most frequent quarter (at least 3 events),
-// 3 – the most frequent tenth (at least 6); stars set by hand (c.stars) take the place of these
+// stars by the events of the last 12 months (by themselves): 1 – up to 20 events, 2 – 21–60, 3 – more than 60;
+// stars set by hand (c.stars) take the place of these
 function ppStarsAuto(){
   if(PP.sa) return PP.sa;
-  const rows = EV.loaded ? PP.contacts.map(c=>({ id:c.id, n:(ppEvOf(c)||{}).n||0 })).filter(x=>x.n > 0).sort((a, b)=>b.n - a.n) : [];
-  const at = q=>rows.length ? rows[Math.max(0, Math.ceil(rows.length*q) - 1)].n : 0;
-  const t3 = Math.max(6, at(.1)), t2 = Math.max(3, at(.35)), map = {};
-  rows.forEach(x=>{ map[x.id] = x.n >= t3 ? 3 : x.n >= t2 ? 2 : 1; });
+  const map = {};
+  if(EV.loaded) PP.contacts.forEach(c=>{ const y = (ppEvOf(c)||{}).y||0; if(y > 0) map[c.id] = y > 60 ? 3 : y > 20 ? 2 : 1; });
   return PP.sa = map;
 }
 // c.stars: 1–3 set by hand, -1 – taken off by hand, none (or 0) – by the events
@@ -25174,6 +25177,7 @@ function ppBindActions(box){
     if(b.dataset.pact==='mail') ppMail(c);
     if(b.dataset.pact==='inactive') ppSetInactive(c, !c.inactive);
     if(b.dataset.pact==='star') ppSetStars(c, +b.dataset.v);
+    if(b.dataset.pact==='redstar') ppSaveContact(Object.assign({}, c, { red:!c.red })).then(ok=>{ if(ok){ ppRenderBody(); toast(c.red ? 'Raudona žvaigždutė nuimta.' : '✓ '+ppName(c)+' – pirmumo teisė visiems renginiams.'); } });
     if(b.dataset.pact==='outcome') ppSetOutcome(b.dataset.call, b.dataset.v);
     if(b.dataset.pact==='mark') ppMarkModal(c, b.dataset.day ? [b.dataset.day] : null);
     if(b.dataset.pact==='rem') ppRemModal(c);
@@ -45153,6 +45157,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-14 19:30', v:'v552', k:'new', t:'Žmonės: žvaigždutės pagal metų renginius ir raudona žvaigždutė', f:'Žvaigždutės skaičiuojamos pagal paskutinių 12 mėn. renginius: 1 – iki 20 renginių, 2 – 21–60, 3 – daugiau nei 60; prie vardo rodomas metų renginių skaičius. Nauja raudona žvaigždutė – pirmumo teisė visiems renginiams: tokie žmonės rodomi pačiame grupės viršuje (dar virš 3 žvaigždučių).' },
   { d:'2026-10-14 19:00', v:'v551', k:'new', t:'Chato dokumentai atsidaro programoje; žvaigždutės pagal renginius – savaime', f:'Pokalbyje paspaudus PDF, Word (.docx), Excel (.xlsx, .xls, .csv), paveikslėlį ar tekstinį failą jis atsidaro programoje (Excel – su lapų pasirinkimu); mygtukas „Atsisiųsti“ viršuje, Esc – uždaryti. Kiti failai (pvz. .pptx, .zip) atsisiunčiami kaip anksčiau. Žmonės: žvaigždutės pagal renginius uždedamos savaime (1 – buvo renginyje, 2 – dažniausias ketvirtis, bent 3 renginiai, 3 – dažniausias dešimtadalis, bent 6) ir daugiausia jų turintys rodomi grupės viršuje; rankomis uždėtos ar nuimtos žvaigždutės pakeičia automatines.' },
   { d:'2026-10-14 18:00', v:'v550', k:'new', t:'Žmonės: kiek renginių ir žvaigždutės pagal renginius', f:'Prie vardo smulkiai rodoma, kiek renginių žmogus įrašytas (pvz. 12×; užvedus – paskutinio data); atšaukti renginiai neskaičiuojami, randama ir kai įrašyta „Pavardė Vardas“. Mygtukas „Pagal renginius“ uždeda žvaigždutes: 1 – buvo renginyje, 2 – dažniausiai įrašomas ketvirtis (bent 3 renginiai), 3 – dažniausias dešimtadalis (bent 6). Prieš tai parodo, kiek kam; rankomis uždėtos didesnės nemažinamos.' },
   { d:'2026-10-14 17:30', v:'v549', k:'new', t:'Žmonės: pirmenybės žvaigždutės', f:'Prie vardo – 1–3 mažos žvaigždutės: 3 – visiška pirmenybė, 2 – labai dažnai dirbame, 1 – dirbome. Tuščios matosi tik užvedus pelę ant eilutės; paspaudus tą pačią – nuimama. Žmonės su daugiau žvaigždučių rodomi grupės viršuje (Archyve ir Bookinge).' },
