@@ -21,8 +21,7 @@ SB = 'yakmikxkcudwloxruhvx.supabase.co'
 csp = {
   'default-src': "'self'",
   # c.dailywebrtc.net: the Daily call bundle (loaded as a script, dailyConfig.avoidEval)
-  # 'wasm-unsafe-eval': WebAssembly only (the card number read on the phone – Tesseract OCR), not eval()
-  'script-src': "'self' 'wasm-unsafe-eval' " + ' '.join(hashes) + " https://cdn.jsdelivr.net https://c.dailywebrtc.net",
+  'script-src': "'self' " + ' '.join(hashes) + " https://cdn.jsdelivr.net https://c.dailywebrtc.net",
   'worker-src': "'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net",
   'style-src': "'self' 'unsafe-inline' https://fonts.googleapis.com",
   'font-src': f"'self' data: https://fonts.gstatic.com https://{SB}",
