@@ -12,7 +12,7 @@ wb = openpyxl.load_workbook(sys.argv[1], data_only=True)
 
 TIME_LABELS = ['Sandėlyje','Išvažiuoti','Lokacijoje','Soundcheck','Repeticija','Paruošti iki','Pradžia','Pabaiga','Demontavimas']
 GROUP_COLS = {11:'Daiktų rūšiavimas', 12:'Montavimas diena prieš', 14:'Montavimas renginio dieną', 16:'Demontavimas',
-              18:'Garsas', 19:'VJ', 20:'Šviesa', 21:'Budi renginyje'}
+              18:'Garsas', 19:'VJ', 20:'Šviesa', 21:'Budi renginyje'}   # Garsas / VJ / Šviesa become one „Operatoriai“ table on import
 NOTE_FILLS = {'FFCFE2F3','FFC9DAF8','FFD0E0E3'}
 POS_RE = re.compile(r'^((?:[AVL]\d*(?:/(?:OP|CREW))?)|rigg|DeRigg\??|Elektr\.?)[\s/]+(.+)$', re.I)
 DAYTIME_RE = re.compile(r'^\s*\d{1,2}\s*d\b|^\s*\d{1,2}:\d{2}|\d{1,2}:\d{2}\s*$', re.I)
