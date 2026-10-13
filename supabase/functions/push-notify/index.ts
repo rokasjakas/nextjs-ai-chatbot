@@ -1618,11 +1618,18 @@ Deno.serve(async (req) => {
       let rr: unknown = null, wp: unknown = null;
       try { rr = await reportReminders(); } catch (e) { rr = { error: String(e) }; }   // before report_reminders.sql the table is missing
       try { wp = await workPlanReminders(); } catch (e) { wp = { error: String(e) }; }   // before work_plans.sql the tables are missing
+      // Bolt / Wolt monthly reports sent by themselves (reports-mail, sql/report_mail.sql)
+      let rm: unknown = null;
+      try {
+        const res = await fetch(`${env("SUPABASE_URL")}/functions/v1/reports-mail`, { method: "POST", signal: AbortSignal.timeout(50000),
+          headers: { "Content-Type": "application/json", "x-cron-secret": secret, apikey: env("SUPABASE_SERVICE_ROLE_KEY") }, body: JSON.stringify({ mode: "cron" }) });
+        rm = await res.json().catch(() => ({ status: res.status }));
+      } catch (e) { rm = { error: String(e) }; }
       if (new Date().getUTCMinutes() < 5) {
         await db(`user_notifications?created_at=lt.${new Date(Date.now() - 30 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
         await db(`message_push?at=lt.${new Date(Date.now() - 3 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
       }
-      return json({ ...tr, inv: ir, tracker: tt, reports: rr, workplans: wp });
+      return json({ ...tr, inv: ir, tracker: tt, reports: rr, workplans: wp, report_mail: rm });
     }
     // a new member signed up (called by user-access with the cron secret): every admin is told
     if (body?.mode === "new-user") {
