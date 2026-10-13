@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-T/URK63zZ1Ia99570imaE5zU+OYIuIhVkEs/Sn5IYn8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-SQ6bgR7WWA6JGBqZsihiE9DQ+w8M29fg7NUgAzXaLUk=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bapK7G4smUC/CzO9btKc1ROWONm0sQ/HProphCfKVY4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-hewaLHZtAA+spxHIHy86/7OttReLfqEZd3M4nmVNEoA=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Automobilis · Event Solutions</title>
@@ -54,7 +54,7 @@ textarea{min-height:110px;resize:vertical;}
 .me{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--ok) 14%,transparent);font-size:14px;}
 .err{color:var(--bad);font-size:14px;margin-top:8px;}
 .done{text-align:center;padding:26px 16px;}
-.pin-res{text-align:center;} .pin-big{font-size:46px;font-weight:800;letter-spacing:10px;margin:8px 0;font-family:ui-monospace,monospace;}
+.pin-res{text-align:center;} .pin-big.hid{color:var(--dim);} .fp-card{border-top:1px solid var(--border);margin-top:10px;padding-top:8px;} .pin-big{font-size:46px;font-weight:800;letter-spacing:10px;margin:8px 0;font-family:ui-monospace,monospace;}
 .done .big{font-size:46px;}
 .muted{color:var(--dim);font-size:13px;}
 .hidden{display:none !important;}
@@ -258,6 +258,55 @@ async function pinPage(){
     PIN.busy = false; b.disabled = false; b.innerHTML = ic('lock')+' Rodyti PIN';
   };
 }
+/* „Kuro pylimas“: first the PIN of this vehicle's UTA card (sql/uta_vehicle_pin.sql) – a member signed in
+   on this phone sees it at once, anyone else types their driver code from the event letter; then the fill's form */
+const FP = { res:null, busy:false, err:'', tm:null };
+const fpWait = ms=>new Promise(r=>{ const t0 = Date.now(), k = setInterval(()=>{ if(PIN.loc || PIN.locSt!=='wait' || Date.now()-t0 > ms){ clearInterval(k); r(); } }, 200); });
+async function fpGet(code){
+  if(FP.busy) return; FP.busy = true; FP.err = ''; draw();
+  try{
+    await fpWait(4000);
+    const j = await rpc('uta_vehicle_pin', { p_token:T, p_code:code || null, p_loc:PIN.loc });
+    if(j && j.error) FP.err = j.error; else FP.res = j || { pins:[] };
+  }catch(e){
+    if(/function|schema cache|Could not find/i.test(e.message||'')) FP.res = { legacy:true };   // before uta_vehicle_pin.sql: the form as before
+    else FP.err = e.message || String(e);
+  }
+  FP.busy = false; FP.hidden = false; draw();
+}
+// the PIN hidden after a minute; shown again by asking again (that is written down too)
+function fpTimer(){
+  clearInterval(FP.tm); if(FP.hidden || !FP.res || !(FP.res.pins||[]).some(p=>p.pin)) return;
+  let left = 60; FP.tm = setInterval(()=>{ left--; const l = document.getElementById('fpLeft');
+    if(left <= 0){ clearInterval(FP.tm); FP.hidden = true; const box = document.getElementById('fpBox'); if(box){ box.outerHTML = fpHtml(); fpBind(); } }
+    else if(l) l.textContent = 'PIN paslėpsiu po '+left+' s'; }, 1000);
+}
+function fpBind(){
+  const a = document.getElementById('fpAgain'); if(!a) return;
+  a.onclick = async ()=>{ a.disabled = true; a.textContent = 'Tikrinama…';
+    try{ const j = await rpc('uta_vehicle_pin', { p_token:T, p_code:FP.res.code || null, p_loc:PIN.loc }); if(j && j.error) throw new Error(j.error); FP.res = j; FP.hidden = false; }
+    catch(e){ a.disabled = false; a.textContent = 'Rodyti PIN dar kartą'; const er = document.getElementById('fpAgainErr'); if(er) er.textContent = e.message || String(e); return; }
+    const box = document.getElementById('fpBox'); if(box){ box.outerHTML = fpHtml(); fpBind(); } fpTimer(); };
+}
+function fpHtml(){
+  const r = FP.res, pins = r.pins || [];
+  return `<div class="card pin-res" id="fpBox"><h2 style="justify-content:center;">${ic('card')} Kuro kortelės PIN</h2>
+    <small class="muted">${esc(r.name || '')}${r.event ? ' · '+esc(r.event) : ''}</small>
+    ${pins.length ? pins.map(p=>`<div class="fp-card"><small class="muted">${esc([p.title, p.card].filter(Boolean).join(' · '))}</small>${p.pin ? `<div class="pin-big ${FP.hidden ? 'hid' : ''}">${FP.hidden ? '••••' : esc(p.pin)}</div>` : '<p class="err" style="margin:6px 0;">Šios kortelės PIN neįrašytas – kreipkis į ofisą.</p>'}</div>`).join('')
+      : '<p class="muted">Šiam automobiliui UTA kortelė nepriskirta – jei pili savo pinigais, pridėk kvito nuotrauką.</p>'}
+    ${!pins.some(p=>p.pin) ? '' : FP.hidden ? '<button type="button" class="btn ghost" id="fpAgain" style="width:auto;padding:6px 14px;margin:4px auto 0;">Rodyti PIN dar kartą</button><div class="err" id="fpAgainErr"></div>' : '<small class="muted" id="fpLeft">PIN paslėpsiu po 60 s</small>'}
+    <p class="muted" style="margin:8px 0 0;font-size:12px;">Kas, kada ir kur žiūrėjo PIN – įrašoma į UTA ataskaitą ir susiejama su pylimu.</p></div>`;
+}
+function fpGateHtml(){
+  if(V.me) return `<div class="card"><h2>${ic('card')} Kuro kortelės PIN</h2><div class="me">${esc(V.me)} (įmonės narys) – kodo nereikia</div><div class="loc" id="pinLoc"></div>${FP.err ? `<div class="err">${esc(FP.err)}</div><button class="btn" id="fpGo">${ic('lock')} Rodyti PIN</button>` : '<p class="muted">Kraunama…</p>'}</div>`;
+  return `<div class="card"><h2>${ic('card')} Kuro kortelės PIN</h2>
+    <p>Kurą gali pilti vairuotojas, kuriam šis automobilis priskirtas renginyje. Įrašyk savo <b>vairuotojo kodą</b> iš renginio laiško – bus parodytas kortelės PIN.</p>
+    <label for="fpCode">Vairuotojo kodas</label><input type="text" id="fpCode" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 skaitmenys">
+    <div class="loc" id="pinLoc"></div>
+    <div class="err" id="fpErr">${esc(FP.err)}</div>
+    <button class="btn" id="fpGo" ${FP.busy ? 'disabled' : ''}>${FP.busy ? 'Tikrinama…' : ic('lock')+' Rodyti PIN'}</button>
+    <p class="muted" style="margin-top:10px;">Įmonės nariams, prisijungusiems programėlėje ar naršyklėje, kodo nereikia. Po 5 neteisingų kodų kuro PIN užrakinamas parai.</p></div>`;
+}
 async function load(){
   const app = document.getElementById('app');
   if(PIN_T) return pinPage();
@@ -270,7 +319,9 @@ async function load(){
 function go(m){
   if(VBUSY) return;
   PH.forEach(p=>{ URL.revokeObjectURL(p.url); if(p.prep) vidDrop(p.prep); }); PH = [];
+  if(m!=='fuel'){ FP.res = null; FP.err = ''; FP.hidden = false; clearInterval(FP.tm); }
   MODE = m; draw(); window.scrollTo(0, 0);
+  if(m==='fuel' && V.me && !FP.res && !FP.busy) fpGet('');
 }
 function infoHtml(){
   const v = V, d = v.docs || {}, o = v.oil, c = v.check;
@@ -301,10 +352,18 @@ function draw(){
   }
   const back = `<button type="button" class="back" id="goBack">${ic('back', 18)} Visi pasirinkimai</button>`;
   if(MODE==='info'){ app.innerHTML = head + back + infoHtml(); document.getElementById('goBack').onclick = ()=>go(''); return; }
+  if(MODE==='fuel' && !FP.res){
+    app.innerHTML = head + back + fpGateHtml(); document.getElementById('goBack').onclick = ()=>go(''); pinLoc();
+    const ci = document.getElementById('fpCode'), gb = document.getElementById('fpGo');
+    if(ci){ ci.oninput = ()=>{ ci.value = ci.value.replace(/\D/g, '').slice(0, 4); }; ci.onkeydown = e=>{ if(e.key==='Enter') gb.click(); }; }
+    if(gb) gb.onclick = ()=>{ const c = ci ? ci.value : ''; if(ci && !/^\d{4}$/.test(c)){ FP.err = 'Įrašyk savo vairuotojo kodą – 4 skaitmenys iš renginio laiško.'; document.getElementById('fpErr').textContent = FP.err; ci.focus(); return; } fpGet(c); };
+    return;
+  }
+  const fpOn = MODE==='fuel' && FP.res && !FP.res.legacy;
   const w = who(), now = new Date();
   const whoHtml = v.me ? `<div class="me">Registruoji kaip <b>${esc(v.me)}</b> (įmonės narys)</div>`
     : `<div class="note">Nesi prisijungęs kaip įmonės narys – įrašyk savo vardą, pavardę ir el. paštą.</div>
-      <label for="rpName">Vardas ir pavardė</label><input type="text" id="rpName" autocomplete="name" placeholder="pvz. Jonas Jonaitis" value="${esc(w.name||'')}">
+      <label for="rpName">Vardas ir pavardė</label><input type="text" id="rpName" autocomplete="name" placeholder="pvz. Jonas Jonaitis" value="${esc((fpOn && FP.res.name) || w.name || '')}">
       <label for="rpEmail">El. paštas</label><input type="email" id="rpEmail" autocomplete="email" inputmode="email" placeholder="pvz. jonas@pastas.lt" value="${esc(w.email||'')}">`;
   const body = MODE==='problem' ? `<label for="rpText">Kas pastebėta</label><textarea id="rpText" placeholder="pvz. Dega variklio lemputė, barška priekiniai stabdžiai…"></textarea>
       <label>Kaip skubu</label>
@@ -318,13 +377,13 @@ function draw(){
     : `<div class="row2"><div><label for="rpL">Kiek įpilta (l)</label><input type="number" id="rpL" min="0" step="0.01" inputmode="decimal" placeholder="nebūtina"></div>
       <div><label for="rpEur">Suma (€)</label><input type="number" id="rpEur" min="0" step="0.01" inputmode="decimal" placeholder="nebūtina"></div></div>
       <label for="rpKm">Rida (km)</label><input type="number" id="rpKm" min="0" step="1" inputmode="numeric" placeholder="nebūtina">
-      <label for="rpCode">Vairuotojo kodas (iš renginio laiško)</label><input type="text" id="rpCode" inputmode="numeric" maxlength="4" placeholder="4 skaitmenys" autocomplete="off">
-      <label class="muted" style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:6px;"><input type="checkbox" id="rpNoCode" style="width:auto;margin:0;"> Neturiu kodo</label>
+      ${fpOn ? '' : `<label for="rpCode">Vairuotojo kodas (iš renginio laiško)</label><input type="text" id="rpCode" inputmode="numeric" maxlength="4" placeholder="4 skaitmenys" autocomplete="off">
+      <label class="muted" style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:6px;"><input type="checkbox" id="rpNoCode" style="width:auto;margin:0;"> Neturiu kodo</label>`}
       <label for="rpText">Komentaras dėl pylimo</label><textarea id="rpText" placeholder="pvz. kur pilta, kodėl, kuria kortele ar savo pinigais…"></textarea>`;
   const fl = MODE==='fuel' ? 'Kvito nuotrauka: nufotografuok arba įkelk (iki 6)'
     : MODE==='incident' ? 'Nuotraukos ir video (nebūtina, iki 6 nuotraukų ir 3 video)'
     : 'Nuotraukos ir video (nebūtina, iki 6 nuotraukų ir 3 video): nufotografuok, nufilmuok arba įkelk – video suspaudžiamas ir įkeliamas jau užregistravus – laukti nereikia';
-  app.innerHTML = head + back + `<div class="card" id="repCard">
+  app.innerHTML = head + back + (fpOn ? fpHtml() : '') + `<div class="card" id="repCard">
       <h2>${ic(m.i)} ${m.t}</h2>
       ${whoHtml}${body}
       <label>${fl}</label>
@@ -334,6 +393,7 @@ function draw(){
     </div>`;
   drawPh(); if(MODE!=='fuel') getLoc();
   document.getElementById('goBack').onclick = ()=>go('');
+  if(fpOn){ fpBind(); fpTimer(); }
   document.getElementById('rpGo').onclick = send;
 }
 function drawPh(){
@@ -434,8 +494,9 @@ async function send(){
     if(data.liters!=null && !(data.liters > 0)) return fail('Neteisingas litrų kiekis.', 'rpL');
     if(data.eur!=null && !(data.eur >= 0)) return fail('Neteisinga suma.', 'rpEur');
     if(data.km!=null && !(data.km >= 0)) return fail('Neteisinga rida.', 'rpKm');
-    const code = g('rpCode').value.trim();
-    if(!g('rpNoCode').checked){
+    const code = g('rpCode') ? g('rpCode').value.trim() : '';
+    if(FP.res && !FP.res.legacy) CODE = FP.res.code || '';
+    else if(!g('rpNoCode').checked){
       if(!/^\d{4}$/.test(code)) return fail('Įrašyk vairuotojo kodą (4 skaitmenys – jis yra renginio laiške) arba pažymėk „Neturiu kodo“.', 'rpCode');
       try{ if(!(await rpc('vehicle_log_code', { p_token:T, p_log:null, p_code:code }))) return fail('Tokio vairuotojo kodo nėra – patikrink renginio laiške.', 'rpCode'); }
       catch(e){ if(!/function|schema cache/i.test(e.message||'')) throw e; }   // before driver_codes.sql

@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-T/URK63zZ1Ia99570imaE5zU+OYIuIhVkEs/Sn5IYn8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-SQ6bgR7WWA6JGBqZsihiE9DQ+w8M29fg7NUgAzXaLUk=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bapK7G4smUC/CzO9btKc1ROWONm0sQ/HProphCfKVY4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-hewaLHZtAA+spxHIHy86/7OttReLfqEZd3M4nmVNEoA=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -8634,7 +8634,44 @@ async function dcEnsure(names){
   const { data, error } = await getSb().rpc('driver_codes_ensure', { p:[...need].map(([k, n])=>({ k, n })) });
   if(error) console.warn('driver_codes_ensure', error.message); else dcPut(data);
 }
-const dcEvDrivers = ev=>((ev && ev.logistics) || []).flatMap(l=>dcSplit(l.driver));
+// a truck („Fura Alius“) comes with its own driver: no code for them
+const dcIsFura = car=>rpWords(car).some(w=>RP_FURA.test(w));
+// a transport line's drivers, each with the car they drive ('' – not known); FURA drivers left out
+function dcLinePairs(l){
+  const cars = String((l && l.vehicle)||'').split('\n').map(x=>x.trim()).filter(Boolean), drv = String((l && l.driver)||'').split('\n').map(x=>x.trim()).filter(Boolean);
+  if(cars.length && cars.length===drv.length) return drv.flatMap((d, i)=>dcIsFura(cars[i]) ? [] : dcSplit(d).map(n=>({ n, car:cars[i] })));
+  if(cars.length && cars.every(dcIsFura)) return [];
+  return drv.flatMap(d=>dcSplit(d).map(n=>({ n, car:cars.length===1 ? cars[0] : '' })));
+}
+const dcEvDrivers = ev=>((ev && ev.logistics) || []).flatMap(l=>dcLinePairs(l).map(x=>x.n));
+// a transport line's driver text for the letter: the codes added, a truck's driver as written
+function dcLineText(l){
+  const cars = String(l.vehicle||'').split('\n').map(x=>x.trim()).filter(Boolean), drv = String(l.driver||'').split('\n').map(x=>x.trim()).filter(Boolean);
+  if(cars.length && cars.length===drv.length) return drv.map((d, i)=>dcIsFura(cars[i]) ? d : dcWithCodes(d)).join('\n');
+  return cars.length && cars.every(dcIsFura) ? drv.join('\n') : dcWithCodes(drv.join('\n'));
+}
+/* who drives which company vehicle on which day (sql/uta_vehicle_pin.sql): the QR page's „Kuro pylimas“
+   shows the vehicle's UTA card PIN to a non-member only for their code from the event letter */
+const VD = { t:null, q:new Map(), off:false };
+function vdRows(ev){
+  if(!ev || ev.deletedAt || !evCounts(ev)) return [];
+  const out = [];
+  (ev.logistics||[]).forEach(l=>{ if(evLogIsRent(l)) return; const d = rpLogDate(ev, l); if(!/^\d{4}-\d{2}-\d{2}$/.test(d||'')) return;
+    const pairs = dcLinePairs(l), cars = String(l.vehicle||'').split('\n').map(x=>x.trim()).filter(Boolean);
+    pairs.forEach(p=>(p.car ? [p.car] : cars).forEach(car=>STATE.vehicles.filter(v=>utaCarIs(car, v)).forEach(v=>out.push({ d, v:v.id, k:dcKey(p.n), n:p.n })))); });
+  return out;
+}
+function vdSyncSoon(evs){
+  if(VD.off || !canEdit('events')) return;
+  (evs||[]).forEach(ev=>{ if(ev && ev.id) VD.q.set(String(ev.id), ev); });
+  clearTimeout(VD.t); VD.t = setTimeout(async ()=>{
+    const list = [...VD.q.values()]; VD.q.clear();
+    for(const ev of list){
+      const r = await getSb().rpc('vehicle_drivers_set', { p_event:String(ev.id), p_name:ev.name || ev.title || 'Renginys', p_rows:vdRows(ev) }).then(x=>x, e=>({ error:e }));
+      if(r && r.error){ if(/function|schema cache|Could not find/i.test(r.error.message||'')) VD.off = true; else console.warn('vehicle_drivers_set', r.error.message); if(VD.off) return; }
+    }
+  }, 1500);
+}
 function dcEnsureSoon(evs){ clearTimeout(DC.t); DC.t = setTimeout(()=>dcEnsure((evs||[]).flatMap(dcEvDrivers)).catch(()=>{}), 1200); }
 const dcOf = name=>DC.byKey[dcKey(name)] || null;
 const dcCode = name=>{ const r = dcOf(name); return r ? r.code : ''; };
@@ -21967,7 +22004,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v529';
+const APP_VER = 'v530';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -23051,6 +23088,7 @@ function evSave(ev){
   if(!canEdit('events')){ evDeniedReload('renginių'); return; }
   if((ev.logistics||[]).some(l=>l.vehicle) && typeof rvSyncSoon==='function') rvSyncSoon();
   if((ev.logistics||[]).some(l=>l.driver)) dcEnsureSoon([ev]);
+  vdSyncSoon([ev]);
   evLeaveGuard(ev);
   evNotifyCheck(ev);
   if(typeof CALX!=='undefined') CALX.cache = {};   // the calendars read events again
@@ -23359,7 +23397,8 @@ function renderEventsTab(){
   if((canView('fleet') || canView('stats')) && typeof rvLoad==='function' && !RV.loaded) rvLoad().then(()=>{ try{ evPeopleDatalist(); }catch(e){} }).catch(()=>{});
   if(canView('people') && typeof ppLoad==='function' && !PP.loaded) ppLoad().then(()=>{ try{ evPeopleDatalist(); }catch(e){} }).catch(()=>{});
   crContactsLoad().then(()=>{ try{ evPeopleDatalist(); }catch(e){} }).catch(()=>{});
-  if(!DC.evDone && canEdit('events')){ DC.evDone = true; evLoad().then(()=>{ const since = calISO(new Date(Date.now() - 400*864e5)); dcEnsureSoon(EV.events.filter(e=>e && !e.deletedAt && String(e.dateEnd || e.date || '') >= since)); }).catch(()=>{}); }
+  if(!DC.evDone && canEdit('events')){ DC.evDone = true; evLoad().then(()=>{ const since = calISO(new Date(Date.now() - 400*864e5)); dcEnsureSoon(EV.events.filter(e=>e && !e.deletedAt && String(e.dateEnd || e.date || '') >= since));
+    vdSyncSoon(EV.events.filter(e=>e && String(e.dateEnd || e.date || '') >= calISO(new Date(Date.now() - 3*864e5)) && String(e.date || '') <= calISO(new Date(Date.now() + 45*864e5)))); }).catch(()=>{}); }
   if(canView('venues') && !VEN.loaded) venLoad().catch(()=>{});
   const q = document.getElementById('evQ');
   q.addEventListener('input', ()=>{ EVQ.q = q.value; clearTimeout(evSearchTimer); evSearchTimer = setTimeout(renderEventList, 180); });
@@ -25707,13 +25746,13 @@ function lmAuto(ev){
     if(!byDay.has(d)) byDay.set(d, { cars:[], drivers:[] });
     const r = byDay.get(d);
     if(l.vehicle) r.cars.push(l.vehicle.trim());
-    if(l.driver) r.drivers.push(l.driver.trim());
+    if(l.driver) r.drivers.push(dcLineText(l));
   });
   const dayNo = d=>d ? String(Number(d.slice(8,10))) : '';
   const transport = [...byDay.entries()].map(([d, r])=>{
     const n = String(d).replace(/\D/g,'');
     const label = n && n===dayNo(dates.demont) && dates.demont!==dates.mont ? 'Demontažas '+n+' d.' : n && n===dayNo(dates.mont) ? 'Montažas '+n+' d.' : (d ? d+(n===d?' d.':'') : 'Transportas');
-    return { label, cars:r.cars.join('\n'), drivers:dcWithCodes(r.drivers.join('\n')) };
+    return { label, cars:r.cars.join('\n'), drivers:r.drivers.join('\n') };
   });
   const loc = String(ev.location||'').trim();
   return {
@@ -44344,6 +44383,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-14 04:10', v:'v530', k:'new', t:'QR ant automobilio → kuro kortelės PIN', f:'Nuskenavus automobilio QR kodą ir paspaudus „Kuro pylimas“ pirmiausia rodomas tam automobiliui priskirtos UTA kortelės PIN, po to – pylimo forma. Įmonės nariui, prisijungusiam programėlėje ar telefono naršyklėje, kodo nereikia. Ne nariui (kiti QR puslapio pasirinkimai jam veikia kaip anksčiau) reikia įrašyti savo vairuotojo kodą iš renginio laiško – kodas turi būti priskirtas tam automobiliui renginyje tą dieną (±1 d.); po 5 neteisingų kodų kuro PIN tam automobiliui užrakinamas parai. Kiekviena peržiūra (kas, kada, kur, renginys) įrašoma į UTA ataskaitą ir įkėlus UTA PDF susiejama su pylimu. FURA vairuotojams kodas nebekuriamas ir laiške nerodomas. Supabase paleisk supabase/sql/uta_vehicle_pin.sql.' },
   { d:'2026-10-14 03:20', v:'v529', k:'new', t:'Kuro kortelė → UTA pylimas', f:'Kai vairuotojas telefone nurašo skaičius po „CVC:“ ir pamato PIN, šis įvykis iškart matomas UTA puslapyje ir Ataskaitose (kas, kada, kur, kuri kortelė) – net kol mėnesio ataskaitos dar nėra („Laukia UTA ataskaitos“). Įkėlus UTA ataskaitą (PDF ar Excel) PIN peržiūra pati susiejama su tos kortelės pylimu (be laiko – tos dienos, su laiku – artimiausias per 6 val.); stulpelyje „UTA pylimas“ – data, litrai ir suma. Nesusietos rodomos raudonai, jų skaičius – iškart po įkėlimo ir viršuje prie pylimų sumų. Supabase paleisk supabase/sql/uta_pin_fills.sql.' },
   { d:'2026-10-14 02:40', v:'v528', k:'chg', t:'Kuro kortelė: skaičiai po „CVC:“', f:'„Kuro kortelė“ puslapyje vairuotojas nurašo tik skaičius, esančius kortelės gale po „CVC:“ – pagal juos randama to renginio kortelė ir parodomas PIN. Tuos skaičius prie kortelės įrašo Transportą redaguojantys (UTA kortelės → kortelė → „Skaičiai po CVC:“, 3–8 skaitmenys). Po 5 neteisingų bandymų nuoroda užrakinama parai. Paleisk atnaujintą supabase/sql/uta_card_cvc.sql.' },
   { d:'2026-10-14 02:10', v:'v527', k:'chg', t:'Išlaidos: balansas tik eurais', f:'Nario balansas asmeninėms reikmėms suteikiamas tik eurais (pvz. Augustinui Mažučiui – 200 € per mėnesį). Asmeniniai UTA pylimai atimami jų suma eurais; nepanaudotas likutis pereina į kitą mėnesį, viršijus – trūkstama suma atimama iš kito mėnesio. Litrų pasirinkimas išimtas iš balanso nustatymo, asmeninio pylimo, „Pasipildžiau iš likučio“ ir kompensacijos. supabase/sql/expenses_eur.sql perjungia anksčiau litrais nustatytus balansus į eurus.' },
