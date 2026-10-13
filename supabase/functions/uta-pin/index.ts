@@ -53,28 +53,58 @@ const PROMPT = "Pirmoje nuotraukoje – degalų kortelės (UTA / Union Tank) pri
   "Atsakyk TIK JSON: {\"card\":\"skaitmenys be tarpų arba tuščia\",\"is_card\":true|false,\"back\":true|false} – " +
   "is_card: ar tai tikrai degalų / mokėjimo kortelė (ne ekranas, ne popierius); back: ar antroje nuotraukoje kortelės galas.";
 
+// an OpenAI-compatible chat (Groq, OpenRouter…) with both photos
+async function askOpenAI(base: string, key: string, model: string, front: Img, back: Img): Promise<Response> {
+  return await fetch(`${base.replace(/\/$/, "")}/chat/completions`, {
+    method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    body: JSON.stringify({ model, temperature: 0, max_tokens: 300,
+      messages: [{ role: "user", content: [{ type: "text", text: PROMPT },
+        { type: "image_url", image_url: { url: `data:${front.mime};base64,${front.data}` } },
+        { type: "image_url", image_url: { url: `data:${back.mime};base64,${back.data}` } }] }] }),
+  });
+}
+// Groq's vision models change (an old one answers 404): the one set, the known ones, then whatever vision model Groq lists now
+async function groqModels(key: string): Promise<string[]> {
+  const out = [E("GROQ_VISION_MODEL"), "meta-llama/llama-4-scout-17b-16e-instruct", "meta-llama/llama-4-maverick-17b-128e-instruct"].filter(Boolean);
+  try {
+    const r = await fetch("https://api.groq.com/openai/v1/models", { headers: { Authorization: `Bearer ${key}` } });
+    if (r.ok) { const j = await r.json();
+      (j?.data ?? []).map((m: { id?: string }) => String(m.id ?? "")).filter((id: string) => /vision|llama-4|scout|maverick|-vl|gemma-3|llava/i.test(id)).forEach((id: string) => out.push(id)); }
+  } catch { /* the known ones only */ }
+  return [...new Set(out)];
+}
 async function readCard(front: Img, back: Img): Promise<{ card: string; is_card: boolean; back: boolean }> {
-  let text = "";
-  if (E("GROQ_API_KEY")) {
-    const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${E("GROQ_API_KEY")}` },
-      body: JSON.stringify({ model: E("GROQ_VISION_MODEL") || "meta-llama/llama-4-scout-17b-16e-instruct", temperature: 0, max_tokens: 200,
-        messages: [{ role: "user", content: [{ type: "text", text: PROMPT },
-          { type: "image_url", image_url: { url: `data:${front.mime};base64,${front.data}` } },
-          { type: "image_url", image_url: { url: `data:${back.mime};base64,${back.data}` } }] }] }),
-    });
-    if (!r.ok) throw new Error("AI " + r.status);
-    const j = await r.json(); text = j?.choices?.[0]?.message?.content ?? "";
-  } else if (E("GEMINI_API_KEY")) {
-    const model = E("GEMINI_MODEL") || "gemini-flash-latest";
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-      method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": E("GEMINI_API_KEY") },
-      body: JSON.stringify({ generationConfig: { temperature: 0 }, contents: [{ role: "user", parts: [{ text: PROMPT },
-        { inline_data: { mime_type: front.mime, data: front.data } }, { inline_data: { mime_type: back.mime, data: back.data } }] }] }),
-    });
-    if (!r.ok) throw new Error("AI " + r.status);
-    const j = await r.json(); text = (j?.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join("");
-  } else throw new Error("AI nesukonfigūruotas");
+  let text = "", tried: string[] = [];
+  const fail = (who: string, r: Response, body: string) => { tried.push(`${who} ${r.status}${body ? ": " + body.replace(/\s+/g, " ").slice(0, 120) : ""}`); };
+  if (!text && E("GROQ_API_KEY")) {
+    for (const model of await groqModels(E("GROQ_API_KEY"))) {
+      const r = await askOpenAI("https://api.groq.com/openai/v1", E("GROQ_API_KEY"), model, front, back);
+      if (r.ok) { const j = await r.json(); text = j?.choices?.[0]?.message?.content ?? ""; if (text) break; continue; }
+      const b = await r.text(); fail(`Groq ${model}`, r, b);
+      if (![400, 404].includes(r.status)) break;   // a key / limit problem – another model will not help
+    }
+  }
+  if (!text && E("GEMINI_API_KEY")) {
+    for (const model of [...new Set([E("GEMINI_MODEL"), "gemini-flash-latest", "gemini-2.5-flash", "gemini-2.0-flash"].filter(Boolean))]) {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+        method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": E("GEMINI_API_KEY") },
+        body: JSON.stringify({ generationConfig: { temperature: 0 }, contents: [{ role: "user", parts: [{ text: PROMPT },
+          { inline_data: { mime_type: front.mime, data: front.data } }, { inline_data: { mime_type: back.mime, data: back.data } }] }] }),
+      });
+      if (r.ok) { const j = await r.json(); text = (j?.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? "").join(""); if (text) break; continue; }
+      const b = await r.text(); fail(`Gemini ${model}`, r, b);
+      if (![400, 404].includes(r.status)) break;
+    }
+  }
+  if (!text && E("AI_API_KEY") && E("AI_BASE_URL") && E("AI_MODEL")) {
+    const r = await askOpenAI(E("AI_BASE_URL"), E("AI_API_KEY"), E("AI_MODEL"), front, back);
+    if (r.ok) { const j = await r.json(); text = j?.choices?.[0]?.message?.content ?? ""; } else fail(`AI ${E("AI_MODEL")}`, r, await r.text());
+  }
+  if (!text) {
+    if (!E("GROQ_API_KEY") && !E("GEMINI_API_KEY") && !E("AI_API_KEY")) throw new Error("AI nesukonfigūruotas (Supabase → Edge Functions → Secrets: GROQ_API_KEY arba GEMINI_API_KEY)");
+    console.error("uta-pin AI", tried.join(" | "));
+    throw new Error("AI neatsakė – " + (tried.join("; ") || "tuščias atsakymas"));
+  }
   const m = text.match(/\{[\s\S]*\}/);
   try { const o = JSON.parse(m ? m[0] : text); return { card: digits(o.card), is_card: o.is_card !== false, back: o.back !== false }; }
   catch { return { card: digits(text).slice(0, 20), is_card: true, back: true }; }

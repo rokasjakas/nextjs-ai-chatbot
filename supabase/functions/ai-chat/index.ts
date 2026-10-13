@@ -109,11 +109,22 @@ Deno.serve(async (req) => {
         content: img && i === turns.length - 1 ? [{ type: "text", text: t.parts[0].text }, { type: "image_url", image_url: { url: `data:${img.mime};base64,${img.data}` } }] : t.parts[0].text }))],
     };
     if (provider === "groq" && /gpt-oss/.test(model)) req.reasoning_effort = "low";   // everyday questions: quick answers
-    api = await fetch(`${base}/chat/completions`, {
+    const send = () => fetch(`${base}/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
       body: JSON.stringify(req),
     });
+    api = await send();
+    // Groq's vision models change (an old one answers 404): another vision model Groq lists now
+    if (provider === "groq" && img && (api.status === 404 || api.status === 400) && !E("GROQ_VISION_MODEL")) {
+      try {
+        const lr = await fetch(`${base}/models`, { headers: { Authorization: `Bearer ${key}` } });
+        const ids: string[] = lr.ok ? ((await lr.json())?.data ?? []).map((m: { id?: string }) => String(m.id ?? "")) : [];
+        const alt = ["meta-llama/llama-4-maverick-17b-128e-instruct", ...ids.filter((id) => /vision|llama-4|scout|maverick|-vl|gemma-3|llava/i.test(id))]
+          .filter((id, i, a) => id !== model && a.indexOf(id) === i && (!ids.length || ids.includes(id)));
+        for (const m of alt.slice(0, 4)) { req.model = m; const r = await send(); if (r.ok) { api = r; model = m; break; } }
+      } catch { /* keep the first answer */ }
+    }
   }
   if (!api.ok || !api.body) {
     const t = await api.text().catch(() => "");
