@@ -91,11 +91,21 @@ Deno.serve(async (req) => {
   if (!api.ok || !api.body) {
     const t = await api.text().catch(() => "");
     console.error("ai-chat", api.status, t.slice(0, 500));
+    // Google's own reason, so the cause is seen in the app (the key itself is never in it)
+    let why = "", reason = "";
+    try { const j = JSON.parse(t)?.error ?? {}; why = String(j.message ?? ""); reason = String((j.details ?? []).map((d: { reason?: string }) => d?.reason ?? "").filter(Boolean)[0] ?? j.status ?? ""); } catch { /* not JSON */ }
+    const hint = /SERVICE_DISABLED|has not been used|is disabled/i.test(why + reason) ? " – Google Cloud projekte įjunk „Generative Language API“ (arba susikurk raktą aistudio.google.com)."
+      : /API_KEY_HTTP_REFERRER_BLOCKED|referer|referrer/i.test(why + reason) ? " – rakte nuimk „Application restrictions“ (svetainių / referrer apribojimą): serveris jo nesiunčia."
+      : /API_KEY_IP_ADDRESS_BLOCKED|IP address/i.test(why + reason) ? " – rakte nuimk IP adresų apribojimą."
+      : /API_KEY_SERVICE_BLOCKED|blocked/i.test(why + reason) ? " – rakto „API restrictions“ turi leisti „Generative Language API“."
+      : /unregistered callers|API key not/i.test(why) ? " – raktas Google nepasiekė: Supabase paslaptis turi vadintis tiksliai GEMINI_API_KEY, reikšmė – tik raktas (be tarpų ir kabučių)."
+      : /location|region|country/i.test(why) ? " – Gemini API šiam regionui / projektui neprieinamas."
+      : /billing|quota/i.test(why) ? " – patikrink kvotą / mokėjimus Google AI Studio." : "";
     const msg = api.status === 429 ? "Pasiektas nemokamo plano limitas – pabandyk po minutės."
-      : api.status === 401 || (api.status === 400 && /API key/i.test(t)) ? "Neteisingas Gemini raktas (patikrink Supabase paslaptį GEMINI_API_KEY)."
-      : api.status === 403 ? "Gemini raktas neturi teisės (patikrink raktą)."
+      : api.status === 401 || (api.status === 400 && /API key/i.test(t)) ? "Neteisingas Gemini raktas (patikrink Supabase paslaptį GEMINI_API_KEY – be tarpų ir kabučių)."
+      : api.status === 403 ? `Gemini raktas neturi teisės${hint || "."}${why ? " Google: " + why.slice(0, 220) : ""}`
       : api.status === 404 || /model.*(not found|does not exist|decommissioned)/i.test(t) ? `Modelis „${model}“ nerastas – nurodyk kitą (GEMINI_MODEL).`
-      : `AI klaida (${api.status}).`;
+      : `AI klaida (${api.status})${why ? ": " + why.slice(0, 220) : "."}`;
     return json({ error: msg }, 502);
   }
 
