@@ -2,7 +2,8 @@
 -- „Kuro kortelė“ → UTA pylimas
 -- Vairuotojas telefone nurašo skaičius po „CVC:“ ir pamato PIN – tai įvykis (uta_pin_views).
 -- Įkėlus UTA ataskaitą jis susiejamas su tos kortelės pylimu (uta_pin_views.tx_id):
---  * ataskaitoje su laiku – artimiausias pylimas nuo 30 min. prieš iki 6 val. po PIN peržiūros;
+--  * ataskaitoje su laiku – artimiausias pylimas nuo 3 val. prieš (nariui įrašoma užregistravus pylimą,
+--    t. y. jau po jo) iki 6 val. po PIN peržiūros;
 --  * ataskaitoje be laiko (PDF) – tos pačios dienos (ar kitos dienos, jei PIN žiūrėtas vakare) pylimas.
 -- Kelios to paties žmogaus peržiūros per 2 val. – tas pats pylimas. Ištrynus ataskaitą ryšys dingsta,
 -- įkėlus vėl – susiejama iš naujo. Nesusietos peržiūros rodomos UTA puslapyje ir Ataskaitose.
@@ -31,7 +32,7 @@ begin
        where x.card_id = v.card_id and coalesce(x.quantity, 0) > 0
          and not exists (select 1 from public.uta_pin_views o where o.tx_id = x.id and abs(extract(epoch from o.at - v.at)) > 7200)
          and (case when (x.tx_at at time zone 'Europe/Vilnius')::time <> '00:00'
-                   then x.tx_at between v.at - interval '30 minutes' and v.at + interval '6 hours'
+                   then x.tx_at between v.at - interval '3 hours' and v.at + interval '6 hours'
                    else x.tx_date = (v.at at time zone 'Europe/Vilnius')::date
                      or (x.tx_date = (v.at at time zone 'Europe/Vilnius')::date + 1 and (v.at at time zone 'Europe/Vilnius')::time >= '18:00') end)
        order by case when (x.tx_at at time zone 'Europe/Vilnius')::time <> '00:00' then abs(extract(epoch from x.tx_at - v.at)) else 0 end,
