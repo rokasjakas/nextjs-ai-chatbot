@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Vdw33lmNDF8OIDqplLwSIwrcO2tM0klXkp5ofwNoeRQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-BZM4iY2i77deOv7PkeMXkSJTJq811SfFGT8QRQrxru4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-S0oMTcx8p92NGpQuBsn0fjqFAW/GVk3fG63AmkOkmpQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-BZM4iY2i77deOv7PkeMXkSJTJq811SfFGT8QRQrxru4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -381,6 +381,22 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .vl-ok{color:#2F9E73;font-weight:700;} .vl-bad{color:var(--danger);font-weight:700;}
 @media (max-width:760px){ .vl-head{display:none;} .vl-row{grid-template-columns:1fr 1fr 30px;padding-bottom:6px;border-bottom:1px dashed var(--border);} .vl-row [data-vf="desc"]{grid-column:1 / -1;grid-row:2;} }
 .inv-vl td.n{text-align:right;white-space:nowrap;}
+.cr-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.cr-tools{display:flex;gap:8px;align-items:center;margin-bottom:10px;} .cr-tools input{flex:1;min-width:0;}
+.cr-list{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.cr-row{display:grid;grid-template-columns:minmax(150px,1.1fr) minmax(140px,1fr) minmax(170px,1fr) minmax(0,1.2fr) 60px;gap:10px;align-items:center;padding:8px 12px;border-top:1px solid var(--border);}
+.cr-row.cr-2{grid-template-columns:minmax(180px,1.3fr) minmax(170px,1fr) minmax(0,1.2fr) 60px;}
+.cr-row:first-child{border-top:0;} .cr-row.cr-head{background:var(--panel-2);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);padding:6px 12px;}
+.cr-t{display:flex;flex-direction:column;min-width:0;} .cr-t b{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;} .cr-t .cr-f b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .cr-t .cr-f a{font-size:13.5px;font-weight:700;color:var(--accent,#2b6fd6);text-decoration:none;} .cr-t .cr-f a:hover{text-decoration:underline;} .cr-t .cr-sub{font-size:11.5px;color:var(--text-dim);}
+.cr-t > a,.cr-t small{font-size:11.5px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cr-f{display:flex;align-items:center;gap:4px;min-width:0;font-size:13px;} .cr-f > span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cr-f .cr-pw{font-family:ui-monospace,monospace;letter-spacing:.06em;} .cr-muted{color:var(--text-faint);}
+.cr-ib{flex:none;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:6px;background:none;color:var(--text-dim);cursor:pointer;}
+.cr-ib:hover{background:var(--panel-2);color:var(--text);} .cr-ib svg{width:15px;height:15px;}
+.cr-note{font-size:12px;color:var(--text-dim);min-width:0;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.cr-act{display:flex;gap:2px;}
+.cr-lock{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--text-dim);margin-top:10px;} .cr-lock svg{width:14px;height:14px;}
+@media (max-width:760px){ .cr-row.cr-head{display:none;} .cr-row,.cr-row.cr-2{grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;} .cr-row > .cr-t{grid-column:1;} .cr-row > .cr-act{grid-column:2;grid-row:1;} .cr-row > .cr-f, .cr-row > .cr-note{grid-column:1 / -1;} }
 .sk-item-hint{margin-left:auto;font-size:11px;color:var(--text-faint);}
 .sk-seen{display:flex;justify-content:flex-start;align-items:center;gap:3px;margin:2px 0 0;font-size:10.5px;line-height:1;color:var(--text-faint);opacity:.75;user-select:none;}
 .sk-seen svg{width:13px;height:13px;} .sk-seen.on{color:var(--accent);opacity:.7;} .sk-seen.on span{color:var(--text-faint);}
@@ -6154,6 +6170,9 @@ body.ev-full-on{overflow:hidden;}
     <button class="rail-btn" data-mobile="more" data-tab="invoices" data-label="Sąskaitos"><span class="rail-tip" data-short="Sąsk.">Sąskaitos</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
     </button>
+    <button class="rail-btn" data-mobile="more" data-tab="creds" data-label="Prisijungimai"><span class="rail-tip" data-short="Prisij.">Prisijungimai</span>
+      <svg viewBox="0 0 24 24"></svg>
+    </button>
     <button class="rail-btn" data-mobile="more" data-tab="keys" data-label="Raktai"><span class="rail-tip">Raktai</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3M16 7l3 3M13.5 9.5l2 2"/></svg>
     </button>
@@ -6353,7 +6372,7 @@ SL.notif = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .
   const RAIL = { home:'house', events:'calendar', projects:'folder', load:'cart', rentals:'pickup', handovers:'handover', inventory:'warehouse',
     rules:'package', fleet:'truck', stats:'chart', chat:'chat', members:'users', people:'card', jobs:'tasks', offers:'receipt',
     venues:'building', admin:'shield', profile:'user', gear:'alert', newproj:'addbox', sort:'sorting', stocktake:'checklist', works:'build',
-    games:'games', mail:'mail', invoices:'invoice', buy:'shopbag', tracker:'clock', expenses:'wallet', workplans:'checklist', keys:'key', alarm:'siren' };
+    games:'games', mail:'mail', invoices:'invoice', buy:'shopbag', tracker:'clock', expenses:'wallet', workplans:'checklist', creds:'lock', keys:'key', alarm:'siren' };
   document.querySelectorAll('.rail-btn').forEach(b=>{
     const k = b.id==='railMore' ? 'dots' : b.id==='railNotes' ? 'note' : RAIL[b.dataset.tab], s = b.querySelector('svg');
     if(k && s && SL[k]) s.outerHTML = slIcon(k);
@@ -12636,6 +12655,7 @@ function canView(tab){
   if(tab==='stocktake' || tab==='works') return canView('inventory');
   if(tab==='gear') return canView('inventory') || !!window.GR_MINE;
   if((tab==='chat' || tab==='mail') && ACCESS.fallback) return false;
+  if(tab==='creds') return ['admin','pm','office'].includes(ACCESS.role) && !ACCESS.fallback;   // Prisijungimai / Kontaktai: Office and up
   if(TEAM_TABS.includes(tab)) return !!ACCESS.role && !ACCESS.fallback;
   if(tab==='admin') return ACCESS.role==='admin' || isSuper();     // Super Admin keeps it in every level (to come back)
   return accessLevel(tab)!=='none';
@@ -12648,6 +12668,7 @@ function canEdit(tab){
   if(tab==='admin') return ACCESS.role==='admin' || isSuper();
   if(tab==='chat' || tab==='mail') return canView(tab);      // who may see the chat / mail may also write
   if(tab==='invoices') return canView(tab);                  // who sees Sąskaitos uploads own invoices (deciding stays with Admin+)
+  if(tab==='creds') return canView(tab);
   if(TEAM_TABS.includes(tab)) return !!ACCESS.role && !ACCESS.fallback;
   return accessLevel(tab)==='edit';
 }
@@ -19296,6 +19317,108 @@ function rpInvLoad(){
   o.p = getSb().rpc('vehrent_invoices', { p_from:RP.from, p_to:RP.to }).then(r=>{ if(r.error){ o.err = /function|schema cache|does not exist/i.test(r.error.message) ? 'Sąskaitoms ataskaitoje Supabase paleisk invoices_vehrent.sql.' : r.error.message; o.list = []; } else o.list = r.data || []; });
   return o.p;
 }
+/* ---------- Prisijungimai / Kontaktai (sql/creds.sql) ----------
+   Programų prisijungimai, Puslapių prisijungimai, Kontaktai, El. paštai (tik Admin). Office ir aukštesni.
+   Slaptažodžiai – užšifruoti serveryje; sąraše jų nėra: akutė atskleidžia (įrašoma, kas žiūrėjo), kopijuoti – į iškarpinę. */
+const CR = { cat:'app', q:'', list:{}, err:'', shown:{} };
+const CR_CATS = [
+  ['app', 'Programų prisijungimai', { title:'Pavadinimas (ar nuoroda)', url:'Nuoroda (nebūtina)', login:'Prisijungimo vardas', secret:'Slaptažodis', note:'Pastaba' }],
+  ['web', 'Puslapių prisijungimai', { title:'Pavadinimas (ar nuoroda)', url:'Nuoroda (nebūtina)', login:'Prisijungimo vardas', secret:'Slaptažodis', note:'Pastaba' }],
+  ['contact', 'Kontaktai', { title:'Vardas, pavardė', company:'Įmonė / pareigos', phone:'Telefonas', email:'El. paštas', note:'Pastaba' }],
+  ['email', 'El. paštai', { title:'El. pašto adresas', secret:'Slaptažodis', url:'Webmail / serveris', note:'Pastaba' }],
+];
+const crCats = ()=>CR_CATS.filter(c=>c[0]!=='email' || ACCESS.role==='admin');
+async function crLoad(cat){
+  const { data, error } = await getSb().rpc('cred_list', { p_cat:cat });
+  if(error){ CR.err = /function|schema cache|does not exist/i.test(error.message) ? 'Supabase paleisk supabase/sql/creds.sql.' : error.message; CR.list[cat] = []; return; }
+  CR.err = ''; CR.list[cat] = data || [];
+}
+function crCopy(t, what){ if(!t){ toast('Nėra ką kopijuoti.'); return; } (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(()=>toast('✓ Nukopijuota: '+what+'.'), ()=>toast('Nukopijuoti nepavyko.')); }
+async function crSecret(id){
+  const { data, error } = await getSb().rpc('cred_secret', { p_id:id });
+  if(error){ toast('Nepavyko: '+error.message); return null; }
+  return data || '';
+}
+async function renderCredsTab(){
+  const main = document.getElementById('main');
+  if(!canView('creds')){ main.innerHTML = '<div class="tabpanel"><div class="card empty-state">Šį puslapį mato Office ir aukštesni lygiai.</div></div>'; return; }
+  if(!crCats().some(c=>c[0]===CR.cat)) CR.cat = 'app';
+  const cat = CR_CATS.find(c=>c[0]===CR.cat);
+  main.innerHTML = `<div class="tabpanel"><div class="card">
+    <div class="row between" style="align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">Prisijungimai / Kontaktai</h2>
+      <button class="btn primary small" id="crNew">${slIcon('plus')} Naujas</button></div>
+    <div class="cr-tabs">${crCats().map(([k, l])=>`<button class="chip ${CR.cat===k?'active':''}" data-crc="${k}">${k==='email' ? slIcon('lock')+' ' : ''}${esc(l)}${CR.list[k] ? ` <span class="count-badge">${CR.list[k].length}</span>` : ''}</button>`).join('')}</div>
+    <div class="cr-tools"><input type="search" id="crQ" placeholder="Ieškoti…" value="${esc(CR.q)}" autocomplete="off"></div>
+    <div id="crBody"><div class="empty-state">Kraunama…</div></div>
+    <div class="cr-lock">${slIcon('lock')}<span>Slaptažodžiai saugomi užšifruoti; atskleidus akute įrašoma, kas ir kada žiūrėjo. ${CR.cat==='email' ? 'El. paštus mato tik Admin.' : 'Mato Office, Projektų vadovai ir Admin.'}</span></div>
+  </div></div>`;
+  main.querySelectorAll('[data-crc]').forEach(b=>b.onclick = ()=>{ CR.cat = b.dataset.crc; CR.shown = {}; renderCredsTab(); });
+  document.getElementById('crNew').onclick = ()=>crEdit(null);
+  const q = document.getElementById('crQ'); q.oninput = ()=>{ CR.q = q.value; crDraw(); };
+  if(!CR.list[CR.cat]) await crLoad(CR.cat);
+  if(currentTab==='creds') crDraw();
+}
+function crDraw(){
+  const box = document.getElementById('crBody'); if(!box) return;
+  if(CR.err){ box.innerHTML = `<div class="mail-err">${esc(CR.err)}</div>`; return; }
+  const cat = CR.cat, F = CR_CATS.find(c=>c[0]===cat)[2], qn = normalizeText(CR.q);
+  const list = (CR.list[cat]||[]).filter(e=>!qn || normalizeText([e.title, e.url, e.login, e.company, e.phone, e.email, e.note].join(' ')).includes(qn));
+  if(!list.length){ box.innerHTML = `<div class="empty-state">${qn ? 'Nieko nerasta.' : 'Dar nieko nėra – spausk „Naujas“.'}</div>`; return; }
+  const pw = e=>e.has_secret ? `<div class="cr-f"><span class="cr-pw" data-pw="${esc(e.id)}">${CR.shown[e.id]!=null ? esc(CR.shown[e.id]) : '••••••••'}</span>
+      <button class="cr-ib" data-crshow="${esc(e.id)}" title="${CR.shown[e.id]!=null ? 'Paslėpti' : 'Rodyti slaptažodį'}">${slIcon('eye')}</button><button class="cr-ib" data-crcopypw="${esc(e.id)}" title="Kopijuoti slaptažodį">${slIcon('copy')}</button></div>` : '<div class="cr-f cr-muted">—</div>';
+  const fld = (v, what, link)=>v ? `<div class="cr-f"><span>${link ? `<a href="${esc(link)}" ${/^https?:/.test(link) ? 'target="_blank" rel="noopener"' : ''}>${esc(v)}</a>` : esc(v)}</span><button class="cr-ib" data-crcopy="${esc(v)}" data-what="${esc(what)}" title="Kopijuoti">${slIcon('copy')}</button></div>` : '<div class="cr-f cr-muted">—</div>';
+  const href = u=>!u ? '' : /^https?:\/\//i.test(u) ? u : 'https://'+u;
+  // a title that is itself an address (e.g. „manosvetaine.lt“) – a link too
+  const isLink = t=>/^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}(:\d+)?(\/\S*)?$/i.test(String(t||'').trim()) && !/@/.test(t);
+  const two = cat!=='contact';
+  const head = cat==='contact' ? ['Vardas', 'Telefonas', 'El. paštas', 'Pastaba'] : [cat==='email' ? 'Adresas' : 'Pavadinimas', 'Slaptažodis', 'Pastaba'];
+  const nameCell = e=>{ const t = e.title||'—', link = e.url ? href(e.url) : isLink(e.title) ? href(e.title.trim()) : '';
+    return `<div class="cr-t"><div class="cr-f">${link ? `<a href="${esc(link)}" target="_blank" rel="noopener" title="Atidaryti naujame lange">${esc(t)}</a>` : `<b>${esc(t)}</b>`}<button class="cr-ib" data-crcopy="${esc(e.title||'')}" data-what="${cat==='email' ? 'adresas' : 'pavadinimas'}" title="Kopijuoti">${slIcon('copy')}</button></div>
+      ${e.login ? `<div class="cr-f cr-sub"><span>${esc(e.login)}</span><button class="cr-ib" data-crcopy="${esc(e.login)}" data-what="prisijungimo vardas" title="Kopijuoti prisijungimo vardą">${slIcon('copy')}</button></div>` : ''}</div>`; };
+  box.innerHTML = `<div class="cr-list"><div class="cr-row cr-head${two ? ' cr-2' : ''}">${head.map(h=>`<span>${esc(h)}</span>`).join('')}<span></span></div>
+    ${list.map(e=>`<div class="cr-row${two ? ' cr-2' : ''}" data-crid="${esc(e.id)}">
+      ${two ? nameCell(e)+pw(e) : `<div class="cr-t"><b>${esc(e.title||'—')}</b>${e.company ? `<small>${esc(e.company)}</small>` : ''}</div>`
+        +fld(e.phone, 'telefonas', 'tel:'+String(e.phone||'').replace(/\s+/g,''))+fld(e.email, 'el. paštas', 'mailto:'+(e.email||''))}
+      <div class="cr-note" title="${esc(e.note||'')}">${esc(e.note||'')}${e.updated_name ? `<br><small class="cr-muted">${esc(e.updated_name)} · ${esc(String(e.updated_at||'').slice(0,10))}${e.views ? ' · žiūrėta '+e.views+'×' : ''}</small>` : ''}</div>
+      <div class="cr-act"><button class="cr-ib" data-credit="${esc(e.id)}" title="Redaguoti">${slIcon('pencil')}</button><button class="cr-ib" data-crdel="${esc(e.id)}" title="Ištrinti">${slIcon('bin')}</button></div>
+    </div>`).join('')}</div>`;
+  box.querySelectorAll('[data-crcopy]').forEach(b=>b.onclick = ()=>crCopy(b.dataset.crcopy, b.dataset.what));
+  box.querySelectorAll('[data-crshow]').forEach(b=>b.onclick = async ()=>{ const id = b.dataset.crshow;
+    if(CR.shown[id]!=null){ delete CR.shown[id]; crDraw(); return; }
+    const t = await crSecret(id); if(t==null) return; CR.shown[id] = t; crDraw();
+    clearTimeout(CR['t'+id]); CR['t'+id] = setTimeout(()=>{ delete CR.shown[id]; if(currentTab==='creds') crDraw(); }, 30000); });
+  box.querySelectorAll('[data-crcopypw]').forEach(b=>b.onclick = async ()=>{ const id = b.dataset.crcopypw, t = CR.shown[id]!=null ? CR.shown[id] : await crSecret(id); if(t!=null) crCopy(t, 'slaptažodis'); });
+  box.querySelectorAll('[data-credit]').forEach(b=>b.onclick = ()=>crEdit((CR.list[cat]||[]).find(x=>x.id===b.dataset.credit)));
+  box.querySelectorAll('[data-crdel]').forEach(b=>b.onclick = async ()=>{ const e = (CR.list[cat]||[]).find(x=>x.id===b.dataset.crdel); if(!e) return;
+    if(!(await uiConfirm(`Ištrinti „${e.title||'įrašą'}“?`))) return;
+    const { error } = await getSb().rpc('cred_delete', { p_id:e.id }); if(error){ toast('Nepavyko: '+error.message); return; }
+    CR.list[cat] = CR.list[cat].filter(x=>x.id!==e.id); renderCredsTab(); toast('Ištrinta.'); });
+}
+function crEdit(e){
+  const cat = e ? e.cat : CR.cat, F = CR_CATS.find(c=>c[0]===cat)[2], v = e || {};
+  const inp = (k, type)=>F[k] ? `<label class="field">${esc(F[k])}${k==='note' ? `<textarea id="crf_${k}" rows="3">${esc(v[k]||'')}</textarea>` : `<input type="${type||'text'}" id="crf_${k}" value="${esc(v[k]||'')}" autocomplete="off">`}</label>` : '';
+  openModal(`<h3 style="margin:0 0 10px;">${e ? 'Redaguoti' : 'Naujas'} · ${esc(CR_CATS.find(c=>c[0]===cat)[1])}</h3>
+    <div class="grid cols-2" style="gap:10px;">${inp('title')}${inp('url')}${inp('login')}${inp('company')}${inp('phone', 'tel')}${inp('email', 'email')}
+      ${F.secret ? `<label class="field">${esc(F.secret)}<div class="email-add-row"><input type="password" id="crf_secret" autocomplete="new-password" placeholder="${v.has_secret ? 'nepakeistas – įrašyk naują, jei keiti' : ''}"><button type="button" class="btn small" id="crPwEye" title="Rodyti">${slIcon('eye')}</button></div>
+        ${v.has_secret ? '<label class="checkbox-row" style="margin-top:4px;"><input type="checkbox" id="crf_clear"> pašalinti slaptažodį</label>' : ''}</label>` : ''}</div>
+    ${inp('note')}
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button class="btn" id="crX">Atšaukti</button><button class="btn primary" id="crGo">Išsaugoti</button></div>`);
+  const pe = document.getElementById('crPwEye'); if(pe) pe.onclick = ()=>{ const i = document.getElementById('crf_secret'); i.type = i.type==='password' ? 'text' : 'password'; };
+  document.getElementById('crX').onclick = ()=>closeModal();
+  setTimeout(()=>{ const t = document.getElementById('crf_title'); if(t && !e) t.focus(); }, 30);
+  document.getElementById('crGo').onclick = async ev=>{
+    const val = k=>{ const el = document.getElementById('crf_'+k); return el ? el.value.trim() : (v[k]||''); };
+    const d = { title:val('title'), url:val('url'), login:val('login'), company:val('company'), phone:val('phone'), email:val('email'), note:val('note') };
+    if(!d.title){ toast('Užpildyk: '+F.title+'.'); return; }
+    const si = document.getElementById('crf_secret'), clr = document.getElementById('crf_clear');
+    const secret = clr && clr.checked ? '' : si && si.value ? si.value : (e ? null : '');
+    ev.target.disabled = true;
+    const { error } = await getSb().rpc('cred_save', { p_id:e ? e.id : null, p_cat:cat, p_data:d, p_secret:secret });
+    if(error){ ev.target.disabled = false; toast('Nepavyko: '+(/function|schema cache/i.test(error.message) ? 'Supabase paleisk creds.sql' : error.message), 6000); return; }
+    closeModal(); delete CR.shown[e && e.id]; await crLoad(cat); CR.cat = cat; if(currentTab==='creds') renderCredsTab(); toast('✓ Išsaugota.');
+  };
+}
+
 // the days from – to (a rental written in an invoice line)
 function rpDaysOf(a, b){ const out = []; if(!/^\d{4}-\d{2}-\d{2}$/.test(a||'')) return out; if(!/^\d{4}-\d{2}-\d{2}$/.test(b||'') || b < a) b = a; for(let d = a, n = 0; d <= b && n < 62; d = lmDay(d, 1), n++) out.push(d); return out; }
 function rpRentData(){
@@ -19832,6 +19955,7 @@ const HOME_TILES = [
   {tab:'buy', title:'Pirkiniai', color:'#E8590C', desc:'Ko reikia nupirkti: VIDEO, LIGHT, AUDIO, bendri daiktai – kainos, nuorodos, svarba.'},
   {tab:'mail', title:'El. paštas', color:'#E0B04E', desc:'Tavo @eventsolutions.lt laiškai: skaityk ir atsakyk čia.'},
   {tab:'people', title:'Žmonės', color:'#50AD97', desc:'Kontaktų archyvas ir žmonių bookingas: skambučiai, kas sutiko, kas negali.'},
+  {tab:'creds', title:'Prisijungimai / Kontaktai', color:'#8A6FD8', desc:'Programų ir puslapių prisijungimai, kontaktai, el. paštai (tik Admin). Slaptažodžiai saugomi užšifruoti.'},
   {tab:'keys', title:'Raktai', color:'#E0B04E', desc:'Sandėlio spynos kodas, išduoti raktai ir jų archyvas.'},
   {tab:'alarm', title:'Signalizacija', color:'#E8590C', desc:'Darbuotojų signalizacijos kodai, laikini kodai su galiojimu ir archyvas.'},
   {tab:'venues', title:'Erdvės', color:'#E07A5F', desc:'Renginių vietos: patekimas, elektra, liftas, kontaktai, nuotraukos.'},
@@ -20384,7 +20508,7 @@ const byOrder = (list, order, key)=>{ if(!Array.isArray(order)) return list; con
 
 /* ---------- Pagrindinis: grupės „Ofisas“ ir „Sandėlis“ ---------- */
 const HOME_GROUPS = [
-  {id:'office', title:'Ofisas', color:'#F35E7D', tabs:['events','people','jobs','offers','invoices','venues','keys','alarm'],
+  {id:'office', title:'Ofisas', color:'#F35E7D', tabs:['events','people','jobs','offers','invoices','venues','creds','keys','alarm'],
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/><path d="M11 13v2h2v-2"/></svg>'},
   {id:'warehouse', title:'Sandėlis', color:'#4E9BC9', tabs:['projects','newproj','sort','load','rentals','handovers','inventory','works','stocktake','gear','rules'],
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-5 9 5v12"/><path d="M7 21v-8h10v8"/><path d="M7 17h10"/></svg>'},
@@ -21369,7 +21493,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v511';
+const APP_VER = 'v512';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -43023,6 +43147,7 @@ const TABS = {
   tracker: renderTrackerTab,
   expenses: renderExpensesTab,
   workplans: renderWorkPlansTab,
+  creds: renderCredsTab,
   keys: renderKeysTab,
   alarm: renderAlarmTab,
   games: renderGamesTab,
@@ -43542,6 +43667,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-13 15:30', v:'v512', k:'new', t:'Naujas puslapis „Prisijungimai / Kontaktai“', f:'Programų ir puslapių prisijungimai, kontaktai ir el. paštai (tik Admin) vienoje vietoje. Pavadinimas–nuoroda atsidaro naujame lange, šalia pavadinimo ir slaptažodžio – kopijavimo mygtukai. Slaptažodžiai saugomi užšifruoti, matoma, kas juos žiūrėjo. Mato Office ir aukštesni.' },
   { d:'2026-10-13 14:30', v:'v511', k:'new', t:'Transporto nuomos sąskaitos: detalizacija', f:'Įkeliant transporto nuomos sąskaitą – detalizacija: kiekvienas transportas atskira eilute (valst. nr., kas nuomota, nuo – iki, suma) ir papildomos paslaugos (valymas, kuras – su numeriu prie to transporto, be numerio – prie išrašiusios įmonės). Iš PDF nuskaitoma pati (pvz. BUS 5968 – 5 automobiliai + 2 valymai, suma sutampa), jei nėra – surašoma ranka; be detalizacijos neįkeliama. Ataskaitoje kiekvienas automobilis su sava suma ir nuomos dienomis, papildomos paslaugos rodomos atskirai („iš jų papildomos“). Jau įkeltoms sąskaitoms – „Įrašyti detalizaciją“ / „Nuskaityti iš PDF“ sąskaitos lange. Reikia paleisti supabase/sql/invoices_vehrent2.sql.' },
   { d:'2026-10-13 13:15', v:'v510', k:'fix', t:'Transporto nuoma: automobilis – to, kas išrašė sąskaitą', f:'Jei automobilis anksčiau (iš renginio) buvo priskirtas kitai įmonei, pvz. „Movie Wheels“, o sąskaitą už jį išrašė „MB Kino Ratai“, automobilis perkeliamas pas sąskaitos išrašytoją (pagal naujausią sąskaitą). Senas pavadinimas lieka „Kaip rašoma renginiuose“, kad renginiuose jis vis tiek būtų atpažintas. Įmonės sujungiamos nepaisant UAB / MB ir kabučių („MB „Kino Ratai““ = „Kino Ratai“).' },
   { d:'2026-10-13 12:30', v:'v509', k:'new', t:'Chatas: narių paieška · Sąskaitos: Transporto nuoma', f:'Chate paieškoje įrašius vardą parodomi ir nariai – paspaudus atsidaro (ar sukuriamas) pokalbis su juo. Sąskaitose nauja rūšis „Transporto nuoma“: įkėlus PDF valstybiniai numeriai nuskaitomi patys (galima pataisyti). Visos tokios sąskaitos (patvirtintos ar ne) iš karto patenka į Ataskaitos → Transporto nuoma: su numeriu – prie to transporto (dar vienas nuomos kartas; naujas transportas sukuriamas Transportas → Transporto nuoma su įmone, kuri išrašė), be numerio – pagal tai, kas išrašė. Nauja stulpelis „Sąskaitos“ ir suma. Reikia paleisti supabase/sql/invoices_vehrent.sql.' },
