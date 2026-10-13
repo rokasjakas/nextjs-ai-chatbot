@@ -35,7 +35,8 @@ csp = {
   'form-action': "'self'",
 }
 meta_csp = '; '.join(f'{k} {v}' for k, v in csp.items())
-head_csp = meta_csp + "; frame-ancestors 'none'; upgrade-insecure-requests"
+# the app may show itself in its own quick windows (greitieji langai) – nobody else may frame it
+head_csp = meta_csp + "; frame-ancestors 'self'; upgrade-insecure-requests"
 # only inside the page's own <head> (the scripts also contain '<meta charset' in strings)
 for f, s in pages.items():
     hm = re.search(r'<head>\s*(<meta charset="[^"]*">)', s[:5000], re.I)
@@ -44,7 +45,7 @@ for f, s in pages.items():
     open(f, 'w', encoding='utf-8').write(s)
 open(headers_out, 'w').write(f"""/*
   Content-Security-Policy: {head_csp}
-  X-Frame-Options: DENY
+  X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: payment=(), usb=(), serial=(), bluetooth=(), hid=()
