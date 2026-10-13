@@ -1510,9 +1510,10 @@ async function onExpense(uid: string, id: string, ev: string) {
   }
   // a decision: only by who made it, and it must be the expense's state now
   const may = isPlusP(me) || (e.kind === "fuel" && isFuelChecker(me));
-  const st = ev === "deduct" ? (e.status === "ok" && String(e.review_note || "").startsWith("Nurašyta nuo balanso") ? "deduct" : "") : e.status;
+  const st = ev === "deduct" ? (e.status === "ok" && String(e.review_note || "").startsWith("Nurašyta nuo balanso") ? "deduct" : "")
+    : ev === "purpose" ? (e.status === "ok" && String(e.review_note || "").startsWith("Tikslas pakeistas") ? "purpose" : "") : e.status;
   if (!may || e.reviewed_by !== uid || st !== ev) return { error: "Tik sprendimą priėmęs narys" };
-  const head: Record<string, string> = { deduct: "Išlaida nurašyta nuo balanso", fix: "Reikia korekcijų pylimui", info: "Paaiškink išlaidą", ok: "Išlaida patvirtinta", rejected: "Išlaida atmesta", paid: "Išlaida apmokama" };
+  const head: Record<string, string> = { purpose: e.purpose === "personal" ? "Pylimas pažymėtas asmeniniu" : "Pylimas pažymėtas darbo reikalais", deduct: "Išlaida nurašyta nuo balanso", fix: "Reikia korekcijų pylimui", info: "Paaiškink išlaidą", ok: "Išlaida patvirtinta", rejected: "Išlaida atmesta", paid: "Išlaida apmokama" };
   const t = (head[ev] || "Išlaida") + ": " + what;
   const body = (e.review_note ? e.review_note.slice(0, 160) : name(me)) + sum;
   return await sendTo(await wantIds([e.user_id], "other"), { title: t, body, tag: "exp-" + e.id, url, kind: "expense" });
@@ -1692,7 +1693,7 @@ Deno.serve(async (req) => {
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
     if (body.kind === "invoice-check") return json(await onInvoiceCheck(uid, String(body.invoice_id ?? ""), body.event === "checked" ? "checked" : "msg", String(body.text ?? ""), body.ok === true));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : body.event === "resend" ? "resend" : "decided"));
-    if (body.kind === "expense") return json(await onExpense(uid, String(body.expense_id ?? ""), ["fix", "info", "ok", "rejected", "resubmit", "deduct"].includes(body.event) ? body.event : "ok"));
+    if (body.kind === "expense") return json(await onExpense(uid, String(body.expense_id ?? ""), ["fix", "info", "ok", "rejected", "resubmit", "deduct", "purpose"].includes(body.event) ? body.event : "ok"));
     if (body.kind === "expense-pay") return json(await onExpensePay(uid, String(body.expense_id ?? ""), Array.isArray(body.to) ? body.to.map(String) : [], String(body.note ?? "").slice(0, 2000)));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
     if (body.kind === "leave") return json(await onLeave(uid, String(body.leave_id ?? ""), ["new", "decided", "cancelled"].includes(body.event) ? body.event : "new"));
