@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-jEF6kNXQPL10v+kSD13bVTzOOxIrikA40du59W0o29k=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-3uwAZb2RDAqpgX0Nl2aZW3WuIIiGoMNO3OPxystT4T0=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-nvAzaHdRvFGC3RHzFwo1qbEJYbpLXDpRB81UZAN+g+c=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-SQ6bgR7WWA6JGBqZsihiE9DQ+w8M29fg7NUgAzXaLUk=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Automobilis · Event Solutions</title>
@@ -228,28 +228,26 @@ async function pinPage(){
   catch(e){ app.innerHTML = `<div class="card">Nepavyko įkelti: ${esc(e.message)}</div><button class="btn ghost" onclick="location.reload()">Bandyti dar kartą</button>`; return; }
   if(!info || !info.ok){ app.innerHTML = `<div class="card"><h2>${ic('card')} Kuro kortelė</h2><p class="muted">${!info || info.why==='none' ? 'Ši nuoroda nebegalioja.' : info.why==='early' ? 'Nuoroda dar negalioja – ji veiks renginio dienomis'+(info.from ? ' (nuo '+esc(day(info.from))+')' : '')+'.' : 'Renginys baigėsi – nuoroda nebegalioja.'}</p></div>`; return; }
   app.innerHTML = `<div class="card"><h2>${ic('card')} Kuro kortelė</h2><p class="muted">${esc(info.event || '')}</p>
-      <p>Įrašyk UTA kortelės <b>paskutinius 5 skaitmenis</b> ir <b>CVC</b> (3 skaičiai kortelės gale) – bus parodytas jos PIN kodas.</p>
+      <p>Nurašyk skaičius, esančius UTA kortelės <b>gale po „CVC:“</b> – bus parodytas jos PIN kodas.</p>
       <label for="pinName">Tavo vardas ir pavardė</label><input type="text" id="pinName" maxlength="80" autocomplete="name" value="${esc((()=>{ try{ return localStorage.getItem(PIN_NAME)||''; }catch(e){ return ''; } })())}" placeholder="pvz. Jonas Jonaitis">
-      <div class="row2"><div><label for="pinL5">Paskutiniai 5 skaitmenys</label><input type="text" id="pinL5" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="pvz. 00469"></div>
-        <div><label for="pinCvc">CVC (gale)</label><input type="password" id="pinCvc" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="3 skaičiai"></div></div>
+      <label for="pinCvc">Skaičiai po „CVC:“</label><input type="text" id="pinCvc" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="pvz. 123">
       <div class="loc" id="pinLoc"></div>
       <div class="err" id="pinErr"></div>
       <button class="btn" id="pinGo">${ic('lock')} Rodyti PIN</button>
-      <p class="muted" style="margin-top:10px;">Kas, kada ir kur žiūrėjo PIN – įrašoma į UTA ataskaitas. Po 5 neteisingų CVC kortelė šiai nuorodai užrakinama parai.</p></div>
+      <p class="muted" style="margin-top:10px;">Kas, kada ir kur žiūrėjo PIN – įrašoma į UTA ataskaitas. Po kelių neteisingų bandymų nuoroda užrakinama parai.</p></div>
     <div id="pinOut"></div>`;
   pinLoc();
   const nm = document.getElementById('pinName'); nm.oninput = ()=>{ try{ localStorage.setItem(PIN_NAME, nm.value.trim()); }catch(e){} };
-  ['pinL5','pinCvc'].forEach(id=>{ const el = document.getElementById(id); el.oninput = ()=>{ el.value = el.value.replace(/\D/g, ''); }; });
+  ['pinCvc'].forEach(id=>{ const el = document.getElementById(id); el.oninput = ()=>{ el.value = el.value.replace(/\D/g, ''); }; });
   document.getElementById('pinGo').onclick = async ()=>{
     if(PIN.busy) return; const err = document.getElementById('pinErr'), b = document.getElementById('pinGo'), out = document.getElementById('pinOut');
-    const name = nm.value.replace(/\s+/g, ' ').trim(), last5 = document.getElementById('pinL5').value, cvc = document.getElementById('pinCvc').value;
+    const name = nm.value.replace(/\s+/g, ' ').trim(), cvc = document.getElementById('pinCvc').value;
     if(name.length < 3 || !/\s/.test(name)){ err.textContent = 'Įrašyk savo vardą ir pavardę.'; nm.focus(); return; }
-    if(!/^\d{5}$/.test(last5)){ err.textContent = 'Įrašyk paskutinius 5 kortelės skaitmenis.'; document.getElementById('pinL5').focus(); return; }
-    if(!/^\d{3}$/.test(cvc)){ err.textContent = 'Įrašyk CVC – 3 skaičius kortelės gale.'; document.getElementById('pinCvc').focus(); return; }
+    if(!/^\d{3,8}$/.test(cvc)){ err.textContent = 'Nurašyk skaičius kortelės gale po „CVC:“.'; document.getElementById('pinCvc').focus(); return; }
     err.textContent = ''; PIN.busy = true; b.disabled = true; b.textContent = 'Tikrinama…';
     try{
       const r = await fetch(SUPABASE_URL+'/functions/v1/uta-pin', { method:'POST', headers:{ 'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY },
-        body:JSON.stringify({ t:PIN_T, name, loc:PIN.loc, last5, cvc }) });
+        body:JSON.stringify({ t:PIN_T, name, loc:PIN.loc, cvc }) });
       const j = await r.json().catch(()=>({}));
       if(!r.ok || !j.pin) throw new Error(j.error || ('Klaida '+r.status));
       document.getElementById('pinCvc').value = '';

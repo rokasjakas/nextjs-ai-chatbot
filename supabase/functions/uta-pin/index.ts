@@ -1,14 +1,13 @@
 // Supabase Edge Function: uta-pin
 //
 // „Kuro kortelė“ in the event letter (supabase/sql/uta_pin_links.sql, uta_card_cvc.sql): the driver
-// opens auto.html?pin=<token>, types the card's last 5 digits and its CVC (3 digits on the back) –
-// the card is found among the event's cards and its PIN is shown. No sign-in: the link's token is
-// the key, and it works only on the event's days (a day before and after) and only for the event's
+// opens auto.html?pin=<token> and types the digits printed on the card's back after „CVC:“ – the card
+// with that code is found among the event's cards and its PIN is shown. No sign-in: the link's token
+// is the key, and it works only on the event's days (a day before and after) and only for the event's
 // vehicles' cards. Every attempt is written to uta_pin_views with the name, time and the phone's
-// place; at most 10 attempts a link per hour, and a card is locked for the link for a day after 5
-// wrong CVCs.
+// place; at most 10 attempts a link per hour, and the link is locked for a day after 5 wrong codes.
 //
-// POST {"t":"<token>","name":"Vardas Pavardė","loc":{"lat":54.6,"lng":25.2,"acc":12},"last5":"00469","cvc":"123"}
+// POST {"t":"<token>","name":"Vardas Pavardė","loc":{"lat":54.6,"lng":25.2,"acc":12},"cvc":"123"}
 //   -> {"pin":"1234","card":"•••• 0046 9","title":"AUTO 1","vehicle":"Iveco Daily MPL 840"}
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are given by Supabase.
 
@@ -17,7 +16,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-const HOURLY = 10, CARD_FAILS = 5;
+const HOURLY = 10, LINK_FAILS = 5;
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json; charset=utf-8" } });
@@ -43,15 +42,14 @@ function same(a: string, b: string): boolean { if (a.length !== b.length) return
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "POST" }, 405);
-  let body: { t?: string; name?: string; loc?: { lat?: number; lng?: number; acc?: number }; last5?: string; cvc?: string };
+  let body: { t?: string; name?: string; loc?: { lat?: number; lng?: number; acc?: number }; cvc?: string };
   try { body = await req.json(); } catch { return json({ error: "Blogas užklausos formatas." }, 400); }
   const t = String(body.t ?? "");
   if (!/^[0-9a-f]{24,64}$/.test(t)) return json({ error: "Nuoroda neteisinga." }, 400);
   const name = String(body.name ?? "").replace(/\s+/g, " ").trim().slice(0, 120);
   if (name.length < 3) return json({ error: "Įrašyk savo vardą ir pavardę." }, 400);
-  const last5 = digits(body.last5), cvc = digits(body.cvc);
-  if (last5.length !== 5) return json({ error: "Įrašyk paskutinius 5 kortelės skaitmenis." }, 400);
-  if (cvc.length !== 3) return json({ error: "Įrašyk CVC – 3 skaičius kortelės gale." }, 400);
+  const cvc = digits(body.cvc);
+  if (cvc.length < 3 || cvc.length > 8) return json({ error: "Nurašyk skaičius kortelės gale po „CVC:“." }, 400);
   const L = body.loc, num = (x: unknown, lo: number, hi: number) => typeof x === "number" && isFinite(x) && x >= lo && x <= hi ? x : null;
   const lat = L ? num(L.lat, -90, 90) : null, lng = L ? num(L.lng, -180, 180) : null;
   const where = lat != null && lng != null ? { lat: +lat.toFixed(6), lng: +lng.toFixed(6), acc: L && num(L.acc, 0, 100000) != null ? Math.round(L.acc as number) : null } : {};
@@ -66,30 +64,23 @@ Deno.serve(async (req) => {
     const recent = await db<{ id: number }[]>(`uta_pin_views?token=eq.${t}&at=gte.${encodeURIComponent(since)}&select=id`);
     if (recent.length >= HOURLY) return json({ error: "Per daug bandymų – pabandyk po valandos." }, 429);
 
+    // a link locked for a day after too many wrong codes
+    const dayAgo = new Date(Date.now() - 86400_000).toISOString();
+    const fails = await db<{ id: number }[]>(`uta_pin_views?token=eq.${t}&reason=eq.${encodeURIComponent("neteisingas kodas")}&at=gte.${encodeURIComponent(dayAgo)}&select=id`);
+    if (fails.length >= LINK_FAILS) return json({ error: "Per daug neteisingų bandymų – nuoroda užrakinta parai. Kreipkis į ofisą." }, 429);
+
     const cards = await db<{ id: string; card_no: string; title: string; vehicle_name: string | null }[]>(`uta_cards?select=id,card_no,title,vehicle_name&active=eq.true`);
     const allowed = (l.card_ids ?? []).length ? cards.filter((c) => l.card_ids.includes(c.id)) : cards;
-    const hit = allowed.filter((c) => digits(c.card_no).endsWith(last5));
-    if (!hit.length) {
-      const other = cards.some((c) => digits(c.card_no).endsWith(last5));
-      await log({ event_name: l.event_name, ok: false, reason: other ? "ne šio renginio kortelė" : "kortelė nerasta", card_read: last5 });
-      return json({ error: other ? "Ši kortelė ne šio renginio automobiliui." : "Tokios kortelės nėra – patikrink paskutinius 5 skaitmenis." }, 404);
+    if (!allowed.length) return json({ error: "Šiam renginiui kortelių nėra – kreipkis į ofisą." }, 404);
+    const codes = await db<{ card_id: string; cvc: string }[]>(`uta_card_cvc?card_id=in.(${allowed.map((c) => c.id).join(",")})&select=card_id,cvc`);
+    const hit = allowed.filter((c) => codes.some((x) => x.card_id === c.id && same(x.cvc, cvc)));
+    if (hit.length !== 1) {
+      await log({ event_name: l.event_name, ok: false, reason: hit.length ? "keli atitikmenys" : "neteisingas kodas", card_read: cvc.replace(/.(?=.{2})/g, "•") });
+      return json({ error: hit.length ? "Šis kodas tinka kelioms kortelėms – kreipkis į ofisą." : !codes.length ? "Šio renginio kortelėms kodai dar neįrašyti – kreipkis į ofisą." : "Tokios kortelės nėra – patikrink skaičius po „CVC:“." }, hit.length ? 409 : 404);
     }
-    // a card locked for this link after too many wrong CVCs (a day)
-    const dayAgo = new Date(Date.now() - 86400_000).toISOString();
-    const ids = hit.map((c) => c.id);
-    const fails = await db<{ card_id: string }[]>(`uta_pin_views?token=eq.${t}&reason=eq.${encodeURIComponent("neteisingas CVC")}&at=gte.${encodeURIComponent(dayAgo)}&card_id=in.(${ids.join(",")})&select=card_id`);
-    const cvcs = await db<{ card_id: string; cvc: string }[]>(`uta_card_cvc?card_id=in.(${ids.join(",")})&select=card_id,cvc`);
-    const withCvc = hit.filter((c) => cvcs.some((x) => x.card_id === c.id));
-    if (!withCvc.length) { await log({ event_name: l.event_name, card_id: hit[0].id, ok: false, reason: "CVC neįrašytas", card_read: last5 }); return json({ error: "Šios kortelės CVC dar neįrašytas – kreipkis į ofisą." }, 404); }
-    const open = withCvc.filter((c) => fails.filter((f) => f.card_id === c.id).length < CARD_FAILS);
-    if (!open.length) return json({ error: "Per daug neteisingų bandymų – kortelė šiai nuorodai užrakinta parai. Kreipkis į ofisą." }, 429);
-    const c = open.find((x) => same(cvcs.find((y) => y.card_id === x.id)!.cvc, cvc));
-    if (!c) {
-      for (const x of open) await log({ event_name: l.event_name, card_id: x.id, ok: false, reason: "neteisingas CVC", card_read: last5 });
-      return json({ error: "Neteisingas CVC – patikrink 3 skaičius kortelės gale." }, 403);
-    }
+    const c = hit[0];
     const [p] = await db<{ pin: string }[]>(`uta_pins?card_id=eq.${c.id}&select=pin`);
-    await log({ event_name: l.event_name, card_id: c.id, ok: !!p, reason: p ? null : "PIN neįrašytas", card_read: last5, vehicle: [c.title, c.vehicle_name].filter(Boolean).join(" · ") || null });
+    await log({ event_name: l.event_name, card_id: c.id, ok: !!p, reason: p ? null : "PIN neįrašytas", card_read: null, vehicle: [c.title, c.vehicle_name].filter(Boolean).join(" · ") || null });
     if (!p) return json({ error: "Šios kortelės PIN dar neįrašytas – kreipkis į ofisą." }, 404);
     return json({ pin: p.pin, card: mask(c.card_no), title: c.title || "", vehicle: c.vehicle_name || "" });
   } catch (e) {
