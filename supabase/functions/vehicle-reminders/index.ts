@@ -231,7 +231,9 @@ function describe(doc: DocStatus): string {
 }
 
 function buildEmail(v: Vehicle, docs: DocStatus[]) {
-  const car = v.plate ? `${v.name} (${v.plate})` : v.name;
+  const norm = (x: unknown) => String(x || "").toUpperCase().replace(/[^0-9A-Z]/g, "");
+  // the plate only once: often it is in the name already ("Iveco Daily MPL 840")
+  const car = v.plate && !norm(v.name).includes(norm(v.plate)) ? `${v.name} (${v.plate})` : v.name;
   const worst = docs
     .filter((d) => d.days !== null)
     .sort((a, b) => (a.days as number) - (b.days as number))[0];

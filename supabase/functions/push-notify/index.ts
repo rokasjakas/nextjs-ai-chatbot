@@ -1414,7 +1414,9 @@ type VehicleRm = { id: string; vehicle_id: string; vehicle_name: string; plate: 
 async function onVehicleRm(uid: string, id: string, ev: string) {
   const [r] = await db<VehicleRm[]>(`vehicle_removals?select=id,vehicle_id,vehicle_name,plate,reason,status,requested_by,requested_name,decided_by,decision_note&id=eq.${encodeURIComponent(id)}`);
   if (!r) return { error: "Prašymas nerastas" };
-  const what = r.vehicle_name + (r.plate ? " (" + r.plate + ")" : "");
+  const norm = (x: string | null) => String(x || "").toUpperCase().replace(/[^0-9A-Z]/g, "");
+  // the plate only once: often it is in the name already ("Iveco Daily MPL 840")
+  const what = r.vehicle_name + (r.plate && !norm(r.vehicle_name).includes(norm(r.plate)) ? " (" + r.plate + ")" : "");
   const url = `./?vehicle=${encodeURIComponent(r.vehicle_id)}`;
   if (ev === "request") {
     if (r.status !== "pending" || r.requested_by !== uid) return { error: "Prašymo nėra" };

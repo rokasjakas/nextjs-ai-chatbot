@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-oF5zDspveZ89+YtgfnLUg+yM0ozOGvPOrjhud1Zmh1M=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-ZHx+8BrSNKoWs0YR2Q9U4x3OMeLgbifGEeE1IrxYxU4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-qfZmYqjV5db3rgtTHJOOFkyhWrkpKj3RBU2Rt4ltnwY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-NU0UTyUrtY/j6xhs8GeC2cd7YhYOieLoIyG95jESO6o=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -8038,7 +8038,7 @@ function fleetTileHtml(v){
   const ka = v.docs && v.docs.kasko ? fleetDocChip(v, 'kasko', 'KASKO') : null;
   const repair = !!(v.repair && v.repair.on), alarm = repair || [vin, ta, ins].concat(ka ? [ka] : []).some(x=>x.level!=='ok');
   return `<button type="button" class="fl-tile ${rm ? 'rm' : ''} ${alarm ? 'alarm' : ''}" data-vopen="${esc(v.id)}">
-    <span class="fl-tile-h"><b>${esc(v.name || 'Automobilis')}</b>${v.plate ? `<span class="fl-plate">${esc(v.plate)}</span>` : ''}</span>
+    <span class="fl-tile-h"><b>${esc(v.name || 'Automobilis')}</b>${vehPlateX(v) ? `<span class="fl-plate">${esc(v.plate)}</span>` : ''}</span>
     <span class="fl-tile-m">${model ? esc(model)+' · ' : ''}${fmt(v.L*v.W*v.H/1e6,1)} m³ · iki ${fmt(v.maxWeight,0)} kg</span>
     <span class="fl-tile-s">
       ${repair ? `<span class="fl-chip danger" ${v.repair.desc ? `title="${esc(v.repair.desc)}"` : ''}>🔧 Remonte${fleetRepPeriod(v.repair)}${v.repair.note ? ' · '+esc(v.repair.note) : ''}</span>` : ''}
@@ -8058,7 +8058,7 @@ function renderFleetList(){
     if(!STATE.vehicles.length) box.innerHTML = `<div class="card empty-state">Parkas tuščias. Pridėk transporto priemonę iš šablonų aukščiau.</div>`;
     else {
       const plusWait = grIsPlus() ? FLEET.rm.filter(r=>r.status==='pending' && r.requested_by!==teamMe() && STATE.vehicles.some(v=>v.id===r.vehicle_id)) : [];
-      box.innerHTML = (plusWait.length ? `<div class="fl-rmbar">🗑 Laukia tavo patvirtinimo: ${plusWait.map(r=>`<button type="button" class="btn small" data-vopen="${esc(r.vehicle_id)}">${esc(r.vehicle_name)}${r.plate ? ' · '+esc(r.plate) : ''}</button>`).join('')}</div>` : '')
+      box.innerHTML = (plusWait.length ? `<div class="fl-rmbar">🗑 Laukia tavo patvirtinimo: ${plusWait.map(r=>`<button type="button" class="btn small" data-vopen="${esc(r.vehicle_id)}">${esc(r.vehicle_name)}${vehPlateX({ name:r.vehicle_name, plate:r.plate }) ? ' · '+esc(r.plate) : ''}</button>`).join('')}</div>` : '')
         + `<div class="fl-grid">${STATE.vehicles.map(fleetTileHtml).join('')}</div>`;
       box.querySelectorAll('[data-vopen]').forEach(b=>b.onclick = e=>{
         // a document chip on the tile: the document itself opens
@@ -8074,7 +8074,7 @@ function renderFleetList(){
 function fleetChoose(id){
   const v = STATE.vehicles.find(x=>x.id===id); if(!v) return;
   const open = (typeof VL!=='undefined' ? VL.list : []).filter(x=>x.vehicle_id===id && x.kind==='problem' && x.status==='open').length;
-  openModal(`<div class="row between" style="align-items:center;gap:8px;"><h3 style="margin:0;">${esc(v.name)}${v.plate ? ` <small class="muted">${esc(v.plate)}</small>` : ''}</h3><button type="button" class="icon-btn" id="fcX" aria-label="Uždaryti">✕</button></div>
+  openModal(`<div class="row between" style="align-items:center;gap:8px;"><h3 style="margin:0;">${esc(v.name)}${vehPlateX(v) ? ` <small class="muted">${esc(v.plate)}</small>` : ''}</h3><button type="button" class="icon-btn" id="fcX" aria-label="Uždaryti">✕</button></div>
     <div class="fc-opts">
       <button type="button" class="fc-opt warn" id="fcProb"><span class="fc-ic">${slIcon('alert')}</span><span><b>Pranešti apie problemą</b><small>nuotraukos, video – pranešimas atsakingiems ir į chatą</small></span></button>
       ${vlCanService() ? `<button type="button" class="fc-opt" id="fcRep"><span class="fc-ic">🔧</span><span><b>Registruoti taisymą</b><small>${v.repair && v.repair.on ? 'šiuo metu remonte'+esc(fleetRepPeriod(v.repair))+' · grąžinti ar įrašyti atliktą taisymą' : 'jau atliktas taisymas su dokumentais arba išvežtas taisymui ilgesniam laikui'}</small></span></button>` : ''}
@@ -8092,7 +8092,7 @@ function fleetChoose(id){
 // „Registruoti taisymą“: a finished repair (documents, description – a service record) or the vehicle taken away for repair
 function fleetRepairChoose(v){
   const on = !!(v.repair && v.repair.on);
-  openModal(`<div class="row between" style="align-items:center;gap:8px;"><h3 style="margin:0;">🔧 Registruoti taisymą · ${esc(v.name)}${v.plate ? ` <small class="muted">${esc(v.plate)}</small>` : ''}</h3><button type="button" class="icon-btn" id="frX" aria-label="Uždaryti">✕</button></div>
+  openModal(`<div class="row between" style="align-items:center;gap:8px;"><h3 style="margin:0;">🔧 Registruoti taisymą · ${esc(v.name)}${vehPlateX(v) ? ` <small class="muted">${esc(v.plate)}</small>` : ''}</h3><button type="button" class="icon-btn" id="frX" aria-label="Uždaryti">✕</button></div>
     <div class="fc-opts">
       <button type="button" class="fc-opt" id="frDone"><span class="fc-ic">${slIcon('cog')}</span><span><b>Įvykęs taisymas</b><small>kas atlikta, data, kaina, servisas, aprašymas; įkelk sąskaitas, aktus, nuotraukas</small></span></button>
       <button type="button" class="fc-opt ${on ? 'warn' : ''}" id="frAway"><span class="fc-ic">🚚</span><span><b>${on ? 'Remonte – keisti ar grąžinti' : 'Išvežtas taisymui'}</b><small>${on ? esc('nuo '+(v.repair.from||'?')+(v.repair.to ? ' iki '+v.repair.to : '')+(v.repair.note ? ' · '+v.repair.note : '')) : 'ilgesniam laikui: nuo kada, iki kada (planuojama), kur ir ką taiso – automobilis pažymimas „Remonte“'}</small></span></button>
@@ -8168,7 +8168,7 @@ function fleetPopRender(force){
   if(!v){ fleetClose(); return; }
   // someone typing in the window keeps what they typed (the card is redrawn on the next open)
   if(!force && document.activeElement && pop.contains(document.activeElement) && document.activeElement.matches('input,textarea,select')) return;
-  document.getElementById('vehPopT').textContent = v.name + (v.plate ? ' · '+v.plate : '');
+  document.getElementById('vehPopT').textContent = vehLabel(v);
   const el = document.getElementById('fleetList');
   el.innerHTML = `
     <div class="card veh-card" data-id="${v.id}">
@@ -8201,7 +8201,7 @@ function fleetPopRender(force){
       v[field] = isNum ? (parseFloat(e.target.value)||0) : e.target.value;
       saveState();
       if(['L','W','H','archH','floorW'].includes(field)) fleetPopRender(true);
-      if(field==='name' || field==='plate') document.getElementById('vehPopT').textContent = v.name + (v.plate ? ' · '+v.plate : '');
+      if(field==='name' || field==='plate') document.getElementById('vehPopT').textContent = vehLabel(v);
     });
   };
   bind('.veh-name','name',false); bind('.veh-plate','plate',false);
@@ -8273,7 +8273,7 @@ function fleetRmBox(v){
 async function fleetRmAsk(v){
   if(!TEAM.members || !TEAM.members.length){ try{ await teamLoadMembers(); }catch(e){} }
   const plus = grPlusMembers();
-  openModal(`<h3>Pašalinti iš parko</h3><p><b>${esc(v.name)}${v.plate ? ' · '+esc(v.plate) : ''}</b></p>
+  openModal(`<h3>Pašalinti iš parko</h3><p><b>${esc(v.name)}${vehPlateX(v) ? ' · '+esc(v.plate) : ''}</b></p>
     <div class="gr-woinfo">${slIcon('checkbadge')}<span><b>Reikia Admin+ patvirtinimo</b><small>${plus.length ? 'Prašymas keliaus: '+esc(plus.map(teamName).join(', ')) : 'Nėra kito Admin+ nario, kuris galėtų patvirtinti'}</small></span></div>
     <p class="muted" style="font-size:12.5px;">Kol pašalinimas nepatvirtintas, automobilis lieka parke. Tvarkymų ir UTA įrašai lieka ir po pašalinimo.</p>
     <label class="field">Priežastis<textarea id="vRmNote" rows="2" placeholder="pvz. parduotas, grąžintas lizingui"></textarea></label>
@@ -8597,6 +8597,15 @@ function rvFor(key){
   return null;
 }
 
+/* the plate is often in the vehicle's name already („Iveco Daily MPL 840“): then it is not written twice */
+const vehNo = x=>String(x||'').toUpperCase().replace(/[^0-9A-Z]/g, '');
+function vehHasPlate(v){ const p = vehNo(v && v.plate); return !!p && vehNo(v.name).includes(p); }
+const vehPlateX = v=>v && v.plate && !vehHasPlate(v) ? v.plate : '';
+// „Iveco Daily MPL 840 MPL 840“ (written earlier, the plate picked twice) → „Iveco Daily MPL 840“
+function vehDedupText(t){ return typeof t!=='string' ? t : t.replace(/\b([A-Z]{2,3})[\s-]?(\d{2,4})\b(?:[\s·,(]+\1[\s-]?\2\b\)?)+/g, m=>m.match(/^[A-Z]{2,3}[\s-]?\d{2,4}/)[0]); }
+function evVehDedup(list){ (list||[]).forEach(ev=>{ if(ev && Array.isArray(ev.logistics)) ev.logistics.forEach(l=>{ if(l && l.vehicle) l.vehicle = vehDedupText(l.vehicle); }); }); }
+function vehLabel(v, sep){ if(!v) return ''; const n = v.name || 'Automobilis', p = vehPlateX(v); return p ? n+(sep==null ? ' · ' : sep)+p : n; }
+
 /* ---------- Vairuotojų kodai (sql/driver_codes.sql) ----------
    Kiekvienam renginyje priskirtam vairuotojui – unikalus 4 skaitmenų kodas (pagal vardą pavardę, tas pats
    žmogus visada gauna tą patį). Kodas matomas renginio laiške; pildant kuro išlaidą ar žymint kuro pylimą
@@ -8794,7 +8803,7 @@ async function utaAutoAssign(){
   if(!list.length) return;
   UTA.assigning = true; let n = 0;
   for(const { c, v } of list){
-    const r = await getSb().from('uta_cards').update({ assign_kind:'vehicle', vehicle_id:v.id, vehicle_name:v.name+(v.plate ? ' · '+v.plate : ''), updated_at:new Date().toISOString() }).eq('id', c.id).select().single();
+    const r = await getSb().from('uta_cards').update({ assign_kind:'vehicle', vehicle_id:v.id, vehicle_name:vehLabel(v), updated_at:new Date().toISOString() }).eq('id', c.id).select().single();
     if(r.error) break; Object.assign(c, Array.isArray(r.data) ? r.data[0] : r.data); n++;
   }
   UTA.assigning = n===list.length ? false : true;
@@ -8837,10 +8846,10 @@ function utaVehByPlate(p){
 // whom a line belongs to: the card's vehicle / person, else the plate in the report, else the card itself
 function utaOwner(t){
   const c = utaCardById(t.card_id) || utaCardFor(t.card_no);
-  if(c && c.assign_kind==='vehicle' && c.vehicle_id){ const v = STATE.vehicles.find(x=>x.id===c.vehicle_id); return { key:'v:'+c.vehicle_id, kind:'vehicle', vid:c.vehicle_id, name: v ? v.name+(v.plate ? ' · '+v.plate : '') : (c.vehicle_name || 'Automobilis') }; }
+  if(c && c.assign_kind==='vehicle' && c.vehicle_id){ const v = STATE.vehicles.find(x=>x.id===c.vehicle_id); return { key:'v:'+c.vehicle_id, kind:'vehicle', vid:c.vehicle_id, name: v ? vehLabel(v) : (c.vehicle_name || 'Automobilis') }; }
   if(c && c.assign_kind==='person' && (c.person_id || c.person_name)){ const m = c.person_id && (TEAM.members||[]).find(x=>x.id===c.person_id); return { key:'p:'+(c.person_id || c.person_name), kind:'person', name: m ? teamName(m) : (c.person_name || 'Asmuo') }; }
   const v = utaVehByPlate(t.plate);
-  if(v) return { key:'v:'+v.id, kind:'vehicle', vid:v.id, name:v.name+(v.plate ? ' · '+v.plate : '') };
+  if(v) return { key:'v:'+v.id, kind:'vehicle', vid:v.id, name:vehLabel(v) };
   // the vehicle as UTA names it (column „Transporto priemonė“: AUTO 1, KUE 833…)
   if(t.plate) return { key:'l:'+utaNorm(t.plate), kind:'label', name:t.plate.trim() };
   const no = c ? c.card_no : t.card_no;
@@ -8895,7 +8904,7 @@ function utaDraw(){
   const list = UTA.tx[utaRangeKey()], groups = list ? utaGroups(list) : [], reps = UTA.reports.filter(r=>String(r.month).slice(0,7) >= UTA.from.slice(0,7) && String(r.month).slice(0,7) <= UTA.to.slice(0,7));
   const pres = utaPresets(), cur = pres.find(p=>p[1]===UTA.from && p[2]===UTA.to);
   const own = c=>{
-    if(c.assign_kind==='vehicle'){ const v = STATE.vehicles.find(x=>x.id===c.vehicle_id); return '🚐 '+esc(v ? v.name+(v.plate ? ' · '+v.plate : '') : (c.vehicle_name || 'automobilis')+(v ? '' : ' (nebėra parke)')); }
+    if(c.assign_kind==='vehicle'){ const v = STATE.vehicles.find(x=>x.id===c.vehicle_id); return '🚐 '+esc(v ? vehLabel(v) : (c.vehicle_name || 'automobilis')+(v ? '' : ' (nebėra parke)')); }
     if(c.assign_kind==='person'){ const m = c.person_id && (TEAM.members||[]).find(x=>x.id===c.person_id); return '👤 '+esc(m ? teamName(m) : (c.person_name || 'asmuo')); }
     return '<span class="muted">nepriskirta</span>';
   };
@@ -9063,7 +9072,7 @@ function utaNoteEdit(txId, redraw){
     ${pair.length ? `<p class="section-sub" style="margin:0 0 10px;">Ta pačia kortele per 1 val. dar: ${pair.map(p=>esc(utaWhen(p.tx_at))+' · '+(p.quantity!=null ? esc(fmt(+p.quantity, 2))+' l' : '')).join('; ')}. Vienas pylimas – kortelės automobiliui, kitą paaiškink.</p>` : ''}
     <label class="field">Kam pilta<select id="unKind">${UTA_NOTE_KINDS.map(([k, l])=>`<option value="${k}" ${n.kind===k ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
     <label class="field" id="unPlateF" style="margin-top:8px;">Transportas (valst. nr.)<input type="text" id="unPlate" list="unPlates" value="${esc(n.plate||'')}" placeholder="pvz. ABC 123 arba Ducato" autocomplete="off">
-      <datalist id="unPlates">${STATE.vehicles.map(v=>`<option value="${esc(v.name+(v.plate ? ' '+v.plate : ''))}">`).join('')}${rents.map(r=>`<option value="${esc(r)}">`).join('')}</datalist></label>
+      <datalist id="unPlates">${STATE.vehicles.map(v=>`<option value="${esc(vehLabel(v, ' '))}">`).join('')}${rents.map(r=>`<option value="${esc(r)}">`).join('')}</datalist></label>
     <label class="field" style="margin-top:8px;">Komentaras<textarea id="unNote" rows="2" placeholder="pvz. busikas renginyje „…“, generatoriaus bakelis">${esc(n.note||'')}</textarea></label>
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;">${X.notes.get(txId) ? '<button type="button" class="btn" id="unDel">Pašalinti</button>' : '<span></span>'}<span class="row" style="gap:8px;"><button type="button" class="btn" id="unNo">Atšaukti</button><button type="button" class="btn primary" id="unOk">Išsaugoti</button></span></div>`);
   const kind = document.getElementById('unKind'), pf = document.getElementById('unPlateF');
@@ -9113,7 +9122,7 @@ function utaCardForm(c){
     </div>
     <div class="field" style="margin-top:10px;">Kam priskirta
       <div class="viewmode-toggle" id="ucKind" style="margin-top:4px;width:max-content;">${[['vehicle','🚐 Transportui'],['person','👤 Asmeniui'],['none','Niekam']].map(([k,t])=>`<button type="button" data-k="${k}" class="${c.assign_kind===k?'active':''}">${t}</button>`).join('')}</div></div>
-    <label class="field uc-veh" style="margin-top:8px;">Automobilis<select id="ucVeh"><option value="">— pasirink —</option>${STATE.vehicles.map(v=>`<option value="${esc(v.id)}" ${c.vehicle_id===v.id?'selected':''}>${esc(v.name+(v.plate ? ' · '+v.plate : ''))}</option>`).join('')}</select></label>
+    <label class="field uc-veh" style="margin-top:8px;">Automobilis<select id="ucVeh"><option value="">— pasirink —</option>${STATE.vehicles.map(v=>`<option value="${esc(v.id)}" ${c.vehicle_id===v.id?'selected':''}>${esc(vehLabel(v))}</option>`).join('')}</select></label>
     <div class="uc-per" style="margin-top:8px;"><label class="field">Asmuo<select id="ucPer"><option value="">— pasirink —</option>${mem.map(m=>`<option value="${esc(m.id)}" ${c.person_id===m.id?'selected':''}>${esc(teamName(m))}</option>`).join('')}<option value="__other" ${other?'selected':''}>Kitas (įrašyti vardą)</option></select></label>
       <label class="field uc-pn" style="margin-top:6px;">Vardas, pavardė<input type="text" id="ucPn" value="${esc(other ? c.person_name : '')}"></label></div>
     <div class="grid cols-2" style="margin-top:10px;">
@@ -9154,7 +9163,7 @@ function utaCardForm(c){
     if(kind==='person' && per==='__other' && !pn){ toast('Įrašyk vardą.'); return; }
     const v = STATE.vehicles.find(x=>x.id===vid), m = (TEAM.members||[]).find(x=>x.id===per);
     const row = { card_no:no, title:document.getElementById('ucTitle').value.trim(), assign_kind:kind,
-      vehicle_id: kind==='vehicle' ? vid : null, vehicle_name: kind==='vehicle' && v ? v.name+(v.plate ? ' · '+v.plate : '') : null,
+      vehicle_id: kind==='vehicle' ? vid : null, vehicle_name: kind==='vehicle' && v ? vehLabel(v) : null,
       person_id: kind==='person' && m ? m.id : null, person_name: kind==='person' ? (m ? teamName(m) : pn) : null,
       valid_until: document.getElementById('ucValid').value || null, note:document.getElementById('ucNote').value.trim(), active:document.getElementById('ucActive').checked, updated_at:new Date().toISOString() };
     if(document.getElementById('ucShared').checked || 'shared' in c) row.shared = document.getElementById('ucShared').checked;   // column from uta_pins.sql
@@ -9414,7 +9423,7 @@ function utaImpCards(out){
   const L = Object.values(by), T = L.reduce((a, g)=>({ fills:a.fills+g.fills, l:a.l+g.l, net:a.net+g.net, gross:a.gross+g.gross }), { fills:0, l:0, net:0, gross:0 });
   return `<div class="uta-tw" style="margin-top:8px;"><table class="uta-t"><thead><tr><th>Kortelė</th><th>Transportas (ataskaitoje)</th><th>Pylimų</th><th>Kuro</th><th>Be PVM</th><th>Su PVM</th></tr></thead><tbody>
     ${L.map(g=>{ const c = utaCardFor(g.no), v = c && c.assign_kind==='vehicle' ? STATE.vehicles.find(x=>x.id===c.vehicle_id) : (g.plate ? utaVehByPlate(g.plate) : null);
-      return `<tr><td>${esc(utaMask(g.no))}${c ? '' : ' <small class="muted">nauja</small>'}</td><td>${esc(g.plate||'—')}${v ? ` <small>→ ${esc(v.name+(v.plate ? ' · '+v.plate : ''))}</small>` : ''}</td><td>${g.fills}${g.other ? ` <small>+ ${g.other} kt.</small>` : ''}</td><td>${esc(utaQty(g.l))}</td><td>${esc(utaMoney(g.net))}</td><td><b>${esc(utaMoney(g.gross))}</b></td></tr>`; }).join('')}
+      return `<tr><td>${esc(utaMask(g.no))}${c ? '' : ' <small class="muted">nauja</small>'}</td><td>${esc(g.plate||'—')}${v ? ` <small>→ ${esc(vehLabel(v))}</small>` : ''}</td><td>${g.fills}${g.other ? ` <small>+ ${g.other} kt.</small>` : ''}</td><td>${esc(utaQty(g.l))}</td><td>${esc(utaMoney(g.net))}</td><td><b>${esc(utaMoney(g.gross))}</b></td></tr>`; }).join('')}
     <tr class="uta-dsum"><td colspan="2"><b>Iš viso</b> (palygink su ataskaitos „IŠ VISO“)</td><td>${T.fills}</td><td><b>${esc(utaQty(T.l))}</b></td><td>${esc(utaMoney(T.net))}</td><td><b>${esc(utaMoney(T.gross))}</b></td></tr></tbody></table></div>`;
 }
 function utaImportForm(file, b){
@@ -9455,7 +9464,7 @@ async function utaImportRun(file, rows, month, fresh, addCards){
     if(addCards && fresh.length){
       const add = fresh.map(no=>{ const plates = [...new Set(rows.filter(r=>r.card_no===no && r.plate).map(r=>utaNorm(r.plate)))], v = plates.length===1 ? utaVehByPlate(plates[0]) : null;
         const labels = [...new Set(rows.filter(r=>r.card_no===no && r.plate).map(r=>r.plate.trim()))];
-        return { card_no:no, title: labels.length===1 ? labels[0].slice(0, 80) : '', active:true, assign_kind: v ? 'vehicle' : 'none', vehicle_id: v ? v.id : null, vehicle_name: v ? v.name+(v.plate ? ' · '+v.plate : '') : null, note:'Pridėta iš ataskaitos '+file.name.slice(0, 80) }; });
+        return { card_no:no, title: labels.length===1 ? labels[0].slice(0, 80) : '', active:true, assign_kind: v ? 'vehicle' : 'none', vehicle_id: v ? v.id : null, vehicle_name: v ? vehLabel(v) : null, note:'Pridėta iš ataskaitos '+file.name.slice(0, 80) }; });
       const r = await sb.from('uta_cards').insert(add).select();
       if(r.error && !/duplicate/i.test(r.error.message)) throw new Error(r.error.message);
       if(r.data) UTA.cards.push(...r.data);
@@ -10761,7 +10770,7 @@ function renderFleetPicker(){
   if(loadMode==='fleet'){
     if(!STATE.vehicles.length){ wrap.innerHTML = `<div class="empty-state">Parke nėra automobilių. Pridėk Transporto skirtuke.</div>`; return; }
     wrap.innerHTML = STATE.vehicles.map(v=>`
-      <label class="checkbox-row" style="margin-bottom:6px;"><input type="checkbox" class="fleet-check" data-id="${v.id}" ${v.active!==false?'checked':''}> ${esc(v.name)} ${v.plate?'· '+esc(v.plate):''} — ${fmt(v.L*v.W*v.H/1e6,1)} m³, iki ${v.maxWeight} kg</label>`).join('<br>');
+      <label class="checkbox-row" style="margin-bottom:6px;"><input type="checkbox" class="fleet-check" data-id="${v.id}" ${v.active!==false?'checked':''}> ${esc(v.name)} ${vehPlateX(v)?'· '+esc(v.plate):''} — ${fmt(v.L*v.W*v.H/1e6,1)} m³, iki ${v.maxWeight} kg</label>`).join('<br>');
     wrap.querySelectorAll('.fleet-check').forEach(cb=>cb.addEventListener('change', e=>{
       const v = STATE.vehicles.find(x=>x.id===e.target.getAttribute('data-id'));
       v.active = e.target.checked; saveState(); ldAutoPackSoon();
@@ -19443,7 +19452,7 @@ function renderGuestProject(proj, items, token){
 
     <div class="card">
       <h2 class="section-title">Transportas</h2>
-      ${vehicles.length? vehicles.map(v=>`<div style="padding:6px 0;border-bottom:1px solid var(--border);">${esc(v.name)} ${v.plate?'· '+esc(v.plate):''} — ${fmt(v.L*v.W*v.H/1e6,1)} m³, iki ${v.maxWeight} kg</div>`).join('') : '<div class="empty-state">Transportas dar nepriskirtas.</div>'}
+      ${vehicles.length? vehicles.map(v=>`<div style="padding:6px 0;border-bottom:1px solid var(--border);">${esc(v.name)} ${vehPlateX(v)?'· '+esc(v.plate):''} — ${fmt(v.L*v.W*v.H/1e6,1)} m³, iki ${v.maxWeight} kg</div>`).join('') : '<div class="empty-state">Transportas dar nepriskirtas.</div>'}
     </div>
 
     ${pr && pr.bins ? `
@@ -21904,7 +21913,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v521';
+const APP_VER = 'v522';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -22958,7 +22967,7 @@ async function evLoad(force){
   if(EV.loaded && !force) return;
   if(EV.loading) return EV.loading;
   EV.loading = (async ()=>{
-    try{ const c = JSON.parse(localStorage.getItem('evCache')||'null'); if(c && !EV.loaded){ EV.events = c.events||[]; EV.rentals = c.rentals||[]; evLimit(); } }catch(e){}
+    try{ const c = JSON.parse(localStorage.getItem('evCache')||'null'); if(c && !EV.loaded){ EV.events = c.events||[]; EV.rentals = c.rentals||[]; evLimit(); evVehDedup(EV.events); } }catch(e){}
     const sb = getSb();
     if(!sb){ EV.loaded = true; return; }
     const [e1, e2] = await Promise.all([ sb.from('events').select('id,data'), sb.from('rentals').select('id,data') ]);
@@ -22968,7 +22977,7 @@ async function evLoad(force){
       EV.error = '';
       // keep local edits that are still waiting to be uploaded
       const pendingEv = new Set(Object.keys(evTimers)), pendingR = new Set(Object.keys(rentalTimers));
-      EV.events = (e1.data||[]).map(r=>r.data).filter(Boolean).filter(e=>!pendingEv.has(e.id)).concat(EV.events.filter(e=>pendingEv.has(e.id)));
+      EV.events = (e1.data||[]).map(r=>r.data).filter(Boolean).filter(e=>!pendingEv.has(e.id)).concat(EV.events.filter(e=>pendingEv.has(e.id))); evVehDedup(EV.events);
       EV.rentals = (e2.data||[]).map(r=>r.data).filter(Boolean).filter(r=>!pendingR.has(r.id)).concat(EV.rentals.filter(r=>pendingR.has(r.id)));
       evLimit(); evCacheWrite();
     }
@@ -23195,7 +23204,7 @@ function evPeopleDatalist(){
   dor.innerHTML = evOrgList().map(t=>`<option value="${esc(t)}">`).join('');
   let dv = document.getElementById('dl-vehicles');
   if(!dv){ dv = document.createElement('datalist'); dv.id = 'dl-vehicles'; document.body.appendChild(dv); }
-  dv.innerHTML = STATE.vehicles.map(v=>`<option value="${esc(v.name+(v.plate?' '+v.plate:''))}">`).join('') + ['Nuoma','Kurjeris'].map(x=>`<option value="${x}">`).join('');
+  dv.innerHTML = STATE.vehicles.map(v=>`<option value="${esc(vehLabel(v, ' '))}">`).join('') + ['Nuoma','Kurjeris'].map(x=>`<option value="${x}">`).join('');
   let ds = document.getElementById('dl-suppliers');
   if(!ds){ ds = document.createElement('datalist'); ds.id = 'dl-suppliers'; document.body.appendChild(ds); }
   ds.innerHTML = evOpts().suppliers.map(s=>`<option value="${esc(s.name)}">`).join('');
@@ -39975,7 +39984,7 @@ const VL_CATS = [VL_OIL, 'Techninis aptarnavimas','Remontas','Padangos','Technin
 const VL_SEV = { low:{ label:'Galima važiuoti', cls:'low' }, soon:{ label:'Reikia greitai sutvarkyti', cls:'soon' }, stop:{ label:'Negalima važiuoti', cls:'stop' } };
 function vlCanService(){ return canEdit('fleet'); }
 function vlVeh(id){ return (STATE.vehicles||[]).find(v=>v.id===id); }
-function vlVehName(id, rec){ const v = vlVeh(id); return v ? (v.name||'Automobilis')+(v.plate ? ' ('+v.plate+')' : '') : (rec && rec.vehicle_name) || 'Automobilis'; }
+function vlVehName(id, rec){ const v = vlVeh(id); return v ? (vehPlateX(v) ? (v.name||'Automobilis')+' ('+v.plate+')' : (v.name||'Automobilis')) : (rec && rec.vehicle_name) || 'Automobilis'; }
 function vlMoney(n){ return n==null || n==='' ? '' : fmt(+n, 2)+' €'; }
 function vlFiles(n){ const t = n%10, h = n%100; return n+' '+(t===1 && h!==11 ? 'failas' : t>=2 && t<=9 && (h<12 || h>19) ? 'failai' : 'failų'); }
 function vlKm(n){ return n==null || n==='' ? '' : fmt(+n, 0)+' km'; }
@@ -43021,10 +43030,10 @@ async function vqrOpen(v){
   let token = null;
   try{ token = await vqrToken(v.id, canEdit('fleet')); }catch(e){ toast('QR kodo nepavyko: '+e.message, 6000); return; }
   if(!token){ toast('QR kodą sukurti gali tas, kas redaguoja „Transportą“.'); return; }
-  const url = vqrUrl(token), title = (v.name||'Automobilis') + (v.plate ? ' · '+v.plate : '');
+  const url = vqrUrl(token), title = vehLabel(v);
   openModal(`<div class="row between" style="align-items:center;"><h3 style="margin:0;">QR kodas · ${esc(title)}</h3><button type="button" class="icon-btn" id="vqX">✕</button></div>
     <div class="vqr-box"><canvas id="vqC" aria-label="QR kodas"></canvas>
-      <div class="vqr-t"><b>${esc(v.name||'Automobilis')}</b>${v.plate ? `<span class="fl-plate">${esc(v.plate)}</span>` : ''}<small>Nuskenuok: informacija ir problemos registravimas</small></div></div>
+      <div class="vqr-t"><b>${esc(v.name||'Automobilis')}</b>${vehPlateX(v) ? `<span class="fl-plate">${esc(v.plate)}</span>` : ''}<small>Nuskenuok: informacija ir problemos registravimas</small></div></div>
     <div class="section-sub" style="margin:8px 0;">Šis kodas priskirtas tik šiam automobiliui ir niekada nesikeičia – lipduką užtenka priklijuoti vieną kartą. Nuskenavus atsidaro automobilio puslapis (be prisijungimo): rida, moto valandos, draudimas, tech. apžiūra, vinjetė, tepalo keitimas, profilaktika, žinomos problemos ir mygtukas „Registruoti problemą“. Problema su nuotraukomis ateina į chato kanalą #automobiliai.</div>
     <input type="text" readonly value="${esc(url)}" id="vqU" style="width:100%;font-size:12px;">
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px;">
@@ -43041,7 +43050,7 @@ async function vqrOpen(v){
   document.getElementById('vqP').onclick = ()=>{
     const w = window.open('', '_blank'); if(!w){ toast('Leisk iššokančius langus spausdinimui.'); return; }
     w.document.write(`<!doctype html><meta charset="utf-8"><title>${esc(title)}</title><style>body{font-family:system-ui,sans-serif;display:flex;justify-content:center;padding:20px;}div{border:2px solid #000;border-radius:14px;padding:16px 20px;text-align:center;width:300px;}img{width:250px;height:250px;}b{display:block;font-size:20px;}span{display:inline-block;margin:4px 0;padding:2px 10px;border:2px solid #000;border-radius:5px;font-weight:700;letter-spacing:1px;}small{display:block;font-size:13px;margin-top:6px;}</style>
-      <div><b>${esc(v.name||'Automobilis')}</b>${v.plate ? `<span>${esc(v.plate)}</span>` : ''}<img src="${cv.toDataURL('image/png')}" alt=""><small>Nuskenuok telefonu: informacija apie automobilį ir problemos registravimas</small></div>`);
+      <div><b>${esc(v.name||'Automobilis')}</b>${vehPlateX(v) ? `<span>${esc(v.plate)}</span>` : ''}<img src="${cv.toDataURL('image/png')}" alt=""><small>Nuskenuok telefonu: informacija apie automobilį ir problemos registravimas</small></div>`);
     w.document.close(); setTimeout(()=>{ w.focus(); w.print(); }, 300);
   };
 
@@ -44264,6 +44273,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-13 23:00', v:'v522', k:'fix', t:'Automobilio valst. nr. – tik vieną kartą', f:'Jei automobilio pavadinime jau yra numeris (pvz. „Iveco Daily MPL 840“), jis nebepridedamas antrą kartą: renginio transporto pasirinkimas, Transportas (kortelės, langas, QR), UTA kortelės ir ataskaitos, darbų istorija, chato pranešimai, priminimai. Jau įrašytuose renginiuose „Iveco Daily MPL 840 MPL 840“ rodoma kaip „Iveco Daily MPL 840“ (išsaugoma pataisius renginį). Chato pranešimams iš QR – supabase/sql/vehicle_names.sql.' },
   { d:'2026-10-13 22:20', v:'v521', k:'new', t:'Išlaidos → Kuras: darbo ar asmeniniais tikslais', f:'Pildant kuro išlaidą pasirenkamas tikslas: „Darbo tikslais“ (kaip iki šiol – komentaras būtinas) arba „Asmeniniais tikslais“ (komentaras nebūtinas, nekompensuojama). Asmeninis pylimas UTA kortele – tas pylimas pats pažymimas asmeniniu ir atimamas iš balanso; jei UTA ataskaita dar neįkelta – vėliau prie pylimo spausk „Asmeninis“. Sąraše tokia išlaida pažymėta „Asmeniniais tikslais“. Reikia paleisti supabase/sql/expenses_purpose.sql.' },
   { d:'2026-10-13 21:50', v:'v520', k:'fix', t:'UTA: rodomi tik pakartotiniai pylimai', f:'UTA kortelėse paspaudus įspėjimą apie pakartotinius pylimus rodomi tik tie pylimai (ta pačia kortele per 1 val., o ataskaitose be laiko – tą pačią dieną toje pačioje stotyje), su juostele „Rodyti visus pylimus“ grįžti. UTA „Detali specifikacija“ PDF pylimų laiko neturi (tik datą) – įkeliant tai parašoma; laiką turi UTA portalo Excel / CSV eksportas.' },
   { d:'2026-10-13 21:20', v:'v519', k:'fix', t:'UTA: mygtukas „Sujungti dublikatus“', f:'Transportas → UTA kortelės → „Sujungti dublikatus“: rasti dublikatai (pvz. sena kortelė 0046 ir nauja •••• 0046 9) pažymėti iš karto, galima pasirinkti ir bet kurias dvi korteles ranka. Pylimai, PIN ir priskyrimas pereina į paliekamą kortelę, tie patys pylimai lieka vieną kartą. Dabar atpažįstami ir senų ataskaitų trumpi numeriai (tik paskutiniai skaitmenys) – todėl automatinis sujungimas anksčiau nesuveikė. Veikia ir nepaleidus SQL; supabase/sql/uta_merge.sql atnaujintas (paleidus sujungia viską iškart).' },
