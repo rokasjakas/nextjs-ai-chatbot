@@ -131,12 +131,14 @@ async function readGemini(key: string, b64: string, type: string): Promise<Scan>
     generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", required: ["is_invoice", "total"],
       properties: { is_invoice: { type: "BOOLEAN" }, total: { type: "NUMBER", nullable: true } } } },
   });
-  const studio = () => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(env || "gemini-flash-latest")}:generateContent`, {
+  const studio = (m = env || "gemini-flash-latest") => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(m)}:generateContent`, {
     method: "POST", signal: AbortSignal.timeout(60_000), headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body });
   const vertex = () => fetch(`https://aiplatform.googleapis.com/v1/publishers/google/models/${encodeURIComponent(env && !/latest/.test(env) ? env : "gemini-2.5-flash")}:generateContent?key=${encodeURIComponent(key)}`, {
     method: "POST", signal: AbortSignal.timeout(60_000), headers: { "Content-Type": "application/json" }, body });
   let r = await (vertexKey ? vertex() : studio());
   if (!r.ok && [400, 401, 403, 404].includes(r.status)) { const o = await (vertexKey ? studio() : vertex()).catch(() => null); if (o && o.ok) r = o; }
+  // a model name Google does not know (any more): the next Flash models
+  for (const m of ["gemini-2.5-flash", "gemini-2.0-flash"]) { if (r.ok || r.status !== 404 || vertexKey) break; const o = await studio(m).catch(() => null); if (o) r = o; }
   if (!r.ok) throw new Error("gemini " + r.status + " " + (await r.text()).slice(0, 200));
   const d = await r.json() as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
   return scanOf(JSON.parse((d.candidates?.[0]?.content?.parts || []).map((x) => x.text || "").join("")));

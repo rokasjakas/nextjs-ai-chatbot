@@ -100,6 +100,13 @@ Deno.serve(async (req) => {
     const other = await (vertexKey ? studio(sModel) : vertex(vModel)).catch(() => null);
     if (other && other.ok) { api = other; model = vertexKey ? sModel : vModel; }
   }
+  // a model name Google does not know (any more): the next Flash models
+  if (!api.ok && api.status === 404) {
+    for (const m of ["gemini-2.5-flash", "gemini-2.0-flash"].filter((x) => x !== model)) {
+      const r = await (vertexKey ? vertex(m) : studio(m)).catch(() => null);
+      if (r && r.ok) { api = r; model = m; break; }
+    }
+  }
   if (!api.ok || !api.body) {
     const t = await api.text().catch(() => "");
     console.error("ai-chat", api.status, t.slice(0, 500));
