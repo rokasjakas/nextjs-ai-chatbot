@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-s9eOvFzg/F6fm4uwd+yY6Kn9hlCjFQD0bjfcX3gosH0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-X2J3xSKtDk+PiUW3CDjiULGs7f6MQLWP1XuGX/1UYts=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -3565,6 +3565,8 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .pp-search{flex:1;min-width:200px;}
 .pp-actions{display:flex;gap:8px;}
 .pp-groups,.pp-show{margin:12px 0 8px;}
+.pp-subgroups{margin-top:-2px;padding-left:12px;border-left:3px solid var(--border);}
+.pp-subgroups .chip{font-size:12px;}
 .pp-sec{padding:0;margin-bottom:12px;overflow:hidden;}
 .pp-sec-h{display:flex;align-items:baseline;gap:8px;padding:12px 16px 6px;}
 .pp-sec-h h4{margin:0;}
@@ -22055,7 +22057,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v543';
+const APP_VER = 'v544';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24917,18 +24919,34 @@ function ppMatches(c){
   const digits = PP.q.replace(/\D/g,'');
   return t.every(x=>h.includes(x)) || (digits.length>=4 && ppTel(c.phone).includes(digits));
 }
-function ppGroupChips(list){
-  const groups = ppGroups();
-  const count = g=>g==='' ? list.length : g==='-' ? list.filter(c=>!(c.groups||[]).length).length : list.filter(c=>(c.groups||[]).includes(g)).length;
-  const none = count('-');
-  return `<div class="chipbar pp-groups">${[['','Visi'], ...groups.map(g=>[g,g]), ...(none?[['-','Be grupės']]:[])].map(([v,l])=>`<button type="button" class="chip ${PP.group===v?'active':''} ${PP_GCOLOR[v]?'pp-gchip':''}" ${ppGStyle(v)} data-pgroup="${esc(v)}">${esc(l)} <span class="count-badge">${count(v)}</span></button>`).join('')}</div>`;
+// Garsas / Šviesa / Video split in two: operators (also in „Operatoriai“) and the rest of the techs
+const PP_SUB = { 'Garsas':[['op','A/OP'],['tech','A/TECH']], 'Šviesa':[['op','L/OP'],['tech','L/TECH']], 'Video':[['op','VJ'],['tech','V/TECH']] };
+function ppGBase(v){ return String(v||'').split('|')[0]; }
+function ppGHas(c, v){
+  const gs = c.groups||[]; if(!v) return true; if(v==='-') return !gs.length;
+  const [g, s] = String(v).split('|'); if(!gs.includes(g)) return false; if(!s) return true;
+  return (s==='op') === gs.includes('Operatoriai');
 }
-function ppInGroup(c){ return !PP.group || (PP.group==='-' ? !(c.groups||[]).length : (c.groups||[]).includes(PP.group)); }
+function ppGLabel(v){
+  if(v==='-') return 'Be grupės';
+  const [g, s] = String(v).split('|'), x = s && (PP_SUB[g]||[]).find(k=>k[0]===s);
+  return x ? `${g} · ${x[1]}` : g;
+}
+function ppGroupChips(list){
+  const groups = ppGroups(), base = ppGBase(PP.group);
+  const count = g=>list.filter(c=>ppGHas(c, g)).length;
+  const none = count('-');
+  const chip = (v, l, on)=>`<button type="button" class="chip ${on?'active':''} ${PP_GCOLOR[ppGBase(v)]?'pp-gchip':''}" ${ppGStyle(ppGBase(v))} data-pgroup="${esc(v)}">${esc(l)} <span class="count-badge">${count(v)}</span></button>`;
+  const subs = PP_SUB[base] && groups.includes(base) ? `<div class="chipbar pp-groups pp-subgroups">${[[base, 'Visi'], ...PP_SUB[base].map(([k, l])=>[base+'|'+k, l])].map(([v, l])=>chip(v, l, PP.group===v)).join('')}</div>` : '';
+  return `<div class="chipbar pp-groups">${[['','Visi'], ...groups.map(g=>[g,g]), ...(none?[['-','Be grupės']]:[])].map(([v,l])=>chip(v, l, base===v)).join('')}</div>${subs}`;
+}
+function ppInGroup(c){ return ppGHas(c, PP.group); }
 // sections by group (a person in two groups is shown in both)
 function ppSections(list){
-  if(PP.group) return [{ title: PP.group==='-' ? 'Be grupės' : PP.group, list }];
-  const out = ppGroups().map(g=>({ title:g, list:list.filter(c=>(c.groups||[]).includes(g)) }));
-  out.push({ title:'Be grupės', list:list.filter(c=>!(c.groups||[]).length) });
+  const split = g=>PP_SUB[g] ? PP_SUB[g].map(([k])=>({ title:ppGLabel(g+'|'+k), g, list:list.filter(c=>ppGHas(c, g+'|'+k)) })) : [{ title:g, g, list:list.filter(c=>ppGHas(c, g)) }];
+  if(PP.group) return PP.group==='-' ? [{ title:'Be grupės', g:'-', list }] : PP.group.includes('|') ? [{ title:ppGLabel(PP.group), g:ppGBase(PP.group), list }] : split(PP.group).filter(s=>s.list.length);
+  const out = ppGroups().flatMap(split);
+  out.push({ title:'Be grupės', g:'-', list:list.filter(c=>!(c.groups||[]).length) });
   return out.filter(s=>s.list.length);
 }
 function ppSort(list){ return ppQSort(list.slice().sort((a,b)=>ppName(a).natCmp(ppName(b)))); }
@@ -24992,8 +25010,8 @@ function ppRenderArchive(box){
   box.innerHTML = `${ppGroupChips(all)}
     ${!PP.contacts.length ? `<div class="card"><div class="empty-state">Kontaktų dar nėra. Spausk „+ Naujas kontaktas“${canEdit('people')?' arba „Importuoti“ — bus paimti žmonės iš renginių sąrašų ir narių':''}.</div></div>`
       : !list.length ? `<div class="card"><div class="empty-state">Nieko nerasta.</div></div>`
-      : ppSections(list).map(s=>`<div class="card pp-sec" ${ppGStyle(s.title)}><div class="pp-sec-h"><h4>${esc(s.title)}</h4><span class="section-sub">${s.list.length}</span></div>
-          <div class="pp-rows">${ppRank(s.list, s.title).map(c=>ppRowHtml(c)).join('')}</div></div>`).join('')}`;
+      : ppSections(list).map(s=>`<div class="card pp-sec" ${ppGStyle(s.g)}><div class="pp-sec-h"><h4>${esc(s.title)}</h4><span class="section-sub">${s.list.length}</span></div>
+          <div class="pp-rows">${ppRank(s.list, s.g).map(c=>ppRowHtml(c)).join('')}</div></div>`).join('')}`;
   box.querySelectorAll('[data-pedit]').forEach(b=>b.onclick = e=>{ if(e.target.closest('[data-pact]')) return; ppContactModal(PP.contacts.find(c=>c.id===b.dataset.pedit)); });
   ppBindActions(box);
 }
@@ -25030,7 +25048,7 @@ function ppMail(c){
 }
 function ppContactModal(c){
   const isNew = !c;
-  c = c ? JSON.parse(JSON.stringify(c)) : { id:uid('ct'), first:'', last:'', groups: PP.group && PP.group!=='-' ? [PP.group] : [], email:'', phone:'', address:'', note:'', createdAt:new Date().toISOString() };
+  c = c ? JSON.parse(JSON.stringify(c)) : { id:uid('ct'), first:'', last:'', groups: PP.group && PP.group!=='-' ? [ppGBase(PP.group), ...(PP.group.endsWith('|op') ? ['Operatoriai'] : [])] : [], email:'', phone:'', address:'', note:'', createdAt:new Date().toISOString() };
   const ro = !canEdit('people');
   const groups = ()=>ppGroups().concat((c.groups||[]).filter(g=>!ppGroups().includes(g)));
   openModal(`<h3>${isNew ? 'Naujas kontaktas' : esc(ppName(c))}</h3>
@@ -25237,8 +25255,8 @@ function ppRenderBooking(box){
     <div class="chipbar pp-show">${[['all','Visi'],['new','Dar neskambinta'],['sutiko','Sutiko'],['atsisake','Atsisakė'],['negali','Negali'],['neatsiliepe','Neatsiliepė'],['placiau','Kita']].map(([v,l])=>`<button type="button" class="chip ${PP.show===v?'active':''}" data-pshow="${v}">${l}${v!=='all'?` <span class="count-badge">${cnt(v)}</span>`:''}</button>`).join('')}</div>
     ${!PP.contacts.length ? `<div class="card"><div class="empty-state">Archyve dar nėra kontaktų. Pirma juos pridėk skiltyje „Archyvas“.</div></div>`
       : !list.length ? `<div class="card"><div class="empty-state">Nieko nerasta.</div></div>`
-      : ppSections(list).map(s=>`<div class="card pp-sec" ${ppGStyle(s.title)}><div class="pp-sec-h"><h4>${esc(s.title)}</h4><span class="section-sub">${s.list.length}</span></div>
-        <div class="pp-rows">${ppCalledLast(ppRank(s.list, s.title), dayCalls).map(c=>ppBookRowHtml(c, dayCalls)).join('')}</div></div>`).join('')}`;
+      : ppSections(list).map(s=>`<div class="card pp-sec" ${ppGStyle(s.g)}><div class="pp-sec-h"><h4>${esc(s.title)}</h4><span class="section-sub">${s.list.length}</span></div>
+        <div class="pp-rows">${ppCalledLast(ppRank(s.list, s.g), dayCalls).map(c=>ppBookRowHtml(c, dayCalls)).join('')}</div></div>`).join('')}`;
   box.querySelectorAll('[data-pedit]').forEach(b=>b.onclick = e=>{ if(e.target.closest('[data-pact],button')) return; ppContactModal(PP.contacts.find(c=>c.id===b.dataset.pedit)); });
   const dIn = document.getElementById('ppDate'), dTo = document.getElementById('ppDateTo');
   if(dIn) dIn.onchange = e=>{ PP.date = e.target.value || ppToday(); if(PP.dateTo && PP.dateTo<=PP.date) PP.dateTo = ''; ppRenderBody(); };
@@ -44918,6 +44936,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-14 14:30', v:'v544', k:'new', t:'Žmonės: Garsas, Šviesa ir Video išskirstyti į operatorius ir techninius', f:'Garsas → A/OP (garso operatoriai) ir A/TECH (visi kiti garso žmonės), Šviesa → L/OP ir L/TECH, Video → VJ ir V/TECH. Operatorius – tas, kuris dar priskirtas grupei „Operatoriai“. Pasirinkus grupę atsiranda jos poskyrių mygtukai, sąraše žmonės rodomi atskirose dalyse (Archyve ir Bookinge).' },
   { d:'2026-10-14 13:30', v:'v543', k:'fix', t:'Kontaktų Excel: Prisijungimai įkeliami greitai ir atskirai', f:'Organizatorių kontaktai ir RENT kompanijos įkeliamos iš karto po žmonių ir po kelis vienu metu (anksčiau – po vieną paskutiniai, užtrukdavo kelias minutes); matyti eiga ir, jei kas nepavyko, kiek ir kodėl. Prisijungimuose naujas mygtukas „Įkelti Excel“ – organizatorių ir RENT kontaktus galima įkelti atskirai (pakartojus – atnaujinami, ne dubliuojami).' },
   { d:'2026-10-14 13:00', v:'v542', k:'new', t:'Kontaktų Excel: freelanceriai, organizatoriai, RENT kompanijos', f:'Žmonės → „Įkelti Excel“ atpažįsta biuro kontaktų failą: „NEW Freelance“ – žmonės pagal skyrius (A → Garsas, L → Šviesa, V/VJ → Video, /OP → Operatoriai, CREW), lygiai L1–L3, teisės, ką gali (rigging, montažas, stagehand…), miestas, „Dirbome“ / BAN, kainos (valandinis / stafkė – mato tik Office+), komentarai; failo duomenys pakeičia esamus, dublikatai sujungiami (skambučių istorija išlieka). „Organizatorių kontaktai“ → Prisijungimai / Organizatorių kontaktai, „RENT kompanijos“ → nauja skiltis Prisijungimai / RENT kompanijos. Telefonai: 86… / 8… / 0… ir 370… → +370… (ir jau esamuose kontaktuose, ir išsaugant). Supabase paleisk supabase/sql/contacts_import.sql.' },
   { d:'2026-10-14 12:00', v:'v541', k:'fix', t:'AI: visada pirmiausia nemokamas Gemini adresas', f:'AI asistentas, dokumentų ir sąskaitų skaitymas visada pirmiausia kreipiasi į nemokamą Gemini API (generativelanguage.googleapis.com), nesvarbu, kaip prasideda raktas; mokamas Vertex AI adresas – tik atsarginis, kai nemokamas raktą atmeta.' },
