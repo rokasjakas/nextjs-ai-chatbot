@@ -58,6 +58,8 @@ needs = collections.OrderedDict()
 
 def person_entry(raw, fillrgb):
     raw = re.sub(r'\s+', ' ', raw).strip()
+    if re.match(r'^[AVL]\d*(?:/(?:OP|CREW))?\??$', raw, re.I):   # only a position ("V2", "L1?") – a free place
+        return {'pos': raw, 'person': '', 'status': ''}
     m = POS_RE.match(raw)
     pos, name = (m.group(1), m.group(2).strip()) if m else ('', raw)
     status = 'gali' if fillrgb == 'FFFF9900' else 'negali' if fillrgb == 'FFFF0000' else 'siulomas' if fillrgb == 'FFB4A7D6' else ''
@@ -127,12 +129,15 @@ def convert_events(ws, tag):
         need = re.sub(r'\s+', ' ', text(ws.cell(r0,3).value)).strip()
         ev_needs = [cat for cat, rx in NEED_CATS if need and re.search(rx, need, re.I)]
         for n in ev_needs: needs.setdefault(n, None)
-        mgr = re.sub(r'\s*\n\s*', ' · ', text(ws.cell(r0,8).value)).strip(' ·')
+        mgr_raw = text(ws.cell(r0,8).value)
+        mo = re.search(r'office[ \t]*:?[ \t]*([^\n]*)', mgr_raw, re.I); mt = re.search(r'tech[ \t]*:?[ \t]*([^\n]*)', mgr_raw, re.I)
+        m_office = re.sub(r'\s*tech\b.*$', '', mo.group(1), flags=re.I).strip(' ,·') if mo else ''; m_tech = (mt.group(1).strip(' ,·') if mt else '')
+        mgr = m_office if (mo or mt) else re.sub(r'\s*\n\s*', ' · ', mgr_raw).strip(' ·')
         out.append({
             'id': ev_id, 'kind': 'event', 'date': date, 'dateEnd': date_end,
             'name': lines[0] if lines else '(be pavadinimo)', 'artist': ' '.join(lines[1:]),
             'needs': ev_needs, 'needsNote': need, 'location': re.sub(r'\s*\n\s*', ', ', text(ws.cell(r0,6).value)),
-            'organizer': re.sub(r'\s*\n\s*', ', ', text(ws.cell(r0,7).value)), 'manager': mgr, 'projectId': None,
+            'organizer': re.sub(r'\s*\n\s*', ', ', text(ws.cell(r0,7).value)), 'manager': mgr, 'managerOffice': mgr, 'managerTech': m_tech, 'projectId': None,
             'times': [{'label': l, 'time': times[l]} for l in TIME_LABELS] + extra,
             'crew': groups, 'logistics': logistics, 'notes': notes,
             'createdAt': f'{date}T00:00:{r0%60:02d}', 'imported': True,
