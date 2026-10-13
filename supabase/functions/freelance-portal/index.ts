@@ -125,7 +125,7 @@ async function readClaude(key: string, b64: string, type: string): Promise<Scan>
 }
 async function readGemini(key: string, b64: string, type: string): Promise<Scan> {
   // a Gemini API key („AIza…“, aistudio.google.com) or a Vertex AI express mode key („AQ.…“, Google Cloud): each its own address
-  const vertexKey = /^AQ\./.test(key), env = Deno.env.get("GEMINI_MODEL") || "";
+  const env = Deno.env.get("GEMINI_MODEL") || "";
   const body = JSON.stringify({
     contents: [{ role: "user", parts: [{ inlineData: { mimeType: type, data: b64 } }, { text: SCAN_PROMPT }] }],
     generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", required: ["is_invoice", "total"],
@@ -135,10 +135,10 @@ async function readGemini(key: string, b64: string, type: string): Promise<Scan>
     method: "POST", signal: AbortSignal.timeout(60_000), headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body });
   const vertex = () => fetch(`https://aiplatform.googleapis.com/v1/publishers/google/models/${encodeURIComponent(env && !/latest/.test(env) ? env : "gemini-2.5-flash")}:generateContent?key=${encodeURIComponent(key)}`, {
     method: "POST", signal: AbortSignal.timeout(60_000), headers: { "Content-Type": "application/json" }, body });
-  let r = await (vertexKey ? vertex() : studio());
-  if (!r.ok && [400, 401, 403, 404].includes(r.status)) { const o = await (vertexKey ? studio() : vertex()).catch(() => null); if (o && o.ok) r = o; }
-  // a model name Google does not know (any more): the next Flash models
-  for (const m of ["gemini-2.5-flash", "gemini-2.0-flash"]) { if (r.ok || r.status !== 404 || vertexKey) break; const o = await studio(m).catch(() => null); if (o) r = o; }
+  // the free Gemini API address first; Vertex AI (Google Cloud) only when that refuses the key
+  let r = await studio();
+  for (const m of ["gemini-2.5-flash", "gemini-2.0-flash"]) { if (r.ok || r.status !== 404) break; const o = await studio(m).catch(() => null); if (o) r = o; }   // an unknown model name
+  if (!r.ok && [400, 401, 403].includes(r.status)) { const o = await vertex().catch(() => null); if (o && o.ok) r = o; }
   if (!r.ok) throw new Error("gemini " + r.status + " " + (await r.text()).slice(0, 200));
   const d = await r.json() as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
   return scanOf(JSON.parse((d.candidates?.[0]?.content?.parts || []).map((x) => x.text || "").join("")));
