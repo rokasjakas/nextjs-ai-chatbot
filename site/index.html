@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-WqYEPSjYNx/9uazh3qZcbWj9Qzo+01Ntx8KePJNKPdc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QXOneQGBlDTRUDccMsRNawkwDHZ5s8cKEjsW5Wb4xj8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -21472,7 +21472,7 @@ function edSoon(){ if(!ED_RAF) ED_RAF = requestAnimationFrame(()=>{ edApplyAll()
    Kiekvieną kartą atidarius programėlę kiekviena suskleidžiama vieta (grupės, skiltys, sąrašai, filtrai)
    pirmą kartą pasirodžiusi suskleidžiama; narys ją gali išskleisti – iki programėlės uždarymo ji lieka taip,
    kaip paliko. Super Admin „Visada išskleista / suskleista“ (redagavimo režime) yra svarbiau.
-   Išjungti: Super Admin → „Visur pradžioje suskleista“. Renginiams ši taisyklė negalioja – jie visada išskleisti. */
+   Išjungti: Super Admin → „Visur pradžioje suskleista“. Renginiams ir Projektams ši taisyklė negalioja – ten lieka taip, kaip narys paliko (iš pradžių išskleista). */
 const AF = { done:new Set(), at:0 };
 const AF_ATTR = ['data-hsfold','data-subtog','data-stkfold','data-stfold','data-gfold','data-fold'];
 function afOn(){ return !uil().noAutoFold; }
@@ -21501,7 +21501,7 @@ function afApply(){
   for(const root of [document.getElementById('main'), document.getElementById('gSide'), ...document.querySelectorAll(ED_POPS)]){
     if(!root || root.classList.contains('hdr-pop')) continue;
     const scope = edRootScope(root);
-    if(scope==='events') continue;   // Renginiai: the events are always shown unfolded (the rule does not apply there)
+    if(scope==='events' || scope==='newproj') continue;   // Renginiai, Projektai: each stays as the member left it (unfolded at first)
     for(const tog of root.querySelectorAll(AF_SEL)){
       if(tog.closest('.ed-ui') || tog.dataset.edlock || tog.matches('input, select, textarea, [role="combobox"]')) continue;
       const k = afKey(tog, scope); if(!k || AF.done.has(k)) continue;
@@ -22109,7 +22109,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v561';
+const APP_VER = 'v562';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24746,8 +24746,8 @@ function evDateCellHtml(ev){
 function evFoldLoad(){
   if(EV.folded) return EV.folded;
   let ids = [];
-  try{ localStorage.removeItem('evFolded'); }catch(e){}   // folded rows are not kept: Renginiai always opens unfolded
-  EV.folded = new Set(ids);
+  try{ ids = JSON.parse(localStorage.getItem('evFolded')||'[]'); }catch(e){}   // as each event was left (folded / open) – so it stays
+  EV.folded = new Set(Array.isArray(ids) ? ids : []);
   return EV.folded;
 }
 function evFoldButtons(){
@@ -24757,7 +24757,7 @@ function evFoldButtons(){
   if(a) a.classList.toggle('hidden', n===ids.length);
   if(b) b.classList.toggle('hidden', n===0);
 }
-function evFoldSave(){}
+function evFoldSave(){ try{ localStorage.setItem('evFolded', JSON.stringify(Array.from(EV.folded).slice(-3000))); }catch(e){} }
 function evIsFolded(ev){ return evFoldLoad().has(ev.id); }
 function evFoldedRowHtml(ev, cols, cls){
   const one = v=>esc(String(v||'').split('\n')[0]);
@@ -45278,6 +45278,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-15 00:30', v:'v562', k:'fix', t:'Renginiai ir Projektai: įsimenama, kas suskleista', f:'Kaip palikai renginį (suskleistą ar išskleistą), taip jis ir lieka grįžus į puslapį ar vėl atidarius programą. Iš pradžių viskas išskleista; taisyklė „Visur pradžioje suskleista“ Renginiams ir Projektams negalioja.' },
   { d:'2026-10-15 00:00', v:'v561', k:'new', t:'Renginiai: dublį (!) galima pažymėti kaip galimą', f:'Paspaudus „!“ prie žmogaus rodomi renginiai, kur jis tą pačią dieną įrašytas, ir prie kiekvieno – „Galima – dirbs abiejuose“ (arba visiems iš karto). Pažymėjus „!“ dingsta abiejuose renginiuose. Jei žmogus tą dieną įrašomas dar į naują renginį, „!“ atsiranda vėl – tik dėl to naujo. Pažymėtus galima atšaukti tame pačiame lange.' },
   { d:'2026-10-14 23:30', v:'v560', k:'fix', t:'Renginiai: aiškus tarpas tarp renginių', f:'Tarp renginių – platus tamsus tarpas (ir su fono paveikslu / stiklo tema), datos langelio viršuje – spalvota juosta (renginys – rožinė, sandėlio darbai – geltona), kad būtų aišku, kur prasideda kitas renginys.' },
   { d:'2026-10-14 23:00', v:'v559', k:'fix', t:'Renginių importas: klaida „ON CONFLICT … second time“', f:'Kai ankstesnio importo renginio numeris sutapdavo su kito renginio numeriu naujame faile (lentelėje pasislinkus eilutėms), importas nutrūkdavo. Dabar renginys atpažįstamas tik pagal dieną ir pavadinimą, o sutapęs numeris pakeičiamas nauju – kitas renginys neperrašomas.' },
