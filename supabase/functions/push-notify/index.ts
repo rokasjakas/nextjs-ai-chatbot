@@ -912,14 +912,14 @@ export function reminderText(t: Task, m: Moment): { title: string; body: string 
 function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
-async function mailTo(to: string[], subject: string, html: string): Promise<string> {
+async function mailTo(to: string[], subject: string, html: string, attachments?: { filename: string; path: string }[]): Promise<string> {
   const key = Deno.env.get("RESEND_API_KEY");
   if (!key || !to.length) return key ? "" : "RESEND_API_KEY nenustatytas";
   const res = await fetch("https://api.resend.com/emails", {
     signal: AbortSignal.timeout(12000),
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: Deno.env.get("REMINDER_FROM") || "Event Solutions <onboarding@resend.dev>", to, subject, html }),
+    body: JSON.stringify({ from: Deno.env.get("REMINDER_FROM") || "Event Solutions <onboarding@resend.dev>", to, subject, html, ...(attachments?.length ? { attachments } : {}) }),
   });
   return res.ok ? "" : `Resend ${res.status}: ${(await res.text()).slice(0, 200)}`;
 }
@@ -1483,6 +1483,73 @@ async function onLeave(uid: string, id: string, ev: string) {
   });
 }
 
+// Išlaidos (sql/expenses_review.sql): the reviewer asks for corrections / an explanation or decides – the member
+// hears it; the member corrects and sends it again – the one who asked hears it (nobody asked: the checkers).
+type Expense = { id: string; user_id: string; user_name: string | null; kind: string; spent_on: string; route: string; reason: string; liters: number | null;
+  km: number | null; amount: number | null; paid: string; status: string; comp: number | null; comp_unit: string | null; review_note: string | null;
+  reviewed_by: string | null; reviewed_name: string | null; receipts: { path: string; name?: string; type?: string }[] | null; purpose?: string | null };
+const EXP_KIND: Record<string, string> = { fuel: "Kuras", food: "Maistas", other: "Kitos" };
+const eur = (n: number | null) => n == null ? "" : Number(n).toLocaleString("lt-LT", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+const expWhat = (e: Expense) => [e.route, e.reason].filter(Boolean).join(" · ") || EXP_KIND[e.kind] || "Išlaida";
+async function expProfile(uid: string) { const [p] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,level,notify_prefs&id=eq.${uid}`); return p; }
+const isPlusP = (p?: Profile & { level?: string }) => !!p && p.role === "admin" && ["plus", "super"].includes(String(p.level || ""));
+const isFuelChecker = (p?: Profile) => !!p && ["admin", "office", "pm"].includes(p.role);
+async function onExpense(uid: string, id: string, ev: string) {
+  const [e] = await db<Expense[]>(`expenses?select=*&id=eq.${encodeURIComponent(id)}`);
+  if (!e) return { error: "Išlaida nerasta" };
+  const me = await expProfile(uid) as Profile & { level?: string };
+  const url = `./?expense=${e.id}`, what = expWhat(e).slice(0, 80), sum = e.amount != null ? " · " + eur(e.amount) : e.liters != null ? ` · ${e.liters} l` : "";
+  if (ev === "resubmit") {
+    if (e.user_id !== uid || e.status !== "new") return { error: "Tik išlaidą pateikęs narys" };
+    let to = e.reviewed_by && e.reviewed_by !== uid ? [e.reviewed_by] : [];
+    if (!to.length) {
+      const q = e.kind === "fuel" ? "role.in.(office,pm,admin)" : "and(role.eq.admin,level.in.(plus,super))";
+      to = (await db<{ id: string }[]>(`profiles?select=id&or=(${q})`)).map((p) => p.id).filter((x) => x !== uid);
+    }
+    return await sendTo(await wantIds(to, "other"), { title: "Išlaida pataisyta: " + what, body: name(me) + sum + " – patikrink", tag: "exp-" + e.id, url, kind: "expense" });
+  }
+  // a decision: only by who made it, and it must be the expense's state now
+  const may = isPlusP(me) || (e.kind === "fuel" && isFuelChecker(me));
+  if (!may || e.reviewed_by !== uid || e.status !== ev) return { error: "Tik sprendimą priėmęs narys" };
+  const head: Record<string, string> = { fix: "Reikia korekcijų pylimui", info: "Paaiškink išlaidą", ok: "Išlaida patvirtinta", rejected: "Išlaida atmesta", paid: "Išlaida apmokama" };
+  const t = (head[ev] || "Išlaida") + ": " + what;
+  const body = (e.review_note ? e.review_note.slice(0, 160) : name(me)) + sum;
+  return await sendTo(await wantIds([e.user_id], "other"), { title: t, body, tag: "exp-" + e.id, url, kind: "expense" });
+}
+// Admin+ „Apmokėti“: a letter to the given addresses – the expense, its receipts (attached), that the company
+// covers it to the member; the expense becomes 'paid'
+async function onExpensePay(uid: string, id: string, to: string[], note: string) {
+  const me = await expProfile(uid) as Profile & { level?: string };
+  if (!isPlusP(me)) return { error: "Tik Admin+ narys" };
+  const [e] = await db<Expense[]>(`expenses?select=*&id=eq.${encodeURIComponent(id)}`);
+  if (!e) return { error: "Išlaida nerasta" };
+  const mails = [...new Set(to.map((x) => String(x).trim().toLowerCase()).filter((x) => /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(x)))].slice(0, 10);
+  if (!mails.length) return { error: "Įrašyk bent vieną el. paštą" };
+  const who = e.user_name || name(await expProfile(e.user_id));
+  const key = env("SUPABASE_SERVICE_ROLE_KEY"), week = 7 * 86400, files: { filename: string; path: string }[] = [];
+  for (const r of (e.receipts || []).slice(0, 10)) {
+    const res = await fetch(`${env("SUPABASE_URL")}/storage/v1/object/sign/expense-files/${String(r.path).split("/").map(encodeURIComponent).join("/")}`, {
+      method: "POST", headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ expiresIn: week }),
+    }).catch(() => null);
+    const j = res && res.ok ? await res.json().catch(() => null) : null;
+    if (j?.signedURL) files.push({ filename: r.name || "kvitas", path: `${env("SUPABASE_URL")}/storage/v1${j.signedURL}` });
+  }
+  const row = (k: string, v: string) => v ? `<tr><td style="padding:6px 12px 6px 0;color:#666;vertical-align:top;">${k}</td><td style="padding:6px 0;"><b>${escHtml(v)}</b></td></tr>` : "";
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;max-width:620px;">
+<div style="font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#e04e6c;font-weight:bold;">Išlaidos kompensavimas</div>
+<h2 style="margin:6px 0 12px;font-size:21px;">${escHtml(who)} · ${escHtml(eur(e.amount) || "")}</h2>
+<p>Ši išlaida patvirtinta ir turi būti <b>padengta įmonės lėšomis</b> – sumą reikia grąžinti ją patyrusiam nariui <b>${escHtml(who)}</b>.</p>
+${note.trim() ? `<div style="padding:12px 14px;background:#f5f5f7;border-radius:8px;white-space:pre-wrap;margin:10px 0;">${escHtml(note.trim())}</div>` : ""}
+<table style="border-collapse:collapse;margin:10px 0;">${row("Narys", who)}${row("Data", String(e.spent_on).split("-").reverse().join("."))}${row("Rūšis", EXP_KIND[e.kind] || e.kind)}${row("Kam", expWhat(e))}${row("Suma", eur(e.amount))}${row("Apmokėta", e.paid === "own" ? "savais pinigais" : e.paid === "uta" ? "UTA kortele" : e.paid)}</table>
+${files.length ? `<p style="margin:14px 0 6px;">Kvitai / dokumentai (prisegti; nuorodos galioja 7 d.):</p><ul>${files.map((f) => `<li><a href="${f.path}">${escHtml(f.filename)}</a></li>`).join("")}</ul>` : `<p style="color:#888;">Kvitų neprisegta.</p>`}
+<p style="color:#888;font-size:12px;margin-top:20px;">Išsiuntė ${escHtml(name(me))} per Event Solutions programą.</p></div>`;
+  const err = await mailTo(mails, `Išlaidos kompensavimas: ${who} · ${eur(e.amount)} (${String(e.spent_on)})`, html, files);
+  if (err) return { error: err };
+  await db(`expenses?id=eq.${e.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ status: "paid", paid_at: new Date().toISOString(), paid_to: mails, review_note: note.trim() || null, reviewed_by: uid, reviewed_name: name(me), reviewed_at: new Date().toISOString() }) });
+  const sent = await sendTo(await wantIds([e.user_id], "other"), { title: "Išlaida apmokama: " + expWhat(e).slice(0, 80), body: "Įmonė padengs " + eur(e.amount), tag: "exp-" + e.id, url: `./?expense=${e.id}`, kind: "expense" }).catch(() => null);
+  return { mailed: mails.length, files: files.length, sent };
+}
+
 // Renginiai: a member written into an event's crew (or as its manager) is told.
 // The app sends the people it added; the server checks the caller may edit
 // events and that each of them really is in that event now (by name).
@@ -1617,6 +1684,8 @@ Deno.serve(async (req) => {
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
     if (body.kind === "invoice-check") return json(await onInvoiceCheck(uid, String(body.invoice_id ?? ""), body.event === "checked" ? "checked" : "msg", String(body.text ?? ""), body.ok === true));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : body.event === "resend" ? "resend" : "decided"));
+    if (body.kind === "expense") return json(await onExpense(uid, String(body.expense_id ?? ""), ["fix", "info", "ok", "rejected", "resubmit"].includes(body.event) ? body.event : "ok"));
+    if (body.kind === "expense-pay") return json(await onExpensePay(uid, String(body.expense_id ?? ""), Array.isArray(body.to) ? body.to.map(String) : [], String(body.note ?? "").slice(0, 2000)));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
     if (body.kind === "leave") return json(await onLeave(uid, String(body.leave_id ?? ""), ["new", "decided", "cancelled"].includes(body.event) ? body.event : "new"));
     if (body.kind === "event") return json(await onEvent(uid, String(body.event_id ?? ""), Array.isArray(body.users) ? body.users : []));
