@@ -1,7 +1,7 @@
 -- ============================================================
 -- UTA kortelių dublikatų sujungimas
 -- Naujos UTA ataskaitos („Detali specifikacija“) kortelės numerį rašo su kontroliniu skaitmeniu
--- (706000 949837 0046 9), senosios – be jo (…0046). Tai ta pati kortelė: p_drop sujungiama į p_keep –
+-- (706000 949837 0046 9), senosios – be jo arba tik paskutinius skaitmenis (0046). Tai ta pati kortelė: p_drop sujungiama į p_keep –
 -- pylimai, PIN, priskyrimas (jei p_keep nepriskirta), pavadinimas; tie patys pylimai (ta pati diena,
 -- kiekis ir suma) iš abiejų ataskaitų lieka vieną kartą. p_keep gauna pilną (ilgesnį) numerį.
 -- Reikia: uta.sql, uta_pins.sql. Saugu paleisti pakartotinai.
@@ -64,26 +64,32 @@ end $$;
 revoke all on function public.uta_cards_merge(uuid, uuid) from public, anon;
 grant execute on function public.uta_cards_merge(uuid, uuid) to authenticated;
 
--- all such pairs now: one number is the other plus the last check digit; the card given to someone
--- (or the older one) stays
+-- all such pairs now. New reports: the whole number with the check digit (706000 949837 0046 9); older ones:
+-- the whole number without it (7060009498370046) or only its last digits (0046 – when just one card fits).
+-- The card given to someone (or the older one) stays.
 do $$
-declare r record; n int := 0;
+declare r record; n int := 0; done int; k int := 0;
 begin
+  loop   -- again until nothing is left (a merged card may have another pair)
+  done := 0; k := k + 1;
   for r in
-    select distinct on (least(a.id::text, b.id::text), greatest(a.id::text, b.id::text))
-           case when (a.assign_kind <> 'none') <> (b.assign_kind <> 'none') then case when a.assign_kind <> 'none' then a.id else b.id end
-                when a.created_at <= b.created_at then a.id else b.id end as keep,
-           case when (a.assign_kind <> 'none') <> (b.assign_kind <> 'none') then case when a.assign_kind <> 'none' then b.id else a.id end
-                when a.created_at <= b.created_at then b.id else a.id end as drop
-      from public.uta_cards a
-      join public.uta_cards b on a.id <> b.id
-       and length(regexp_replace(a.card_no, '[^0-9]', '', 'g')) >= 12
-       and length(regexp_replace(b.card_no, '[^0-9]', '', 'g')) = length(regexp_replace(a.card_no, '[^0-9]', '', 'g')) + 1
-       and left(regexp_replace(b.card_no, '[^0-9]', '', 'g'), length(regexp_replace(a.card_no, '[^0-9]', '', 'g'))) = regexp_replace(a.card_no, '[^0-9]', '', 'g')
+    with c as (select id, assign_kind, created_at, regexp_replace(card_no, '[^0-9]', '', 'g') d from public.uta_cards),
+    p as (
+      select a.id aid, b.id bid, a.assign_kind ak, b.assign_kind bk, a.created_at ac, b.created_at bc
+        from c a join c b on a.id <> b.id and a.d <> b.d and length(b.d) >= 12 and (
+             (length(a.d) >= 12 and length(b.d) = length(a.d) + 1 and left(b.d, length(a.d)) = a.d)
+          or (length(a.d) between 4 and 8 and right(left(b.d, length(b.d) - 1), length(a.d)) = a.d
+              and (select count(*) from c x where length(x.d) >= 12 and right(left(x.d, length(x.d) - 1), length(a.d)) = a.d) = 1)))
+    select case when (ak <> 'none') <> (bk <> 'none') then case when ak <> 'none' then aid else bid end when ac <= bc then aid else bid end as keep,
+           case when (ak <> 'none') <> (bk <> 'none') then case when ak <> 'none' then bid else aid end when ac <= bc then bid else aid end as drop
+      from p
   loop
     if exists (select 1 from public.uta_cards where id = r.keep) and exists (select 1 from public.uta_cards where id = r.drop) then
-      perform public.uta_cards_merge_do(r.keep, r.drop); n := n + 1;
+      perform public.uta_cards_merge_do(r.keep, r.drop); n := n + 1; done := done + 1;
+      exit;
     end if;
+  end loop;
+  exit when done = 0 or k > 500;
   end loop;
   raise notice 'UTA kortelių sujungta: %', n;
 end $$;

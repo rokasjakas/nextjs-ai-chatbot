@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dw2ilqvYzjsZ9PVmKWX/eQItsjxZTP6vi5eby1c7T7o=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-ZHx+8BrSNKoWs0YR2Q9U4x3OMeLgbifGEeE1IrxYxU4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-FPnHOitgpLXYexBsbhaBZPbjC35SD7valiuEZk+GAgM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-ZHx+8BrSNKoWs0YR2Q9U4x3OMeLgbifGEeE1IrxYxU4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -467,6 +467,7 @@ input.fd-auto{outline:2px solid #3fbf8f;outline-offset:1px;}
 .uta-sum .uta-g.none td{color:var(--text-dim);}
 .uta-days{max-width:220px;white-space:normal;font-size:12.5px;}
 .uta-prod{display:block;white-space:nowrap;}
+.um-list{display:flex;flex-direction:column;gap:4px;max-height:44vh;overflow:auto;} .um-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;} .um-row small{color:var(--text-dim);}
 .uta-imp-kind{display:flex;gap:6px;align-items:center;margin:8px 0 2px;color:var(--ok,#2F9E73);font-weight:700;font-size:13px;} .uta-imp-kind svg{width:16px;height:16px;}
 .uta-inf{min-width:150px;} .uta-inf .uta-ev{font-weight:700;display:block;} .uta-inf .uta-who{color:var(--ok,#2F9E73);} .uta-inf .uta-note.ok{color:var(--ok,#2F9E73);} .uta-inf .uta-note.bad{color:var(--danger);}
 .uta-inf svg{width:13px;height:13px;vertical-align:-2px;} .uta-nb{border:0;background:none;color:var(--text-dim);cursor:pointer;padding:0 2px;}
@@ -8721,21 +8722,69 @@ function utaRangeLabel(){
 // the days of the fills: day numbers within one month, month.day over a longer period
 function utaDaysText(days){ const one = UTA.from.slice(0,7)===UTA.to.slice(0,7), yr = UTA.from.slice(0,4)===UTA.to.slice(0,4); return [...days].sort().map(d=>one ? String(+d.slice(8)) : yr ? d.slice(5).replace('-','.') : d.replace(/-/g,'.')).join(', '); }
 function utaCardById(id){ return id ? UTA.cards.find(c=>c.id===id) : null; }
-// two numbers of the same card: one is the other plus the check digit at the end (706000 949837 0046 9 = 7060009498370046)
+// two numbers of the same card. New UTA reports write the whole number with the check digit (706000 949837 0046 9);
+// older ones: the whole number without it (7060009498370046) or only its last digits (0046)
 function utaSameNo(a, b){
   const x = utaDigits(a), y = utaDigits(b); if(!x || !y) return false; if(x===y) return true;
   const [s1, l1] = x.length < y.length ? [x, y] : [y, x];
-  return s1.length >= 12 && l1.length===s1.length+1 && l1.startsWith(s1);
+  if(s1.length >= 12) return l1.length===s1.length+1 && l1.startsWith(s1);
+  return s1.length >= 4 && s1.length <= 8 && l1.length >= 12 && l1.slice(0, -1).endsWith(s1);
 }
-// cards entered twice that way: [keep, drop] – the one given to someone (or the older one) stays
+const utaKeepFirst = (a, b)=>{ const ka = a.assign_kind!=='none', kb = b.assign_kind!=='none'; return ka!==kb ? (ka ? a : b) : (String(a.created_at||'') <= String(b.created_at||'') ? a : b); };
+// cards entered twice that way: [keep, drop] – the one given to someone (or the older one) stays;
+// a short number (0046) only when exactly one whole number fits it
 function utaDupPairs(){
   const out = [], used = new Set();
   UTA.cards.forEach((a, i)=>UTA.cards.slice(i+1).forEach(b=>{
     if(used.has(a.id) || used.has(b.id) || !utaSameNo(a.card_no, b.card_no) || utaDigits(a.card_no)===utaDigits(b.card_no)) return;
-    const ka = a.assign_kind!=='none', kb = b.assign_kind!=='none';
-    const keep = ka!==kb ? (ka ? a : b) : (String(a.created_at||'') <= String(b.created_at||'') ? a : b);
+    const sh = utaDigits(a.card_no).length < utaDigits(b.card_no).length ? a : b;
+    if(utaDigits(sh.card_no).length < 12 && UTA.cards.filter(c=>c!==sh && utaSameNo(c.card_no, sh.card_no)).length !== 1) return;
+    const keep = utaKeepFirst(a, b);
     out.push([keep, keep===a ? b : a]); used.add(a.id); used.add(b.id); }));
   return out;
+}
+// one card into another: on the server (uta_merge.sql), or here when that is not there yet
+async function utaMergeOne(k, d){
+  const sb = getSb(), r = await sb.rpc('uta_cards_merge', { p_keep:k.id, p_drop:d.id });
+  if(!r.error) return +((r.data||{}).duplicates)||0;
+  if(!/function|schema cache|Could not find/i.test(r.error.message)) throw new Error(r.error.message);
+  const [tk, td] = await Promise.all([sb.from('uta_tx').select('id, tx_date, quantity, amount_gross, amount_net, product').eq('card_id', k.id).limit(20000), sb.from('uta_tx').select('id, tx_date, quantity, amount_gross, amount_net, product').eq('card_id', d.id).limit(20000)]);
+  if(tk.error || td.error) throw new Error((tk.error || td.error).message);
+  const sig = t=>[t.tx_date, (+t.quantity||0).toFixed(2), (+(t.amount_gross!=null ? t.amount_gross : t.amount_net)||0).toFixed(2), String(t.product||'').toLowerCase()].join('|');
+  const have = new Set((tk.data||[]).map(sig)), gone = (td.data||[]).filter(t=>have.has(sig(t))).map(t=>t.id);
+  for(let i = 0; i < gone.length; i += 200){ const x = await sb.from('uta_tx').delete().in('id', gone.slice(i, i+200)); if(x.error) throw new Error(x.error.message); }
+  const mv = await sb.from('uta_tx').update({ card_id:k.id }).eq('card_id', d.id); if(mv.error) throw new Error(mv.error.message);
+  await sb.from('uta_pins').update({ card_id:k.id }).eq('card_id', d.id).then(()=>{}, ()=>{});
+  const longer = utaDigits(d.card_no).length > utaDigits(k.card_no).length ? d.card_no : k.card_no;
+  const del = await sb.from('uta_cards').delete().eq('id', d.id); if(del.error) throw new Error(del.error.message);
+  const up = { card_no:longer, title:k.title || d.title || '', valid_until:k.valid_until || d.valid_until || null, updated_at:new Date().toISOString() };
+  if(k.assign_kind==='none' && d.assign_kind!=='none') Object.assign(up, { assign_kind:d.assign_kind, vehicle_id:d.vehicle_id, vehicle_name:d.vehicle_name, person_id:d.person_id, person_name:d.person_name });
+  const u = await sb.from('uta_cards').update(up).eq('id', k.id); if(u.error) throw new Error(u.error.message);
+  return gone.length;
+}
+// „Sujungti dublikatus“: the pairs found (ticked) and any two cards picked by hand
+function utaMergeDialog(){
+  const pairs = utaDupPairs(), opt = sel=>UTA.cards.map(c=>`<option value="${esc(c.id)}" ${sel===c.id ? 'selected' : ''}>${esc(utaMask(c.card_no)+(c.title ? ' · '+c.title : '')+(c.assign_kind==='person' ? ' · '+(c.person_name||'asmuo') : c.assign_kind==='vehicle' ? ' · '+(c.vehicle_name||'automobilis') : ''))}</option>`).join('');
+  const lab = c=>`<b>${esc(utaMask(c.card_no))}</b>${c.title ? ' '+esc(c.title) : ''}${c.assign_kind==='person' ? ` <small>${esc(c.person_name||'asmuo')}</small>` : c.assign_kind==='vehicle' ? ` <small>${esc(c.vehicle_name||'automobilis')}</small>` : ' <small class="muted">nepriskirta</small>'}`;
+  openModal(`<div class="row between" style="align-items:center;margin-bottom:6px;"><h3 style="margin:0;">Sujungti kortelių dublikatus</h3><button type="button" class="icon-btn" id="umX" aria-label="Uždaryti">✕</button></div>
+    <p class="section-sub" style="margin:0 0 10px;">Pylimai, PIN ir priskyrimas pereina į paliekamą kortelę; ji gauna pilną numerį. Tie patys pylimai iš abiejų ataskaitų lieka vieną kartą.</p>
+    ${pairs.length ? `<div class="wp-sec-h">Rasti dublikatai (${pairs.length})</div><div class="um-list">${pairs.map(([k, d], i)=>`<label class="um-row"><input type="checkbox" data-ump="${i}" checked><span>${lab(d)}</span><span class="muted">→ į →</span><span>${lab(k)}</span></label>`).join('')}</div>` : '<div class="empty-state" style="padding:10px;">Automatiškai dublikatų nerasta – pasirink korteles ranka.</div>'}
+    <div class="wp-sec-h" style="margin-top:12px;">Ranka</div>
+    <div class="grid cols-2" style="gap:10px;"><label class="field">Sujungti šią (dings)<select id="umD"><option value="">—</option>${opt('')}</select></label><label class="field">Į šią (lieka)<select id="umK"><option value="">—</option>${opt('')}</select></label></div>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button type="button" class="btn" id="umNo">Atšaukti</button><button type="button" class="btn primary" id="umGo">Sujungti</button></div>`);
+  document.getElementById('umX').onclick = document.getElementById('umNo').onclick = ()=>closeModal();
+  document.getElementById('umGo').onclick = async e=>{
+    const list = pairs.filter((p, i)=>{ const c = document.querySelector(`[data-ump="${i}"]`); return c && c.checked; });
+    const dI = document.getElementById('umD').value, kI = document.getElementById('umK').value;
+    if(dI || kI){ if(!dI || !kI || dI===kI){ toast('Pasirink dvi skirtingas korteles.'); return; } list.push([UTA.cards.find(c=>c.id===kI), UTA.cards.find(c=>c.id===dI)]); }
+    if(!list.length){ toast('Nieko nepažymėta.'); return; }
+    e.target.disabled = true; e.target.textContent = 'Jungiama…';
+    let ok = 0, dups = 0;
+    try{ for(const [k, d] of list){ dups += await utaMergeOne(k, d); ok++; } }
+    catch(err){ toast('Nepavyko: '+err.message, 7000); }
+    UTA.tx = {}; UTA.x = {}; await utaLoad(true); closeModal(); if(document.getElementById('utaBox')) utaDraw();
+    if(ok) toast(`✓ Sujungta: ${ok}${dups ? ` · ${dups} pasikartojusių pylimų pašalinta` : ''}.`, 6000);
+  };
 }
 // cards given to nobody whose name in the report is a fleet vehicle (AUTO 10, KUE 833 → NET833): given to it
 async function utaAutoAssign(){
@@ -8755,9 +8804,7 @@ async function utaMergeDups(){
   UTA.merging = true;
   let ok = 0, dups = 0, err = '';
   for(const [k, d] of pairs){
-    const r = await getSb().rpc('uta_cards_merge', { p_keep:k.id, p_drop:d.id });
-    if(r.error){ err = /function|schema cache/i.test(r.error.message) ? 'Supabase paleisk supabase/sql/uta_merge.sql' : r.error.message; break; }
-    ok++; dups += +((r.data||{}).duplicates)||0;
+    try{ dups += await utaMergeOne(k, d); ok++; }catch(e){ err = e.message; break; }
   }
   if(ok){ UTA.tx = {}; UTA.x = {}; await utaLoad(true); if(document.getElementById('utaBox')) utaDraw(); }
   if(err) console.warn('uta merge', err); else if(ok) toast(`✓ Sujungti kortelių dublikatai: ${ok}${dups ? ` · ${dups} pasikartojusių pylimų pašalinta` : ''}.`, 6000);
@@ -8768,7 +8815,8 @@ function utaCardFor(no){
   const d = utaDigits(no); if(!d) return null;
   const exact = UTA.cards.find(c=>utaDigits(c.card_no)===d); if(exact) return exact;
   // the same card written with / without its last check digit (new UTA reports: …0046 9, old ones: …0046)
-  const same = UTA.cards.find(c=>utaSameNo(c.card_no, no)); if(same) return same;
+  const same = UTA.cards.filter(c=>utaSameNo(c.card_no, no)); if(same.length===1) return same[0];
+  if(same.length > 1){ const full = same.filter(c=>utaDigits(c.card_no).length >= 12); if(full.length===1) return full[0]; }
   if(/[*xX•]/.test(no) && d.length >= 4){
     const head = String(no).replace(/\s+/g,'').match(/^\d+/), last = d.slice(-4);
     const fit = UTA.cards.filter(c=>{ const cd = utaDigits(c.card_no); return (cd.endsWith(last) || cd.slice(0, -1).endsWith(last)) && (!head || cd.startsWith(head[0])); });
@@ -8853,7 +8901,7 @@ function utaDraw(){
   box.innerHTML = `
     <div class="card">
       <div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><h2 class="section-title" style="margin:0;">💳 UTA kortelės</h2>
-        ${ed ? `<span class="row" style="gap:6px;flex-wrap:wrap;"><button type="button" class="btn small" id="utaNew">+ Nauja kortelė</button>${rrCan() ? '<button type="button" class="btn small" data-rrkind="uta">🔔 Priminimai</button>' : ''}<label class="btn small primary" style="cursor:pointer;">⬆ Įkelti mėnesio ataskaitą<input type="file" id="utaFile" accept=".pdf,.xlsx,.xls,.csv,application/pdf" hidden></label></span>` : ''}</div>
+        ${ed ? `<span class="row" style="gap:6px;flex-wrap:wrap;"><button type="button" class="btn small" id="utaNew">+ Nauja kortelė</button><button type="button" class="btn small" id="utaMerge" title="Ta pati kortelė įvesta du kartus (pvz. 0046 ir 0046 9)">${slIcon('compress')} Sujungti dublikatus${utaDupPairs().length ? ` <span class="exp-tabn">${utaDupPairs().length}</span>` : ''}</button>${rrCan() ? '<button type="button" class="btn small" data-rrkind="uta">🔔 Priminimai</button>' : ''}<label class="btn small primary" style="cursor:pointer;">⬆ Įkelti mėnesio ataskaitą<input type="file" id="utaFile" accept=".pdf,.xlsx,.xls,.csv,application/pdf" hidden></label></span>` : ''}</div>
       <p class="section-sub" style="margin:6px 0 10px;">Kortelę priskirk automobiliui arba žmogui. Mėnesio ataskaitą (PDF, Excel ar CSV iš UTA) įkelk čia – pylimai susirikiuos pagal korteles.</p>
       ${UTA.cards.length ? `<div class="uta-tw"><table class="uta-t"><thead><tr><th>Kortelė</th><th>Kam priskirta</th><th>Galioja iki</th><th>Pastaba</th>${ed ? '<th></th>' : ''}</tr></thead><tbody>
         ${UTA.cards.map(c=>`<tr class="${c.active ? '' : 'off'}"><td><b>${esc(utaMask(c.card_no))}</b>${c.title ? `<small>${esc(c.title)}</small>` : ''}${c.active ? '' : '<small>neaktyvi</small>'}</td><td>${own(c)}</td>
@@ -8873,6 +8921,7 @@ function utaDraw(){
       ${reps.length ? `<div class="uta-reps">${reps.map(r=>`<span class="fl-chip">📄 ${esc(r.file_name||'ataskaita')} · ${r.rows} eil. · ${esc(r.uploaded_by_name||'')} ${esc(grWhen(r.created_at))}${ed ? ` <button type="button" class="uta-rx" data-utarx="${esc(r.id)}" title="Ištrinti šią ataskaitą ir jos eilutes">✕</button>` : ''}</span>`).join('')}</div>` : ''}
     </div>`;
   const nb = document.getElementById('utaNew'); if(nb) nb.onclick = ()=>utaCardForm(null);
+  const mg = document.getElementById('utaMerge'); if(mg) mg.onclick = utaMergeDialog;
   // the same card twice (old report without the check digit, new with it): joined by itself
   if(ed && !UTA.merging && utaDupPairs().length) utaMergeDups();
   else if(ed && !UTA.merging) utaAutoAssign();
@@ -21846,7 +21895,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v518';
+const APP_VER = 'v519';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -44189,6 +44238,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-13 21:20', v:'v519', k:'fix', t:'UTA: mygtukas „Sujungti dublikatus“', f:'Transportas → UTA kortelės → „Sujungti dublikatus“: rasti dublikatai (pvz. sena kortelė 0046 ir nauja •••• 0046 9) pažymėti iš karto, galima pasirinkti ir bet kurias dvi korteles ranka. Pylimai, PIN ir priskyrimas pereina į paliekamą kortelę, tie patys pylimai lieka vieną kartą. Dabar atpažįstami ir senų ataskaitų trumpi numeriai (tik paskutiniai skaitmenys) – todėl automatinis sujungimas anksčiau nesuveikė. Veikia ir nepaleidus SQL; supabase/sql/uta_merge.sql atnaujintas (paleidus sujungia viską iškart).' },
   { d:'2026-10-13 20:40', v:'v518', k:'fix', t:'UTA: kortelių dublikatai sujungiami patys', f:'Naujos UTA ataskaitos kortelės numerį rašo su paskutiniu kontroliniu skaitmeniu (…0046 9), senosios – be jo (…0046). Dabar tai laikoma ta pačia kortele: jau atsiradę dublikatai sujungiami automatiškai (pylimai, PIN, priskyrimas nariui ar automobiliui lieka; tas pats pylimas iš abiejų ataskaitų – vieną kartą), o naujos ataskaitos naujų kortelių nebekuria. UTA pavadinimas su sena valst. nr. (pvz. KUE 833) priskiriamas parko automobiliui su tais pačiais skaitmenimis (NET833), jei toks vienintelis; nepriskirtos kortelės, kurių pavadinimas atitinka parko automobilį, priskiriamos pačios. Reikia paleisti supabase/sql/uta_merge.sql.' },
   { d:'2026-10-13 20:00', v:'v517', k:'new', t:'UTA: mėnesio „Detali specifikacija“ (PDF) įkėlimas', f:'Transportas → UTA kortelės → „Įkelti mėnesio ataskaitą“ dabar atpažįsta UTA „Detali specifikacija“ PDF: kiekviena grupė „Transporto priemonė ID (AUTO 1, KUE 833…) · Kortelės Nr.“ tampa kortele (nauja kortelė pridedama pati ir pavadinama AUTO 1, KUE 833…; jei toks valst. nr. ar pavadinimas yra parke – priskiriama tam automobiliui), iš eilučių paimama data, produktas, stotis, šalis, kvito nr., rida, kiekis ir sumos EUR be PVM / su PVM. Prieš įkeliant – lentelė pagal korteles su sumomis, kurias galima sulyginti su ataskaitos „IŠ VISO“. Šioje ataskaitoje laiko nėra, todėl pakartotiniais pylimais laikomi pylimai ta pačia kortele tą pačią dieną toje pačioje stotyje. Kortelės numeris rodomas kaip ataskaitoje: •••• 0046 9.' },
   { d:'2026-10-13 19:10', v:'v516', k:'fix', t:'Mac programa: diegimas per Terminalą', f:'Jei Mac programa išarchyvavus dingsta ar neatsidaro (macOS blokuoja internetu atsisiųstą Apple nepatvirtintą programą), ją galima įdiegti viena komanda Terminale: ji atsisiunčia programą (Apple M ar Intel – nustato pati), patikrina, įdeda į Programos (Applications) ir atidaro. Komanda su mygtuku „Kopijuoti“ – Mano erdvė → Parsisiųsti → „Diegti per Terminalą“ ir Mac diegimo instrukcijoje.' },
