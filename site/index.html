@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-YOKc7So0l87bjfIpHiNrF8rLq8jkrtDnuyWFyarJgaE=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-BZM4iY2i77deOv7PkeMXkSJTJq811SfFGT8QRQrxru4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-yFP+cMTvInjbiX/F5103POK2tvIGKMR6YDLti/MlAdc=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-BZM4iY2i77deOv7PkeMXkSJTJq811SfFGT8QRQrxru4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -8324,8 +8324,21 @@ async function rvSync(){
     // plates in Sąskaitos → Transporto nuoma: the vehicle with the company that issued the invoice
     try{
       const r = await getSb().rpc('vehrent_invoices', { p_from:calISO(new Date(Date.now()-400*864e5)), p_to:calISO(new Date(Date.now()+60*864e5)) });
-      (r.data||[]).forEach(v=>(v.plates||[]).forEach(p=>{ const pl = utaNorm(p); if(!/^[A-Z]{3}\d{3}$/.test(pl)) return;
+      const owner = new Map();   // plate → the issuer of its newest invoice
+      (r.data||[]).slice().sort((a,b)=>String(a.invoice_date||a.created_at).localeCompare(String(b.invoice_date||b.created_at))).forEach(v=>(v.plates||[]).forEach(p=>{ const pl = utaNorm(p); if(!/^[A-Z]{3}\d{3}$/.test(pl)) return;
+        if(String(v.supplier||'').trim()) owner.set(pl, String(v.supplier).trim());
         if(!plates.has('p:'+pl)) plates.set('p:'+pl, { car:pl.slice(0,3)+' '+pl.slice(3), from:'sąskaitos'+(v.number ? ' '+v.number : '')+(v.supplier ? ' ('+v.supplier+')' : ''), company:String(v.supplier||'').trim(), inv:true }); }));
+      // a vehicle written earlier under another company (from an event): it goes to the one that issued the invoice;
+      // the old name stays in „Kaip rašoma renginiuose“, so the events still find it
+      for(const [pl, sup] of owner){
+        const rv = RV.all.find(x=>utaNorm(x.plate)===pl); if(!rv || rvCompKey(rv.company)===rvCompKey(sup)) continue;
+        const old = String(rv.company||'').trim(), al = String(rv.aliases||'').split(',').map(x=>x.trim()).filter(Boolean);
+        if(old && !al.some(a=>rvCompKey(a)===rvCompKey(old))) al.push(old);
+        const o = RV.list.find(x=>x!==rv && rvCompKey(x.company)===rvCompKey(sup));
+        const upd = Object.assign({ company:sup, aliases:al.join(', ') }, o && !rv.phone && !rv.email ? { contact_name:o.contact_name||rv.contact_name||'', phone:o.phone||'', email:o.email||'' } : {});
+        const u = await getSb().from('rent_vehicles').update(upd).eq('id', rv.id).select().single();
+        if(!u.error && u.data){ Object.assign(rv, u.data); const l = RV.list.find(x=>x.id===rv.id); if(l && l!==rv) Object.assign(l, u.data); RV.moved = (RV.moved||0) + 1; }
+      }
     }catch(e){}
     const add = [];
     // written in the event as „Nuoma“: supplier, plate, kind
@@ -8353,8 +8366,9 @@ async function rvSync(){
       if(r.error){ if(/source|dismissed|column/i.test(r.error.message)){ RV.syncErr = 'Supabase paleisk rent_vehicles2.sql.'; break; } continue; }
       RV.all.push(r.data); RV.list.push(r.data); n++;
     }
-    if(n) rvSort();
-    return n;
+    const moved = RV.moved || 0; RV.moved = 0;
+    if(n || moved) rvSort();
+    return n + moved;
   }catch(e){ return 0; }
   finally{ RV.syncing = false; }
 }
@@ -8511,6 +8525,7 @@ async function rvDocsUpload(r, files){
   rvDocsDraw(r); rvDraw(); toast('✓ Įkelta: '+ltPlural(done.length,'failas','failai','failų'));
 }
 // the rental vehicle of a summary line: the same plate, or a truck whose company / contact / „kaip rašoma“ has that name
+function rvCompKey(c){ return normalizeText(String(c||'').replace(/\b(UAB|MB|IĮ|AB|VšĮ|UAB\.)\b/gi, ' ').replace(/["„“”'«»]/g, ' ')).replace(/\s+/g, ' ').trim(); }
 function rvStems(r){
   const parts = [r.aliases, r.contact_name, String(r.company||'').replace(/\b(UAB|MB|IĮ|AB|VšĮ|UAB\.)\b/gi, ' ')].join(',').split(',');
   const out = new Set();
@@ -19212,13 +19227,15 @@ function rpRentDraw(box, acts){
   if(!RP.inv[ik] || !RP.inv[ik].list){ rpInvLoad().then(()=>{ if(currentTab==='stats' && RP.sub==='rent' && box.isConnected) rpRentDraw(box, acts); }); }
   const D = rpRentData(), evs = new Set(D.rows.filter(r=>!r.inv).map(r=>r.evId)), invErr = (RP.inv[ik] || {}).err || '';
   // the rental's price and contacts (Transportas → Transporto nuoma); the cost: days × price per day
-  D.groups.forEach(g=>{ g.rv = rvFor(g.key); g.cost = g.rv && g.rv.price_day!=null ? g.days.size * +g.rv.price_day : null; });
+  D.groups.forEach(g=>{ g.rv = rvFor(g.key); g.cost = g.rv && g.rv.price_day!=null ? g.days.size * +g.rv.price_day : null;
+    const li = g.rows.filter(r=>r.inv && r.supplier).pop(); g.invSup = li ? li.supplier : '';
+    g.comp = g.invSup || (g.rv && String(g.rv.company||'').trim()) || ''; });
   // by company: every plate / truck of the same company in one line (cost = the sum of theirs)
   if(RP.rentBy==='company'){
     const by = new Map();
     // the rental company, else who issued the invoices
-    D.groups.forEach(g=>{ const c = (g.rv && String(g.rv.company||'').trim()) || [...(g.sups||[])][0] || '', key = c ? 'c:'+normalizeText(c) : g.key;
-      if(!by.has(key)) by.set(key, { key, name: c || g.name, company:!!c, rv:g.rv, vehs:[], rows:[], days:new Set(), evs:new Set(), cost:null, prices:new Set(), inv:0, invN:0, invIds:new Set(), sups:new Set() });
+    D.groups.forEach(g=>{ const c = g.comp || [...(g.sups||[])][0] || '', key = c ? 'c:'+rvCompKey(c) : g.key;
+      if(!by.has(key)) by.set(key, { key, name: c || g.name, company:!!c, rv:g.rv, invSup:c, vehs:[], rows:[], days:new Set(), evs:new Set(), cost:null, prices:new Set(), inv:0, invN:0, invIds:new Set(), sups:new Set() });
       const x = by.get(key); if(!g.key.startsWith('s:')) x.vehs.push(g.name); x.inv += g.inv||0; (g.invIds||[]).forEach(i=>x.invIds.add(i)); x.invN = x.invIds.size; (g.sups||[]).forEach(v=>x.sups.add(v)); x.rows.push(...g.rows.map(r=>Object.assign({}, r, { veh:g.name }))); g.days.forEach(d=>x.days.add(d)); g.evs.forEach(e=>x.evs.add(e));
       if(g.cost!=null) x.cost = (x.cost||0) + g.cost; if(g.rv && g.rv.price_day!=null) x.prices.add(+g.rv.price_day); });
     D.groups = [...by.values()].map(x=>Object.assign(x, { rows:x.rows.sort((a,b)=>a.date.localeCompare(b.date)), rv: x.company ? x.rv : x.rv })).sort((a,b)=>(b.cost||0)-(a.cost||0) || b.rows.length-a.rows.length);
@@ -19230,7 +19247,7 @@ function rpRentDraw(box, acts){
     <div class="uta-tot"><span>Nuomotas transportas: <b>${D.rows.length}</b> kart.</span><span>Renginių: <b>${evs.size}</b></span><span>Skirtingų: <b>${D.groups.length}</b></span>${cost ? `<span>Nuomos kaina: <b>${esc(rvMoney(cost))}</b></span>` : ''}${invN ? `<span>Sąskaitos: <b>${invN}</b> · <b>${esc(rvMoney(invSum))}</b></span>` : ''}</div>
     ${D.rows.length ? `<div class="uta-tw"><table class="uta-t uta-sum"><thead><tr><th>Transportas</th><th>Įmonė, kontaktai</th><th>Kartų</th><th>Dienos</th><th>Kaina parai</th><th>Suma</th><th>Sąskaitos</th></tr></thead><tbody>
       ${D.groups.map(g=>`<tr class="uta-g ${RP.open===g.key || RP.q ? 'on' : ''}" data-rpo="${esc(g.key)}"><td><b>${esc(g.name)}</b>${g.vehs ? (g.company ? `<small>${esc(g.vehs.join(', '))}</small>` : '') : g.rv ? `<small>${esc([(RV_KINDS.find(k=>k[0]===g.rv.kind)||[])[2], g.rv.name, g.rv.plate].filter(Boolean).join(' · '))}</small>` : ''}</td>
-        <td>${g.rv && (g.rv.company || contact(g.rv)) ? `<b>${esc(g.rv.company||'')}</b><small>${contact(g.rv)}</small>` : g.sups && g.sups.size ? `<b>${esc([...g.sups].join(', '))}</b><small>pagal sąskaitą</small>` : '<span class="muted">neįrašyta</span>'}${g.rv && !g.vehs && rvDocCount(g.rv.id) ? `<button type="button" class="fl-chip rp-docs" data-rvopen="${esc(g.rv.id)}" title="Nuotraukos ir dokumentai">📎 ${rvDocCount(g.rv.id)}</button>` : ''}</td>
+        <td>${g.invSup && !(g.rv && rvCompKey(g.rv.company)===rvCompKey(g.invSup)) ? `<b>${esc(g.invSup)}</b><small>pagal sąskaitą${g.rv && contact(g.rv) ? ' · '+contact(g.rv) : ''}</small>` : g.rv && (g.rv.company || contact(g.rv)) ? `<b>${esc(g.rv.company||'')}</b><small>${contact(g.rv)}</small>` : g.sups && g.sups.size ? `<b>${esc([...g.sups].join(', '))}</b><small>pagal sąskaitą</small>` : '<span class="muted">neįrašyta</span>'}${g.rv && !g.vehs && rvDocCount(g.rv.id) ? `<button type="button" class="fl-chip rp-docs" data-rvopen="${esc(g.rv.id)}" title="Nuotraukos ir dokumentai">📎 ${rvDocCount(g.rv.id)}</button>` : ''}</td>
         <td>${g.rows.length}<small>${[g.evs.size ? ltPlural(g.evs.size,'renginys','renginiai','renginių') : '', g.invN ? ltPlural(g.invN,'sąskaita','sąskaitos','sąskaitų') : ''].filter(Boolean).join(' · ')}</small></td>
         <td class="uta-days">${!g.days.size ? '—' : esc([...g.days].sort().map(d=>RP.from.slice(0,4)===RP.to.slice(0,4) ? d.slice(5).replace('-','.') : rpWhen(d)).join(', '))}${g.days.size ? `<small>${ltPlural(g.days.size,'diena','dienos','dienų')}</small>` : ''}</td>
         <td>${g.prices ? (g.prices.size ? [...g.prices].sort((a,b)=>a-b).map(rvMoney).map(esc).join(' / ') : '—') : g.rv && g.rv.price_day!=null ? esc(rvMoney(g.rv.price_day))+(g.rv.price_note ? `<small>${esc(g.rv.price_note)}</small>` : '') : '—'}</td>
@@ -21219,7 +21236,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v509';
+const APP_VER = 'v510';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -43392,6 +43409,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-13 13:15', v:'v510', k:'fix', t:'Transporto nuoma: automobilis – to, kas išrašė sąskaitą', f:'Jei automobilis anksčiau (iš renginio) buvo priskirtas kitai įmonei, pvz. „Movie Wheels“, o sąskaitą už jį išrašė „MB Kino Ratai“, automobilis perkeliamas pas sąskaitos išrašytoją (pagal naujausią sąskaitą). Senas pavadinimas lieka „Kaip rašoma renginiuose“, kad renginiuose jis vis tiek būtų atpažintas. Įmonės sujungiamos nepaisant UAB / MB ir kabučių („MB „Kino Ratai““ = „Kino Ratai“).' },
   { d:'2026-10-13 12:30', v:'v509', k:'new', t:'Chatas: narių paieška · Sąskaitos: Transporto nuoma', f:'Chate paieškoje įrašius vardą parodomi ir nariai – paspaudus atsidaro (ar sukuriamas) pokalbis su juo. Sąskaitose nauja rūšis „Transporto nuoma“: įkėlus PDF valstybiniai numeriai nuskaitomi patys (galima pataisyti). Visos tokios sąskaitos (patvirtintos ar ne) iš karto patenka į Ataskaitos → Transporto nuoma: su numeriu – prie to transporto (dar vienas nuomos kartas; naujas transportas sukuriamas Transportas → Transporto nuoma su įmone, kuri išrašė), be numerio – pagal tai, kas išrašė. Nauja stulpelis „Sąskaitos“ ir suma. Reikia paleisti supabase/sql/invoices_vehrent.sql.' },
   { d:'2026-10-13 11:00', v:'v508', k:'new', t:'Pasiūlymai: visi veiksmai matomi, „Peržiūrėti PDF“', f:'Pasiūlymo viršuje nebėra „⋯“ meniu – visi veiksmai matomi iš karto ir sugrupuoti: Išsaugoti (Klientas, Versija, Galutinis), PDF (Peržiūrėti, Parsisiųsti, Be kainų, Siųsti klientui, Į Pasiūlymų PDF) ir Kita (Išversti į EN, Antraštės EN/LT, Kopija, Ištrinti). Nauja – „Peržiūrėti“: PDF atsidaro naujame lange, nieko neparsisiunčiant; „Be kainų“ taip pat atsidaro peržiūrai.' },
   { d:'2026-10-13 10:15', v:'v507', k:'new', t:'Pasiūlymai: nuolaida procentais ir / arba eurais', f:'Kiekvienos skilties nuolaidoje du laukeliai: % ir €. Pvz. skiltis 1000 €, nuolaida 50 % + 100 € → nuolaida 600 € ir šalia parodoma tikroji nuolaida (60 %), suma su nuolaida 400 € + PVM. Galima įrašyti ir tik eurus. Pasiūlymo PDF rodoma bendra nuolaida su tikru procentu (pvz. „Nuolaida 60 %  − 600,00 €“).' },
