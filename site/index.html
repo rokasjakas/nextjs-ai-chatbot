@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-ZZHIfh7JZ7WuwxOIGhr8CgrApNzGHV0os7+xh5/UtWo=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-BZM4iY2i77deOv7PkeMXkSJTJq811SfFGT8QRQrxru4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-j/igEngXbilo6FRX7KXYFghiv8/YGECaPjN0iQcqSBU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-BZM4iY2i77deOv7PkeMXkSJTJq811SfFGT8QRQrxru4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1998,6 +1998,7 @@ button.icon-btn .bi svg,label.icon-btn .bi svg{width:20px;height:20px;stroke-wid
 .od-foot{border-top:1px solid #E3E3E3;padding:6px 22px 7px 19px;}
 .od-fr{display:flex;justify-content:space-between;align-items:center;font-size:8.9px;font-weight:500;min-height:16px;}
 .od-fr b{font-weight:700;}
+.od-discr input{margin:0 2px;} .od-discplus{color:var(--text-faint);margin:0 3px;} .od-discreal{color:var(--text-dim);font-weight:600;font-size:.92em;}
 .od-sumcard{padding:8px 22px 7px 19px;}
 .od-h2{font-size:10px;font-weight:600;margin-bottom:6px;}
 .od-green,.od-green b{color:#1E6641;font-size:10px;}
@@ -21165,7 +21166,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v506';
+const APP_VER = 'v507';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -28871,8 +28872,16 @@ function offerMoney(n){
 function offerNum(v){ const n = parseFloat(String(v==null?'':v).replace(/\s/g,'').replace(',','.')); return isFinite(n) ? n : 0; }
 function offerPlain(n){ const v = Math.round((+n||0)*100)/100; return String(v).replace('.',','); }
 function offerRowSum(r){ return offerNum(r.qty)*offerNum(r.price)*(r.coef===''||r.coef==null ? 1 : offerNum(r.coef)); }
+// a section's discount: % of its sum and / or a sum in € on top of it (50 % and then −100 €);
+// pct – the real discount of the two together
+function offerHasDisc(s){ return !!(offerNum(s.discount) || offerNum(s.discAmt)); }
+function offerSecDisc(s, sum){
+  const disc = Math.max(0, Math.min(sum, sum*offerNum(s.discount)/100 + offerNum(s.discAmt)));
+  return { disc, pct: sum ? disc/sum*100 : 0 };
+}
+const offerPctTxt = p=>offerPlain(Math.round(p*100)/100)+' %';
 function offerTotals(d){
-  const secs = d.sections.map(s=>{ const sum = s.rows.reduce((a,r)=>a+offerRowSum(r),0), disc = sum*offerNum(s.discount)/100; return { sum, disc, net:sum-disc }; });
+  const secs = d.sections.map(s=>{ const sum = s.rows.reduce((a,r)=>a+offerRowSum(r),0), x = offerSecDisc(s, sum); return { sum, disc:x.disc, pct:x.pct, net:sum-x.disc }; });
   const net = secs.reduce((a,x)=>a+x.net,0), vat = net*offerNum(d.vat)/100;
   return { secs, net, vat, gross:net+vat };
 }
@@ -28948,7 +28957,7 @@ function odLines(text){
 /* ---------- the document (edit / print / noprice) ---------- */
 // the offer in English: the fixed words of the document (the texts themselves are translated once – offerTranslateEN)
 const OD_EN = { 'Komercinis pasiūlymas':'Commercial offer', 'Klientas:':'Client:', 'Vardas:':'Contact:', 'Projektas:':'Project:', 'Lokacija:':'Location:', 'Data:':'Date:', 'Iki:':'Until:',
-  '(tęsinys)':'(continued)', 'Pavadinimas':'Description', 'Kiekis':'Qty', 'Kaina':'Price', 'Koef.':'Coef.', 'Suma':'Amount', 'Suma (BE PVM)':'Total (excl. VAT)', 'Nuolaida (%)':'Discount (%)',
+  '(tęsinys)':'(continued)', 'Pavadinimas':'Description', 'Kiekis':'Qty', 'Kaina':'Price', 'Koef.':'Coef.', 'Suma':'Amount', 'Suma (BE PVM)':'Total (excl. VAT)', 'Nuolaida (%)':'Discount (%)', 'Nuolaida':'Discount',
   'Suma su nuolaida':'Total after discount', 'Pasiūlymą paruošė:':'Prepared by:', 'Apžvalga':'Summary', 'Viso Suma (BE PVM)':'Total (excl. VAT)', 'PVM':'VAT', 'VISO SUMA (SU PVM)':'TOTAL (incl. VAT)' };
 const odT = (d, t)=>d && d.lang==='en' ? (OD_EN[t] || t) : t;
 const odU = (d, u)=>d && d.lang==='en' ? ({ 'vnt.':'pcs.', 'kompl.':'set' }[u] || u) : u;
@@ -28999,8 +29008,8 @@ function odSection(d, s, si, mode, rows, cont){
   const last = !rows || rows[rows.length-1]===s.rows[s.rows.length-1];
   const foot = np || !last ? '' : `<div class="od-foot">
       <div class="od-fr"><span>${odT(d,'Suma (BE PVM)')}</span><span>${offerMoney(t.sum)}</span></div>
-      ${ed ? `<div class="od-fr"><span>${odT(d,'Nuolaida (%)')} <input data-disc="${si}" value="${odE(s.discount||'')}" placeholder="0" inputmode="decimal" style="width:44px"></span><span>${offerNum(s.discount) ? '- '+offerMoney(t.disc) : ''}</span></div>` : (offerNum(s.discount) ? `<div class="od-fr"><span>${odT(d,'Nuolaida (%)')} &nbsp;&nbsp; ${odE(offerPlain(offerNum(s.discount)))}%</span><span>- ${offerMoney(t.disc)}</span></div>` : '')}
-      ${offerNum(s.discount) ? `<div class="od-fr"><span>${odT(d,'Suma su nuolaida')}</span><b>${offerMoney(t.net)}</b></div>` : ''}
+      ${ed ? `<div class="od-fr od-discr"><span>${odT(d,'Nuolaida')} <input data-disc="${si}" value="${odE(s.discount||'')}" placeholder="0" inputmode="decimal" style="width:44px" title="Nuolaida procentais"> % <span class="od-discplus">+</span> <input data-discamt="${si}" value="${odE(s.discAmt||'')}" placeholder="0" inputmode="decimal" style="width:64px" title="Dar tiek eurų nuo sumos (po procentų)"> €</span><span class="od-disct">${offerHasDisc(s) ? '- '+offerMoney(t.disc)+(offerNum(s.discAmt) ? ` <small class="od-discreal" title="Tikroji nuolaida">(${offerPctTxt(t.pct)})</small>` : '') : ''}</span></div>` : (offerHasDisc(s) ? `<div class="od-fr"><span>${odT(d,'Nuolaida')} &nbsp;&nbsp; ${odE(offerPctTxt(t.pct))}</span><span>- ${offerMoney(t.disc)}</span></div>` : '')}
+      ${offerHasDisc(s) ? `<div class="od-fr"><span>${odT(d,'Suma su nuolaida')}</span><b>${offerMoney(t.net)}</b></div>` : ''}
     </div>`;
   return `<div class="od-card od-sec" data-sec="${si}">${head}<div class="od-tbl">${cols}${body}${blank}</div>${add}${foot}</div>`;
 }
@@ -29749,7 +29758,7 @@ function ofCompare(A, B, back){
       const t = offerTotals(X.doc).secs[si], yi = ys ? Y.doc.sections.indexOf(ys) : -1, yt = yi>=0 ? tb.secs[yi] : null;
       return `<div class="ov-sec ${ys?'':'ov-new'}"><div class="ov-sh" style="border-left-color:${odE(s.color)}">${odE(s.title)}${ys?'':' <small>(nauja skiltis)</small>'}${gone?` <small class="ov-gone">− ${gone} eil. nėra</small>`:''}</div>
         <table class="ov-t"><tr><th>Pavadinimas</th><th>Kiekis</th><th>Kaina</th><th>Koef.</th><th>Suma</th></tr>${rows || '<tr><td colspan="5" class="section-sub">tuščia</td></tr>'}
-        <tr class="ov-tot"><td colspan="4">Suma${offerNum(s.discount)?' su nuolaida '+odE(s.discount)+'%':''}</td>${cell(offerMoney(t.net), !yt || Math.abs(t.net-yt.net)>0.004)}</tr></table></div>`;
+        <tr class="ov-tot"><td colspan="4">Suma${offerHasDisc(s)?' su nuolaida '+odE(offerPctTxt(t.pct)):''}</td>${cell(offerMoney(t.net), !yt || Math.abs(t.net-yt.net)>0.004)}</tr></table></div>`;
     }).join('');
     return `<div class="ov-col"><div class="ov-colh">${odE(X.label)}</div><table class="ov-t ov-head">${head}</table>${secs}
       <table class="ov-t ov-sumt"><tr><th>Be PVM</th>${cell(offerMoney(ta.net), Math.abs(ta.net-tb.net)>0.004)}</tr><tr><th>Su PVM</th>${cell(offerMoney(ta.gross), Math.abs(ta.gross-tb.gross)>0.004)}</tr></table></div>`;
@@ -29893,9 +29902,9 @@ function offerRefreshNumbers(){
     if(!f) return;
     const rows = f.querySelectorAll('.od-fr');
     rows[0].lastElementChild.textContent = offerMoney(x.sum);
-    rows[1].lastElementChild.textContent = offerNum(s.discount) ? '- '+offerMoney(x.disc) : '';
+    rows[1].lastElementChild.innerHTML = offerHasDisc(s) ? '- '+esc(offerMoney(x.disc))+(offerNum(s.discAmt) ? ` <small class="od-discreal" title="Tikroji nuolaida">(${esc(offerPctTxt(x.pct))})</small>` : '') : '';
     const has = !!rows[2];
-    if(!!offerNum(s.discount) !== has){ clearTimeout(offerRefreshNumbers._t); offerRefreshNumbers._t = setTimeout(()=>offerTouch(true), 700); }
+    if(offerHasDisc(s) !== has){ clearTimeout(offerRefreshNumbers._t); offerRefreshNumbers._t = setTimeout(()=>offerTouch(true), 700); }
     else if(has) rows[2].lastElementChild.textContent = offerMoney(x.net);
   });
   const sum = document.querySelector('#odEdit .od-sumcard'); if(sum){ const r = sum.querySelectorAll('.od-fr'); r[0].lastElementChild.textContent = offerMoney(t.net); r[1].lastElementChild.textContent = offerMoney(t.vat); r[2].lastElementChild.textContent = offerMoney(t.gross); }
@@ -29995,6 +30004,7 @@ function offerEditorBind(){
   root.querySelectorAll('[data-clpick]').forEach(b=>b.onclick = e=>{ e.preventDefault(); clPicker(); });
   root.querySelectorAll('[data-st]').forEach(el=>el.addEventListener('input', ()=>{ d.sections[+el.dataset.st].title = el.value; offerTouch(false); }));
   root.querySelectorAll('[data-disc]').forEach(el=>el.addEventListener('input', ()=>{ d.sections[+el.dataset.disc].discount = el.value; offerTouch(false); }));
+  root.querySelectorAll('[data-discamt]').forEach(el=>el.addEventListener('input', ()=>{ d.sections[+el.dataset.discamt].discAmt = el.value; offerTouch(false); }));
   root.querySelectorAll('[data-row]').forEach(rowEl=>{
     const [si, i] = rowEl.dataset.row.split(':').map(Number), sec = d.sections[si], r = sec.rows[i];
     rowEl.querySelectorAll('[data-f]').forEach(inp=>inp.addEventListener('input', ()=>{ r[inp.dataset.f] = inp.value; if(inp.dataset.f==='name'){ const ln = r.ln || (r.itemId ? (getItem(r.itemId)||{}).name : '');
@@ -43302,6 +43312,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-13 10:15', v:'v507', k:'new', t:'Pasiūlymai: nuolaida procentais ir / arba eurais', f:'Kiekvienos skilties nuolaidoje du laukeliai: % ir €. Pvz. skiltis 1000 €, nuolaida 50 % + 100 € → nuolaida 600 € ir šalia parodoma tikroji nuolaida (60 %), suma su nuolaida 400 € + PVM. Galima įrašyti ir tik eurus. Pasiūlymo PDF rodoma bendra nuolaida su tikru procentu (pvz. „Nuolaida 60 %  − 600,00 €“).' },
   { d:'2026-10-13 09:30', v:'v506', k:'fix', t:'Transportas: tvarkingas ir kompaktiškas automobilio langas', f:'Automobilio lange dokumentai – viena lygi lentelė: Dokumentas | Galioja iki | Failai | Priminti likus (anksčiau – atskiros skirtingo aukščio kortelės, KASKO atskiroje eilutėje). Priminimų nustatymai – vienoje eilutėje. Telefone: automobilio brėžinys ir QR šalia, matmenys po tris eilutėje, kiekvienas dokumentas – dvi eilutės (pavadinimas ir priminimas, data ir failas). Pataisytas „Pašalinti iš parko“ mygtukas.' },
   { d:'2026-10-12 18:00', v:'v505', k:'new', t:'Chatas: ar matė žinutę', f:'Po tavo paskutine žinute – maža, vos matoma žymė: „Išsiųsta“, kol niekas neperskaitė, „Matė“ (asmeniniame pokalbyje), grupėse „Matė 3“ arba „Matė visi“. Užvedus pelę – kas matė. Kai kitas atsako, žymė dingsta. Atsinaujina pati, kol pokalbis atidarytas.' },
   { d:'2026-10-12 17:30', v:'v504', k:'new', t:'Automobilio QR: dokumentai atsidaro', f:'Nuskenavus automobilio QR kodą, „Apie automobilį“ skiltyje prie registracijos liudijimo, draudimo, tech. apžiūros, vinjetės ir KASKO matomi įkelti dokumentai – paspaudus atsidaro pats dokumentas (nuoroda galioja 10 min.). Rodoma ir KASKO galiojimo data.' },
