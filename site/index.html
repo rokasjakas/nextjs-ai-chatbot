@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QXOneQGBlDTRUDccMsRNawkwDHZ5s8cKEjsW5Wb4xj8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-xhcy66FQKRy7ji5bF+sneAmT7h12evtlE22YiKsrKm0=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -2344,6 +2344,7 @@ body.of-pop-open{overflow:hidden;}
 .sk-find input{flex:1;min-width:0;background:none !important;border:0 !important;box-shadow:none !important;color:var(--text);padding:7px 0 !important;font-size:13.5px;outline:none;}
 .sk-find-big{margin:12px 16px;}
 .sk-scroll{flex:1;overflow-y:auto;min-height:0;padding:0 8px 12px;overscroll-behavior:contain;}
+.sk-sec-n{font-weight:400;opacity:.6;margin-left:4px;font-size:11px;}
 .sk-sec{margin-top:6px;}
 .sk-sec-h{display:flex;align-items:center;gap:4px;background:none;border:0;color:var(--sk-dim);font:inherit;font-size:14px;font-weight:600;padding:5px 8px;cursor:pointer;border-radius:6px;width:100%;text-align:left;}
 .sk-sec-h:hover{background:rgb(var(--hi-rgb) / .05);}
@@ -22109,7 +22110,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v562';
+const APP_VER = 'v563';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -34596,13 +34597,28 @@ function chatItem(c){
     ${un ? `<b class="tm-badge">${c.unread}</b>` : ''}
   </button>`;
 }
+// a channel made for an event: its year and date (from Renginiai; the list is loaded quietly when not yet)
+function chatEventYears(){
+  if(!EV.loaded && !chatEventYears.ask && typeof canView==='function' && canView('events')){ chatEventYears.ask = true; evLoad().then(()=>{ if(currentTab==='chat') chatRenderList(); }).catch(()=>{}); }
+  const map = {}, dates = {};
+  (EV.events||[]).forEach(ev=>{ if(ev && ev.chatId && ev.date && !ev.deletedAt){ map[ev.chatId] = ev.date.slice(0, 4); dates[ev.chatId] = ev.date; } });
+  ((typeof HV!=='undefined' && HV.list) || []).forEach(h=>{ if(h && h.chatId && !map[h.chatId]){ const d = h.date || h.issueDate || ''; if(/^\d{4}-/.test(d)){ map[h.chatId] = d.slice(0, 4); dates[h.chatId] = d; } } });
+  chatEventYears.dates = dates;
+  return map;
+}
+function chatEventDate(c){ return (chatEventYears.dates||{})[c.id] || ''; }
 function chatSideHome(){
   if(!TEAM.convLoaded) return chatSideHead('Event Solutions')+'<div class="empty-state">Kraunama…</div>';
   const q = normalizeText(TEAM.sideQ);
   const match = c=>!q || normalizeText(chatTitle(c)).includes(q);
   // the general channel first, the locked (private) ones – #automobiliai, #sandėlio-raktas… – always at the bottom
   const chRank = c=>c.kind==='general' ? 0 : chatPrivate(c) ? 2 : 1;
-  const chans = TEAM.convs.filter(c=>chatIsChannel(c) && !c.archived_at && match(c)).sort((a,b)=>chRank(a)-chRank(b) || chatTitle(a).natCmp(chatTitle(b)));
+  const allCh = TEAM.convs.filter(c=>chatIsChannel(c) && !c.archived_at && match(c));
+  // the events' channels („#10-20-pavadinimas“) apart, by the event's year: „Renginiai 2026“, „Renginiai 2027“…
+  const evYear = chatEventYears(), yearOf = c=>evYear[c.id] || '';
+  const chans = allCh.filter(c=>!yearOf(c)).sort((a,b)=>chRank(a)-chRank(b) || chatTitle(a).natCmp(chatTitle(b)));
+  const years = [...new Set(allCh.map(yearOf).filter(Boolean))].sort();
+  const thisY = String(new Date().getFullYear());
   const dms = TEAM.convs.filter(c=>chatIsDM(c) && match(c)).sort((a,b)=>String(b.last_message_at).localeCompare(String(a.last_message_at)));
   const sec = (key, title, body, foot)=>`<div class="sk-sec ${TEAM.collapsed[key]?'shut':''}"><button class="sk-sec-h" data-sec="${key}"><span class="sk-caret">▾</span>${title}</button><div class="sk-sec-b">${body}${foot||''}</div></div>`;
   // searching a name: the members too – a tap opens (or starts) a conversation with them
@@ -34616,6 +34632,10 @@ function chatSideHome(){
     + '<div class="sk-scroll">'
     + sec('ch', 'Kanalai', chans.map(chatItem).join('') || '<div class="sk-none">Kanalų nerasta</div>',
         `<button class="sk-item sk-add" data-act="newch"><span class="sk-item-ic">${SK_ICON.plus}</span><span class="sk-item-t">Pridėti kanalą</span></button><button class="sk-item sk-add" data-act="browse"><span class="sk-item-ic">${SK_ICON.search}</span><span class="sk-item-t">Naršyti visus kanalus</span></button>`)
+    + years.map(y=>{ const k = 'evy'+y; if(TEAM.collapsed[k]==null) TEAM.collapsed[k] = y < thisY;   // past years folded at first
+        const list = allCh.filter(c=>yearOf(c)===y).sort((a,b)=>(chatEventDate(a)||chatTitle(a)).localeCompare(chatEventDate(b)||chatTitle(b)) || chatTitle(a).natCmp(chatTitle(b)));
+        const un = list.reduce((n, c)=>n + (c.unread && c.id!==TEAM.open ? c.unread : 0), 0);
+        return sec(k, `Renginiai ${y} <small class="sk-sec-n">${list.length}</small>${un ? ` <b class="tm-badge">${un}</b>` : ''}`, list.map(chatItem).join('')); }).join('')
     + (people.length ? sec('ppl', 'Nariai', peopleHtml) : '')
     + sec('dm', 'Tiesioginės žinutės', dms.map(chatItem).join('') || '<div class="sk-none">Pokalbių nėra</div>',
         `<button class="sk-item sk-add" data-act="newdm"><span class="sk-item-ic">${SK_ICON.plus}</span><span class="sk-item-t">Nauja žinutė</span></button>`)
@@ -45278,6 +45298,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-15 01:00', v:'v563', k:'new', t:'Chatas: renginių kanalai sugrupuoti pagal metus', f:'Renginių (ir išdavimų) kanalai atskirti nuo kitų kanalų ir sudėti į grupes „Renginiai 2026“, „Renginiai 2027“… – kiekvienoje pagal renginio datą, su kanalų ir neskaitytų žinučių skaičiumi. Praėjusių metų grupės iš pradžių suskleistos.' },
   { d:'2026-10-15 00:30', v:'v562', k:'fix', t:'Renginiai ir Projektai: įsimenama, kas suskleista', f:'Kaip palikai renginį (suskleistą ar išskleistą), taip jis ir lieka grįžus į puslapį ar vėl atidarius programą. Iš pradžių viskas išskleista; taisyklė „Visur pradžioje suskleista“ Renginiams ir Projektams negalioja.' },
   { d:'2026-10-15 00:00', v:'v561', k:'new', t:'Renginiai: dublį (!) galima pažymėti kaip galimą', f:'Paspaudus „!“ prie žmogaus rodomi renginiai, kur jis tą pačią dieną įrašytas, ir prie kiekvieno – „Galima – dirbs abiejuose“ (arba visiems iš karto). Pažymėjus „!“ dingsta abiejuose renginiuose. Jei žmogus tą dieną įrašomas dar į naują renginį, „!“ atsiranda vėl – tik dėl to naujo. Pažymėtus galima atšaukti tame pačiame lange.' },
   { d:'2026-10-14 23:30', v:'v560', k:'fix', t:'Renginiai: aiškus tarpas tarp renginių', f:'Tarp renginių – platus tamsus tarpas (ir su fono paveikslu / stiklo tema), datos langelio viršuje – spalvota juosta (renginys – rožinė, sandėlio darbai – geltona), kad būtų aišku, kur prasideda kitas renginys.' },
