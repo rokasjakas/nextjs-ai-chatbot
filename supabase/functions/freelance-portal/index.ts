@@ -124,15 +124,19 @@ async function readClaude(key: string, b64: string, type: string): Promise<Scan>
   return scanOf(JSON.parse(text));
 }
 async function readGemini(key: string, b64: string, type: string): Promise<Scan> {
-  const model = Deno.env.get("GEMINI_MODEL") || "gemini-flash-latest";
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-    method: "POST", signal: AbortSignal.timeout(60_000), headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ inline_data: { mime_type: type, data: b64 } }, { text: SCAN_PROMPT }] }],
-      generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", required: ["is_invoice", "total"],
-        properties: { is_invoice: { type: "BOOLEAN" }, total: { type: "NUMBER", nullable: true } } } },
-    }),
+  // a Gemini API key („AIza…“, aistudio.google.com) or a Vertex AI express mode key („AQ.…“, Google Cloud): each its own address
+  const vertexKey = /^AQ\./.test(key), env = Deno.env.get("GEMINI_MODEL") || "";
+  const body = JSON.stringify({
+    contents: [{ role: "user", parts: [{ inlineData: { mimeType: type, data: b64 } }, { text: SCAN_PROMPT }] }],
+    generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", required: ["is_invoice", "total"],
+      properties: { is_invoice: { type: "BOOLEAN" }, total: { type: "NUMBER", nullable: true } } } },
   });
+  const studio = () => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(env || "gemini-flash-latest")}:generateContent`, {
+    method: "POST", signal: AbortSignal.timeout(60_000), headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body });
+  const vertex = () => fetch(`https://aiplatform.googleapis.com/v1/publishers/google/models/${encodeURIComponent(env && !/latest/.test(env) ? env : "gemini-2.5-flash")}:generateContent?key=${encodeURIComponent(key)}`, {
+    method: "POST", signal: AbortSignal.timeout(60_000), headers: { "Content-Type": "application/json" }, body });
+  let r = await (vertexKey ? vertex() : studio());
+  if (!r.ok && [400, 401, 403, 404].includes(r.status)) { const o = await (vertexKey ? studio() : vertex()).catch(() => null); if (o && o.ok) r = o; }
   if (!r.ok) throw new Error("gemini " + r.status + " " + (await r.text()).slice(0, 200));
   const d = await r.json() as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
   return scanOf(JSON.parse((d.candidates?.[0]?.content?.parts || []).map((x) => x.text || "").join("")));

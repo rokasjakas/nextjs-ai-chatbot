@@ -10,7 +10,8 @@
 //   the picture goes with the last question (e.g. Transportas: read a document's end date; pictures and PDF)
 //
 // Only a signed-in, approved member may ask (the public anon key alone is not enough).
-//   GEMINI_API_KEY    aistudio.google.com → Get API key   (GEMINI_MODEL, default gemini-flash-latest)
+//   GEMINI_API_KEY    aistudio.google.com → Get API key („AIza…“, GEMINI_MODEL default gemini-flash-latest)
+//                     or a Vertex AI express mode key from Google Cloud („AQ.…“, default gemini-2.5-flash)
 //   Supabase → Edge Functions → Secrets (or: supabase secrets set GEMINI_API_KEY=…)
 // Deploy:  supabase functions deploy ai-chat
 // On free plans the service may use the questions to improve its models – the card says so.
@@ -80,21 +81,32 @@ Deno.serve(async (req) => {
     img = { mime, data: body.image.data.replace(/\s+/g, "") };
   }
 
-  const model = E("GEMINI_MODEL") || "gemini-flash-latest";
-  const api = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": E("GEMINI_API_KEY") },
-    body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] },
-      contents: img ? turns.map((t, i) => i === turns.length - 1 ? { role: t.role, parts: [...t.parts, { inline_data: { mime_type: img!.mime, data: img!.data } }] } : t) : turns,
-      generationConfig: { maxOutputTokens: 4096 } }),
-  });
+  // two kinds of keys: a Gemini API key from aistudio.google.com („AIza…“) and a Vertex AI key from Google Cloud
+  // (express mode, „AQ.…“) – each has its own address; the other one is tried when the first refuses
+  const key = E("GEMINI_API_KEY"), vertexKey = /^AQ\./.test(key);
+  const payload = JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] },
+    contents: img ? turns.map((t, i) => i === turns.length - 1 ? { role: t.role, parts: [...t.parts, { inlineData: { mimeType: img!.mime, data: img!.data } }] } : t) : turns,
+    generationConfig: { maxOutputTokens: 4096 } });
+  const studio = (m: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(m)}:streamGenerateContent?alt=sse`, {
+    method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: payload });
+  const vertex = (m: string) => fetch(`https://aiplatform.googleapis.com/v1/publishers/google/models/${encodeURIComponent(m)}:streamGenerateContent?alt=sse&key=${encodeURIComponent(key)}`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: payload });
+  // Vertex AI has no „…-latest“ names: a fixed model there
+  const vModel = E("GEMINI_MODEL") && !/latest/.test(E("GEMINI_MODEL")) ? E("GEMINI_MODEL") : "gemini-2.5-flash";
+  const sModel = E("GEMINI_MODEL") || "gemini-flash-latest";
+  let model = vertexKey ? vModel : sModel;
+  let api = await (vertexKey ? vertex(model) : studio(model));
+  if (!api.ok && [400, 401, 403, 404].includes(api.status)) {
+    const other = await (vertexKey ? studio(sModel) : vertex(vModel)).catch(() => null);
+    if (other && other.ok) { api = other; model = vertexKey ? sModel : vModel; }
+  }
   if (!api.ok || !api.body) {
     const t = await api.text().catch(() => "");
     console.error("ai-chat", api.status, t.slice(0, 500));
     // Google's own reason, so the cause is seen in the app (the key itself is never in it)
     let why = "", reason = "";
     try { const j = JSON.parse(t)?.error ?? {}; why = String(j.message ?? ""); reason = String((j.details ?? []).map((d: { reason?: string }) => d?.reason ?? "").filter(Boolean)[0] ?? j.status ?? ""); } catch { /* not JSON */ }
-    const hint = /SERVICE_DISABLED|has not been used|is disabled/i.test(why + reason) ? " – Google Cloud projekte įjunk „Generative Language API“ (arba susikurk raktą aistudio.google.com)."
+    const hint = /SERVICE_DISABLED|has not been used|is disabled/i.test(why + reason) ? (vertexKey ? " – Google Cloud projekte įjunk „Vertex AI API“ (APIs & Services → Library)." : " – Google Cloud projekte įjunk „Generative Language API“ (arba susikurk raktą aistudio.google.com).")
       : /API_KEY_HTTP_REFERRER_BLOCKED|referer|referrer/i.test(why + reason) ? " – rakte nuimk „Application restrictions“ (svetainių / referrer apribojimą): serveris jo nesiunčia."
       : /API_KEY_IP_ADDRESS_BLOCKED|IP address/i.test(why + reason) ? " – rakte nuimk IP adresų apribojimą."
       : /API_KEY_SERVICE_BLOCKED|blocked/i.test(why + reason) ? " – rakto „API restrictions“ turi leisti „Generative Language API“."
