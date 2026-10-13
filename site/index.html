@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-qfZmYqjV5db3rgtTHJOOFkyhWrkpKj3RBU2Rt4ltnwY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-NU0UTyUrtY/j6xhs8GeC2cd7YhYOieLoIyG95jESO6o=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Rq6qt4wKJEbxm4we68439gGYgPXQ6VMSyOWF0asSI58=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-RngC5dTu5QUmJTY6Byg/Q5dRKZD43NoCQzTiTggJQp4=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -21913,7 +21913,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v522';
+const APP_VER = 'v523';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25773,7 +25773,8 @@ function lmHtml(L){
     out.push(`<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:16px;min-width:520px;">
       <tr><td colspan="4" style="${TH}">TRANSPORTAS</td></tr>
       ${tr.map(t=>`<tr><td style="${TD}text-align:center;">${esc(t.label||'').replace(/\s(\d+ d\.)$/, '<br>$1')}</td><td style="${TD}text-align:center;font-weight:bold;">${lmLines(t.cars).map(esc).join('<br>')}</td><td style="${TD}">Vairuoja:</td><td style="${TD}text-align:center;font-weight:bold;">${lmLines(t.drivers).map(esc).join('<br>')}</td></tr>`).join('')}
-    </table>${L.transportNote ? `<div style="font-style:italic;margin-top:4px;">${esc(L.transportNote)}</div>` : ''}`);
+    </table>${L.transportNote ? `<div style="font-style:italic;margin-top:4px;">${esc(L.transportNote)}</div>` : ''}
+    ${L.fuelUrl ? `<div style="margin-top:8px;"><a href="${esc(L.fuelUrl)}" style="font-weight:bold;">Kuro kortelė</a> – nufotografuok UTA kortelės priekį ir galą telefonu ir pamatysi jos PIN kodą (veikia renginio dienomis).</div>` : ''}`);
   }
   const lead = L.lead ? people.find(p=>p.where.has('lead')) : null;
   const byDept = LM_DEPTS.map(d=>({ d, list:people.filter(p=>p.where.has('team') && (p.dept||'Kita')===d) })).filter(x=>x.list.length);
@@ -25821,7 +25822,7 @@ function lmText(L){
   out.push('Renginio lokacija: '+(L.evLoc||''));
   (L.stays||[]).filter(s=>s.addr||s.people).forEach((s,i)=>out.push('', `${i+1}. Adresas: ${[s.title,s.addr].filter(Boolean).join(', ')}`, s.people?'   Lovos: '+s.people:'', s.resp?'   Atsakingas asmuo: '+s.resp:''));
   const tr = (L.transport||[]).filter(t=>t.cars||t.drivers);
-  if(tr.length){ out.push('', 'TRANSPORTAS'); tr.forEach(t=>out.push(`${t.label}: ${lmLines(t.cars).join(', ')} — vairuoja: ${lmLines(t.drivers).join(', ')}`)); }
+  if(tr.length){ out.push('', 'TRANSPORTAS'); tr.forEach(t=>out.push(`${t.label}: ${lmLines(t.cars).join(', ')} — vairuoja: ${lmLines(t.drivers).join(', ')}`)); if(L.fuelUrl) out.push('Kuro kortelė (PIN kodas – nufotografuok kortelę): '+L.fuelUrl); }
   const teamP = people.filter(p=>p.where.has('team'));
   if(teamP.length){ out.push('', 'KOMANDA'); LM_DEPTS.forEach(d=>{ const l = teamP.filter(p=>(p.dept||'Kita')===d); if(l.length) out.push(d+': '+l.map(p=>p.name+(p.phone?' '+p.phone:'')).join(', ')); }); }
   if(L.dressMont||L.dressEvent) out.push('', 'APRANGA', 'Montažo metu: '+(L.dressMont||''), 'Renginio metu: '+(L.dressEvent||''));
@@ -25979,10 +25980,30 @@ function lmFilesRender(){
 function lmSteps(n){
   return `<div class="lm-steps">${['Pildymas','Tikrinimas','Gavėjai ir siuntimas'].map((t,i)=>`<span class="${i+1===n?'on':i+1<n?'done':''}">${i+1}. ${t}</span>`).join('')}</div>`;
 }
+// „Kuro kortelė“: the event's link (uta_pin_links.sql) – the drivers photograph the card and see its PIN;
+// it works on the event's days and for the cards of the event's vehicles (none found – every active card)
+async function lmFuelLink(ev){
+  try{
+    if(!(ev.logistics||[]).some(l=>l.driver || l.vehicle)) return '';
+    const days = rpEvDays(ev).concat((ev.logistics||[]).map(l=>rpLogDate(ev, l))).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d||'')).sort();
+    if(!days.length) return '';
+    let cards = [];
+    if(canView('fleet')){
+      await utaLoad().catch(()=>{});
+      const vs = STATE.vehicles.filter(v=>(ev.logistics||[]).some(l=>!evLogIsRent(l) && String(l.vehicle||'').split('\n').some(c=>c.trim() && utaCarIs(c, v))));
+      cards = (UTA.cards||[]).filter(c=>c.active && c.assign_kind==='vehicle' && vs.some(v=>v.id===c.vehicle_id)).map(c=>c.id);
+    }
+    const { data, error } = await getSb().rpc('uta_pin_link_make', { p_event:String(ev.id), p_name:ev.name || ev.title || 'Renginys', p_cards:cards, p_from:days[0], p_to:days[days.length-1] });
+    if(error || !data) return '';
+    return location.origin + location.pathname.replace(/[^/]*$/, '') + (location.protocol==='https:' ? 'auto' : 'auto.html') + '?pin=' + data;
+  }catch(e){ return ''; }
+}
 async function openEventLetter(ev){
-  // the drivers' codes go into the letter
-  try{ await Promise.race([dcEnsure(dcEvDrivers(ev)), new Promise(r=>setTimeout(r, 3000))]); }catch(e){}
+  // the drivers' codes go into the letter, and the „Kuro kortelė“ link
+  let fuel = '';
+  try{ [, fuel] = await Promise.race([Promise.all([dcEnsure(dcEvDrivers(ev)), lmFuelLink(ev)]), new Promise(r=>setTimeout(()=>r([null, '']), 4000))]); }catch(e){}
   LM = { ev, L:lmMerge(ev), files:[], chatFiles:[], sig:'', step:1, skip:new Set() };
+  LM.L.fuelUrl = fuel || '';
   openModal(`<div class="lm-head"><h3>✉ Renginio laiškas</h3>${lmSteps(1)}<button type="button" class="icon-btn" data-lact="close" title="Uždaryti">✕</button></div>
     <div class="lm-body">
       <div class="lm-form" id="lmForm">${lmFormHtml()}</div>
@@ -44273,6 +44294,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-13 23:50', v:'v523', k:'new', t:'Renginio laiške – „Kuro kortelė“', f:'Renginio laiške po transporto lentele atsiranda nuoroda „Kuro kortelė“. Vairuotojas ją atsidaro telefone (tas pats puslapis kaip automobilio QR, bet tik kortelės skenavimas), nufotografuoja UTA kortelės priekį ir galą – numeris nuskaitomas ir parodomas tos kortelės PIN (paslepiamas po 60 s). Nuoroda veikia tik renginio dienomis (diena prieš ir po) ir tik to renginio automobilių kortelėms; numerio įvesti ranka negalima; kas ir kada žiūrėjo PIN – įrašoma. Reikia paleisti supabase/sql/uta_pin_links.sql.' },
   { d:'2026-10-13 23:00', v:'v522', k:'fix', t:'Automobilio valst. nr. – tik vieną kartą', f:'Jei automobilio pavadinime jau yra numeris (pvz. „Iveco Daily MPL 840“), jis nebepridedamas antrą kartą: renginio transporto pasirinkimas, Transportas (kortelės, langas, QR), UTA kortelės ir ataskaitos, darbų istorija, chato pranešimai, priminimai. Jau įrašytuose renginiuose „Iveco Daily MPL 840 MPL 840“ rodoma kaip „Iveco Daily MPL 840“ (išsaugoma pataisius renginį). Chato pranešimams iš QR – supabase/sql/vehicle_names.sql.' },
   { d:'2026-10-13 22:20', v:'v521', k:'new', t:'Išlaidos → Kuras: darbo ar asmeniniais tikslais', f:'Pildant kuro išlaidą pasirenkamas tikslas: „Darbo tikslais“ (kaip iki šiol – komentaras būtinas) arba „Asmeniniais tikslais“ (komentaras nebūtinas, nekompensuojama). Asmeninis pylimas UTA kortele – tas pylimas pats pažymimas asmeniniu ir atimamas iš balanso; jei UTA ataskaita dar neįkelta – vėliau prie pylimo spausk „Asmeninis“. Sąraše tokia išlaida pažymėta „Asmeniniais tikslais“. Reikia paleisti supabase/sql/expenses_purpose.sql.' },
   { d:'2026-10-13 21:50', v:'v520', k:'fix', t:'UTA: rodomi tik pakartotiniai pylimai', f:'UTA kortelėse paspaudus įspėjimą apie pakartotinius pylimus rodomi tik tie pylimai (ta pačia kortele per 1 val., o ataskaitose be laiko – tą pačią dieną toje pačioje stotyje), su juostele „Rodyti visus pylimus“ grįžti. UTA „Detali specifikacija“ PDF pylimų laiko neturi (tik datą) – įkeliant tai parašoma; laiką turi UTA portalo Excel / CSV eksportas.' },
