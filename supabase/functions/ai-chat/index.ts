@@ -1,27 +1,21 @@
 // Supabase Edge Function: ai-chat
 //
 // The „AI asistentas“ card on the app's home page: a team member asks everyday
-// questions, a free AI service (Groq or Google Gemini) answers in Lithuanian. The answer is streamed back as
+// questions, Google Gemini answers in Lithuanian. The answer is streamed back as
 // plain text (chunks of UTF-8), so it appears while it is being written.
 //
 // POST { messages: [{ role:"user"|"assistant", content:"…" }, …] }   (the last one is the user's)
 //   -> text/plain stream with the answer
 // POST { messages, image: { mime:"image/jpeg"|"image/png"|"application/pdf", data:"<base64>" } }
-//   the picture goes with the last question (e.g. Transportas: read a document's end date). Groq answers it
-//   with a vision model (GROQ_VISION_MODEL, default meta-llama/llama-4-scout-17b-16e-instruct; pictures only),
-//   Gemini with its usual model (pictures and PDF)
+//   the picture goes with the last question (e.g. Transportas: read a document's end date; pictures and PDF)
 //
 // Only a signed-in, approved member may ask (the public anon key alone is not enough).
-// The AI service is the one whose key is set (first found):
-//   GROQ_API_KEY      free key, no card: console.groq.com → API Keys      (GROQ_MODEL, default openai/gpt-oss-120b)
-//   GEMINI_API_KEY    aistudio.google.com → Get API key                   (GEMINI_MODEL, default gemini-flash-latest)
-//   AI_API_KEY + AI_BASE_URL + AI_MODEL   any OpenAI-compatible service, e.g. OpenRouter
-//     (AI_BASE_URL=https://openrouter.ai/api/v1, AI_MODEL=<a model id ending in :free>)
-//   supabase secrets set GROQ_API_KEY=…
+//   GEMINI_API_KEY    aistudio.google.com → Get API key   (GEMINI_MODEL, default gemini-flash-latest)
+//   Supabase → Edge Functions → Secrets (or: supabase secrets set GEMINI_API_KEY=…)
 // Deploy:  supabase functions deploy ai-chat
 // On free plans the service may use the questions to improve its models – the card says so.
 
-export const VERSION = 4;
+export const VERSION = 6;
 const MAX_IMAGE = 5_500_000;   // base64 signs (~4 MB file)
 const MAX_TURNS = 40;          // messages kept from the conversation
 const MAX_CHARS = 12000;       // per message
@@ -63,8 +57,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
   if (!(await approvedMember(req))) return json({ error: "Prisijunk iš naujo (tik patvirtintiems nariams)." }, 401);
   const E = (k: string) => (Deno.env.get(k) ?? "").trim();
-  const provider = E("GROQ_API_KEY") ? "groq" : E("GEMINI_API_KEY") ? "gemini" : E("AI_API_KEY") && E("AI_BASE_URL") && E("AI_MODEL") ? "openai" : "";
-  if (!provider) return json({ error: "AI dar nesukonfigūruotas: Supabase → Edge Functions → Secrets → GROQ_API_KEY (nemokamas raktas: console.groq.com)." }, 503);
+  if (!E("GEMINI_API_KEY")) return json({ error: "AI dar nesukonfigūruotas: Supabase → Edge Functions → Secrets → GEMINI_API_KEY (raktas: aistudio.google.com)." }, 503);
 
   let body: { messages?: { role?: string; content?: string }[]; image?: { mime?: string; data?: string } };
   try { body = await req.json(); } catch { return json({ error: "Blogas užklausos formatas." }, 400); }
@@ -84,55 +77,24 @@ Deno.serve(async (req) => {
     const mime = String(body.image.mime ?? "");
     if (!/^(image\/(jpeg|png|webp)|application\/pdf)$/.test(mime)) return json({ error: "Netinkamas failo tipas (tik nuotrauka arba PDF)." }, 400);
     if (body.image.data.length > MAX_IMAGE) return json({ error: "Failas per didelis AI skaitymui." }, 413);
-    if (mime === "application/pdf" && provider !== "gemini") return json({ error: "Šis AI PDF neskaito – siųsk puslapio nuotrauką." }, 400);
     img = { mime, data: body.image.data.replace(/\s+/g, "") };
   }
 
-  let api: Response, model: string;
-  if (provider === "gemini") {
-    model = E("GEMINI_MODEL") || "gemini-flash-latest";
-    api = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": E("GEMINI_API_KEY") },
-      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] },
-        contents: img ? turns.map((t, i) => i === turns.length - 1 ? { role: t.role, parts: [...t.parts, { inline_data: { mime_type: img!.mime, data: img!.data } }] } : t) : turns,
-        generationConfig: { maxOutputTokens: 4096 } }),
-    });
-  } else {
-    // Groq and the other OpenAI-compatible services: /chat/completions with stream:true
-    const base = provider === "groq" ? "https://api.groq.com/openai/v1" : E("AI_BASE_URL").replace(/\/$/, "");
-    const key = provider === "groq" ? E("GROQ_API_KEY") : E("AI_API_KEY");
-    model = provider === "groq" ? (img ? E("GROQ_VISION_MODEL") || "meta-llama/llama-4-scout-17b-16e-instruct" : E("GROQ_MODEL") || "openai/gpt-oss-120b") : E("AI_MODEL");
-    const req: Record<string, unknown> = {
-      model, stream: true, max_tokens: 4096,
-      messages: [{ role: "system", content: SYSTEM }, ...turns.map((t, i) => ({ role: t.role === "model" ? "assistant" : "user",
-        content: img && i === turns.length - 1 ? [{ type: "text", text: t.parts[0].text }, { type: "image_url", image_url: { url: `data:${img.mime};base64,${img.data}` } }] : t.parts[0].text }))],
-    };
-    if (provider === "groq" && /gpt-oss/.test(model)) req.reasoning_effort = "low";   // everyday questions: quick answers
-    const send = () => fetch(`${base}/chat/completions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-      body: JSON.stringify(req),
-    });
-    api = await send();
-    // Groq's vision models change (an old one answers 404): another vision model Groq lists now
-    if (provider === "groq" && img && (api.status === 404 || api.status === 400) && !E("GROQ_VISION_MODEL")) {
-      try {
-        const lr = await fetch(`${base}/models`, { headers: { Authorization: `Bearer ${key}` } });
-        const ids: string[] = lr.ok ? ((await lr.json())?.data ?? []).map((m: { id?: string }) => String(m.id ?? "")) : [];
-        const alt = ["meta-llama/llama-4-maverick-17b-128e-instruct", ...ids.filter((id) => /vision|llama-4|scout|maverick|-vl|gemma-3|llava/i.test(id))]
-          .filter((id, i, a) => id !== model && a.indexOf(id) === i && (!ids.length || ids.includes(id)));
-        for (const m of alt.slice(0, 4)) { req.model = m; const r = await send(); if (r.ok) { api = r; model = m; break; } }
-      } catch { /* keep the first answer */ }
-    }
-  }
+  const model = E("GEMINI_MODEL") || "gemini-flash-latest";
+  const api = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-goog-api-key": E("GEMINI_API_KEY") },
+    body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] },
+      contents: img ? turns.map((t, i) => i === turns.length - 1 ? { role: t.role, parts: [...t.parts, { inline_data: { mime_type: img!.mime, data: img!.data } }] } : t) : turns,
+      generationConfig: { maxOutputTokens: 4096 } }),
+  });
   if (!api.ok || !api.body) {
     const t = await api.text().catch(() => "");
     console.error("ai-chat", api.status, t.slice(0, 500));
     const msg = api.status === 429 ? "Pasiektas nemokamo plano limitas – pabandyk po minutės."
-      : api.status === 401 || (api.status === 400 && /API key/i.test(t)) ? "Neteisingas AI raktas (patikrink Supabase paslaptį)."
-      : api.status === 403 ? "AI raktas neturi teisės (patikrink raktą)."
-      : api.status === 404 || /model.*(not found|does not exist|decommissioned)/i.test(t) ? `Modelis „${model}“ nerastas – nurodyk kitą (${provider === "groq" ? "GROQ_MODEL" : provider === "gemini" ? "GEMINI_MODEL" : "AI_MODEL"}).`
+      : api.status === 401 || (api.status === 400 && /API key/i.test(t)) ? "Neteisingas Gemini raktas (patikrink Supabase paslaptį GEMINI_API_KEY)."
+      : api.status === 403 ? "Gemini raktas neturi teisės (patikrink raktą)."
+      : api.status === 404 || /model.*(not found|does not exist|decommissioned)/i.test(t) ? `Modelis „${model}“ nerastas – nurodyk kitą (GEMINI_MODEL).`
       : `AI klaida (${api.status}).`;
     return json({ error: msg }, 502);
   }
@@ -148,14 +110,6 @@ Deno.serve(async (req) => {
         const data = line.slice(5).trim(); if (!data || data === "[DONE]") return;
         try {
           const j = JSON.parse(data);
-          if (Array.isArray(j?.choices)) {   // OpenAI-compatible: only the answer, not the model's reasoning
-            const ch = j.choices[0];
-            const t = ch?.delta?.content;
-            if (typeof t === "string" && t) { ctrl.enqueue(enc.encode(t)); any = true; }
-            if (ch?.finish_reason === "length") blocked = "\n\n(Atsakymas nutrūko – per ilgas.)";
-            else if (ch?.finish_reason === "content_filter") blocked = "\n\n(Į šį klausimą atsakyti negaliu.)";
-            return;
-          }
           const c = j?.candidates?.[0];
           for (const p of c?.content?.parts ?? []) if (typeof p?.text === "string" && !p.thought) { ctrl.enqueue(enc.encode(p.text)); any = true; }
           if (c?.finishReason === "MAX_TOKENS") blocked = "\n\n(Atsakymas nutrūko – per ilgas.)";
