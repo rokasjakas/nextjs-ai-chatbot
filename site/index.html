@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-LSnFSdP1sK2+dRXy9piyW8Yoj22BbzZGmHkA8AopyS8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-HVZu0iKeFurx3Ir9uY16mcL3bneVboOLyiC/cO9nU/M=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -22206,7 +22206,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v569';
+const APP_VER = 'v570';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26306,7 +26306,7 @@ function lmParseLine(line){
   let note = '';
   const nm = s.match(/^(.*?)\s*\((.*)\)\s*$/); if(nm){ s = nm[1]; note = nm[2]; }
   let pos = '';
-  const pm = s.match(/^((?:[A-ZĄČĘĖĮŠŲŪŽ]{1,3}\d*(?:\/[A-Za-zĄČĘĖĮŠŲŪŽ]+)?)|Elektr\.?|Elektrikas)\s+(.+)$/);
+  const pm = s.match(/^((?:[A-ZĄČĘĖĮŠŲŪŽ]{1,4}\d*(?:\/[A-Za-zĄČĘĖĮŠŲŪŽ]+)?)|Elektr\.?|Elektrikas)(?:\s*\/\s*|\s+)(.+)$/);   // „A1 Vardas“, „A / Vardas“, „A/OP Vardas“
   if(pm){ pos = pm[1]; s = pm[2]; }
   return { pos, name:s.trim(), note };
 }
@@ -26354,14 +26354,15 @@ function lmAuto(ev){
     (g.entries||[]).forEach(e=>{
       const name = String(e.person||'').trim(); if(!name) return;
       // in a part only the name; an operator with the place before it (A/OP, L/OP, VJ)
-      const pos = lmIsOp(e.pos) ? lmOpPos(e.pos) : '';
+      // the place before the name: A / L / V (without the number); an operator – A/OP, L/OP, VJ
+      const pos = lmIsOp(e.pos) ? lmOpPos(e.pos) : String(e.pos||'').trim().replace(/\d+$/, '').toUpperCase();
       const k = normalizeText(name);
-      if(seen[ph][k]){ if(pos && !seen[ph][k].pos) seen[ph][k].pos = pos; return; }
+      if(seen[ph][k]){ const o = seen[ph][k]; if(pos && (!o.pos || (lmIsOp(pos) && !lmIsOp(o.pos)))) o.pos = pos; return; }
       seen[ph][k] = { pos, name, notes:[] };
       team[ph].push(seen[ph][k]);
     });
   });
-  const teamText = ph=>team[ph].map(x=>(x.pos?x.pos+' ':'')+x.name+(x.notes.length?' ('+x.notes.join(', ')+')':'')).join('\n');
+  const teamText = ph=>team[ph].map(x=>(x.pos ? (lmIsOp(x.pos) ? x.pos+' ' : x.pos+' / ') : '')+x.name+(x.notes.length?' ('+x.notes.join(', ')+')':'')).join('\n');
   const times = { mont:[], event:[], demont:[] };
   (ev.times||[]).forEach(t=>{
     if(!t.time) return;
@@ -45509,6 +45510,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-15 04:15', v:'v570', k:'fix', t:'Renginio laiškas: pozicija prieš vardą', f:'Laiško dalyse prieš vardą – pozicija: A / Vardas Pavardė, L / Vardas Pavardė, V / Vardas Pavardė; operatoriams – A/OP, L/OP, VJ kaip anksčiau.' },
   { d:'2026-10-15 04:00', v:'v569', k:'fix', t:'Renginio laiškas: žmonės pagal dienas', f:'Laiške žmonės sudedami pagal dieną: MONTAŽAS – diena prieš (ir rūšiavimas), RENGINYS – visi renginio dieną įrašyti (montavimas renginio dieną, budintys, operatoriai), DEMONTAŽAS – demontavimas. Dalyse prie žmogaus – tik vardas, pavardė ir kur atvyksta; operatoriams – pozicija prieš vardą (A/OP, L/OP, VJ).' },
   { d:'2026-10-15 03:30', v:'v568', k:'new', t:'Renginio laiškas: datos, atvykimas, operatoriai', f:'Datos laiške – 11.13 (ne 11-13); dalis, trunkanti ilgiau – 11.13 – 11.15 (laiško formoje prie kiekvienos dalies – „Iki“). Prie kiekvieno žmogaus dalyje – „Atvyksta į sandėlį / Atvyksta į renginio vietą“ ir laikas – laiške rašoma prie vardo. Operatoriai visoje komandoje su pozicija prieš vardą: A/OP Vitas Račyla +370…, VJ Tomas Tunyla +370…, L/OP …; V/OP rodomas kaip VJ.' },
   { d:'2026-10-15 03:00', v:'v567', k:'new', t:'Naujas renginys, organizatoriai, automobilių patikra, kalendoriaus užvedimas', f:'Naujo renginio formoje penki vienodi blokai: Montavimas prieš renginį, Montavimas renginio dieną, Demontavimas, Budi renginyje, Operatoriai – kiekvienas su data, laiku ir Garsas / Šviesa / Video / Crew (be varnelių). Organizatorių pasiūlymai be dublikatų: „Kamilė Partizanas +370…“, „Partizanas Kamile“ – vienas; telefonas perkeliamas į telefono laukelį. Darbų plane – „Pridėti automobilius“: narys pasirenka automobilį, užpildo jo teiginius, eina prie kito, pabaigoje „Darbų planas atliktas“; Transporte prie automobilio – „Savaitinė patikra“ su rezultatais. Dešinio skydelio dienos langelis: užvedus pelę – tos dienos renginiai, susitikimai, užduotys.' },
