@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/9vy5Hjneq2rGOPg94CfYKm80CenhMznFavmY4J/DIQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-k813arBc/uYgzr0ChQGJdKTNaKu7GJ3pAwn0WfcMbQI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -22102,7 +22102,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v555';
+const APP_VER = 'v556';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25008,7 +25008,7 @@ function ppSections(list){
 }
 function ppSort(list){ return ppQSort(list.slice().sort((a,b)=>ppName(a).natCmp(ppName(b)))); }
 // searching: the first or last name starting with the letters first
-function ppQSort(list){ const l = srchSort(list, PP.q, c=>[c.first, c.last, ppName(c)]); return [...l.filter(c=>!c.inactive).sort((a, b)=>(b.red ? 10 : 0) + ppStarsOf(b) - (a.red ? 10 : 0) - ppStarsOf(a) || ppEvTotal(b) - ppEvTotal(a)), ...l.filter(c=>c.inactive)]; }
+function ppQSort(list){ const l = srchSort(list, PP.q, c=>[c.first, c.last, ppName(c)]); return [...l.filter(c=>!c.inactive).sort((a, b)=>ppEvTotal(b) - ppEvTotal(a)), ...l.filter(c=>c.inactive)]; }
 // stars: 3 – visiška pirmenybė, 2 – labai dažnai dirbame, 1 – dirbome; the people with stars go first in their group
 const PP_STARS = ['', 'Dirbome', 'Labai dažnai dirbame', 'Visiška pirmenybė'];
 function ppStarsHtml(c){
@@ -25051,7 +25051,7 @@ function ppStarsAuto(){
 }
 // c.stars: 1–3 set by hand, -1 – taken off by hand, none (or 0) – by the events
 function ppStarsHand(c){ return +c.stars > 0 || +c.stars===-1; }
-// all the events one was written in (the more – the higher in the list, after the stars)
+// all the events one worked (the more – the higher in the list; the stars only mark the priority, they do not sort)
 function ppEvTotal(c){ return EV.loaded ? (ppEvOf(c)||{}).n||0 : 0; }
 function ppStarsOf(c){ return ppStarsHand(c) ? Math.max(0, +c.stars) : ppStarsAuto()[c.id] || 0; }
 async function ppSetStars(c, v){
@@ -45162,6 +45162,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-14 21:30', v:'v556', k:'fix', t:'Žmonės: rikiuojama pagal pradirbtus renginius', f:'Visur sąraše viršuje tas, kas iš viso pradirbo daugiausia renginių. Žvaigždutės (ir raudona) rikiavimo nebekeičia – tik parodo pirmenybę prie vardo. Nebeaktyvūs – apačioje.' },
   { d:'2026-10-14 21:00', v:'v555', k:'fix', t:'Žmonės: skaičiuojami tik pradirbti renginiai', f:'Renginys įskaitomas kaip pradirbtas tik praėjus paskutinei jo dienai, jei žmogaus vardas liko sąraše (išbrauktas anksčiau – neskaičiuojamas). Būsimi ir dar vykstantys renginiai nebeskaičiuojami. Skaičiai, žvaigždutės ir rikiavimas atsinaujina patys kiekvieną dieną.' },
   { d:'2026-10-14 20:30', v:'v554', k:'new', t:'Žmonės: rikiavimas pagal visus pradirbtus renginius', f:'Grupėje viršuje – raudona žvaigždutė, tada pagal žvaigždučių skaičių, o tarp turinčių tiek pat žvaigždučių (ir be jų) – kas iš viso pradirbo daugiausia renginių, tas aukščiau.' },
   { d:'2026-10-14 20:00', v:'v553', k:'fix', t:'Žmonės: naujos žvaigždučių ribos', f:'Pagal paskutinių 12 mėn. renginius: 1 žvaigždutė – iki 15 renginių, 2 – 16–30, 3 – 31 ir daugiau.' },
