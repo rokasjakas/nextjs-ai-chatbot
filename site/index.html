@@ -2,13 +2,14 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-WaJufqwzw+iWlMs/uWiww0R2vM5x0Qgya86FU8Cr4lU=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-LBualMuA0GgidRB3rC4law5DEE0TbTaeMHgEaKX0/5M=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-vEMpSDTkFpUZ4CplVcwc7zk9jk5jHtqR2BZe86Fwjek=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
 if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
 if(/[?&]ilangas=1/.test(location.search)) document.documentElement.classList.add('es-embed');   // a quick window (greitasis langas) inside the app: only the page
+if(/[?&]rinkti=1/.test(location.search)) document.documentElement.classList.add('es-pick');      // a new quick window: the left menu stays to pick the page
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* iPhone zooms into small text fields on focus; stop that (pinch zoom still works on iOS) */
@@ -6114,12 +6115,15 @@ body.ev-full-on{overflow:hidden;}
 .qk-win-b{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .qk-win-b svg{width:16px;height:16px;color:inherit;} .qk-win-b:hover{color:var(--text);border-color:var(--accent);} .qk-win-x:hover{color:#fff;background:var(--danger);border-color:var(--danger);}
 .qk-win-f{flex:1;width:100%;border:0;background:var(--bg);}
+.qk-win-add{width:auto;gap:6px;padding:0 12px;font-weight:600;color:#fff;background:var(--accent);border-color:var(--accent);} .qk-win-add:hover{color:#fff;filter:brightness(1.1);}
+.qk-win-cur{font-size:13px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.qk-add{border-style:dashed;box-shadow:none;background:transparent;}
 .qk-win-r{position:absolute;right:0;bottom:0;width:18px;height:18px;cursor:nwse-resize;touch-action:none;background:linear-gradient(135deg, transparent 50%, var(--text-faint) 50%, var(--text-faint) 60%, transparent 60%, transparent 70%, var(--text-faint) 70%, var(--text-faint) 80%, transparent 80%);}
 body.qk-moving .qk-win-f{pointer-events:none;} body.qk-moving{user-select:none;}
 .qk-win.qk-drag{will-change:transform;box-shadow:0 10px 26px rgb(0 0 0 / .45);}
 .qk-ghost{position:fixed;border:2px dashed var(--accent);border-radius:12px;background:color-mix(in srgb, var(--accent) 8%, transparent);pointer-events:none;}
-html.es-embed aside.rail, html.es-embed header.pageheader, html.es-embed #qkBar, html.es-embed #gSide, html.es-embed .gside-tab{display:none !important;}
-html.es-embed main{margin:0 !important;width:auto !important;max-width:none !important;}
+html.es-embed:not(.es-pick) aside.rail, html.es-embed header.pageheader, html.es-embed #qkBar, html.es-embed #gSide, html.es-embed .gside-tab{display:none !important;}
+html.es-embed:not(.es-pick) main{margin:0 !important;width:auto !important;max-width:none !important;}
 @media (min-width:641px){ aside.rail{padding-bottom:calc(16px + var(--qk-h, 0px));} }
 @media (max-width:640px){ .qk-bar{display:none !important;} #scr2Hdr{display:none;} }
 @media (min-width:761px){
@@ -13142,13 +13146,14 @@ function qkRender(){
   const app = document.getElementById('app'); if(!app || qkEmbed()) return;
   let bar = document.getElementById('qkBar');
   if(!bar){ bar = document.createElement('div'); bar.id = 'qkBar'; bar.className = 'qk-bar'; document.body.appendChild(bar);
-    bar.addEventListener('click', e=>{ const x = e.target.closest('[data-qkx]'); if(x){ e.stopPropagation(); qkToggle(x.dataset.qkx); return; } const b = e.target.closest('[data-qk]'); if(b) qkWin(b.dataset.qk); });
+    bar.addEventListener('click', e=>{ if(e.target.closest('[data-qkadd]')){ qkWin('+'); return; } const x = e.target.closest('[data-qkx]'); if(x){ e.stopPropagation(); qkToggle(x.dataset.qkx); return; } const b = e.target.closest('[data-qk]'); if(b) qkWin(b.dataset.qk); });
     bar.addEventListener('contextmenu', e=>{ const b = e.target.closest('[data-qk]'); if(!b) return; e.preventDefault(); qkToggle(b.dataset.qk); }); }
-  const l = qkList(), on = !app.classList.contains('hidden') && l.length;
+  const l = qkList(), on = !app.classList.contains('hidden');
   bar.classList.toggle('hidden', !on);
   requestAnimationFrame(()=>document.body.style.setProperty('--qk-h', on ? bar.offsetHeight+'px' : '0px'));   // the left menu leaves room for it
   if(on) bar.innerHTML = '<span class="qk-h" title="Greitieji langai">Greiti</span>' + l.map(k=>{ const rb = document.querySelector('.rail-btn[data-tab="'+k+'"]'), lab = rb ? rb.dataset.label : k, ic = rb ? rb.querySelector('svg') : null;
-    return `<button type="button" class="qk-b ${k===currentTab ? 'on' : ''}" data-qk="${esc(k)}" title="${esc(lab)} (dešinys pelės mygtukas – išimti)">${ic ? ic.outerHTML : esc(lab.slice(0,2))}<span class="qk-x" data-qkx="${esc(k)}" title="Išimti iš greitųjų langų">${slIcon('close')}</span></button>`; }).join('');
+    return `<button type="button" class="qk-b ${k===currentTab ? 'on' : ''}" data-qk="${esc(k)}" title="${esc(lab)} (dešinys pelės mygtukas – išimti)">${ic ? ic.outerHTML : esc(lab.slice(0,2))}<span class="qk-x" data-qkx="${esc(k)}" title="Išimti iš greitųjų langų">${slIcon('close')}</span></button>`; }).join('')
+    + `<button type="button" class="qk-b qk-add" data-qkadd="1" title="Naujas greitasis langas – atsidaro langas, nueik į norimą puslapį ir spausk „Pridėti“">${slIcon('plus')}</button>`;
   const hb = document.getElementById('qkHdr');
   if(hb){ const has = l.includes(currentTab); hb.innerHTML = slIcon(has ? 'bmremove' : 'plus'); hb.classList.toggle('on', has);
     hb.title = has ? 'Išimti šį puslapį iš greitųjų langų' : 'Pridėti šį puslapį į greituosius langus (kairėje apačioje)'; hb.onclick = ()=>qkToggle(currentTab); }
@@ -13157,19 +13162,29 @@ function qkRender(){
 }
 // a quick window: the page in its own window over the app – moved by its top bar, resized at the corner, closed with ×
 let QK_Z = 8900;
+// k '+' – a new one: the page inside keeps its left menu; „Pridėti“ adds the page shown there and the window stays as that quick window
 function qkWin(k){
   const old = document.querySelector('.qk-win[data-k="'+CSS.escape(k)+'"]'); if(old){ old.style.zIndex = ++QK_Z; return; }
-  const rb = document.querySelector('.rail-btn[data-tab="'+k+'"]'), lab = rb ? rb.dataset.label : k, ic = rb ? rb.querySelector('svg') : null;
+  const pick = k==='+';
   let g = null; try{ g = JSON.parse(localStorage.getItem('qkWin:'+k)||'null'); }catch(e){}
   const n = document.querySelectorAll('.qk-win').length, W = innerWidth, H = innerHeight;
   g = g || { x:110 + n*28, y:70 + n*28, w:Math.min(1100, W - 180), h:Math.min(760, H - 120) };
   const w = document.createElement('div'); w.className = 'qk-win'; w.dataset.k = k; w.style.zIndex = ++QK_Z;
-  w.innerHTML = `<div class="qk-win-h">${ic ? ic.outerHTML : ''}<b>${esc(lab)}</b><span class="qk-win-sp"></span>
+  const tabLab = t=>{ const rb = document.querySelector('.rail-btn[data-tab="'+t+'"]'); return { lab:rb ? rb.dataset.label : t, ic:rb ? rb.querySelector('svg') : null }; };
+  const head = ()=>{ const h = w.querySelector('.qk-win-h');
+    if(pick && !w.dataset.done) h.innerHTML = `${slIcon('plus')}<b>Naujas greitasis langas</b><span class="qk-win-cur"></span><span class="qk-win-sp"></span>
+      <button type="button" class="qk-win-b qk-win-add" data-qwa="add" title="Pridėti šį puslapį į greituosius langus">${slIcon('plus')}<span>Pridėti</span></button>
+      <button type="button" class="qk-win-b qk-win-x" data-qwa="close" title="Uždaryti">${slIcon('close')}</button>`;
+    else { const { lab, ic } = tabLab(k); h.innerHTML = `${ic ? ic.outerHTML : ''}<b>${esc(lab)}</b><span class="qk-win-sp"></span>
       <button type="button" class="qk-win-b" data-qwa="main" title="Atidaryti pagrindiniame lange">${slIcon('openext')}</button>
-      <button type="button" class="qk-win-b qk-win-x" data-qwa="close" title="Uždaryti">${slIcon('close')}</button></div>
-    <iframe class="qk-win-f" src="${esc(location.href.split(/[?#]/)[0] + '?langas=' + encodeURIComponent(k) + '&ilangas=1')}"></iframe>
+      <button type="button" class="qk-win-b qk-win-x" data-qwa="close" title="Uždaryti">${slIcon('close')}</button>`; } };
+  w.innerHTML = `<div class="qk-win-h"></div>
+    <iframe class="qk-win-f" src="${esc(location.href.split(/[?#]/)[0] + '?langas=' + encodeURIComponent(pick ? (currentTab||'home') : k) + '&ilangas=1' + (pick ? '&rinkti=1' : ''))}"></iframe>
     <span class="qk-win-r" title="Tempk – keisti dydį"></span>`;
-  document.body.appendChild(w);
+  head(); document.body.appendChild(w);
+  const fr = w.querySelector('iframe'), shown = ()=>{ try{ return fr.contentWindow.esCurTab || ''; }catch(e){ return ''; } };
+  if(pick){ const tick = setInterval(()=>{ if(!w.isConnected || w.dataset.done){ clearInterval(tick); return; }
+      const c = w.querySelector('.qk-win-cur'), s = shown(); if(c) c.textContent = s ? '· ' + tabLab(s).lab : ''; }, 400); }
   const fit = ()=>{ g.w = Math.max(340, Math.min(g.w, innerWidth - 10)); g.h = Math.max(240, Math.min(g.h, innerHeight - 10));
     g.x = Math.max(0, Math.min(g.x, innerWidth - 120)); g.y = Math.max(0, Math.min(g.y, innerHeight - 40));
     Object.assign(w.style, { left:g.x+'px', top:g.y+'px', width:g.w+'px', height:g.h+'px' }); };
@@ -13198,8 +13213,17 @@ function qkWin(k){
     el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up); });
   drag(w.querySelector('.qk-win-h'), 'move');
   drag(w.querySelector('.qk-win-r'), 'size');
-  w.querySelector('[data-qwa="close"]').onclick = ()=>w.remove();
-  w.querySelector('[data-qwa="main"]').onclick = ()=>{ w.remove(); qkGo(k); };
+  w.querySelector('.qk-win-h').addEventListener('click', e=>{ const b = e.target.closest('[data-qwa]'); if(!b) return;
+    if(b.dataset.qwa==='close') w.remove();
+    else if(b.dataset.qwa==='main'){ w.remove(); qkGo(k); }
+    else if(b.dataset.qwa==='add'){ const s = shown(); if(!s || !TABS[s]){ toast('Puslapis dar neužsikrovė – palauk akimirką.'); return; }
+      const dup = document.querySelector('.qk-win[data-k="'+CSS.escape(s)+'"]');
+      if(!qkList().includes(s)) qkSet(qkList().concat(s));
+      toast('✓ „'+tabLab(s).lab+'“ – greituosiuose languose (kairėje apačioje).');
+      if(dup){ w.remove(); dup.style.zIndex = ++QK_Z; return; }
+      // the window stays – now as that page's quick window
+      k = s; w.dataset.k = s; w.dataset.done = '1'; head(); keep();
+      try{ fr.contentDocument.documentElement.classList.remove('es-pick'); }catch(e){} } });
 }
 window.addEventListener('resize', ()=>document.querySelectorAll('.qk-win').forEach(w=>{ const r = w.getBoundingClientRect(); if(r.left > innerWidth - 120) w.style.left = Math.max(0, innerWidth - 300)+'px'; if(r.top > innerHeight - 40) w.style.top = Math.max(0, innerHeight - 200)+'px'; }));
 // antras ekranas: the same app in a second window (dragged to the other screen it lives on its own – its own pages)
@@ -22267,7 +22291,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v574';
+const APP_VER = 'v575';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -45095,7 +45119,7 @@ function setTab(key){
   if(!same) keepReset();
   if(key!=='fleet' && document.getElementById('vehPop')) fleetClose();
   disposeViz3D();
-  currentTab = key;
+  currentTab = key; window.esCurTab = key;   // read by the quick window around this page
   document.querySelectorAll('.rail-btn[data-tab]').forEach(b=>b.classList.toggle('active', b.getAttribute('data-tab')===key));
   if(key!=='chat') document.documentElement.classList.remove('chat-fix');
   // another page chosen: the phone's Notes / Meniu layer closes, only one button stays lit
@@ -45589,6 +45613,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-15 07:00', v:'v575', k:'new', t:'Greitieji langai – „+“ kairiajame meniu', f:'Kairiojo meniu apačioje, prie greitųjų langų, visada yra „+“. Paspaudus atsidaro naujas langas su meniu: nueik į norimą puslapį ir spausk „Pridėti“ – puslapis prisideda prie greitųjų langų, o langas lieka atidarytas kaip jo greitasis langas.' },
   { d:'2026-10-15 06:00', v:'v574', k:'fix', t:'Greitieji langai nebestringa tempiant', f:'Tempiamas greitasis langas juda sklandžiai (vienas atnaujinimas per kadrą, puslapis viduje neperpiešiamas). Keičiant dydį rodomas punktyrinis rėmelis – langas naują dydį gauna atleidus pelę, todėl didelės lentelės (pvz. Žmonės) nebelėtina tempimo.' },
   { d:'2026-10-15 05:00', v:'v573', k:'new', t:'Greitieji langai – atskiri langai programoje', f:'Paspaudus greitąjį langą (kairėje apačioje) puslapis atsidaro savo lange virš programos: jį gali tempti už viršutinės juostos, keisti dydį už apatinio dešinio kampo (dydis ir vieta įsimenami), jis nepermatomas, uždaromas su ×. Mygtukas šalia × atidaro tą puslapį pagrindiniame lange. Gali būti atidaryti keli langai vienu metu.' },
   { d:'2026-10-15 04:45', v:'v572', k:'fix', t:'Renginio laiškas: laikas ranka, Enter išsaugo', f:'Atvykimo laikas laiško formoje rašomas ranka (be iššokančio pasirinkimo): „1000“ iškart tampa „10:00“, „930“ – „09:30“. Enter bet kuriame laiško formos laukelyje išsaugo įrašą ir nebeperjungia į „Tikrinti laišką“.' },
