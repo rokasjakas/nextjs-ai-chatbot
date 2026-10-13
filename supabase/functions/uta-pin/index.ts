@@ -8,7 +8,8 @@
 // (…0046 9, …0047 7), so only a photo of the card itself shows the PIN.
 // Every attempt is written to uta_pin_views; at most 10 attempts a link per hour.
 //
-// POST {"t":"<token>","front":{"mime":"image/jpeg","data":"<base64>"},"back":{…}}
+// POST {"t":"<token>","name":"Vardas Pavardė","loc":{"lat":54.6,"lng":25.2,"acc":12},"front":{"mime":"image/jpeg","data":"<base64>"},"back":{…}}
+//   (the name, the time and the phone's place are kept with the view – the UTA reports show them at the fill)
 //   -> {"pin":"1234","card":"•••• 0046 9","title":"AUTO 1","vehicle":"Iveco Daily MPL 840"}
 // Secrets: GROQ_API_KEY or GEMINI_API_KEY (as ai-chat). SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are given.
 
@@ -82,14 +83,19 @@ async function readCard(front: Img, back: Img): Promise<{ card: string; is_card:
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "POST" }, 405);
-  let body: { t?: string; front?: Img; back?: Img };
+  let body: { t?: string; name?: string; loc?: { lat?: number; lng?: number; acc?: number }; front?: Img; back?: Img };
   try { body = await req.json(); } catch { return json({ error: "Blogas užklausos formatas." }, 400); }
   const t = String(body.t ?? "");
   if (!/^[0-9a-f]{24,64}$/.test(t)) return json({ error: "Nuoroda neteisinga." }, 400);
   const ok = (i?: Img) => !!i && /^image\/(jpeg|png|webp)$/.test(String(i.mime)) && typeof i.data === "string" && i.data.length > 1000 && i.data.length < MAX_IMAGE;
   if (!ok(body.front) || !ok(body.back)) return json({ error: "Nufotografuok kortelės priekį ir galą." }, 400);
+  const name = String(body.name ?? "").replace(/\s+/g, " ").trim().slice(0, 120);
+  if (name.length < 3) return json({ error: "Įrašyk savo vardą ir pavardę." }, 400);
+  const L = body.loc, num = (x: unknown, lo: number, hi: number) => typeof x === "number" && isFinite(x) && x >= lo && x <= hi ? x : null;
+  const lat = L ? num(L.lat, -90, 90) : null, lng = L ? num(L.lng, -180, 180) : null;
+  const where = lat != null && lng != null ? { lat: +lat.toFixed(6), lng: +lng.toFixed(6), acc: L && num(L.acc, 0, 100000) != null ? Math.round(L.acc as number) : null } : {};
 
-  const log = (row: Record<string, unknown>) => db("uta_pin_views", { method: "POST", body: JSON.stringify({ token: t, ...row }) }).catch(() => {});
+  const log = (row: Record<string, unknown>) => db("uta_pin_views", { method: "POST", body: JSON.stringify({ token: t, driver_name: name, ...where, ...row }) }).catch(() => {});
   try {
     const [l] = await db<{ token: string; event_name: string; card_ids: string[]; valid_from: string; valid_to: string }[]>(`uta_pin_links?token=eq.${t}&select=*`);
     if (!l) return json({ error: "Nuoroda nebegalioja." }, 404);
@@ -114,7 +120,7 @@ Deno.serve(async (req) => {
     }
     const c = hit[0];
     const [p] = await db<{ pin: string }[]>(`uta_pins?card_id=eq.${c.id}&select=pin`);
-    await log({ event_name: l.event_name, card_id: c.id, ok: !!p, reason: p ? null : "PIN neįrašytas", card_read: read.card });
+    await log({ event_name: l.event_name, card_id: c.id, ok: !!p, reason: p ? null : "PIN neįrašytas", card_read: read.card, vehicle: [c.title, c.vehicle_name].filter(Boolean).join(" · ") || null });
     if (!p) return json({ error: "Šios kortelės PIN dar neįrašytas – kreipkis į ofisą." }, 404);
     return json({ pin: p.pin, card: mask(c.card_no), title: c.title || "", vehicle: c.vehicle_name || "" });
   } catch (e) {

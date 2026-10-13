@@ -30,13 +30,20 @@ create table if not exists public.uta_pin_views (
   at        timestamptz not null default now()
 );
 create index if not exists uta_pin_views_token on public.uta_pin_views (token, at desc);
+-- who (the name typed on the page), where (the phone's place) – with the time it is the fill's „when“ in the UTA reports
+alter table public.uta_pin_views add column if not exists driver_name text;
+alter table public.uta_pin_views add column if not exists lat double precision;
+alter table public.uta_pin_views add column if not exists lng double precision;
+alter table public.uta_pin_views add column if not exists acc integer;
+alter table public.uta_pin_views add column if not exists vehicle text;
+create index if not exists uta_pin_views_card on public.uta_pin_views (card_id, at desc);
 
 alter table public.uta_pin_links enable row level security;
 alter table public.uta_pin_views enable row level security;
 drop policy if exists "uta pin links view" on public.uta_pin_links;
 create policy "uta pin links view" on public.uta_pin_links for select to authenticated using (public.can_edit('fleet') or public.can_edit('events'));
 drop policy if exists "uta pin views view" on public.uta_pin_views;
-create policy "uta pin views view" on public.uta_pin_views for select to authenticated using (public.can_edit('fleet'));
+create policy "uta pin views view" on public.uta_pin_views for select to authenticated using (public.can_view('fleet') or public.can_view('stats'));
 revoke all on public.uta_pin_links, public.uta_pin_views from anon;
 grant select on public.uta_pin_links, public.uta_pin_views to authenticated;
 
