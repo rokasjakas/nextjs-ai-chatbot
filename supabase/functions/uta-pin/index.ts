@@ -113,7 +113,7 @@ async function readCard(front: Img, back: Img): Promise<{ card: string; is_card:
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "POST" }, 405);
-  let body: { t?: string; name?: string; loc?: { lat?: number; lng?: number; acc?: number }; front?: Img; back?: Img };
+  let body: { t?: string; name?: string; loc?: { lat?: number; lng?: number; acc?: number }; ocr?: string[]; front?: Img; back?: Img };
   try { body = await req.json(); } catch { return json({ error: "Blogas užklausos formatas." }, 400); }
   const t = String(body.t ?? "");
   if (!/^[0-9a-f]{24,64}$/.test(t)) return json({ error: "Nuoroda neteisinga." }, 400);
@@ -136,13 +136,28 @@ Deno.serve(async (req) => {
     if (recent.length >= HOURLY) return json({ error: "Per daug bandymų – pabandyk po valandos." }, 429);
 
     const img = (i: Img) => ({ mime: i.mime, data: i.data.replace(/\s+/g, "") });
-    const read = await readCard(img(body.front!), img(body.back!));
+    // the AI reads the photos; when it cannot (no vision model), the number read on the phone (OCR) is used
+    const ocr = (Array.isArray(body.ocr) ? body.ocr : []).map(digits).filter((d) => d.length >= 12 && d.length <= 20).slice(0, 12);
+    let read: { card: string; is_card: boolean; back: boolean; ocr?: boolean };
+    try { read = await readCard(img(body.front!), img(body.back!)); }
+    catch (e) {
+      if (!ocr.length) throw e;
+      console.warn("uta-pin: AI", e instanceof Error ? e.message : e, "– phone OCR used");
+      read = { card: "", is_card: true, back: true, ocr: true };
+    }
     if (!read.is_card) { await log({ event_name: l.event_name, ok: false, reason: "ne kortelė", card_read: read.card || null }); return json({ error: "Nuotraukoje kortelės neatpažinau – nufotografuok pačią kortelę iš arti." }, 422); }
     if (!read.back) { await log({ event_name: l.event_name, ok: false, reason: "be galo", card_read: read.card || null }); return json({ error: "Antroje nuotraukoje – kortelės galas (kita pusė)." }, 422); }
-    if (read.card.length < 12) { await log({ event_name: l.event_name, ok: false, reason: "numeris neperskaitytas", card_read: read.card || null }); return json({ error: "Kortelės numerio perskaityti nepavyko – fotografuok iš arčiau, be atspindžių." }, 422); }
+
 
     const cards = await db<{ id: string; card_no: string; title: string; vehicle_name: string | null; active: boolean }[]>(`uta_cards?select=id,card_no,title,vehicle_name,active&active=eq.true`);
     const allowed = (l.card_ids ?? []).length ? cards.filter((c) => l.card_ids.includes(c.id)) : cards;
+    // the phone's reading: the one candidate that is exactly one card of the event
+    if (read.ocr || read.card.length < 12) {
+      const fit = ocr.map((d) => ({ d, c: allowed.filter((c) => sameNo(c.card_no, d)) })).filter((x) => x.c.length === 1);
+      const ids = [...new Set(fit.map((x) => x.c[0].id))];
+      if (ids.length === 1) read = { ...read, card: fit[0].d, ocr: true };
+    }
+    if (read.card.length < 12) { await log({ event_name: l.event_name, ok: false, reason: "numeris neperskaitytas", card_read: ocr.join(",").slice(0, 200) || null }); return json({ error: "Kortelės numerio perskaityti nepavyko – fotografuok iš arčiau, tiesiai, be atspindžių, kad numeris užimtų visą kadrą." }, 422); }
     const hit = allowed.filter((c) => sameNo(c.card_no, read.card));
     if (hit.length !== 1) {
       await log({ event_name: l.event_name, ok: false, reason: cards.some((c) => sameNo(c.card_no, read.card)) ? "ne šio renginio kortelė" : "kortelė nerasta", card_read: read.card });
@@ -150,7 +165,7 @@ Deno.serve(async (req) => {
     }
     const c = hit[0];
     const [p] = await db<{ pin: string }[]>(`uta_pins?card_id=eq.${c.id}&select=pin`);
-    await log({ event_name: l.event_name, card_id: c.id, ok: !!p, reason: p ? null : "PIN neįrašytas", card_read: read.card, vehicle: [c.title, c.vehicle_name].filter(Boolean).join(" · ") || null });
+    await log({ event_name: l.event_name, card_id: c.id, ok: !!p, reason: p ? (read.ocr ? "skaityta telefone" : null) : "PIN neįrašytas", card_read: read.card, vehicle: [c.title, c.vehicle_name].filter(Boolean).join(" · ") || null });
     if (!p) return json({ error: "Šios kortelės PIN dar neįrašytas – kreipkis į ofisą." }, 404);
     return json({ pin: p.pin, card: mask(c.card_no), title: c.title || "", vehicle: c.vehicle_name || "" });
   } catch (e) {

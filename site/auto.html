@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Ndjc/QkNo03xmoi4lxXSxZ1sdvl56PFDg5fm6um3+Gs=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-caQfqzM7K0Ckj1LkDvwDsyMdYgg4CWVESQmUYyJ+mbE=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-qIyo0on0onCOzPAvvxLNo6H7Im79reZaScxBEoLA2Pw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-QCn1GbzA/UrRVaId/FA6Vq1eYRZgr9578/L9S0CwsG8=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Automobilis · Event Solutions</title>
@@ -213,6 +213,29 @@ async function vidShrink(file, maxBytes, onProg, prep){
 /* ---------- „Kuro kortelė“: the card's front and back photographed → its PIN (functions/uta-pin) ---------- */
 const PIN = { front:null, back:null, busy:false, loc:null, locSt:'' };
 const PIN_NAME = 'esPinName';
+// the card number read on the phone (Tesseract OCR) – used by the server when its AI cannot read photos
+const TESS = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/';
+function loadJs(src){ return new Promise((res, rej)=>{ const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = ()=>rej(new Error('nepavyko įkelti')); document.head.appendChild(s); }); }
+// grey, stronger contrast, 1600 px wide: the printed / embossed digits stand out
+async function ocrPrep(blob){
+  const img = await new Promise((res, rej)=>{ const i = new Image(); i.onload = ()=>res(i); i.onerror = rej; i.src = URL.createObjectURL(blob); });
+  const k = 1600 / Math.max(img.naturalWidth, img.naturalHeight), c = document.createElement('canvas');
+  c.width = Math.round(img.naturalWidth*k); c.height = Math.round(img.naturalHeight*k);
+  const g = c.getContext('2d'); g.filter = 'grayscale(1) contrast(1.8)'; g.drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(img.src);
+  return c;
+}
+async function pinOcr(blobs){
+  if(typeof Tesseract==='undefined') await loadJs(TESS+'tesseract.min.js');
+  const w = await Tesseract.createWorker('eng', 1, { workerPath:TESS+'worker.min.js', corePath:'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1', langPath:'https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int' });
+  try{
+    await w.setParameters({ tessedit_char_whitelist:'0123456789 ' });
+    const out = [];
+    for(const b of blobs){ const { data } = await w.recognize(await ocrPrep(b)); String(data.text||'').split(/\n+/).forEach(l=>{ const d = l.replace(/\D/g, ''); if(d.length >= 12) out.push(d); });
+      // the whole text too (a number broken over two lines)
+      const all = String(data.text||'').replace(/\D/g, ''); const m = all.match(/7060\d{12,15}/); if(m) out.push(m[0]); }
+    return [...new Set(out)].slice(0, 12);
+  } finally { try{ await w.terminate(); }catch(e){} }
+}
 // the phone's place: kept with the PIN view (the UTA reports show where and when the card was used)
 function pinLoc(){
   const show = ()=>{ const el = document.getElementById('pinLoc'); if(el) el.innerHTML = PIN.loc ? `${ic('place', 16)} Vieta nustatyta${PIN.loc.acc ? ' (±'+PIN.loc.acc+' m)' : ''}` : PIN.locSt==='wait' ? ic('place', 16)+' Nustatoma vieta…' : PIN.locSt ? ic('place', 16)+' '+esc(PIN.locSt)+' – PIN vis tiek bus parodytas' : ''; };
@@ -252,9 +275,10 @@ async function pinPage(){
     const name = document.getElementById('pinName').value.replace(/\s+/g, ' ').trim();
     if(name.length < 3 || !/\s/.test(name)){ err.textContent = 'Įrašyk savo vardą ir pavardę.'; document.getElementById('pinName').focus(); return; }
     err.textContent = ''; PIN.busy = true; b.disabled = true; b.textContent = 'Skaitoma kortelė…';
+    let ocr = []; try{ ocr = await pinOcr([PIN.front.blob, PIN.back.blob]); }catch(e){}
     try{
       const r = await fetch(SUPABASE_URL+'/functions/v1/uta-pin', { method:'POST', headers:{ 'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY },
-        body:JSON.stringify({ t:PIN_T, name, loc:PIN.loc, front:{ mime:'image/jpeg', data:await b64(PIN.front.blob) }, back:{ mime:'image/jpeg', data:await b64(PIN.back.blob) } }) });
+        body:JSON.stringify({ t:PIN_T, name, loc:PIN.loc, ocr, front:{ mime:'image/jpeg', data:await b64(PIN.front.blob) }, back:{ mime:'image/jpeg', data:await b64(PIN.back.blob) } }) });
       const j = await r.json().catch(()=>({}));
       if(!r.ok || !j.pin) throw new Error(j.error || ('Klaida '+r.status));
       out.innerHTML = `<div class="card pin-res"><small class="muted">${esc([j.title, j.vehicle].filter(Boolean).join(' · '))} · ${esc(j.card||'')}</small><div class="pin-big">${esc(j.pin)}</div><small class="muted" id="pinLeft">Paslėpsiu po 60 s</small></div>`;
