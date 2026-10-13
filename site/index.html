@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bapK7G4smUC/CzO9btKc1ROWONm0sQ/HProphCfKVY4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-hewaLHZtAA+spxHIHy86/7OttReLfqEZd3M4nmVNEoA=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-8F4S2O+0j36bS16JAFSY82tW5XzvyPO/4DKZKma7N6k=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QG+XLWuiFiLaQFNrlf74KcsOdK/EHFDoJwepBA5ZxSs=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-EoThXMAnAgg37xjCnecP4mce3L3lXXzNJPGwP4M93G0=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -8192,7 +8192,7 @@ function fleetPopRender(force){
       <div class="veh-repair ${v.repair && v.repair.on ? 'on' : ''}">
         <label class="checkbox-row"><input type="checkbox" class="veh-rep" ${v.repair && v.repair.on ? 'checked' : ''}> <b>🔧 Išvežtas remontui</b></label>
         ${v.repair && v.repair.on ? `<span class="veh-rep-dates"><label>Nuo<input type="date" class="veh-repfrom" value="${esc(v.repair.from||'')}"></label><label>Iki<input type="date" class="veh-repto" value="${esc(v.repair.to||'')}" min="${esc(v.repair.from||'')}"></label></span>
-        <input type="text" class="veh-repnote" value="${esc(v.repair.note || '')}" placeholder="kur tvarkomas (nebūtina)">` : ''}
+        <input type="text" class="veh-repnote" value="${esc(v.repair.note || '')}" placeholder="kur tvarkomas">` : ''}
       </div>
       <div class="veh-docs" data-docslot="${esc(v.id)}"></div>
       ${vlStripHtml(v)}
@@ -16858,7 +16858,7 @@ async function invInboxModal(){
         <input type="text" data-r="${i}" data-k="kw" value="${esc(x.kw||'')}" placeholder="pvz. lemona, ignitis, elektra">
         <select data-r="${i}" data-k="where">${INB_WHERE.map(([k,l])=>`<option value="${k}" ${(x.where||'any')===k?'selected':''}>${l}</option>`).join('')}</select>
         <select data-r="${i}" data-k="kind">${kindOpts(x.kind||'service')}</select>
-        <input type="text" data-r="${i}" data-k="supplier" value="${esc(x.supplier||'')}" placeholder="Tiekėjas (nebūtina)">
+        <input type="text" data-r="${i}" data-k="supplier" value="${esc(x.supplier||'')}" placeholder="Tiekėjas">
         <span class="inb-btns">${i ? `<button type="button" class="icon-btn" data-up="${i}" title="Aukščiau">↑</button>` : ''}<button type="button" class="icon-btn" data-rm="${i}" title="Pašalinti">✕</button></span>
       </div>`).join('') : '<div class="section-sub" style="margin:0 0 8px;">Taisyklių dar nėra – visi laiškai gaus numatytąją rūšį.</div>';
     q('ibxRules').querySelectorAll('[data-r]').forEach(el=>el.oninput = el.onchange = ()=>{ rules[+el.dataset.r][el.dataset.k] = el.value; });
@@ -22004,7 +22004,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v530';
+const APP_VER = 'v531';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -34951,8 +34951,8 @@ function slfEdit(it){
       <label class="field" style="grid-column:1/-1">Pavadinimas<input type="text" id="slfN" value="${esc(v.name)}" placeholder="pvz. Tape juoda 50 mm" autocomplete="off"></label>
       <label class="field">Kategorija<select id="slfC"><option value="">Be kategorijos</option>${SLF.cats.map(c=>`<option value="${esc(c.id)}" ${v.cat_id===c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}<option value="+">+ Nauja kategorija…</option></select></label>
       <div class="field">Kaip skaičiuojama<div class="exp-seg sm" id="slfU"><button type="button" data-u="pcs" class="${v.unit!=='pct' ? 'on' : ''}">Vienetais</button><button type="button" data-u="pct" class="${v.unit==='pct' ? 'on' : ''}">Procentais</button></div></div>
-      <label class="field">Baigiasi, kai liko ne daugiau <small class="muted" id="slfMinU">(${v.unit==='pct' ? '%' : 'vnt.'})</small><input type="number" id="slfM" min="0" step="any" inputmode="decimal" value="${v.min_level!=null ? esc(String(+v.min_level)) : ''}" placeholder="nebūtina"></label>
-      <label class="field">Pastaba<input type="text" id="slfNt" value="${esc(v.note||'')}" placeholder="nebūtina"></label>
+      <label class="field">Baigiasi, kai liko ne daugiau <small class="muted" id="slfMinU">(${v.unit==='pct' ? '%' : 'vnt.'})</small><input type="number" id="slfM" min="0" step="any" inputmode="decimal" value="${v.min_level!=null ? esc(String(+v.min_level)) : ''}"></label>
+      <label class="field">Pastaba<input type="text" id="slfNt" value="${esc(v.note||'')}"></label>
       ${it ? `<label class="pp-chk" style="grid-column:1/-1"><input type="checkbox" id="slfA" ${v.active ? 'checked' : ''}> Naudojamas (išjungtas nerodomas darbų plane)</label>` : ''}
     </div>
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;">${it ? '<button type="button" class="btn danger small" id="slfDel">Ištrinti</button>' : '<span></span>'}<span class="row" style="gap:8px;"><button type="button" class="btn" id="slfNo">Atšaukti</button><button type="button" class="btn primary" id="slfOk">Išsaugoti</button></span></div>`);
@@ -40341,15 +40341,15 @@ function vlForm(kind, v, rec){
     <div class="vl-form">
       <label class="field">Data<input type="date" id="vlDate" value="${esc(String(d.log_date).slice(0,10))}"></label>
       <label class="field">Rida (km)<input type="number" id="vlKm" min="0" step="1" inputmode="numeric" value="${d.mileage!=null ? esc(String(d.mileage)) : ''}" placeholder="${lastKm!=null ? 'paskutinė '+fmt(lastKm,0) : 'pvz. 123456'}"></label>
-      <label class="field">Moto valandos<input type="number" id="vlHrs" min="0" step="0.1" inputmode="decimal" value="${d.engine_hours!=null ? esc(String(+d.engine_hours)) : ''}" placeholder="${lastH!=null ? 'paskutinės '+fmt(lastH,0) : 'nebūtina'}"></label>
+      <label class="field">Moto valandos<input type="number" id="vlHrs" min="0" step="0.1" inputmode="decimal" value="${d.engine_hours!=null ? esc(String(+d.engine_hours)) : ''}" placeholder="${lastH!=null ? 'paskutinės '+fmt(lastH,0) : ''}"></label>
       ${chk ? `<div class="field vl-wide">Skysčiai (kiek papildyta / patikrinta)<div class="vl-fluids">${VL_FLUIDS.map(([k,l])=>`<label class="vl-fluid"><span>${esc(l)}</span><input type="number" min="0" step="any" inputmode="decimal" data-flv="${k}" value="${fl[k] && fl[k].v!=null ? esc(String(fl[k].v)) : ''}" placeholder="0"><select data-flu="${k}"><option value="ml" ${(fl[k]||{}).u!=='l'?'selected':''}>ml</option><option value="l" ${(fl[k]||{}).u==='l'?'selected':''}>l</option></select></label>`).join('')}</div></div>
         <div class="field vl-wide">Bendra būklė<div class="vl-sevs">${Object.entries(VL_COND).map(([k,c])=>`<label class="vl-sev ${c.cls==='ok'?'low':c.cls}"><input type="radio" name="vlCond" value="${k}" ${(d.data.condition||'good')===k?'checked':''}> ${esc(c.label)}</label>`).join('')}</div></div>`
       : svc ? `<label class="field">Kategorija<select id="vlCat">${VL_CATS.map(c=>`<option ${d.category===c?'selected':''}>${esc(c)}</option>`).join('')}</select></label>
         <label class="field">Kaina (€, su PVM)<input type="number" id="vlCost" min="0" step="0.01" inputmode="decimal" value="${d.cost!=null ? esc(String(+d.cost)) : ''}"></label>
         <label class="field vl-wide">Kas atlikta<input type="text" id="vlTitle" value="${esc(d.title||'')}" placeholder="pvz. Tepalų ir filtrų keitimas"></label>
         <label class="field vl-wide">Servisas / kas tvarkė<input type="text" id="vlPlace" value="${esc(d.place||'')}" placeholder="pvz. UAB Autoservisas, Vilnius"></label>`
-      : fuel ? `<label class="field">Kiek įpilta (l)<input type="number" id="vlFuelL" min="0" step="0.01" inputmode="decimal" value="${d.data.liters!=null ? esc(String(+d.data.liters)) : ''}" placeholder="nebūtina"></label>
-        <label class="field">Suma (€, su PVM)<input type="number" id="vlCost" min="0" step="0.01" inputmode="decimal" value="${d.cost!=null ? esc(String(+d.cost)) : ''}" placeholder="nebūtina"></label>
+      : fuel ? `<label class="field">Kiek įpilta (l)<input type="number" id="vlFuelL" min="0" step="0.01" inputmode="decimal" value="${d.data.liters!=null ? esc(String(+d.data.liters)) : ''}"></label>
+        <label class="field">Suma (€, su PVM)<input type="number" id="vlCost" min="0" step="0.01" inputmode="decimal" value="${d.cost!=null ? esc(String(+d.cost)) : ''}"></label>
         <label class="field">Vairuotojo kodas <small class="muted">(iš renginio laiško)</small><input type="text" id="vlCode" inputmode="numeric" maxlength="4" value="${esc(d.data.driver_code||'')}" placeholder="4 skaitmenys" autocomplete="off"><small class="dc-who" id="vlCodeWho"></small></label>`
       : inc ? `<label class="field">Laikas<input type="time" id="vlTime" value="${esc(d.data.time||'')}"></label>
         <label class="field vl-wide">Kas nutiko<input type="text" id="vlTitle" value="${esc(d.title||'')}" placeholder="pvz. Įbrėžtas galinis bamperis stovėjimo aikštelėje"></label>
@@ -40361,7 +40361,7 @@ function vlForm(kind, v, rec){
         <label class="field">Tepalas (rūšis)<input type="text" id="vlOilType" value="${esc(oil.type||'')}" placeholder="pvz. 5W-30 Castrol"></label>
         <label class="field">Kiekis (l)<input type="number" id="vlOilL" min="0" step="0.1" inputmode="decimal" value="${oil.liters!=null ? esc(String(oil.liters)) : ''}"></label>
         <label class="field">Kitas keitimas ties (km)<input type="number" id="vlOilNextKm" min="0" step="1" inputmode="numeric" value="${oil.next_km!=null ? esc(String(oil.next_km)) : ''}" placeholder="pvz. rida + 15 000"></label>
-        <label class="field">arba ties (moto val.)<input type="number" id="vlOilNextH" min="0" step="1" inputmode="numeric" value="${oil.next_hours!=null ? esc(String(oil.next_hours)) : ''}" placeholder="nebūtina"></label>
+        <label class="field">arba ties (moto val.)<input type="number" id="vlOilNextH" min="0" step="1" inputmode="numeric" value="${oil.next_hours!=null ? esc(String(oil.next_hours)) : ''}"></label>
         <label class="field">arba iki (data)<input type="date" id="vlOilNextD" value="${esc(oil.next_date||'')}"></label>
       </div></div>` : ''}
       ${inc ? `<label class="field vl-wide">Komentaras<textarea id="vlComment" rows="2" placeholder="pvz. kaltininkas, policijos / draudimo bylos nr., kas vairavo…">${esc(d.data.comment||'')}</textarea></label>` : ''}
@@ -44383,6 +44383,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-14 04:30', v:'v531', k:'chg', t:'Be „nebūtina“ laukeliuose', f:'Tušti laukeliai nebe rodo „nebūtina“: QR puslapio kuro pylime (litrai, suma, rida), pylimo formoje prie transporto, Likučiuose ir kitur.' },
   { d:'2026-10-14 04:10', v:'v530', k:'new', t:'QR ant automobilio → kuro kortelės PIN', f:'Nuskenavus automobilio QR kodą ir paspaudus „Kuro pylimas“ pirmiausia rodomas tam automobiliui priskirtos UTA kortelės PIN, po to – pylimo forma. Įmonės nariui, prisijungusiam programėlėje ar telefono naršyklėje, kodo nereikia. Ne nariui (kiti QR puslapio pasirinkimai jam veikia kaip anksčiau) reikia įrašyti savo vairuotojo kodą iš renginio laiško – kodas turi būti priskirtas tam automobiliui renginyje tą dieną (±1 d.); po 5 neteisingų kodų kuro PIN tam automobiliui užrakinamas parai. Kiekviena peržiūra (kas, kada, kur, renginys) įrašoma į UTA ataskaitą ir įkėlus UTA PDF susiejama su pylimu. FURA vairuotojams kodas nebekuriamas ir laiške nerodomas. Supabase paleisk supabase/sql/uta_vehicle_pin.sql.' },
   { d:'2026-10-14 03:20', v:'v529', k:'new', t:'Kuro kortelė → UTA pylimas', f:'Kai vairuotojas telefone nurašo skaičius po „CVC:“ ir pamato PIN, šis įvykis iškart matomas UTA puslapyje ir Ataskaitose (kas, kada, kur, kuri kortelė) – net kol mėnesio ataskaitos dar nėra („Laukia UTA ataskaitos“). Įkėlus UTA ataskaitą (PDF ar Excel) PIN peržiūra pati susiejama su tos kortelės pylimu (be laiko – tos dienos, su laiku – artimiausias per 6 val.); stulpelyje „UTA pylimas“ – data, litrai ir suma. Nesusietos rodomos raudonai, jų skaičius – iškart po įkėlimo ir viršuje prie pylimų sumų. Supabase paleisk supabase/sql/uta_pin_fills.sql.' },
   { d:'2026-10-14 02:40', v:'v528', k:'chg', t:'Kuro kortelė: skaičiai po „CVC:“', f:'„Kuro kortelė“ puslapyje vairuotojas nurašo tik skaičius, esančius kortelės gale po „CVC:“ – pagal juos randama to renginio kortelė ir parodomas PIN. Tuos skaičius prie kortelės įrašo Transportą redaguojantys (UTA kortelės → kortelė → „Skaičiai po CVC:“, 3–8 skaitmenys). Po 5 neteisingų bandymų nuoroda užrakinama parai. Paleisk atnaujintą supabase/sql/uta_card_cvc.sql.' },
