@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Fl4fuo2ScJun+FuG23nts3lWJmiP8+kczhpJ/3F93Gg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-73a8fSjvdPswPKyJUpJOU0e1eYLljD5emggWgn8j9S4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -6142,7 +6142,14 @@ body.qk-moving .qk-win-f{pointer-events:none;} body.qk-moving{user-select:none;}
 .ws-layer[data-n="3"]{grid-template-columns:repeat(3,minmax(0,1fr));}
 .ws-pane{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--panel);border:1px solid var(--border-2,var(--border));border-radius:12px;overflow:hidden;}
 .ws-pane-h{display:flex;align-items:center;gap:8px;padding:5px 8px 5px 12px;background:var(--panel-2);border-bottom:1px solid var(--border);color:var(--text);}
-.ws-pane-h > svg{width:18px;height:18px;color:var(--accent);flex:none;} .ws-pane-h b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.ws-pane{position:relative;}
+.ws-title{display:inline-flex;align-items:center;gap:8px;min-width:0;padding:3px 8px 3px 4px;margin-left:-4px;border:1px solid transparent;border-radius:8px;background:none;color:var(--text);font:inherit;cursor:pointer;}
+.ws-title:hover{border-color:var(--accent);background:var(--panel);}
+.ws-title svg{width:18px;height:18px;color:var(--accent);flex:none;} .ws-title svg:last-child{width:15px;height:15px;color:var(--text-faint);}
+.ws-title:hover svg:last-child{color:var(--accent);}
+.ws-title b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.ws-swap{position:absolute;top:40px;left:8px;z-index:5;width:min(420px, calc(100% - 16px));max-height:min(420px, calc(100% - 50px));display:flex;flex-direction:column;gap:8px;padding:10px;background:var(--panel);border:1px solid var(--border-2,var(--border));border-radius:10px;box-shadow:0 14px 36px rgb(0 0 0 / .5);}
+.ws-swap .ws-res{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
 .ws-add{display:flex;flex-direction:column;align-items:stretch;gap:8px;border:2px dashed var(--border);border-radius:12px;color:var(--text-dim);padding:14px;min-height:0;min-width:0;}
 .ws-add-h{display:flex;align-items:center;gap:8px;} .ws-add-h svg{width:22px;height:22px;color:var(--accent);} .ws-add-h b{font-size:15px;color:var(--text);}
 .ws-q{width:100%;}
@@ -22353,7 +22360,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v582';
+const APP_VER = 'v583';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -23347,6 +23354,27 @@ function wsFind(q, tabs){
 }
 function wsResHtml(q, tabs){ const l = wsFind(q, tabs);
   return l.length ? l.map((x, i)=>{ const ic = wsTabInfo(x.k).ic; return `<button type="button" class="ws-r ${i ? '' : 'on'}" data-wsadd="${esc(x.k)}">${ic ? ic.outerHTML : ''}<span>${esc(x.lab)}</span></button>`; }).join('') : '<div class="ws-none">Nerasta</div>'; }
+function wsTitleHtml(k){ const { lab, ic } = wsTabInfo(k);
+  return `<button type="button" class="ws-title" data-wsa="swap" data-k="${esc(k)}" title="Pakeisti programą šiame lange">${ic ? ic.outerHTML : ''}<b>${esc(lab)}</b>${slIcon('swap')}</button>`; }
+// another program in the same window (the window keeps its place and size)
+function wsSwapOpen(pane){
+  const old = pane.querySelector('.ws-swap'); if(old){ old.remove(); return; }
+  const box = document.createElement('div'); box.className = 'ws-swap';
+  box.innerHTML = `<input type="search" class="ws-q" placeholder="Ieškoti programos…" autocomplete="off"><div class="ws-res"></div>`;
+  pane.appendChild(box); box.querySelector('.ws-res').innerHTML = wsResHtml('', wsPref().tabs); box.querySelector('.ws-q').focus();
+  const out = e=>{ if(!box.isConnected){ document.removeEventListener('pointerdown', out, true); return; } if(!box.contains(e.target) && !e.target.closest('.ws-title')){ box.remove(); document.removeEventListener('pointerdown', out, true); } };
+  document.addEventListener('pointerdown', out, true);
+}
+function wsSwap(pane, k){
+  const p = wsPref(), from = pane.dataset.k, i = p.tabs.indexOf(from);
+  if(!k || !TABS[k] || k===from || p.tabs.includes(k) || i < 0){ pane.querySelector('.ws-swap')?.remove(); return; }
+  p.tabs[i] = k; wsSave(p);
+  pane.dataset.k = k; pane.querySelector('.ws-title').outerHTML = wsTitleHtml(k);
+  pane.querySelectorAll('[data-wsa]').forEach(b=>{ b.dataset.k = k; });
+  const pz = pane.querySelector('.pz'); if(pz) pz.outerHTML = paneZHtml(k);
+  pane.querySelector('iframe').src = wsSrc(k); pane.querySelector('.ws-swap')?.remove();
+  document.querySelectorAll('#homeWs .ws-add').forEach(a=>{ a.dataset.sig = ''; }); wsPlace();
+}
 function wsAdd(k){ const p = wsPref(); if(k && TABS[k] && !p.tabs.includes(k) && p.tabs.length < p.n){ p.tabs.push(k); wsSave(p); } wsPlace(); }
 function wsSrc(k){ return location.href.split(/[?#]/)[0] + '?langas=' + encodeURIComponent(k) + '&ilangas=1' + paneZSrc(k); }
 // sizes of the windows: where the columns (and, with 4, the rows) are cut – 0…1 of the width / height
@@ -23397,17 +23425,18 @@ function wsLayer(){
       const b = e.target.closest('[data-wsa]'); if(!b) return; const k = b.dataset.k, p = wsPref();
       if(b.dataset.wsa==='close'){ p.tabs = p.tabs.filter(x=>x!==k); wsSave(p); wsPlace(); }
       else if(b.dataset.wsa==='main') setTab(k);
+      else if(b.dataset.wsa==='swap') wsSwapOpen(b.closest('.ws-pane'));
       else if(b.dataset.wsa==='reload'){ const f = b.closest('.ws-pane').querySelector('iframe'); if(f) f.src = wsSrc(k); } });
     L.addEventListener('pointerdown', e=>{ const s = e.target.closest('.ws-split'); if(s && e.button===0) wsSplitDrag(e, s, L); });
     L.addEventListener('dblclick', e=>{ const s = e.target.closest('.ws-split'); if(!s) return; const hw = Object.assign({}, prefGet('homeWork') || {}); delete hw.split; prefSet('homeWork', hw); wsGrid(L); });
-    L.addEventListener('input', e=>{ const q = e.target.closest('.ws-q'); if(!q) return; q.closest('.ws-add').querySelector('.ws-res').innerHTML = wsResHtml(q.value, wsPref().tabs); });
-    L.addEventListener('keydown', e=>{ const q = e.target.closest('.ws-q'); if(!q) return; const res = q.closest('.ws-add').querySelector('.ws-res'), items = [...res.querySelectorAll('.ws-r')];
+    L.addEventListener('input', e=>{ const q = e.target.closest('.ws-q'); if(!q) return; q.closest('.ws-add, .ws-swap').querySelector('.ws-res').innerHTML = wsResHtml(q.value, wsPref().tabs); });
+    L.addEventListener('keydown', e=>{ const q = e.target.closest('.ws-q'); if(!q) return; const res = q.closest('.ws-add, .ws-swap').querySelector('.ws-res'), items = [...res.querySelectorAll('.ws-r')];
       let at = items.findIndex(x=>x.classList.contains('on'));
       if(e.key==='ArrowDown' || e.key==='ArrowUp'){ e.preventDefault(); if(!items.length) return; at = (at + (e.key==='ArrowDown' ? 1 : -1) + items.length) % items.length;
         items.forEach((x, i)=>x.classList.toggle('on', i===at)); items[at].scrollIntoView({ block:'nearest' }); }
-      else if(e.key==='Enter'){ e.preventDefault(); e.stopPropagation(); if(items[at]) wsAdd(items[at].dataset.wsadd); }
-      else if(e.key==='Escape'){ q.value = ''; res.innerHTML = wsResHtml('', wsPref().tabs); } });
-    L.addEventListener('mousedown', e=>{ const r = e.target.closest('[data-wsadd]'); if(r){ e.preventDefault(); wsAdd(r.dataset.wsadd); } }); }
+      else if(e.key==='Enter'){ e.preventDefault(); e.stopPropagation(); const sw = q.closest('.ws-swap'); if(items[at]){ if(sw) wsSwap(sw.closest('.ws-pane'), items[at].dataset.wsadd); else wsAdd(items[at].dataset.wsadd); } }
+      else if(e.key==='Escape'){ const sw = q.closest('.ws-swap'); if(sw){ sw.remove(); return; } q.value = ''; res.innerHTML = wsResHtml('', wsPref().tabs); } });
+    L.addEventListener('mousedown', e=>{ const r = e.target.closest('[data-wsadd]'); if(!r) return; e.preventDefault(); const sw = r.closest('.ws-swap'); if(sw) wsSwap(sw.closest('.ws-pane'), r.dataset.wsadd); else wsAdd(r.dataset.wsadd); }); }
   return L;
 }
 // the panes follow the chosen pages (a pane already open keeps its page – it is not reloaded)
@@ -23415,7 +23444,7 @@ function wsSync(L, tabs){
   L.querySelectorAll('.ws-pane[data-k]').forEach(el=>{ if(!tabs.includes(el.dataset.k)) el.remove(); });
   tabs.forEach(k=>{ if(L.querySelector('.ws-pane[data-k="'+CSS.escape(k)+'"]')) return; const { lab, ic } = wsTabInfo(k);
     const el = document.createElement('div'); el.className = 'ws-pane'; el.dataset.k = k;
-    el.innerHTML = `<div class="ws-pane-h">${ic ? ic.outerHTML : ''}<b>${esc(lab)}</b><span class="qk-win-sp"></span>
+    el.innerHTML = `<div class="ws-pane-h">${wsTitleHtml(k)}<span class="qk-win-sp"></span>
       ${paneZHtml(k)}<button type="button" class="qk-win-b" data-wsa="reload" data-k="${esc(k)}" title="Atnaujinti">${slIcon('refresh')}</button>
       <button type="button" class="qk-win-b" data-wsa="main" data-k="${esc(k)}" title="Atidaryti visame lange">${slIcon('openext')}</button>
       <button type="button" class="qk-win-b qk-win-x" data-wsa="close" data-k="${esc(k)}" title="Išimti iš darbo erdvės">${slIcon('close')}</button></div>
@@ -45833,6 +45862,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-15 11:00', v:'v583', k:'new', t:'Darbo erdvė: pakeisti programą lange', f:'Paspausk lango pavadinimą (šalia – keitimo ženklas): atsidaro paieška – rašyk programos pavadinimą ir pasirink (Enter arba paspaudimu). Langas lieka toje pačioje vietoje ir to paties dydžio, kiti langai neužkraunami iš naujo.' },
   { d:'2026-10-15 10:30', v:'v582', k:'fix', t:'Languose puslapis per visą aukštį', f:'Darbo erdvės ir greituosiuose languose Renginių lentelė (ir kiti puslapiai) užima visą lango aukštį – ir pakeitus mastelį, ir pakeitus lango dydį.' },
   { d:'2026-10-15 10:00', v:'v581', k:'new', t:'Darbo erdvė: 2 / 3 / 4 langai ir programų paieška', f:'Pradžios viršutinėje juostoje „Langai 2 3 4“ – pasirink, kiek darbinių langų (2 – šalia, 3 – eilėje, 4 – 2×2). Laisvoje vietoje rašyk programos pavadinimą (pvz. „zmon“ – Žmonės): sąrašas filtruojasi rašant, Enter arba paspaudimas atidaro langą, rodyklės – pasirinkti.' },
   { d:'2026-10-15 09:30', v:'v580', k:'new', t:'Darbo erdvės langai: mastelis ir dydis', f:'Kiekvieno darbo erdvės (ir greitojo) lango antraštėje − / + keičia puslapio mastelį lange (50–150 %, paspaudus skaičių – 100 %); įsimenama kiekvienam puslapiui. Tarpą tarp langų tempk – keičiasi langų plotis, o su 4 langais ir aukštis; dvigubas spragtelėjimas ant tarpo grąžina lygius langus.' },
