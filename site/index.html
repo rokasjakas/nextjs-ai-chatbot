@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-z1zVyGueVRFC/XI8wFdRiIeElrKi/SWppCVTpPQWXQQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-CUAdEhvObbDvsYgVBWWh9uGJyLWeFem090UwS3l12tU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -6127,13 +6127,22 @@ body.ev-full-on{overflow:hidden;}
 body.qk-moving .qk-win-f{pointer-events:none;} body.qk-moving{user-select:none;}
 .qk-win.qk-drag{will-change:transform;box-shadow:0 10px 26px rgb(0 0 0 / .45);}
 .ws-slot{width:100%;min-height:320px;}
+.ws-split{position:absolute;z-index:3;touch-action:none;}
+.ws-split.v{top:0;bottom:0;width:12px;transform:translateX(-50%);cursor:col-resize;}
+.ws-split.h{left:0;right:0;height:12px;transform:translateY(-50%);cursor:row-resize;}
+.ws-split::after{content:'';position:absolute;border-radius:3px;background:transparent;transition:background .12s;}
+.ws-split.v::after{top:30%;bottom:30%;left:4px;width:4px;} .ws-split.h::after{left:30%;right:30%;top:4px;height:4px;}
+.ws-split:hover::after{background:var(--text-faint);} .ws-split.on::after{background:var(--accent);top:0;bottom:0;left:4px;}
+.ws-split.h.on::after{left:0;right:0;top:4px;bottom:auto;}
+.pz{display:inline-flex;align-items:center;gap:2px;margin-right:4px;} .pz .qk-win-b{width:28px;height:28px;}
+.pz-v{min-width:46px;height:28px;padding:0 4px;border:0;background:none;color:var(--text-dim);font:inherit;font-size:12px;font-weight:700;cursor:pointer;border-radius:6px;} .pz-v:hover{color:var(--text);background:var(--panel);}
 .ws-layer{position:fixed;z-index:30;display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);}
 .ws-layer.hidden{display:none;}
 .ws-layer[data-n="1"]{grid-template-columns:1fr;} .ws-layer[data-n="2"]{grid-template-columns:repeat(2,minmax(0,1fr));}
 .ws-layer[data-n="3"]{grid-template-columns:repeat(3,minmax(0,1fr));}
 .ws-pane{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--panel);border:1px solid var(--border-2,var(--border));border-radius:12px;overflow:hidden;}
 .ws-pane-h{display:flex;align-items:center;gap:8px;padding:5px 8px 5px 12px;background:var(--panel-2);border-bottom:1px solid var(--border);color:var(--text);}
-.ws-pane-h > svg{width:18px;height:18px;color:var(--accent);} .ws-pane-h b{font-size:14px;}
+.ws-pane-h > svg{width:18px;height:18px;color:var(--accent);flex:none;} .ws-pane-h b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
 .ws-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--border);border-radius:12px;color:var(--text-dim);padding:16px;min-height:0;}
 .ws-add > svg{width:34px;height:34px;color:var(--accent);} .ws-add b{font-size:15px;color:var(--text);} .ws-add small{font-size:12px;}
 .ws-add select{max-width:260px;width:100%;}
@@ -6145,7 +6154,7 @@ main .home-layout.ws-on .home-tile .ht-title{font-size:12.5px !important;line-he
 main .home-layout.ws-on .home-tile .ht-text{min-width:0;}
 main .home-layout.ws-on .home-tile .ht-stat,main .home-layout.ws-on .home-tile .ht-extra{display:none !important;}
 main .home-layout.ws-on .home-shell{gap:10px;}
-@media (max-width:760px){ #wsHdr{display:none;} .ws-layer{grid-template-columns:1fr !important;} }
+@media (max-width:760px){ #wsHdr{display:none;} .ws-layer{grid-template-columns:1fr !important;grid-template-rows:none !important;} .ws-split{display:none;} }
 .qk-ghost{position:fixed;border:2px dashed var(--accent);border-radius:12px;background:color-mix(in srgb, var(--accent) 8%, transparent);pointer-events:none;}
 html.es-embed:not(.es-pick) aside.rail, html.es-embed header.pageheader, html.es-embed #homeWs, html.es-embed #qkBar, html.es-embed #gSide, html.es-embed .gside-tab{display:none !important;}
 html.es-embed:not(.es-pick) main{margin:0 !important;width:auto !important;max-width:none !important;}
@@ -13078,7 +13087,9 @@ function appZ(){ const z = parseFloat(document.documentElement.style.zoom); retu
 function appZoomApply(z){
   const r = document.documentElement;
   if(window.innerWidth <= 760 && !window.esDesktop) z = 1;   // a phone zooms with two fingers – the layout stays as made for it
-  if(window.esDesktop && typeof esDesktop.setZoom==='function'){ try{ esDesktop.setZoom(z); }catch(e){} r.style.removeProperty('zoom'); z = 1; }
+  const emb = r.classList.contains('es-embed');   // a window inside the app (darbo erdvė, greitasis langas): its own size, set from outside
+  if(emb){ const pz = window.esPaneZ != null ? window.esPaneZ : parseFloat(new URLSearchParams(location.search).get('dydis')); if(pz > 0) z = pz; }
+  if(!emb && window.esDesktop && typeof esDesktop.setZoom==='function'){ try{ esDesktop.setZoom(z); }catch(e){} r.style.removeProperty('zoom'); z = 1; }
   else if(z!==1) r.style.zoom = z; else r.style.removeProperty('zoom');
   if(z!==1){ r.style.setProperty('--vh100', 'calc(100vh / '+z+')'); r.style.setProperty('--dvh100', 'calc(100dvh / '+z+')'); }
   else { r.style.removeProperty('--vh100'); r.style.removeProperty('--dvh100'); }
@@ -13189,6 +13200,18 @@ function qkRender(){
 }
 // a quick window: the page in its own window over the app – moved by its top bar, resized at the corner, closed with ×
 let QK_Z = 8900;
+// size of the page inside a window (darbo erdvė / greitasis langas): − / + in its top bar, remembered per page
+const PANE_Z = [.5, .6, .7, .8, .9, 1, 1.1, 1.2, 1.3, 1.5];
+function paneZGet(k){ const m = prefGet('paneZoom') || {}; const z = +m[k]; return z > 0 ? z : 1; }
+function paneZHtml(k){ return `<span class="pz">${'<button type="button" class="qk-win-b" data-pz="-1" title="Mažinti">'+slIcon('zoomout')+'</button>'}<button type="button" class="pz-v" data-pz="0" title="Atstatyti 100 %">${Math.round(paneZGet(k)*100)}%</button><button type="button" class="qk-win-b" data-pz="1" title="Didinti">${slIcon('zoomin')}</button></span>`; }
+function paneZSrc(k){ const z = paneZGet(k); return z !== 1 ? '&dydis='+z : ''; }
+function paneZStep(k, d, fr, lbl){
+  let z = paneZGet(k);
+  if(!d) z = 1; else { const i = PANE_Z.findIndex(x=>x >= z - 1e-6); z = PANE_Z[Math.max(0, Math.min(PANE_Z.length - 1, (i < 0 ? PANE_Z.length - 1 : i) + d))]; }
+  const m = Object.assign({}, prefGet('paneZoom') || {}); if(z === 1) delete m[k]; else m[k] = z; prefSet('paneZoom', m);
+  if(lbl) lbl.textContent = Math.round(z*100)+'%';
+  try{ fr.contentWindow.esPaneZ = z; fr.contentWindow.appZoomApply(z); }catch(e){}
+}
 // k '+' – a new one: the page inside keeps its left menu; „Pridėti“ adds the page shown there and the window stays as that quick window
 function qkWin(k){
   const old = document.querySelector('.qk-win[data-k="'+CSS.escape(k)+'"]'); if(old){ old.style.zIndex = ++QK_Z; return; }
@@ -13203,10 +13226,10 @@ function qkWin(k){
       <button type="button" class="qk-win-b qk-win-add" data-qwa="add" title="Pridėti šį puslapį į greituosius langus">${slIcon('plus')}<span>Pridėti</span></button>
       <button type="button" class="qk-win-b qk-win-x" data-qwa="close" title="Uždaryti">${slIcon('close')}</button>`;
     else { const { lab, ic } = tabLab(k); h.innerHTML = `${ic ? ic.outerHTML : ''}<b>${esc(lab)}</b><span class="qk-win-sp"></span>
-      <button type="button" class="qk-win-b" data-qwa="main" title="Atidaryti pagrindiniame lange">${slIcon('openext')}</button>
+      ${paneZHtml(k)}<button type="button" class="qk-win-b" data-qwa="main" title="Atidaryti pagrindiniame lange">${slIcon('openext')}</button>
       <button type="button" class="qk-win-b qk-win-x" data-qwa="close" title="Uždaryti">${slIcon('close')}</button>`; } };
   w.innerHTML = `<div class="qk-win-h"></div>
-    <iframe class="qk-win-f" src="${esc(location.href.split(/[?#]/)[0] + '?langas=' + encodeURIComponent(pick ? 'home' : k) + '&ilangas=1' + (pick ? '&rinkti=1' : ''))}"></iframe>
+    <iframe class="qk-win-f" src="${esc(location.href.split(/[?#]/)[0] + '?langas=' + encodeURIComponent(pick ? 'home' : k) + '&ilangas=1' + (pick ? '&rinkti=1' : paneZSrc(k)))}"></iframe>
     <span class="qk-win-r" title="Tempk – keisti dydį"></span>`;
   head(); document.body.appendChild(w);
   const fr = w.querySelector('iframe'), shown = ()=>{ try{ return fr.contentWindow.esCurTab || ''; }catch(e){ return ''; } };
@@ -13240,7 +13263,8 @@ function qkWin(k){
     el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up); });
   drag(w.querySelector('.qk-win-h'), 'move');
   drag(w.querySelector('.qk-win-r'), 'size');
-  w.querySelector('.qk-win-h').addEventListener('click', e=>{ const b = e.target.closest('[data-qwa]'); if(!b) return;
+  w.querySelector('.qk-win-h').addEventListener('click', e=>{ const z = e.target.closest('[data-pz]'); if(z){ paneZStep(k, +z.dataset.pz, fr, w.querySelector('.pz-v')); return; }
+    const b = e.target.closest('[data-qwa]'); if(!b) return;
     if(b.dataset.qwa==='close') w.remove();
     else if(b.dataset.qwa==='main'){ w.remove(); qkGo(k); }
     else if(b.dataset.qwa==='add'){ const s = shown(); if(!s || !TABS[s]){ toast('Puslapis dar neužsikrovė – palauk akimirką.'); return; }
@@ -22318,7 +22342,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v579';
+const APP_VER = 'v580';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -23296,7 +23320,35 @@ function renderHomeTab(){
    puslapį jie tik paslepiami (ne užkraunami iš naujo), grįžus matai juos tokius pat */
 const WS_MAX = 4;
 function wsPref(){ const p = prefGet('homeWork') || {}; return { on:!!p.on, tabs:(Array.isArray(p.tabs) ? p.tabs : []).filter(k=>TABS[k] && k!=='home' && canView(k)).slice(0, WS_MAX) }; }
-function wsSave(p){ prefSet('homeWork', { on:!!p.on, tabs:p.tabs.slice(0, WS_MAX) }); }
+function wsSave(p){ prefSet('homeWork', Object.assign({}, prefGet('homeWork') || {}, { on:!!p.on, tabs:p.tabs.slice(0, WS_MAX) })); }
+function wsSrc(k){ return location.href.split(/[?#]/)[0] + '?langas=' + encodeURIComponent(k) + '&ilangas=1' + paneZSrc(k); }
+// sizes of the windows: where the columns (and, with 4, the rows) are cut – 0…1 of the width / height
+function wsSplit(){ const s = (prefGet('homeWork') || {}).split || {}; return { c2:s.c2 || [.5], c3:s.c3 || [1/3, 2/3], r:s.r || [.5] }; }
+const WS_GAP = 10;
+function wsGrid(L){
+  const n = +L.dataset.n, sp = wsSplit(), cut = n===3 ? sp.c3 : n>=2 ? sp.c2 : [];
+  const fr = a=>{ const pts = [0, ...a, 1]; return pts.slice(1).map((x, i)=>(x - pts[i]).toFixed(4)+'fr').join(' '); };
+  L.style.gridTemplateColumns = n<=1 ? '1fr' : fr(cut);
+  L.style.gridTemplateRows = n===4 ? fr(sp.r) : '1fr';
+  L.querySelectorAll('.ws-split').forEach(s=>s.remove());
+  const m = cut.length + 1, at = (c, i, cnt)=>`calc(${c} * (100% - ${WS_GAP*(cnt-1)}px) + ${WS_GAP*i + WS_GAP/2}px)`;
+  cut.forEach((c, i)=>{ const s = document.createElement('div'); s.className = 'ws-split v'; s.dataset.i = i; s.style.left = at(c, i, m); s.title = 'Tempk – keisti langų plotį'; L.appendChild(s); });
+  if(n===4){ const s = document.createElement('div'); s.className = 'ws-split h'; s.dataset.i = 0; s.style.top = at(sp.r[0], 0, 2); s.title = 'Tempk – keisti langų aukštį'; L.appendChild(s); }
+}
+// dragging a gap between windows: only the line moves meanwhile, the windows take the new size on release (no lag)
+function wsSplitDrag(e, s, L){
+  e.preventDefault(); s.setPointerCapture(e.pointerId); s.classList.add('on'); document.body.classList.add('qk-moving');
+  const v = s.classList.contains('v'), n = +L.dataset.n, i = +s.dataset.i, full = wsSplit(), key = v ? (n===3 ? 'c3' : 'c2') : 'r', arr = full[key].slice();
+  const cnt = arr.length + 1, R = L.getBoundingClientRect(), size = (v ? R.width : R.height) - WS_GAP*(cnt-1);
+  let raf = 0, c = arr[i];
+  const mv = ev=>{ const x = (v ? ev.clientX - R.left : ev.clientY - R.top) - WS_GAP*i - WS_GAP/2;
+    c = Math.max((i ? arr[i-1] : 0) + .12, Math.min((i < arr.length-1 ? arr[i+1] : 1) - .12, x / size));
+    if(!raf) raf = requestAnimationFrame(()=>{ raf = 0; s.style[v ? 'left' : 'top'] = `calc(${c} * (100% - ${WS_GAP*(cnt-1)}px) + ${WS_GAP*i + WS_GAP/2}px)`; }); };
+  const up = ()=>{ s.removeEventListener('pointermove', mv); s.removeEventListener('pointerup', up); s.removeEventListener('pointercancel', up); if(raf) cancelAnimationFrame(raf);
+    document.body.classList.remove('qk-moving'); arr[i] = Math.round(c*1000)/1000;
+    const hw = Object.assign({}, prefGet('homeWork') || {}); hw.split = Object.assign({}, hw.split || {}, { [key]:arr }); prefSet('homeWork', hw); wsGrid(L); };
+  s.addEventListener('pointermove', mv); s.addEventListener('pointerup', up); s.addEventListener('pointercancel', up);
+}
 function wsTabInfo(k){ const rb = document.querySelector('.rail-btn[data-tab="'+k+'"]'); return { lab:rb ? rb.dataset.label : k, ic:rb ? rb.querySelector('svg') : null }; }
 function wsHdrRender(){
   const b = document.getElementById('wsHdr'); if(!b) return;
@@ -23314,10 +23366,13 @@ function wsToggle(){
 function wsLayer(){
   let L = document.getElementById('homeWs');
   if(!L){ L = document.createElement('div'); L.id = 'homeWs'; L.className = 'ws-layer hidden'; document.body.appendChild(L);
-    L.addEventListener('click', e=>{ const b = e.target.closest('[data-wsa]'); if(!b) return; const k = b.dataset.k, p = wsPref();
+    L.addEventListener('click', e=>{ const z = e.target.closest('[data-pz]'); if(z){ const pane = z.closest('.ws-pane'); paneZStep(pane.dataset.k, +z.dataset.pz, pane.querySelector('iframe'), pane.querySelector('.pz-v')); return; }
+      const b = e.target.closest('[data-wsa]'); if(!b) return; const k = b.dataset.k, p = wsPref();
       if(b.dataset.wsa==='close'){ p.tabs = p.tabs.filter(x=>x!==k); wsSave(p); wsPlace(); }
       else if(b.dataset.wsa==='main') setTab(k);
-      else if(b.dataset.wsa==='reload'){ const f = b.closest('.ws-pane').querySelector('iframe'); if(f) f.src = f.src; } });
+      else if(b.dataset.wsa==='reload'){ const f = b.closest('.ws-pane').querySelector('iframe'); if(f) f.src = wsSrc(k); } });
+    L.addEventListener('pointerdown', e=>{ const s = e.target.closest('.ws-split'); if(s && e.button===0) wsSplitDrag(e, s, L); });
+    L.addEventListener('dblclick', e=>{ const s = e.target.closest('.ws-split'); if(!s) return; const hw = Object.assign({}, prefGet('homeWork') || {}); delete hw.split; prefSet('homeWork', hw); wsGrid(L); });
     L.addEventListener('change', e=>{ const s = e.target.closest('.ws-pick'); if(!s || !s.value) return; const p = wsPref();
       if(!p.tabs.includes(s.value) && p.tabs.length < WS_MAX){ p.tabs.push(s.value); wsSave(p); } wsPlace(); }); }
   return L;
@@ -23328,10 +23383,10 @@ function wsSync(L, tabs){
   tabs.forEach(k=>{ if(L.querySelector('.ws-pane[data-k="'+CSS.escape(k)+'"]')) return; const { lab, ic } = wsTabInfo(k);
     const el = document.createElement('div'); el.className = 'ws-pane'; el.dataset.k = k;
     el.innerHTML = `<div class="ws-pane-h">${ic ? ic.outerHTML : ''}<b>${esc(lab)}</b><span class="qk-win-sp"></span>
-      <button type="button" class="qk-win-b" data-wsa="reload" data-k="${esc(k)}" title="Atnaujinti">${slIcon('refresh')}</button>
+      ${paneZHtml(k)}<button type="button" class="qk-win-b" data-wsa="reload" data-k="${esc(k)}" title="Atnaujinti">${slIcon('refresh')}</button>
       <button type="button" class="qk-win-b" data-wsa="main" data-k="${esc(k)}" title="Atidaryti visame lange">${slIcon('openext')}</button>
       <button type="button" class="qk-win-b qk-win-x" data-wsa="close" data-k="${esc(k)}" title="Išimti iš darbo erdvės">${slIcon('close')}</button></div>
-      <iframe class="qk-win-f" src="${esc(location.href.split(/[?#]/)[0] + '?langas=' + encodeURIComponent(k) + '&ilangas=1')}"></iframe>`;
+      <iframe class="qk-win-f" src="${esc(wsSrc(k))}"></iframe>`;
     const add = L.querySelector('.ws-add'); L.insertBefore(el, add || null); });
   let add = L.querySelector('.ws-add');
   if(tabs.length < WS_MAX){
@@ -23341,6 +23396,7 @@ function wsSync(L, tabs){
       <select class="ws-pick"><option value="">Pasirink puslapį…</option>${opts.map(k=>`<option value="${esc(k)}">${esc(wsTabInfo(k).lab)}</option>`).join('')}</select>`;
   } else if(add) add.remove();
   L.dataset.n = Math.min(WS_MAX, tabs.length + (tabs.length < WS_MAX ? 1 : 0));
+  wsGrid(L);
 }
 function wsPlace(){
   if(qkEmbed()) return;
@@ -45743,6 +45799,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-15 09:30', v:'v580', k:'new', t:'Darbo erdvės langai: mastelis ir dydis', f:'Kiekvieno darbo erdvės (ir greitojo) lango antraštėje − / + keičia puslapio mastelį lange (50–150 %, paspaudus skaičių – 100 %); įsimenama kiekvienam puslapiui. Tarpą tarp langų tempk – keičiasi langų plotis, o su 4 langais ir aukštis; dvigubas spragtelėjimas ant tarpo grąžina lygius langus.' },
   { d:'2026-10-15 09:00', v:'v579', k:'new', t:'Darbo erdvė Pradžioje', f:'Viršutiniame meniu naujas mygtukas „Darbo erdvė“: įjungus Pradžios plytelės tampa mažos, o po jomis telpa iki 4 darbinių langų (pradžioje Chatas, Renginiai ir Pasiūlymai). Laisvoje vietoje „Pridėti langą“ – pasirink puslapį; lango antraštėje: atnaujinti, atidaryti visame lange, išimti. Išėjus į kitą puslapį langai neužkraunami iš naujo – grįžus matai juos tokius pat. Tuo pačiu mygtuku išjungiama.' },
   { d:'2026-10-15 08:30', v:'v578', k:'new', t:'Naujas renginys: kelios montavimo ir demontavimo dienos', f:'Naujo renginio formoje prie „Montavimas prieš renginį“, „Montavimas renginio dieną“ ir „Demontavimas“ yra „+ Diena“ – pridedama kita diena (data, laikas ir A / L / V / Crew vietos; data – kita diena po ankstesnės). Lentelėje kiekviena diena – atskira lentelė toje pačioje grafoje: pirma diena viršuje, kita po ja.' },
   { d:'2026-10-15 08:00', v:'v577', k:'fix', t:'Matomas „Pridėti“ mygtukas naujame greitajame lange', f:'Su šviesia akcento spalva mygtukas „Pridėti“ buvo visiškai baltas – dabar tekstas ir ženklas visada kontrastingi akcento spalvai.' },
