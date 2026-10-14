@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Gii7LK4KU0tjfq2dfkLEAWGTPIC82Bzoqfr3YniEhuA=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Automobilis · Event Solutions</title>
+<link rel="icon" href="icons/icon-192.png">
+<style>
+:root{--bg:#141414;--panel:#1f1f1f;--border:#343434;--text:#ececec;--dim:#9a9a9a;--accent:#6BB4F5;--ok:#2F9E73;--warn:#E0A030;--bad:#E5484D;}
+@media (prefers-color-scheme: light){ :root{--bg:#f3f4f6;--panel:#fff;--border:#dcdfe4;--text:#1d2229;--dim:#6b7280;--accent:#1e6fd9;} }
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+.wrap{max-width:560px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px));}
+.brand{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:13px;margin-bottom:12px;}
+.brand img{width:28px;height:28px;border-radius:7px;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
+h1{font-size:24px;margin:0;line-height:1.2;}
+.plate{display:inline-block;margin-top:6px;padding:3px 10px;border:2px solid var(--text);border-radius:6px;font-weight:700;letter-spacing:1px;}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.kv:last-child{border-bottom:0;}
+.kv span{color:var(--dim);}
+.kv b{text-align:right;}
+.kv-doc{flex-wrap:wrap;} .kv-doc > b{margin-left:auto;}
+.docs{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;}
+.dl{display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:none;color:var(--accent);font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+.dl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;}
+.dl:disabled{opacity:.6;}
+.ok{color:var(--ok);} .warn{color:var(--warn);} .bad{color:var(--bad);}
+.rep{background:color-mix(in srgb,var(--bad) 14%,var(--panel));border-color:var(--bad);font-weight:600;}
+h2{font-size:17px;margin:0 0 10px;}
+.prob{padding:8px 10px;border-radius:8px;margin-bottom:6px;background:color-mix(in srgb,var(--warn) 12%,transparent);}
+.prob.stop{background:color-mix(in srgb,var(--bad) 16%,transparent);}
+.prob small{display:block;color:var(--dim);}
+label{display:block;font-size:13px;color:var(--dim);margin:10px 0 4px;}
+input[type=text],textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;}
+textarea{min-height:110px;resize:vertical;}
+.sev{display:flex;flex-direction:column;gap:6px;}
+.sev label{display:flex;align-items:center;gap:8px;margin:0;padding:10px 12px;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;}
+.sev input{accent-color:var(--accent);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 16px;border:0;border-radius:12px;background:var(--accent);color:#0c1b2a;font:inherit;font-weight:700;font-size:16px;cursor:pointer;}
+.btn.ghost{background:none;border:1px solid var(--border);color:var(--text);font-weight:600;}
+.btn:disabled{opacity:.6;}
+.phs{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.ph{position:relative;width:76px;height:76px;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.ph img,.ph video{width:100%;height:100%;object-fit:cover;display:block;background:#000;}
+.loc{margin-top:10px;font-size:13px;color:var(--dim);display:flex;align-items:center;flex-wrap:wrap;gap:4px;} .loc a{color:var(--accent);}
+.vbg{margin:12px 0;text-align:left;} .vbg-row{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;margin-top:6px;font-size:14px;} .vbg-row.ok b{color:var(--ok);} .vbg-row.bad b{color:#e66;}
+.ph.busy{display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;color:var(--dim);padding:4px;box-sizing:border-box;}
+.ph button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;cursor:pointer;line-height:1;}
+.addph{width:96px;height:76px;border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:12px;color:var(--dim);cursor:pointer;}
+.addph span{font-size:22px;}
+.me{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--ok) 14%,transparent);font-size:14px;}
+.err{color:var(--bad);font-size:14px;margin-top:8px;}
+.done{text-align:center;padding:26px 16px;}
+.pin-res{text-align:center;} .pin-big.hid{color:var(--dim);} .fp-card{border-top:1px solid var(--border);margin-top:10px;padding-top:8px;} .pin-big{font-size:46px;font-weight:800;letter-spacing:10px;margin:8px 0;font-family:ui-monospace,monospace;}
+.done .big{font-size:46px;}
+.muted{color:var(--dim);font-size:13px;}
+.hidden{display:none !important;}
+input[type=email],input[type=number],input[type=time]{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;}
+textarea.short{min-height:70px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.opt{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--panel);color:var(--text);font:inherit;text-align:left;cursor:pointer;}
+.opt>span:nth-child(2){flex:1;min-width:0;}
+.opt b{display:block;font-size:16px;}
+.opt small{display:block;color:var(--dim);font-size:13px;margin-top:2px;}
+.opt-ic{flex:none;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);}
+.opt.warn .opt-ic{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad);}
+.opt>svg{flex:none;color:var(--dim);}
+.back{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:none;color:var(--text);font:inherit;font-size:14px;cursor:pointer;}
+.note{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--warn) 14%,transparent);font-size:14px;}
+.done .btn+.btn{margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><img src="icons/icon-192.png" alt=""><span>Event Solutions · automobilis</span></div>
+  <div id="app"><div class="card muted">Kraunama…</div></div>
+</div>
+<script>
+const SUPABASE_URL = "https://yakmikxkcudwloxruhvx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OYVSooEWr-aPd__NPM8G3g_MQrSAXbI";
+const T = new URLSearchParams(location.search).get('t') || '';
+// „Kuro kortelė“ from the event letter: ?pin=<token> – only scanning the card (its front and back) for its PIN
+const PIN_T = new URLSearchParams(location.search).get('pin') || '';
+const esc = s=>String(s==null ? '' : s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// a member signed in to the app on this phone: the problem is reported in their name
+function session(){
+  try{ const ref = SUPABASE_URL.split('//')[1].split('.')[0]; const s = JSON.parse(localStorage.getItem('sb-'+ref+'-auth-token')||'null');
+    return s && s.access_token && (s.expires_at||0)*1000 > Date.now() + 60000 ? s.access_token : ''; }catch(e){ return ''; }
+}
+const TOKEN = session();
+const hdr = (extra)=>Object.assign({ apikey:SUPABASE_KEY, Authorization:'Bearer '+(TOKEN || SUPABASE_KEY) }, extra||{});
+async function rpc(name, args){
+  const ac = new AbortController(), to = setTimeout(()=>ac.abort(), 15000);
+  try{
+    const r = await fetch(SUPABASE_URL+'/rest/v1/rpc/'+name, { method:'POST', headers:hdr({ 'Content-Type':'application/json' }), body:JSON.stringify(args||{}), signal:ac.signal });
+    const t = await r.text(); let j = null; try{ j = t ? JSON.parse(t) : null; }catch(e){}
+    if(!r.ok) throw new Error((j && (j.message || j.error)) || ('Klaida '+r.status));
+    return j;
+  } finally { clearTimeout(to); }
+}
+const day = d=>d ? String(d).slice(0,10).replace(/-/g, '.') : '';
+const num = (n, d)=>n==null ? '' : Number(n).toLocaleString('lt-LT', { maximumFractionDigits:d||0 });
+// the documents uploaded in the app (Transportas → automobilis → Dokumentai): opened from here too
+let DOCF = {};
+const FILES_FN = SUPABASE_URL+'/functions/v1/files';
+async function filesCall(body){
+  const r = await fetch(FILES_FN, { method:'POST', headers:hdr({ 'Content-Type':'application/json' }), body:JSON.stringify(body) });
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok || j.error) throw new Error(j.error || ('Klaida '+r.status));
+  return j;
+}
+async function loadDocs(){ try{ DOCF = (await filesCall({ action:'qr-docs', t:T })).files || {}; if(Object.keys(DOCF).length) draw(); }catch(e){ DOCF = {}; } }
+async function openDoc(b){
+  const w = window.open('', '_blank'); b.disabled = true;
+  try{ const j = await filesCall({ action:'qr-doc', t:T, doc:b.dataset.doc, i:+b.dataset.i }); if(w) w.location.href = j.url; else location.href = j.url; }
+  catch(e){ if(w) w.close(); alert('Dokumento atidaryti nepavyko: '+e.message); }
+  b.disabled = false;
+}
+document.addEventListener('click', e=>{ const b = e.target.closest && e.target.closest('[data-doc]'); if(b){ e.preventDefault(); openDoc(b); } });
+const docBtns = key=>(DOCF[key]||[]).length ? `<div class="docs">${DOCF[key].map((f, i)=>`<button type="button" class="dl" data-doc="${key}" data-i="${i}" title="Atidaryti dokumentą">${ic('doc', 16)}<span>${esc(f.name)}</span></button>`).join('')}</div>` : '';
+function docRow(label, date, key, optional){
+  const files = docBtns(key);
+  if(!date){ if(optional && !files) return ''; return `<div class="kv kv-doc"><span>${label}</span><b class="${optional ? 'muted' : 'bad'}">${optional ? '' : 'neįvesta'}</b>${files}</div>`; }
+  const days = Math.round((new Date(String(date).slice(0,10)) - new Date(new Date().toISOString().slice(0,10)))/864e5);
+  const cls = days < 0 ? 'bad' : days <= 14 ? 'warn' : 'ok';
+  return `<div class="kv kv-doc"><span>${label}</span><b class="${cls}">${days < 0 ? 'baigėsi ' : 'iki '}${day(date)}${days >= 0 && days <= 14 ? ' · liko '+days+' d.' : ''}</b>${files}</div>`;
+}
+const SEV = { low:'Galima važiuoti', soon:'Reikia greitai sutvarkyti', stop:'Negalima važiuoti' };
+const COND = { good:['Gera','ok'], fair:['Patenkinama','warn'], bad:['Bloga','bad'] };
+const P = { place:'M529.5-510.59q20.5-20.59 20.5-49.5t-20.59-49.41q-20.59-20.5-49.5-20.5t-49.41 20.59q-20.5 20.59-20.5 49.5t20.59 49.41q20.59 20.5 49.5 20.5t49.41-20.59ZM480-80Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z', card:'M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm0-342h680v-129H140v129Z', lock:'M220-80q-24.75 0-42.37-17.63Q160-115.25 160-140v-434q0-24.75 17.63-42.38Q195.25-634 220-634h70v-96q0-78.85 55.61-134.42Q401.21-920 480.11-920q78.89 0 134.39 55.58Q670-808.85 670-730v96h70q24.75 0 42.38 17.62Q800-598.75 800-574v434q0 24.75-17.62 42.37Q764.75-80 740-80H220Zm314.5-222.03Q557-324.06 557-355q0-30-22.67-54.5t-54.5-24.5q-31.83 0-54.33 24.5t-22.5 55q0 30.5 22.67 52.5t54.5 22q31.83 0 54.33-22.03ZM350-634h260v-96q0-54.17-37.88-92.08-37.88-37.92-92-37.92T388-822.08q-38 37.91-38 92.08v96Z', doc:'M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554h189L551-820v186Z', warn:'m40-120 440-760 440 760H40Zm465.5-125.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Z', crash:'M636.76-274q23.24 0 38.74-15.75Q691-305.5 691-328q0-23.33-15.75-39.67Q659.5-384 637-384q-23.33 0-39.67 16.26Q581-351.47 581-328.24q0 23.24 16.26 38.74 16.27 15.5 39.5 15.5Zm-391 0q23.24 0 38.74-15.75Q300-305.5 300-328q0-23.33-15.75-39.67Q268.5-384 246-384q-23.33 0-39.67 16.26Q190-351.47 190-328.24q0 23.24 16.26 38.74 16.27 15.5 39.5 15.5Zm443.43-224Q610-498 554-554.01t-56-135.48Q498-768 554-824q56-56 135-56 80 0 135.5 55.5T880-689q0 80-55.81 135.5-55.82 55.5-135 55.5ZM674-659h35v-143h-35v143Zm17.5 85q9.5 0 16-6t6.5-16q0-10-6.6-16t-15.4-6q-11 1-16.5 7t-5.5 15.5q0 9.5 6 15.5t15.5 6ZM110-80q-12.75 0-21.37-8.63Q80-97.25 80-110v-324l85-256q5-14 16.78-22 11.78-8 26.22-8h228q-2 15-2 30t2 30H218l-55 166h362q36 30 79.5 46.5T695-431q27.29 0 53.65-5.5Q775-442 800-454v344q0 12.75-8.62 21.37Q782.75-80 770-80h-21q-12.33 0-20.66-9-8.34-9-8.34-21v-54H160v54q0 12.75-8.62 21.37Q142.75-80 130-80h-20Z', fuel:'M160-120v-660q0-24 18-42t42-18h269q24 0 42 18t18 42v288h65q20.63 0 35.31 14.69Q664-462.63 664-442v219q0 21.68 15.5 36.34Q695-172 717-172t37.5-14.66Q770-201.32 770-223v-295q-11 6-23 9t-24 3q-39.48 0-66.74-27.26Q629-560.52 629-600q0-31.61 18-56.81Q665-682 695-690l-95-95 36-35 153 153q14 14 22.5 30.5T820-600v377q0 43.26-29.82 73.13-29.81 29.87-73 29.87Q674-120 644-149.87q-30-29.87-30-73.13v-219h-65v322H160Zm60-432h269v-228H220v228Zm503-4q18 0 31-13t13-31q0-18-13-31t-31-13q-18 0-31 13t-13 31q0 18 13 31t31 13Z', info:'M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z', back:'m274-450 248 248-42 42-320-320 320-320 42 42-248 248h526v60H274Z', next:'M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z', ok:'m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z', repair:'M705-128 447-388q-23 8-46 13t-47 5q-97 0-165-67.5T121-602q0-31 8-60.5t23-55.5l145 145 92-86-149-149q26-15 55-23.5t59-8.5q99 0 168.5 69.5T592-602q0 24-5 47t-13 46l259 258q11 11 11 26.5T833-198l-76 70q-11 11-26 11t-26-11Z' };
+const ic = (k, n)=>`<svg viewBox="0 0 24 24" width="${n||20}" height="${n||20}" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="${P[k]}"/></svg>`;
+// the same choices as tapping the vehicle in the app
+const MODES = {
+  problem:{ t:'Pranešti apie problemą', i:'warn', s:'nuotraukos, video – pranešimas atsakingiems', go:'Registruoti problemą', done:'Problema užregistruota' },
+  incident:{ t:'Registruoti įvykį', i:'crash', s:'avarija, apgadinimas, bauda ar kt. – aprašymas, nuotraukos ir video', go:'Registruoti įvykį', done:'Įvykis užregistruotas' },
+  fuel:{ t:'Kuro pylimas', i:'fuel', s:'komentaras dėl pylimo ir kvito nuotrauka', go:'Registruoti kuro pylimą', done:'Kuro pylimas užregistruotas' },
+  info:{ t:'Apie automobilį', i:'info', s:'dokumentai, tepalo keitimas, profilaktika, žinomos problemos' } };
+let MODE = '';   // '' – the choices
+// who is registering (not a member): remembered on this phone
+const WHO_KEY = 'es-qr-who', EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
+function who(){ try{ return JSON.parse(localStorage.getItem(WHO_KEY)||'null') || {}; }catch(e){ return {}; } }
+let V = null, PH = [], BUSY = '';
+const VID_MAX = 45*1024*1024;
+function vidExt(type){ return /webm/.test(type) ? 'webm' : /quicktime/.test(type) ? 'mov' : 'mp4'; }
+// called right in the tap (Išsaugoti / Registruoti): phones let a video play with sound later only when it was started in a tap
+function vidPrep(file){
+  const p = { url:URL.createObjectURL(file), v:document.createElement('video'), src:null, ac:null };
+  const v = p.v; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'auto'; v.src = p.url;
+  v.style.cssText = 'position:fixed;left:-9999px;top:0;width:2px;height:2px;opacity:0;pointer-events:none;';
+  document.body.appendChild(v);
+  try{ const AC = window.AudioContext || window.webkitAudioContext;
+    if(AC){ p.ac = window.__vidAC || (window.__vidAC = new AC()); if(p.ac.state==='suspended') p.ac.resume().catch(()=>{});
+      p.src = p.ac.createMediaElementSource(v); } }catch(e){ p.src = null; }
+  if(!p.src) v.muted = true;   // no sound out loud while it is being made smaller
+  try{ const pr = v.play(); if(pr) pr.then(()=>v.pause()).catch(()=>{}); }catch(e){}
+  return p;
+}
+function vidDrop(p){ if(!p) return; try{ p.v.pause(); p.v.remove(); if(p.src) p.src.disconnect(); }catch(e){} URL.revokeObjectURL(p.url); }
+// a video made smaller on the phone before sending: played once (silently) into a canvas
+// and recorded again with a bitrate that fits maxBytes; a small video goes as it is
+async function vidShrink(file, maxBytes, onProg, prep){
+  maxBytes = maxBytes || VID_MAX;
+  const type0 = file.type || 'video/mp4';
+  if(file.size <= maxBytes && /mp4|webm|quicktime/.test(type0)){ vidDrop(prep); return { blob:file, type:type0, ext:vidExt(type0) }; }
+  if(!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){ vidDrop(prep); throw new Error('šis telefonas nemoka suspausti video – pasirink trumpesnį'); }
+  const mime = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']
+    .find(m=>{ try{ return MediaRecorder.isTypeSupported(m); }catch(e){ return false; } });
+  if(!mime){ vidDrop(prep); throw new Error('šis telefonas nemoka suspausti video'); }
+  const p = prep || vidPrep(file), v = p.v;
+  try{
+    v.pause();
+    if(v.readyState < 1) await new Promise((res, rej)=>{ v.onloadedmetadata = res; v.onerror = ()=>rej(new Error('video neatsidaro')); });
+    let dur = v.duration;
+    if(!isFinite(dur) || !dur){ v.currentTime = 1e7; await new Promise(r=>{ v.ontimeupdate = r; setTimeout(r, 1500); }); dur = v.duration; v.currentTime = 0; }
+    if(!isFinite(dur) || !dur) dur = 60;
+    let audio = null;
+    if(p.src && p.ac){ try{ if(p.ac.state==='suspended') await Promise.race([p.ac.resume(), new Promise(r=>setTimeout(r, 700))]);
+      if(p.ac.state==='running'){ const dst = p.ac.createMediaStreamDestination(); p.src.connect(dst); audio = dst.stream.getAudioTracks()[0] || null; } }catch(e){ audio = null; } }
+    if(!audio) v.muted = true;
+    let factor = 0.88;
+    for(let attempt=0; attempt<3; attempt++){
+      const aBits = audio ? 64000 : 0;
+      const vBits = Math.max(120000, Math.floor(maxBytes*8*factor/dur) - aBits);
+      const maxDim = vBits > 2500000 ? 1280 : vBits > 900000 ? 960 : vBits > 400000 ? 720 : 480;
+      const k = Math.min(1, maxDim / Math.max(v.videoWidth||maxDim, v.videoHeight||maxDim));
+      const c = document.createElement('canvas'); c.width = Math.max(2, Math.round((v.videoWidth||640)*k/2)*2); c.height = Math.max(2, Math.round((v.videoHeight||360)*k/2)*2);
+      const g = c.getContext('2d');
+      const stream = c.captureStream(30); if(audio) stream.addTrack(audio);
+      const rec = new MediaRecorder(stream, { mimeType:mime, videoBitsPerSecond:vBits, audioBitsPerSecond:aBits || undefined });
+      const parts = []; rec.ondataavailable = e=>{ if(e.data && e.data.size) parts.push(e.data); };
+      const done = new Promise(r=>{ rec.onstop = r; });
+      v.currentTime = 0; await new Promise(r=>{ if(v.readyState >= 2 && !v.seeking) r(); else { v.onseeked = r; setTimeout(r, 800); } });
+      let alive = true;
+      const draw = ()=>{ if(!alive) return; try{ g.drawImage(v, 0, 0, c.width, c.height); }catch(e){} onProg && onProg(Math.min(99, Math.round(v.currentTime/dur*100)), attempt);
+        if(v.requestVideoFrameCallback) v.requestVideoFrameCallback(draw); else requestAnimationFrame(draw); };
+      draw(); rec.start(1000);
+      try{ await v.play(); }catch(e){ v.muted = true; await v.play(); }
+      await new Promise(r=>{ v.onended = r; });
+      alive = false; rec.stop(); await done;
+      const type = mime.split(';')[0], blob = new Blob(parts, { type });
+      if(blob.size <= maxBytes && blob.size > 0) return { blob, type, ext:vidExt(type) };
+      factor *= Math.min(0.8, maxBytes / blob.size * 0.9);
+    }
+    throw new Error('video per ilgas – nepavyko suspausti iki '+Math.round(maxBytes/1048576)+' MB');
+  } finally { vidDrop(p); }
+}
+/* ---------- „Kuro kortelė“: the card's front and back photographed → its PIN (functions/uta-pin) ---------- */
+const PIN = { busy:false, loc:null, locSt:'' };
+const PIN_NAME = 'esPinName';
+// the phone's place: kept with the PIN view (the UTA reports show where and when the card was used)
+function pinLoc(){
+  const show = ()=>{ const el = document.getElementById('pinLoc'); if(el) el.innerHTML = PIN.loc ? `${ic('place', 16)} Vieta nustatyta${PIN.loc.acc ? ' (±'+PIN.loc.acc+' m)' : ''}` : PIN.locSt==='wait' ? ic('place', 16)+' Nustatoma vieta…' : PIN.locSt ? ic('place', 16)+' '+esc(PIN.locSt)+' – PIN vis tiek bus parodytas' : ''; };
+  if(PIN.loc || PIN.locSt==='wait'){ show(); return; }
+  if(!navigator.geolocation){ PIN.locSt = 'vietos nustatyti nepavyko'; show(); return; }
+  PIN.locSt = 'wait'; show();
+  navigator.geolocation.getCurrentPosition(p=>{ PIN.loc = { lat:+p.coords.latitude.toFixed(6), lng:+p.coords.longitude.toFixed(6), acc:Math.round(p.coords.accuracy||0) }; PIN.locSt = ''; show(); },
+    e=>{ PIN.locSt = e && e.code===1 ? 'vietos nustatymas neleistas' : 'vietos nustatyti nepavyko'; show(); }, { enableHighAccuracy:true, timeout:20000, maximumAge:60000 });
+}
+async function pinPage(){
+  const app = document.getElementById('app');
+  if(!/^[0-9a-f]{24,64}$/.test(PIN_T)){ app.innerHTML = '<div class="card">Nuoroda neteisinga.</div>'; return; }
+  document.title = 'Kuro kortelė';
+  let info; try{ info = await rpc('uta_pin_link_info', { p_token:PIN_T }); }
+  catch(e){ app.innerHTML = `<div class="card">Nepavyko įkelti: ${esc(e.message)}</div><button class="btn ghost" onclick="location.reload()">Bandyti dar kartą</button>`; return; }
+  if(!info || !info.ok){ app.innerHTML = `<div class="card"><h2>${ic('card')} Kuro kortelė</h2><p class="muted">${!info || info.why==='none' ? 'Ši nuoroda nebegalioja.' : info.why==='early' ? 'Nuoroda dar negalioja – ji veiks renginio dienomis'+(info.from ? ' (nuo '+esc(day(info.from))+')' : '')+'.' : 'Renginys baigėsi – nuoroda nebegalioja.'}</p></div>`; return; }
+  app.innerHTML = `<div class="card"><h2>${ic('card')} Kuro kortelė</h2><p class="muted">${esc(info.event || '')}</p>
+      <p>Nurašyk skaičius, esančius UTA kortelės <b>gale po „CVC:“</b> – bus parodytas jos PIN kodas.</p>
+      <label for="pinName">Tavo vardas ir pavardė</label><input type="text" id="pinName" maxlength="80" autocomplete="name" value="${esc((()=>{ try{ return localStorage.getItem(PIN_NAME)||''; }catch(e){ return ''; } })())}" placeholder="pvz. Jonas Jonaitis">
+      <label for="pinCvc">Skaičiai po „CVC:“</label><input type="text" id="pinCvc" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="pvz. 123">
+      <div class="loc" id="pinLoc"></div>
+      <div class="err" id="pinErr"></div>
+      <button class="btn" id="pinGo">${ic('lock')} Rodyti PIN</button>
+      <p class="muted" style="margin-top:10px;">Kas, kada ir kur žiūrėjo PIN – įrašoma į UTA ataskaitas. Po kelių neteisingų bandymų nuoroda užrakinama parai.</p></div>
+    <div id="pinOut"></div>`;
+  pinLoc();
+  const nm = document.getElementById('pinName'); nm.oninput = ()=>{ try{ localStorage.setItem(PIN_NAME, nm.value.trim()); }catch(e){} };
+  ['pinCvc'].forEach(id=>{ const el = document.getElementById(id); el.oninput = ()=>{ el.value = el.value.replace(/\D/g, ''); }; });
+  document.getElementById('pinGo').onclick = async ()=>{
+    if(PIN.busy) return; const err = document.getElementById('pinErr'), b = document.getElementById('pinGo'), out = document.getElementById('pinOut');
+    const name = nm.value.replace(/\s+/g, ' ').trim(), cvc = document.getElementById('pinCvc').value;
+    if(name.length < 3 || !/\s/.test(name)){ err.textContent = 'Įrašyk savo vardą ir pavardę.'; nm.focus(); return; }
+    if(!/^\d{3,8}$/.test(cvc)){ err.textContent = 'Nurašyk skaičius kortelės gale po „CVC:“.'; document.getElementById('pinCvc').focus(); return; }
+    err.textContent = ''; PIN.busy = true; b.disabled = true; b.textContent = 'Tikrinama…';
+    try{
+      const r = await fetch(SUPABASE_URL+'/functions/v1/uta-pin', { method:'POST', headers:{ 'Content-Type':'application/json', apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY },
+        body:JSON.stringify({ t:PIN_T, name, loc:PIN.loc, cvc }) });
+      const j = await r.json().catch(()=>({}));
+      if(!r.ok || !j.pin) throw new Error(j.error || ('Klaida '+r.status));
+      document.getElementById('pinCvc').value = '';
+      out.innerHTML = `<div class="card pin-res"><small class="muted">${esc([j.title, j.vehicle].filter(Boolean).join(' · '))} · ${esc(j.card||'')}</small><div class="pin-big">${esc(j.pin)}</div><small class="muted" id="pinLeft">Paslėpsiu po 60 s</small></div>`;
+      let left = 60; clearInterval(PIN.tm); PIN.tm = setInterval(()=>{ left--; const l = document.getElementById('pinLeft'); if(l) l.textContent = 'Paslėpsiu po '+left+' s'; if(left <= 0){ clearInterval(PIN.tm); const o = document.getElementById('pinOut'); if(o) o.innerHTML = ''; } }, 1000);
+      out.scrollIntoView({ behavior:'smooth', block:'center' });
+    }catch(e){ err.textContent = e.message || String(e); }
+    PIN.busy = false; b.disabled = false; b.innerHTML = ic('lock')+' Rodyti PIN';
+  };
+}
+/* „Kuro pylimas“: first the PIN of this vehicle's UTA card (sql/uta_vehicle_pin.sql) – a member signed in
+   on this phone sees it at once, anyone else types their driver code from the event letter; then the fill's form */
+const FP = { res:null, busy:false, err:'', tm:null };
+const fpWait = ms=>new Promise(r=>{ const t0 = Date.now(), k = setInterval(()=>{ if(PIN.loc || PIN.locSt!=='wait' || Date.now()-t0 > ms){ clearInterval(k); r(); } }, 200); });
+async function fpGet(code){
+  if(FP.busy) return; FP.busy = true; FP.err = ''; draw();
+  try{
+    await fpWait(4000);
+    const j = await rpc('uta_vehicle_pin', { p_token:T, p_code:code || null, p_loc:PIN.loc });
+    if(j && j.error) FP.err = j.error; else FP.res = j || { pins:[] };
+  }catch(e){
+    if(/function|schema cache|Could not find/i.test(e.message||'')) FP.res = { legacy:true };   // before uta_vehicle_pin.sql: the form as before
+    else FP.err = e.message || String(e);
+  }
+  FP.busy = false; FP.hidden = false; draw();
+}
+// the PIN hidden after a minute; shown again by asking again (that is written down too)
+function fpTimer(){
+  clearInterval(FP.tm); if(FP.hidden || !FP.res || !(FP.res.pins||[]).some(p=>p.pin)) return;
+  let left = 60; FP.tm = setInterval(()=>{ left--; const l = document.getElementById('fpLeft');
+    if(left <= 0){ clearInterval(FP.tm); FP.hidden = true; const box = document.getElementById('fpBox'); if(box){ box.outerHTML = fpHtml(); fpBind(); } }
+    else if(l) l.textContent = 'PIN paslėpsiu po '+left+' s'; }, 1000);
+}
+function fpBind(){
+  const a = document.getElementById('fpAgain'); if(!a) return;
+  a.onclick = async ()=>{ a.disabled = true; a.textContent = 'Tikrinama…';
+    try{ const j = await rpc('uta_vehicle_pin', { p_token:T, p_code:FP.res.code || null, p_loc:PIN.loc }); if(j && j.error) throw new Error(j.error); FP.res = j; FP.hidden = false; }
+    catch(e){ a.disabled = false; a.textContent = 'Rodyti PIN dar kartą'; const er = document.getElementById('fpAgainErr'); if(er) er.textContent = e.message || String(e); return; }
+    const box = document.getElementById('fpBox'); if(box){ box.outerHTML = fpHtml(); fpBind(); } fpTimer(); };
+}
+function fpHtml(){
+  const r = FP.res, pins = r.pins || [];
+  return `<div class="card pin-res" id="fpBox"><h2 style="justify-content:center;">${ic('card')} Kuro kortelės PIN</h2>
+    <small class="muted">${esc(r.name || '')}${r.event ? ' · '+esc(r.event) : ''}</small>
+    ${pins.length ? pins.map(p=>`<div class="fp-card"><small class="muted">${esc([p.title, p.card].filter(Boolean).join(' · '))}</small>${p.pin ? `<div class="pin-big ${FP.hidden ? 'hid' : ''}">${FP.hidden ? '••••' : esc(p.pin)}</div>` : '<p class="err" style="margin:6px 0;">Šios kortelės PIN neįrašytas – kreipkis į ofisą.</p>'}</div>`).join('')
+      : '<p class="muted">Šiam automobiliui UTA kortelė nepriskirta – jei pili savo pinigais, pridėk kvito nuotrauką.</p>'}
+    ${!pins.some(p=>p.pin) ? '' : FP.hidden ? '<button type="button" class="btn ghost" id="fpAgain" style="width:auto;padding:6px 14px;margin:4px auto 0;">Rodyti PIN dar kartą</button><div class="err" id="fpAgainErr"></div>' : '<small class="muted" id="fpLeft">PIN paslėpsiu po 60 s</small>'}
+    <p class="muted" style="margin:8px 0 0;font-size:12px;">${r.member ? 'Į UTA ataskaitą įrašoma tik paspaudus „Registruoti kuro pylimą“ – kartu su komentaru ir kvito nuotrauka.' : 'Kas, kada ir kur žiūrėjo PIN – įrašoma į UTA ataskaitą; užregistravus pylimą prie jo prisegamas komentaras ir kvitas.'}</p></div>`;
+}
+function fpGateHtml(){
+  if(V.me) return `<div class="card"><h2>${ic('card')} Kuro kortelės PIN</h2><div class="me">${esc(V.me)} (įmonės narys) – kodo nereikia</div><div class="loc" id="pinLoc"></div>${FP.err ? `<div class="err">${esc(FP.err)}</div><button class="btn" id="fpGo">${ic('lock')} Rodyti PIN</button>` : '<p class="muted">Kraunama…</p>'}</div>`;
+  return `<div class="card"><h2>${ic('card')} Kuro kortelės PIN</h2>
+    <p>Kurą gali pilti vairuotojas, kuriam šis automobilis priskirtas renginyje. Įrašyk savo <b>vairuotojo kodą</b> iš renginio laiško – bus parodytas kortelės PIN.</p>
+    <label for="fpCode">Vairuotojo kodas</label><input type="text" id="fpCode" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 skaitmenys">
+    <div class="loc" id="pinLoc"></div>
+    <div class="err" id="fpErr">${esc(FP.err)}</div>
+    <button class="btn" id="fpGo" ${FP.busy ? 'disabled' : ''}>${FP.busy ? 'Tikrinama…' : ic('lock')+' Rodyti PIN'}</button>
+    <p class="muted" style="margin-top:10px;">Įmonės nariams, prisijungusiems programėlėje ar naršyklėje, kodo nereikia. Po 5 neteisingų kodų kuro PIN užrakinamas parai.</p></div>`;
+}
+async function load(){
+  const app = document.getElementById('app');
+  if(PIN_T) return pinPage();
+  if(!/^[0-9a-f]{24,64}$/.test(T)){ app.innerHTML = '<div class="card">QR kodas neteisingas.</div>'; return; }
+  try{ V = await rpc('vehicle_public', { p_token:T }); }
+  catch(e){ app.innerHTML = `<div class="card">Nepavyko įkelti: ${esc(e.message)}</div><button class="btn ghost" onclick="location.reload()">Bandyti dar kartą</button>`; return; }
+  if(!V){ app.innerHTML = '<div class="card">Šis QR kodas nebegalioja.</div>'; return; }
+  draw(); loadDocs();
+}
+function go(m){
+  if(VBUSY) return;
+  PH.forEach(p=>{ URL.revokeObjectURL(p.url); if(p.prep) vidDrop(p.prep); }); PH = [];
+  if(m!=='fuel'){ FP.res = null; FP.err = ''; FP.hidden = false; clearInterval(FP.tm); }
+  MODE = m; draw(); window.scrollTo(0, 0);
+  if(m==='fuel' && V.me && !FP.res && !FP.busy) fpGet('');
+}
+function infoHtml(){
+  const v = V, d = v.docs || {}, o = v.oil, c = v.check;
+  const nx = o && o.next ? [o.next.next_km!=null ? 'ties '+num(o.next.next_km)+' km' : '', o.next.next_hours!=null ? 'ties '+num(o.next.next_hours)+' mval.' : '', o.next.next_date ? 'iki '+day(o.next.next_date) : ''].filter(Boolean).join(' / ') : '';
+  return `<div class="card"><h2>Svarbiausia</h2>
+      ${v.km!=null ? `<div class="kv"><span>Rida</span><b>${num(v.km)} km</b></div>` : ''}
+      ${v.hours!=null ? `<div class="kv"><span>Moto valandos</span><b>${num(v.hours, 1)}</b></div>` : ''}
+      ${(DOCF.registration||[]).length ? `<div class="kv kv-doc"><span>Registracijos liudijimas</span>${docBtns('registration')}</div>` : ''}
+      ${docRow('Draudimas', d.insurance, 'insurance')}${docRow('Tech. apžiūra', d.inspection, 'inspection')}${docRow('Kelių mokestis (vinjetė)', d.roadPermit, 'roadPermit')}${docRow('KASKO', d.kasko, 'kasko', true)}
+      <div class="kv"><span>Tepalo keitimas</span><b>${o ? day(o.date)+(o.km!=null ? ' · '+num(o.km)+' km' : '') : '<span class="muted">neįrašyta</span>'}</b></div>
+      ${nx ? `<div class="kv"><span>Kitas tepalo keitimas</span><b>${esc(nx)}</b></div>` : ''}
+      <div class="kv"><span>Profilaktika</span><b>${c ? day(c.date)+(COND[c.condition] ? ` · <span class="${COND[c.condition][1]}">${COND[c.condition][0]}</span>` : '') : '<span class="muted">neįrašyta</span>'}</b></div>
+    </div>
+    ${(v.problems||[]).length ? `<div class="card"><h2>Žinomos problemos</h2>${v.problems.map(p=>`<div class="prob ${p.severity==='stop' ? 'stop' : ''}">${esc(p.title)}<small>${day(p.date)} · ${SEV[p.severity]||''}</small></div>`).join('')}</div>` : ''}`;
+}
+function draw(){
+  const v = V, rp = v.repair && v.repair.on, m = MODES[MODE];
+  const plateX = v.plate && !String(v.name||'').toUpperCase().replace(/[^0-9A-Z]/g, '').includes(String(v.plate).toUpperCase().replace(/[^0-9A-Z]/g, '')) ? v.plate : '';   // the plate only once
+  document.title = (v.name || 'Automobilis') + (plateX ? ' · '+plateX : '');
+  const app = document.getElementById('app');
+  const head = `<div class="card"><h1>${esc(v.name || 'Automobilis')}</h1>${plateX ? `<span class="plate">${esc(plateX)}</span>` : ''}</div>
+    ${rp ? `<div class="card rep">${ic('repair')} Automobilis remonte${v.repair.to ? ' iki '+day(v.repair.to) : ''}${v.repair.note ? ' · '+esc(v.repair.note) : ''}</div>` : ''}`;
+  if(!m){
+    const np = (v.problems||[]).length;
+    app.innerHTML = head + `<div class="opts">${Object.entries(MODES).map(([k,x])=>`<button type="button" class="opt ${k==='problem' ? 'warn' : ''}" data-mode="${k}"><span class="opt-ic">${ic(x.i, 24)}</span><span><b>${x.t}</b><small>${k==='info' && np ? 'atviros problemos: '+np+' · ' : ''}${x.s}</small></span>${ic('next')}</button>`).join('')}</div>`;
+    app.querySelectorAll('[data-mode]').forEach(b=>b.onclick = ()=>go(b.dataset.mode));
+    return;
+  }
+  const back = `<button type="button" class="back" id="goBack">${ic('back', 18)} Visi pasirinkimai</button>`;
+  if(MODE==='info'){ app.innerHTML = head + back + infoHtml(); document.getElementById('goBack').onclick = ()=>go(''); return; }
+  if(MODE==='fuel' && !FP.res){
+    app.innerHTML = head + back + fpGateHtml(); document.getElementById('goBack').onclick = ()=>go(''); pinLoc();
+    const ci = document.getElementById('fpCode'), gb = document.getElementById('fpGo');
+    if(ci){ ci.oninput = ()=>{ ci.value = ci.value.replace(/\D/g, '').slice(0, 4); }; ci.onkeydown = e=>{ if(e.key==='Enter') gb.click(); }; }
+    if(gb) gb.onclick = ()=>{ const c = ci ? ci.value : ''; if(ci && !/^\d{4}$/.test(c)){ FP.err = 'Įrašyk savo vairuotojo kodą – 4 skaitmenys iš renginio laiško.'; document.getElementById('fpErr').textContent = FP.err; ci.focus(); return; } fpGet(c); };
+    return;
+  }
+  const fpOn = MODE==='fuel' && FP.res && !FP.res.legacy;
+  const w = who(), now = new Date();
+  const whoHtml = v.me ? `<div class="me">Registruoji kaip <b>${esc(v.me)}</b> (įmonės narys)</div>`
+    : `<div class="note">Nesi prisijungęs kaip įmonės narys – įrašyk savo vardą, pavardę ir el. paštą.</div>
+      <label for="rpName">Vardas ir pavardė</label><input type="text" id="rpName" autocomplete="name" placeholder="pvz. Jonas Jonaitis" value="${esc((fpOn && FP.res.name) || w.name || '')}">
+      <label for="rpEmail">El. paštas</label><input type="email" id="rpEmail" autocomplete="email" inputmode="email" placeholder="pvz. jonas@pastas.lt" value="${esc(w.email||'')}">`;
+  const body = MODE==='problem' ? `<label for="rpText">Kas pastebėta</label><textarea id="rpText" placeholder="pvz. Dega variklio lemputė, barška priekiniai stabdžiai…"></textarea>
+      <label>Kaip skubu</label>
+      <div class="sev">${Object.entries(SEV).map(([k,l])=>`<label><input type="radio" name="sev" value="${k}" ${k==='soon'?'checked':''}> ${l}</label>`).join('')}</div>
+      <div class="loc" id="rpLoc"></div>`
+    : MODE==='incident' ? `<label for="rpTitle">Kas nutiko</label><input type="text" id="rpTitle" maxlength="120" placeholder="pvz. Įbrėžtas galinis bamperis stovėjimo aikštelėje">
+      <label for="rpTime">Laikas</label><input type="time" id="rpTime" value="${String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')}">
+      <label for="rpText">Aprašymas</label><textarea id="rpText" placeholder="kaip ir kur tai įvyko, kas apgadinta…"></textarea>
+      <label for="rpComment">Komentaras (nebūtina)</label><textarea id="rpComment" class="short" placeholder="pvz. kaltininkas, policijos / draudimo bylos nr., kas vairavo…"></textarea>
+      <div class="loc" id="rpLoc"></div>`
+    : `<div class="row2"><div><label for="rpL">Kiek įpilta (l)</label><input type="number" id="rpL" min="0" step="0.01" inputmode="decimal"></div>
+      <div><label for="rpEur">Suma (€)</label><input type="number" id="rpEur" min="0" step="0.01" inputmode="decimal"></div></div>
+      <label for="rpKm">Rida (km)</label><input type="number" id="rpKm" min="0" step="1" inputmode="numeric">
+      ${fpOn ? '' : `<label for="rpCode">Vairuotojo kodas (iš renginio laiško)</label><input type="text" id="rpCode" inputmode="numeric" maxlength="4" placeholder="4 skaitmenys" autocomplete="off">
+      <label class="muted" style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:6px;"><input type="checkbox" id="rpNoCode" style="width:auto;margin:0;"> Neturiu kodo</label>`}
+      <label for="rpText">Komentaras dėl pylimo</label><textarea id="rpText" placeholder="pvz. kur pilta, kodėl, kuria kortele ar savo pinigais…"></textarea>`;
+  const fl = MODE==='fuel' ? 'Kvito nuotrauka: nufotografuok arba įkelk (iki 6)'
+    : MODE==='incident' ? 'Nuotraukos ir video (nebūtina, iki 6 nuotraukų ir 3 video)'
+    : 'Nuotraukos ir video (nebūtina, iki 6 nuotraukų ir 3 video): nufotografuok, nufilmuok arba įkelk – video suspaudžiamas ir įkeliamas jau užregistravus – laukti nereikia';
+  app.innerHTML = head + back + (fpOn ? fpHtml() : '') + `<div class="card" id="repCard">
+      <h2>${ic(m.i)} ${m.t}</h2>
+      ${whoHtml}${body}
+      <label>${fl}</label>
+      <div class="phs" id="phs"></div>
+      <div class="err" id="rpErr"></div>
+      <div style="margin-top:14px;"><button class="btn" id="rpGo">${m.go}</button></div>
+    </div>`;
+  drawPh(); if(MODE!=='fuel') getLoc();
+  document.getElementById('goBack').onclick = ()=>go('');
+  if(fpOn){ fpBind(); fpTimer(); }
+  document.getElementById('rpGo').onclick = send;
+}
+function drawPh(){
+  const box = document.getElementById('phs'); if(!box) return;
+  const nI = PH.filter(p=>!p.vid).length, nV = PH.filter(p=>p.vid).length;
+  box.innerHTML = PH.map((p,i)=>`<div class="ph">${p.vid ? `<video src="${p.url}#t=0.1" muted playsinline preload="metadata"></video>` : `<img src="${p.url}" alt="">`}<button type="button" data-x="${i}" aria-label="Pašalinti">✕</button></div>`).join('')
+    + (BUSY ? `<div class="ph busy" id="phBusy">${esc(BUSY)}</div>` : '')
+    + (BUSY ? '' : (nI < 6 ? '<label class="addph"><input type="file" accept="image/*" capture="environment" hidden data-ph><span><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M480-267q72 0 121-49t49-121q0-73-49-121.5T480-607q-73 0-121.5 48.5T310-437q0 72 48.5 121T480-267Zm0-60q-48 0-79-31.5T370-437q0-48 31-79t79-31q47 0 78.5 31t31.5 79q0 47-31.5 78.5T480-327ZM140-120q-24 0-42-18t-18-42v-513q0-23 18-41.5t42-18.5h147l73-87h240l73 87h147q23 0 41.5 18.5T880-693v513q0 24-18.5 42T820-120H140Z"/></svg></span>Fotografuoti</label>' : '')
+      + (nV < 3 && MODE!=='fuel' ? '<label class="addph"><input type="file" accept="video/*" capture="environment" hidden data-ph><span>🎬</span>Filmuoti</label>' : '')
+      + '<label class="addph"><input type="file" accept="'+(MODE==='fuel' ? 'image/*' : 'image/*,video/*')+'" multiple hidden data-ph><span><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm56-157h489L578-473 446-302l-93-127-117 152Z"/></svg></span>Įkelti</label>');
+  box.querySelectorAll('[data-x]').forEach(b=>b.onclick = ()=>{ const x = PH[+b.dataset.x]; URL.revokeObjectURL(x.url); if(x.prep) vidDrop(x.prep); PH.splice(+b.dataset.x, 1); drawPh(); });
+  box.querySelectorAll('[data-ph]').forEach(inp=>inp.onchange = ()=>addFiles([...inp.files], inp));
+}
+// photos made smaller (max 1600 px, JPEG); a video squeezed on the phone to fit (up to ~45 MB)
+async function addFiles(files, inp){
+  if(inp) inp.value = '';
+  for(const f of files){
+    const isVid = /^video\//.test(f.type||'') || /\.(mp4|m4v|mov|webm|3gp)$/i.test(f.name||'');
+    if(isVid){
+      if(MODE==='fuel' || PH.filter(p=>p.vid).length >= 3) continue;
+      PH.push({ file:f, url:URL.createObjectURL(f), vid:true });   // made smaller and sent after „Registruoti“ – no waiting here
+    } else {
+      if(PH.filter(p=>!p.vid).length >= 6) continue;
+      try{ const blob = await shrink(f); PH.push({ blob, url:URL.createObjectURL(blob), type:'image/jpeg', ext:'jpg' }); }catch(e){}
+    }
+  }
+  drawPh();
+}
+// pictures made smaller before sending (max 1600 px, JPEG)
+async function shrink(file){
+  const img = await new Promise((res, rej)=>{ const i = new Image(); i.onload = ()=>res(i); i.onerror = rej; i.src = URL.createObjectURL(file); });
+  const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth*k); c.height = Math.round(img.naturalHeight*k);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(img.src);
+  return await new Promise(r=>c.toBlob(r, 'image/jpeg', .84));
+}
+// where the problem was noticed: the phone's place (sent with the report, shown in the chat as a map link)
+let LOC = null, CODE = '';
+function drawLoc(st){
+  const el = document.getElementById('rpLoc'); if(!el) return;
+  el.innerHTML = LOC ? `📍 Vieta nustatyta${LOC.acc ? ' (±'+LOC.acc+' m)' : ''} · <a href="https://www.google.com/maps?q=${LOC.lat},${LOC.lng}" target="_blank" rel="noopener">žemėlapyje</a>`
+    : st==='wait' ? '📍 Nustatoma vieta…' : st ? `📍 ${esc(st)} <button type="button" class="btn ghost" id="rpLocTry" style="width:auto;padding:6px 12px;margin:0 0 0 6px;">Bandyti</button>` : '';
+  const t = document.getElementById('rpLocTry'); if(t) t.onclick = getLoc;
+}
+function getLoc(){
+  if(LOC){ drawLoc(); return; }
+  if(!navigator.geolocation){ drawLoc('vietos nustatyti nepavyko'); return; }
+  drawLoc('wait');
+  navigator.geolocation.getCurrentPosition(p=>{ LOC = { lat:+p.coords.latitude.toFixed(6), lng:+p.coords.longitude.toFixed(6), acc:Math.round(p.coords.accuracy||0) }; drawLoc(); },
+    e=>drawLoc(e && e.code===1 ? 'vietos nustatymas neleistas' : 'vietos nustatyti nepavyko'), { enableHighAccuracy:true, timeout:20000, maximumAge:60000 });
+}
+async function putFile(blob, type, ext){
+  const rnd = Array.from(crypto.getRandomValues(new Uint8Array(8)), x=>(x%36).toString(36)).join('');
+  const path = V.channel+'/qr-'+T+'-'+Date.now().toString(36)+rnd+'.'+ext;
+  const r = await fetch(SUPABASE_URL+'/storage/v1/object/chat-files/'+path, { method:'POST', headers:hdr({ 'Content-Type':type, 'x-upsert':'false' }), body:blob });
+  return r.ok ? path : null;
+}
+// the report is already sent: its videos are made smaller and added one by one (to the report and the chat)
+let VBUSY = false;
+window.addEventListener('beforeunload', e=>{ if(VBUSY){ e.preventDefault(); e.returnValue = ''; } });
+async function sendVideos(rid, vids){
+  const card = document.querySelector('#repCard .done'); if(!card) return;
+  const box = document.createElement('div'); box.className = 'vbg'; card.insertBefore(box, card.querySelector('#rpMore'));
+  const more = document.getElementById('rpMore'); more.hidden = true;
+  const st = vids.map(()=>({ t:'laukia eilėje', cls:'' }));
+  const draw = ()=>{ box.innerHTML = vids.map((v,i)=>`<div class="vbg-row ${st[i].cls}"><span>🎬 Video ${vids.length>1 ? i+1 : ''}</span><b>${esc(st[i].t)}</b></div>`).join('')
+    + (VBUSY ? '<p class="muted" style="margin:8px 0 0;font-size:13px;">Neuždaryk šio puslapio, kol video įkeliamas.</p>' : ''); };
+  VBUSY = true; draw();
+  for(let i=0;i<vids.length;i++){
+    try{
+      st[i].t = 'suspaudžiamas…'; draw();
+      const prep = vids[i].prep; vids[i].prep = null;
+      const sh = await vidShrink(vids[i].file, VID_MAX, pc=>{ st[i].t = 'suspaudžiamas '+pc+'%'; draw(); }, prep);
+      st[i].t = 'įkeliamas…'; draw();
+      const path = await putFile(sh.blob, sh.type, sh.ext);
+      if(!path) throw new Error('įkelti nepavyko');
+      await rpc('vehicle_public_report_media', { p_token:T, p_report:rid, p_files:[path] });
+      st[i] = { t:'✓ įkeltas ir įdėtas į chatą', cls:'ok' };
+    }catch(e){ st[i] = { t:'nepavyko: '+(e.message||e), cls:'bad' }; }
+    URL.revokeObjectURL(vids[i].url); draw();
+  }
+  VBUSY = false; draw(); more.hidden = false;
+}
+async function send(){
+  const err = m=>{ document.getElementById('rpErr').textContent = m || ''; }, g = id=>document.getElementById(id);
+  const fail = (m, id)=>{ err(m); if(id && g(id)) g(id).focus(); };
+  const mode = MODE, m = MODES[mode];
+  const name = V.me ? '' : g('rpName').value.trim().replace(/\s+/g, ' '), email = V.me ? '' : g('rpEmail').value.trim().toLowerCase(), text = g('rpText').value.trim();
+  if(!V.me && (name.length < 3 || !/\s/.test(name))) return fail('Įrašyk vardą ir pavardę.', 'rpName');
+  if(!V.me && !EMAIL_RE.test(email)) return fail('Įrašyk el. paštą.', 'rpEmail');
+  const title = mode==='incident' ? g('rpTitle').value.trim() : '';
+  if(mode==='incident' && title.length < 3) return fail('Parašyk, kas nutiko.', 'rpTitle');
+  if(text.length < 3) return fail(mode==='fuel' ? 'Parašyk komentarą dėl pylimo.' : mode==='incident' ? 'Aprašyk įvykį.' : 'Aprašyk, kas pastebėta.', 'rpText');
+  const data = {};
+  if(mode==='fuel'){
+    const n = id=>{ const x = String(g(id).value).trim().replace(',', '.'); return x==='' ? null : +x; };
+    data.liters = n('rpL'); data.eur = n('rpEur'); data.km = n('rpKm');
+    if(data.liters!=null && !(data.liters > 0)) return fail('Neteisingas litrų kiekis.', 'rpL');
+    if(data.eur!=null && !(data.eur >= 0)) return fail('Neteisinga suma.', 'rpEur');
+    if(data.km!=null && !(data.km >= 0)) return fail('Neteisinga rida.', 'rpKm');
+    const code = g('rpCode') ? g('rpCode').value.trim() : '';
+    if(FP.res && !FP.res.legacy) CODE = FP.res.code || '';
+    else if(!g('rpNoCode').checked){
+      if(!/^\d{4}$/.test(code)) return fail('Įrašyk vairuotojo kodą (4 skaitmenys – jis yra renginio laiške) arba pažymėk „Neturiu kodo“.', 'rpCode');
+      try{ if(!(await rpc('vehicle_log_code', { p_token:T, p_log:null, p_code:code }))) return fail('Tokio vairuotojo kodo nėra – patikrink renginio laiške.', 'rpCode'); }
+      catch(e){ if(!/function|schema cache/i.test(e.message||'')) throw e; }   // before driver_codes.sql
+      CODE = code;
+    } else CODE = '';
+  }
+  if(mode==='incident'){ data.time = g('rpTime').value || null; data.comment = g('rpComment').value.trim() || null; }
+  if(BUSY) return fail('Palauk, kol paruošiamas video.');
+  if(!V.me) try{ localStorage.setItem(WHO_KEY, JSON.stringify({ name, email })); }catch(e){}
+  PH.forEach(p=>{ if(p.vid && !p.prep) p.prep = vidPrep(p.file); });   // still within the tap: later the video may play with sound
+  err(''); const b = g('rpGo'); b.disabled = true; b.textContent = PH.length ? 'Siunčiami failai…' : 'Siunčiama…';
+  try{
+    const paths = [], pics = PH.filter(p=>!p.vid), vids = PH.filter(p=>p.vid);
+    for(let i=0;i<pics.length;i++){ const p = pics[i];
+      if(pics.length > 1) b.textContent = 'Siunčiama '+(i+1)+'/'+pics.length+'…';
+      const path = await putFile(p.blob, p.type||'image/jpeg', p.ext||'jpg');
+      if(path) paths.push(path);
+    }
+    // an incident's videos: made smaller and sent before it is registered
+    if(mode==='incident') for(let i=0;i<vids.length;i++){
+      const no = vids.length > 1 ? (i+1)+'/'+vids.length+' ' : '';
+      const prep = vids[i].prep; vids[i].prep = null;
+      const sh = await vidShrink(vids[i].file, VID_MAX, pc=>{ b.textContent = 'Video '+no+'suspaudžiamas '+pc+'%'; }, prep);
+      b.textContent = 'Video '+no+'įkeliamas…';
+      const path = await putFile(sh.blob, sh.type, sh.ext);
+      if(path) paths.push(path);
+    }
+    b.textContent = 'Siunčiama…';
+    let rid;
+    if(mode==='problem'){
+      const args = { p_token:T, p_name:name, p_text:text, p_severity:(document.querySelector('input[name="sev"]:checked')||{}).value || 'soon', p_files:paths, p_loc:LOC };
+      if(!V.me) args.p_email = email;
+      try{ rid = await rpc('vehicle_public_report', args); }
+      catch(e){ if(!/p_email|p_loc|function|schema cache/i.test(e.message||'')) throw e;   // before vehicle_fuel.sql / vehicle_loc.sql
+        delete args.p_email;
+        try{ rid = await rpc('vehicle_public_report', args); }
+        catch(e2){ if(!/p_loc|function|schema cache/i.test(e2.message||'')) throw e2; delete args.p_loc; rid = await rpc('vehicle_public_report', args); } }
+    } else {
+      try{ rid = await rpc('vehicle_public_log', { p_token:T, p_kind:mode, p_name:name, p_email:email, p_title:title || null, p_text:text, p_files:paths, p_loc:mode==='incident' ? LOC : null, p_data:data }); }
+      catch(e){ if(/function|schema cache/i.test(e.message||'')) throw new Error('ši galimybė dar neįjungta – pranešk įmonei'); throw e; }
+      if(mode==='fuel' && CODE && rid) try{ await rpc('vehicle_log_code', { p_token:T, p_log:rid, p_code:CODE }); }catch(e){}
+      // the PIN view goes to the UTA report now, with this fill (a member's – only now)
+      if(mode==='fuel' && rid && FP.res && !FP.res.legacy) try{ await rpc('uta_vehicle_pin_done', { p_token:T, p_log:rid, p_loc:PIN.loc }); }catch(e){}
+    }
+    PH = [];
+    g('repCard').innerHTML = `<div class="done"><div class="big" style="color:var(--ok)">${ic('ok', 52)}</div><h2>${m.done}</h2><p class="muted">${mode==='fuel' ? 'Ačiū! Pylimas įrašytas į automobilio istoriją'+(paths.length ? ' su kvito nuotrauka' : '')+'.' : mode==='incident' ? 'Ačiū! Įvykis įrašytas į automobilio istoriją, atsakingi gavo pranešimą.' : 'Ačiū! Atsakingas asmuo gavo pranešimą'+(paths.length ? ' su nuotraukomis / video' : '')+'.'}</p>
+      <div id="rpMore"><button class="btn ghost" id="rpAgain">Registruoti dar vieną</button><button class="btn ghost" id="rpHome">Visi pasirinkimai</button></div></div>`;
+    g('rpAgain').onclick = ()=>go(mode); g('rpHome').onclick = ()=>go('');
+    if(mode==='problem' && vids.length && rid) sendVideos(rid, vids);
+  }catch(e){ b.disabled = false; b.textContent = m.go; err('Nepavyko: '+e.message); }
+}
+load();
+</script>
+</body>
+</html>
