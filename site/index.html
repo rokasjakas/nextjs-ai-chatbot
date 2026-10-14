@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-73a8fSjvdPswPKyJUpJOU0e1eYLljD5emggWgn8j9S4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Gii7LK4KU0tjfq2dfkLEAWGTPIC82Bzoqfr3YniEhuA=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1263,6 +1263,7 @@ table.xg select{background-position:right 5px center !important;padding-right:18
 /* logistics */
 .xg-logl .xg-day{flex:0 0 36px;text-align:center;border-right:1px solid rgba(0,0,0,.12) !important;}
 .xg-logl [data-k="vehicle"]{flex:1.4;}
+table.xg textarea.xg-vrep{color:var(--danger) !important;background-color:color-mix(in srgb, var(--danger) 16%, transparent) !important;font-weight:700;}
 .xg-logl [data-k="driver"]{flex:1;border-left:1px solid rgba(0,0,0,.12) !important;}
 .xg-rt{font-size:11.5px;padding:3px 5px;border-top:1px solid rgba(0,0,0,.1);}
 .xg-rt .pill{font-size:10px;padding:1px 5px;}
@@ -20633,7 +20634,7 @@ function uiAsk(msg, opt){
     el.innerHTML = `<div class="ui-ask-card">
       <div class="ui-ask-msg"></div>
       ${opt.input ? '<input type="text" class="ui-ask-in" autocomplete="off">' : ''}
-      <div class="ui-ask-b"><button type="button" class="btn" data-a="no">${esc(opt.no || 'Atšaukti')}</button><button type="button" class="btn ${danger ? 'danger' : 'primary'}" data-a="yes">${esc(opt.yes || (danger ? (String(msg).trim().split(/\s/)[0].replace(/[^A-Za-zĄČĘĖĮŠŲŪŽąčęėįšųūž]/g,'') || 'Taip') : 'Gerai'))}</button></div></div>`;
+      <div class="ui-ask-b">${opt.no===false ? '' : `<button type="button" class="btn" data-a="no">${esc(opt.no || 'Atšaukti')}</button>`}<button type="button" class="btn ${danger ? 'danger' : 'primary'}" data-a="yes">${esc(opt.yes || (danger ? (String(msg).trim().split(/\s/)[0].replace(/[^A-Za-zĄČĘĖĮŠŲŪŽąčęėįšųūž]/g,'') || 'Taip') : 'Gerai'))}</button></div></div>`;
     el.querySelector('.ui-ask-msg').textContent = String(msg);
     const inp = el.querySelector('.ui-ask-in'); if(inp) inp.value = opt.value==null ? '' : String(opt.value);
     const done = v=>{ doc.removeEventListener('keydown', key, true); el.classList.add('out'); el.__instant = true; setTimeout(()=>el.remove(), 120); res(v); };   // it already faded (.out)
@@ -22360,7 +22361,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v583';
+const APP_VER = 'v584';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24358,8 +24359,22 @@ function evConflictAllow(ev, e, list, on){
   toast(on ? '✓ Pažymėta: tą dieną gali dirbti keliuose renginiuose.' : 'Dublis vėl rodomas.');
 }
 // adds / removes the „!“ in every row on screen
+// a vehicle in repair (Transportas → išvežtas taisymui, nuo–iki) cannot drive to an event on those days
+function vehInRepair(v, day){ const r = v && v.repair; if(!r || !r.on || !day) return false; return (!r.from || day >= r.from) && (!r.to || day <= r.to); }
+function evLogDays(ev, l){ const s = String(l.day||'').trim(); return s ? [rpLogDate(ev, l)].filter(Boolean) : rpEvDays(ev); }
+// the cars of a logistics line that are in repair on its day(s): [{ car, v, day }]
+function evLogRepairs(ev, l){
+  if(!l || evLogIsRent(l)) return [];
+  const days = evLogDays(ev, l), out = [];
+  String(l.vehicle||'').split('\n').map(x=>x.trim()).filter(Boolean).forEach(car=>{
+    (STATE.vehicles||[]).filter(v=>utaCarIs(car, v)).forEach(v=>{ const day = days.find(d=>vehInRepair(v, d)); if(day) out.push({ car, v, day }); }); });
+  return out;
+}
+function evRepText(x){ return x.v.name+' remonte'+fleetRepPeriod(x.v.repair)+(x.v.repair.note ? ' ('+x.v.repair.note+')' : ''); }
 function evConflictMarks(){
   evPeopleIndex();
+  document.querySelectorAll('#xgTable tbody tr[data-ev] textarea[data-k="vehicle"][data-l]').forEach(ta=>{ const ev = EV.events.find(x=>x.id===ta.closest('tr[data-ev]').dataset.ev), l = ev && (ev.logistics||[])[+ta.dataset.l];
+    const r = l ? evLogRepairs(ev, l) : []; ta.classList.toggle('xg-vrep', !!r.length); if(r.length) ta.title = r.map(evRepText).join('\n'); else ta.removeAttribute('title'); });
   document.querySelectorAll('#xgTable tbody tr[data-ev]').forEach(tr=>{ const ev = EV.events.find(x=>x.id===tr.dataset.ev); if(!ev || !ev.crew) return;
     tr.querySelectorAll('.xg-entry').forEach(row=>{ const g = ev.crew[+row.dataset.g], e = g && g.entries[+row.dataset.i];
       const c = g && e ? evConflictsFor(ev, g, e) : [], btn = row.querySelector('.xg-cf');
@@ -27597,6 +27612,12 @@ function bindEventListEvents(){
       const tel = evOrgPhone(v); if(tel && !(ev.organizerPhone||'').trim()){ ev.organizerPhone = tel; evSave(ev); const f = t.closest('td') && t.closest('td').querySelector('[data-f="organizerPhone"]'); if(f) f.value = tel; } }
     if(t.dataset.f==='organizer') crContactSync(t.value, ev.organizerPhone);
     if(t.dataset.f==='organizerPhone'){ evOrgPhoneSet(ev.organizer, t.value); crContactSync(ev.organizer, t.value); }
+    // a car in repair on that day is not put in – it is taken back out and the reason is shown
+    if(t.dataset.l!==undefined && t.dataset.k==='vehicle'){ const l = ev.logistics[+t.dataset.l], bad = l ? evLogRepairs(ev, l) : [];
+      if(bad.length){ const out = new Set(bad.map(x=>x.car)); l.vehicle = String(l.vehicle||'').split('\n').filter(x=>!out.has(x.trim())).join('\n'); t.value = l.vehicle; evSave(ev);
+        uiAsk(bad.map(x=>'🔧 '+evRepText(x)+' – '+evShortDate(x.day)+' jo įrašyti negalima.').join('\n')+'\n\nPasirink kitą automobilį arba Transporte pakeisk remonto datas.', { yes:'Supratau', no:false, danger:false });
+        return; } }
+    if(t.dataset.l!==undefined && t.dataset.k==='day') setTimeout(()=>{ try{ evConflictMarks(); }catch(e){} }, 0);
     if(t.dataset.l!==undefined && t.dataset.k==='vehicle'){ const l = ev.logistics[+t.dataset.l], rent = /^\s*nuom/i.test(t.value||'');
       if(rent && !l.rent){ l.rent = {}; evSave(ev); rerenderEventCard(ev); setTimeout(()=>{ const f = document.querySelector('tr[data-ev="'+ev.id+'"] [data-rk="company"][data-l="'+t.dataset.l+'"]'); if(f) f.focus(); }, 30); }
       else if(!rent && l.rent){ delete l.rent; evSave(ev); rerenderEventCard(ev); } }
@@ -45862,6 +45883,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-15 11:30', v:'v584', k:'fix', t:'Remonte esančio automobilio nebegalima įrašyti į renginį', f:'Jei Transporte automobilis pažymėtas „išvežtas taisymui“ (nuo–iki), Renginiuose jo nebegalima įrašyti tomis dienomis (pagal eilutės dieną, o jei ji neįrašyta – visas renginio dienas): jis išimamas ir parodoma kodėl. Jau įrašyti tokie automobiliai lentelėje pažymėti raudonai.' },
   { d:'2026-10-15 11:00', v:'v583', k:'new', t:'Darbo erdvė: pakeisti programą lange', f:'Paspausk lango pavadinimą (šalia – keitimo ženklas): atsidaro paieška – rašyk programos pavadinimą ir pasirink (Enter arba paspaudimu). Langas lieka toje pačioje vietoje ir to paties dydžio, kiti langai neužkraunami iš naujo.' },
   { d:'2026-10-15 10:30', v:'v582', k:'fix', t:'Languose puslapis per visą aukštį', f:'Darbo erdvės ir greituosiuose languose Renginių lentelė (ir kiti puslapiai) užima visą lango aukštį – ir pakeitus mastelį, ir pakeitus lango dydį.' },
   { d:'2026-10-15 10:00', v:'v581', k:'new', t:'Darbo erdvė: 2 / 3 / 4 langai ir programų paieška', f:'Pradžios viršutinėje juostoje „Langai 2 3 4“ – pasirink, kiek darbinių langų (2 – šalia, 3 – eilėje, 4 – 2×2). Laisvoje vietoje rašyk programos pavadinimą (pvz. „zmon“ – Žmonės): sąrašas filtruojasi rašant, Enter arba paspaudimas atidaro langą, rodyklės – pasirinkti.' },
