@@ -81,6 +81,8 @@ type Prefs = {
   leave?: boolean;
   muted?: string[];
   quiet?: { on?: boolean; from?: string; to?: string };
+  // the member's own state in the app: "dnd" (Netrukdyti) – no notifications until `until` (or until changed)
+  presence?: { st?: string; until?: string | null };
 };
 type Sub = { endpoint: string; user_id: string; p256dh: string; auth: string; user_agent?: string | null };
 type Payload = { title: string; body: string; tag: string; url: string; kind?: string; call_id?: string; meet?: string; provider?: string };
@@ -126,6 +128,12 @@ function name(p?: Profile): string {
     p.email.split("@")[0];
 }
 
+// Netrukdyti: set by the member in the app (profile → status), for a while or until changed
+export function inDnd(pr: Prefs | null, now = new Date()): boolean {
+  const s = pr?.presence;
+  if (!s || s.st !== "dnd") return false;
+  return !s.until || Date.parse(s.until) > now.getTime();
+}
 // quiet hours in Vilnius time, also across midnight (22:00–07:00)
 export function inQuietHours(q: Prefs["quiet"], now = new Date()): boolean {
   if (!q?.on || !q.from || !q.to) return false;
@@ -136,7 +144,7 @@ export function inQuietHours(q: Prefs["quiet"], now = new Date()): boolean {
 }
 export function wants(p: Prefs | null, kind: "general" | "direct" | "group" | "reactions" | "meetings" | "threads" | "tasks" | "events" | "gear" | "leave" | "other", convId: string): boolean {
   const pr = p ?? {};
-  if (pr.enabled === false) return false;
+  if (pr.enabled === false || inDnd(pr)) return false;
   if (kind !== "other" && pr[kind] === false) return false;
   if ((pr.muted ?? []).includes(convId)) return false;
   return !inQuietHours(pr.quiet);
@@ -480,13 +488,13 @@ async function onMessage(uid: string, messageId: string, server = false) {
 }
 export function wantsMention(p: Prefs | null): boolean {
   const pr = p ?? {};
-  if (pr.enabled === false || pr.mentions === false) return false;
+  if (pr.enabled === false || pr.mentions === false || inDnd(pr)) return false;
   return !inQuietHours(pr.quiet);
 }
 
 export function wantsCall(p: Prefs | null): boolean {
   const pr = p ?? {};
-  if (pr.enabled === false || pr.calls === false) return false;
+  if (pr.enabled === false || pr.calls === false || inDnd(pr)) return false;
   return !inQuietHours(pr.quiet);
 }
 async function onCall(uid: string, callId: string) {
