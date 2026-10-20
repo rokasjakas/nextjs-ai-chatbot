@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-VqNiftB610RcftRw3zwJ/Wre6/9gnibnkfL3UPu+JpA=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-nYbhIQI2DUlIAy/BRkABkyvXbizoRODhTuemyaWUbcQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1815,6 +1815,16 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 .dv-img{flex:1;display:flex;align-items:center;justify-content:center;padding:12px;} .dv-img img{max-width:100%;max-height:100%;object-fit:contain;}
 .dv-img.zoomed{display:block;flex:none;width:max-content;min-width:100%;text-align:center;} .dv-img.zoomed img{display:inline-block;height:auto;}
 .dv-pages.zoomed{align-items:flex-start;width:max-content;min-width:100%;} .dv-pages.zoomed .dv-page{max-width:none;margin:0 auto;}
+.iwh-modal{max-width:760px !important;}
+.iwh-pick{position:relative;} .iwh-pick input{width:100%;}
+.iwh-sug{display:flex;flex-direction:column;gap:2px;margin-top:4px;} .iwh-sug:empty{display:none;}
+.iwh-sug button{display:flex;align-items:baseline;gap:8px;text-align:left;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--panel-2);color:var(--text);font:inherit;cursor:pointer;} .iwh-sug button:hover{border-color:var(--accent);} .iwh-sug small{color:var(--text-dim);}
+.iwh-item{margin-top:10px;font-size:14px;}
+.iwh-res{margin-top:12px;} .iwh-sum{font-size:13px;margin-bottom:6px;color:var(--text-dim);} .iwh-sum b{color:var(--text);}
+.iwh-list{display:flex;flex-direction:column;gap:4px;max-height:50vh;overflow-y:auto;}
+.iwh-row{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--panel-2);color:var(--text);font:inherit;text-align:left;cursor:pointer;}
+.iwh-row:hover:not(:disabled){border-color:var(--accent);} .iwh-row:disabled{cursor:default;opacity:.9;}
+.iwh-d{font-variant-numeric:tabular-nums;color:var(--text-dim);font-size:12.5px;} .iwh-n{display:flex;flex-direction:column;min-width:0;} .iwh-n b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .iwh-n small{font-size:11.5px;color:var(--text-dim);} .iwh-q{font-weight:800;}
 .dv-zoom{display:inline-flex;align-items:center;gap:2px;} .dv-zoom[hidden]{display:none;}
 .dv-zb{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;} .dv-zb svg{width:17px;height:17px;} .dv-zb:hover{border-color:var(--accent);}
 .dv-zv{min-width:52px;height:30px;border:0;background:none;color:var(--text);font:inherit;font-weight:700;font-size:12.5px;cursor:pointer;border-radius:8px;} .dv-zv:hover{background:var(--panel-2);}
@@ -7476,6 +7486,65 @@ async function parseExcelForProject(file){
    ============================================================ */
 let invFilter = { q:'', group:'', folder:'', brand:null, missing:false };
 
+/* „Kur suplanuota“: an item and a period → every project / event that had it written down (and how many) –
+   gear reserved for an event, a project's load list, Rentman projects */
+const INVW = { id:null, from:'', to:'' };
+function invWhereUses(id, a, b){
+  id = String(id); const out = [], over = (x, y)=>x && (!b || x <= b) && (!a || (y||x) >= a);
+  (EV.events||[]).forEach(ev=>{ if(ev.deletedAt) return; const g = gearOf(ev), sp = g && gearSpan(ev); if(!sp || !over(sp[0], sp[1])) return;
+    const q = g.items.filter(r=>String(r.itemId)===id).reduce((s, r)=>s + (+r.qty||0), 0);
+    if(q > 0) out.push({ kind:'ev', ev, name:gearEvName(ev), from:sp[0], to:sp[1], qty:q }); });
+  (STATE.projects||[]).forEach(p=>{ const d = p.eventDate; if(!over(d, d)) return;
+    const q = (p.loadList||[]).filter(r=>(r.kind||'item')==='item' && String(r.refId)===id).reduce((s, r)=>s + (+r.qty||0), 0);
+    if(q > 0) out.push({ kind:'proj', p, name:p.name||'Projektas', from:d, to:d, qty:q }); });
+  if(GRM.on) gearRmProjects().forEach(p=>{ if(!p.from || !over(p.from, p.to||p.from)) return;
+    const q = (p.equipment||[]).filter(e=>gearRmItem(e)===id).reduce((s, e)=>s + (+e.qty||0), 0);
+    if(q > 0 && !out.some(x=>x.kind==='ev' && x.ev.gear && String(x.ev.gear.rentmanId)===String(p.rentmanId))) out.push({ kind:'rm', name:p.name||'Rentman projektas', from:p.from, to:p.to||p.from, qty:q }); });
+  return out.sort((x, y)=>String(x.from).localeCompare(String(y.from)));
+}
+function invWhere(itemId){
+  const t = new Date(), iso = x=>calISO(x);
+  if(!INVW.from){ INVW.from = iso(new Date(t.getFullYear(), t.getMonth()-3, 1)); INVW.to = iso(new Date(t.getFullYear(), t.getMonth()+4, 0)); }
+  if(itemId!=null) INVW.id = String(itemId);
+  const quick = [['Šis mėnuo', ()=>[iso(new Date(t.getFullYear(), t.getMonth(), 1)), iso(new Date(t.getFullYear(), t.getMonth()+1, 0))]],
+    ['Praėję 3 mėn.', ()=>[iso(new Date(t.getFullYear(), t.getMonth()-3, t.getDate())), iso(t)]],
+    ['Ateinantys 3 mėn.', ()=>[iso(t), iso(new Date(t.getFullYear(), t.getMonth()+3, t.getDate()))]],
+    ['Šie metai', ()=>[t.getFullYear()+'-01-01', t.getFullYear()+'-12-31']]];
+  openModal(`<h3 style="margin:0 0 4px;">Kur suplanuota</h3>
+    <div class="section-sub" style="margin:0 0 10px;">Pasirink daiktą ir laikotarpį – matysi renginius ir projektus, kuriuose jis įrašytas, ir kiek vienetų.</div>
+    <div class="iwh-pick"><input type="search" id="iwhQ" placeholder="Ieškoti daikto: pavadinimas arba kodas…" autocomplete="off"><div class="iwh-sug" id="iwhSug"></div></div>
+    <div class="iwh-item" id="iwhItem"></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:8px;">
+      <label class="field" style="margin:0;">Nuo<input type="date" id="iwhFrom" value="${esc(INVW.from)}"></label>
+      <label class="field" style="margin:0;">Iki<input type="date" id="iwhTo" value="${esc(INVW.to)}"></label>
+      <span class="chipbar" style="gap:4px;">${quick.map((q, i)=>`<button type="button" class="chip" data-iwq="${i}">${q[0]}</button>`).join('')}</span>
+    </div>
+    <div id="iwhRes" class="iwh-res"></div>`);
+  document.getElementById('modalRoot').classList.add('iwh-modal');
+  const $ = id=>document.getElementById(id), q = $('iwhQ'), sug = $('iwhSug');
+  const showItem = ()=>{ const it = INVW.id && getItem(INVW.id);
+    $('iwhItem').innerHTML = it ? `<b>${esc(it.name)}</b>${it.code ? ` <span class="muted">· ${esc(it.code)}</span>` : ''} <span class="muted">· sandėlyje ${stockOf(it)}</span>` : '<span class="muted">Daiktas nepasirinktas.</span>'; };
+  const draw = async ()=>{ const box = $('iwhRes'); if(!box) return; showItem();
+    if(!INVW.id){ box.innerHTML = ''; return; }
+    if(GRM.on && INVW.from){ box.innerHTML = '<div class="muted">Kraunama (ir iš Rentman)…</div>'; try{ await gearRmLoad(INVW.from, INVW.to || INVW.from); }catch(e){} if(!$('iwhRes')) return; }
+    const list = invWhereUses(INVW.id, INVW.from, INVW.to), tot = list.reduce((s, x)=>s + x.qty, 0);
+    const lab = { ev:'Renginys', proj:'Projektas', rm:'Rentman' }, when = x=>ppDM(x.from)+(x.to && x.to!==x.from ? '–'+ppDM(x.to) : '')+' '+String(x.from).slice(0, 4);
+    box.innerHTML = list.length ? `<div class="iwh-sum">Rasta: <b>${list.length}</b> · iš viso <b>${tot}</b> vnt.${GRM.err ? ` <small class="muted">(Rentman: ${esc(GRM.err)})</small>` : ''}</div>
+      <div class="iwh-list">${list.map((x, i)=>`<button type="button" class="iwh-row" data-iwi="${i}" ${x.kind==='rm' ? 'disabled' : ''}><span class="iwh-d">${esc(when(x))}</span><span class="iwh-n"><b>${esc(x.name)}</b><small>${lab[x.kind]}</small></span><span class="iwh-q">${x.qty} vnt.</span></button>`).join('')}</div>`
+      : `<div class="muted" style="padding:10px 0;">Šiuo laikotarpiu šis daiktas niekur neįrašytas.</div>`;
+    box.querySelectorAll('[data-iwi]').forEach(b=>b.onclick = ()=>{ const x = list[+b.dataset.iwi]; closeModal();
+      if(x.kind==='ev'){ EV.month = evMonthKey(x.ev.date || x.from); setTab('events'); setTimeout(()=>{ const tr = document.querySelector('tr[data-ev="'+x.ev.id+'"]'); if(tr){ tr.scrollIntoView({ block:'center' }); tr.classList.add('xg-flash'); setTimeout(()=>tr.classList.remove('xg-flash'), 1800); } }, 400); }
+      else if(x.kind==='proj'){ STATE.activeProjectId = x.p.id; saveState(); setTab('load'); } }); };
+  q.addEventListener('input', ()=>{ const n = normalizeText(q.value).trim(); if(!n){ sug.innerHTML = ''; return; }
+    const hits = allItems().filter(it=>normalizeText((it.name||'')+' '+(it.code||'')).includes(n)).sort((a, b)=>(normalizeText(a.name).startsWith(n) ? 0 : 1) - (normalizeText(b.name).startsWith(n) ? 0 : 1)).slice(0, 8);
+    sug.innerHTML = hits.map(it=>`<button type="button" data-iwid="${esc(String(it.id))}"><b>${esc(it.name)}</b>${it.code ? `<small>${esc(it.code)}</small>` : ''}</button>`).join('') || '<div class="muted" style="padding:6px;">Nerasta</div>'; });
+  q.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); e.stopPropagation(); const f = sug.querySelector('[data-iwid]'); if(f) f.click(); } });
+  sug.addEventListener('click', e=>{ const b = e.target.closest('[data-iwid]'); if(!b) return; INVW.id = b.dataset.iwid; sug.innerHTML = ''; q.value = ''; draw(); });
+  const dates = ()=>{ INVW.from = $('iwhFrom').value; INVW.to = $('iwhTo').value; draw(); };
+  $('iwhFrom').addEventListener('change', dates); $('iwhTo').addEventListener('change', dates);
+  document.querySelectorAll('[data-iwq]').forEach(b=>b.onclick = ()=>{ const [a, z] = quick[+b.dataset.iwq][1](); $('iwhFrom').value = a; $('iwhTo').value = z; dates(); });
+  draw(); setTimeout(()=>q.focus(), 50);
+}
 function renderInventoryTab(){
   stkEnsure(()=>{ if(currentTab==='inventory') renderInvRows(); });
   rfidEnsure(()=>{ if(currentTab==='inventory') renderInvRows(); });
@@ -7487,7 +7556,7 @@ function renderInventoryTab(){
     <div class="card">
       <div class="row between" style="margin-bottom:10px;">
         <h2 class="section-title inv-fold-h" style="margin:0;"><button type="button" class="inv-foldbtn" id="invFoldBtn" data-ro-ok title="Suskleisti / išskleisti filtrus">${slIcon(invFiltFolded() ? 'dropdown' : 'dropup')}</button>Sandėlio sąrašas<span class="inv-fold-n" id="invFoldN"></span></h2>
-        <span class="row" style="gap:6px;"><button class="btn small" id="iwBtn" data-ro-ok>🛠 Atlikti darbai</button><button class="btn small" id="bundlesBtn" data-ro-ok>📦 Rinkiniai (${invBundles().length})</button><button class="btn primary small" id="addItemBtn">+ Naujas daiktas</button></span>
+        <span class="row" style="gap:6px;"><button class="btn small" id="iwhBtn" data-ro-ok title="Kur daiktas buvo / bus naudojamas: projektai ir renginiai pasirinktu laikotarpiu">${slIcon('search')} Kur suplanuota</button><button class="btn small" id="iwBtn" data-ro-ok>🛠 Atlikti darbai</button><button class="btn small" id="bundlesBtn" data-ro-ok>📦 Rinkiniai (${invBundles().length})</button><button class="btn primary small" id="addItemBtn">+ Naujas daiktas</button></span>
       </div>
       <div class="row" style="margin-bottom:12px;">
         <div class="searchbar">
@@ -7948,6 +8017,7 @@ function bindInventoryEvents(){
   document.getElementById('addItemBtn').addEventListener('click', openAddItemModal);
   document.getElementById('bundlesBtn').addEventListener('click', invBundlesModal);
   document.getElementById('iwBtn').addEventListener('click', ()=>setTab('works'));
+  document.getElementById('iwhBtn').addEventListener('click', ()=>invWhere());
   const fb = document.getElementById('invFoldBtn'); if(fb) fb.onclick = invFiltFold;
   if(document.getElementById('bulkApplyBtn')) document.getElementById('bulkApplyBtn').addEventListener('click', ()=>{
     const rows = filteredInvItems();
@@ -22489,7 +22559,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v598';
+const APP_VER = 'v599';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -46216,6 +46286,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-20 21:15', v:'v599', k:'new', t:'Įranga: Kur suplanuota', f:'Įrangos puslapyje mygtukas „Kur suplanuota“: įrašyk daikto pavadinimą ar kodą, pasirink laikotarpį (arba Šis mėnuo / Praėję 3 mėn. / Ateinantys 3 mėn. / Šie metai) – matysi visus renginius (rezervuota įranga), projektus (krovimo sąrašas) ir Rentman projektus, kuriuose tas daiktas įrašytas, su kiekiu ir datomis. Paspaudus renginį ar projektą – jis atsidaro.' },
   { d:'2026-10-20 20:45', v:'v598', k:'new', t:'Projektai: Ši diena ir ateinantys', f:'Projektuose (ir Rentman projektų sąraše) galima pasirinkti „Ši diena ir ateinantys“ – rodomi šiandienos ir vėlesni projektai; pasirinkimas įsimenamas ir kasdien pasislenka pats.' },
   { d:'2026-10-20 20:15', v:'v597', k:'new', t:'Failų peržiūra su mastelio keitimu · Išvaizda per visą plotį', f:'Chate atidarius PDF ar paveikslėlį – viršuje − / % / + (ir Ctrl + ratukas, Ctrl +/−, telefone dviem pirštais), nuo 25 % iki 500 %. PDF didinant persipiešia iš vektorių – lieka aštrus; paveikslėliai – pagal jų raišką. Mano erdvė → Išvaizda kompiuteryje išdėstyta horizontaliai: Dizainas, Ikonos, Fonas greta.' },
   { d:'2026-10-20 19:45', v:'v596', k:'new', t:'Įvykę renginiai susiskleidžia patys', f:'Renginiuose praėjus 2 dienoms po renginio paskutinės dienos (pvz. renginys 20 d. → 22 d.) jis susiskleidžia savaime. Jei jį vėl išskleidi ranka – lieka išskleistas.' },
