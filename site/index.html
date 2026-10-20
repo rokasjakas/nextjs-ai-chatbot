@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/qPiqw4zHgadNlhusmx6hpcoSyD6uGa4g0QiIM9OVVo=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Am+assUF5UeE0tr6FRW8ecI5tprPaInuqclmNC4YxHQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -13335,6 +13335,20 @@ function qkSecondWindow(){
   try{ w.focus(); }catch(e){}
 }
 function themeNow(){ return document.documentElement.getAttribute('data-theme')==='light' ? 'light' : 'dark'; }
+// the other windows of the app (darbo erdvė, greitieji langai, antras ekranas) follow a change of theme / look made in one of them
+window.addEventListener('storage', e=>{
+  try{
+    if(e.key==='es-theme'){ if(e.newValue && e.newValue!==themeNow()) themeSet(e.newValue); return; }
+    if(e.key==='es-ui'){ uiApply(); return; }
+    const me = teamMe(), m = me && e.key && e.key.endsWith(':'+me) ? e.key.slice(0, -me.length-1) : '';
+    if(!m || !ACCESS.profile) return;
+    let v = null; try{ v = JSON.parse(e.newValue); }catch(x){}
+    ACCESS.profile.notify_prefs = Object.assign({}, ACCESS.profile.notify_prefs||{}, { [m]:v });
+    if(/^(glass|hoverFx|radius)$/.test(m)) glassApply();
+    else if(/^bg/.test(m)) bgApply();
+    else if(m==='presence'){ teamTrack(); myStatusRefresh(); }
+  }catch(x){}
+});
 function themeSet(t){
   if(t==='light') document.documentElement.setAttribute('data-theme','light'); else document.documentElement.removeAttribute('data-theme');
   try{ localStorage.setItem('es-theme', t); }catch(e){}
@@ -22393,7 +22407,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v589';
+const APP_VER = 'v590';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -45996,6 +46010,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-20 17:00', v:'v590', k:'fix', t:'Langai keičia temą kartu su programa', f:'Perjungus šviesų / tamsų režimą (ar pakeitus akcento spalvą, stiklą, foną) darbo erdvės langai, greitieji langai ir antras ekranas persijungia iškart kartu – nebelieka tamsių langų šviesioje programoje.' },
   { d:'2026-10-20 16:30', v:'v589', k:'fix', t:'Bendra patikra: matomumas tamsiame ir šviesiame režime', f:'Patikrinti visi puslapiai ir langai tamsiame, šviesiame režime, su balta / juoda akcento spalva ir stiklu, kompiuteryje ir telefone. Pataisyta: skaičiai aktyviuose mygtukuose (pvz. „Laukia 0“, „Visi 0“) su balta ar juoda akcento spalva buvo beveik nematomi; kalendoriuje šventinė kito mėnesio diena šviesiame režime nesimatė; tuščių sąrašų ikonos ryškesnės; Transporte automobilis be dokumentų datų nebelaužia priminimų išsaugojimo.' },
   { d:'2026-10-20 15:00', v:'v588', k:'new', t:'„Langai“ – įjungti / išjungti', f:'Pradžioje viršutiniame meniu „Langai“ su jungikliu: paspaudus įjungi arba išjungi darbo langus. Įjungus šalia atsiranda 2 / 3 / 4 ir „Tvarkyti“.' },
   { d:'2026-10-20 14:30', v:'v587', k:'fix', t:'Darbo erdvė: vienas atnaujinimo pranešimas, valdymas viršuje', f:'Išleidus naują versiją „Programa atnaujinta“ rodomas tik vieną kartą (ne kiekviename lange) – „Perkrauti“ perkrauna ir visus langus. Įjungus darbo erdvę juosta su laiku ir oru Pradžioje nerodoma, o „Langai 2 3 4“ ir „Tvarkyti“ perkelti į viršutinį meniu – langams daugiau vietos.' },
