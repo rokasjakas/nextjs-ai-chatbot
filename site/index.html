@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-IDeH1d+G6zVet++4OfgGbyatyhNaLQ47xAnZBrsiUAM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-nBTLBS5/KTWPtkxPa+ic4h+FyWpuy9Ec6zj0nLpHh/8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1440,6 +1440,11 @@ tr.xg-folded .xg-date-in small{font-size:10px;}
 tr.xg-folded:hover td:not(.xg-date){filter:brightness(.97);}
 .xg-meta{align-items:center;flex-wrap:wrap;}
 .xg-fold-all{display:flex;gap:6px;margin-left:auto;}
+.ev-actions #evMeta{margin:0 0 0 auto;gap:8px;white-space:nowrap;flex-wrap:nowrap;justify-content:flex-end;}
+.ev-actions #evMeta:empty{display:none;}
+.ev-actions #evMeta .xg-fold-all{margin-left:0;}
+.ev-actions:has(#evMeta){width:100%;align-items:center;}
+.ev-actions #evMeta .xg-hint{display:none;}
 @media (max-width:640px){ .xg-fold-all{margin-left:0;} .xg-meta .xg-hint{margin-left:auto;} }
 
 .rt-modal{max-width:720px !important;}
@@ -22564,7 +22569,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v601';
+const APP_VER = 'v602';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -24149,6 +24154,7 @@ function renderEventsTab(){
         <button class="btn small" id="evImport" title="Įkelti renginius ir paėmimus iš Google Sheets (paruošto .json failo)">⬆ Importuoti</button>
         <span class="ev-zoom"><button type="button" class="btn small" id="evZoomOut" title="Tolinti (Ctrl −)">${slIcon('zoomout')}</button><b id="evZoomV" title="Grąžinti 100 %">100 %</b><button type="button" class="btn small" id="evZoomIn" title="Artinti (Ctrl +)">${slIcon('zoomin')}</button></span>
         <button type="button" class="btn small" id="evFull" title="Atidaryti per visą langą (Esc – uždaryti)">${slIcon('fullscreen')}</button>
+        <span class="xg-meta" id="evMeta"></span>
       </div>
     </div>
     <div id="evError"></div>
@@ -25150,6 +25156,7 @@ function renderEventList(){
   const months = new Set(evSpanMonths());
   const list = evSorted(EV.events.filter(e=> searching ? evMatches(e) : months.has(evMonthKey(e.date))));
   if(!list.length){
+    const mt0 = document.getElementById('evMeta'); if(mt0) mt0.innerHTML = '';
     el.innerHTML = `<div class="card empty-state">${searching ? 'Nieko nerasta. Pabandyk kitą žodį ar datas.' : (evSpan() > 1 ? 'Šiais mėnesiais' : 'Šį mėnesį')+' renginių dar nėra. Spausk „+ Renginys“ arba „↓ Iš projektų“.'}</div>`;
     return;
   }
@@ -25166,8 +25173,10 @@ function renderEventList(){
     }
     rows += evRowHtml(ev, cols);
   });
+  // the count and fold buttons sit in the top button row (no separate strip above the table)
+  const mt = document.getElementById('evMeta');
+  if(mt) mt.innerHTML = `<span class="xg-count">${searching ? 'Rasta: <b>'+list.length+'</b>' : ltPlural(nEv,'renginys','renginiai','renginių')+(nWork?' · '+ltPlural(nWork,'sandėlio darbai','sandėlio darbai','sandėlio darbų'):'')}</span><span class="xg-fold-all"><button type="button" class="btn small" id="evFoldAll">▸ Sutraukti visus</button><button type="button" class="btn small" id="evUnfoldAll">▾ Išskleisti visus</button></span><span class="xg-hint">← slink į šonus →</span>`;
   el.innerHTML = `
-    <div class="xg-meta">${searching ? 'Rasta: <b>'+list.length+'</b>' : ltPlural(nEv,'renginys','renginiai','renginių')+(nWork?' · '+ltPlural(nWork,'sandėlio darbai','sandėlio darbai','sandėlio darbų'):'')}<span class="xg-fold-all"><button type="button" class="btn small" id="evFoldAll">▸ Sutraukti visus</button><button type="button" class="btn small" id="evUnfoldAll">▾ Išskleisti visus</button></span><span class="xg-hint">← slink į šonus →</span></div>
     <div class="xg-wrap" id="xgWrap"><table class="xg" id="xgTable">${evColgroup(cols, list)}${evGridHead(cols)}<tbody>${rows}</tbody></table></div>
     <div class="xg-hs hidden" id="xgHs"><button type="button" class="xg-hs-b" data-hs="-1" title="Į kairę">‹</button><input type="range" id="xgHsR" min="0" max="100" value="0" step="1" aria-label="Slinkti lentelę į šonus"><button type="button" class="xg-hs-b" data-hs="1" title="Į dešinę">›</button></div>`;
   evFitGrid();
@@ -46292,6 +46301,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-20 22:10', v:'v602', k:'chg', t:'Renginiai: be atskiros juostos virš lentelės', f:'Renginių skaičius ir „Sutraukti / Išskleisti visus“ perkelti į viršutinę mygtukų eilę (šalia „+ Renginys“), tuščia juosta virš lentelės panaikinta.' },
   { d:'2026-10-20 21:55', v:'v601', k:'chg', t:'Renginiai: komandos langas – tik per mygtuką', f:'Paspaudus ant renginio lentelės langelio komandos langas nebeatsidaro. Jį atidaro atskiras mygtukas (nustatymų ikona šalia „+ Pridėti eilutę“), o tuščiame stulpelyje – „+“.' },
   { d:'2026-10-20 21:40', v:'v600', k:'fix', t:'Projektų sąrašas nebemirksi', f:'Vedant pele per projektų lentelę eilutė nebemirksi – eilutė po pele paryškinama iškart ir laikosi, kol pelė ant jos.' },
   { d:'2026-10-20 21:15', v:'v599', k:'new', t:'Įranga: Kur suplanuota', f:'Įrangos puslapyje mygtukas „Kur suplanuota“: įrašyk daikto pavadinimą ar kodą, pasirink laikotarpį (arba Šis mėnuo / Praėję 3 mėn. / Ateinantys 3 mėn. / Šie metai) – matysi visus renginius (rezervuota įranga), projektus (krovimo sąrašas) ir Rentman projektus, kuriuose tas daiktas įrašytas, su kiekiu ir datomis. Paspaudus renginį ar projektą – jis atsidaro.' },
