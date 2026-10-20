@@ -18,3 +18,5 @@
 - Existing pages are edited in place (Super Admin → „Redaguoti puslapius“ or Sistema → Puslapiai → Esami programos puslapiai):
   rules in `STATE.uiLayout.ed[scope]` keyed by the element's name (`edTextKey`) – t name, i icon, o order, f fold, h hidden,
   s look, a click (`edRunAct`), n inserted elements (`edIns`). Renaming a button's text in code breaks its rules – keep names.
+- Nightly backups: `.github/workflows/backup.yml` (DB pg_dump + Storage + R2, encrypted with `BACKUP_PASSWORD`, to the hosting via
+  rclone SFTP/FTP and 7 days as a GitHub artifact); result in `app_config` key `backup`; restore steps in `docs/ATKURIMAS.md`.
