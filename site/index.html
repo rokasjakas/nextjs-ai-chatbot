@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-lWH45i0Zu7oUzREN9jbV+BRpHlBNr/4gBYwdIa10kqI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-HQtFujP3N75f6+PpWBAuqy8xMy9IjFXthzUTYQBFOAI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1813,6 +1813,11 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 .dv-pages{display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px;}
 .dv-page{background:#fff;max-width:100%;height:auto;box-shadow:0 2px 14px rgb(0 0 0 / .5);}
 .dv-img{flex:1;display:flex;align-items:center;justify-content:center;padding:12px;} .dv-img img{max-width:100%;max-height:100%;object-fit:contain;}
+.dv-img.zoomed{display:block;flex:none;width:max-content;min-width:100%;text-align:center;} .dv-img.zoomed img{display:inline-block;height:auto;}
+.dv-pages.zoomed{align-items:flex-start;width:max-content;min-width:100%;} .dv-pages.zoomed .dv-page{max-width:none;margin:0 auto;}
+.dv-zoom{display:inline-flex;align-items:center;gap:2px;} .dv-zoom[hidden]{display:none;}
+.dv-zb{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;} .dv-zb svg{width:17px;height:17px;} .dv-zb:hover{border-color:var(--accent);}
+.dv-zv{min-width:52px;height:30px;border:0;background:none;color:var(--text);font:inherit;font-weight:700;font-size:12.5px;cursor:pointer;border-radius:8px;} .dv-zv:hover{background:var(--panel-2);}
 .dv-text{margin:12px auto;max-width:1000px;width:calc(100% - 24px);white-space:pre-wrap;word-break:break-word;background:var(--panel);color:var(--text);padding:16px;border-radius:var(--radius);font-size:13px;}
 .dv-frame{flex:1;width:100%;border:0;background:#fff;}
 @media(max-width:640px){ .dv-dl{padding:6px 8px;} .dv-bar{gap:6px;padding:8px 10px;padding-top:calc(8px + env(safe-area-inset-top,0px));} }
@@ -3928,7 +3933,10 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .pf-nav-t b{font-size:15px;}
 .pf-nav-t small{color:var(--text-dim);font-size:11.5px;line-height:1.3;}
 .pf-pane[hidden]{display:none !important;}
-.pf-pane[data-pane="look"] > .card{max-width:760px;}
+.pf-pane[data-pane="look"] > .card{max-width:none;}
+/* Išvaizda on a computer: side by side like the other sections (Dizainas · Ikonos · Fonas) */
+@media (min-width:1000px){ #pfUi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start;}
+  #pfUi > .pf-lk{min-width:0;} #pfUi > .pf-lk + .pf-lk{border-left:1px solid var(--border);padding-left:22px;} }
 .pf-uta{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;flex-wrap:wrap;}
 .pf-uta-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, #2F9E73 18%, transparent);color:#2F9E73;flex:0 0 auto;}
 .pf-uta-ic svg{width:22px;height:22px;}
@@ -22473,7 +22481,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v596';
+const APP_VER = 'v597';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31317,12 +31325,31 @@ async function docView(o){
   document.getElementById('docView')?.remove();
   const box = document.createElement('div'); box.id = 'docView'; box.className = 'dv-pop';
   box.innerHTML = `<div class="dv-bar"><span class="dv-ic">${chatFileIcon(o.name, o.mime)}</span><b class="dv-name" title="${esc(o.name||'')}">${esc(o.name||'failas')}</b><span class="dv-sheets"></span><span class="dv-sp"></span>
+      <span class="dv-zoom" hidden><button type="button" class="dv-zb" data-dz="-1" title="Mažinti (Ctrl −)">${slIcon('zoomout')}</button><button type="button" class="dv-zv" data-dz="0" title="Per plotį">100%</button><button type="button" class="dv-zb" data-dz="1" title="Didinti (Ctrl +)">${slIcon('zoomin')}</button></span>
       ${o.download ? `<button type="button" class="btn small dv-dl">${slIcon('download')} Atsisiųsti</button>` : ''}<button type="button" class="icon-btn dv-x" title="Uždaryti (Esc)">${slIcon('close')}</button></div>
     <div class="dv-body"><div class="dv-msg"><span class="spin"></span> Atidaroma…</div></div>`;
   document.body.appendChild(box);
   const body = box.querySelector('.dv-body');
   const close = ()=>{ box.remove(); document.removeEventListener('keydown', key, true); };
-  const key = e=>{ if(e.key==='Escape'){ e.stopPropagation(); close(); } };
+  const key = e=>{ if(e.key==='Escape'){ e.stopPropagation(); close(); return; }
+    if(zoomTo && (e.ctrlKey || e.metaKey) && /^[-+=0]$/.test(e.key)){ e.preventDefault(); e.stopPropagation(); zoomTo(e.key==='0' ? 1 : zoomStep(e.key==='-' ? -1 : 1)); } };
+  // zoom (PDF and pictures): 25 % … 500 %; a PDF is drawn again at the new size (sharp – vector), a picture as its resolution allows
+  const DZ = [.25, .33, .5, .67, .75, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5];
+  let zoom = 1, zoomTo = null;
+  const zoomStep = d=>{ const i = DZ.findIndex(x=>x >= zoom - 1e-6); return DZ[Math.max(0, Math.min(DZ.length - 1, (i < 0 ? DZ.length - 1 : i) + d))]; };
+  const zoomUi = fn=>{ zoomTo = z=>{ z = Math.max(.25, Math.min(5, z)); if(Math.abs(z - zoom) < 1e-6) return;
+      // keep the same spot in the middle of the screen
+      const b = body, cx = (b.scrollLeft + b.clientWidth/2) / Math.max(1, b.scrollWidth), cy = (b.scrollTop + b.clientHeight/2) / Math.max(1, b.scrollHeight);
+      zoom = z; box.querySelector('.dv-zv').textContent = Math.round(z*100)+'%'; fn(z);
+      requestAnimationFrame(()=>{ b.scrollLeft = cx*b.scrollWidth - b.clientWidth/2; b.scrollTop = cy*b.scrollHeight - b.clientHeight/2; }); };
+    const zb = box.querySelector('.dv-zoom'); zb.hidden = false;
+    zb.addEventListener('click', e=>{ const t = e.target.closest('[data-dz]'); if(!t) return; const d = +t.dataset.dz; zoomTo(d ? zoomStep(d) : 1); });
+    body.addEventListener('wheel', e=>{ if(!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); zoomTo(zoom * (e.deltaY < 0 ? 1.1 : 1/1.1)); }, { passive:false });
+    // two fingers on a phone
+    let pd = 0, pz = 1; const dist = t=>Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    body.addEventListener('touchstart', e=>{ if(e.touches.length===2){ pd = dist(e.touches); pz = zoom; } }, { passive:true });
+    body.addEventListener('touchmove', e=>{ if(e.touches.length===2 && pd){ e.preventDefault(); zoomTo(pz * dist(e.touches) / pd); } }, { passive:false });
+    body.addEventListener('touchend', ()=>{ pd = 0; }, { passive:true }); };
   document.addEventListener('keydown', key, true);
   box.querySelector('.dv-x').onclick = close;
   const dl = box.querySelector('.dv-dl'); if(dl) dl.onclick = ()=>o.download();
@@ -31333,7 +31360,13 @@ async function docView(o){
   try{
     const url = await o.url();
     if(!document.body.contains(box)) return;
-    if(kind==='img'){ body.innerHTML = `<div class="dv-img"><img alt="" src="${esc(url)}"></div>`; return; }
+    if(kind==='img'){ body.innerHTML = `<div class="dv-img"><img alt="" src="${esc(url)}"></div>`;
+      const img = body.querySelector('img'), wrap = body.firstChild;
+      // 100 % = fits the window; bigger – the picture grows (up to 5×) and the window scrolls
+      zoomUi(z=>{ if(z===1){ wrap.classList.remove('zoomed'); img.style.width = ''; img.style.maxWidth = ''; img.style.maxHeight = ''; return; }
+        const fitW = Math.min(img.naturalWidth || img.clientWidth, (body.clientWidth - 24), (body.clientHeight - 24) * (img.naturalWidth||1) / (img.naturalHeight||1));
+        wrap.classList.add('zoomed'); img.style.maxWidth = 'none'; img.style.maxHeight = 'none'; img.style.width = Math.round(fitW * z)+'px'; });
+      return; }
     const res = await fetch(url); if(!res.ok) throw new Error('HTTP '+res.status);
     if(kind==='text'){ const t = await res.text(); body.innerHTML = `<pre class="dv-text">${esc(t.slice(0, 400000))}</pre>`; return; }
     const buf = await res.arrayBuffer();
@@ -31343,14 +31376,26 @@ async function docView(o){
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
       const pdf = await pdfjsLib.getDocument({ data:buf }).promise;
       body.innerHTML = '<div class="dv-pages"></div>'; const pages = body.firstChild, max = Math.min(pdf.numPages, 80);
-      const w = Math.min(body.clientWidth - 24, 1000), dpr = Math.min(window.devicePixelRatio||1, 2);
+      const w = Math.min(body.clientWidth - 24, 1000), dpr = Math.min(window.devicePixelRatio||1, 2), P = [];
+      // a page drawn for the zoom it is seen at (the PDF's vectors – sharp at any size); very big pages are capped so the browser copes
+      const draw = async x=>{ const want = zoom; if(x.at===want) return; if(x.task){ try{ x.task.cancel(); }catch(e){} }
+        let sc = w * want / x.v0.width * dpr; const lim = 8192 / Math.max(x.v0.width, x.v0.height); if(sc > lim) sc = lim;
+        const vp = x.pg.getViewport({ scale:sc }), c = document.createElement('canvas'); c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
+        x.task = x.pg.render({ canvasContext:c.getContext('2d'), viewport:vp });
+        try{ await x.task.promise; }catch(e){ return; }
+        x.task = null; if(want!==zoom) return; x.c.width = c.width; x.c.height = c.height; x.c.getContext('2d').drawImage(c, 0, 0); x.at = want; };
+      const seen = new IntersectionObserver(es=>es.forEach(en=>{ const x = P.find(y=>y.c===en.target); if(x){ x.vis = en.isIntersecting; if(x.vis) draw(x); } }), { root:body, rootMargin:'600px 0px' });
       for(let i = 1; i <= max; i++){
         if(!document.body.contains(box)) return;
         const pg = await pdf.getPage(i), v0 = pg.getViewport({ scale:1 }), vp = pg.getViewport({ scale:w / v0.width * dpr });
         const c = document.createElement('canvas'); c.width = vp.width; c.height = vp.height; c.style.width = (vp.width/dpr)+'px'; c.className = 'dv-page';
         pages.appendChild(c); await pg.render({ canvasContext:c.getContext('2d'), viewport:vp }).promise;
+        const x = { pg, v0, c, at:1 }; P.push(x); seen.observe(c);
       }
       if(pdf.numPages > max) pages.insertAdjacentHTML('beforeend', `<div class="dv-msg">Rodoma ${max} iš ${pdf.numPages} puslapių – visą dokumentą atsisiųsk.</div>`);
+      let zt = 0;
+      zoomUi(z=>{ P.forEach(x=>{ x.c.style.width = Math.round(w * z)+'px'; }); pages.classList.toggle('zoomed', z > 1);   // at once: the page grows (blurred a moment)
+        clearTimeout(zt); zt = setTimeout(()=>P.filter(x=>x.vis).forEach(draw), 180); });   // then the visible pages are drawn sharp
       return;
     }
     if(kind==='docx'){
@@ -33953,7 +33998,7 @@ function pfUiDraw(){
   const box = document.getElementById('pfUi'); if(!box) return;
   const p = uiPrefs(), prev = (rail, ink, acc, main, panel)=>`<span class="pf-ui-prev"><i class="p-rail" style="background:${rail};color:${ink}"><b class="on" style="background:${acc};opacity:1"></b><b></b><b></b><b></b></i><i class="p-main" style="background:${main}"><b style="background:${panel};width:70%"></b><b style="background:${panel}"></b><b style="background:${acc};width:30%"></b></i></span>`;
   const dark = themeNow()==='dark', acc = p.accent || (dark ? '#6AB0F3' : '#2F80D8'), rail = p.rail || (dark ? '#1E1E1E' : '#FFFFFF'), rink = uiLum(rail)>.4 ? '#1D2229' : '#E8E8E8';
-  box.innerHTML = `<div class="section-title" style="font-size:14px;margin:14px 0 0;">Dizainas</div>
+  box.innerHTML = `<div class="pf-lk"><div class="section-title" style="font-size:14px;margin:14px 0 0;">Dizainas</div>
     <div class="pf-ui-vers">
       <button type="button" class="pf-ui-v ${p.v!=='v2' ? 'on' : ''}" data-uiv="v1">${prev(dark ? '#151515' : '#FFFFFF', dark ? '#ddd' : '#333', '#F35E7D', dark ? '#101010' : '#F3F3F1', dark ? '#222' : '#fff')}<b>V1</b><small>Ankstesnis dizainas</small></button>
       <button type="button" class="pf-ui-v ${p.v==='v2' ? 'on' : ''}" data-uiv="v2">${prev(rail, rink, acc, dark ? '#141414' : '#F2F3F5', dark ? '#2A2A2A' : '#fff')}<b>V2</b><small>Naujas: platus meniu su pavadinimais</small></button>
@@ -33962,13 +34007,14 @@ function pfUiDraw(){
       <div class="pf-ui-row"><span>Pagrindinė spalva</span>${UI_ACCENTS.map(([c, n])=>`<button type="button" class="pf-sw ${p.accent===c ? 'on' : ''}" data-uiacc="${c}" title="${n}" style="background:${c}"></button>`).join('')}<input type="color" id="pfUiAcc" value="${acc}" title="Kita spalva"></div>
       <div class="pf-ui-row"><span>Šoninis meniu</span>${UI_RAILS.map(([c, n])=>`<button type="button" class="pf-sw ${p.rail===c ? 'on' : ''}" data-uirail="${c}" title="${n}" style="background:${c || (dark ? '#1E1E1E' : '#FFFFFF')}">${c ? '' : '<small style="font-size:9px;">A</small>'}</button>`).join('')}<input type="color" id="pfUiRail" value="${rail}" title="Kita spalva"></div>
       <button type="button" class="btn small" id="pfUiReset" style="align-self:flex-start;">Atstatyti spalvas</button>
-    </div>` : ''}
+    </div>` : ''}</div>
+    <div class="pf-lk"><div class="section-title" style="font-size:14px;margin:14px 0 0;">Ikonos</div>
     <div class="pf-ui-cols pf-ico">
       <div class="pf-ui-row"><span>Pradžios ikonos</span><div class="pf-seg">${[['','Spalvotos'],['mono','Vienspalvės'],['accent','Pagrindinė'],['own','Sava spalva']].map(([k, t])=>`<button type="button" class="${(p.ico||'')===k ? 'on' : ''}" data-uiico="${k}">${t}</button>`).join('')}</div></div>
       ${p.ico==='own' ? `<div class="pf-ui-row"><span>Ikonų spalva</span>${UI_ACCENTS.map(([c, n])=>`<button type="button" class="pf-sw ${p.icoColor===c ? 'on' : ''}" data-uiicoc="${c}" title="${n}" style="background:${c}"></button>`).join('')}<button type="button" class="pf-sw ${p.icoColor==='#FFFFFF' ? 'on' : ''}" data-uiicoc="#FFFFFF" title="Balta" style="background:#FFFFFF"></button><input type="color" id="pfIcoC" value="${uiLum(p.icoColor)>=0 ? p.icoColor : '#6AB0F3'}" title="Kita spalva – pasirink bet kokią"></div>` : ''}
       <div class="pf-ui-row"><span>Fonas aplink ikoną</span><div class="pf-seg"><button type="button" class="${p.icoBg!==false ? 'on' : ''}" data-uiicobg="1">Rodyti</button><button type="button" class="${p.icoBg===false ? 'on' : ''}" data-uiicobg="0">Be fono</button></div></div>
       <div class="pf-ico-demo">${homeTileList().slice(0, 6).map(t=>`<span class="home-tile pf-ico-t" title="${esc(t.title)}"><span class="ht-icon" style="background:${t.color}22;color:${t.color};">${t.group ? t.icon : homeRailIcon(t.tab)}</span><small>${esc(t.title)}</small></span>`).join('')}</div>
-    </div>${bgUiHtml()}`;
+    </div></div><div class="pf-lk">${bgUiHtml()}</div>`;
   bgUiWire(pfUiDraw);
   box.querySelectorAll('[data-uiico]').forEach(b=>b.onclick = ()=>{ const k = b.dataset.uiico; uiSet(k==='own' && uiLum(uiPrefs().icoColor)<0 ? { ico:k, icoColor:uiAccentFor(uiPrefs().accent) && uiLum(uiPrefs().accent)>=0 ? uiPrefs().accent : '#6AB0F3' } : { ico:k }); pfUiDraw(); });
   box.querySelectorAll('[data-uiicoc]').forEach(b=>b.onclick = ()=>{ uiSet({ ico:'own', icoColor:b.dataset.uiicoc }); pfUiDraw(); });
@@ -46162,6 +46208,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-20 20:15', v:'v597', k:'new', t:'Failų peržiūra su mastelio keitimu · Išvaizda per visą plotį', f:'Chate atidarius PDF ar paveikslėlį – viršuje − / % / + (ir Ctrl + ratukas, Ctrl +/−, telefone dviem pirštais), nuo 25 % iki 500 %. PDF didinant persipiešia iš vektorių – lieka aštrus; paveikslėliai – pagal jų raišką. Mano erdvė → Išvaizda kompiuteryje išdėstyta horizontaliai: Dizainas, Ikonos, Fonas greta.' },
   { d:'2026-10-20 19:45', v:'v596', k:'new', t:'Įvykę renginiai susiskleidžia patys', f:'Renginiuose praėjus 2 dienoms po renginio paskutinės dienos (pvz. renginys 20 d. → 22 d.) jis susiskleidžia savaime. Jei jį vėl išskleidi ranka – lieka išskleistas.' },
   { d:'2026-10-20 19:30', v:'v595', k:'fix', t:'Pasiūlymas: vėl matosi pavadinimai, vienodas redagavimo pieštukas', f:'Pataisyta: eilutėse su dydžiu (LED, pakylos) dingdavo pavadinimai, pieštukas buvo per didelis. Dabar visi eilutės mygtukai, atidarantys redagavimo langą (dydis, sudėtis), turi tą patį mažą pieštuką šalia pavadinimo.' },
   { d:'2026-10-20 19:15', v:'v594', k:'fix', t:'Pasiūlymo eilutės mygtukai neuždengia sumos', f:'Eilutės mygtukai (dublikuoti, aukštyn, žemyn, ištrinti) sutalpinti šalia sumos – jie nebeuždengia kainos.' },
