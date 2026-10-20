@@ -26,3 +26,5 @@
 - Įrankiai (`tools` tab, warehouse group) → LED skaičiuoklė (`ledCalc`, `ledPorts`): 650 000 px per NovaStar Gigabit port at 60 Hz / 8 bit,
   scaled by 60/fps and halved at 10/12 bit. Devices/cabinets defaults `LED_DEVICES` / `LED_PANELS`; Super Admin overrides in
   `app_config` key `led_db` (`check:true` = figure to verify against the datasheet).
+  UNICO rules (VX Pro / VX2000 Pro / VC Pro, `unico:true`): port load = rectangle around the port's cabinets unless Free Topology;
+  low latency cap = (1 − Y/H) × 650 000; Ethernet backup Split / Sequential halves usable ports; 3D side-by-side halves capacity.

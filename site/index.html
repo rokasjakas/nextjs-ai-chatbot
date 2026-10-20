@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-vDXPehIXceOyamwekY8d8uYJlG3PlG+VJ5Bq6KCU5nM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-E4lTeG+QpRLQ+S5vmYjDghR4T/I0ef8eWM44ZnULKt4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5509,6 +5509,7 @@ body .tabpanel.xg-panel.ev-full{padding-top:calc(10px + env(safe-area-inset-top,
 .led-bar i{display:block;height:100%;background:var(--blue);}
 .led-bar.over i{background:var(--danger);}
 .led-ok{color:var(--ok);font-weight:700;} .led-no{color:var(--danger);font-weight:700;} .led-mid{color:var(--warn);font-weight:700;}
+.led-notes{margin:0;padding-left:20px;line-height:1.5;color:var(--text-dim);} .led-notes b{color:var(--text);}
 .led-dbt input[type="text"]{min-width:180px;} .led-dbt input[type="number"]{width:96px;}
 .cp-page{max-width:100%;}
 html.cp-editing .modal-backdrop{z-index:9500;} html.cp-editing #toast,body:has(.cpx-pop) #toast{z-index:9600;}
@@ -23198,7 +23199,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v610';
+const APP_VER = 'v611';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -47805,18 +47806,23 @@ const LED_PORT_PX = 650000;
 const LED_DEVICES = [
   { id:'h16', name:'H serija (H2/H5/H9/H15/H20) – 16×RJ45 išvesties kortos', fam:'H', kind:'mod', card:{ name:'16×RJ45 korta', ports:16, maxPx:10400000 }, cards:3, check:true, note:'Kiekviena korta – 16 Ethernet prievadų. Kiek kortų telpa rėme, priklauso nuo modelio.' },
   { id:'vx1000', name:'VX1000', fam:'VX', ports:10, maxPx:6500000, maxW:10240, maxH:8192 },
-  { id:'vx1000pro', name:'VX1000 Pro', fam:'VX', ports:10, maxPx:6500000, maxW:10240, maxH:8192, check:true, note:'Optiniai išėjimai dubliuoja Ethernet prievadus.' },
+  { id:'vx2000pro', name:'VX2000 Pro', fam:'VX', ports:20, maxPx:13000000, maxW:16384, maxH:8192, unico:true, ll:true, check:true, note:'OPT 3/4 kopijuoja arba saugo Ethernet 1–10 / 11–20. Išvestis 8 arba 10 bit.' },
+  { id:'vx1000pro', name:'VX1000 Pro', fam:'VX', ports:10, maxPx:6500000, maxW:10240, maxH:8192, unico:true, ll:true, check:true, note:'OPT 2 kopijuoja arba saugo Ethernet 1–10.' },
   { id:'vx600', name:'VX600', fam:'VX', ports:6, maxPx:3900000, maxW:10240, maxH:8192 },
-  { id:'vx600pro', name:'VX600 Pro', fam:'VX', ports:6, maxPx:3900000, maxW:10240, maxH:8192, check:true },
+  { id:'vx600pro', name:'VX600 Pro', fam:'VX', ports:6, maxPx:3900000, maxW:10240, maxH:8192, unico:true, ll:true, check:true, note:'OPT 2 kopijuoja arba saugo Ethernet 1–6.' },
   { id:'vx400', name:'VX400', fam:'VX', ports:4, maxPx:2600000, maxW:10240, maxH:8192 },
-  { id:'vx400pro', name:'VX400 Pro', fam:'VX', ports:4, maxPx:2600000, maxW:10240, maxH:8192, check:true },
+  { id:'vx400pro', name:'VX400 Pro', fam:'VX', ports:4, maxPx:2600000, maxW:10240, maxH:8192, unico:true, ll:true, check:true, note:'OPT 2 kopijuoja arba saugo Ethernet 1–4.' },
+  { id:'vc24pro', name:'VC24 Pro', fam:'VC Pro', ports:24, maxPx:15600000, maxW:16384, maxH:8192, unico:true, check:true },
+  { id:'vc16pro', name:'VC16 Pro', fam:'VC Pro', ports:16, maxPx:10400000, maxW:16384, maxH:8192, unico:true, check:true },
+  { id:'vc10pro', name:'VC10 Pro', fam:'VC Pro', ports:10, maxPx:6500000, maxW:16384, maxH:8192, unico:true, check:true },
+  { id:'vc6pro', name:'VC6 Pro', fam:'VC Pro', ports:6, maxPx:3900000, maxW:16384, maxH:8192, unico:true, check:true },
   { id:'vx16s', name:'VX16s', fam:'VX', ports:16, maxPx:10400000, maxW:16384, maxH:8192, check:true },
   { id:'vx6s', name:'VX6s', fam:'VX', ports:6, maxPx:3900000, maxW:10240, maxH:8192, check:true },
   { id:'vx4sn', name:'VX4S-N', fam:'VX', ports:4, maxPx:2300000, maxW:3840, maxH:1920 },
-  { id:'mctrl4k', name:'MCTRL4K', fam:'MCTRL', ports:16, maxPx:8847360, maxW:7680, maxH:7680, check:true },
+  { id:'mctrl4k', name:'MCTRL4K', fam:'MCTRL', ports:16, maxPx:8847360, maxW:7680, maxH:7680, ll:true, check:true },
   { id:'mctrlr5', name:'MCTRL R5', fam:'MCTRL', ports:8, maxPx:3900000, maxW:3840, maxH:3840, check:true, note:'Palaiko laisvą pasukimą (360°).' },
   { id:'mctrl700', name:'MCTRL700', fam:'MCTRL', ports:6, maxPx:2300000, maxW:3840, maxH:1920, check:true },
-  { id:'mctrl660pro', name:'MCTRL660 PRO', fam:'MCTRL', ports:6, maxPx:2300000, maxW:3840, maxH:1920, check:true },
+  { id:'mctrl660pro', name:'MCTRL660 PRO', fam:'MCTRL', ports:6, maxPx:2300000, maxW:3840, maxH:1920, ll:true, check:true },
   { id:'mctrl660', name:'MCTRL660', fam:'MCTRL', ports:4, maxPx:2300000, maxW:3840, maxH:1920 },
   { id:'mctrl600', name:'MCTRL600', fam:'MCTRL', ports:4, maxPx:2300000, maxW:3840, maxH:1920 },
   { id:'mctrl300', name:'MCTRL300', fam:'MCTRL', ports:2, maxPx:1300000, maxW:3840, maxH:1920, check:true },
@@ -47845,56 +47851,82 @@ function ledSaveState(){ try{ localStorage.setItem('ledCalc', JSON.stringify(LED
 function ledDb(){ const c = CFG.led||{}; return { devices:Array.isArray(c.devices) && c.devices.length ? c.devices : LED_DEVICES, panels:Array.isArray(c.panels) && c.panels.length ? c.panels : LED_PANELS }; }
 function ledCab(s){ if(s.cab==='custom') return Object.assign({ id:'custom', name:'Savas kabinetas' }, s.custom); return ledDb().panels.find(p=>p.id===s.cab) || ledDb().panels[0]; }
 // the order the cabinets are chained in (a snake), cut into ports
-function ledPorts(s, maxCab){
+// the load a group of cabinets puts on one port: the cabinets themselves (SmartLCT, UNICO „Free Topology“) or the
+// rectangle around them (UNICO by default – a port whose cabinets run over two rows loads the whole width of both)
+function ledLoad(cells, cab, rect){
+  if(!rect) return cells.length*cab.pw*cab.ph;
+  let c0 = 1e9, c1 = -1, r0 = 1e9, r1 = -1; cells.forEach(q=>{ c0 = Math.min(c0, q.c); c1 = Math.max(c1, q.c); r0 = Math.min(r0, q.r); r1 = Math.max(r1, q.r); });
+  return (c1-c0+1)*cab.pw*(r1-r0+1)*cab.ph;
+}
+// the order the cabinets are chained in (a snake), cut into ports that each stay within their capacity (capOf)
+function ledPorts(s, cab, rect, capOf){
   const C = s.cols, R = s.rows, dir = s.lowlat ? 'v' : s.dir, top = s.start[0]==='t', left = s.start[1]==='l';
   const nLines = dir==='h' ? R : C, L = dir==='h' ? C : R;
   const cell = (line, pos, rev)=>{ const p = rev ? L-1-pos : pos;
     return dir==='h' ? { c:left ? p : C-1-p, r:top ? line : R-1-line } : { c:left ? line : C-1-line, r:top ? p : R-1-p }; };
-  const ports = [];
-  if(s.mode==='lines'){
-    if(L <= maxCab){
-      const k = Math.max(1, Math.floor(maxCab / L));
-      for(let g = 0; g<nLines; g += k){ const p = []; for(let l = g; l<Math.min(nLines, g+k); l++) for(let i = 0; i<L; i++) p.push(cell(l, i, (l-g)%2===1)); ports.push(p); }
-    } else {
-      const segs = Math.ceil(L / maxCab), len = Math.ceil(L / segs);
-      for(let l = 0; l<nLines; l++) for(let a = 0; a<L; a += len){ const p = []; for(let i = a; i<Math.min(L, a+len); i++) p.push(cell(l, i, false)); ports.push(p); }
-    }
-  } else {
-    const all = []; for(let l = 0; l<nLines; l++) for(let i = 0; i<L; i++) all.push(cell(l, i, l%2===1));
-    for(let i = 0; i<all.length; i += maxCab) ports.push(all.slice(i, i+maxCab));
+  const line = (l, rev)=>Array.from({ length:L }, (_, i)=>cell(l, i, rev));
+  const fits = p=>ledLoad(p, cab, rect) <= capOf(p);
+  const greedy = list=>{ const out = []; let cur = []; list.forEach(q=>{ const t = cur.concat([q]); if(cur.length && !fits(t)){ out.push(cur); cur = [q]; } else cur = t; }); if(cur.length) out.push(cur); return out; };
+  if(s.mode!=='lines') return greedy([].concat(...Array.from({ length:nLines }, (_, l)=>line(l, l%2===1))));
+  // whole lines per port; a line too long for one port is cut into equal parts
+  const ports = []; let g = [], n = 0;
+  for(let l = 0; l<nLines; l++){
+    const ln = line(l, n%2===1);
+    if(g.length && fits(g.concat(ln))){ g = g.concat(ln); n++; continue; }
+    if(g.length){ ports.push(g); g = []; n = 0; }
+    const ln0 = line(l, false);
+    if(fits(ln0)){ g = ln0; n = 1; continue; }
+    let segs = 2; while(segs < L && !Array.from({ length:segs }, (_, i)=>ln0.slice(Math.round(i*L/segs), Math.round((i+1)*L/segs))).every(fits)) segs++;
+    for(let i = 0; i<segs; i++) ports.push(ln0.slice(Math.round(i*L/segs), Math.round((i+1)*L/segs)));
   }
+  if(g.length) ports.push(g);
   return ports;
 }
+const LED_BK = [['', 'Nėra'], ['split', 'Ethernet: Split (antra pusė saugo pirmą)'], ['seq', 'Ethernet: Sequential (2 saugo 1, 4 – 3…)'], ['dev', 'Atsarginis įrenginys (tokio pat modelio)']];
 // everything about one screen on one device
 function ledCalc(s, dev, withMap){
+  if(s.backup===true && !s.bk) s.bk = 'split';   // the earlier on/off backup
   const cab = ledCab(s), C = Math.max(1, s.cols|0), R = Math.max(1, s.rows|0), W = C*cab.pw, H = R*cab.ph, px = W*H, n = C*R;
-  const k = (60 / Math.max(1, s.fps)) * (s.bit>8 ? .5 : 1), portCap = Math.floor(LED_PORT_PX * k), perCab = cab.pw*cab.ph;
-  const maxCab = Math.floor(portCap / perCab), out = { cab, C, R, W, H, px, n, k, portCap, perCab, maxCab, dev, warn:[], err:'' };
+  const k = (60 / Math.max(1, s.fps)) * (s.bit>8 ? .5 : 1) * (s.d3 ? .5 : 1), portCap = Math.floor(LED_PORT_PX * k), perCab = cab.pw*cab.ph;
+  const rect = s.load==='rect' || ((s.load||'auto')==='auto' && !!dev.unico), bk = s.bk||'';
+  const maxCab = Math.floor(portCap / perCab), out = { cab, C, R, W, H, px, n, k, portCap, perCab, maxCab, dev, rect, bk, warn:[], err:'' };
   out.mW = C*cab.mw/1000; out.mH = R*cab.mh/1000; out.area = out.mW*out.mH; out.pitch = cab.mw/cab.pw;
   out.diag = Math.sqrt(out.mW**2 + out.mH**2)/0.0254; out.kg = n*cab.kg; out.wmax = n*cab.wmax; out.wavg = n*cab.wavg;
   out.a1 = out.wmax/230; out.a3 = out.wmax/(3*230); out.per16 = cab.wmax ? Math.floor(16*230*.8/cab.wmax) : 0;
   if(maxCab<1){ out.err = 'Vienas kabinetas ('+perCab.toLocaleString('lt-LT')+' px) viršija vieno prievado galią ('+portCap.toLocaleString('lt-LT')+' px) šiais nustatymais.'; return out; }
-  const ports = ledPorts(Object.assign({}, s, { cols:C, rows:R }), maxCab);
-  out.ports = ports.length; out.cables = ports.length * (s.backup ? 2 : 1);
+  // low latency (UNICO appendix): a port's capacity = (1 − Y / H) × 650 000, Y – the top of its highest cabinet
+  const capOf = cells=>s.lowlat ? Math.floor(portCap * (1 - Math.min(...cells.map(q=>q.r))*cab.ph / H)) : portCap;
+  const ports = ledPorts(Object.assign({}, s, { cols:C, rows:R }), cab, rect, capOf);
+  out.ports = ports.length; out.cables = ports.length * (bk ? 2 : 1);
+  const unitPorts = dev.kind==='mod' ? dev.card.ports : dev.ports, usable = bk==='split' || bk==='seq' ? Math.floor(unitPorts/2) : unitPorts;
+  out.unitPorts = unitPorts; out.usable = usable;
   if(dev.kind==='mod'){
-    const cp = dev.card.ports, cpx = Math.floor(dev.card.maxPx * k);
-    out.unitPorts = cp; out.need = Math.max(Math.ceil(out.cables / cp), Math.ceil(px / cpx)); out.have = Math.max(1, s.cards|0);
+    const cpx = Math.floor(dev.card.maxPx * k);
+    out.need = Math.max(Math.ceil(out.ports / usable), Math.ceil(px / cpx)); out.have = Math.max(1, s.cards|0);
     out.unitName = 'korta'; out.load = px / (out.have*cpx);
-    if(out.need > out.have) out.warn.push(`Reikia ${out.need} išvesties kortų (${cp} prievadų), o nurodyta ${out.have}.`);
+    if(out.need > out.have) out.warn.push(`Reikia ${out.need} išvesties kortų (${unitPorts} prievadų${usable<unitPorts ? ', iš jų '+usable+' pagrindiniai' : ''}), o nurodyta ${out.have}.`);
+    if(bk==='dev') out.warn.push('Atsarginis įrenginys: reikės antro tokio pat rėmo su tiek pat kortų.');
   } else {
     const dpx = Math.floor(dev.maxPx * k);
-    out.unitPorts = dev.ports; out.unitName = 'įrenginys';
-    out.need = Math.max(Math.ceil(out.cables / dev.ports), Math.ceil(px / dpx), dev.maxW ? Math.ceil(W / dev.maxW) : 1, dev.maxH ? Math.ceil(H / dev.maxH) : 1);
+    out.unitName = 'įrenginys';
+    out.need = Math.max(Math.ceil(out.ports / usable), Math.ceil(px / dpx), dev.maxW ? Math.ceil(W / dev.maxW) : 1, dev.maxH ? Math.ceil(H / dev.maxH) : 1);
     out.have = out.need; out.load = px / (out.need*dpx);
     if(out.need>1) out.warn.push(`Vienas ${dev.name} nepakanka – reikia ${out.need} (mozaika: ekranas dalijamas tarp įrenginių).`);
+    if(bk==='dev') out.warn.push(`Atsarginis įrenginys: dar ${out.need} × ${dev.name} (to paties modelio ir programinės versijos).`);
     if(dev.maxW && W > dev.maxW) out.warn.push(`Plotis ${W} px viršija ${dev.name} didžiausią plotį ${dev.maxW} px.`);
     if(dev.maxH && H > dev.maxH) out.warn.push(`Aukštis ${H} px viršija ${dev.name} didžiausią aukštį ${dev.maxH} px.`);
   }
   if(s.lowlat && s.dir!=='v') out.warn.push('Mažo vėlinimo režime prievadai krauna kabinetus vertikaliai – jungimas pakeistas į vertikalų.');
+  if(s.lowlat && !dev.ll) out.warn.push(`${dev.name} mažo vėlinimo režimo gali nepalaikyti (pagal vadovus: MCTRL4K, MCTRL660 PRO, VX Pro serija).`);
+  if(s.lowlat) out.warn.push('Mažas vėlinimas: žemiau prasidedantis prievadas veža mažiau – (1 − Y/H) × 650 000 px. Geriausia, kai visi prievadai prasideda viršuje.');
   if(dev.check) out.warn.push(`${dev.name} duomenys – pagal gamintojo informaciją; prieš renginį patikrinkite specifikaciją (bazę gali pataisyti Super Admin).`);
   if(withMap){
-    out.map = ports.map((p, i)=>{ const u = Math.floor(i / out.unitPorts), q = i % out.unitPorts;
-      return { i, u, q, label:`${u+1}-${q+1}`, cells:p, px:p.length*perCab, use:p.length*perCab/portCap }; });
+    const half = Math.floor(unitPorts/2);
+    out.map = ports.map((p, i)=>{ const u = Math.floor(i / usable), q = i % usable;
+      const pno = bk==='seq' ? 2*q+1 : q+1, bno = bk==='split' ? q+1+half : bk==='seq' ? 2*q+2 : bk==='dev' ? q+1 : 0;
+      const ld = ledLoad(p, cab, rect), cap = capOf(p);
+      return { i, u, q, label:`${u+1}-${pno}`, bk:bno ? (bk==='dev' ? `atsarg. įr. ${u+1}-${bno}` : `${u+1}-${bno}`) : '', cells:p, px:ld, cap, use:ld/cap }; });
+    const over = out.map.filter(p=>p.use>1).length; if(over) out.warn.push(`${over} prievad. perkrauti – vienas kabinetas ar eilė per didelė šiems nustatymams.`);
   }
   return out;
 }
@@ -47922,7 +47954,7 @@ function ledResultHtml(r, s){
       ${tile('Raiška', `${ledN(r.W)} × ${ledN(r.H)}`, `${ledN(r.px)} px · ${ledF(r.W/r.H, 2)}:1`)}
       ${tile('Dydis', `${ledF(r.mW, 2)} × ${ledF(r.mH, 2)} m`, `${ledF(r.area, 1)} m² · ${ledF(r.diag, 0)}″ · P${ledF(r.pitch, 2)}`)}
       ${tile('Kabinetai', `${r.C} × ${r.R} = ${r.n}`, esc(r.cab.name))}
-      ${tile('Prievadai', String(r.ports)+(s.backup ? ` + ${r.ports} atsarg.` : ''), `iki ${r.maxCab} kab. į prievadą · ${ledN(r.portCap)} px/prievadą`)}
+      ${tile('Prievadai', String(r.ports)+(r.bk && r.bk!=='dev' ? ` + ${r.ports} atsarg.` : ''), `iki ${r.maxCab} kab. į prievadą · ${ledN(r.portCap)} px/prievadą${r.rect ? ' · apkrova pagal stačiakampį' : ''}`)}
       ${tile(r.dev.kind==='mod' ? 'Išvesties kortos' : 'Įrenginiai', unit, `apkrova ${ledF(r.load*100, 0)} %`)}
       ${tile('Svoris', `${ledF(r.kg, 0)} kg`, '')}
       ${tile('Galia', `${ledF(r.wmax/1000, 1)} kW maks.`, `vid. ${ledF(r.wavg/1000, 1)} kW`)}
@@ -47932,8 +47964,8 @@ function ledResultHtml(r, s){
 }
 function ledPortsHtml(r){
   if(!r.map) return '';
-  return `<div class="table-wrap"><table class="led-pt"><thead><tr><th>Prievadas</th><th>${r.dev.kind==='mod' ? 'Korta' : 'Įrenginys'}</th><th>Kabinetai</th><th>Pikseliai</th><th>Apkrova</th></tr></thead><tbody>
-    ${r.map.map(p=>`<tr><td><span class="led-dot" style="background:hsl(${(p.i*137.508)%360} 62% 55%)"></span><b>${p.label}</b></td><td>${p.u+1}</td><td>${p.cells.length}</td><td>${ledN(p.px)}</td>
+  return `<div class="table-wrap"><table class="led-pt"><thead><tr><th>Prievadas</th>${r.bk ? '<th>Atsarginis</th>' : ''}<th>${r.dev.kind==='mod' ? 'Korta' : 'Įrenginys'}</th><th>Kabinetai</th><th>Apkrova, px</th><th>Talpa, px</th><th>Apkrova</th></tr></thead><tbody>
+    ${r.map.map(p=>`<tr><td><span class="led-dot" style="background:hsl(${(p.i*137.508)%360} 62% 55%)"></span><b>${p.label}</b></td>${r.bk ? `<td>${esc(p.bk)}</td>` : ''}<td>${p.u+1}</td><td>${p.cells.length}</td><td>${ledN(p.px)}</td><td>${ledN(p.cap)}</td>
       <td><span class="led-bar ${p.use>1 ? 'over' : ''}"><i style="width:${Math.min(100, p.use*100)}%"></i></span> ${ledF(p.use*100, 0)} %</td></tr>`).join('')}</tbody></table></div>`;
 }
 function ledCompareHtml(s){
@@ -47977,7 +48009,9 @@ function ledFormHtml(){
       <label class="field">Jungimas<select id="ledMode">${opt(s.mode, [['fill', 'Ištisai (kaip Auto Connect)'], ['lines', 'Pilnomis eilėmis / stulpeliais']])}</select></label>
       <label class="field">Procesorius / siuntimo įrenginys<select id="ledDev">${fams.map(f=>`<optgroup label="${esc(f||'Kita')}">${opt(s.dev, db.devices.filter(d=>(d.fam||'')===f).map(d=>[d.id, d.name+(d.check ? ' ≈' : '')]))}</optgroup>`).join('')}</select></label>
       ${dev.kind==='mod' ? `<label class="field">Išvesties kortų rėme<input type="number" id="ledCards" min="1" max="40" value="${s.cards}"></label>` : ''}
-      <label class="checkbox-row"><input type="checkbox" id="ledBackup" ${s.backup ? 'checked' : ''}> Atsarginis žiedas (hot backup)</label>
+      <label class="field">Atsarga (hot backup)<select id="ledBk">${opt(s.bk || (s.backup===true ? 'split' : ''), LED_BK)}</select></label>
+      <label class="field">Prievado apkrova skaičiuojama<select id="ledLoadMode">${opt(s.load||'auto', [['auto', 'Automatiškai (UNICO įrenginiams – stačiakampis)'], ['cab', 'Pagal kabinetus (SmartLCT, UNICO Free Topology)'], ['rect', 'Pagal apimantį stačiakampį (UNICO numatyta)']])}</select></label>
+      <label class="checkbox-row"><input type="checkbox" id="ledD3" ${s.d3 ? 'checked' : ''}> 3D (side-by-side / top-bottom – talpa perpus)</label>
       <label class="checkbox-row"><input type="checkbox" id="ledLow" ${s.lowlat ? 'checked' : ''}> Mažas vėlinimas (low latency)</label>
     </div></div>`;
 }
@@ -47991,6 +48025,12 @@ function ledRender(){
       <p class="sys-faint" style="margin:4px 0 8px;">Ant kabineto: ${dev.kind==='mod' ? 'korta' : 'įrenginys'}-prievadas-eilės nr. (kaip SmartLCT „1-1-5“). Taškas – kur jungiamas kabelis iš procesoriaus.</p>
       <div class="led-svgwrap">${ledSvg(r, s.view)}</div></div>
       <div class="card"><h3 class="section-title">Prievadai</h3>${ledPortsHtml(r)}</div>` : ''}
+    <div class="card"><h3 class="section-title">SmartLCT ir UNICO – kuo skiriasi skaičiavimas</h3><ul class="led-notes">
+      <li><b>SmartLCT</b> (H, MCTRL, VX, NovaPro): prievado apkrova = jo kabinetų pikseliai, riba 650 000 px (60 Hz, 8 bit).</li>
+      <li><b>UNICO</b> (VX Pro, VX2000 Pro, VC Pro): pagal nutylėjimą apkrova = <b>stačiakampis, apimantis visus prievado kabinetus</b> („Free Topology“ išjungta). Todėl prievadą geriau jungti pilnomis eilėmis ar stulpeliais.</li>
+      <li><b>Mažas vėlinimas</b> (UNICO formulė): prievado talpa = (1 − Y/H) × 650 000; kabeliai – vertikaliai, prievadai turi prasidėti viršuje.</li>
+      <li><b>Atsarga</b>: Split – antra prievadų pusė saugo pirmą; Sequential – 2 saugo 1, 4 saugo 3; įrenginio atsarga – antras to paties modelio įrenginys. VX Pro OPT išėjimai kopijuoja arba saugo Ethernet prievadus.</li>
+      <li><b>3D</b> (side-by-side / top-bottom) perpus sumažina išvesties talpą; 10/12 bit – taip pat perpus.</li></ul></div>
     <div class="card"><h3 class="section-title">Kuris procesorius tinka šiam ekranui</h3><p class="sys-faint" style="margin:0 0 8px;">Paspausk eilutę – perskaičiuos su tuo įrenginiu. „≈“ / „patikrinti“ – duomenis verta sutikrinti su gamintojo specifikacija.</p>${ledCompareHtml(s)}</div>`;
   ledWire(box);
 }
@@ -47999,7 +48039,8 @@ function ledWire(box){
   const on = (id, k, num)=>{ const el = document.getElementById(id); if(el) el.onchange = ()=>set(k, num ? +el.value : el.value); };
   on('ledCab', 'cab'); on('ledCols', 'cols', true); on('ledRows', 'rows', true); on('ledFps', 'fps', true); on('ledBit', 'bit', true); on('ledDir', 'dir'); on('ledStart', 'start'); on('ledMode', 'mode'); on('ledDev', 'dev'); on('ledCards', 'cards', true);
   ['ledCols', 'ledRows', 'ledCards'].forEach(id=>{ const el = document.getElementById(id); if(el) el.oninput = ()=>{ const v = +el.value; if(v>=1 && v<=200){ LED[{ ledCols:'cols', ledRows:'rows', ledCards:'cards' }[id]] = v; ledSaveState(); clearTimeout(ledWire.t); ledWire.t = setTimeout(()=>{ const f = document.activeElement && document.activeElement.id; ledRender(); const n = f && document.getElementById(f); if(n){ n.focus(); try{ n.setSelectionRange(99, 99); }catch(e){} } }, 400); } }; });
-  const bk = document.getElementById('ledBackup'); if(bk) bk.onchange = ()=>set('backup', bk.checked);
+  on('ledBk', 'bk'); on('ledLoadMode', 'load');
+  const d3 = document.getElementById('ledD3'); if(d3) d3.onchange = ()=>set('d3', d3.checked);
   const lo = document.getElementById('ledLow'); if(lo) lo.onchange = ()=>set('lowlat', lo.checked);
   box.querySelectorAll('[data-cu]').forEach(i=>i.onchange = ()=>{ LED.custom = Object.assign({}, LED.custom, { [i.dataset.cu]:Math.max(0, +i.value||0) }); ledSaveState(); ledRender(); });
   box.querySelectorAll('[data-lview]').forEach(b=>b.onclick = ()=>set('view', b.dataset.lview));
@@ -48028,7 +48069,7 @@ function ledPrint(){
 // the list of devices and cabinets (Super Admin): saved for everyone, with the change history of Sistema → Nustatymai
 function ledDbEditor(){
   const db = JSON.parse(JSON.stringify(ledDb())), T = { tab:'devices' };
-  const dCols = [['name', 'Pavadinimas', 'text'], ['fam', 'Šeima', 'text'], ['ports', 'Prievadų', 'number'], ['maxPx', 'Maks. px', 'number'], ['maxW', 'Maks. plotis', 'number'], ['maxH', 'Maks. aukštis', 'number'], ['check', 'Tikrinti', 'checkbox']];
+  const dCols = [['name', 'Pavadinimas', 'text'], ['fam', 'Šeima', 'text'], ['ports', 'Prievadų', 'number'], ['maxPx', 'Maks. px', 'number'], ['maxW', 'Maks. plotis', 'number'], ['maxH', 'Maks. aukštis', 'number'], ['unico', 'UNICO', 'checkbox'], ['ll', 'Mažas vėlin.', 'checkbox'], ['check', 'Tikrinti', 'checkbox']];
   const pCols = [['name', 'Pavadinimas', 'text'], ['pw', 'px pl.', 'number'], ['ph', 'px aukšt.', 'number'], ['mw', 'mm pl.', 'number'], ['mh', 'mm aukšt.', 'number'], ['kg', 'kg', 'number'], ['wmax', 'W maks.', 'number'], ['wavg', 'W vid.', 'number'], ['check', 'Tikrinti', 'checkbox']];
   const draw = ()=>{
     const list = db[T.tab], cols = T.tab==='devices' ? dCols : pCols;
@@ -48608,6 +48649,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 04:10', v:'v611', k:'new', t:'LED skaičiuoklė: UNICO taisyklės ir nauji procesoriai', f:'Pagal NovaStar UNICO vadovą: VX Pro ir VC Pro įrenginiams prievado apkrova skaičiuojama pagal kabinetus apimantį stačiakampį (arba „Free Topology“ – pagal kabinetus), mažo vėlinimo talpa (1 − Y/H) × 650 000, Ethernet atsarga Split / Sequential arba atsarginis įrenginys, 3D talpos sumažėjimas. Nauji: VX2000 Pro, VC6/VC10/VC16/VC24 Pro. Prievadų lentelėje – talpa ir atsarginis prievadas, aprašytas SmartLCT ir UNICO skirtumas.' },
   { d:'2026-10-21 03:20', v:'v610', k:'new', t:'Sandėlis → Įrankiai: LED skaičiuoklė', f:'Naujas puslapis „Įrankiai“ ir pirmas įrankis – LED skaičiuoklė (kaip NovaStar SmartLCT offline): kabinetas, stulpeliai × eilės, kadrų dažnis, spalvų gylis, jungimo kryptis ir pradžia, atsarginis žiedas, mažas vėlinimas. Apskaičiuoja raišką, dydį, svorį, galią ir srovę, kiek kabinetų telpa į prievadą, kiek prievadų, įrenginių ar H serijos kortų reikia, nubraižo jungimo schemą (1-1-5 kaip SmartLCT, iš priekio ir iš galo) ir parodo, kurie NovaStar procesoriai (H, VX, MCTRL, NovaPro, COEX) tinka. Išsaugojimas, PDF, redaguojama įrenginių ir kabinetų bazė.' },
   { d:'2026-10-21 02:30', v:'v609', k:'new', t:'Naktinės atsarginės kopijos', f:'Kas naktį visa duomenų bazė ir visi failai užšifruoti kopijuojami į savo hostingą (30 dienų) ir į GitHub (7 dienos). Paskutinės kopijos būsena – Sistema → Nustatymai → Atsarginės kopijos (ir Sistemos santraukoje).' },
   { d:'2026-10-21 01:50', v:'v608', k:'new', t:'Esamų puslapių redagavimas konstruktoriaus įrankiais', f:'Redagavimo režime (Super Admin → Redaguoti puslapius arba Sistema → Puslapiai → Esami programos puslapiai) bet kurį esamo puslapio, jo skilties ar lango elementą galima ne tik pervadinti, keisti ikoną ir vietą, bet ir paslėpti, pakeisti jo spalvas, šriftą ir kampus, priskirti kitą veiksmą paspaudus (puslapis, programos funkcija, savo sukurtas puslapis ar jo popup, nuoroda) ir po juo įterpti naujų mygtukų, tekstų ar duomenų blokų.' },
