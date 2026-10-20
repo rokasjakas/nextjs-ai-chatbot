@@ -6,3 +6,6 @@
   `<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="…"/>` and draw it with `slIcon(key)`.
   Never use emoji or hand-drawn SVG as an icon in the interface; an emoji typed in UI text must have an `EI_MAP` entry
   (it is swapped for the Material icon at runtime).
+- **Sistema** (Super Admin page, `renderSystemTab`): the map comes from `site/sys-map.json` – rebuild it at every release with
+  `python3 site-tools/sys_build.py site/index.html supabase/functions site/sys-map.json`. Errors are collected by `SYSLOG`
+  (table `app_errors`, `supabase/sql/app_errors.sql`); explanations live in `sysExplain`.
