@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-honDxo1gZaLsZedsYw4NHxiMSNZzdoM2iUuYGzdMhaM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-rAyIELYcVNHsFP2RdYt3N3uVLUAvOMkLt2Rfba7F8BY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -2265,7 +2265,9 @@ body.of-pop-open{overflow:hidden;}
 .od-sact button,.od-ract button{background:none;border:0;color:inherit;opacity:.75;cursor:pointer;font-size:10px;padding:0 3px;line-height:20px;}
 .od-sact button:hover,.od-ract button:hover{opacity:1;}
 .od-ract{grid-column:10;display:flex;justify-content:flex-end;gap:1px;opacity:0;color:#555;padding-right:4px;}
-.od-ract button svg{width:13px;height:13px;vertical-align:-2px;} .od-edit svg{width:14px;height:14px;vertical-align:-2px;}
+.od-ract button svg{width:8px;height:8px;vertical-align:-1px;} .od-ract button{padding:0 1px !important;font-size:9px !important;}
+/* the row's buttons stay right of the sum (they no longer cover it) */
+.od-tr > .od-ract{position:relative;z-index:2;gap:0;padding-right:0;} .od-edit svg{width:14px;height:14px;vertical-align:-2px;}
 .od-tr:hover .od-ract,.od-tr:focus-within .od-ract{opacity:1;}
 .od-tr.over{background:#FFECEF;}
 .od-stock{display:block;font-size:6.5px;color:#6b7280;margin:-1px 0 1px 3px;}
@@ -22471,7 +22473,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v593';
+const APP_VER = 'v594';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -46148,6 +46150,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-20 19:15', v:'v594', k:'fix', t:'Pasiūlymo eilutės mygtukai neuždengia sumos', f:'Eilutės mygtukai (dublikuoti, aukštyn, žemyn, ištrinti) sutalpinti šalia sumos – jie nebeuždengia kainos.' },
   { d:'2026-10-20 19:00', v:'v593', k:'new', t:'Pasiūlymai: dublikuoti eilutę, redaguoti dydį', f:'Pasiūlymo eilutėje (užvedus pelę) – dublikavimo mygtukas: eilutė nukopijuojama po ja su viskuo, išskyrus kiekį (įrašai naują); LED ekranui ar pakylai iškart atsidaro dydžio langas. Dydžio mygtukas dabar – pieštukas (redaguoti). Pasirinkus m², plotis × aukštis nebėra rodomi.' },
   { d:'2026-10-20 18:30', v:'v592', k:'new', t:'Pasiūlymų versijos, × visuose languose, dydis m²', f:'Pasiūlymo versijų sąraše prie kiekvienos versijos trumpai parašyta, kuo ji skiriasi nuo ankstesnės (+/− eilutės, pakeistos, klientas, suma ir pan.). Palyginti galima nuo 2 iki 8 versijų: lange kiekvienos stulpelio versiją galima pakeisti, pridėti naują ar išimti; visos lyginamos su pirma (bazė). Visi iškylantys langai turi × viršuje dešinėje toje pačioje vietoje. Pakylų ir LED ekranų dydis – Plotis × Aukštis arba iškart m².' },
   { d:'2026-10-20 17:30', v:'v591', k:'new', t:'Renginiai: aiškesnė lentelė ir įrangos PDF', f:'Renginių lentelėje tarpai tarp renginių ryškūs (ir kairėje, prie datos ir pavadinimo), linijos ryškesnės, spalvos sodresnės, pilki užrašai tamsesni (šviesiame režime) / šviesesni (tamsiame); prie šiandienos datos nebėra juodo apvado. Prie renginio vietoj įrangos ir pakavimo mygtukų – PDF: paspaudus gauni renginio įrangos sąrašą PDF (rezervuota įranga arba susieto projekto sąrašas); jei įrangos dar nėra – pasiūloma ją rezervuoti.' },
