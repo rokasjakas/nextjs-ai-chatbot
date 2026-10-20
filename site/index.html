@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-w81RTM+q6GBQIiTRShxjKe1CXOS6XqpOrcF86EFP9tM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dZtxfAjtnf1WXm0MA4IcgARkYrQsjfruQr2sOEIy2Vw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -23279,7 +23279,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v612';
+const APP_VER = 'v613';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -47884,7 +47884,7 @@ function sysCenterOn(id){
 const LED_PORT_PX = 650000;
 // sending devices; check:true – the figure is from memory of the maker's data and should be checked against the datasheet
 const LED_DEVICES = [
-  { id:'h16', name:'H serija (H2/H5/H9/H15/H20) – 16×RJ45 išvesties kortos', fam:'H', kind:'mod', card:{ name:'16×RJ45 korta', ports:16, maxPx:10400000 }, cards:3, check:true, note:'Kiekviena korta – 16 Ethernet prievadų. Kiek kortų telpa rėme, priklauso nuo modelio.' },
+  { id:'h16', name:'H serija (H2/H5/H9/H15/H20) – H_16xRJ45 2xFiber kortos', fam:'H', kind:'mod', card:{ name:'H_16xRJ45 2xFiber Sending Card', ports:16, maxPx:10400000, maxW:10240, maxH:10240, port10:320000 }, cards:3, note:'Kortai iki 10,4 mln. px, plotis / aukštis iki 10 240 px; prievadui 650 000 px (8 bit) arba 320 000 px (10 bit); hot backup; OPT1 dubliuoja Ethernet 1–8, OPT2 – 9–16.' },
   { id:'vx1000', name:'VX1000', fam:'VX', ports:10, maxPx:6500000, maxW:10240, maxH:8192 },
   { id:'vx2000pro', name:'VX2000 Pro', fam:'VX', ports:20, maxPx:13000000, maxW:16384, maxH:8192, unico:true, ll:true, check:true, note:'OPT 3/4 kopijuoja arba saugo Ethernet 1–10 / 11–20. Išvestis 8 arba 10 bit.' },
   { id:'vx1000pro', name:'VX1000 Pro', fam:'VX', ports:10, maxPx:6500000, maxW:10240, maxH:8192, unico:true, ll:true, check:true, note:'OPT 2 kopijuoja arba saugo Ethernet 1–10.' },
@@ -48060,13 +48060,16 @@ function lpPortInfo(){
   return { per, units, list };
 }
 function lpK(){ return (60 / Math.max(1, LP.fps)) * (LP.bit>8 ? .5 : 1) * (LP.d3 ? .5 : 1); }
+// one port's capacity: 650 000 px at 60 Hz / 8 bit; at 10/12 bit the device's own figure (H card: 320 000) or half
+function lpPortCap(d){ d = d || lpDev(); const c = d.kind==='mod' ? d.card : d, base = LP.bit>8 ? (+c.port10 || LED_PORT_PX/2) : LED_PORT_PX;
+  return Math.floor(base * (60 / Math.max(1, LP.fps)) * (LP.d3 ? .5 : 1)); }
 function lpRect(){ return LP.load==='rect' || ((LP.load||'auto')==='auto' && !!lpDev().unico); }
 function lpBox(ids){ let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; ids.forEach(id=>{ const c = lpCab(id); if(!c) return; const p = lpPanel(c.t); x0 = Math.min(x0, c.x); y0 = Math.min(y0, c.y); x1 = Math.max(x1, c.x+p.pw); y1 = Math.max(y1, c.y+p.ph); }); return x1<x0 ? null : { x0, y0, x1, y1, w:x1-x0, h:y1-y0 }; }
 // one port: its load (the cabinets' pixels, or the rectangle around them – UNICO) and its capacity (low latency: (1 − Y/H) × 650 000)
 function lpPortLoad(ids){
-  if(!ids || !ids.length) return { load:0, cap:Math.floor(LED_PORT_PX*lpK()) };
+  if(!ids || !ids.length) return { load:0, cap:lpPortCap() };
   const b = lpBox(ids), load = lpRect() ? b.w*b.h : ids.reduce((a, id)=>{ const c = lpCab(id); if(!c) return a; const p = lpPanel(c.t); return a + p.pw*p.ph; }, 0);
-  const cap = Math.floor(LED_PORT_PX*lpK() * (LP.lowlat ? Math.max(0, 1 - Math.max(0, b.y0)/Math.max(1, LP.srcH)) : 1));
+  const cap = Math.floor(lpPortCap() * (LP.lowlat ? Math.max(0, 1 - Math.max(0, b.y0)/Math.max(1, LP.srcH)) : 1));
   return { load, cap };
 }
 function lpCleanPorts(){ Object.keys(LP.ports).forEach(g=>{ LP.ports[g] = (LP.ports[g]||[]).filter(id=>lpCab(id)); if(!LP.ports[g].length) delete LP.ports[g]; }); }
@@ -48113,7 +48116,11 @@ function lpTotals(){
   if(b){ if(b.w > LP.srcW || b.h > LP.srcH) T.warn.push(`Ekranas (${b.w}×${b.h}) didesnis už šaltinio raišką ${LP.srcW}×${LP.srcH}.`);
     if(d.maxW && b.x1 > d.maxW*Math.max(1, d.kind==='mod' ? 1 : LP.units)) T.warn.push(`Plotis viršija ${d.name} galimybes (${d.maxW} px vienam įrenginiui).`); }
   const unitPx = Math.floor((d.kind==='mod' ? d.card.maxPx : d.maxPx) * k);
-  for(let u = 0; u<pi.units; u++){ const sum = T.ports.filter(p=>p.u===u).reduce((a, p)=>a+p.load, 0); if(sum > unitPx) T.warn.push(`${d.kind==='mod' ? 'Korta' : 'Įrenginys'} ${u+1}: ${ledN(sum)} px viršija ${ledN(unitPx)} px.`); }
+  const lim = d.kind==='mod' ? d.card : d;
+  for(let u = 0; u<pi.units; u++){ const ps = T.ports.filter(p=>p.u===u), sum = ps.reduce((a, p)=>a+p.load, 0), nm = `${d.kind==='mod' ? 'Korta' : 'Įrenginys'} ${u+1}`;
+    if(sum > unitPx) T.warn.push(`${nm}: ${ledN(sum)} px viršija ${ledN(unitPx)} px.`);
+    const ub = lpBox([].concat(...ps.map(p=>p.ids)));
+    if(ub && d.kind==='mod' && ((lim.maxW && ub.w > lim.maxW) || (lim.maxH && ub.h > lim.maxH))) T.warn.push(`${nm}: jos kabinetų plotas ${ub.w}×${ub.h} px viršija kortos ribą ${lim.maxW||'∞'}×${lim.maxH||'∞'} px.`); }
   if(LP.lowlat && !d.ll) T.warn.push(`${d.name} mažo vėlinimo režimo gali nepalaikyti.`);
   if(d.check) T.warn.push(`${d.name} duomenis verta sutikrinti su gamintojo specifikacija.`);
   return T;
@@ -48215,7 +48222,7 @@ function lpBotHtml(){
   return `${T.warn.length ? `<div class="lp-warn">${slIcon('alert')} ${T.warn.map(esc).join(' · ')}</div>` : `<div class="lp-ok">${slIcon('check')} Viskas telpa.</div>`}
     <div class="lp-sum">
       <span><small>Raiška</small><b>${b ? `${ledN(b.w)} × ${ledN(b.h)}` : '—'}</b></span><span><small>Pikseliai</small><b>${ledN(T.px)}</b></span>
-      <span><small>Kabinetai</small><b>${T.n}</b>${types ? `<em>${types}</em>` : ''}</span><span><small>Prievadai</small><b>${T.used}${LP.bk && LP.bk!=='dev' ? ' + '+T.used+' atsarg.' : ''}</b><em>${ledN(Math.floor(LED_PORT_PX*k))} px / prievadą${lpRect() ? ' · stačiakampis' : ''}</em></span>
+      <span><small>Kabinetai</small><b>${T.n}</b>${types ? `<em>${types}</em>` : ''}</span><span><small>Prievadai</small><b>${T.used}${LP.bk && LP.bk!=='dev' ? ' + '+T.used+' atsarg.' : ''}</b><em>${ledN(lpPortCap())} px / prievadą${lpRect() ? ' · stačiakampis' : ''}</em></span>
       <span><small>Plotas</small><b>${ledF(T.area, 2)} m²</b></span><span><small>Svoris</small><b>${ledF(T.kg, 0)} kg</b></span>
       <span><small>Galia</small><b>${ledF(T.wmax/1000, 1)} kW</b><em>vid. ${ledF(T.wavg/1000, 1)} kW</em></span><span><small>Srovė</small><b>${ledF(T.wmax/230, 1)} A</b><em>3 f.: ${ledF(T.wmax/690, 1)} A/f.</em></span>
     </div>${units}`;
@@ -48224,7 +48231,8 @@ function lpCompareHtml(){
   const T = lpTotals(); if(!T.n) return '';
   const b = T.b, k = lpK(), ports = Math.max(1, T.used);
   const rows = ledDb().devices.map(d=>{ const per = d.kind==='mod' ? d.card.ports : d.ports, usable = LP.bk==='split' || LP.bk==='seq' ? Math.floor(per/2) : per, upx = Math.floor((d.kind==='mod' ? d.card.maxPx : d.maxPx)*k);
-    const need = Math.max(Math.ceil(ports/usable), Math.ceil(T.px/upx), d.kind!=='mod' && d.maxW ? Math.ceil(b.w/d.maxW) : 1, d.kind!=='mod' && d.maxH ? Math.ceil(b.h/d.maxH) : 1);
+    const portsD = Math.ceil(ports * lpPortCap() / Math.max(1, lpPortCap(d)));   // a device with a smaller port figure needs more ports
+    const need = Math.max(Math.ceil(portsD/usable), Math.ceil(T.px/upx), d.kind!=='mod' && d.maxW ? Math.ceil(b.w/d.maxW) : 1, d.kind!=='mod' && d.maxH ? Math.ceil(b.h/d.maxH) : 1);
     return { d, need, load:T.px/(need*upx) }; }).sort((a, b)=>a.need-b.need || b.load-a.load);
   return `<div class="card"><h3 class="section-title">Kuris procesorius tinka</h3><p class="sys-faint" style="margin:0 0 8px;">Pagal dabartinį jungimą (${ports} prievad.) ir pikselius. Paspausk – perjungs įrenginį.</p><div class="table-wrap"><table class="led-pt"><thead><tr><th>Įrenginys</th><th>Prievadų</th><th>Reikia</th><th>Apkrova</th></tr></thead><tbody>
     ${rows.map(({ d, need, load })=>`<tr class="${d.id===LP.dev ? 'on' : ''}" data-ldev="${esc(d.id)}"><td><b>${esc(d.name)}</b>${d.check ? ' <small class="sys-faint">(patikrinti)</small>' : ''}</td><td>${d.kind==='mod' ? d.card.ports+' / kortai' : d.ports}</td><td>${need} ${d.kind==='mod' ? 'kort.' : 'vnt.'}</td><td>${ledF(load*100, 0)} %</td></tr>`).join('')}</tbody></table></div></div>`;
@@ -48405,18 +48413,18 @@ function lpPrint(){
 // the list of devices and cabinets (Super Admin): saved for everyone, with the change history of Sistema → Nustatymai
 function ledDbEditor(){
   const db = JSON.parse(JSON.stringify(ledDb())), T = { tab:'devices' };
-  const dCols = [['name', 'Pavadinimas', 'text'], ['fam', 'Šeima', 'text'], ['ports', 'Prievadų', 'number'], ['maxPx', 'Maks. px', 'number'], ['maxW', 'Maks. plotis', 'number'], ['maxH', 'Maks. aukštis', 'number'], ['unico', 'UNICO', 'checkbox'], ['ll', 'Mažas vėlin.', 'checkbox'], ['check', 'Tikrinti', 'checkbox']];
+  const dCols = [['name', 'Pavadinimas', 'text'], ['fam', 'Šeima', 'text'], ['ports', 'Prievadų', 'number'], ['maxPx', 'Maks. px', 'number'], ['maxW', 'Maks. plotis', 'number'], ['maxH', 'Maks. aukštis', 'number'], ['port10', '10 bit px/prievadą', 'number'], ['unico', 'UNICO', 'checkbox'], ['ll', 'Mažas vėlin.', 'checkbox'], ['check', 'Tikrinti', 'checkbox']];
   const pCols = [['name', 'Pavadinimas', 'text'], ['pw', 'px pl.', 'number'], ['ph', 'px aukšt.', 'number'], ['mw', 'mm pl.', 'number'], ['mh', 'mm aukšt.', 'number'], ['kg', 'kg', 'number'], ['wmax', 'W maks.', 'number'], ['wavg', 'W vid.', 'number'], ['check', 'Tikrinti', 'checkbox']];
   const draw = ()=>{
     const list = db[T.tab], cols = T.tab==='devices' ? dCols : pCols;
     const body = document.getElementById('ledDbBody'); if(!body) return;
     body.innerHTML = `<div class="table-wrap"><table class="led-pt led-dbt"><thead><tr>${cols.map(c=>`<th>${c[1]}</th>`).join('')}<th></th></tr></thead><tbody>
-      ${list.map((d, i)=>`<tr data-i="${i}">${cols.map(([k, , t])=>{ const v = k==='ports' && d.kind==='mod' ? (d.card||{}).ports : k==='maxPx' && d.kind==='mod' ? (d.card||{}).maxPx : d[k];
+      ${list.map((d, i)=>`<tr data-i="${i}">${cols.map(([k, , t])=>{ const v = d.kind==='mod' && ['ports', 'maxPx', 'maxW', 'maxH', 'port10'].includes(k) ? (d.card||{})[k] : d[k];
         return `<td>${t==='checkbox' ? `<input type="checkbox" data-k="${k}" ${v ? 'checked' : ''}>` : `<input type="${t}" data-k="${k}" value="${esc(v==null ? '' : v)}" ${t==='number' ? 'step="any" min="0"' : ''}>`}</td>`; }).join('')}
         <td><button type="button" class="btn small" data-del="${i}">${slIcon('close')}</button></td></tr>`).join('')}</tbody></table></div>
       <button type="button" class="btn small" id="ledDbAdd" style="margin-top:6px;">${slIcon('plus')} Pridėti</button>`;
   };
-  openModal(`<h3>LED skaičiuoklės bazė</h3><p class="sys-faint">Pataisyk įrenginių ir kabinetų duomenis pagal gamintojo specifikacijas – galios visiems. H serijos eilutėje „Prievadų“ ir „Maks. px“ – vienai išvesties kortai.</p>
+  openModal(`<h3>LED skaičiuoklės bazė</h3><p class="sys-faint">Pataisyk įrenginių ir kabinetų duomenis pagal gamintojo specifikacijas – galios visiems. H serijos eilutėje prievadų, pikselių, pločio ir aukščio ribos – vienai išvesties kortai. „10 bit px/prievadą“ – jei gamintojas nurodo kitą nei pusę (H kortai 320 000).</p>
     <div class="seg" style="margin:6px 0 10px;"><button type="button" class="chip active" data-dbt="devices">Įrenginiai</button><button type="button" class="chip" data-dbt="panels">Kabinetai</button></div>
     <div id="ledDbBody"></div>
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;"><button type="button" class="btn small" id="ledDbReset">Gamykliniai duomenys</button><button type="button" class="btn small primary" id="ledDbOk">${slIcon('save')} Išsaugoti visiems</button></div>`);
@@ -48425,7 +48433,7 @@ function ledDbEditor(){
   m.querySelectorAll('[data-dbt]').forEach(b=>b.onclick = ()=>{ T.tab = b.dataset.dbt; m.querySelectorAll('[data-dbt]').forEach(x=>x.classList.toggle('active', x===b)); draw(); });
   m.addEventListener('input', e=>{ const t = e.target, tr = t.closest('tr[data-i]'); if(!tr || !t.dataset.k) return; const d = db[T.tab][+tr.dataset.i], k = t.dataset.k;
     const v = t.type==='checkbox' ? t.checked : t.type==='number' ? +t.value : t.value;
-    if(d.kind==='mod' && (k==='ports' || k==='maxPx')) d.card = Object.assign({}, d.card, { [k]:v }); else d[k] = v; });
+    if(d.kind==='mod' && ['ports', 'maxPx', 'maxW', 'maxH', 'port10'].includes(k)) d.card = Object.assign({}, d.card, { [k]:v }); else d[k] = v; });
   m.addEventListener('change', e=>{ if(e.target.type==='checkbox') e.target.dispatchEvent(new Event('input', { bubbles:true })); });
   m.addEventListener('click', e=>{
     const del = e.target.closest('[data-del]'); if(del){ db[T.tab].splice(+del.dataset.del, 1); draw(); return; }
@@ -48985,6 +48993,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 05:30', v:'v613', k:'fix', t:'LED skaičiuoklė: tikslūs H serijos kortos duomenys', f:'H_16xRJ45 2xFiber Sending Card: iki 10,4 mln. px kortai, plotis ir aukštis iki 10 240 px (įspėja, jei kortos kabinetai platesni ar aukštesni), prievadui 650 000 px esant 8 bit ir 320 000 px esant 10 bit, OPT1 dubliuoja Ethernet 1–8, OPT2 – 9–16. Bazėje galima įrašyti įrenginio 10 bit prievado talpą.' },
   { d:'2026-10-21 05:00', v:'v612', k:'new', t:'Įrankiai kaip programėlės, LED skaičiuoklė – redaktorius kaip SmartLCT', f:'Įrankiai atsidaro kaip programėlių plytelės (LED skaičiuoklė – pirmoji). LED skaičiuoklė dabar kaip SmartLCT: Naujas projektas (įrenginys, kabinetas, stulpeliai × eilės, šaltinio raiška, jungimo būdas), drobė su keliais kabinetų tipais, kabinetus galima dėti, tempti, žymėti; kairėje – įrenginio kortos ir prievadai, pasirinkus prievadą signalo kelią galima nubraižyti pele arba vienu iš 8 jungimo būdų; apačioje – prievadų apkrovos juostos ir įspėjimai; vaizdas iš priekio ir iš galo, imtuvo kortų numeriai, pritraukimas prie kabinetų ar tinklelio, atšaukimas, išsaugojimas, PDF.' },
   { d:'2026-10-21 04:10', v:'v611', k:'new', t:'LED skaičiuoklė: UNICO taisyklės ir nauji procesoriai', f:'Pagal NovaStar UNICO vadovą: VX Pro ir VC Pro įrenginiams prievado apkrova skaičiuojama pagal kabinetus apimantį stačiakampį (arba „Free Topology“ – pagal kabinetus), mažo vėlinimo talpa (1 − Y/H) × 650 000, Ethernet atsarga Split / Sequential arba atsarginis įrenginys, 3D talpos sumažėjimas. Nauji: VX2000 Pro, VC6/VC10/VC16/VC24 Pro. Prievadų lentelėje – talpa ir atsarginis prievadas, aprašytas SmartLCT ir UNICO skirtumas.' },
   { d:'2026-10-21 03:20', v:'v610', k:'new', t:'Sandėlis → Įrankiai: LED skaičiuoklė', f:'Naujas puslapis „Įrankiai“ ir pirmas įrankis – LED skaičiuoklė (kaip NovaStar SmartLCT offline): kabinetas, stulpeliai × eilės, kadrų dažnis, spalvų gylis, jungimo kryptis ir pradžia, atsarginis žiedas, mažas vėlinimas. Apskaičiuoja raišką, dydį, svorį, galią ir srovę, kiek kabinetų telpa į prievadą, kiek prievadų, įrenginių ar H serijos kortų reikia, nubraižo jungimo schemą (1-1-5 kaip SmartLCT, iš priekio ir iš galo) ir parodo, kurie NovaStar procesoriai (H, VX, MCTRL, NovaPro, COEX) tinka. Išsaugojimas, PDF, redaguojama įrenginių ir kabinetų bazė.' },
