@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/FOcu/jmzfBrheh6LuisN9SyxL+I6svafvDxmMd71tU=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-lWH45i0Zu7oUzREN9jbV+BRpHlBNr/4gBYwdIa10kqI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -22473,7 +22473,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v595';
+const APP_VER = 'v596';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25081,6 +25081,7 @@ function renderEventList(){
     <div class="xg-hs hidden" id="xgHs"><button type="button" class="xg-hs-b" data-hs="-1" title="Į kairę">‹</button><input type="range" id="xgHsR" min="0" max="100" value="0" step="1" aria-label="Slinkti lentelę į šonus"><button type="button" class="xg-hs-b" data-hs="1" title="Į dešinę">›</button></div>`;
   evFitGrid();
   evAutosizeAll(el);
+  evAutoFoldPast();
   EV.visibleIds = list.map(e=>e.id);
   const setAll = fold=>{ const f = evFoldLoad(); EV.visibleIds.forEach(id=>fold ? f.add(id) : f.delete(id)); evFoldSave(); renderEventList(); };
   document.getElementById('evFoldAll').onclick = ()=>setAll(true);
@@ -25392,6 +25393,17 @@ function evFoldButtons(){
   const a = document.getElementById('evFoldAll'), b = document.getElementById('evUnfoldAll');
   if(a) a.classList.toggle('hidden', n===ids.length);
   if(b) b.classList.toggle('hidden', n===0);
+}
+// an event that is over folds by itself 2 days after its last day (20 d. → folded on 22 d.); only once –
+// opened again by hand, it stays open
+const EV_AUTOFOLD_DAYS = 2;
+function evAutoFoldPast(){
+  let done; try{ done = new Set(JSON.parse(localStorage.getItem('evAutoFolded')||'[]')); }catch(e){ done = new Set(); }
+  const today = evToday(), f = evFoldLoad(); let ch = false;
+  (EV.events||[]).forEach(ev=>{ if(!ev || done.has(ev.id)) return; const last = ev.dateEnd && ev.dateEnd >= (ev.date||'') ? ev.dateEnd : ev.date;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(last||'') || lmDay(last, EV_AUTOFOLD_DAYS) > today) return;
+    f.add(ev.id); done.add(ev.id); ch = true; });
+  if(ch){ evFoldSave(); try{ localStorage.setItem('evAutoFolded', JSON.stringify(Array.from(done).slice(-5000))); }catch(e){} }
 }
 function evFoldSave(){ try{ localStorage.setItem('evFolded', JSON.stringify(Array.from(EV.folded).slice(-3000))); }catch(e){} }
 function evIsFolded(ev){ return evFoldLoad().has(ev.id); }
@@ -46150,6 +46162,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-20 19:45', v:'v596', k:'new', t:'Įvykę renginiai susiskleidžia patys', f:'Renginiuose praėjus 2 dienoms po renginio paskutinės dienos (pvz. renginys 20 d. → 22 d.) jis susiskleidžia savaime. Jei jį vėl išskleidi ranka – lieka išskleistas.' },
   { d:'2026-10-20 19:30', v:'v595', k:'fix', t:'Pasiūlymas: vėl matosi pavadinimai, vienodas redagavimo pieštukas', f:'Pataisyta: eilutėse su dydžiu (LED, pakylos) dingdavo pavadinimai, pieštukas buvo per didelis. Dabar visi eilutės mygtukai, atidarantys redagavimo langą (dydis, sudėtis), turi tą patį mažą pieštuką šalia pavadinimo.' },
   { d:'2026-10-20 19:15', v:'v594', k:'fix', t:'Pasiūlymo eilutės mygtukai neuždengia sumos', f:'Eilutės mygtukai (dublikuoti, aukštyn, žemyn, ištrinti) sutalpinti šalia sumos – jie nebeuždengia kainos.' },
   { d:'2026-10-20 19:00', v:'v593', k:'new', t:'Pasiūlymai: dublikuoti eilutę, redaguoti dydį', f:'Pasiūlymo eilutėje (užvedus pelę) – dublikavimo mygtukas: eilutė nukopijuojama po ja su viskuo, išskyrus kiekį (įrašai naują); LED ekranui ar pakylai iškart atsidaro dydžio langas. Dydžio mygtukas dabar – pieštukas (redaguoti). Pasirinkus m², plotis × aukštis nebėra rodomi.' },
