@@ -9,3 +9,5 @@
 - **Sistema** (Super Admin page, `renderSystemTab`): the map comes from `site/sys-map.json` – rebuild it at every release with
   `python3 site-tools/sys_build.py site/index.html supabase/functions site/sys-map.json`. Errors are collected by `SYSLOG`
   (table `app_errors`, `supabase/sql/app_errors.sql`); explanations live in `sysExplain`.
+- Menu names / icons / order / turned-off pages come from `app_config` key `nav` (`CFG`, `cfgApply`, `supabase/sql/app_config.sql`),
+  edited in Sistema → Nustatymai; never hard-code a rename that the Super Admin could set there.
