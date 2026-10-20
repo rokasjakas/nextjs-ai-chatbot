@@ -23,3 +23,6 @@
 - From 2026-10-30 Supabase no longer grants Data API access to NEW public tables: every new `create table` in `supabase/sql/*.sql`
   must carry its own `grant … to authenticated` (and `to service_role` when a server function or the backup touches it; `anon`
   only when the table is read before sign-in). Backups keep the grants (`pg_dump` without `--no-privileges`).
+- Įrankiai (`tools` tab, warehouse group) → LED skaičiuoklė (`ledCalc`, `ledPorts`): 650 000 px per NovaStar Gigabit port at 60 Hz / 8 bit,
+  scaled by 60/fps and halved at 10/12 bit. Devices/cabinets defaults `LED_DEVICES` / `LED_PANELS`; Super Admin overrides in
+  `app_config` key `led_db` (`check:true` = figure to verify against the datasheet).
