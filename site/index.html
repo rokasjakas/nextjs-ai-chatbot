@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-SMH7yy3lIo4UamK8nzJ1UYBUS8hSMPJEPJuCfFQNj6c=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-OVjCYQIdFttws/TjffRHFI7Q0WSDGEhebSWI/e8CalI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -6146,7 +6146,12 @@ body.qk-moving .qk-win-f{pointer-events:none;} body.qk-moving{user-select:none;}
 .ws-slot{width:100%;min-height:320px;}
 .home-mini.hidden{display:none !important;}
 .home-hdr-ctl{display:inline-flex;align-items:center;gap:8px;} .home-hdr-ctl[hidden]{display:none;}
-.home-hdr-ctl .ws-n{margin:0;} .home-hdr-ctl .hm-arrange{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text-dim);font:inherit;font-size:12.5px;cursor:pointer;}
+.home-hdr-ctl .ws-n{margin:0;}
+.ws-tg{display:inline-flex !important;align-items:center;gap:6px;min-width:0 !important;width:auto !important;padding:0 8px 0 6px;margin-right:2px;}
+.ws-tg svg{width:16px;height:16px;color:var(--text-dim);} .ws-tg.on svg{color:var(--accent);}
+.ws-tg i{width:24px;height:14px;border-radius:7px;background:var(--border-2,#555);position:relative;transition:background .15s;}
+.ws-tg i::after{content:'';position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:#fff;transition:left .15s;}
+.ws-n .ws-tg.on{background:var(--panel) !important;border-color:var(--accent) !important;color:var(--text) !important;} .ws-tg.on i{background:var(--accent);} .ws-tg.on i::after{left:12px;} .home-hdr-ctl .hm-arrange{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text-dim);font:inherit;font-size:12.5px;cursor:pointer;}
 .home-hdr-ctl .hm-arrange:hover,.home-hdr-ctl .hm-arrange.on{color:var(--text);border-color:var(--accent);} .home-hdr-ctl .hm-arrange svg{width:15px;height:15px;}
 .ws-split{position:absolute;z-index:3;touch-action:none;}
 .ws-split.v{top:0;bottom:0;width:12px;transform:translateX(-50%);cursor:col-resize;}
@@ -22385,7 +22390,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v587';
+const APP_VER = 'v588';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -23329,8 +23334,12 @@ function renderHomeTab(){
   </div>`;
   // work windows on: the strip (time, weather) is hidden – its buttons (Langai 2 3 4, Tvarkyti) go to the top bar
   { const hc = document.getElementById('homeHdrCtl'), ar = document.getElementById('homeArrange');
-    if(hc){ hc.innerHTML = ''; hc.hidden = !wsOn();
-      if(wsOn()){ hc.innerHTML = `<span class="ws-n" title="Kiek darbinių langų">${slIcon('wspace')}Langai ${[2,3,4].map(n=>`<button type="button" data-wsn="${n}" class="${wsPref().n===n ? 'on' : ''}">${n}</button>`).join('')}</span>`; if(ar) hc.appendChild(ar); } } }
+    if(hc){ hc.innerHTML = ''; hc.hidden = wsPhone();
+      if(!wsPhone()){ const on = wsOn();
+        // „Langai“ itself turns the work windows on / off; 2 3 4 – how many
+        hc.innerHTML = `<span class="ws-n"><button type="button" class="ws-tg ${on ? 'on' : ''}" data-wstg title="${on ? 'Išjungti darbo langus' : 'Įjungti darbo langus Pradžioje'}">${slIcon('wspace')}Langai<i></i></button>${on ? [2,3,4].map(n=>`<button type="button" data-wsn="${n}" class="${wsPref().n===n ? 'on' : ''}" title="${n} langai">${n}</button>`).join('') : ''}</span>`;
+        hc.querySelector('[data-wstg]').onclick = wsToggle;
+        if(on && ar) hc.appendChild(ar); } } }
   const editing = ()=>document.body.classList.contains('home-edit');
   makeSortable(document.querySelector('.home-tiles'), { item:'.home-tile', key:el=>el.dataset.k, editing, onDrop:keys=>prefSet('homeTiles', keys) });
   document.querySelectorAll('.home-side [data-hsfold]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); hsFoldToggle(b.dataset.hsfold); });
@@ -45984,6 +45993,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-20 15:00', v:'v588', k:'new', t:'„Langai“ – įjungti / išjungti', f:'Pradžioje viršutiniame meniu „Langai“ su jungikliu: paspaudus įjungi arba išjungi darbo langus. Įjungus šalia atsiranda 2 / 3 / 4 ir „Tvarkyti“.' },
   { d:'2026-10-20 14:30', v:'v587', k:'fix', t:'Darbo erdvė: vienas atnaujinimo pranešimas, valdymas viršuje', f:'Išleidus naują versiją „Programa atnaujinta“ rodomas tik vieną kartą (ne kiekviename lange) – „Perkrauti“ perkrauna ir visus langus. Įjungus darbo erdvę juosta su laiku ir oru Pradžioje nerodoma, o „Langai 2 3 4“ ir „Tvarkyti“ perkelti į viršutinį meniu – langams daugiau vietos.' },
   { d:'2026-10-20 14:00', v:'v586', k:'new', t:'Būsena kaip Discorde · darbo erdvė tik kompiuteryje', f:'Paspaudus savo nuotrauką viršuje (arba Profilyje) pasirink būseną: Prisijungęs, Neaktyvus, Netrukdyti (negausi pranešimų nei telefone, nei kompiuteryje), Nematomas (kitiems atrodai neprisijungęs). Rodyklė – kiek laiko (15 min., 1 val., 8 val., 24 val., 3 d. arba kol pakeisi); laikui pasibaigus vėl Prisijungęs. Kiti tavo būseną mato prie nuotraukos. Darbo erdvės langai telefone nebėra – ten Pradžia kaip įprasta.' },
   { d:'2026-10-20 13:30', v:'v585', k:'new', t:'Darbo erdvė: Notes lange', f:'Darbo erdvės languose galima pasirinkti ir Notes (tavo užrašai): laisvoje vietoje ar per lango pavadinimą parašyk „notes“. Lange matai užrašų sąrašą, kuri naujus, taisai, prisegi ir trini – viskas tas pats, kas Notes meniu. Veikia mastelis, atnaujinimas, o „atidaryti visame lange“ atidaro Notes skydelį.' },
