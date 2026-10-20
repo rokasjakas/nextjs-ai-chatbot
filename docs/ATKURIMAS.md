@@ -23,8 +23,9 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in db-2026-10-21.tgz.enc -pass
 # 2. naujame Supabase projekte: Supabase → Connect → Session pooler eilutė
 export DB='postgresql://postgres.…:SLAPTAŽODIS@…pooler.supabase.com:5432/postgres'
 
-# 3. programos lentelės ir duomenys
-pg_restore --no-owner --no-privileges -d "$DB" db/public.dump
+# 3. programos lentelės, duomenys ir jų teisės (GRANT – būtina: nuo 2026-10-30 Supabase naujoms lentelėms jų pats neduoda)
+pg_restore --no-owner -d "$DB" db/public.dump
+# senesnėse kopijose (be teisių) – po to paleisti supabase/sql/grants_restore.sql
 
 # 4. narių prisijungimai ir failų sąrašai (tik duomenys)
 pg_restore --no-owner --no-privileges --data-only --disable-triggers -d "$DB" db/auth-storage.dump

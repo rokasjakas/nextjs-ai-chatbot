@@ -12799,3 +12799,11 @@ begin
 end $$;
 drop trigger if exists custom_pages_keep on public.custom_pages;
 create trigger custom_pages_keep before insert or update on public.custom_pages for each row execute function public.custom_pages_keep();
+
+-- serverio funkcijoms ir kopijoms (nuo 2026-10-30 Supabase naujoms lentelėms teisių pats nebeduoda)
+grant select, insert, update, delete on public.app_errors to service_role;
+grant usage, select on sequence public.app_errors_id_seq to service_role;
+grant select, insert, update, delete on public.app_config, public.app_config_log to service_role;
+grant usage, select on sequence public.app_config_log_id_seq to service_role;
+grant select, insert, update, delete on public.custom_pages, public.custom_pages_log to service_role;
+grant usage, select on sequence public.custom_pages_log_id_seq to service_role;

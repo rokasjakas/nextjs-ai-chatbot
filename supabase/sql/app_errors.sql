@@ -57,3 +57,7 @@ begin
 end $$;
 drop trigger if exists app_errors_prune on public.app_errors;
 create trigger app_errors_prune after insert on public.app_errors for each statement execute function public.app_errors_prune();
+
+-- serverio funkcijoms ir kopijoms (nuo 2026-10-30 Supabase pats nebeduoda)
+grant select, insert, update, delete on public.app_errors to service_role;
+grant usage, select on sequence public.app_errors_id_seq to service_role;

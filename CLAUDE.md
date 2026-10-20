@@ -20,3 +20,6 @@
   s look, a click (`edRunAct`), n inserted elements (`edIns`). Renaming a button's text in code breaks its rules – keep names.
 - Nightly backups: `.github/workflows/backup.yml` (DB pg_dump + Storage + R2, encrypted with `BACKUP_PASSWORD`, to the hosting via
   rclone SFTP/FTP and 7 days as a GitHub artifact); result in `app_config` key `backup`; restore steps in `docs/ATKURIMAS.md`.
+- From 2026-10-30 Supabase no longer grants Data API access to NEW public tables: every new `create table` in `supabase/sql/*.sql`
+  must carry its own `grant … to authenticated` (and `to service_role` when a server function or the backup touches it; `anon`
+  only when the table is read before sign-in). Backups keep the grants (`pg_dump` without `--no-privileges`).

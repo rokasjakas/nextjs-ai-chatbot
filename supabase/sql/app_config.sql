@@ -62,3 +62,7 @@ begin
 end $$;
 revoke all on function public.app_config_set(text, jsonb, text) from public, anon;
 grant execute on function public.app_config_set(text, jsonb, text) to authenticated;
+
+-- serverio funkcijoms ir kopijoms (nuo 2026-10-30 Supabase pats nebeduoda)
+grant select, insert, update, delete on public.app_config, public.app_config_log to service_role;
+grant usage, select on sequence public.app_config_log_id_seq to service_role;

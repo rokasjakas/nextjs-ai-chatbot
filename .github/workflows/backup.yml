@@ -56,9 +56,10 @@ jobs:
           mkdir -p out
           D=$(date -u +%Y-%m-%d)
           mkdir -p out/db
-          # programos lentelės ir duomenys (public) – būtina
+          # programos lentelės, duomenys ir jų teisės (public) – būtina. Teisės (GRANT) – kartu: nuo 2026-10-30 Supabase
+          # naujose lentelėse jų pats nebeduoda, tad be jų atkurta programa negautų prieigos prie savo lentelių
           docker run --rm -v "$PWD/out/db:/out" -e DBURL="$SUPABASE_DB_URL" postgres:17 \
-            sh -c 'pg_dump "$DBURL" -Fc --no-owner --no-privileges -n public -f /out/public.dump'
+            sh -c 'pg_dump "$DBURL" -Fc --no-owner -n public -f /out/public.dump'
           # narių prisijungimai (auth) ir failų sąrašai (storage) – tik duomenys; jei nepavyktų, kopija vis tiek lieka
           docker run --rm -v "$PWD/out/db:/out" -e DBURL="$SUPABASE_DB_URL" postgres:17 \
             sh -c 'pg_dump "$DBURL" -Fc --no-owner --no-privileges --data-only -n auth -n storage -f /out/auth-storage.dump' \
