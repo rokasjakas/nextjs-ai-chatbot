@@ -95,6 +95,31 @@ for key, fn in TABS.items():
                   'tables': sorted(t), 'rpcs': sorted(r), 'fns': sorted(f), 'state': sorted(s),
                   'code': len(cl)}
 
+# the page's own buttons (with an id) – offered in the page builder as „program functions“: open the page, press it
+BTN = re.compile(r'<button\b([^>]*?)\bid="([A-Za-z][\w-]*)"([^>]*)>(.*?)</button>', re.S)
+DIALOG = re.compile(r'(Modal|Pop|Popup|Form|Ask|Confirm|Dialog|Preview|Picker|Sheet)$', re.I)
+GENERIC = re.compile(r'^(Atšaukti|Išsaugoti|Uždaryti|Baigta|Gerai|Taip|Ne|Atgal|Vėliau|Ištrinti|OK|Rodyti|Toliau|‹.*|✕.*)$', re.I)
+for key, fn in TABS.items():
+    if key not in pages:
+        continue
+    near = closure(fn, 2)
+    found = {}
+    for n in sorted(near, key=lambda x: (x != fn, x)):
+        if n != fn and DIALOG.search(n):
+            continue
+        for m in BTN.finditer(chunks.get(n, {}).get('code', '')):
+            bid = m.group(2)
+            lab = re.sub(r'\$\{[^}]*\}', '', m.group(4)); lab = re.split(r'<(?:small|br|span class="[^"]*(?:sub|hint|desc|note|d)\b)', lab)[0]
+            lab = re.sub(r'<[^>]+>', ' ', lab); lab = re.sub(r'\s+', ' ', lab).strip(' ·')
+            lab = re.sub(r'^[^\wĄČĘĖĮŠŲŪŽąčęėįšųūž+]+', '', lab).strip()
+            t = re.search(r'title="([^"$]*)"', m.group(1) + m.group(3))
+            lab = lab or (t.group(1) if t else '')
+            lab = re.sub(r'\s*\(\s*\)$', '', lab)
+            if len(lab) < 2 or GENERIC.match(lab) or bid in found or re.search(r'[`{}\]]', lab):
+                continue
+            found[bid] = [lab[:60], (t.group(1)[:120] if t else '')]
+    pages[key]['ui'] = [[k] + v for k, v in list(found.items())[:40]]
+
 # the server functions
 funcs = {}
 for name in sorted(os.listdir(fdir)):

@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-uu8obFZfYvkHUEEA/QiTgjhQ4mZVsnQ79VTMITA6Cz8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-71eL1Z+txv2FMe+CypQjU9oq0FlOanqUrHE74pv61RQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5384,7 +5384,7 @@ body .tabpanel.xg-panel.ev-full{padding-top:calc(10px + env(safe-area-inset-top,
 .sys-acts{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-left:auto;}
 .sys-acts .btn svg{width:15px;height:15px;vertical-align:-3px;}
 .sys-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:10px;align-items:start;}
-.sys-body.v-errors,.sys-body.v-cfg{grid-template-columns:minmax(0,1fr);}
+.sys-body.v-errors,.sys-body.v-cfg,.sys-body.v-pages{grid-template-columns:minmax(0,1fr);}
 .sys-map{position:relative;overflow:hidden;height:calc(100vh - 210px);min-height:440px;margin:0;padding:0;cursor:grab;touch-action:none;
   background-color:var(--bg-deep);background-image:linear-gradient(rgb(var(--hi-rgb) / .05) 1px, transparent 1px),linear-gradient(90deg, rgb(var(--hi-rgb) / .05) 1px, transparent 1px);background-size:24px 24px;}
 .sys-map.dragging{cursor:grabbing;}
@@ -5465,6 +5465,129 @@ body .tabpanel.xg-panel.ev-full{padding-top:calc(10px + env(safe-area-inset-top,
 .sysl .btn svg{width:14px;height:14px;vertical-align:-2px;}
 .sysl-acts{margin-top:4px;}
 .sysl-body > .btn{align-self:flex-start;}
+/* Konstruktorius: the pages and the editor */
+.cp-page{max-width:100%;}
+html.cp-editing .modal-backdrop{z-index:9500;} html.cp-editing #toast,body:has(.cpx-pop) #toast{z-index:9600;}
+.cp-host{position:relative;width:100%;}
+.cp-stage{position:relative;overflow:hidden;margin:0 auto;}
+.cp-wrap{position:absolute;left:0;top:0;overflow:hidden;}
+.cp-stage > .cp-wrap{left:50%;transform:translateX(-50%);}
+.cp-stage > .cp-wrap.cp-leaving{pointer-events:none;}
+.cp-frame{position:relative;transform-origin:0 0;background:var(--panel);color:var(--text);overflow:hidden;font-family:var(--font-body);}
+.cp-el{position:absolute;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-start;overflow:hidden;line-height:1.25;transition:transform .18s ease, filter .18s ease, box-shadow .18s ease;}
+.cpt-text{white-space:normal;word-break:break-word;}
+.cpt-button{justify-content:center;text-align:center;font-weight:700;background:var(--accent);color:var(--accent-ink);border-radius:8px;}
+.cp-click{cursor:pointer;}
+.cp-tx{display:block;width:100%;}
+.cpt-icon{justify-content:center;color:var(--accent);}
+.cpt-icon svg{width:100%;height:100%;}
+.cpt-image img{width:100%;height:100%;display:block;}
+.cp-ph{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:100%;color:var(--text-faint);font-size:14px;text-align:center;border:1px dashed var(--border-2);border-radius:inherit;}
+.cp-ph svg{width:22px;height:22px;}
+.cp-data{width:100%;height:100%;overflow:auto;align-self:stretch;}
+.cp-dh{font-weight:700;font-size:1.05em;margin-bottom:8px;}
+.cp-dl{list-style:none;margin:0;padding:0;}
+.cp-dl li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid rgb(var(--hi-rgb) / .08);}
+.cp-dl li span{opacity:.7;white-space:nowrap;}
+.cp-de{opacity:.6;}
+.cp-num{font-size:3em;font-weight:800;line-height:1;}
+.cp-numl{opacity:.75;margin-top:6px;}
+.cpt-embed{align-items:stretch;}
+.cp-if{width:100%;height:100%;border:0;background:var(--bg);}
+.cp-h-lift:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgb(0 0 0 / .3);}
+.cp-h-bright:hover{filter:brightness(1.15);}
+.cp-h-scale:hover{transform:scale(1.05);}
+.cp-h-glow:hover{box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent), 0 0 22px color-mix(in srgb, var(--accent) 55%, transparent);}
+.cpx-pop{position:fixed;inset:0;z-index:9200;display:flex;align-items:center;justify-content:center;}
+.cpx-pop-bd{position:absolute;inset:0;background:rgb(0 0 0 / .55);backdrop-filter:blur(3px);}
+.cpx-pop-box{position:relative;overflow:hidden;border-radius:12px;box-shadow:0 20px 60px rgb(0 0 0 / .45);}
+.cpx-pop-in .cp-frame{transform-origin:0 0;}
+/* editor */
+.cp-ed{position:fixed;inset:0;z-index:9000;background:var(--bg);color:var(--text);display:flex;flex-direction:column;font-size:13px;}
+.cpe-top{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--panel);flex-wrap:wrap;}
+.cpe-top .btn svg,.cpe-left .btn svg,.cpe-right .btn svg{width:15px;height:15px;vertical-align:-3px;}
+.cpe-pic{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:1px dashed var(--border-2);border-radius:6px;background:var(--panel-2);color:var(--accent);cursor:pointer;}
+.cpe-pic svg{width:20px;height:20px;}
+.cpe-title{font-size:16px;font-weight:700;width:240px;}
+.cpe-pub{display:inline-flex;align-items:center;gap:5px;color:var(--text-dim);}
+.cpe-sp{flex:1;}
+.cpe-main{flex:1;min-height:0;display:grid;grid-template-columns:230px minmax(0,1fr) 300px;}
+.cpe-left,.cpe-right{background:var(--panel);overflow:auto;}
+.cpe-left{border-right:1px solid var(--border);padding:8px;}
+.cpe-right{border-left:1px solid var(--border);padding:10px 12px;}
+.cpe-h{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);font-weight:700;margin:6px 2px 6px;}
+.cpe-h span{display:flex;gap:4px;text-transform:none;letter-spacing:0;}
+.cpe-h .btn{padding:3px 6px;min-height:0;font-size:11px;}
+.cpe-fr,.cpe-ly{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:5px;cursor:pointer;}
+.cpe-fr:hover,.cpe-ly:hover{background:rgb(var(--hi-rgb) / .06);}
+.cpe-fr.on,.cpe-ly.on{background:color-mix(in srgb, var(--accent) 18%, transparent);}
+.cpe-fr-i svg{width:15px;height:15px;color:var(--text-dim);vertical-align:-3px;}
+.cpe-fr-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cpe-start svg,.cpe-act svg{width:14px;height:14px;color:var(--accent);vertical-align:-2px;}
+.cpe-frames{margin-bottom:10px;}
+.cpe-center{display:flex;flex-direction:column;min-width:0;min-height:0;}
+.cpe-tools{display:flex;gap:4px;padding:6px 10px;border-bottom:1px solid var(--border);background:var(--panel);flex-wrap:wrap;}
+.cpe-tool{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--panel-2);color:var(--text);cursor:pointer;font:inherit;}
+.cpe-tool:hover{border-color:var(--accent);}
+.cpe-tool svg{width:17px;height:17px;}
+.cpe-canvas{flex:1;min-height:0;overflow:auto;padding:40px 30px;background-color:var(--bg-deep);background-image:radial-gradient(rgb(var(--hi-rgb) / .08) 1px, transparent 1px);background-size:16px 16px;}
+.cpe-zoomer{position:relative;margin:0 auto;}
+.cpe-fname{position:absolute;left:0;top:-20px;font-size:11.5px;color:var(--text-dim);white-space:nowrap;}
+.cpe-zoomer .cp-frame{box-shadow:0 0 0 1px var(--border-2), 0 10px 30px rgb(0 0 0 / .3);}
+.cpe-zoomer .cp-el{cursor:move;transition:none;}
+.cpe-zoomer .cp-el:hover{outline:calc(1px * var(--iz,1)) solid color-mix(in srgb, var(--accent) 60%, transparent);}
+.cpe-zoomer iframe{pointer-events:none;}
+.cpe-link{position:absolute;right:2px;top:2px;width:calc(16px * var(--iz,1));height:calc(16px * var(--iz,1));border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;}
+.cpe-link svg{width:70%;height:70%;}
+.cpe-sel{position:absolute;outline:calc(2px * var(--iz,1)) solid var(--accent);pointer-events:none;z-index:5;}
+.cpe-sel i{position:absolute;width:calc(9px * var(--iz,1));height:calc(9px * var(--iz,1));background:#fff;border:calc(1.5px * var(--iz,1)) solid var(--accent);pointer-events:auto;transform:translate(-50%,-50%);}
+.cpe-sel .h-nw{left:0;top:0;cursor:nwse-resize;} .cpe-sel .h-n{left:50%;top:0;cursor:ns-resize;} .cpe-sel .h-ne{left:100%;top:0;cursor:nesw-resize;}
+.cpe-sel .h-e{left:100%;top:50%;cursor:ew-resize;} .cpe-sel .h-se{left:100%;top:100%;cursor:nwse-resize;} .cpe-sel .h-s{left:50%;top:100%;cursor:ns-resize;}
+.cpe-sel .h-sw{left:0;top:100%;cursor:nesw-resize;} .cpe-sel .h-w{left:0;top:50%;cursor:ew-resize;}
+.cpe-dim{position:absolute;left:50%;top:100%;transform:translate(-50%, calc(8px * var(--iz,1))) scale(var(--iz,1));transform-origin:50% 0;background:var(--accent);color:var(--accent-ink);font-size:11px;padding:1px 6px;border-radius:4px;white-space:nowrap;}
+.cpe-guide{position:absolute;background:#FF2BD6;z-index:6;pointer-events:none;}
+.cpe-guide.v{top:0;bottom:0;width:calc(1px * var(--iz,1));}
+.cpe-guide.h{left:0;right:0;height:calc(1px * var(--iz,1));}
+.cpe-ph{display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px;margin-bottom:8px;}
+.cpe-ph svg{width:18px;height:18px;color:var(--accent);}
+.cpe-ph .btn{padding:3px 6px;min-height:0;}
+.cpe-sec{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);font-weight:700;margin:14px 0 6px;padding-top:10px;border-top:1px solid var(--border);}
+.cpe-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 8px;}
+.cpe-f{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.cpe-f.wide{grid-column:1 / -1;}
+.cpe-f > span:first-child{font-size:11.5px;color:var(--text-dim);}
+.cpe-f input[type="text"],.cpe-f input[type="number"],.cpe-f input[type="url"],.cpe-f select,.cpe-f textarea{width:100%;min-width:0;box-sizing:border-box;}
+.cpe-f input[type="checkbox"]{align-self:flex-start;}
+.cpe-col{display:flex;align-items:center;gap:4px;}
+.cpe-col input[type="color"]{width:100%;height:30px;padding:2px;border:1px solid var(--border-2);border-radius:4px;background:var(--panel-2);cursor:pointer;}
+.cpe-col input.unset{opacity:.35;}
+.cpe-x{border:0;background:none;color:var(--text-dim);cursor:pointer;padding:2px;}
+.cpe-x svg{width:14px;height:14px;}
+.cpe-btns{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:6px;}
+.cpe-btns input{flex:1;min-width:120px;}
+.cpe-tip{margin-top:12px;line-height:1.45;}
+.cpe-steps{margin:2px 0 0 18px;padding:0;font-size:12px;color:var(--text);}
+.cpe-roles{display:flex;flex-direction:column;gap:8px;}
+.cpe-prev{position:absolute;inset:0;z-index:5;background:var(--bg);display:flex;flex-direction:column;}
+.cpe-prev-bar{display:flex;align-items:center;gap:12px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--panel);flex-wrap:wrap;}
+.cpe-prev-bar b svg,.cpe-prev-bar .btn svg{width:15px;height:15px;vertical-align:-3px;}
+.cpe-prev-bar .btn{margin-left:auto;}
+.cpe-prev-body{flex:1;overflow:auto;padding:20px;}
+.cp-rec{position:fixed;inset:0;z-index:9300;background:var(--bg);display:flex;flex-direction:column;}
+.cp-rec-bar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:2px solid var(--accent);background:var(--panel);flex-wrap:wrap;}
+.cp-rec-bar svg{width:15px;height:15px;vertical-align:-3px;}
+.cp-rec-bar b svg{color:var(--danger);}
+.cp-rec-body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 260px;}
+.cp-rec-body iframe{width:100%;height:100%;border:0;background:var(--bg);}
+.cp-rec-list{margin:0;padding:10px 12px 10px 30px;overflow:auto;background:var(--panel);border-left:1px solid var(--border);font-size:12.5px;}
+.cp-rec-list li{margin-bottom:6px;}
+.cpx-list{display:flex;flex-direction:column;}
+.cp-li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.cp-li-i svg{width:26px;height:26px;color:var(--accent);}
+.cp-li-t{flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.cp-li-a{display:flex;gap:4px;flex-wrap:wrap;}
+.cp-li-a .btn svg,#cpNew svg{width:15px;height:15px;vertical-align:-3px;}
+.cp-pub{color:var(--ok);font-weight:700;}
 .sysc-card{margin:0 0 10px;padding:12px 14px;}
 .sysc-card .row .btn svg{width:15px;height:15px;vertical-align:-3px;}
 .sysc-h{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;}
@@ -13863,6 +13986,7 @@ const LOW_HIDDEN = new Set(['buy','stocktake']);    // everyone approved; chat f
 const HIDDEN_TABS = new Set(['projects']);
 function canView(tab){
   if(tab==='home') return true;
+  if(/^cp_/.test(tab)) return cpCanView(tab.slice(3));   // a page made in the Konstruktorius
   if(HIDDEN_TABS.has(tab)) return false;
   if(cfgOff(tab) && !(typeof sysCan==='function' && sysCan())) return false;   // turned off in Sistema → Nustatymai (the Super Admin still sees it)
   if(tab==='sort') return canView('load');
@@ -13883,6 +14007,7 @@ function canEdit(tab){
   if(tab==='gear') return canEdit('inventory');
   if(tab==='admin') return ACCESS.role==='admin' || isSuper();
   if(tab==='system') return sysCan();
+  if(/^cp_/.test(tab)) return true;   // a made page has nothing to change
   if(tab==='chat' || tab==='mail') return canView(tab);      // who may see the chat / mail may also write
   if(tab==='invoices') return canView(tab);                  // who sees Sąskaitos uploads own invoices (deciding stays with Admin+)
   if(tab==='creds') return canView(tab);
@@ -13933,6 +14058,7 @@ async function loadAccess(session){
   const { data: rows } = await permsQ;
   accCacheSet(session.user.id, prof, rows);
   accApplyPerms(rows);
+  cpLoad().catch(()=>{});   // the pages made in the Konstruktorius (menu buttons)
   return 'ok';
 }
 const ACC_CACHE = 'es-acc-cache';
@@ -22881,7 +23007,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v606';
+const APP_VER = 'v607';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -46396,8 +46522,8 @@ function renderSystemTab(){
   main.innerHTML = `<div class="sys-page">
     <div class="card sys-top">
       <div class="sys-title">${slIcon('hub')}<div><h2>Sistema</h2><div class="sys-faint" id="sysSum"></div></div></div>
-      <div class="sys-tabs seg">${[['map', 'Žemėlapis'], ['list', 'Sąrašas'], ['errors', 'Klaidos'], ['cfg', 'Nustatymai']].map(([v, l])=>`<button type="button" class="chip ${SYS.view===v ? 'active' : ''}" data-view="${v}">${esc(l)}<span class="sys-tab-n" data-n="${v}"></span></button>`).join('')}</div>
-      <input type="search" id="sysQ" class="sys-q" ${SYS.view==='cfg' ? 'hidden' : ''} placeholder="Ieškoti: puslapis, lentelė, funkcija…" value="${esc(SYS.q)}" autocomplete="off">
+      <div class="sys-tabs seg">${[['map', 'Žemėlapis'], ['list', 'Sąrašas'], ['errors', 'Klaidos'], ['cfg', 'Nustatymai'], ['pages', 'Puslapiai']].map(([v, l])=>`<button type="button" class="chip ${SYS.view===v ? 'active' : ''}" data-view="${v}">${esc(l)}<span class="sys-tab-n" data-n="${v}"></span></button>`).join('')}</div>
+      <input type="search" id="sysQ" class="sys-q" ${SYS.view==='cfg' || SYS.view==='pages' ? 'hidden' : ''} placeholder="Ieškoti: puslapis, lentelė, funkcija…" value="${esc(SYS.q)}" autocomplete="off">
       <span class="sys-acts">
         <button type="button" class="btn primary small" id="sysCheck" ${SYS.checking ? 'disabled' : ''}>${slIcon('refresh')} ${SYS.checking ? 'Tikrinama…' : 'Patikrinti viską'}</button>
         ${SYS.view==='map' ? `<span class="ev-zoom"><button type="button" class="btn small" id="sysZo" title="Tolinti">${slIcon('zoomout')}</button><b id="sysZv" title="Visas vaizdas">100 %</b><button type="button" class="btn small" id="sysZi" title="Artinti">${slIcon('zoomin')}</button></span>
@@ -46409,7 +46535,7 @@ function renderSystemTab(){
       ${SYS.view==='map' ? `<div class="sys-map card" id="sysMap"><div class="sys-layer" id="sysLayer"></div>
         <div class="sys-legend"><span class="st-ok"><span class="sys-dot"></span>veikia</span><span class="st-warn"><span class="sys-dot"></span>problemos</span><span class="st-err"><span class="sys-dot"></span>neveikia</span><span><span class="sys-dot"></span>netikrinta</span>
         <span class="sys-faint">· tempk foną – judink, ratukas – artink, tempk mazgą – perkelk</span></div></div>`
-      : SYS.view==='list' ? `<div class="sys-list card" id="sysList"></div>` : SYS.view==='cfg' ? `<div class="sys-cfg" id="sysCfg"></div>` : `<div class="sys-errs" id="sysErrs"></div>`}
+      : SYS.view==='list' ? `<div class="sys-list card" id="sysList"></div>` : SYS.view==='cfg' ? `<div class="sys-cfg" id="sysCfg"></div>` : SYS.view==='pages' ? `<div class="sys-cfg" id="sysPages"></div>` : `<div class="sys-errs" id="sysErrs"></div>`}
       ${SYS.view==='map' || SYS.view==='list' ? `<aside class="sys-side card" id="sysSide"></aside>` : ''}
     </div></div>`;
   sysWire();
@@ -46432,6 +46558,9 @@ function sysRender(first){
     sysHighlight();
   } else if(SYS.view==='list'){
     const el = document.getElementById('sysList'); if(el) el.innerHTML = sysListHtml(all);
+  } else if(SYS.view==='pages'){
+    const el = document.getElementById('sysPages'); if(el){ el.innerHTML = sysPagesHtml(); if(!el.dataset.wired){ el.dataset.wired = '1'; sysPagesWire(el); } }
+    if(first && !CP.loaded) cpLoad().then(()=>{ if(SYS.view==='pages') sysRender(); });
   } else if(SYS.view==='cfg'){
     if(first){ sysCfgWire(); sysCfgRender(); sysCfgLoadLog().then(()=>{ if(SYS.view==='cfg') sysCfgRender(); }); }
   } else {
@@ -46783,6 +46912,665 @@ function sysCfgWire(){
     if(un){ const r = (SYSC.log||[]).find(x=>String(x.id)===un.dataset.undo); if(!r) return;
       if(!await uiAsk('Grąžinti nustatymus, kokie buvo prieš šį pakeitimą?\n'+sysCfgDiff(r.prev, r.value, r.key), { yes:'Grąžinti', no:'Atšaukti', danger:false })) return;
       await sysCfgSave(r.key==='lists' ? sysLClean(r.prev||{}) : sysCfgClean(r.prev||{ tabs:{}, order:[] }), 'Grąžinta prieš '+new Date(r.at).toLocaleString('lt-LT'), r.key); }
+  });
+}
+/* ============================================================
+   Konstruktorius: pages built by the Super Admin (Sistema → Puslapiai), like a Figma prototype – frames (pages and
+   popups) with freely placed elements; a click on an element goes to another frame, opens a popup, opens a page of the
+   program or runs one of its functions (recorded clicks), with a transition. Stored in public.custom_pages.
+   doc = { frames:[{ id, name, kind:'page'|'popup', w, h, bg, els:[el] }], start }
+   el  = { id, type, name, x, y, w, h, text, s:{style}, icon, src, fit, data:{src, mode, limit}, embed:{tab, steps},
+           act:{ do, frame, tab, steps, url, msg, tr, ms }, hover }
+   ============================================================ */
+const CP = { list:[], loaded:false, err:'', run:null };
+const CP_TR = [['none', 'Be efekto'], ['fade', 'Išblukimas'], ['slide-left', 'Slinkti į kairę'], ['slide-right', 'Slinkti į dešinę'], ['slide-up', 'Iškilti iš apačios'], ['slide-down', 'Nusileisti iš viršaus'], ['zoom', 'Priartėjimas']];
+const CP_ACTS = [['', 'Nieko'], ['frame', 'Eiti į kadrą'], ['popup', 'Atidaryti popup'], ['close', 'Uždaryti popup'], ['back', 'Atgal'], ['tab', 'Atidaryti programos puslapį'], ['fn', 'Programos funkcija (paspaudimai)'], ['url', 'Atidaryti nuorodą'], ['toast', 'Rodyti pranešimą']];
+const CP_HOVER = [['', 'Nėra'], ['lift', 'Pakyla'], ['bright', 'Pašviesėja'], ['scale', 'Padidėja'], ['glow', 'Švytėjimas']];
+// the program's live data a „Duomenys“ element can show
+const CP_DATA = {
+  events_next:{ t:'Artimiausi renginiai', tab:'events', load:async ()=>{ if(canView('events')) try{ await evLoad(); }catch(e){}
+    const d = evToday(); return (EV.events||[]).filter(e=>e.kind!=='work' && (e.dateEnd||e.date||'')>=d).sort((a, b)=>(a.date||'')<(b.date||'') ? -1 : 1).map(e=>({ t:e.name||'(be pavadinimo)', s:evShortDate(e.date)+(e.location ? ' · '+e.location : '') })); } },
+  events_today:{ t:'Šiandienos renginiai', tab:'events', load:async ()=>{ if(canView('events')) try{ await evLoad(); }catch(e){}
+    const d = evToday(); return (EV.events||[]).filter(e=>(e.date||'')<=d && (e.dateEnd||e.date||'')>=d).map(e=>({ t:e.name||e.title||'(be pavadinimo)', s:e.kind==='work' ? 'sandėlio darbai' : (e.location||'') })); } },
+  tasks_mine:{ t:'Mano užduotys', load:async ()=>(TK.list||[]).filter(t=>!t.done && !t.done_at).sort((a, b)=>String(a.due_at||'9')<String(b.due_at||'9') ? -1 : 1).map(t=>({ t:t.title||'', s:t.due_at ? new Date(t.due_at).toLocaleDateString('lt-LT') : '' })) },
+  veh_repair:{ t:'Transportas remonte', tab:'fleet', load:async ()=>(STATE.vehicles||[]).filter(v=>vehInRepair(v, evToday())).map(v=>({ t:v.name||'', s:'remonte' })) },
+  vehicles:{ t:'Transportas', tab:'fleet', load:async ()=>(STATE.vehicles||[]).map(v=>({ t:v.name||'', s:vehInRepair(v, evToday()) ? 'remonte' : '' })) },
+  team_online:{ t:'Prisijungę nariai', tab:'members', load:async ()=>{ try{ if(!TEAM.members || !TEAM.members.length) await teamLoadMembers(); }catch(e){}
+    return (TEAM.members||[]).filter(m=>teamOnline(m.id)).map(m=>({ t:m.full_name || [m.first_name, m.last_name].filter(Boolean).join(' ') || m.email || '', s:'' })); } },
+  projects:{ t:'Projektai', tab:'newproj', load:async ()=>(STATE.projects||[]).slice(-50).reverse().map(p=>({ t:p.name||p.title||'', s:p.date||'' })) },
+  today:{ t:'Šiandiena', load:async ()=>{ const n = new Date(); return [{ t:n.toLocaleDateString('lt-LT', { weekday:'long', day:'numeric', month:'long' }), s:n.toLocaleTimeString('lt-LT', { hour:'2-digit', minute:'2-digit' }) }]; } },
+};
+function cpCanView(id){
+  const p = CP.list.find(x=>x.id===id); if(!p) return false;
+  if(isSuper()) return true;
+  if(!p.published) return false;
+  return ACCESS.role==='admin' || !(p.roles||[]).length || (p.roles||[]).includes(ACCESS.role);
+}
+async function cpLoad(){
+  const sb = getSb(); if(!sb) return;
+  const { data, error } = await sb.from('custom_pages').select('*').order('sort').order('created_at');
+  if(error){ CP.err = /42P01|PGRST205/.test(error.code||'') ? 'nosql' : error.message; CP.loaded = true; return; }
+  CP.list = data||[]; CP.err = ''; CP.loaded = true;
+  cpNav();
+  // a reload (or a quick window) on one of these pages: back to it now that it is known
+  let want = ''; try{ want = new URLSearchParams(location.search).get('langas') || sessionStorage.getItem('esTab') || ''; }catch(e){}
+  if(/^cp_/.test(want) && currentTab==='home' && canView(want)) setTab(want);
+  if(currentTab==='system' && typeof sysRender==='function') sysRender(true);
+}
+// the menu buttons of the pages (before „Mano erdvė“)
+function cpNav(){
+  const nav = document.getElementById('tabNav'); if(!nav) return;
+  nav.querySelectorAll('.rail-btn[data-cp]').forEach(b=>b.remove());
+  Object.keys(TABS).forEach(k=>{ if(/^cp_/.test(k)) delete TABS[k]; });
+  const prof = nav.querySelector('.rail-btn[data-tab="profile"]');
+  CP.list.forEach(p=>{
+    const key = 'cp_'+p.id; TABS[key] = ()=>cpRender(p.id);
+    const b = document.createElement('button'); b.className = 'rail-btn'; b.dataset.mobile = 'more'; b.dataset.tab = key; b.dataset.label = p.title; b.dataset.cp = '1';
+    b.innerHTML = `<span class="rail-tip">${esc(p.title)}</span>${slIcon(p.icon && SL[p.icon] ? p.icon : 'gridview')}`;
+    b.addEventListener('click', ()=>setTab(key));
+    b.classList.toggle('hidden', !canView(key));
+    nav.insertBefore(b, prof);
+  });
+  try{ navApplyFavs(); }catch(e){}
+}
+/* ---------- drawing (the same in the editor and on the page) ---------- */
+function cpColor(v){ return /^#[0-9a-fA-F]{6}$/.test(v||'') ? v : ''; }
+function cpElStyle(el){
+  const s = el.s||{}, st = [`left:${el.x|0}px`, `top:${el.y|0}px`, `width:${Math.max(4, el.w|0)}px`, `height:${Math.max(4, el.h|0)}px`];
+  if(cpColor(s.bg)) st.push('background:'+s.bg); if(cpColor(s.color)) st.push('color:'+s.color);
+  if(s.fs) st.push(`font-size:${+s.fs}px`); if(s.fw) st.push(`font-weight:${+s.fw}`);
+  if(s.align) st.push(`text-align:${s.align};justify-content:${s.align==='left' ? 'flex-start' : s.align==='right' ? 'flex-end' : 'center'}`);
+  if(s.va) st.push(`align-items:${s.va==='top' ? 'flex-start' : s.va==='bottom' ? 'flex-end' : 'center'}`);
+  if(s.r!=null && s.r!=='') st.push(`border-radius:${+s.r}px`);
+  if(+s.bw) st.push(`border:${+s.bw}px solid ${cpColor(s.bc)||'currentColor'}`);
+  if(s.op!=null && s.op!=='' && +s.op<100) st.push(`opacity:${(+s.op)/100}`);
+  if(s.sh) st.push('box-shadow:0 8px 24px rgb(0 0 0 / .28)');
+  if(s.pad!=null && s.pad!=='') st.push(`padding:${+s.pad}px`);
+  if(s.rot) st.push(`transform:rotate(${+s.rot}deg)`);
+  return st.join(';');
+}
+function cpElInner(el, mode){
+  const t = esc(el.text||'').replace(/\n/g, '<br>');
+  switch(el.type){
+    case 'text': case 'button': return `<span class="cp-tx">${t}</span>`;
+    case 'icon': return SL[el.icon] ? slIcon(el.icon) : slIcon('star');
+    case 'image': return el.src ? `<img src="${esc(el.src)}" alt="" draggable="false" style="object-fit:${el.fit==='contain' ? 'contain' : 'cover'}">` : `<span class="cp-ph">${slIcon('image')} Paveikslėlis</span>`;
+    case 'data': { const D = CP_DATA[(el.data||{}).src]; return `<div class="cp-data" data-cpd>${D ? (mode==='edit' ? `<span class="cp-ph">${slIcon('database')} ${esc(D.t)}</span>` : '<span class="cp-ph">Kraunama…</span>') : '<span class="cp-ph">Pasirink duomenis</span>'}</div>`; }
+    case 'embed': { const k = (el.embed||{}).tab, b = k && document.querySelector('#tabNav .rail-btn[data-tab="'+k+'"]');
+      return mode==='edit' || !k ? `<span class="cp-ph">${slIcon('wspace')} ${esc(b ? b.dataset.label : 'Programos puslapis')}${(el.embed||{}).steps && el.embed.steps.length ? ' · '+el.embed.steps.length+' paspaud.' : ''}</span>`
+        : `<iframe class="cp-if" src="${esc(wsSrc(k))}" loading="lazy"></iframe>`; }
+    default: return '';
+  }
+}
+function cpElHtml(el, mode){
+  const cls = ['cp-el', 'cpt-'+el.type, el.hover ? 'cp-h-'+el.hover : '', el.act && el.act.do && mode!=='edit' ? 'cp-click' : ''].filter(Boolean).join(' ');
+  return `<div class="${cls}" data-el="${esc(el.id)}" style="${cpElStyle(el)}">${cpElInner(el, mode)}</div>`;
+}
+function cpFrameHtml(f, mode){
+  return `<div class="cp-frame ${f.kind==='popup' ? 'is-pop' : ''}" data-fr="${esc(f.id)}" style="width:${f.w}px;height:${f.h}px;${cpColor(f.bg) ? 'background:'+f.bg : ''}">${(f.els||[]).map(el=>cpElHtml(el, mode)).join('')}</div>`;
+}
+/* ---------- running a page ---------- */
+function cpRender(id){
+  const p = CP.list.find(x=>x.id===id), main = document.getElementById('main');
+  if(!p){ main.innerHTML = '<div class="card empty-state">Puslapis nerastas.</div>'; return; }
+  main.innerHTML = `<div class="cp-page"><div class="cp-host" id="cpHost"></div></div>`;
+  cpMount(document.getElementById('cpHost'), p.doc||{});
+}
+// mount a document into a box: frames, popups, the history for „Atgal“
+function cpMount(host, doc){
+  const frames = doc.frames||[]; if(!frames.length){ host.innerHTML = '<div class="card empty-state">Šis puslapis dar tuščias.</div>'; return null; }
+  const R = { host, doc, stack:[], pops:[] };
+  host.innerHTML = `<div class="cp-stage"></div>`; host._cp = R;
+  const start = frames.find(f=>f.id===doc.start && f.kind!=='popup') || frames.find(f=>f.kind!=='popup') || frames[0];
+  cpGo(R, start.id, 'none', 0, true);
+  if(!host._cpRO && window.ResizeObserver){ host._cpRO = new ResizeObserver(()=>cpFit(R)); host._cpRO.observe(host); }
+  host.addEventListener('click', e=>{ const el = e.target.closest('.cp-el.cp-click'); if(!el || !host.contains(el)) return; const f = el.closest('.cp-frame'), fr = R.doc.frames.find(x=>x.id===f.dataset.fr);
+    const d = fr && (fr.els||[]).find(x=>x.id===el.dataset.el); if(d) cpDo(R, d.act||{}); });
+  return R;
+}
+function cpScaleFor(f, box){ const w = box.clientWidth || 1000; return Math.min(1, w/f.w); }
+function cpFit(R){
+  const st = R.host.querySelector('.cp-stage'), cur = R.host.querySelector('.cp-stage > .cp-wrap:last-child'); if(!st || !cur) return;
+  const f = R.doc.frames.find(x=>x.id===cur.dataset.fr); if(!f) return;
+  const k = cpScaleFor(f, R.host); st.style.height = Math.ceil(f.h*k)+'px';
+  R.host.querySelectorAll('.cp-stage > .cp-wrap').forEach(w=>{ const fx = R.doc.frames.find(x=>x.id===w.dataset.fr); if(fx){ const kk = cpScaleFor(fx, R.host); w.firstElementChild.style.transform = `scale(${kk})`; w.style.width = Math.ceil(fx.w*kk)+'px'; w.style.height = Math.ceil(fx.h*kk)+'px'; } });
+  R.pops.forEach(p=>cpFitPop(p));
+}
+const CP_KF = {
+  fade:[[{ opacity:0 }, { opacity:1 }], [{ opacity:1 }, { opacity:0 }]],
+  'slide-left':[[{ transform:'translateX(100%)' }, { transform:'none' }], [{ transform:'none' }, { transform:'translateX(-100%)' }]],
+  'slide-right':[[{ transform:'translateX(-100%)' }, { transform:'none' }], [{ transform:'none' }, { transform:'translateX(100%)' }]],
+  'slide-up':[[{ transform:'translateY(100%)' }, { transform:'none' }], [{ transform:'none' }, { transform:'translateY(-30%)', opacity:0 }]],
+  'slide-down':[[{ transform:'translateY(-100%)' }, { transform:'none' }], [{ transform:'none' }, { transform:'translateY(30%)', opacity:0 }]],
+  zoom:[[{ transform:'scale(.85)', opacity:0 }, { transform:'none', opacity:1 }], [{ opacity:1 }, { opacity:0 }]],
+};
+const CP_BACK = { 'slide-left':'slide-right', 'slide-right':'slide-left', 'slide-up':'slide-down', 'slide-down':'slide-up', fade:'fade', zoom:'fade', none:'none' };
+function cpGo(R, frameId, tr, ms, first){
+  const f = R.doc.frames.find(x=>x.id===frameId && x.kind!=='popup'); if(!f) return;
+  const st = R.host.querySelector('.cp-stage'), old = st.querySelector('.cp-wrap:last-child');
+  const w = document.createElement('div'); w.className = 'cp-wrap'; w.dataset.fr = f.id; w.innerHTML = cpFrameHtml(f, 'run'); st.appendChild(w);
+  if(!first) R.stack.push({ id:old ? old.dataset.fr : '', tr });
+  cpFit(R); cpFillData(w, R);
+  const anim = !first && tr && tr!=='none' && CP_KF[tr] && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(old){ if(anim){ const d = Math.max(80, +ms||300); old.classList.add('cp-leaving'); w.animate(CP_KF[tr][0], { duration:d, easing:'cubic-bezier(.2,.7,.2,1)' });
+      old.animate(CP_KF[tr][1], { duration:d, easing:'cubic-bezier(.2,.7,.2,1)' }).onfinish = ()=>old.remove(); } else old.remove(); }
+}
+function cpPopup(R, frameId, tr, ms){
+  const f = R.doc.frames.find(x=>x.id===frameId); if(!f) return;
+  const o = document.createElement('div'); o.className = 'cpx-pop'; o.innerHTML = `<div class="cpx-pop-bd"></div><div class="cpx-pop-box" data-fr="${esc(f.id)}"><div class="cpx-pop-in">${cpFrameHtml(f, 'run')}</div></div>`;
+  document.body.appendChild(o); const P = { o, f, tr }; R.pops.push(P); cpFitPop(P); cpFillData(o, R);
+  o.querySelector('.cpx-pop-bd').onclick = ()=>cpClosePop(R);
+  o.addEventListener('click', e=>{ const el = e.target.closest('.cp-el.cp-click'); if(!el) return; const d = (f.els||[]).find(x=>x.id===el.dataset.el); if(d) cpDo(R, d.act||{}); });
+  const d = Math.max(80, +ms||260), k = CP_KF[tr && tr!=='none' ? tr : 'zoom'];
+  o.querySelector('.cpx-pop-bd').animate([{ opacity:0 }, { opacity:1 }], { duration:d });
+  if(tr!=='none') o.querySelector('.cpx-pop-box').animate(k[0], { duration:d, easing:'cubic-bezier(.2,.7,.2,1)' });
+}
+function cpFitPop(P){
+  const k = Math.min(1, (innerWidth-24)/P.f.w, (innerHeight-24)/P.f.h), box = P.o.querySelector('.cpx-pop-box');
+  box.style.width = Math.ceil(P.f.w*k)+'px'; box.style.height = Math.ceil(P.f.h*k)+'px'; box.querySelector('.cp-frame').style.transform = `scale(${k})`;
+}
+function cpClosePop(R){
+  const P = R.pops.pop(); if(!P) return;
+  const a = P.o.querySelector('.cpx-pop-box').animate([{ opacity:1 }, { opacity:0, transform:'scale(.96)' }], { duration:160 });
+  P.o.querySelector('.cpx-pop-bd').animate([{ opacity:1 }, { opacity:0 }], { duration:160 }); a.onfinish = ()=>P.o.remove();
+}
+function cpCloseAll(R){ while(R && R.pops.length){ const P = R.pops.pop(); P.o.remove(); } }
+async function cpDo(R, a){
+  const tr = a.tr||'fade', ms = a.ms||300;
+  switch(a.do){
+    case 'frame': cpCloseAll(R); cpGo(R, a.frame, tr, ms); break;
+    case 'popup': cpPopup(R, a.frame, a.tr||'zoom', ms); break;
+    case 'close': cpClosePop(R); break;
+    case 'back': if(R.pops.length) cpClosePop(R); else { const b = R.stack.pop(); if(b && b.id){ cpGo(R, b.id, CP_BACK[b.tr]||'fade', ms); R.stack.pop(); } } break;
+    case 'tab': cpCloseAll(R); if(R.preview){ toast('Peržiūroje: būtų atidarytas puslapis „'+cpTabLabel(a.tab)+'“'); break; } setTab(a.tab); break;
+    case 'fn': cpCloseAll(R); if(R.preview){ toast('Peržiūroje: būtų atlikta funkcija „'+(a.label||'paspaudimai')+'“'); break; } await cpPlay(a.steps||[], a.label); break;
+    case 'url': if(/^https?:\/\//i.test(a.url||'')) window.open(a.url, '_blank', 'noopener'); break;
+    case 'toast': if(a.msg) toast(a.msg); break;
+  }
+}
+function cpTabLabel(k){ const b = document.querySelector('#tabNav .rail-btn[data-tab="'+k+'"]'); return b ? b.dataset.label : k; }
+// the „Duomenys“ elements: the program's data, now
+function cpFillData(root, R){
+  // a program page inside an element: open it, then replay the recorded clicks inside it (a sub-page)
+  root.querySelectorAll('iframe.cp-if').forEach(fr=>{ const elDiv = fr.closest('.cp-el'), frEl = fr.closest('[data-fr]');
+    const frame = R.doc.frames.find(f=>f.id===frEl.dataset.fr), el = frame && (frame.els||[]).find(x=>x.id===elDiv.dataset.el);
+    const steps = el && el.embed && el.embed.steps; if(steps && steps.length) fr.addEventListener('load', ()=>setTimeout(()=>{ try{ cpPlay(steps.filter(s=>s.sel || s.text), '', fr.contentWindow, true); }catch(e){} }, 900), { once:true }); });
+  root.querySelectorAll('.cp-data').forEach(async box=>{
+    const elDiv = box.closest('.cp-el'), fr = box.closest('[data-fr]'); if(!elDiv || !fr) return;
+    const frame = R.doc.frames.find(f=>f.id===fr.dataset.fr), el = frame && (frame.els||[]).find(x=>x.id===elDiv.dataset.el); if(!el) return;
+    const d = el.data||{}, D = CP_DATA[d.src]; if(!D){ box.innerHTML = ''; return; }
+    let rows = []; try{ rows = await D.load(); }catch(e){ rows = []; }
+    const lim = Math.max(1, +d.limit||5);
+    if(d.mode==='count') box.innerHTML = `<div class="cp-num">${rows.length}</div>${d.title!==false ? `<div class="cp-numl">${esc(d.label||D.t)}</div>` : ''}`;
+    else box.innerHTML = (d.label!=='' ? `<div class="cp-dh">${esc(d.label||D.t)}</div>` : '') + (rows.length ? `<ul class="cp-dl">${rows.slice(0, lim).map(r=>`<li><b>${esc(r.t)}</b>${r.s ? `<span>${esc(r.s)}</span>` : ''}</li>`).join('')}</ul>` : '<div class="cp-de">Nėra</div>');
+  });
+}
+/* ---------- program functions: recorded clicks played back in the program ---------- */
+function cpFind(doc, st){
+  if(st.sel){ try{ const e = doc.querySelector(st.sel); if(e && e.offsetParent!==null) return e; }catch(_){} }
+  if(st.text){ const want = normalizeText(st.text);
+    return [...doc.querySelectorAll('button, a, [role="button"], .chip, .tab, [data-tab], [data-view], label, summary')].find(e=>e.offsetParent!==null && normalizeText(e.textContent||'').trim()===want) || null; }
+  return null;
+}
+async function cpWaitFind(doc, st, ms){
+  const t0 = Date.now(); let e = null;
+  while(!(e = cpFind(doc, st)) && Date.now()-t0 < (ms||4000)) await new Promise(r=>setTimeout(r, 120));
+  return e;
+}
+async function cpPlay(steps, label, win, quiet){
+  win = win || window; const doc = win.document;
+  for(const st of steps){
+    if(st.tab && win.esCurTab!==st.tab && typeof win.setTab==='function'){ if(!win.canView(st.tab)){ toast('Neturi prieigos prie „'+cpTabLabel(st.tab)+'“.'); return false; } win.setTab(st.tab); await new Promise(r=>setTimeout(r, 250)); }
+    if(!st.sel && !st.text) continue;
+    const e = await cpWaitFind(doc, st);
+    if(!e){ if(!quiet) toast('Funkcijos „'+(label||st.text||'')+'“ šiuo metu nerasta – gal pasikeitė puslapis ar neturi teisės.'); return false; }
+    e.scrollIntoView({ block:'nearest' }); e.click(); await new Promise(r=>setTimeout(r, 300));
+  }
+  return true;
+}
+/* ---------- Konstruktorius: the editor (Figma-like: frames on the left, the canvas, properties and prototype on the right) ---------- */
+const CPE = { p:null, doc:null, fid:null, sel:null, z:1, hist:[], fut:[], dirty:false, typing:0, guides:[] };
+const CP_SIZES = [['1280x800', 'Kompiuteris 1280×800'], ['1440x900', 'Didelis ekranas 1440×900'], ['1024x768', 'Planšetė 1024×768'], ['390x844', 'Telefonas 390×844'], ['520x360', 'Popup 520×360'], ['720x480', 'Popup 720×480']];
+const CP_TYPE_L = { text:'Tekstas', button:'Mygtukas', rect:'Forma', image:'Paveikslėlis', icon:'Ikona', data:'Duomenys', embed:'Programos puslapis' };
+const CP_TYPE_I = { text:'sortlines', button:'addbox', rect:'grid', image:'image', icon:'star', data:'database', embed:'wspace' };
+const CP_NEW = {
+  text:{ w:360, h:56, text:'Tekstas', s:{ fs:28, fw:700, align:'left' } },
+  button:{ w:200, h:48, text:'Mygtukas', s:{ bg:'#F35E7D', color:'#FFFFFF', fs:16, fw:700, r:8, align:'center' }, hover:'lift' },
+  rect:{ w:320, h:200, s:{ bg:'#2A2A2A', r:12 } },
+  image:{ w:360, h:240, s:{ r:12 }, fit:'cover' },
+  icon:{ w:56, h:56, icon:'star', s:{ color:'#F35E7D' } },
+  data:{ w:380, h:280, data:{ src:'events_next', mode:'list', limit:5 }, s:{ bg:'#1F1F1F', color:'#F5F5F5', r:12, pad:16 } },
+  embed:{ w:900, h:560, embed:{ tab:'events', steps:[] }, s:{ r:8, bw:1, bc:'#3A3A3A' } },
+};
+function cpNewFrame(kind, name){ return { id:uid('fr'), name, kind, w:kind==='popup' ? 520 : 1280, h:kind==='popup' ? 360 : 800, bg:'', els:[] }; }
+function cpNewDoc(){ const f = cpNewFrame('page', 'Pradžia'); return { frames:[f], start:f.id }; }
+const edF = ()=>CPE.doc.frames.find(f=>f.id===CPE.fid) || CPE.doc.frames[0];
+const edEl = ()=>CPE.sel ? (edF().els||[]).find(e=>e.id===CPE.sel) : null;
+function edSnap(){ CPE.hist.push(JSON.stringify({ doc:CPE.doc, fid:CPE.fid, sel:CPE.sel })); if(CPE.hist.length>80) CPE.hist.shift(); CPE.fut = []; CPE.dirty = true; }
+// one step in the history for a burst of typing (not every letter)
+function edSnapTyping(){ const n = Date.now(); if(n-CPE.typing>900) edSnap(); CPE.typing = n; CPE.dirty = true; }
+function edUndo(back){
+  const from = back ? CPE.hist : CPE.fut, to = back ? CPE.fut : CPE.hist; if(!from.length) return;
+  to.push(JSON.stringify({ doc:CPE.doc, fid:CPE.fid, sel:CPE.sel })); const s = JSON.parse(from.pop());
+  CPE.doc = s.doc; CPE.fid = s.fid; CPE.sel = s.sel; CPE.dirty = true; cpEdDraw();
+}
+async function cpEdit(p){
+  if(matchMedia('(max-width:900px)').matches){ toast('Konstruktorius veikia kompiuteryje (platesniame ekrane).'); return; }
+  try{ await sysLoadMap(); }catch(e){}
+  CPE.p = p ? JSON.parse(JSON.stringify(p)) : { id:null, title:'Naujas puslapis', icon:'gridview', roles:[], published:false, doc:null };
+  CPE.doc = CPE.p.doc && CPE.p.doc.frames && CPE.p.doc.frames.length ? CPE.p.doc : cpNewDoc();
+  CPE.fid = CPE.doc.start || CPE.doc.frames[0].id; CPE.sel = null; CPE.hist = []; CPE.fut = []; CPE.dirty = !p; CPE.z = 0;
+  let o = document.getElementById('cpEd'); if(o) o.remove();
+  o = document.createElement('div'); o.id = 'cpEd'; o.className = 'cp-ed'; document.body.appendChild(o);
+  document.documentElement.classList.add('pop-lock', 'cp-editing');
+  cpEdDraw(); cpEdFitZoom();
+  document.addEventListener('keydown', cpEdKey, true);
+}
+async function cpEdClose(force){
+  if(!force && CPE.dirty && !await uiAsk('Yra neišsaugotų pakeitimų. Uždaryti jų neišsaugojus?', { yes:'Uždaryti', no:'Grįžti', danger:true })) return;
+  document.removeEventListener('keydown', cpEdKey, true);
+  const o = document.getElementById('cpEd'); if(o) o.remove(); document.documentElement.classList.remove('pop-lock', 'cp-editing');
+  if(currentTab==='system') sysRender(true);
+}
+function cpEdDraw(){
+  const o = document.getElementById('cpEd'); if(!o) return;
+  const rl = (CPE.p.roles||[]).length ? CPE.p.roles.map(r=>(ACCESS_ROLES.find(x=>x.v===r)||{ label:r }).label).join(', ') : 'Visiems';
+  o.innerHTML = `<div class="cpe-top">
+      <button type="button" class="btn small" id="cpeClose" title="Uždaryti (Esc)">${slIcon('close')}</button>
+      <button type="button" class="cpe-pic" id="cpeIcon" title="Puslapio ikona meniu">${slIcon(SL[CPE.p.icon] ? CPE.p.icon : 'gridview')}</button>
+      <input type="text" id="cpeTitle" class="cpe-title" maxlength="60" value="${esc(CPE.p.title)}" aria-label="Puslapio pavadinimas">
+      <button type="button" class="btn small" id="cpeRoles" title="Kam rodomas meniu">${slIcon('users')} ${esc(rl)}</button>
+      <label class="cpe-pub" title="Paskelbtas – matomas meniu (pagal roles). Nepaskelbtą mato tik Super Admin."><input type="checkbox" id="cpePub" ${CPE.p.published ? 'checked' : ''}> Paskelbtas</label>
+      <span class="cpe-sp"></span>
+      <button type="button" class="btn small" id="cpeUndo" title="Atšaukti (Ctrl+Z)">${slIcon('undo')}</button><button type="button" class="btn small" id="cpeRedo" title="Grąžinti (Ctrl+Shift+Z)">${slIcon('redo')}</button>
+      <span class="ev-zoom"><button type="button" class="btn small" id="cpeZo">${slIcon('zoomout')}</button><b id="cpeZv" title="Talpinti">100 %</b><button type="button" class="btn small" id="cpeZi">${slIcon('zoomin')}</button></span>
+      <button type="button" class="btn small" id="cpePlay" title="Išbandyti puslapį kaip nariai jį matys">${slIcon('play')} Peržiūra</button>
+      <button type="button" class="btn primary small" id="cpeSave" title="Ctrl+S">${slIcon('save')} Išsaugoti</button>
+    </div>
+    <div class="cpe-main">
+      <aside class="cpe-left">
+        <div class="cpe-h">Kadrai<span><button type="button" class="btn small" data-addf="page" title="Naujas kadras (puslapis)">${slIcon('plus')} Puslapis</button><button type="button" class="btn small" data-addf="popup" title="Naujas popup langas">${slIcon('plus')} Popup</button></span></div>
+        <div class="cpe-frames" id="cpeFrames"></div>
+        <div class="cpe-h">Sluoksniai</div>
+        <div class="cpe-layers" id="cpeLayers"></div>
+      </aside>
+      <div class="cpe-center">
+        <div class="cpe-tools">${Object.keys(CP_NEW).map(t=>`<button type="button" class="cpe-tool" data-add="${t}" title="Įterpti: ${esc(CP_TYPE_L[t])}">${slIcon(CP_TYPE_I[t])}<span>${esc(CP_TYPE_L[t])}</span></button>`).join('')}</div>
+        <div class="cpe-canvas" id="cpeCanvas"><div class="cpe-zoomer" id="cpeZoomer"></div></div>
+      </div>
+      <aside class="cpe-right" id="cpeProps"></aside>
+    </div>`;
+  cpEdWire(o); cpEdPaint();
+}
+function cpEdPaint(){ cpEdFrames(); cpEdLayers(); cpEdCanvas(); cpEdProps(); }
+function cpEdFrames(){
+  const box = document.getElementById('cpeFrames'); if(!box) return;
+  box.innerHTML = CPE.doc.frames.map(f=>`<div class="cpe-fr ${f.id===CPE.fid ? 'on' : ''}" data-f="${esc(f.id)}">
+    <span class="cpe-fr-i">${slIcon(f.kind==='popup' ? 'selwin' : 'screen')}</span><span class="cpe-fr-n">${esc(f.name)}</span>
+    ${CPE.doc.start===f.id ? `<span class="cpe-start" title="Pradinis kadras">${slIcon('flag')}</span>` : ''}</div>`).join('');
+}
+function cpEdLayers(){
+  const box = document.getElementById('cpeLayers'); if(!box) return; const els = (edF().els||[]).slice().reverse();
+  box.innerHTML = els.length ? els.map(e=>`<div class="cpe-ly ${e.id===CPE.sel ? 'on' : ''}" data-l="${esc(e.id)}"><span class="cpe-fr-i">${slIcon(CP_TYPE_I[e.type]||'grid')}</span><span class="cpe-fr-n">${esc(e.name || (e.text ? String(e.text).slice(0, 30) : CP_TYPE_L[e.type]))}</span>${e.act && e.act.do ? `<span class="cpe-act" title="Turi veiksmą">${slIcon('link')}</span>` : ''}</div>`).join('')
+    : '<div class="sys-faint" style="padding:6px 8px;">Tuščia – įterpk elementą viršuje.</div>';
+}
+function cpEdCanvas(){
+  const zm = document.getElementById('cpeZoomer'); if(!zm) return; const f = edF(), z = CPE.z||1;
+  zm.style.width = Math.ceil(f.w*z)+'px'; zm.style.height = Math.ceil(f.h*z)+'px';
+  zm.innerHTML = `<div class="cpe-fname">${esc(f.name)} · ${f.w}×${f.h}${f.kind==='popup' ? ' · popup' : ''}</div>` + cpFrameHtml(f, 'edit');
+  const fr = zm.querySelector('.cp-frame'); fr.style.transform = `scale(${z})`; fr.style.setProperty('--iz', 1/z);
+  (f.els||[]).forEach(e=>{ if(e.act && e.act.do){ const d = fr.querySelector('[data-el="'+CSS.escape(e.id)+'"]'); if(d) d.insertAdjacentHTML('beforeend', `<span class="cpe-link">${slIcon('link')}</span>`); } });
+  cpEdSelBox();
+  const zv = document.getElementById('cpeZv'); if(zv) zv.textContent = Math.round(z*100)+' %';
+}
+function cpEdSelBox(){
+  const fr = document.querySelector('#cpeZoomer .cp-frame'); if(!fr) return;
+  fr.querySelectorAll('.cpe-sel, .cpe-guide').forEach(x=>x.remove());
+  const e = edEl(); if(e){
+    const b = document.createElement('div'); b.className = 'cpe-sel'; b.style.cssText = `left:${e.x}px;top:${e.y}px;width:${e.w}px;height:${e.h}px`;
+    b.innerHTML = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].map(h=>`<i data-h="${h}" class="h-${h}"></i>`).join('') + `<span class="cpe-dim">${e.w|0} × ${e.h|0}</span>`;
+    fr.appendChild(b);
+  }
+  (CPE.guides||[]).forEach(g=>{ const l = document.createElement('div'); l.className = 'cpe-guide '+(g.v ? 'v' : 'h'); l.style.cssText = g.v ? `left:${g.p}px` : `top:${g.p}px`; fr.appendChild(l); });
+}
+function cpEdPaintEl(e){
+  const d = document.querySelector('#cpeZoomer .cp-el[data-el="'+CSS.escape(e.id)+'"]'); if(!d){ cpEdCanvas(); return; }
+  const n = document.createElement('div'); n.innerHTML = cpElHtml(e, 'edit'); const nd = n.firstElementChild;
+  if(e.act && e.act.do) nd.insertAdjacentHTML('beforeend', `<span class="cpe-link">${slIcon('link')}</span>`);
+  d.replaceWith(nd); cpEdSelBox();
+}
+function cpEdFitZoom(){
+  const c = document.getElementById('cpeCanvas'); if(!c) return; const f = edF();
+  CPE.z = Math.max(.15, Math.min(1, (c.clientWidth-60)/f.w, (c.clientHeight-70)/f.h)); cpEdCanvas();
+}
+/* ---------- properties ---------- */
+function cpEdField(label, html, wide){ return `<label class="cpe-f ${wide ? 'wide' : ''}"><span>${esc(label)}</span>${html}</label>`; }
+function cpEdNum(k, v, min, max, step){ return `<input type="number" data-k="${k}" value="${v==null ? '' : esc(v)}" ${min!=null ? 'min="'+min+'"' : ''} ${max!=null ? 'max="'+max+'"' : ''} step="${step||1}">`; }
+function cpEdCol(k, v){ return `<span class="cpe-col"><input type="color" data-k="${k}" value="${cpColor(v)||'#888888'}" class="${cpColor(v) ? '' : 'unset'}"><button type="button" class="cpe-x" data-clr="${k}" title="Be spalvos (pagal temą)">${slIcon('close')}</button></span>`; }
+function cpEdSel(k, v, opts){ return `<select data-k="${k}">${opts.map(([a, b])=>`<option value="${esc(a)}" ${String(v==null ? '' : v)===String(a) ? 'selected' : ''}>${esc(b)}</option>`).join('')}</select>`; }
+function cpTabsOpts(){ return [...document.querySelectorAll('#tabNav .rail-btn[data-tab]')].filter(b=>TABS[b.dataset.tab] && !b.dataset.cp && !HIDDEN_TABS.has(b.dataset.tab) && b.dataset.tab!=='system').map(b=>[b.dataset.tab, b.dataset.label]); }
+function cpStepsHtml(steps){ return (steps||[]).length ? `<ol class="cpe-steps">${steps.map(s=>`<li>${s.sel || s.text ? esc(s.text || s.sel) : 'Atidaryti „'+esc(cpTabLabel(s.tab))+'“'}</li>`).join('')}</ol>` : '<div class="sys-faint">Paspaudimų dar nėra.</div>'; }
+function cpEdProps(){
+  const box = document.getElementById('cpeProps'); if(!box) return; const f = edF(), e = edEl();
+  if(!e){
+    const sz = f.w+'x'+f.h;
+    box.innerHTML = `<div class="cpe-ph">${slIcon(f.kind==='popup' ? 'selwin' : 'screen')} Kadras</div>
+      <div class="cpe-grid">${cpEdField('Pavadinimas', `<input type="text" data-k="f.name" value="${esc(f.name)}" maxlength="40">`, true)}
+      ${cpEdField('Tipas', cpEdSel('f.kind', f.kind, [['page', 'Puslapis'], ['popup', 'Popup langas']]), true)}
+      ${cpEdField('Dydis', cpEdSel('f.size', CP_SIZES.some(x=>x[0]===sz) ? sz : '', [['', 'Savas']].concat(CP_SIZES)), true)}
+      ${cpEdField('Plotis', cpEdNum('f.w', f.w, 200, 4000))}${cpEdField('Aukštis', cpEdNum('f.h', f.h, 120, 6000))}
+      ${cpEdField('Fonas', cpEdCol('f.bg', f.bg))}</div>
+      <div class="cpe-btns">${f.kind!=='popup' && CPE.doc.start!==f.id ? `<button type="button" class="btn small" data-fa="start">${slIcon('flag')} Pradinis kadras</button>` : ''}
+        <button type="button" class="btn small" data-fa="dup">${slIcon('copy')} Dublikuoti</button>
+        ${CPE.doc.frames.length>1 ? `<button type="button" class="btn small danger" data-fa="del">${slIcon('bin')} Ištrinti</button>` : ''}</div>
+      <p class="sys-faint cpe-tip">Pasirink elementą drobėje arba įterpk naują viršuje. Kadrai – tai puslapio „ekranai“: mygtukais tarp jų pereinama, popup kadrai atidaromi virš puslapio.</p>`;
+    return;
+  }
+  const s = e.s||{}, a = e.act||{}, pages = CPE.doc.frames.filter(x=>x.kind!=='popup' && x.id!==f.id), pops = CPE.doc.frames.filter(x=>x.kind==='popup');
+  let content = '';
+  if(e.type==='text' || e.type==='button') content = cpEdField('Tekstas', `<textarea data-k="text" rows="3">${esc(e.text||'')}</textarea>`, true);
+  if(e.type==='icon') content = cpEdField('Ikona', `<button type="button" class="btn small" data-pick="icon">${slIcon(SL[e.icon] ? e.icon : 'star')} Keisti</button>`, true);
+  if(e.type==='image') content = cpEdField('Paveikslėlis', `<span class="cpe-btns"><button type="button" class="btn small" data-pick="img">${slIcon('upload')} Įkelti</button><input type="url" data-k="src" placeholder="arba nuoroda https://…" value="${esc(/^data:/.test(e.src||'') ? '' : e.src||'')}"></span>`, true)
+    + cpEdField('Užpildymas', cpEdSel('fit', e.fit||'cover', [['cover', 'Užpildyti'], ['contain', 'Sutalpinti']]), true);
+  if(e.type==='data'){ const d = e.data||{};
+    content = cpEdField('Duomenys', cpEdSel('data.src', d.src, Object.entries(CP_DATA).map(([k, v])=>[k, v.t])), true)
+      + cpEdField('Rodyti', cpEdSel('data.mode', d.mode||'list', [['list', 'Sąrašą'], ['count', 'Skaičių']]))
+      + cpEdField('Eilučių', cpEdNum('data.limit', d.limit||5, 1, 50))
+      + cpEdField('Antraštė', `<input type="text" data-k="data.label" value="${esc(d.label||'')}" placeholder="${esc((CP_DATA[d.src]||{}).t||'')}">`, true); }
+  if(e.type==='embed'){ const em = e.embed||{};
+    content = cpEdField('Puslapis', cpEdSel('embed.tab', em.tab, cpTabsOpts()), true)
+      + `<div class="cpe-f wide"><span>Atidaryti vidinę dalį (paspaudimai puslapyje)</span>${cpStepsHtml((em.steps||[]).filter(x=>x.sel || x.text))}
+        <span class="cpe-btns"><button type="button" class="btn small" data-rec="embed">${slIcon('mic')} Įrašyti</button>${(em.steps||[]).length ? `<button type="button" class="btn small" data-recclr="embed">${slIcon('close')} Išvalyti</button>` : ''}</span></div>`; }
+  const actT = a.do==='frame' ? cpEdField('Kadras', cpEdSel('act.frame', a.frame, [['', '— pasirink —']].concat(pages.map(x=>[x.id, x.name]))), true)
+    : a.do==='popup' ? cpEdField('Popup', cpEdSel('act.frame', a.frame, [['', '— pasirink —']].concat(pops.map(x=>[x.id, x.name]))), true) + (pops.length ? '' : '<div class="sys-faint">Pirma sukurk popup kadrą (kairėje „+ Popup“).</div>')
+    : a.do==='tab' ? cpEdField('Programos puslapis', cpEdSel('act.tab', a.tab, [['', '— pasirink —']].concat(cpTabsOpts())), true)
+    : a.do==='fn' ? cpEdField('Funkcija iš katalogo', `<select data-fncat><option value="">— pasirink —</option>${Object.entries((SYS.map||{}).pages||{}).filter(([k, p])=>(p.ui||[]).length && canView(k)).map(([k, p])=>`<optgroup label="${esc(cpTabLabel(k))}">${p.ui.map(([id, l, t])=>`<option value="${esc(k+'|'+id)}" ${a.fid===k+'|'+id ? 'selected' : ''} title="${esc(t)}">${esc(l)}</option>`).join('')}</optgroup>`).join('')}</select>`, true)
+        + `<div class="cpe-f wide"><span>Paspaudimai ${a.label ? '– '+esc(a.label) : ''}</span>${cpStepsHtml(a.steps)}<span class="cpe-btns"><button type="button" class="btn small" data-rec="act">${slIcon('mic')} Įrašyti savo paspaudimus</button></span>
+          <span class="sys-faint">Atsidarys programa – spausk tai, ką turi padaryti mygtukas (pvz. puslapis → skiltis → mygtukas). Taip galima įterpti bet kurią funkciją ar vidinę dalį.</span></div>`
+    : a.do==='url' ? cpEdField('Nuoroda', `<input type="url" data-k="act.url" value="${esc(a.url||'')}" placeholder="https://…">`, true)
+    : a.do==='toast' ? cpEdField('Pranešimas', `<input type="text" data-k="act.msg" value="${esc(a.msg||'')}" maxlength="120">`, true) : '';
+  box.innerHTML = `<div class="cpe-ph">${slIcon(CP_TYPE_I[e.type])} ${esc(CP_TYPE_L[e.type])}<span class="cpe-sp"></span>
+      <button type="button" class="btn small" data-ea="dup" title="Dublikuoti (Ctrl+D)">${slIcon('copy')}</button><button type="button" class="btn small" data-ea="up" title="Į priekį">${slIcon('arrowup')}</button><button type="button" class="btn small" data-ea="down" title="Atgal">${slIcon('arrowdown')}</button><button type="button" class="btn small danger" data-ea="del" title="Ištrinti (Delete)">${slIcon('bin')}</button></div>
+    <div class="cpe-grid">${cpEdField('Sluoksnio pavadinimas', `<input type="text" data-k="name" value="${esc(e.name||'')}" placeholder="${esc(CP_TYPE_L[e.type])}" maxlength="40">`, true)}
+      ${cpEdField('X', cpEdNum('x', e.x|0))}${cpEdField('Y', cpEdNum('y', e.y|0))}${cpEdField('Plotis', cpEdNum('w', e.w|0, 4))}${cpEdField('Aukštis', cpEdNum('h', e.h|0, 4))}
+      ${content}</div>
+    <div class="cpe-sec">Išvaizda</div>
+    <div class="cpe-grid">${cpEdField('Fonas', cpEdCol('s.bg', s.bg))}${cpEdField(e.type==='icon' ? 'Ikonos spalva' : 'Teksto spalva', cpEdCol('s.color', s.color))}
+      ${e.type!=='icon' && e.type!=='image' && e.type!=='rect' ? cpEdField('Šrifto dydis', cpEdNum('s.fs', s.fs||'', 8, 200)) + cpEdField('Storis', cpEdSel('s.fw', s.fw||'', [['', 'Įprastas'], ['500', 'Vidutinis'], ['600', 'Pusjuodis'], ['700', 'Juodas'], ['800', 'Labai juodas']])) : ''}
+      ${e.type==='text' || e.type==='button' ? cpEdField('Lygiuoti', cpEdSel('s.align', s.align||'left', [['left', 'Kairėje'], ['center', 'Centre'], ['right', 'Dešinėje']])) + cpEdField('Vertikaliai', cpEdSel('s.va', s.va||'center', [['top', 'Viršuje'], ['center', 'Centre'], ['bottom', 'Apačioje']])) : ''}
+      ${cpEdField('Kampai', cpEdNum('s.r', s.r==null ? '' : s.r, 0, 999))}${cpEdField('Vidinis tarpas', cpEdNum('s.pad', s.pad==null ? '' : s.pad, 0, 200))}
+      ${cpEdField('Rėmelis', cpEdNum('s.bw', s.bw||'', 0, 20))}${cpEdField('Rėmelio spalva', cpEdCol('s.bc', s.bc))}
+      ${cpEdField('Matomumas %', cpEdNum('s.op', s.op==null || s.op==='' ? 100 : s.op, 0, 100))}${cpEdField('Pasukimas °', cpEdNum('s.rot', s.rot||'', -180, 180))}
+      <label class="cpe-f"><span>Šešėlis</span><input type="checkbox" data-k="s.sh" ${s.sh ? 'checked' : ''}></label></div>
+    <div class="cpe-sec">Prototipas</div>
+    <div class="cpe-grid">${cpEdField('Paspaudus', cpEdSel('act.do', a.do||'', CP_ACTS), true)}${actT}
+      ${a.do && !['tab', 'fn', 'url', 'toast', 'close'].includes(a.do) ? cpEdField('Perėjimas', cpEdSel('act.tr', a.tr||(a.do==='popup' ? 'zoom' : 'fade'), CP_TR)) + cpEdField('Trukmė, ms', cpEdNum('act.ms', a.ms||300, 0, 3000, 50)) : ''}
+      ${cpEdField('Užvedus pelę', cpEdSel('hover', e.hover||'', CP_HOVER), true)}</div>`;
+}
+// set a value by its path in the selected element (or the frame: f.…)
+function cpEdSet(k, v){
+  const f = edF();
+  if(k.startsWith('f.')){ const p = k.slice(2);
+    if(p==='size'){ if(!v) return; const [w, h] = v.split('x').map(Number); f.w = w; f.h = h; }
+    else if(p==='w' || p==='h') f[p] = Math.max(p==='w' ? 200 : 120, Math.min(6000, +v||0));
+    else f[p] = v;
+    return;
+  }
+  const e = edEl(); if(!e) return;
+  const path = k.split('.'); let o = e;
+  for(let i = 0; i<path.length-1; i++){ o[path[i]] = o[path[i]] || {}; o = o[path[i]]; }
+  const last = path[path.length-1];
+  if(['x', 'y', 'w', 'h'].includes(k)) v = Math.round(+v||0);
+  if(v==='' || v==null) delete o[last]; else o[last] = v;
+  if(k==='w' || k==='h') e[k] = Math.max(4, e[k]|0);
+}
+function cpEdAdd(type){
+  const f = edF(), t = JSON.parse(JSON.stringify(CP_NEW[type])), n = (f.els||[]).length;
+  const el = Object.assign({ id:uid('el'), type, x:Math.round(Math.max(0, (f.w - t.w)/2) + (n%6)*16), y:Math.round(Math.max(0, (f.h - t.h)/2) + (n%6)*16) }, t);
+  edSnap(); (f.els = f.els||[]).push(el); CPE.sel = el.id; cpEdPaint();
+  if(type==='image') cpEdPickImage();
+}
+function cpEdKey(e){
+  if(!document.getElementById('cpEd')) return;
+  if(document.querySelector('.ui-ask, .modal-backdrop:not(.hidden) .modal, #cpRec, .cpe-prev')) { if(e.key==='Escape' && document.querySelector('.cpe-prev')){ e.preventDefault(); e.stopPropagation(); cpEdPrevClose(); } return; }
+  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target||{}).tagName||'') || (e.target && e.target.isContentEditable);
+  const mod = e.ctrlKey || e.metaKey;
+  if(mod && e.key.toLowerCase()==='s'){ e.preventDefault(); e.stopPropagation(); cpEdSave(); return; }
+  if(typing) return;
+  if(mod && e.key.toLowerCase()==='z'){ e.preventDefault(); e.stopPropagation(); edUndo(!e.shiftKey); return; }
+  if(mod && e.key.toLowerCase()==='y'){ e.preventDefault(); e.stopPropagation(); edUndo(false); return; }
+  const el = edEl();
+  if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); if(CPE.sel){ CPE.sel = null; cpEdPaint(); } else cpEdClose(); return; }
+  if(!el) return;
+  if(e.key==='Delete' || e.key==='Backspace'){ e.preventDefault(); e.stopPropagation(); cpEdElAct('del'); return; }
+  if(mod && e.key.toLowerCase()==='d'){ e.preventDefault(); e.stopPropagation(); cpEdElAct('dup'); return; }
+  const d = e.shiftKey ? 10 : 1, mv = { ArrowLeft:[-d, 0], ArrowRight:[d, 0], ArrowUp:[0, -d], ArrowDown:[0, d] }[e.key];
+  if(mv){ e.preventDefault(); e.stopPropagation(); edSnapTyping(); el.x += mv[0]; el.y += mv[1]; cpEdPaintEl(el); cpEdProps(); }
+}
+function cpEdElAct(a){
+  const f = edF(), i = (f.els||[]).findIndex(x=>x.id===CPE.sel); if(i<0) return; const el = f.els[i];
+  edSnap();
+  if(a==='del'){ f.els.splice(i, 1); CPE.sel = null; }
+  if(a==='dup'){ const c = JSON.parse(JSON.stringify(el)); c.id = uid('el'); c.x += 16; c.y += 16; f.els.splice(i+1, 0, c); CPE.sel = c.id; }
+  if(a==='up' && i<f.els.length-1) [f.els[i], f.els[i+1]] = [f.els[i+1], f.els[i]];
+  if(a==='down' && i>0) [f.els[i], f.els[i-1]] = [f.els[i-1], f.els[i]];
+  cpEdPaint();
+}
+function cpEdFrameAct(a){
+  const f = edF(); edSnap();
+  if(a==='start') CPE.doc.start = f.id;
+  if(a==='dup'){ const c = JSON.parse(JSON.stringify(f)); c.id = uid('fr'); c.name = f.name+' (kopija)'; c.els.forEach(e=>e.id = uid('el')); CPE.doc.frames.splice(CPE.doc.frames.indexOf(f)+1, 0, c); CPE.fid = c.id; }
+  if(a==='del'){ CPE.doc.frames = CPE.doc.frames.filter(x=>x!==f); if(CPE.doc.start===f.id) CPE.doc.start = (CPE.doc.frames.find(x=>x.kind!=='popup')||CPE.doc.frames[0]).id; CPE.fid = CPE.doc.frames[0].id; }
+  CPE.sel = null; cpEdPaint(); cpEdFitZoom();
+}
+// pictures: made smaller in the browser (max 1600 px) and kept inside the page
+function cpEdPickImage(){
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = ()=>{ const file = inp.files && inp.files[0]; if(!file) return;
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = ()=>{ const k = Math.min(1, 1600/Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      const png = /png|svg|gif/.test(file.type), data = c.toDataURL(png ? 'image/png' : 'image/jpeg', .85);
+      if(data.length > 1500000){ toast('Paveikslėlis per didelis – pasirink mažesnį.'); return; }
+      const el = edEl(); if(!el) return; edSnap(); el.src = data;
+      if(el.type==='image' && el.w && img.width){ el.h = Math.round(el.w * c.height / c.width); }
+      cpEdPaintEl(el); cpEdProps(); };
+    img.src = url; };
+  inp.click();
+}
+function cpIconPick(cur, cb){
+  openModal(`<h3>Ikona</h3><input type="search" id="cpIq" placeholder="Ieškoti ikonos (angliškai: truck, user, mail…)" autocomplete="off" style="width:100%;margin:6px 0 10px;">
+    <div class="sysc-icons" id="cpIcons">${Object.keys(SL).sort().map(n=>`<button type="button" data-icn="${esc(n)}" class="${n===cur ? 'on' : ''}" title="${esc(n)}">${slIcon(n)}<span>${esc(n)}</span></button>`).join('')}</div>`);
+  const q = document.getElementById('cpIq'); q.oninput = ()=>{ const v = q.value.trim().toLowerCase(); document.querySelectorAll('#cpIcons [data-icn]').forEach(b=>b.hidden = !!v && !b.dataset.icn.includes(v)); }; q.focus();
+  document.getElementById('cpIcons').onclick = e=>{ const b = e.target.closest('[data-icn]'); if(b){ closeModal(); cb(b.dataset.icn); } };
+}
+function cpRolesPick(){
+  const roles = ACCESS_ROLES.filter(r=>r.v!=='admin'), cur = new Set(CPE.p.roles||[]);
+  openModal(`<h3>Kam rodomas puslapis</h3><p class="sys-faint">Admin ir Super Admin mato visada. Nieko nepažymėjus – mato visi patvirtinti nariai.</p>
+    <div class="cpe-roles">${roles.map(r=>`<label><input type="checkbox" value="${esc(r.v)}" ${cur.has(r.v) ? 'checked' : ''}> ${esc(r.label)}</label>`).join('')}</div>
+    <div class="row" style="justify-content:flex-end;gap:6px;margin-top:12px;"><button type="button" class="btn primary small" id="cpRolesOk">Gerai</button></div>`);
+  document.getElementById('cpRolesOk').onclick = ()=>{ CPE.p.roles = [...document.querySelectorAll('.cpe-roles input:checked')].map(x=>x.value); CPE.dirty = true; closeModal(); cpEdDraw(); };
+}
+async function cpEdSave(){
+  const sb = getSb(); if(!sb) return;
+  const t = document.getElementById('cpeTitle'); if(t) CPE.p.title = t.value.trim() || 'Naujas puslapis';
+  const row = { title:CPE.p.title.slice(0, 60), icon:CPE.p.icon||null, roles:CPE.p.roles||[], published:!!CPE.p.published, doc:CPE.doc };
+  const b = document.getElementById('cpeSave'); if(b) b.disabled = true;
+  const r = CPE.p.id ? await sb.from('custom_pages').update(row).eq('id', CPE.p.id).select().single() : await sb.from('custom_pages').insert(row).select().single();
+  if(b) b.disabled = false;
+  if(r.error){ toast('Nepavyko išsaugoti: '+(/42P01|PGRST205/.test(r.error.code||'') ? 'paleisk supabase/sql/custom_pages.sql (Supabase → SQL Editor).' : r.error.message)); return false; }
+  CPE.p = Object.assign(CPE.p, r.data); CPE.dirty = false;
+  const i = CP.list.findIndex(x=>x.id===r.data.id); if(i>=0) CP.list[i] = r.data; else CP.list.push(r.data);
+  cpNav(); toast('Išsaugota.'+(CPE.p.published ? '' : ' Puslapis dar nepaskelbtas – jį matai tik tu.'));
+  return true;
+}
+/* ---------- preview ---------- */
+function cpEdPreview(){
+  const o = document.getElementById('cpEd'); if(!o) return;
+  const doc = JSON.parse(JSON.stringify(CPE.doc)); const f = edF(); if(f.kind!=='popup') doc.start = f.id;
+  const p = document.createElement('div'); p.className = 'cpe-prev'; p.innerHTML = `<div class="cpe-prev-bar"><b>${slIcon('play')} Peržiūra – ${esc(CPE.p.title)}</b><span class="sys-faint">Spausk mygtukus kaip narys. Programos puslapiai ir funkcijos peržiūroje neatidaromi.</span><button type="button" class="btn small" id="cpPrevX">${slIcon('close')} Uždaryti (Esc)</button></div><div class="cpe-prev-body"><div class="cp-host" id="cpPrevHost"></div></div>`;
+  o.appendChild(p); p.querySelector('#cpPrevX').onclick = cpEdPrevClose;
+  const R = cpMount(p.querySelector('#cpPrevHost'), doc); if(R) R.preview = true; CP.prevR = R;
+}
+function cpEdPrevClose(){ cpCloseAll(CP.prevR); const p = document.querySelector('#cpEd .cpe-prev'); if(p) p.remove(); }
+/* ---------- recording clicks in the program (a function or a part of a page to put in) ---------- */
+function cpSelOf(el, doc){
+  const c = el.closest('button, a, [role="button"], .chip, [data-tab], [data-view], [data-act], summary, label, input[type="checkbox"], input[type="radio"], select, .rail-btn, .tab, li') || el;
+  const uniq = s=>{ try{ return doc.querySelectorAll(s).length===1; }catch(e){ return false; } };
+  const text = String(c.getAttribute('aria-label') || c.textContent || c.title || '').replace(/\s+/g, ' ').trim().slice(0, 60);
+  if(c.id && !/\d{4,}/.test(c.id) && uniq('#'+CSS.escape(c.id))) return { sel:'#'+CSS.escape(c.id), text };
+  for(const a of ['data-tab', 'data-view', 'data-act', 'data-gsd', 'data-k', 'data-v', 'data-st', 'data-mode', 'data-f']){
+    const v = c.getAttribute(a); if(v!=null && v.length<60){ const s = `${c.tagName.toLowerCase()}[${a}="${CSS.escape(v)}"]`; if(uniq(s)) return { sel:s, text }; } }
+  return text ? { sel:'', text } : null;
+}
+function cpRecord(startTab, done){
+  const o = document.createElement('div'); o.id = 'cpRec'; o.className = 'cp-rec';
+  const steps = startTab ? [{ tab:startTab }] : [];
+  o.innerHTML = `<div class="cp-rec-bar"><b>${slIcon('mic')} Įrašomi paspaudimai</b>
+      <select id="cpRecTab" title="Nuo kurio puslapio pradėti">${cpTabsOpts().map(([k, l])=>`<option value="${esc(k)}" ${k===startTab ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
+      <span class="sys-faint">Spausk programoje tai, ką turi padaryti tavo mygtukas. Įrašyta: <b id="cpRecN">0</b></span>
+      <span class="cpe-sp"></span><button type="button" class="btn small" id="cpRecClr">Išvalyti</button><button type="button" class="btn small" id="cpRecX">Atšaukti</button><button type="button" class="btn primary small" id="cpRecOk">${slIcon('check')} Baigti</button></div>
+    <div class="cp-rec-body"><iframe id="cpRecF"></iframe><ol class="cp-rec-list" id="cpRecList"></ol></div>`;
+  document.body.appendChild(o);
+  const F = o.querySelector('#cpRecF'), list = ()=>{ const s = steps.filter(x=>x.sel || x.text); o.querySelector('#cpRecN').textContent = s.length; o.querySelector('#cpRecList').innerHTML = s.map(x=>`<li>${esc(cpTabLabel(x.tab))} → <b>${esc(x.text || x.sel)}</b></li>`).join('') || '<li class="sys-faint">Dar nieko.</li>'; };
+  const load = tab=>{ steps.length = 0; steps.push({ tab }); list(); F.src = wsSrc(tab); };
+  F.addEventListener('load', ()=>{
+    const w = F.contentWindow, d = F.contentDocument; if(!d) return;
+    const st = d.createElement('style'); st.textContent = '.cp-rec-hl{outline:2px solid #F35E7D !important;outline-offset:2px;}'; d.head.appendChild(st);
+    let hl = null;
+    d.addEventListener('mouseover', e=>{ if(hl) hl.classList.remove('cp-rec-hl'); hl = e.target.closest('button, a, [role="button"], .chip, [data-tab], [data-view], [data-act], summary, label, select, li'); if(hl) hl.classList.add('cp-rec-hl'); }, true);
+    d.addEventListener('click', e=>{ const s = cpSelOf(e.target, d); if(!s) return; steps.push(Object.assign({ tab:w.esCurTab || '' }, s)); list(); }, true);
+  });
+  o.querySelector('#cpRecTab').onchange = e=>load(e.target.value);
+  o.querySelector('#cpRecClr').onclick = ()=>load(o.querySelector('#cpRecTab').value);
+  o.querySelector('#cpRecX').onclick = ()=>o.remove();
+  o.querySelector('#cpRecOk').onclick = ()=>{ o.remove(); done(steps.slice()); };
+  load(startTab || o.querySelector('#cpRecTab').value); list();
+}
+/* ---------- wiring ---------- */
+function cpEdWire(o){
+  o.querySelector('#cpeClose').onclick = ()=>cpEdClose();
+  o.querySelector('#cpeSave').onclick = ()=>cpEdSave();
+  o.querySelector('#cpePlay').onclick = ()=>cpEdPreview();
+  o.querySelector('#cpeUndo').onclick = ()=>edUndo(true); o.querySelector('#cpeRedo').onclick = ()=>edUndo(false);
+  o.querySelector('#cpeZo').onclick = ()=>{ CPE.z = Math.max(.1, CPE.z/1.25); cpEdCanvas(); }; o.querySelector('#cpeZi').onclick = ()=>{ CPE.z = Math.min(3, CPE.z*1.25); cpEdCanvas(); }; o.querySelector('#cpeZv').onclick = cpEdFitZoom;
+  o.querySelector('#cpeTitle').oninput = e=>{ CPE.p.title = e.target.value; CPE.dirty = true; };
+  o.querySelector('#cpePub').onchange = e=>{ CPE.p.published = e.target.checked; CPE.dirty = true; };
+  o.querySelector('#cpeIcon').onclick = ()=>cpIconPick(CPE.p.icon, k=>{ CPE.p.icon = k; CPE.dirty = true; cpEdDraw(); });
+  o.querySelector('#cpeRoles').onclick = cpRolesPick;
+  o.querySelector('.cpe-tools').onclick = e=>{ const b = e.target.closest('[data-add]'); if(b) cpEdAdd(b.dataset.add); };
+  o.querySelector('.cpe-left').onclick = e=>{
+    const af = e.target.closest('[data-addf]'); if(af){ edSnap(); const n = CPE.doc.frames.filter(x=>x.kind===af.dataset.addf).length+1; const f = cpNewFrame(af.dataset.addf, af.dataset.addf==='popup' ? 'Popup '+n : 'Kadras '+n); CPE.doc.frames.push(f); CPE.fid = f.id; CPE.sel = null; cpEdPaint(); cpEdFitZoom(); return; }
+    const fr = e.target.closest('[data-f]'); if(fr){ CPE.fid = fr.dataset.f; CPE.sel = null; cpEdPaint(); cpEdFitZoom(); return; }
+    const ly = e.target.closest('[data-l]'); if(ly){ CPE.sel = ly.dataset.l; cpEdPaint(); }
+  };
+  const P = o.querySelector('#cpeProps');
+  P.addEventListener('input', e=>{ const k = e.target.dataset.k; if(!k || e.target.tagName==='SELECT') return;
+    edSnapTyping(); cpEdSet(k, e.target.type==='checkbox' ? e.target.checked : e.target.value);
+    if(e.target.type==='color') e.target.classList.remove('unset');
+    if(k.startsWith('f.')){ cpEdCanvas(); if(k==='f.name') cpEdFrames(); return; }
+    const el = edEl(); if(el){ cpEdPaintEl(el); if(k==='name' || k==='text') cpEdLayers(); } });
+  P.addEventListener('change', e=>{
+    if(e.target.matches('[data-fncat]')){ const v = e.target.value; if(!v) return; const [tab, id] = v.split('|'), it = ((SYS.map.pages[tab]||{}).ui||[]).find(x=>x[0]===id)||[];
+      const el = edEl(); edSnap(); el.act = Object.assign({}, el.act, { fid:v, label:it[1]||id, steps:[{ tab }, { tab, sel:'#'+CSS.escape(id), text:it[1]||'' }] }); cpEdProps(); return; }
+    const k = e.target.dataset.k; if(!k || (e.target.tagName!=='SELECT' && e.target.type!=='checkbox')) return;
+    edSnap(); cpEdSet(k, e.target.type==='checkbox' ? e.target.checked : e.target.value);
+    if(k.startsWith('f.')){ cpEdPaint(); if(k==='f.size' || k==='f.kind') cpEdFitZoom(); return; }
+    const el = edEl(); if(el){ cpEdPaintEl(el); cpEdLayers(); } cpEdProps();
+  });
+  P.addEventListener('click', e=>{
+    const clr = e.target.closest('[data-clr]'); if(clr){ edSnap(); cpEdSet(clr.dataset.clr, ''); if(clr.dataset.clr.startsWith('f.')) cpEdCanvas(); else cpEdPaintEl(edEl()); cpEdProps(); return; }
+    const ea = e.target.closest('[data-ea]'); if(ea){ cpEdElAct(ea.dataset.ea); return; }
+    const fa = e.target.closest('[data-fa]'); if(fa){ cpEdFrameAct(fa.dataset.fa); return; }
+    const pk = e.target.closest('[data-pick]');
+    if(pk && pk.dataset.pick==='icon'){ const el = edEl(); cpIconPick(el.icon, k=>{ edSnap(); el.icon = k; cpEdPaintEl(el); cpEdProps(); }); return; }
+    if(pk && pk.dataset.pick==='img'){ cpEdPickImage(); return; }
+    const rc = e.target.closest('[data-rec]'); if(rc){ const el = edEl(), emb = rc.dataset.rec==='embed';
+      cpRecord(emb ? (el.embed||{}).tab : ((el.act||{}).steps||[{}])[0].tab || 'events', steps=>{ edSnap();
+        if(emb){ el.embed = { tab:(steps[0]||{}).tab || (el.embed||{}).tab, steps }; cpEdPaintEl(el); }
+        else { const real = steps.filter(x=>x.sel || x.text); el.act = Object.assign({}, el.act, { do:'fn', fid:'', steps, label:real.length ? real[real.length-1].text || 'paspaudimai' : '' }); }
+        cpEdProps(); cpEdLayers(); }); return; }
+    const rcc = e.target.closest('[data-recclr]'); if(rcc){ const el = edEl(); edSnap(); el.embed = { tab:(el.embed||{}).tab, steps:[] }; cpEdPaintEl(el); cpEdProps(); }
+  });
+  // the canvas: select, move, resize, snap to the frame and to the other elements
+  const C = o.querySelector('#cpeCanvas');
+  C.addEventListener('wheel', e=>{ if(!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); CPE.z = Math.max(.1, Math.min(3, CPE.z*Math.exp(-e.deltaY*.002))); cpEdCanvas(); }, { passive:false });
+  let drag = null;
+  C.addEventListener('pointerdown', e=>{
+    if(e.button!==0) return;
+    const h = e.target.closest('.cpe-sel i[data-h]'), d = e.target.closest('.cp-el'), f = edF();
+    if(!h && !d){ if(CPE.sel){ CPE.sel = null; cpEdPaint(); } return; }
+    if(d && d.dataset.el!==CPE.sel){ CPE.sel = d.dataset.el; cpEdLayers(); cpEdProps(); cpEdSelBox(); }
+    const el = edEl(); if(!el) return;
+    e.preventDefault(); C.setPointerCapture(e.pointerId);
+    drag = { h:h ? h.dataset.h : '', x0:e.clientX, y0:e.clientY, r0:{ x:el.x, y:el.y, w:el.w, h:el.h }, moved:false,
+      xs:[0, f.w/2, f.w].concat(...(f.els||[]).filter(x=>x.id!==el.id).map(x=>[x.x, x.x+x.w/2, x.x+x.w])),
+      ys:[0, f.h/2, f.h].concat(...(f.els||[]).filter(x=>x.id!==el.id).map(x=>[x.y, x.y+x.h/2, x.y+x.h])) };
+  });
+  C.addEventListener('pointermove', e=>{
+    if(!drag) return; const el = edEl(); if(!el) return;
+    const dx = (e.clientX-drag.x0)/CPE.z, dy = (e.clientY-drag.y0)/CPE.z;
+    if(!drag.moved && Math.abs(dx)+Math.abs(dy) < 2/CPE.z) return;
+    if(!drag.moved){ edSnap(); drag.moved = true; }
+    const r = Object.assign({}, drag.r0), H = drag.h, tol = 6/CPE.z; CPE.guides = [];
+    const snap = (v, list)=>{ let best = null; list.forEach(p=>{ const dd = Math.abs(p-v); if(dd<tol && (!best || dd<best.d)) best = { d:dd, p }; }); return best; };
+    if(!H){
+      r.x = Math.round(drag.r0.x+dx); r.y = Math.round(drag.r0.y+dy);
+      if(!e.altKey){
+        const sx = [[r.x, 0], [r.x+r.w/2, r.w/2], [r.x+r.w, r.w]].map(([v, o])=>{ const b = snap(v, drag.xs); return b && { p:b.p, o, d:b.d }; }).filter(Boolean).sort((a, b)=>a.d-b.d)[0];
+        if(sx){ r.x = Math.round(sx.p - sx.o); CPE.guides.push({ v:true, p:sx.p }); }
+        const sy = [[r.y, 0], [r.y+r.h/2, r.h/2], [r.y+r.h, r.h]].map(([v, o])=>{ const b = snap(v, drag.ys); return b && { p:b.p, o, d:b.d }; }).filter(Boolean).sort((a, b)=>a.d-b.d)[0];
+        if(sy){ r.y = Math.round(sy.p - sy.o); CPE.guides.push({ v:false, p:sy.p }); }
+      }
+    } else {
+      if(H.includes('e')) r.w = drag.r0.w+dx; if(H.includes('s')) r.h = drag.r0.h+dy;
+      if(H.includes('w')){ r.x = drag.r0.x+dx; r.w = drag.r0.w-dx; } if(H.includes('n')){ r.y = drag.r0.y+dy; r.h = drag.r0.h-dy; }
+      if(e.shiftKey && drag.r0.w && drag.r0.h){ const k = drag.r0.w/drag.r0.h; if(H.length===2){ r.h = r.w/k; if(H.includes('n')) r.y = drag.r0.y + drag.r0.h - r.h; } }
+      if(!e.altKey){ if(H.includes('e')){ const b = snap(r.x+r.w, drag.xs); if(b){ r.w = b.p - r.x; CPE.guides.push({ v:true, p:b.p }); } }
+        if(H.includes('s')){ const b = snap(r.y+r.h, drag.ys); if(b){ r.h = b.p - r.y; CPE.guides.push({ v:false, p:b.p }); } } }
+      r.w = Math.max(8, Math.round(r.w)); r.h = Math.max(8, Math.round(r.h)); r.x = Math.round(r.x); r.y = Math.round(r.y);
+    }
+    Object.assign(el, r);
+    const d = document.querySelector('#cpeZoomer .cp-el[data-el="'+CSS.escape(el.id)+'"]');
+    if(d){ d.style.left = el.x+'px'; d.style.top = el.y+'px'; d.style.width = el.w+'px'; d.style.height = el.h+'px'; }
+    cpEdSelBox();
+  });
+  const end = ()=>{ if(!drag) return; const m = drag.moved; drag = null; CPE.guides = []; cpEdSelBox(); if(m) cpEdProps(); };
+  C.addEventListener('pointerup', end); C.addEventListener('pointercancel', end);
+  C.addEventListener('dblclick', e=>{ const d = e.target.closest('.cp-el'); if(!d) return; const ta = document.querySelector('#cpeProps textarea[data-k="text"]'); if(ta){ ta.focus(); ta.select(); } });
+}
+/* ---------- Sistema → Puslapiai: the list of pages ---------- */
+function sysPagesHtml(){
+  if(CP.err==='nosql') return `<div class="sys-note">${slIcon('alert')} Konstruktorius dar neįjungtas – Supabase → SQL Editor paleisk <b>supabase/sql/custom_pages.sql</b>.</div>`;
+  const rl = p=>(p.roles||[]).length ? p.roles.map(r=>(ACCESS_ROLES.find(x=>x.v===r)||{ label:r }).label).join(', ') : 'visiems';
+  return `<div class="card sysc-card"><div class="sysc-h"><div><h3>Mano sukurti puslapiai</h3><div class="sys-faint">Kurk puslapius kaip Figmoje: kadrai, mygtukai, popup langai, perėjimai, programos duomenys, puslapiai ir funkcijos. Paskelbtas puslapis atsiranda meniu.</div></div>
+      <button type="button" class="btn primary small" id="cpNew">${slIcon('plus')} Naujas puslapis</button></div>
+    ${CP.list.length ? `<div class="cpx-list">${CP.list.map(p=>`<div class="cp-li" data-cp="${esc(p.id)}"><span class="cp-li-i">${slIcon(SL[p.icon] ? p.icon : 'gridview')}</span>
+      <div class="cp-li-t"><b>${esc(p.title)}</b><span class="sys-faint">${p.published ? '<span class="cp-pub">Paskelbtas</span> · '+esc(rl(p)) : 'Juodraštis – matai tik tu'} · ${((p.doc||{}).frames||[]).length} kadr. · ${esc(new Date(p.updated_at).toLocaleString('lt-LT'))}${p.updated_name ? ' · '+esc(p.updated_name) : ''}</span></div>
+      <span class="cp-li-a"><button type="button" class="btn small primary" data-cpa="edit">${slIcon('pencil')} Redaguoti</button><button type="button" class="btn small" data-cpa="open">${slIcon('openext')} Atidaryti</button>
+      <button type="button" class="btn small" data-cpa="ver" title="Ankstesnės versijos">${slIcon('restart')}</button><button type="button" class="btn small" data-cpa="up" title="Aukščiau meniu">${slIcon('arrowup')}</button><button type="button" class="btn small danger" data-cpa="del" title="Ištrinti">${slIcon('bin')}</button></span></div>`).join('')}</div>`
+      : '<div class="card empty-state" style="margin:0;">Puslapių dar nėra – spausk „Naujas puslapis“.</div>'}</div>`;
+}
+function sysPagesWire(el){
+  el.addEventListener('click', async e=>{
+    if(e.target.closest('#cpNew')){ cpEdit(null); return; }
+    const b = e.target.closest('[data-cpa]'); if(!b) return; const p = CP.list.find(x=>x.id===b.closest('[data-cp]').dataset.cp); if(!p) return;
+    const sb = getSb(), a = b.dataset.cpa;
+    if(a==='edit') cpEdit(p);
+    if(a==='open') setTab('cp_'+p.id);
+    if(a==='del'){ if(!await uiAsk('Ištrinti puslapį „'+p.title+'“? Jis dings iš meniu visiems.', { yes:'Ištrinti', no:'Atšaukti', danger:true })) return;
+      const { error } = await sb.from('custom_pages').delete().eq('id', p.id); if(error){ toast('Nepavyko: '+error.message); return; }
+      CP.list = CP.list.filter(x=>x!==p); cpNav(); sysRender(true); }
+    if(a==='up'){ const i = CP.list.indexOf(p); if(i<=0) return; [CP.list[i-1], CP.list[i]] = [CP.list[i], CP.list[i-1]];
+      await Promise.all(CP.list.map((x, j)=>x.sort===j ? null : sb.from('custom_pages').update({ sort:j }).eq('id', x.id).then(()=>{ x.sort = j; }))); cpNav(); sysRender(true); }
+    if(a==='ver'){ const { data, error } = await sb.from('custom_pages_log').select('id,at,name,title').eq('page_id', p.id).order('at', { ascending:false }).limit(50);
+      if(error){ toast(error.message); return; }
+      openModal(`<h3>Versijos: ${esc(p.title)}</h3><p class="sys-faint">Kiekvienas išsaugojimas – nauja versija. Grąžinus dabartinė irgi išsaugoma istorijoje.</p>
+        ${(data||[]).length ? `<div class="cp-vers">${data.map(v=>`<div class="sysc-log"><div><b>${esc(new Date(v.at).toLocaleString('lt-LT'))}</b>${v.name ? ' · '+esc(v.name) : ''}</div><button type="button" class="btn small" data-v="${esc(String(v.id))}">${slIcon('undo')} Grąžinti šią</button></div>`).join('')}</div>` : '<p class="sys-faint">Ankstesnių versijų dar nėra.</p>'}`);
+      document.querySelectorAll('.cp-vers [data-v]').forEach(x=>x.onclick = async ()=>{
+        const r = await sb.from('custom_pages_log').select('doc').eq('id', x.dataset.v).single(); if(r.error){ toast(r.error.message); return; }
+        const u = await sb.from('custom_pages').update({ doc:r.data.doc }).eq('id', p.id).select().single(); if(u.error){ toast(u.error.message); return; }
+        Object.assign(p, u.data); closeModal(); cpNav(); sysRender(true); toast('Versija grąžinta.'); }); }
   });
 }
 function sysCenterOn(id){
@@ -47338,6 +48126,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 01:10', v:'v607', k:'new', t:'Konstruktorius: kurk savo puslapius kaip Figmoje', f:'Sistema → Puslapiai (Super Admin): kadrai ir popup langai, tekstai, mygtukai, formos, paveikslėliai, ikonos, programos duomenys ir įterpti programos puslapiai. Mygtukui galima nurodyti, ką jis daro: eiti į kitą kadrą, atidaryti popup, atidaryti programos puslapį ar atlikti bet kurią jos funkciją (iš katalogo arba įrašius savo paspaudimus), su perėjimo ir užvedimo efektais. Peržiūra, versijos, paskelbimas pasirinktoms rolėms.' },
   { d:'2026-10-21 00:05', v:'v606', k:'new', t:'Sistema → Nustatymai: perdavimo dokumentas', f:'Jei kada prireiktų perduoti programą kitam žmogui – vienu mygtuku sugeneruojamas dokumentas pagal tos dienos būklę: kur laikomas kodas, duomenų bazė ir svetainė, kokias prieigas perduoti, kaip išleisti naują versiją, visi puslapiai, lentelės, serverio funkcijos, nustatymai ir klaidos. Be slaptažodžių ir raktų reikšmių.' },
   { d:'2026-10-20 23:45', v:'v605', k:'new', t:'Sistema → Nustatymai: sąrašai ir būsenos', f:'Super Admin gali pervadinti būsenas (renginių, paėmimų, išdavimų, projektų, gedimų, prašymų, išlaidų), keisti jų spalvas ir tvarkyti laisvus sąrašus (projektų tipai, atliktų darbų rūšys) – pridėti, pašalinti, keisti tvarką. Viskas su istorija ir grąžinimu.' },
   { d:'2026-10-20 23:20', v:'v604', k:'new', t:'Sistema → Nustatymai: puslapiai, meniu ir teisės be kodo', f:'Super Admin gali pervadinti puslapius, pakeisti jų ikonas, meniu tvarką, išjungti nereikalingus puslapius ir keisti rolių teises. Kiekvienas pakeitimas įrašomas į istoriją (kas, kada, pastaba) ir jį galima grąžinti vienu mygtuku.' },

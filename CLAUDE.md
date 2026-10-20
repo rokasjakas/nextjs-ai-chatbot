@@ -12,3 +12,6 @@
 - Menu names / icons / order / turned-off pages come from `app_config` key `nav` (`CFG`, `cfgApply`, `supabase/sql/app_config.sql`),
   edited in Sistema → Nustatymai; never hard-code a rename that the Super Admin could set there. Status names / colours and
   free lists (`SYS_LISTS`, key `lists`) are overlaid on the code constants by `listsApply` – a new list goes into `SYS_LISTS`.
+- **Konstruktorius** (Sistema → Puslapiai): Super Admin's own pages in `custom_pages` (`supabase/sql/custom_pages.sql`), menu keys
+  `cp_<id>`; runtime `cpMount`/`cpDo`, editor `cpEdit` (state `CPE`). „Program functions“ are replayed clicks (`cpPlay`) on button
+  ids – the catalog is `pages[k].ui` in `site/sys-map.json`; keep useful buttons' `id`s stable so built pages keep working.
