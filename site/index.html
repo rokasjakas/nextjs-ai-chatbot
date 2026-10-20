@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-E4lTeG+QpRLQ+S5vmYjDghR4T/I0ef8eWM44ZnULKt4=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-w81RTM+q6GBQIiTRShxjKe1CXOS6XqpOrcF86EFP9tM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5483,6 +5483,86 @@ body .tabpanel.xg-panel.ev-full{padding-top:calc(10px + env(safe-area-inset-top,
 .sysl-body > .btn{align-self:flex-start;}
 /* Konstruktorius: the pages and the editor */
 /* Įrankiai → LED skaičiuoklė */
+/* Įrankiai: the tools as apps */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.tool-app{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:16px;border-radius:14px;border:1px solid var(--border);background:var(--panel);color:var(--text);text-align:left;cursor:pointer;font:inherit;transition:transform .15s ease, border-color .15s ease;}
+button.tool-app:hover{transform:translateY(-2px);border-color:var(--c);}
+.tool-app small{color:var(--text-dim);line-height:1.4;}
+.tool-ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--c, var(--accent)) 18%, transparent);color:var(--c, var(--accent));flex:0 0 auto;}
+.tool-ic svg{width:30px;height:30px;}
+.tool-ic.sm{width:32px;height:32px;border-radius:9px;} .tool-ic.sm svg{width:20px;height:20px;}
+.tool-soon{opacity:.55;cursor:default;--c:var(--slate);}
+.tool-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.tool-bar .btn svg{width:15px;height:15px;vertical-align:-3px;}
+/* LED editor (SmartLCT-like) */
+.lp{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--panel);margin-bottom:12px;}
+.lp-rib{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--panel-2);}
+.lp-grp{position:relative;display:flex;align-items:stretch;gap:2px;padding:6px 8px 18px;border-right:1px solid var(--border);}
+.lp-grp > small{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-size:10.5px;color:var(--text-faint);}
+.lp-rb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:52px;padding:4px 6px;border:1px solid transparent;border-radius:6px;background:none;color:var(--text);font:inherit;font-size:11px;cursor:pointer;}
+.lp-rb:hover{background:rgb(var(--hi-rgb) / .07);} .lp-rb.on{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 14%, transparent);}
+.lp-rb svg{width:22px;height:22px;color:var(--blue);}
+.lp-pb{min-width:40px;}
+.lp-rb .lp-pat{width:26px;height:26px;}
+.lp-pat rect{fill:var(--panel-3);stroke:var(--border-2);stroke-width:.6;}
+.lp-pat polyline{fill:none;stroke:var(--amber);stroke-width:2;stroke-linejoin:round;}
+.lp-types{display:flex;gap:2px;max-width:520px;overflow-x:auto;}
+.lp-type{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;max-width:78px;padding:4px;border:1px solid transparent;border-radius:6px;background:none;color:var(--text);font:inherit;font-size:10.5px;cursor:pointer;}
+.lp-type.on{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 14%, transparent);}
+.lp-type i{display:block;height:24px;background:#d7d9dc;border-radius:2px;}
+.lp-type span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lp-main{display:grid;grid-template-columns:220px minmax(0,1fr) 270px;min-height:520px;}
+.lp-dev,.lp-props{padding:10px;overflow:auto;max-height:72vh;}
+.lp-dev{border-right:1px solid var(--border);} .lp-props{border-left:1px solid var(--border);}
+.lp-h{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);font-weight:700;margin:8px 0 6px;}
+.lp-unit{margin-bottom:8px;} .lp-uh{font-size:12px;margin-bottom:4px;}
+.lp-ports{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.lp-port{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 0 3px;border:1px solid var(--border-2);border-radius:6px;background:var(--panel-2);color:var(--text);cursor:pointer;font:inherit;font-size:11px;}
+.lp-port i{width:14px;height:4px;border-radius:2px;}
+.lp-port small{font-size:9.5px;color:var(--text-dim);}
+.lp-port.on{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber);}
+.lp-port.over{border-color:var(--danger);} .lp-port.over small{color:var(--danger);}
+.lp-port.bk{opacity:.45;}
+.lp-pn{font-weight:700;}
+.lp-uact{display:flex;gap:4px;margin:6px 0;} .lp-uact .btn svg{width:14px;height:14px;vertical-align:-2px;}
+.lp-tip{line-height:1.45;margin-top:10px;}
+.lp-cv{position:relative;overflow:auto;background:#5d6168;max-height:72vh;cursor:default;touch-action:none;}
+.lp-cv[data-tool="add"]{cursor:copy;} .lp-cv[data-tool="wire"]{cursor:crosshair;}
+.lp-zoom{position:relative;margin:10px;}
+.lp-svg{width:100%;height:100%;display:block;user-select:none;}
+.lp-src{fill:none;stroke:#e9ebee;stroke-width:2;stroke-dasharray:10 7;vector-effect:non-scaling-stroke;opacity:.8;}
+.lp-gridl{fill:none;stroke:rgba(255,255,255,.12);stroke-width:1;vector-effect:non-scaling-stroke;}
+.lp-cab rect{fill:#c3c6cb;stroke:#6b7078;stroke-width:1.5;vector-effect:non-scaling-stroke;}
+.lp-cab.on rect{fill-opacity:.85;}
+.lp-cab.sel rect{stroke:#fff;stroke-width:3;}
+.lp-cab circle{fill:#fff;fill-opacity:.55;stroke:#555;stroke-width:1;vector-effect:non-scaling-stroke;}
+.lp-cab text{text-anchor:middle;fill:#111;font-weight:700;font-family:system-ui,sans-serif;pointer-events:none;}
+.lp-line{fill:none;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke;pointer-events:none;}
+.lp-start,.lp-end{fill:#fff;stroke:#111;stroke-width:1;vector-effect:non-scaling-stroke;pointer-events:none;}
+.lp-props .field,.lp-dev .field{margin:0 0 6px;}
+.lp-pg{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:4px 0;flex-wrap:wrap;font-size:12.5px;}
+.lp-pg .chip{padding:3px 8px;min-height:0;font-size:11.5px;}
+.lp-grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 8px;}
+.lp-grid2 input,.lp-grid2 select,.lp-props select,.lp-props input[type="text"],.lp-props input[type="number"],.lp-dev select{width:100%;min-width:0;box-sizing:border-box;} .lp-grid2 .field{margin:0;} .lp-grid2 .wide{grid-column:1 / -1;}
+.lp-kv{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:2px 0;} .lp-kv span{color:var(--text-dim);}
+.lp-bot{border-top:1px solid var(--border);padding:10px 12px;background:var(--panel-2);}
+.lp-warn,.lp-ok{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;padding:6px 8px;border-radius:6px;margin-bottom:8px;}
+.lp-warn{background:color-mix(in srgb, var(--warn) 14%, transparent);} .lp-ok{background:color-mix(in srgb, var(--ok) 12%, transparent);}
+.lp-warn svg,.lp-ok svg{width:16px;height:16px;flex:0 0 auto;color:var(--warn);} .lp-ok svg{color:var(--ok);}
+.lp-sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-bottom:8px;}
+.lp-sum > span{display:flex;flex-direction:column;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--panel);min-width:0;}
+.lp-sum small{font-size:11px;color:var(--text-dim);} .lp-sum b{font-size:15px;} .lp-sum em{font-style:normal;font-size:11px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;}
+.lp-ub{margin-top:6px;font-size:12px;} .lp-ub > b{display:block;margin-bottom:3px;}
+.lp-br{display:grid;grid-template-columns:96px repeat(4, minmax(0,1fr));gap:6px;align-items:center;margin:2px 0;}
+.lp-br > span:first-child{color:var(--text-dim);}
+.lp-bar{position:relative;height:16px;border-radius:3px;background:var(--panel-3);overflow:hidden;}
+.lp-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--blue);}
+.lp-bar.over i{background:var(--danger);}
+.lp-bar.bk{opacity:.5;}
+.lp-bar em{position:relative;font-style:normal;font-size:10.5px;padding-left:4px;line-height:16px;}
+.lp-pats{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.lp-open .btn svg{width:14px;height:14px;vertical-align:-2px;}
+@media (max-width:1000px){ .lp-main{grid-template-columns:minmax(0,1fr);} .lp-dev,.lp-props{max-height:none;border:0;border-bottom:1px solid var(--border);} .lp-cv{min-height:360px;order:-1;} .lp-br{grid-template-columns:70px repeat(4, minmax(0,1fr));} }
 .tools-nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;}
 .tools-nav .chip svg{width:15px;height:15px;vertical-align:-3px;}
 .led-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
@@ -23199,7 +23279,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v611';
+const APP_VER = 'v612';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -47932,138 +48012,394 @@ function ledCalc(s, dev, withMap){
 }
 const ledN = v=>Math.round(v).toLocaleString('lt-LT');
 const ledF = (v, d)=>v.toLocaleString('lt-LT', { minimumFractionDigits:d, maximumFractionDigits:d });
-function ledSvg(r, view){
-  if(!r.map) return '';
-  const C = r.C, R = r.R, cw = 100, ch = Math.round(100*r.cab.mh/r.cab.mw), rear = view==='rear', X = c=>(rear ? C-1-c : c)*cw;
-  const col = i=>`hsl(${(i*137.508)%360} 62% 55%)`;
-  let cells = '', lines = '';
-  r.map.forEach(p=>{
-    p.cells.forEach((q, k)=>{ cells += `<g><rect x="${X(q.c)+2}" y="${q.r*ch+2}" width="${cw-4}" height="${ch-4}" rx="6" fill="${col(p.i)}" fill-opacity=".28" stroke="${col(p.i)}" stroke-width="2"/>
-      <text x="${X(q.c)+cw/2}" y="${q.r*ch+ch*.36}" text-anchor="middle" font-size="${Math.min(22, cw/4.5)}" fill="currentColor">${p.label}-${k+1}</text></g>`; });
-    const pts = p.cells.map(q=>`${X(q.c)+cw/2},${q.r*ch+ch*.68}`).join(' '), s0 = p.cells[0];   // the cable runs low in the cabinet, the number stays readable above it
-    lines += `<polyline points="${pts}" fill="none" stroke="${col(p.i)}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>
-      <circle cx="${X(s0.c)+cw/2}" cy="${s0.r*ch+ch*.68}" r="11" fill="${col(p.i)}"/>`;
-  });
-  return `<svg class="led-svg" viewBox="-4 -4 ${C*cw+8} ${R*ch+8}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kabinetų jungimo schema">${cells}${lines}</svg>`;
-}
-function ledResultHtml(r, s){
-  if(r.err) return `<div class="sys-note">${slIcon('alert')} ${esc(r.err)}</div>`;
-  const tile = (l, v, sub)=>`<div class="led-tile"><span>${esc(l)}</span><b>${v}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
-  const unit = r.dev.kind==='mod' ? `${r.need} / ${r.have} kortų` : `${r.need} × ${esc(r.dev.name)}`;
-  return `<div class="led-tiles">
-      ${tile('Raiška', `${ledN(r.W)} × ${ledN(r.H)}`, `${ledN(r.px)} px · ${ledF(r.W/r.H, 2)}:1`)}
-      ${tile('Dydis', `${ledF(r.mW, 2)} × ${ledF(r.mH, 2)} m`, `${ledF(r.area, 1)} m² · ${ledF(r.diag, 0)}″ · P${ledF(r.pitch, 2)}`)}
-      ${tile('Kabinetai', `${r.C} × ${r.R} = ${r.n}`, esc(r.cab.name))}
-      ${tile('Prievadai', String(r.ports)+(r.bk && r.bk!=='dev' ? ` + ${r.ports} atsarg.` : ''), `iki ${r.maxCab} kab. į prievadą · ${ledN(r.portCap)} px/prievadą${r.rect ? ' · apkrova pagal stačiakampį' : ''}`)}
-      ${tile(r.dev.kind==='mod' ? 'Išvesties kortos' : 'Įrenginiai', unit, `apkrova ${ledF(r.load*100, 0)} %`)}
-      ${tile('Svoris', `${ledF(r.kg, 0)} kg`, '')}
-      ${tile('Galia', `${ledF(r.wmax/1000, 1)} kW maks.`, `vid. ${ledF(r.wavg/1000, 1)} kW`)}
-      ${tile('Srovė (maks.)', `${ledF(r.a1, 1)} A`, `3 fazės: ${ledF(r.a3, 1)} A/fazei${r.per16 ? ` · iki ${r.per16} kab. į 16 A liniją` : ''}`)}
-    </div>
-    ${r.warn.length ? `<div class="led-warns">${r.warn.map(w=>`<div class="sys-note">${slIcon('alert')} ${esc(w)}</div>`).join('')}</div>` : ''}`;
-}
-function ledPortsHtml(r){
-  if(!r.map) return '';
-  return `<div class="table-wrap"><table class="led-pt"><thead><tr><th>Prievadas</th>${r.bk ? '<th>Atsarginis</th>' : ''}<th>${r.dev.kind==='mod' ? 'Korta' : 'Įrenginys'}</th><th>Kabinetai</th><th>Apkrova, px</th><th>Talpa, px</th><th>Apkrova</th></tr></thead><tbody>
-    ${r.map.map(p=>`<tr><td><span class="led-dot" style="background:hsl(${(p.i*137.508)%360} 62% 55%)"></span><b>${p.label}</b></td>${r.bk ? `<td>${esc(p.bk)}</td>` : ''}<td>${p.u+1}</td><td>${p.cells.length}</td><td>${ledN(p.px)}</td><td>${ledN(p.cap)}</td>
-      <td><span class="led-bar ${p.use>1 ? 'over' : ''}"><i style="width:${Math.min(100, p.use*100)}%"></i></span> ${ledF(p.use*100, 0)} %</td></tr>`).join('')}</tbody></table></div>`;
-}
-function ledCompareHtml(s){
-  const rows = ledDb().devices.map(d=>{ const r = ledCalc(Object.assign({}, s, d.kind==='mod' ? {} : {}), d, false); return { d, r }; })
-    .sort((a, b)=>(!!a.r.err - !!b.r.err) || (a.r.need - b.r.need) || (b.r.load - a.r.load));
-  return `<div class="table-wrap"><table class="led-pt"><thead><tr><th>Įrenginys</th><th>Prievadų (turi)</th><th>Reikia</th><th>Apkrova</th><th></th></tr></thead><tbody>
-    ${rows.map(({ d, r })=>{ const ok = !r.err && (d.kind==='mod' ? r.need<=r.have : r.need===1);
-      return `<tr class="${d.id===s.dev ? 'on' : ''}" data-ldev="${esc(d.id)}"><td><b>${esc(d.name)}</b>${d.check ? ' <small class="sys-faint">(patikrinti)</small>' : ''}</td>
-        <td>${d.kind==='mod' ? `${d.card.ports} / kortai` : d.ports}</td><td>${r.err ? '—' : d.kind==='mod' ? `${r.need} kort.` : `${r.need} vnt.`}</td><td>${r.err ? '—' : ledF(r.load*100, 0)+' %'}</td>
-        <td>${r.err ? '<span class="led-no">netinka</span>' : ok ? '<span class="led-ok">tinka</span>' : `<span class="led-mid">${d.kind==='mod' ? 'trūksta kortų' : 'keli vnt.'}</span>`}</td></tr>`; }).join('')}</tbody></table></div>`;
-}
-/* ---------- the page ---------- */
-const TOOLS = { tool:'led' };
+/* ---------- the page: Įrankiai – the tools as apps; a tool opens on its own page ---------- */
+const TOOL_APPS = [
+  { k:'led', t:'LED skaičiuoklė', d:'LED ekrano projektas kaip SmartLCT / UNICO: kabinetai, jungimas, NovaStar procesoriai, apkrova, galia.', i:'screen', c:'#F35E7D' },
+];
+const TOOLS = { tool:(()=>{ try{ return sessionStorage.getItem('esTool')||''; }catch(e){ return ''; } })() };
+function toolOpen(k){ TOOLS.tool = k; try{ sessionStorage.setItem('esTool', k); }catch(e){} renderToolsTab(); window.scrollTo(0, 0); }
 function renderToolsTab(){
-  const main = document.getElementById('main');
-  main.innerHTML = `<div class="tabpanel tools-page">
-    <div class="tools-nav">${[['led', 'LED skaičiuoklė', 'screen']].map(([k, l, i])=>`<button type="button" class="chip ${TOOLS.tool===k ? 'active' : ''}" data-tool="${k}">${slIcon(i)} ${esc(l)}</button>`).join('')}
-      <span class="sys-faint">Daugiau įrankių atsiras čia.</span></div>
-    <div id="toolBody"></div></div>`;
-  main.querySelectorAll('[data-tool]').forEach(b=>b.onclick = ()=>{ TOOLS.tool = b.dataset.tool; renderToolsTab(); });
-  ledRender();
+  const main = document.getElementById('main'), app = TOOL_APPS.find(a=>a.k===TOOLS.tool);
+  if(!app){
+    main.innerHTML = `<div class="tabpanel tools-page"><div class="tools-grid">${TOOL_APPS.map(a=>`<button type="button" class="tool-app" data-tool="${a.k}" style="--c:${a.c}"><span class="tool-ic">${slIcon(a.i)}</span><b>${esc(a.t)}</b><small>${esc(a.d)}</small></button>`).join('')}
+      <div class="tool-app tool-soon"><span class="tool-ic">${slIcon('plus')}</span><b>Daugiau įrankių</b><small>Atsiras čia.</small></div></div></div>`;
+    main.querySelectorAll('[data-tool]').forEach(b=>b.onclick = ()=>toolOpen(b.dataset.tool));
+    return;
+  }
+  main.innerHTML = `<div class="tabpanel tools-page tool-open"><div class="tool-bar"><button type="button" class="btn small" id="toolBack">${slIcon('chevl')} Įrankiai</button><span class="tool-ic sm" style="--c:${app.c}">${slIcon(app.i)}</span><b>${esc(app.t)}</b>
+    ${app.k==='led' && sysCan() ? `<button type="button" class="btn small" id="ledDbEd" style="margin-left:auto;" title="Įrenginių ir kabinetų bazė (Super Admin)">${slIcon('database')} Bazė</button>` : ''}</div><div id="toolBody"></div></div>`;
+  document.getElementById('toolBack').onclick = ()=>toolOpen('');
+  const db = document.getElementById('ledDbEd'); if(db) db.onclick = ledDbEditor;
+  if(app.k==='led') ledRender();
 }
-function ledFormHtml(){
-  const s = LED, db = ledDb(), dev = db.devices.find(d=>d.id===s.dev) || db.devices[0], fams = [...new Set(db.devices.map(d=>d.fam||''))];
-  const opt = (v, list)=>list.map(([k, l])=>`<option value="${esc(k)}" ${String(v)===String(k) ? 'selected' : ''}>${esc(l)}</option>`).join('');
-  const saved = (()=>{ try{ return JSON.parse(localStorage.getItem('ledCalcSaved')||'[]'); }catch(e){ return []; } })();
-  return `<div class="card led-form">
-    <div class="led-h"><h2 class="section-title" style="margin:0;">LED skaičiuoklė</h2>
-      <span class="led-acts">${saved.length ? `<select id="ledLoad"><option value="">Išsaugoti…</option>${saved.map((x, i)=>`<option value="${i}">${esc(x.name)}</option>`).join('')}</select>` : ''}
-        <button type="button" class="btn small" id="ledSave">${slIcon('save')} Išsaugoti</button><button type="button" class="btn small" id="ledPrint">${slIcon('print')} PDF / spausdinti</button>
-        ${sysCan() ? `<button type="button" class="btn small" id="ledDbEd" title="Įrenginių ir kabinetų bazė (Super Admin)">${slIcon('database')} Bazė</button>` : ''}</span></div>
-    <div class="led-grid">
-      <label class="field">Kabinetas<select id="ledCab">${opt(s.cab, db.panels.map(p=>[p.id, p.name+(p.check ? ' ≈' : '')]).concat([['custom', 'Savas kabinetas…']]))}</select></label>
-      ${s.cab==='custom' ? `<div class="led-custom">${[['pw', 'Plotis, px'], ['ph', 'Aukštis, px'], ['mw', 'Plotis, mm'], ['mh', 'Aukštis, mm'], ['kg', 'Svoris, kg'], ['wmax', 'Galia maks., W'], ['wavg', 'Galia vid., W']].map(([k, l])=>`<label class="field">${l}<input type="number" min="0" step="any" data-cu="${k}" value="${esc(s.custom[k])}"></label>`).join('')}</div>` : ''}
-      <label class="field">Stulpeliai (plotis)<input type="number" id="ledCols" min="1" max="200" value="${s.cols}"></label>
-      <label class="field">Eilės (aukštis)<input type="number" id="ledRows" min="1" max="200" value="${s.rows}"></label>
-      <label class="field">Kadrų dažnis<select id="ledFps">${opt(s.fps, LED_FPS.map(f=>[f, f+' Hz']))}</select></label>
-      <label class="field">Spalvų gylis<select id="ledBit">${opt(s.bit, [[8, '8 bit'], [10, '10 bit'], [12, '12 bit']])}</select></label>
-      <label class="field">Jungimo kryptis<select id="ledDir" ${s.lowlat ? 'disabled' : ''}>${opt(s.lowlat ? 'v' : s.dir, [['h', 'Horizontaliai (eilėmis)'], ['v', 'Vertikaliai (stulpeliais)']])}</select></label>
-      <label class="field">Pradžia<select id="ledStart">${opt(s.start, LED_START)}</select></label>
-      <label class="field">Jungimas<select id="ledMode">${opt(s.mode, [['fill', 'Ištisai (kaip Auto Connect)'], ['lines', 'Pilnomis eilėmis / stulpeliais']])}</select></label>
-      <label class="field">Procesorius / siuntimo įrenginys<select id="ledDev">${fams.map(f=>`<optgroup label="${esc(f||'Kita')}">${opt(s.dev, db.devices.filter(d=>(d.fam||'')===f).map(d=>[d.id, d.name+(d.check ? ' ≈' : '')]))}</optgroup>`).join('')}</select></label>
-      ${dev.kind==='mod' ? `<label class="field">Išvesties kortų rėme<input type="number" id="ledCards" min="1" max="40" value="${s.cards}"></label>` : ''}
-      <label class="field">Atsarga (hot backup)<select id="ledBk">${opt(s.bk || (s.backup===true ? 'split' : ''), LED_BK)}</select></label>
-      <label class="field">Prievado apkrova skaičiuojama<select id="ledLoadMode">${opt(s.load||'auto', [['auto', 'Automatiškai (UNICO įrenginiams – stačiakampis)'], ['cab', 'Pagal kabinetus (SmartLCT, UNICO Free Topology)'], ['rect', 'Pagal apimantį stačiakampį (UNICO numatyta)']])}</select></label>
-      <label class="checkbox-row"><input type="checkbox" id="ledD3" ${s.d3 ? 'checked' : ''}> 3D (side-by-side / top-bottom – talpa perpus)</label>
-      <label class="checkbox-row"><input type="checkbox" id="ledLow" ${s.lowlat ? 'checked' : ''}> Mažas vėlinimas (low latency)</label>
-    </div></div>`;
+/* ---------- LED skaičiuoklė: the editor (like SmartLCT's screen page) ----------
+   A free canvas in pixels: cabinets of several types placed by hand or in rows, a device with its ports on the left,
+   the cabling drawn by hand (pick a port, click / drag over the cabinets in the order the signal goes) or with one of
+   the 8 snake patterns, the ports' load at the bottom, the canvas and project settings on the right. */
+const LP_PATTERNS = [['tl', 'h'], ['tl', 'v'], ['tr', 'h'], ['tr', 'v'], ['bl', 'h'], ['bl', 'v'], ['br', 'h'], ['br', 'v']];
+function lpNew(o){ return Object.assign({ name:'Projektas', dev:'h16', units:3, fps:60, bit:8, d3:false, bk:'', load:'auto', lowlat:false, srcW:3840, srcH:2160,
+  view:'front', snap:'edge', showGrid:true, showNo:true, auto:true, cur:'g26', customs:[], cabs:[], ports:{} }, o||{}); }
+let LP = (()=>{ try{ const x = JSON.parse(localStorage.getItem('ledProj')||'null'); if(x && Array.isArray(x.cabs)) return lpNew(x); }catch(e){} return null; })();
+const LPS = { tool:'select', port:null, sel:new Set(), z:0, hist:[], fut:[], drag:null };
+function lpSave(){ try{ localStorage.setItem('ledProj', JSON.stringify(LP)); }catch(e){} }
+function lpSnap(){ LPS.hist.push(JSON.stringify(LP)); if(LPS.hist.length>60) LPS.hist.shift(); LPS.fut = []; }
+function lpUndo(back){ const a = back ? LPS.hist : LPS.fut, b = back ? LPS.fut : LPS.hist; if(!a.length) return; b.push(JSON.stringify(LP)); LP = lpNew(JSON.parse(a.pop())); LPS.sel.clear(); lpSave(); lpDraw(); }
+const lpPanels = ()=>ledDb().panels.concat(LP.customs||[]);
+const lpPanel = id=>lpPanels().find(p=>p.id===id) || lpPanels()[0];
+const lpDev = ()=>ledDb().devices.find(d=>d.id===LP.dev) || ledDb().devices[0];
+const lpCab = id=>LP.cabs.find(c=>c.id===id);
+const lpCol = i=>`hsl(${(i*137.508)%360} 65% 55%)`;
+// the device's ports: physical index g = unit × ports + port; backup ports (Split: 2nd half, Sequential: every 2nd) are not wired
+function lpPortInfo(){
+  const d = lpDev(), per = d.kind==='mod' ? d.card.ports : d.ports, units = Math.max(1, LP.units|0), half = Math.floor(per/2), list = [];
+  for(let u = 0; u<units; u++) for(let q = 0; q<per; q++){
+    const g = u*per + q, backup = (LP.bk==='split' && q>=half) || (LP.bk==='seq' && q%2===1);
+    const partner = LP.bk==='split' ? (q<half ? q+half : q-half) : LP.bk==='seq' ? (q%2 ? q-1 : q+1) : -1;
+    list.push({ g, u, q, label:`${u+1}-${q+1}`, backup, partner:partner>=0 ? `${u+1}-${partner+1}` : '' });
+  }
+  return { per, units, list };
 }
+function lpK(){ return (60 / Math.max(1, LP.fps)) * (LP.bit>8 ? .5 : 1) * (LP.d3 ? .5 : 1); }
+function lpRect(){ return LP.load==='rect' || ((LP.load||'auto')==='auto' && !!lpDev().unico); }
+function lpBox(ids){ let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; ids.forEach(id=>{ const c = lpCab(id); if(!c) return; const p = lpPanel(c.t); x0 = Math.min(x0, c.x); y0 = Math.min(y0, c.y); x1 = Math.max(x1, c.x+p.pw); y1 = Math.max(y1, c.y+p.ph); }); return x1<x0 ? null : { x0, y0, x1, y1, w:x1-x0, h:y1-y0 }; }
+// one port: its load (the cabinets' pixels, or the rectangle around them – UNICO) and its capacity (low latency: (1 − Y/H) × 650 000)
+function lpPortLoad(ids){
+  if(!ids || !ids.length) return { load:0, cap:Math.floor(LED_PORT_PX*lpK()) };
+  const b = lpBox(ids), load = lpRect() ? b.w*b.h : ids.reduce((a, id)=>{ const c = lpCab(id); if(!c) return a; const p = lpPanel(c.t); return a + p.pw*p.ph; }, 0);
+  const cap = Math.floor(LED_PORT_PX*lpK() * (LP.lowlat ? Math.max(0, 1 - Math.max(0, b.y0)/Math.max(1, LP.srcH)) : 1));
+  return { load, cap };
+}
+function lpCleanPorts(){ Object.keys(LP.ports).forEach(g=>{ LP.ports[g] = (LP.ports[g]||[]).filter(id=>lpCab(id)); if(!LP.ports[g].length) delete LP.ports[g]; }); }
+const lpPortOf = id=>{ for(const g in LP.ports){ const i = LP.ports[g].indexOf(id); if(i>=0) return { g:+g, i }; } return null; };
+function lpUnwire(ids){ ids.forEach(id=>{ const p = lpPortOf(id); if(p){ LP.ports[p.g].splice(p.i, 1); } }); lpCleanPorts(); }
+// the next port that can take cabinets after g (skipping backup ports)
+function lpNextPort(g){ const L = lpPortInfo().list.filter(p=>!p.backup); const i = L.findIndex(p=>p.g===g); return L.slice(i+1).find(p=>!(LP.ports[p.g]||[]).length) || null; }
+function lpWire(g, id){
+  const cur = lpPortOf(id); if(cur && cur.g===g) return g;
+  lpUnwire([id]); const list = LP.ports[g] = LP.ports[g]||[];
+  list.push(id);
+  const L = lpPortLoad(list);
+  if(L.load > L.cap && list.length>1 && LP.auto){ list.pop(); const nx = lpNextPort(g); if(!nx){ toast('Laisvų prievadų nebėra – pridėk įrenginį ar kortą.'); return g; } (LP.ports[nx.g] = LP.ports[nx.g]||[]).push(id); LPS.port = nx.g; return nx.g; }
+  return g;
+}
+// a snake pattern over the chosen cabinets (by their rows / columns), starting from the chosen port
+function lpPattern(start, dir, ids){
+  const cs = ids.map(lpCab).filter(Boolean); if(!cs.length) return;
+  const key = c=>dir==='h' ? c.y : c.x, pos = c=>dir==='h' ? c.x : c.y, tol = 4, lines = [];
+  cs.slice().sort((a, b)=>key(a)-key(b)).forEach(c=>{ const l = lines.find(L=>Math.abs(key(L[0])-key(c))<=tol); if(l) l.push(c); else lines.push([c]); });
+  const firstLow = dir==='h' ? start[0]==='t' : start[1]==='l', posLow = dir==='h' ? start[1]==='l' : start[0]==='t';
+  if(!firstLow) lines.reverse();
+  const order = []; lines.forEach((L, i)=>{ L.sort((a, b)=>pos(a)-pos(b)); if(!posLow) L.reverse(); if(i%2===1) L.reverse(); order.push(...L); });
+  let g = LPS.port; if(g==null || (lpPortInfo().list.find(p=>p.g===g)||{}).backup){ const f = lpPortInfo().list.find(p=>!p.backup && !(LP.ports[p.g]||[]).length); if(!f){ toast('Laisvų prievadų nebėra.'); return; } g = f.g; }
+  lpUnwire(order.map(c=>c.id)); if((LP.ports[g]||[]).length){ const nx = lpNextPort(g); if(nx) g = nx.g; }
+  const was = LP.auto; LP.auto = true; order.forEach(c=>{ g = lpWire(g, c.id); }); LP.auto = was; LPS.port = g;
+}
+function lpAddGrid(t, cols, rows, x0, y0){
+  const p = lpPanel(t), ids = [];
+  for(let r = 0; r<rows; r++) for(let c = 0; c<cols; c++){ const id = uid('cb'); LP.cabs.push({ id, t, x:x0 + c*p.pw, y:y0 + r*p.ph }); ids.push(id); }
+  return ids;
+}
+/* ---------- figures ---------- */
+function lpTotals(){
+  const pi = lpPortInfo(), d = lpDev(), k = lpK(), all = LP.cabs.map(c=>c.id), b = lpBox(all);
+  const T = { n:LP.cabs.length, px:0, kg:0, wmax:0, wavg:0, area:0, types:{}, b, ports:[], warn:[] };
+  LP.cabs.forEach(c=>{ const p = lpPanel(c.t); T.px += p.pw*p.ph; T.kg += +p.kg||0; T.wmax += +p.wmax||0; T.wavg += +p.wavg||0; T.area += (p.mw*p.mh)/1e6; T.types[p.name] = (T.types[p.name]||0)+1; });
+  pi.list.forEach(p=>{ const ids = LP.ports[p.g]||[]; const L = lpPortLoad(ids); T.ports.push(Object.assign({}, p, L, { ids, use:ids.length ? L.load/L.cap : 0 })); });
+  const used = T.ports.filter(p=>p.ids.length), over = used.filter(p=>p.use>1), free = LP.cabs.filter(c=>!lpPortOf(c.id));
+  T.used = used.length; T.over = over.length; T.free = free.length;
+  if(over.length) T.warn.push(`${over.length} prievad. viršija apkrovą: ${over.map(p=>p.label).join(', ')}.`);
+  if(free.length) T.warn.push(`${free.length} kabin. neprijungti.`);
+  if(used.some(p=>p.backup)) T.warn.push('Kabinetai prijungti prie atsarginio prievado.');
+  if(b){ if(b.w > LP.srcW || b.h > LP.srcH) T.warn.push(`Ekranas (${b.w}×${b.h}) didesnis už šaltinio raišką ${LP.srcW}×${LP.srcH}.`);
+    if(d.maxW && b.x1 > d.maxW*Math.max(1, d.kind==='mod' ? 1 : LP.units)) T.warn.push(`Plotis viršija ${d.name} galimybes (${d.maxW} px vienam įrenginiui).`); }
+  const unitPx = Math.floor((d.kind==='mod' ? d.card.maxPx : d.maxPx) * k);
+  for(let u = 0; u<pi.units; u++){ const sum = T.ports.filter(p=>p.u===u).reduce((a, p)=>a+p.load, 0); if(sum > unitPx) T.warn.push(`${d.kind==='mod' ? 'Korta' : 'Įrenginys'} ${u+1}: ${ledN(sum)} px viršija ${ledN(unitPx)} px.`); }
+  if(LP.lowlat && !d.ll) T.warn.push(`${d.name} mažo vėlinimo režimo gali nepalaikyti.`);
+  if(d.check) T.warn.push(`${d.name} duomenis verta sutikrinti su gamintojo specifikacija.`);
+  return T;
+}
+/* ---------- drawing ---------- */
+function lpVB(){ const b = lpBox(LP.cabs.map(c=>c.id)); const x1 = Math.max(LP.srcW, b ? b.x1 : 0), y1 = Math.max(LP.srcH, b ? b.y1 : 0), x0 = Math.min(0, b ? b.x0 : 0), y0 = Math.min(0, b ? b.y0 : 0), m = Math.max(x1-x0, y1-y0)*.04; return { x:x0-m, y:y0-m, w:x1-x0+2*m, h:y1-y0+2*m }; }
+function lpSvg(forPrint){
+  const vb = lpVB(), rear = LP.view==='rear', M = 2*vb.x + vb.w, X = (x, w)=>rear ? M - x - w : x;
+  const pi = lpPortInfo(), idx = {}; pi.list.forEach((p, i)=>idx[p.g] = i);
+  const fs = Math.max(10, Math.min(...LP.cabs.map(c=>lpPanel(c.t).ph), 200)/6);
+  let out = `<rect x="${X(0, LP.srcW)}" y="0" width="${LP.srcW}" height="${LP.srcH}" class="lp-src"/>`;
+  if(LP.showGrid && !forPrint){ const g0 = LP.cabs[0] ? lpPanel(LP.cabs[0].t) : lpPanel(LP.cur); out += `<rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="url(#lpGrid)"/>`;
+    out = `<defs><pattern id="lpGrid" width="${g0.pw}" height="${g0.ph}" patternUnits="userSpaceOnUse" x="${rear ? M % g0.pw : 0}"><path d="M ${g0.pw} 0 L 0 0 0 ${g0.ph}" class="lp-gridl"/></pattern></defs>` + out; }
+  LP.cabs.forEach(c=>{ const p = lpPanel(c.t), w = lpPortOf(c.id), col = w ? lpCol(idx[w.g]) : '', x = X(c.x, p.pw), sel = LPS.sel.has(c.id);
+    const lab = w ? `${(pi.list.find(q=>q.g===w.g)||{}).label}-${w.i+1}` : '';
+    out += `<g class="lp-cab ${sel ? 'sel' : ''} ${w ? 'on' : ''}" data-cab="${c.id}"><rect x="${x+1}" y="${c.y+1}" width="${p.pw-2}" height="${p.ph-2}" ${w ? `style="fill:${col}"` : ''}/>
+      <circle cx="${x+p.pw/2}" cy="${c.y+p.ph/2}" r="${Math.min(p.pw, p.ph)*.16}"/>${LP.showNo && lab ? `<text x="${x+p.pw/2}" y="${c.y+p.ph*.86}" font-size="${fs}">${lab}</text>` : ''}</g>`; });
+  Object.keys(LP.ports).forEach(g=>{ const ids = LP.ports[g]; if(!ids.length) return; const col = lpCol(idx[g]);
+    const pts = ids.map(id=>{ const c = lpCab(id), p = lpPanel(c.t); return [X(c.x, p.pw)+p.pw/2, c.y+p.ph/2]; });
+    const s0 = pts[0], e = pts[pts.length-1], r = Math.min(...ids.map(id=>{ const p = lpPanel(lpCab(id).t); return Math.min(p.pw, p.ph); }))*.16;
+    out += `<polyline points="${pts.map(q=>q.join(',')).join(' ')}" class="lp-line" style="stroke:${col}" marker-mid="url(#lpArr)"/>
+      <path d="M ${s0[0]-r} ${s0[1]-r} L ${s0[0]+r} ${s0[1]} L ${s0[0]-r} ${s0[1]+r} Z" class="lp-start"/>${pts.length>1 ? `<rect x="${e[0]-r*.8}" y="${e[1]-r*.8}" width="${r*1.6}" height="${r*1.6}" class="lp-end"/>` : ''}`; });
+  return `<svg class="lp-svg" viewBox="${vb.x} ${vb.y} ${vb.w} ${vb.h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LED ekrano jungimo schema"><defs><marker id="lpArr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#fff"/></marker></defs>${out}</svg>`;
+}
+// a pattern's little picture (a 3×3 cabinet grid and the way the cable runs)
+function lpPatternPic(start, dir){
+  const cells = [], C = 3; for(let r = 0; r<C; r++) for(let c = 0; c<C; c++) cells.push({ c, r });
+  const top = start[0]==='t', left = start[1]==='l', pts = [];
+  for(let l = 0; l<C; l++) for(let i = 0; i<C; i++){ const p = l%2 ? C-1-i : i; const c = dir==='h' ? (left ? p : C-1-p) : (left ? l : C-1-l), r = dir==='h' ? (top ? l : C-1-l) : (top ? p : C-1-p); pts.push(`${c*10+5},${r*10+5}`); }
+  return `<svg viewBox="0 0 30 30" class="lp-pat" aria-hidden="true">${cells.map(q=>`<rect x="${q.c*10+1}" y="${q.r*10+1}" width="8" height="8" rx="1"/>`).join('')}<polyline points="${pts.join(' ')}"/></svg>`;
+}
+// the device's ports on the left (colour = its cable, % = its load); a backup port is marked A
+function lpUnitsHtml(){
+  const d = lpDev(), pi = lpPortInfo(), T = lpTotals();
+  const portBtn = p=>{ const ids = LP.ports[p.g]||[], L = T.ports.find(x=>x.g===p.g), i = pi.list.indexOf(p);
+    return `<button type="button" class="lp-port ${LPS.port===p.g ? 'on' : ''} ${p.backup ? 'bk' : ''} ${L && L.use>1 ? 'over' : ''}" data-port="${p.g}" title="${esc(p.backup ? 'Atsarginis prievadas (saugo '+p.partner+')' : 'Prievadas '+p.label+(ids.length ? ' · '+ids.length+' kab. · '+ledF(L.use*100, 0)+' %' : '')+(p.partner ? ' · atsarginis '+p.partner : ''))}">
+      <span class="lp-pn">${p.q+1}</span>${p.backup ? '<small>A</small>' : `<i style="background:${lpCol(i)}"></i>`}${ids.length ? `<small>${ledF(L.use*100, 0)}%</small>` : ''}</button>`; };
+  return Array.from({ length:pi.units }, (_, u)=>`<div class="lp-unit"><div class="lp-uh"><b>${d.kind==='mod' ? 'Korta '+(u+1) : esc(d.name)+' #'+(u+1)}</b></div><div class="lp-ports">${pi.list.filter(p=>p.u===u).map(portBtn).join('')}</div></div>`).join('');
+}
+function lpHtml(){
+  const d = lpDev(), pi = lpPortInfo(), opt = (v, list)=>list.map(([k, l])=>`<option value="${esc(k)}" ${String(v)===String(k) ? 'selected' : ''}>${esc(l)}</option>`).join('');
+  return `<div class="lp">
+    <div class="lp-rib">
+      <div class="lp-grp"><button type="button" class="lp-rb" data-a="new">${slIcon('addbox')}<span>Naujas</span></button><button type="button" class="lp-rb" data-a="open">${slIcon('folder')}<span>Atidaryti</span></button><button type="button" class="lp-rb" data-a="save">${slIcon('save')}<span>Išsaugoti</span></button><button type="button" class="lp-rb" data-a="print">${slIcon('print')}<span>PDF</span></button><small>Projektas</small></div>
+      <div class="lp-grp"><button type="button" class="lp-rb" data-a="batch">${slIcon('grid')}<span>Pridėti eilėmis</span></button>
+        <span class="lp-types">${lpPanels().map(p=>`<button type="button" class="lp-type ${LP.cur===p.id ? 'on' : ''}" data-type="${esc(p.id)}" title="${esc(p.name+' · '+p.pw+'×'+p.ph+' px · '+p.mw+'×'+p.mh+' mm')}"><i style="aspect-ratio:${p.mw}/${p.mh}"></i><span>${esc(p.name.replace(/\s*\(bendras\)/, ''))}</span></button>`).join('')}</span>
+        <button type="button" class="lp-rb" data-a="custom">${slIcon('plus')}<span>Savas</span></button><small>Kabinetai</small></div>
+      <div class="lp-grp">${LP_PATTERNS.map(([s, dir])=>`<button type="button" class="lp-rb lp-pb" data-pat="${s}|${dir}" title="Sujungti pažymėtus: ${esc((LED_START.find(x=>x[0]===s)||[])[1])}, ${dir==='h' ? 'eilėmis' : 'stulpeliais'}">${lpPatternPic(s, dir)}</button>`).join('')}
+        <button type="button" class="lp-rb" data-a="unwire">${slIcon('close')}<span>Atjungti</span></button><small>Jungimas</small></div>
+      <div class="lp-grp">${[['select', 'Rodyklė', 'drag'], ['add', 'Dėti', 'plus'], ['wire', 'Jungti', 'link']].map(([t, l, i])=>`<button type="button" class="lp-rb ${LPS.tool===t ? 'on' : ''}" data-tool="${t}">${slIcon(i)}<span>${l}</span></button>`).join('')}<small>Įrankis</small></div>
+      <div class="lp-grp"><button type="button" class="lp-rb" data-a="undo" title="Atšaukti (Ctrl+Z)">${slIcon('undo')}<span>Atgal</span></button><button type="button" class="lp-rb" data-a="redo" title="Grąžinti">${slIcon('redo')}<span>Pirmyn</span></button>
+        <button type="button" class="lp-rb" data-a="zo">${slIcon('zoomout')}<span>Tolinti</span></button><button type="button" class="lp-rb" data-a="fit">${slIcon('fullscreen')}<span>Talpinti</span></button><button type="button" class="lp-rb" data-a="zi">${slIcon('zoomin')}<span>Artinti</span></button><small>Vaizdas</small></div>
+    </div>
+    <div class="lp-main">
+      <aside class="lp-dev"><div class="lp-h">Įrenginys</div>
+        <label class="field"><select id="lpDev">${[...new Set(ledDb().devices.map(x=>x.fam||''))].map(f=>`<optgroup label="${esc(f||'Kita')}">${opt(LP.dev, ledDb().devices.filter(x=>(x.fam||'')===f).map(x=>[x.id, x.name+(x.check ? ' ≈' : '')]))}</optgroup>`).join('')}</select></label>
+        <div class="lp-units" id="lpUnits">${lpUnitsHtml()}</div>
+        <div class="lp-uact"><button type="button" class="btn small" data-a="unit+">${slIcon('plus')} ${d.kind==='mod' ? 'Korta' : 'Įrenginys'}</button>${pi.units>1 ? `<button type="button" class="btn small" data-a="unit-">${slIcon('close')}</button>` : ''}</div>
+        <p class="sys-faint lp-tip">Pasirink prievadą, tada <b>Jungti</b>: spausk ar vesk pele per kabinetus ta tvarka, kuria keliauja signalas. Arba pažymėk kabinetus ir spausk jungimo būdą viršuje.</p></aside>
+      <div class="lp-cv" id="lpCv"><div class="lp-zoom" id="lpZoom"></div></div>
+      <aside class="lp-props">
+        <div class="lp-h">Drobė</div>
+        <div class="lp-pg"><span>Vaizdas</span><span class="seg">${[['front', 'Iš priekio'], ['rear', 'Iš galo']].map(([v, l])=>`<button type="button" class="chip ${LP.view===v ? 'active' : ''}" data-view="${v}">${l}</button>`).join('')}</span></div>
+        <label class="checkbox-row"><input type="checkbox" data-p="showNo" ${LP.showNo ? 'checked' : ''}> Imtuvo kortų nr. (1-2-5)</label>
+        <label class="checkbox-row"><input type="checkbox" data-p="auto" ${LP.auto ? 'checked' : ''}> Automatiškai į kitą prievadą, kai pilnas</label>
+        <label class="checkbox-row"><input type="checkbox" data-p="showGrid" ${LP.showGrid ? 'checked' : ''}> Tinklelis</label>
+        <div class="lp-pg"><span>Pritraukti</span><span class="seg">${[['edge', 'Prie kabinetų'], ['grid', 'Prie tinklelio'], ['', 'Ne']].map(([v, l])=>`<button type="button" class="chip ${LP.snap===v ? 'active' : ''}" data-snap="${v}">${l}</button>`).join('')}</span></div>
+        <div class="lp-h">Projektas</div>
+        <div class="lp-grid2">
+          <label class="field">Pavadinimas<input type="text" data-p="name" value="${esc(LP.name)}"></label>
+          ${d.kind==='mod' ? '' : ''}
+          <label class="field">Šaltinis, plotis<input type="number" data-p="srcW" min="64" value="${LP.srcW}"></label><label class="field">Šaltinis, aukštis<input type="number" data-p="srcH" min="64" value="${LP.srcH}"></label>
+          <label class="field">Kadrų dažnis<select data-p="fps">${opt(LP.fps, LED_FPS.map(f=>[f, f+' Hz']))}</select></label>
+          <label class="field">Spalvų gylis<select data-p="bit">${opt(LP.bit, [[8, '8 bit'], [10, '10 bit'], [12, '12 bit']])}</select></label>
+          <label class="field wide">Atsarga<select data-p="bk">${opt(LP.bk, LED_BK)}</select></label>
+          <label class="field wide">Prievado apkrova<select data-p="load">${opt(LP.load||'auto', [['auto', 'Automatiškai (UNICO – stačiakampis)'], ['cab', 'Pagal kabinetus (SmartLCT)'], ['rect', 'Pagal stačiakampį (UNICO)']])}</select></label></div>
+        <label class="checkbox-row"><input type="checkbox" data-p="lowlat" ${LP.lowlat ? 'checked' : ''}> Mažas vėlinimas</label>
+        <label class="checkbox-row"><input type="checkbox" data-p="d3" ${LP.d3 ? 'checked' : ''}> 3D (talpa perpus)</label>
+        <div id="lpSel"></div>
+      </aside>
+    </div>
+    <div class="lp-bot" id="lpBot"></div></div>`;
+}
+function lpSelHtml(){
+  if(!LPS.sel.size) return '';
+  const ids = [...LPS.sel], c = lpCab(ids[0]); if(!c) return '';
+  const p = lpPanel(c.t), w = lpPortOf(c.id), pl = w && lpPortInfo().list.find(q=>q.g===w.g);
+  return `<div class="lp-h">Pažymėta${ids.length>1 ? ' ('+ids.length+')' : ''}</div>
+    ${ids.length===1 ? `<div class="lp-kv"><span>Kabinetas</span><b>${esc(p.name)}</b></div><div class="lp-kv"><span>Jungtis</span><b>${pl ? pl.label+'-'+(w.i+1) : '—'}</b></div><div class="lp-kv"><span>Padėtis</span><b>${c.x}, ${c.y} px</b></div><div class="lp-kv"><span>Dydis</span><b>${p.pw}×${p.ph} px</b></div>` : ''}
+    <label class="field">Keisti tipą<select id="lpSelType">${lpPanels().map(x=>`<option value="${esc(x.id)}" ${x.id===c.t ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label>
+    <div class="cpe-btns"><button type="button" class="btn small" data-a="unwire">${slIcon('close')} Atjungti</button><button type="button" class="btn small danger" data-a="del">${slIcon('bin')} Ištrinti</button></div>`;
+}
+function lpBotHtml(){
+  const T = lpTotals(), d = lpDev(), pi = lpPortInfo(), b = T.b, k = lpK();
+  const types = Object.entries(T.types).map(([n, c])=>`${c} × ${esc(n)}`).join(', ');
+  const units = Array.from({ length:pi.units }, (_, u)=>{ const ps = T.ports.filter(p=>p.u===u), rows = [];
+    for(let i = 0; i<ps.length; i += 4) rows.push(ps.slice(i, i+4));
+    return `<div class="lp-ub"><b>${d.kind==='mod' ? 'Korta '+(u+1) : esc(d.name)+' #'+(u+1)}</b>${rows.map(r=>`<div class="lp-br"><span>Išvestis ${r[0].q+1}–${r[r.length-1].q+1}</span>${r.map(p=>`<span class="lp-bar ${p.use>1 ? 'over' : ''} ${p.backup ? 'bk' : ''}" title="${esc(p.label+(p.backup ? ' (atsarginis)' : '')+': '+ledN(p.load)+' / '+ledN(p.cap)+' px')}"><i style="width:${Math.min(100, p.use*100)}%"></i><em>${p.backup ? 'atsarg.' : ledF(p.use*100, 1)+' %'}</em></span>`).join('')}</div>`).join('')}</div>`; }).join('');
+  return `${T.warn.length ? `<div class="lp-warn">${slIcon('alert')} ${T.warn.map(esc).join(' · ')}</div>` : `<div class="lp-ok">${slIcon('check')} Viskas telpa.</div>`}
+    <div class="lp-sum">
+      <span><small>Raiška</small><b>${b ? `${ledN(b.w)} × ${ledN(b.h)}` : '—'}</b></span><span><small>Pikseliai</small><b>${ledN(T.px)}</b></span>
+      <span><small>Kabinetai</small><b>${T.n}</b>${types ? `<em>${types}</em>` : ''}</span><span><small>Prievadai</small><b>${T.used}${LP.bk && LP.bk!=='dev' ? ' + '+T.used+' atsarg.' : ''}</b><em>${ledN(Math.floor(LED_PORT_PX*k))} px / prievadą${lpRect() ? ' · stačiakampis' : ''}</em></span>
+      <span><small>Plotas</small><b>${ledF(T.area, 2)} m²</b></span><span><small>Svoris</small><b>${ledF(T.kg, 0)} kg</b></span>
+      <span><small>Galia</small><b>${ledF(T.wmax/1000, 1)} kW</b><em>vid. ${ledF(T.wavg/1000, 1)} kW</em></span><span><small>Srovė</small><b>${ledF(T.wmax/230, 1)} A</b><em>3 f.: ${ledF(T.wmax/690, 1)} A/f.</em></span>
+    </div>${units}`;
+}
+function lpCompareHtml(){
+  const T = lpTotals(); if(!T.n) return '';
+  const b = T.b, k = lpK(), ports = Math.max(1, T.used);
+  const rows = ledDb().devices.map(d=>{ const per = d.kind==='mod' ? d.card.ports : d.ports, usable = LP.bk==='split' || LP.bk==='seq' ? Math.floor(per/2) : per, upx = Math.floor((d.kind==='mod' ? d.card.maxPx : d.maxPx)*k);
+    const need = Math.max(Math.ceil(ports/usable), Math.ceil(T.px/upx), d.kind!=='mod' && d.maxW ? Math.ceil(b.w/d.maxW) : 1, d.kind!=='mod' && d.maxH ? Math.ceil(b.h/d.maxH) : 1);
+    return { d, need, load:T.px/(need*upx) }; }).sort((a, b)=>a.need-b.need || b.load-a.load);
+  return `<div class="card"><h3 class="section-title">Kuris procesorius tinka</h3><p class="sys-faint" style="margin:0 0 8px;">Pagal dabartinį jungimą (${ports} prievad.) ir pikselius. Paspausk – perjungs įrenginį.</p><div class="table-wrap"><table class="led-pt"><thead><tr><th>Įrenginys</th><th>Prievadų</th><th>Reikia</th><th>Apkrova</th></tr></thead><tbody>
+    ${rows.map(({ d, need, load })=>`<tr class="${d.id===LP.dev ? 'on' : ''}" data-ldev="${esc(d.id)}"><td><b>${esc(d.name)}</b>${d.check ? ' <small class="sys-faint">(patikrinti)</small>' : ''}</td><td>${d.kind==='mod' ? d.card.ports+' / kortai' : d.ports}</td><td>${need} ${d.kind==='mod' ? 'kort.' : 'vnt.'}</td><td>${ledF(load*100, 0)} %</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+/* ---------- page ---------- */
 function ledRender(){
   const box = document.getElementById('toolBody'); if(!box) return;
-  const s = LED, db = ledDb(), dev = db.devices.find(d=>d.id===s.dev) || db.devices[0], r = ledCalc(s, dev, true);
-  box.innerHTML = `${ledFormHtml()}
-    <div class="card"><div class="led-h"><h3 class="section-title" style="margin:0;">Rezultatas – ${esc(dev.name)}</h3></div>${ledResultHtml(r, s)}</div>
-    ${r.map ? `<div class="card"><div class="led-h"><h3 class="section-title" style="margin:0;">Jungimo schema</h3>
-        <span class="seg">${[['front', 'Iš priekio'], ['rear', 'Iš galo']].map(([v, l])=>`<button type="button" class="chip ${s.view===v ? 'active' : ''}" data-lview="${v}">${l}</button>`).join('')}</span></div>
-      <p class="sys-faint" style="margin:4px 0 8px;">Ant kabineto: ${dev.kind==='mod' ? 'korta' : 'įrenginys'}-prievadas-eilės nr. (kaip SmartLCT „1-1-5“). Taškas – kur jungiamas kabelis iš procesoriaus.</p>
-      <div class="led-svgwrap">${ledSvg(r, s.view)}</div></div>
-      <div class="card"><h3 class="section-title">Prievadai</h3>${ledPortsHtml(r)}</div>` : ''}
-    <div class="card"><h3 class="section-title">SmartLCT ir UNICO – kuo skiriasi skaičiavimas</h3><ul class="led-notes">
+  if(!LP){ box.innerHTML = `<div class="card empty-state">${slIcon('screen')}<p>Naujas LED ekrano projektas – kaip SmartLCT / UNICO.</p><button type="button" class="btn primary" id="lpFirst">${slIcon('addbox')} Naujas projektas</button></div>`;
+    document.getElementById('lpFirst').onclick = lpNewDialog; return; }
+  box.innerHTML = lpHtml() + `<div id="lpCmp"></div>
+    <div class="card"><h3 class="section-title">SmartLCT ir UNICO – kuo skiriasi</h3><ul class="led-notes">
       <li><b>SmartLCT</b> (H, MCTRL, VX, NovaPro): prievado apkrova = jo kabinetų pikseliai, riba 650 000 px (60 Hz, 8 bit).</li>
-      <li><b>UNICO</b> (VX Pro, VX2000 Pro, VC Pro): pagal nutylėjimą apkrova = <b>stačiakampis, apimantis visus prievado kabinetus</b> („Free Topology“ išjungta). Todėl prievadą geriau jungti pilnomis eilėmis ar stulpeliais.</li>
-      <li><b>Mažas vėlinimas</b> (UNICO formulė): prievado talpa = (1 − Y/H) × 650 000; kabeliai – vertikaliai, prievadai turi prasidėti viršuje.</li>
-      <li><b>Atsarga</b>: Split – antra prievadų pusė saugo pirmą; Sequential – 2 saugo 1, 4 saugo 3; įrenginio atsarga – antras to paties modelio įrenginys. VX Pro OPT išėjimai kopijuoja arba saugo Ethernet prievadus.</li>
-      <li><b>3D</b> (side-by-side / top-bottom) perpus sumažina išvesties talpą; 10/12 bit – taip pat perpus.</li></ul></div>
-    <div class="card"><h3 class="section-title">Kuris procesorius tinka šiam ekranui</h3><p class="sys-faint" style="margin:0 0 8px;">Paspausk eilutę – perskaičiuos su tuo įrenginiu. „≈“ / „patikrinti“ – duomenis verta sutikrinti su gamintojo specifikacija.</p>${ledCompareHtml(s)}</div>`;
-  ledWire(box);
+      <li><b>UNICO</b> (VX Pro, VX2000 Pro, VC Pro): apkrova = stačiakampis, apimantis visus prievado kabinetus („Free Topology“ – pagal kabinetus). Todėl jungti pilnomis eilėmis ar stulpeliais.</li>
+      <li><b>Mažas vėlinimas</b>: talpa = (1 − Y/H) × 650 000 – žemiau prasidedantis prievadas veža mažiau; jungti vertikaliai, nuo viršaus.</li>
+      <li><b>Atsarga</b>: Split – antra prievadų pusė saugo pirmą; Sequential – 2 saugo 1; įrenginio atsarga – antras toks pat įrenginys. 3D ir 10/12 bit talpą perpus.</li></ul></div>`;
+  lpWireUi(box); lpDraw(true);
 }
-function ledWire(box){
-  const set = (k, v)=>{ LED[k] = v; ledSaveState(); ledRender(); };
-  const on = (id, k, num)=>{ const el = document.getElementById(id); if(el) el.onchange = ()=>set(k, num ? +el.value : el.value); };
-  on('ledCab', 'cab'); on('ledCols', 'cols', true); on('ledRows', 'rows', true); on('ledFps', 'fps', true); on('ledBit', 'bit', true); on('ledDir', 'dir'); on('ledStart', 'start'); on('ledMode', 'mode'); on('ledDev', 'dev'); on('ledCards', 'cards', true);
-  ['ledCols', 'ledRows', 'ledCards'].forEach(id=>{ const el = document.getElementById(id); if(el) el.oninput = ()=>{ const v = +el.value; if(v>=1 && v<=200){ LED[{ ledCols:'cols', ledRows:'rows', ledCards:'cards' }[id]] = v; ledSaveState(); clearTimeout(ledWire.t); ledWire.t = setTimeout(()=>{ const f = document.activeElement && document.activeElement.id; ledRender(); const n = f && document.getElementById(f); if(n){ n.focus(); try{ n.setSelectionRange(99, 99); }catch(e){} } }, 400); } }; });
-  on('ledBk', 'bk'); on('ledLoadMode', 'load');
-  const d3 = document.getElementById('ledD3'); if(d3) d3.onchange = ()=>set('d3', d3.checked);
-  const lo = document.getElementById('ledLow'); if(lo) lo.onchange = ()=>set('lowlat', lo.checked);
-  box.querySelectorAll('[data-cu]').forEach(i=>i.onchange = ()=>{ LED.custom = Object.assign({}, LED.custom, { [i.dataset.cu]:Math.max(0, +i.value||0) }); ledSaveState(); ledRender(); });
-  box.querySelectorAll('[data-lview]').forEach(b=>b.onclick = ()=>set('view', b.dataset.lview));
-  box.querySelectorAll('[data-ldev]').forEach(tr=>tr.onclick = ()=>{ set('dev', tr.dataset.ldev); window.scrollTo({ top:0, behavior:'smooth' }); });
-  const sv = document.getElementById('ledSave'); if(sv) sv.onclick = async ()=>{
-    const name = await uiPrompt('Pavadinimas (pvz. renginys, ekranas):', ''); if(!name) return;
-    let l = []; try{ l = JSON.parse(localStorage.getItem('ledCalcSaved')||'[]'); }catch(e){}
-    l = l.filter(x=>x.name!==name.trim()); l.unshift({ name:name.trim(), s:JSON.parse(JSON.stringify(LED)) }); try{ localStorage.setItem('ledCalcSaved', JSON.stringify(l.slice(0, 40))); }catch(e){}
-    toast('Išsaugota šioje naršyklėje.'); ledRender(); };
-  const ld = document.getElementById('ledLoad'); if(ld) ld.onchange = ()=>{ let l = []; try{ l = JSON.parse(localStorage.getItem('ledCalcSaved')||'[]'); }catch(e){} const x = l[+ld.value]; if(x){ Object.assign(LED, x.s); ledSaveState(); ledRender(); } };
-  const pr = document.getElementById('ledPrint'); if(pr) pr.onclick = ledPrint;
-  const de = document.getElementById('ledDbEd'); if(de) de.onclick = ledDbEditor;
+function lpDraw(fit){
+  const zm = document.getElementById('lpZoom'); if(!zm){ ledRender(); return; }
+  const cv = document.getElementById('lpCv'), vb = lpVB();
+  if(fit || !LPS.z) LPS.z = Math.max(.02, Math.min(4, (cv.clientWidth-20)/vb.w, (cv.clientHeight-20)/vb.h));
+  zm.style.width = Math.round(vb.w*LPS.z)+'px'; zm.style.height = Math.round(vb.h*LPS.z)+'px'; zm.innerHTML = lpSvg();
+  const bot = document.getElementById('lpBot'); if(bot) bot.innerHTML = lpBotHtml();
+  const sel = document.getElementById('lpSel'); if(sel) sel.innerHTML = lpSelHtml();
+  const cmp = document.getElementById('lpCmp'); if(cmp) cmp.innerHTML = lpCompareHtml();
+  const un = document.getElementById('lpUnits'); if(un) un.innerHTML = lpUnitsHtml();
+  lpSave();
 }
-function ledPrint(){
-  const s = LED, dev = ledDb().devices.find(d=>d.id===s.dev) || ledDb().devices[0], r = ledCalc(s, dev, true);
-  const w = window.open('', '_blank'); if(!w){ toast('Naršyklė neleido atidaryti lango.'); return; }
-  w.document.write(`<!doctype html><html lang="lt"><head><meta charset="utf-8"><title>LED ekranas – ${esc(dev.name)}</title><style>
-    body{font:13px/1.45 system-ui,sans-serif;color:#111;margin:24px;} h1{font-size:20px;margin:0 0 4px;} h2{font-size:15px;margin:18px 0 6px;}
-    .led-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;} .led-tile{border:1px solid #ddd;border-radius:8px;padding:8px;} .led-tile span{display:block;color:#666;font-size:11px;} .led-tile b{font-size:15px;} .led-tile small{display:block;color:#666;}
-    table{border-collapse:collapse;width:100%;} th,td{border:1px solid #ddd;padding:4px 6px;text-align:left;} .led-bar{display:inline-block;width:80px;height:8px;background:#eee;border-radius:4px;vertical-align:middle;} .led-bar i{display:block;height:100%;background:#4E9BC9;border-radius:4px;} .led-bar.over i{background:#e5484d;}
-    .led-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;} .sys-note{border:1px solid #f2a93b;background:#fff8ec;padding:6px 8px;border-radius:6px;margin:6px 0;} svg{width:100%;height:auto;color:#111;} .sys-note svg{display:none;}
-    </style></head><body><h1>LED ekranas – ${esc(r.cab.name)} · ${esc(dev.name)}</h1><div style="color:#666">${esc(new Date().toLocaleString('lt-LT'))} · ${s.fps} Hz · ${s.bit} bit · ${s.backup ? 'su atsarginiu žiedu' : 'be atsarginio žiedo'}</div>
-    ${ledResultHtml(r, s)}<h2>Jungimo schema (${s.view==='rear' ? 'iš galo' : 'iš priekio'})</h2>${ledSvg(r, s.view)}<h2>Prievadai</h2>${ledPortsHtml(r)}</body></html>`);
+// pointer position in canvas pixels (mirrored back for the rear view)
+function lpPt(e){ const zm = document.getElementById('lpZoom'), r = zm.getBoundingClientRect(), vb = lpVB();
+  let x = vb.x + (e.clientX - r.left)/LPS.z; const y = vb.y + (e.clientY - r.top)/LPS.z; if(LP.view==='rear') x = 2*vb.x + vb.w - x; return { x, y }; }
+function lpSnapXY(ids, dx, dy){
+  if(!LP.snap) return { dx:Math.round(dx), dy:Math.round(dy) };
+  const b = lpBox(ids); if(!b) return { dx, dy };
+  if(LP.snap==='grid'){ const g = lpPanel((lpCab(ids[0])||{}).t || LP.cur); return { dx:Math.round((b.x0+dx)/g.pw)*g.pw - b.x0, dy:Math.round((b.y0+dy)/g.ph)*g.ph - b.y0 }; }
+  const tol = 10/LPS.z, others = LP.cabs.filter(c=>!ids.includes(c.id)); let sx = null, sy = null;
+  const xs = [0, LP.srcW], ys = [0, LP.srcH]; others.forEach(c=>{ const p = lpPanel(c.t); xs.push(c.x, c.x+p.pw); ys.push(c.y, c.y+p.ph); });
+  [b.x0+dx, b.x1+dx].forEach((v, i)=>xs.forEach(t=>{ const d = t - v; if(Math.abs(d)<tol && (sx==null || Math.abs(d)<Math.abs(sx))) sx = d; }));
+  [b.y0+dy, b.y1+dy].forEach((v, i)=>ys.forEach(t=>{ const d = t - v; if(Math.abs(d)<tol && (sy==null || Math.abs(d)<Math.abs(sy))) sy = d; }));
+  return { dx:Math.round(dx + (sx||0)), dy:Math.round(dy + (sy||0)) };
+}
+function lpCabAt(pt){ for(let i = LP.cabs.length-1; i>=0; i--){ const c = LP.cabs[i], p = lpPanel(c.t); if(pt.x>=c.x && pt.x<c.x+p.pw && pt.y>=c.y && pt.y<c.y+p.ph) return c; } return null; }
+function lpWireUi(box){
+  const cv = document.getElementById('lpCv');
+  box.querySelector('.lp-rib').addEventListener('click', async e=>{
+    const tl = e.target.closest('[data-tool]'); if(tl){ LPS.tool = tl.dataset.tool; box.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('on', b===tl)); cv.dataset.tool = LPS.tool; return; }
+    const ty = e.target.closest('[data-type]'); if(ty){ LP.cur = ty.dataset.type; box.querySelectorAll('[data-type]').forEach(b=>b.classList.toggle('on', b===ty)); if(LPS.sel.size){ lpSnap(); LPS.sel.forEach(id=>{ const c = lpCab(id); if(c) c.t = LP.cur; }); lpDraw(); } lpSave(); return; }
+    const pt = e.target.closest('[data-pat]'); if(pt){ const [s, dir] = pt.dataset.pat.split('|'); const ids = LPS.sel.size ? [...LPS.sel] : LP.cabs.map(c=>c.id); if(!ids.length) return; lpSnap(); lpPattern(s, dir, ids); lpDraw(); return; }
+    const a = e.target.closest('[data-a]'); if(a) lpAct(a.dataset.a);
+  });
+  box.querySelector('.lp-dev').addEventListener('click', e=>{
+    const pb = e.target.closest('[data-port]'); if(pb){ const p = lpPortInfo().list.find(x=>x.g===+pb.dataset.port); if(p && p.backup){ toast('Tai atsarginis prievadas ('+p.label+' saugo '+p.partner+').'); return; }
+      LPS.port = +pb.dataset.port; LPS.tool = 'wire'; box.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('on', b.dataset.tool==='wire')); cv.dataset.tool = 'wire'; lpDraw(); return; }
+    const a = e.target.closest('[data-a]'); if(a) lpAct(a.dataset.a);
+  });
+  const dv = document.getElementById('lpDev'); dv.onchange = ()=>{ lpSnap(); LP.dev = dv.value; const d = lpDev(); if(d.kind!=='mod') LP.units = Math.max(1, Math.min(LP.units, 4)); lpCleanPorts(); lpReassign(); ledRender(); };
+  const pr = box.querySelector('.lp-props');
+  pr.addEventListener('change', e=>{ const t = e.target, k = t.dataset.p; if(t.id==='lpSelType'){ lpSnap(); LPS.sel.forEach(id=>{ const c = lpCab(id); if(c) c.t = t.value; }); lpDraw(); return; }
+    if(!k) return; lpSnap(); LP[k] = t.type==='checkbox' ? t.checked : t.type==='number' || ['fps', 'bit'].includes(k) ? +t.value : t.value; if(k==='bk') lpReassign(); lpDraw(); });
+  pr.addEventListener('click', e=>{ const v = e.target.closest('[data-view]'); if(v){ LP.view = v.dataset.view; pr.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active', b===v)); lpDraw(); return; }
+    const sn = e.target.closest('[data-snap]'); if(sn){ LP.snap = sn.dataset.snap; pr.querySelectorAll('[data-snap]').forEach(b=>b.classList.toggle('active', b===sn)); lpSave(); return; }
+    const a = e.target.closest('[data-a]'); if(a) lpAct(a.dataset.a); });
+  box.querySelector('#lpBot').addEventListener('click', ()=>{});
+  box.addEventListener('click', e=>{ const tr = e.target.closest('[data-ldev]'); if(tr){ lpSnap(); LP.dev = tr.dataset.ldev; lpCleanPorts(); lpReassign(); ledRender(); window.scrollTo({ top:0, behavior:'smooth' }); } });
+  cv.dataset.tool = LPS.tool;
+  cv.addEventListener('wheel', e=>{ if(!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); const r = cv.getBoundingClientRect(), mx = e.clientX - r.left + cv.scrollLeft, my = e.clientY - r.top + cv.scrollTop, z0 = LPS.z;
+    LPS.z = Math.max(.02, Math.min(4, LPS.z*Math.exp(-e.deltaY*.002))); lpDraw(); cv.scrollLeft = mx*LPS.z/z0 - (e.clientX - r.left); cv.scrollTop = my*LPS.z/z0 - (e.clientY - r.top); }, { passive:false });
+  let D = null;
+  cv.addEventListener('pointerdown', e=>{
+    if(e.button!==0 || !LP) return; const pt = lpPt(e), c = lpCabAt(pt);
+    if(LPS.tool==='add'){ const p = lpPanel(LP.cur); lpSnap(); const id = uid('cb'); const nc = { id, t:LP.cur, x:Math.round(pt.x - p.pw/2), y:Math.round(pt.y - p.ph/2) }; LP.cabs.push(nc); const s = lpSnapXY([id], 0, 0); nc.x += s.dx; nc.y += s.dy; LPS.sel = new Set([id]); lpDraw(); return; }
+    if(LPS.tool==='wire'){ if(LPS.port==null){ toast('Pirma pasirink prievadą kairėje.'); return; } if(!c) return; lpSnap(); LPS.port = lpWire(LPS.port, c.id); D = { wire:true, last:c.id }; cv.setPointerCapture(e.pointerId); lpDraw(); return; }
+    if(c){ if(e.shiftKey){ LPS.sel.has(c.id) ? LPS.sel.delete(c.id) : LPS.sel.add(c.id); } else if(!LPS.sel.has(c.id)) LPS.sel = new Set([c.id]);
+      D = { move:true, x0:pt.x, y0:pt.y, ids:[...LPS.sel], orig:[...LPS.sel].map(id=>{ const k = lpCab(id); return [id, k.x, k.y]; }), moved:false }; }
+    else { if(!e.shiftKey) LPS.sel.clear(); D = { box:true, x0:pt.x, y0:pt.y }; }
+    cv.setPointerCapture(e.pointerId); lpDraw();
+  });
+  cv.addEventListener('pointermove', e=>{
+    if(!D) return; const pt = lpPt(e);
+    if(D.wire){ const c = lpCabAt(pt); if(c && c.id!==D.last){ D.last = c.id; LPS.port = lpWire(LPS.port, c.id); lpDraw(); } return; }
+    if(D.move){ if(!D.moved && Math.hypot(pt.x-D.x0, pt.y-D.y0)*LPS.z < 3) return; if(!D.moved){ lpSnap(); D.moved = true; }
+      const s = lpSnapXY(D.ids, pt.x - D.x0, pt.y - D.y0); D.orig.forEach(([id, x, y])=>{ const c = lpCab(id); c.x = x + s.dx; c.y = y + s.dy; });
+      if(!D.raf) D.raf = requestAnimationFrame(()=>{ D && (D.raf = 0); document.getElementById('lpZoom').innerHTML = lpSvg(); }); return; }
+    if(D.box){ D.x1 = pt.x; D.y1 = pt.y; const x0 = Math.min(D.x0, D.x1), x1 = Math.max(D.x0, D.x1), y0 = Math.min(D.y0, D.y1), y1 = Math.max(D.y0, D.y1);
+      LP.cabs.forEach(c=>{ const p = lpPanel(c.t); if(c.x < x1 && c.x+p.pw > x0 && c.y < y1 && c.y+p.ph > y0) LPS.sel.add(c.id); else if(!e.shiftKey) LPS.sel.delete(c.id); });
+      if(!D.raf) D.raf = requestAnimationFrame(()=>{ D && (D.raf = 0); document.getElementById('lpZoom').innerHTML = lpSvg(); }); }
+  });
+  const end = ()=>{ if(!D) return; D = null; lpDraw(); };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  if(!ledRender.keys){ ledRender.keys = true; document.addEventListener('keydown', e=>{
+    if(currentTab!=='tools' || TOOLS.tool!=='led' || !LP || /^(INPUT|TEXTAREA|SELECT)$/.test((e.target||{}).tagName||'') || document.querySelector('.modal-backdrop:not(.hidden) .modal, .ui-ask')) return;
+    const mod = e.ctrlKey || e.metaKey;
+    if(mod && e.key.toLowerCase()==='z'){ e.preventDefault(); lpUndo(!e.shiftKey); return; }
+    if(mod && e.key.toLowerCase()==='a'){ e.preventDefault(); LPS.sel = new Set(LP.cabs.map(c=>c.id)); lpDraw(); return; }
+    if((e.key==='Delete' || e.key==='Backspace') && LPS.sel.size){ e.preventDefault(); lpAct('del'); return; }
+    const d = e.shiftKey ? 10 : 1, mv = { ArrowLeft:[-d, 0], ArrowRight:[d, 0], ArrowUp:[0, -d], ArrowDown:[0, d] }[e.key];
+    if(mv && LPS.sel.size){ e.preventDefault(); lpSnap(); LPS.sel.forEach(id=>{ const c = lpCab(id); c.x += (LP.view==='rear' ? -mv[0] : mv[0]); c.y += mv[1]; }); lpDraw(); }
+    if(e.key==='Escape'){ LPS.sel.clear(); lpDraw(); }
+  }); }
+}
+// after the backup or the device changed: cabinets on ports that are now backup / gone move to free ones
+function lpReassign(){
+  const pi = lpPortInfo(), ok = new Set(pi.list.filter(p=>!p.backup).map(p=>p.g)), moved = [];
+  Object.keys(LP.ports).forEach(g=>{ if(!ok.has(+g)){ moved.push(LP.ports[g]); delete LP.ports[g]; } });
+  moved.forEach(ids=>{ const f = pi.list.find(p=>!p.backup && !(LP.ports[p.g]||[]).length); if(f) LP.ports[f.g] = ids; });
+  if(LPS.port!=null && !ok.has(LPS.port)) LPS.port = null;
+}
+async function lpAct(a){
+  if(a==='new') return lpNewDialog();
+  if(a==='undo') return lpUndo(true); if(a==='redo') return lpUndo(false);
+  if(a==='zi' || a==='zo'){ LPS.z *= a==='zi' ? 1.25 : .8; lpDraw(); return; }
+  if(a==='fit'){ lpDraw(true); return; }
+  if(a==='unit+'){ lpSnap(); LP.units = Math.min(40, (LP.units|0)+1); ledRender(); return; }
+  if(a==='unit-'){ lpSnap(); LP.units = Math.max(1, (LP.units|0)-1); lpReassign(); lpCleanPorts(); ledRender(); return; }
+  if(a==='unwire'){ const ids = LPS.sel.size ? [...LPS.sel] : null; if(!ids){ if(!await uiAsk('Atjungti visus kabinetus?', { yes:'Atjungti', no:'Atšaukti' })) return; lpSnap(); LP.ports = {}; } else { lpSnap(); lpUnwire(ids); } lpDraw(); return; }
+  if(a==='del'){ if(!LPS.sel.size) return; lpSnap(); const ids = [...LPS.sel]; lpUnwire(ids); LP.cabs = LP.cabs.filter(c=>!LPS.sel.has(c.id)); LPS.sel.clear(); lpDraw(); return; }
+  if(a==='save'){ const name = await uiPrompt('Projekto pavadinimas:', LP.name||''); if(!name) return; LP.name = name.trim(); let l = []; try{ l = JSON.parse(localStorage.getItem('ledProjects')||'[]'); }catch(e){}
+    l = l.filter(x=>x.name!==LP.name); l.unshift({ name:LP.name, at:Date.now(), p:JSON.parse(JSON.stringify(LP)) }); try{ localStorage.setItem('ledProjects', JSON.stringify(l.slice(0, 50))); }catch(e){ toast('Nepavyko išsaugoti – per daug duomenų.'); return; } toast('Išsaugota šioje naršyklėje.'); ledRender(); return; }
+  if(a==='open'){ let l = []; try{ l = JSON.parse(localStorage.getItem('ledProjects')||'[]'); }catch(e){}
+    if(!l.length){ toast('Išsaugotų projektų dar nėra.'); return; }
+    openModal(`<h3>Atidaryti projektą</h3><div class="lp-open">${l.map((x, i)=>`<div class="sysc-log"><div><b>${esc(x.name)}</b> <span class="sys-faint">${esc(new Date(x.at).toLocaleString('lt-LT'))} · ${(x.p.cabs||[]).length} kab.</span></div><button type="button" class="btn small primary" data-o="${i}">Atidaryti</button><button type="button" class="btn small" data-x="${i}">${slIcon('bin')}</button></div>`).join('')}</div>`);
+    document.querySelector('.lp-open').onclick = ev=>{ const o = ev.target.closest('[data-o]'), x = ev.target.closest('[data-x]');
+      if(o){ LP = lpNew(l[+o.dataset.o].p); LPS.sel.clear(); LPS.hist = []; LPS.port = null; closeModal(); ledRender(); }
+      if(x){ l.splice(+x.dataset.x, 1); try{ localStorage.setItem('ledProjects', JSON.stringify(l)); }catch(e){} closeModal(); lpAct('open'); } };
+    return; }
+  if(a==='print') return lpPrint();
+  if(a==='batch'){ const p = lpPanel(LP.cur);
+    openModal(`<h3>Pridėti eilėmis – ${esc(p.name)}</h3><div class="lp-grid2"><label class="field">Stulpeliai<input type="number" id="lpBc" min="1" max="200" value="4"></label><label class="field">Eilės<input type="number" id="lpBr" min="1" max="200" value="3"></label></div>
+      <label class="checkbox-row"><input type="checkbox" id="lpBw" checked> Iškart sujungti (pagal pirmą jungimo būdą)</label><div class="row" style="justify-content:flex-end;margin-top:10px;"><button type="button" class="btn primary small" id="lpBok">Pridėti</button></div>`);
+    document.getElementById('lpBok').onclick = ()=>{ const cols = Math.max(1, +document.getElementById('lpBc').value|0), rows = Math.max(1, +document.getElementById('lpBr').value|0), wire = document.getElementById('lpBw').checked;
+      const b = lpBox(LP.cabs.map(c=>c.id)); lpSnap(); const ids = lpAddGrid(LP.cur, cols, rows, b ? b.x1 : 0, 0); LPS.sel = new Set(ids); if(wire) lpPattern('tl', 'h', ids); closeModal(); lpDraw(true); };
+    return; }
+  if(a==='custom'){
+    openModal(`<h3>Savas kabinetas</h3><div class="lp-grid2"><label class="field wide">Pavadinimas<input type="text" id="lcN" value="Savas"></label>${[['pw', 'Plotis, px', 192], ['ph', 'Aukštis, px', 192], ['mw', 'Plotis, mm', 500], ['mh', 'Aukštis, mm', 500], ['kg', 'Svoris, kg', 8], ['wmax', 'Galia maks., W', 180], ['wavg', 'Galia vid., W', 60]].map(([k, l, v])=>`<label class="field">${l}<input type="number" id="lc_${k}" min="0" step="any" value="${v}"></label>`).join('')}</div>
+      <p class="sys-faint">Šis kabinetas lieka tik šiame projekte. Visiems – per „Bazė“ (Super Admin).</p><div class="row" style="justify-content:flex-end;"><button type="button" class="btn primary small" id="lcOk">Pridėti</button></div>`);
+    document.getElementById('lcOk').onclick = ()=>{ const g = k=>Math.max(1, +document.getElementById('lc_'+k).value||0); const c = { id:uid('pc'), name:document.getElementById('lcN').value.trim() || 'Savas', pw:g('pw'), ph:g('ph'), mw:g('mw'), mh:g('mh'), kg:+document.getElementById('lc_kg').value||0, wmax:+document.getElementById('lc_wmax').value||0, wavg:+document.getElementById('lc_wavg').value||0 };
+      lpSnap(); LP.customs = (LP.customs||[]).concat([c]); LP.cur = c.id; closeModal(); ledRender(); };
+    return; }
+}
+// „Naujas projektas“ – like SmartLCT's dialog
+function lpNewDialog(){
+  const db = ledDb(), cur = LP || lpNew(), opt = (v, list)=>list.map(([k, l])=>`<option value="${esc(k)}" ${String(v)===String(k) ? 'selected' : ''}>${esc(l)}</option>`).join('');
+  openModal(`<h3>Naujas projektas</h3>
+    <div class="lp-grid2"><label class="field wide">1. Pavadinimas<input type="text" id="npN" value="${esc(cur.name||'Projektas')}"></label>
+      <label class="field wide">2. Įrenginys<select id="npD">${[...new Set(db.devices.map(x=>x.fam||''))].map(f=>`<optgroup label="${esc(f||'Kita')}">${opt(cur.dev, db.devices.filter(x=>(x.fam||'')===f).map(x=>[x.id, x.name]))}</optgroup>`).join('')}</select></label>
+      <label class="field">Kortų / įrenginių<input type="number" id="npU" min="1" max="40" value="${cur.units||1}"></label><span></span>
+      <label class="field wide">3. Kabinetas<select id="npC">${opt(cur.cur, db.panels.concat(cur.customs||[]).map(p=>[p.id, p.name+' ('+p.pw+'×'+p.ph+')']))}</select></label>
+      <label class="field">4. Stulpeliai<input type="number" id="npX" min="1" max="200" value="10"></label><label class="field">Eilės<input type="number" id="npY" min="1" max="200" value="6"></label>
+      <label class="field">5. Šaltinio plotis<input type="number" id="npW" min="64" value="${cur.srcW||3840}"></label><label class="field">Aukštis<input type="number" id="npH" min="64" value="${cur.srcH||2160}"></label></div>
+    <div class="field">6. Jungimo būdas<div class="lp-pats" id="npP">${LP_PATTERNS.map(([s, dir], i)=>`<button type="button" class="lp-rb lp-pb ${i===0 ? 'on' : ''}" data-np="${s}|${dir}">${lpPatternPic(s, dir)}</button>`).join('')}<button type="button" class="lp-rb" data-np="">${slIcon('close')}<span>Nejungti</span></button></div></div>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button type="button" class="btn small" id="npX0">Atšaukti</button><button type="button" class="btn primary small" id="npOk">Gerai</button></div>`);
+  let pat = 'tl|h';
+  document.getElementById('npP').onclick = e=>{ const b = e.target.closest('[data-np]'); if(!b) return; pat = b.dataset.np; document.querySelectorAll('#npP [data-np]').forEach(x=>x.classList.toggle('on', x===b)); };
+  document.getElementById('npD').onchange = e=>{ const d = db.devices.find(x=>x.id===e.target.value); if(d && d.kind==='mod') document.getElementById('npU').value = d.cards||3; else document.getElementById('npU').value = 1; };
+  document.getElementById('npX0').onclick = ()=>closeModal();
+  document.getElementById('npOk').onclick = ()=>{
+    const v = id=>document.getElementById(id).value, prev = LP;
+    if(prev) LPS.hist.push(JSON.stringify(prev));
+    LP = lpNew({ name:v('npN').trim()||'Projektas', dev:v('npD'), units:Math.max(1, +v('npU')|0), cur:v('npC'), srcW:Math.max(64, +v('npW')|0), srcH:Math.max(64, +v('npH')|0), customs:(prev && prev.customs)||[],
+      fps:prev ? prev.fps : 60, bit:prev ? prev.bit : 8, bk:prev ? prev.bk : '', load:prev ? prev.load : 'auto' });
+    const ids = lpAddGrid(LP.cur, Math.max(1, +v('npX')|0), Math.max(1, +v('npY')|0), 0, 0);
+    LPS.sel.clear(); LPS.port = null; if(pat){ const [s, dir] = pat.split('|'); lpPattern(s, dir, ids); }
+    closeModal(); ledRender();
+  };
+}
+function lpPrint(){
+  const T = lpTotals(), w = window.open('', '_blank'); if(!w){ toast('Naršyklė neleido atidaryti lango.'); return; }
+  w.document.write(`<!doctype html><html lang="lt"><head><meta charset="utf-8"><title>${esc(LP.name)} – LED</title><style>
+    body{font:13px/1.45 system-ui,sans-serif;color:#111;margin:20px;} h1{font-size:20px;margin:0 0 4px;} svg{width:100%;height:auto;max-height:60vh;}
+    .lp-src{fill:none;stroke:#999;stroke-dasharray:20 12;stroke-width:4;} .lp-cab rect{fill:#c9ccd1;stroke:#555;stroke-width:3;} .lp-cab.on rect{fill-opacity:.7;} .lp-cab circle{fill:#fff;opacity:.8;} .lp-cab text{text-anchor:middle;fill:#111;font-weight:700;}
+    .lp-line{fill:none;stroke-width:8;stroke-linejoin:round;} .lp-start,.lp-end{fill:#111;}
+    .lp-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0;} .lp-sum span{border:1px solid #ddd;border-radius:6px;padding:6px;} .lp-sum small{display:block;color:#666;} .lp-sum em{display:block;color:#666;font-style:normal;font-size:11px;}
+    .lp-ub{margin:6px 0;} .lp-br{display:flex;gap:8px;align-items:center;margin:2px 0;} .lp-br > span:first-child{width:110px;color:#666;} .lp-bar{position:relative;flex:1;height:16px;background:#eee;border-radius:4px;overflow:hidden;} .lp-bar i{position:absolute;inset:0 auto 0 0;background:#4E9BC9;} .lp-bar.over i{background:#e5484d;} .lp-bar em{position:relative;font-style:normal;font-size:11px;padding-left:4px;}
+    .lp-warn,.lp-ok{padding:6px 8px;border:1px solid #f2a93b;background:#fff8ec;border-radius:6px;} .lp-warn svg,.lp-ok svg{display:none;}
+    </style></head><body><h1>${esc(LP.name)} – ${esc(lpDev().name)}</h1><div style="color:#666">${esc(new Date().toLocaleString('lt-LT'))} · ${LP.fps} Hz · ${LP.bit} bit · ${LP.view==='rear' ? 'vaizdas iš galo' : 'vaizdas iš priekio'}</div>${lpSvg(true)}${lpBotHtml()}</body></html>`);
   w.document.close(); setTimeout(()=>{ try{ w.print(); }catch(e){} }, 400);
 }
 // the list of devices and cabinets (Super Admin): saved for everyone, with the change history of Sistema → Nustatymai
@@ -48649,6 +48985,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 05:00', v:'v612', k:'new', t:'Įrankiai kaip programėlės, LED skaičiuoklė – redaktorius kaip SmartLCT', f:'Įrankiai atsidaro kaip programėlių plytelės (LED skaičiuoklė – pirmoji). LED skaičiuoklė dabar kaip SmartLCT: Naujas projektas (įrenginys, kabinetas, stulpeliai × eilės, šaltinio raiška, jungimo būdas), drobė su keliais kabinetų tipais, kabinetus galima dėti, tempti, žymėti; kairėje – įrenginio kortos ir prievadai, pasirinkus prievadą signalo kelią galima nubraižyti pele arba vienu iš 8 jungimo būdų; apačioje – prievadų apkrovos juostos ir įspėjimai; vaizdas iš priekio ir iš galo, imtuvo kortų numeriai, pritraukimas prie kabinetų ar tinklelio, atšaukimas, išsaugojimas, PDF.' },
   { d:'2026-10-21 04:10', v:'v611', k:'new', t:'LED skaičiuoklė: UNICO taisyklės ir nauji procesoriai', f:'Pagal NovaStar UNICO vadovą: VX Pro ir VC Pro įrenginiams prievado apkrova skaičiuojama pagal kabinetus apimantį stačiakampį (arba „Free Topology“ – pagal kabinetus), mažo vėlinimo talpa (1 − Y/H) × 650 000, Ethernet atsarga Split / Sequential arba atsarginis įrenginys, 3D talpos sumažėjimas. Nauji: VX2000 Pro, VC6/VC10/VC16/VC24 Pro. Prievadų lentelėje – talpa ir atsarginis prievadas, aprašytas SmartLCT ir UNICO skirtumas.' },
   { d:'2026-10-21 03:20', v:'v610', k:'new', t:'Sandėlis → Įrankiai: LED skaičiuoklė', f:'Naujas puslapis „Įrankiai“ ir pirmas įrankis – LED skaičiuoklė (kaip NovaStar SmartLCT offline): kabinetas, stulpeliai × eilės, kadrų dažnis, spalvų gylis, jungimo kryptis ir pradžia, atsarginis žiedas, mažas vėlinimas. Apskaičiuoja raišką, dydį, svorį, galią ir srovę, kiek kabinetų telpa į prievadą, kiek prievadų, įrenginių ar H serijos kortų reikia, nubraižo jungimo schemą (1-1-5 kaip SmartLCT, iš priekio ir iš galo) ir parodo, kurie NovaStar procesoriai (H, VX, MCTRL, NovaPro, COEX) tinka. Išsaugojimas, PDF, redaguojama įrenginių ir kabinetų bazė.' },
   { d:'2026-10-21 02:30', v:'v609', k:'new', t:'Naktinės atsarginės kopijos', f:'Kas naktį visa duomenų bazė ir visi failai užšifruoti kopijuojami į savo hostingą (30 dienų) ir į GitHub (7 dienos). Paskutinės kopijos būsena – Sistema → Nustatymai → Atsarginės kopijos (ir Sistemos santraukoje).' },

@@ -28,3 +28,5 @@
   `app_config` key `led_db` (`check:true` = figure to verify against the datasheet).
   UNICO rules (VX Pro / VX2000 Pro / VC Pro, `unico:true`): port load = rectangle around the port's cabinets unless Free Topology;
   low latency cap = (1 − Y/H) × 650 000; Ethernet backup Split / Sequential halves usable ports; 3D side-by-side halves capacity.
+  Įrankiai is a launcher of tool apps (`TOOL_APPS`, `toolOpen`); the LED tool is a SmartLCT-like editor (`LP` project in localStorage
+  `ledProj`, `lpDraw`, `lpWire`, `lpPattern`, `lpTotals`): free pixel canvas, several cabinet types, ports wired by hand or by pattern.
