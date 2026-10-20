@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-0fKSIdg3U4M8rmt3sfFdjGeeiz8eo4L4h4eGiVlnqqY=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-uu8obFZfYvkHUEEA/QiTgjhQ4mZVsnQ79VTMITA6Cz8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5466,6 +5466,7 @@ body .tabpanel.xg-panel.ev-full{padding-top:calc(10px + env(safe-area-inset-top,
 .sysl-acts{margin-top:4px;}
 .sysl-body > .btn{align-self:flex-start;}
 .sysc-card{margin:0 0 10px;padding:12px 14px;}
+.sysc-card .row .btn svg{width:15px;height:15px;vertical-align:-3px;}
 .sysc-h{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;}
 .sysc-h h3{margin:0 0 2px;font-size:15px;}
 .sysc-list{display:flex;flex-direction:column;}
@@ -22880,7 +22881,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v605';
+const APP_VER = 'v606';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -46549,7 +46550,9 @@ function sysCfgHtml(){
     <div class="card sysc-card"><div class="sysc-h"><div><h3>Teisės pagal roles</h3><div class="sys-faint">Ką kiekviena rolė mato ir gali redaguoti. Admin ir Super Admin mato viską. Pakeitimas išsaugomas iš karto (tos pačios teisės kaip Admin → Prieigos).</div></div></div>
       <div id="admPerms"></div></div>
     <div class="card sysc-card"><div class="sysc-h"><div><h3>Pakeitimų istorija</h3><div class="sys-faint">Kas ir kada keitė nustatymus. Bet kurį pakeitimą galima atšaukti.</div></div></div>
-      ${log || '<div class="sys-faint">Pakeitimų dar nėra.</div>'}</div>`;
+      ${log || '<div class="sys-faint">Pakeitimų dar nėra.</div>'}</div>
+    <div class="card sysc-card"><div class="sysc-h"><div><h3>Perdavimas kitam žmogui</h3><div class="sys-faint">Jei kada prireiktų: vienas dokumentas apie visą programą pagal šios dienos būklę – kur laikomas kodas, duomenų bazė ir svetainė, kokias prieigas perduoti, kaip išleisti naują versiją, visi puslapiai, lentelės, serverio funkcijos ir nustatymai. Slaptažodžių ir raktų reikšmių jame nėra.</div></div></div>
+      <div class="row" style="gap:6px;flex-wrap:wrap;"><button type="button" class="btn small" id="sysHoOpen">${slIcon('openext')} Peržiūrėti / spausdinti</button><button type="button" class="btn small" id="sysHoDl">${slIcon('download')} Atsisiųsti (.html)</button></div></div>`;
 }
 function sysCfgRender(){
   const el = document.getElementById('sysCfg'); if(!el) return;
@@ -46653,6 +46656,106 @@ function sysLWire(el){
       const ok = await sysCfgSave(sysLClean(SYSC.ldraft), (document.getElementById('syslNote')||{}).value||'', 'lists'); if(!ok) b.disabled = false; }
   });
 }
+/* Nustatymai → Perdavimas: one self-contained document about the whole program (made from today's map, settings and
+   error log) for a person who would take it over. Only names of keys / secrets – never their values. */
+function sysHandoverHtml(){
+  const m = SYS.map, h = m.handover||{}, g = SYS.g, now = new Date(), E = s=>esc(String(s==null ? '' : s));
+  const who = ACCESS.profile ? (ACCESS.profile.full_name || [ACCESS.profile.first_name, ACCESS.profile.last_name].filter(Boolean).join(' ')) : '';
+  const tbl = (head, rows)=>`<table><thead><tr>${head.map(x=>`<th>${E(x)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  const code = s=>`<code>${E(s)}</code>`, list = a=>a.length ? a.map(code).join(' ') : '<span class="dim">–</span>';
+  const pages = Object.entries(m.pages), tables = [...g.N.values()].filter(n=>n.type==='table').sort((a, b)=>a.label.localeCompare(b.label));
+  const usedBy = t=>g.E.filter(e=>e.b===t).map(e=>g.N.get(e.a)).filter(Boolean);
+  const secrets = {}; Object.entries(m.funcs).forEach(([k, f])=>f.secrets.forEach(s=>(secrets[s] = secrets[s]||[]).push(k)));
+  const svcs = [...g.N.values()].filter(n=>n.type==='svc');
+  const errs = sysErrors().filter(e=>e.t>Date.now()-7*864e5), byNode = {};
+  errs.forEach(e=>{ const k = e.node || (e.kind==='js' ? 'kodas' : e.kind); byNode[k] = (byNode[k]||0) + (e.count||1); });
+  const navCh = Object.entries(CFG.nav.tabs||{}), listCh = Object.keys(CFG.lists||{});
+  return `<!doctype html><html lang="lt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EventSolutions – programos perdavimas ${E(m.ver)}</title>
+<style>
+body{font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#1b1b1b;background:#fff;max-width:1000px;margin:0 auto;padding:24px 16px 60px;}
+h1{font-size:26px;margin:0 0 4px;} h2{font-size:19px;margin:34px 0 8px;padding-top:10px;border-top:2px solid #F35E7D;} h3{font-size:15px;margin:18px 0 6px;}
+.dim{color:#777;} code{font:12px ui-monospace,Menlo,Consolas,monospace;background:#f2f2f0;padding:1px 4px;border-radius:3px;}
+table{border-collapse:collapse;width:100%;margin:6px 0 12px;font-size:13px;} th,td{border:1px solid #ddd;padding:5px 7px;text-align:left;vertical-align:top;} th{background:#f6f6f4;}
+ol li,ul li{margin:3px 0;} .box{border:1px solid #e3e3e0;border-left:4px solid #F2A93B;padding:10px 12px;margin:10px 0;background:#fffaf0;}
+pre{white-space:pre-wrap;font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;background:#f6f6f4;padding:12px;border-radius:4px;}
+nav a{margin-right:12px;} @media print{h2{page-break-before:auto;} nav{display:none;}}
+</style></head><body>
+<h1>EventSolutions programa – perdavimo dokumentas</h1>
+<div class="dim">Versija ${E(m.ver)} · sugeneruota ${E(now.toLocaleString('lt-LT'))}${who ? ' · '+E(who) : ''} · kodas: ${E(m.lines)} eilučių</div>
+<nav><a href="#kur">Kur kas yra</a><a href="#prieigos">Prieigos</a><a href="#isleidimas">Išleidimas</a><a href="#puslapiai">Puslapiai</a><a href="#lenteles">Lentelės</a><a href="#funkcijos">Serverio funkcijos</a><a href="#nustatymai">Nustatymai</a><a href="#klaidos">Klaidos</a><a href="#pastabos">Pastabos</a></nav>
+<div class="box">Šiame dokumente nėra slaptažodžių ir raktų reikšmių – tik jų pavadinimai ir vietos, kur jie nustatomi. Raktus ir prieigas perduokite asmeniškai.</div>
+
+<h2 id="kur">1. Kur kas yra</h2>
+${tbl(['Kas', 'Kur'], [
+  ['Programos kodas', `${h.repo ? `<a href="${E(h.repo)}">${E(h.repo)}</a>` : 'GitHub repozitorija'} · šaka ${code(h.branch||'')}`],
+  ['Visa programa (vienas failas)', `${code('site/index.html')} – visi puslapiai, stiliai ir logika`],
+  ['Svetainė', `Cloudflare Pages – automatiškai įdiegia aplanką ${code('site/')} po kiekvieno „push“ į šaką ${code(h.branch||'')}`],
+  ['Duomenų bazė ir prisijungimai', `Supabase projektas ${code(SUPABASE_URL)}`],
+  ['Duomenų bazės struktūra (SQL)', `${code('supabase/sql/')} (${(h.sqlFiles||[]).length} failų); bendras ${code('atnaujinimas.sql')} – viskas iš eilės. Paleidžiama ranka: Supabase → SQL Editor.`],
+  ['Serverio funkcijos', `${code('supabase/functions/')} (${Object.keys(m.funcs).length}) – įdiegiamos automatiškai per GitHub Actions („Supabase funkcijos“)`],
+  ['Kiti svetainės failai', list(h.siteFiles||[])],
+  ['Pagalbiniai įrankiai išleidimui', code('site-tools/')+' – balsavimo, RFID, saugumo (CSP) ir sistemos žemėlapio failų generavimas'],
+  ['Android programėlės pasirašymo raktas', 'Laikomas atskirai, NE repozitorijoje – perduoti asmeniškai (be jo nebus galima atnaujinti programėlės Google Play / APK).'],
+])}
+<h3>Automatiniai darbai (GitHub → Actions)</h3>
+${tbl(['Darbas', 'Failas', 'Reikalingi GitHub raktai (Settings → Secrets → Actions)'], (h.workflows||[]).map(w=>[E(w.name), code('.github/workflows/'+w.file), list(w.secrets)]))}
+
+<h2 id="prieigos">2. Prieigos, kurias reikia perduoti</h2>
+<ol>
+<li><b>GitHub</b> – pridėti žmogų prie repozitorijos (Settings → Collaborators) arba perduoti repozitoriją.</li>
+<li><b>Cloudflare</b> – paskyra su Pages projektu (ir R2 saugykla failams), domenų DNS.</li>
+<li><b>Supabase</b> – projektas (Organization → Members). Ten ir serverio funkcijų raktai: Edge Functions → Secrets.</li>
+<li><b>Domenų registratorius</b> – eventsolutions.lt.</li>
+${svcs.map(n=>`<li><b>${E(n.label)}</b> – ${E(n.desc||'')}</li>`).join('')}
+<li><b>Apple Developer / App Store Connect</b> ir <b>Google Play</b> – jei naudojamos programėlės.</li>
+<li><b>Programos Super Admin</b> – naujam žmogui programoje (Admin → Nariai) suteikti Super Admin lygį.</li>
+</ol>
+<h3>Serverio funkcijų raktai (Supabase → Edge Functions → Secrets)</h3>
+${tbl(['Raktas', 'Naudoja funkcijos'], Object.keys(secrets).sort().map(s=>[code(s), secrets[s].map(E).join(', ')]))}
+
+<h2 id="isleidimas">3. Kaip išleisti naują versiją</h2>
+<ol>
+<li>Pakeisti ${code('site/index.html')}. Padidinti ${code("APP_VER")} (pvz. v605 → v606) ir ${code('site/sw.js')} ${code('CACHE')} tuo pačiu numeriu; įrašyti eilutę į ${code('CHANGELOG')} (matosi „Atnaujinimuose“).</li>
+<li>Paleisti įrankius: ${code('python3 site-tools/sys_build.py site/index.html supabase/functions site/sys-map.json')}, ${code('python3 site-tools/build_vote.py site/index.html site/balsuoti.html')}, ${code('python3 site-tools/rfid_build.py site/index.html site/rfid-items.json')}, ${code('python3 site-tools/sec_build.py site/index.html site/_headers site/balsuoti.html site/auto.html site/saskaitos.html site/rfid.html')} (paskutinis būtinas – be jo naršyklė neleis paleisti pakeisto kodo).</li>
+<li>Jei keitėsi duomenų bazė – naujas failas ${code('supabase/sql/…sql')}, jį pridėti ir prie ${code('atnaujinimas.sql')}, paleisti Supabase → SQL Editor.</li>
+<li>${code('git commit')} ir ${code('git push')} į šaką ${code(h.branch||'')} – Cloudflare per ~1 min. įdiegia svetainę, GitHub Actions – pakeistas serverio funkcijas.</li>
+<li>Nauja versija pirmiausia matoma tik Super Admin; visiems – „Atnaujinimai“ → „Išleisti visiems“.</li>
+</ol>
+
+<h2 id="puslapiai">4. Puslapiai (${pages.length})</h2>
+${tbl(['Puslapis', 'Kas tai', 'Kode', 'Lentelės', 'Serverio funkcijos'], pages.map(([k, p])=>{ const n = g.N.get('page:'+k)||{};
+  return [`<b>${E(p.label)}</b><br><span class="dim">${E(k)}</span>`, E(n.desc||''), `${code(p.render+'()')}<br><span class="dim">${E(p.line)} eil.</span>`, list(p.tables), list(p.fns)]; }))}
+
+<h2 id="lenteles">5. Duomenų lentelės (${tables.length})</h2>
+${tbl(['Lentelė', 'Sukuriama', 'Naudoja'], tables.map(n=>[code(n.label), n.sql ? code('supabase/sql/'+n.sql) : '<span class="dim">–</span>', usedBy(n.id).map(x=>E(x.label)).join(', ')]))}
+
+<h2 id="funkcijos">6. Serverio funkcijos (${Object.keys(m.funcs).length})</h2>
+${tbl(['Funkcija', 'Kas tai', 'Lentelės', 'Išorinės paslaugos', 'Raktai'], Object.entries(m.funcs).map(([k, f])=>[`${code(k)}<br><span class="dim">${E(f.lines)} eil.</span>`, E(SYS_FN_DESC[k]||''), list(f.tables),
+  g.E.filter(e=>e.a==='fn:'+k && e.b.startsWith('svc:')).map(e=>E(g.N.get(e.b).label)).join(', ') || '<span class="dim">–</span>', list(f.secrets)]))}
+
+<h2 id="nustatymai">7. Nustatymai be kodo (Sistema → Nustatymai)</h2>
+<p>Puslapių pavadinimai, ikonos, meniu tvarka, išjungti puslapiai, būsenų pavadinimai ir sąrašai keičiami programoje – lentelė ${code('app_config')}, istorija ${code('app_config_log')}.</p>
+${navCh.length ? tbl(['Puslapis', 'Pakeista'], navCh.map(([k, t])=>[E((CFG_ORIG.get(k)||{}).label||k), [t.label ? 'pavadinimas „'+E(t.label)+'“' : '', t.icon ? 'ikona '+code(t.icon) : '', t.off ? '<b>išjungtas</b>' : ''].filter(Boolean).join(', ')])) : '<p class="dim">Puslapių nustatymai nekeisti.</p>'}
+${listCh.length ? `<p>Pakeisti sąrašai: ${listCh.map(id=>E((SYS_LISTS.find(L=>L.id===id)||{}).title||id)).join(', ')}.</p>` : '<p class="dim">Sąrašai nekeisti.</p>'}
+
+<h2 id="klaidos">8. Klaidos per 7 dienas</h2>
+${Object.keys(byNode).length ? tbl(['Kur', 'Kiek kartų'], Object.entries(byNode).sort((a, b)=>b[1]-a[1]).map(([k, c])=>[code(k), E(c)])) : '<p class="dim">Klaidų neužfiksuota.</p>'}
+<p class="dim">Smulkiai – programoje: Sistema → Klaidos (su paaiškinimu, kodėl ir ką daryti).</p>
+
+<h2 id="pastabos">9. Pastabos programuotojui</h2>
+<p>Svarbiausios kodo taisyklės (ikonos, išleidimas, nustatymai be kodo) aprašytos repozitorijos faile ${code('CLAUDE.md')} – jį perskaityti pirmiausia. Kiekvienas pakeitimas aprašytas programos „Atnaujinimuose“ (${code('CHANGELOG')} kode).</p>
+</body></html>`;
+}
+function sysHandoverDownload(){
+  const html = sysHandoverHtml(), d = new Date().toISOString().slice(0, 10);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type:'text/html' })); a.download = `EventSolutions-perdavimas-${d}.html`;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+}
+function sysHandoverOpen(){
+  const w = window.open('', '_blank'); if(!w){ toast('Naršyklė neleido atidaryti naujo lango – spausk „Atsisiųsti“.'); return; }
+  w.document.open(); w.document.write(sysHandoverHtml()); w.document.close();
+}
 function sysCfgWire(){
   const el = document.getElementById('sysCfg'); if(!el || el.dataset.wired) return; el.dataset.wired = '1';
   sysLWire(el);
@@ -46673,6 +46776,8 @@ function sysCfgWire(){
     if(e.target.closest('[data-ic]') && k){ sysCfgIconPick(k); return; }
     if(e.target.closest('[data-rs]') && k){ delete d.tabs[k]; sysCfgRender(); sysCfgSaveBar(); return; }
     if(e.target.closest('#syscCancel')){ SYSC.draft = null; sysCfgRender(); return; }
+    if(e.target.closest('#sysHoOpen')){ sysHandoverOpen(); return; }
+    if(e.target.closest('#sysHoDl')){ sysHandoverDownload(); return; }
     if(e.target.closest('#syscGo')){ const b = e.target.closest('#syscGo'); b.disabled = true; const ok = await sysCfgSave(sysCfgClean(SYSC.draft), (document.getElementById('syscNote')||{}).value||''); if(!ok) b.disabled = false; return; }
     const un = e.target.closest('[data-undo]');
     if(un){ const r = (SYSC.log||[]).find(x=>String(x.id)===un.dataset.undo); if(!r) return;
@@ -47233,6 +47338,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 00:05', v:'v606', k:'new', t:'Sistema → Nustatymai: perdavimo dokumentas', f:'Jei kada prireiktų perduoti programą kitam žmogui – vienu mygtuku sugeneruojamas dokumentas pagal tos dienos būklę: kur laikomas kodas, duomenų bazė ir svetainė, kokias prieigas perduoti, kaip išleisti naują versiją, visi puslapiai, lentelės, serverio funkcijos, nustatymai ir klaidos. Be slaptažodžių ir raktų reikšmių.' },
   { d:'2026-10-20 23:45', v:'v605', k:'new', t:'Sistema → Nustatymai: sąrašai ir būsenos', f:'Super Admin gali pervadinti būsenas (renginių, paėmimų, išdavimų, projektų, gedimų, prašymų, išlaidų), keisti jų spalvas ir tvarkyti laisvus sąrašus (projektų tipai, atliktų darbų rūšys) – pridėti, pašalinti, keisti tvarką. Viskas su istorija ir grąžinimu.' },
   { d:'2026-10-20 23:20', v:'v604', k:'new', t:'Sistema → Nustatymai: puslapiai, meniu ir teisės be kodo', f:'Super Admin gali pervadinti puslapius, pakeisti jų ikonas, meniu tvarką, išjungti nereikalingus puslapius ir keisti rolių teises. Kiekvienas pakeitimas įrašomas į istoriją (kas, kada, pastaba) ir jį galima grąžinti vienu mygtuku.' },
   { d:'2026-10-20 22:40', v:'v603', k:'new', t:'Sistema: visos programos žemėlapis (Super Admin)', f:'Naujas puslapis „Sistema“ (tik Super Admin): visi puslapiai, duomenų lentelės, serverio funkcijos ir išorinės paslaugos kaip sujungti mazgai. Paspaudus mazgą – kas tai, kur jis kode, su kuo susijęs ir ar veikia. „Patikrinti viską“ patikrina lenteles ir funkcijas, o klaidų žurnalas iš visų narių parodo, kas neveikia, kodėl ir ką daryti.' },

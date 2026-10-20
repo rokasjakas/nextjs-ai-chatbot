@@ -132,9 +132,32 @@ for key, fn in TABS.items():
             owner.setdefault(n, set()).add(key)
 code = {n: [c['line'], (sorted(owner[n])[0] if len(owner.get(n, ())) == 1 else '')] for n, c in chunks.items() if c['fn']}
 
+# where the code lives and how it ships – for the hand-over document (Sistema → Nustatymai → Perdavimas)
+root = os.path.dirname(os.path.dirname(os.path.abspath(src)))
+def rd(*p):
+    try: return open(os.path.join(root, *p), encoding='utf-8').read()
+    except OSError: return ''
+import subprocess
+try: repo = subprocess.run(['git', '-C', root, 'config', '--get', 'remote.origin.url'], capture_output=True, text=True).stdout.strip()
+except Exception: repo = ''
+repo = re.sub(r'//[^@/]*@', '//', repo)
+m = re.search(r'github\.com[/:]([\w.-]+/[\w.-]+?)(?:\.git)?$', repo)
+notes = rd('CLAUDE.md')
+br = re.search(r'from branch `([^`]+)`', notes)
+wf = []
+wdir = os.path.join(root, '.github', 'workflows')
+if os.path.isdir(wdir):
+    for name in sorted(os.listdir(wdir)):
+        c = rd('.github', 'workflows', name); t = re.search(r'^name:\s*(.+)$', c, re.M)
+        wf.append({'file': name, 'name': t.group(1).strip() if t else name, 'secrets': sorted(set(re.findall(r'secrets\.([A-Z_0-9]+)', c)))})
+sitefiles = sorted(n for n in os.listdir(os.path.dirname(os.path.abspath(src))) if not n.startswith('.'))
+handover = {'repo': ('https://github.com/' + m.group(1)) if m else '', 'branch': br.group(1) if br else '', 'workflows': wf,
+            'sqlFiles': sorted(n for n in os.listdir(sdir) if n.endswith('.sql')) if os.path.isdir(sdir) else [],
+            'siteFiles': sitefiles}   # the developer notes (CLAUDE.md) stay in the repository – this file is public
+
 ver = re.search(r"const APP_VER = '(v\d+)'", js)
 data = {'ver': ver.group(1) if ver else '', 'built': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M'),
-        'lines': html.count('\n') + 1, 'pages': pages, 'funcs': funcs, 'sql': sql, 'code': code}
+        'lines': html.count('\n') + 1, 'pages': pages, 'funcs': funcs, 'sql': sql, 'code': code, 'handover': handover}
 json.dump(data, open(out, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 print('sys map: %d pages, %d server functions, %d tables' % (len(pages), len(funcs),
       len({t for p in pages.values() for t in p['tables']} | {t for f in funcs.values() for t in f['tables']})))
