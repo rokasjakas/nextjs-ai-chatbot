@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wXoPIiuaotltCCQsCTc+b+DaPO+PkQkQq+gzdhsld34=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-PJ6EHZ/gdD0vxq4lv2uhgroskCvmaN99e7sNenGsDj8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -356,7 +356,19 @@ td input,td select{padding:5px 7px;font-size:12.5px;width:100%;min-width:56px;}
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
 .pop-safe-x{position:sticky;top:0;float:right;z-index:6;width:40px;height:40px;margin:-8px -8px 4px 8px;border-radius:50%;border:1px solid var(--border);background:var(--panel);color:var(--text);font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.25);}
 :not(.modal) > .pop-safe-x{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;margin:0;float:none;z-index:2147483000;}
+.pop-safe-x svg{width:20px;height:20px;}
+/* a computer: the same ✕ as every other window – top right inside the window */
+@media (min-width:761px) and (pointer:fine){
+  .pop-safe-x{width:32px;height:32px;border-radius:9px;background:var(--panel-2);color:var(--text-dim);margin:-10px -10px 4px 10px;}
+  .pop-safe-x svg{width:18px;height:18px;} .pop-safe-x:hover{color:#fff;background:var(--danger);border-color:var(--danger);}
+  :not(.modal) > .pop-safe-x{position:absolute;top:10px;right:10px;margin:0;z-index:20;} }
 .modal{background:var(--panel);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:20px;}
+/* the one × of every pop-up: top right, stays there while the window scrolls */
+.modal-x{position:sticky;top:0;float:right;z-index:6;width:32px;height:32px;margin:-10px -10px 4px 10px;border-radius:9px;border:1px solid var(--border);background:var(--panel-2);color:var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+.modal-x svg{width:18px;height:18px;} .modal-x:hover{color:#fff;background:var(--danger);border-color:var(--danger);}
+.modal-own-x{display:none !important;}
+.ui-ask-card{position:relative;} .ui-ask-card > .modal-x{position:absolute;top:10px;right:10px;margin:0;float:none;}
+.ui-ask-card .ui-ask-msg{padding-right:34px;}
 .modal h3{margin:0 0 14px;font-size:16px;}
 /* dialog docked to the left while keliumokestis.lt is open in a popup on the right */
 .modal-backdrop.docked-left{justify-content:flex-start;align-items:flex-start;background:transparent;pointer-events:none;padding:12px;}
@@ -2202,7 +2214,7 @@ body.of-pop-open{overflow:hidden;}
 .of-notes textarea{width:100%;box-sizing:border-box;resize:vertical;}
 .of-sp-cur{font-weight:700;}
 .ov-modal{max-width:760px !important;width:calc(100vw - 32px);}
-.ov-modal.ov-wide{max-width:1300px !important;}
+.ov-modal.ov-wide{max-width:min(96vw, 1800px) !important;}
 .ov-list{display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow-y:auto;}
 .ov-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;}
 .ov-row.is-final{border-color:var(--ok);}
@@ -2211,6 +2223,12 @@ body.of-pop-open{overflow:hidden;}
 .ov-sum{font-weight:700;white-space:nowrap;}
 .ov-chk input{width:18px;height:18px;}
 .ov-cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-height:70vh;overflow:auto;}
+.sz-mode{display:flex;gap:6px;margin:0 0 10px;} .sz-x{align-self:flex-end;padding-bottom:10px;font-weight:700;color:var(--text-dim);}
+.ov-cmp.ov-cmpn{grid-template-columns:repeat(var(--ov-n,2), minmax(340px, 1fr));}
+.ov-colh{display:flex;align-items:center;gap:8px;position:sticky;top:0;background:var(--panel);z-index:2;}
+.ov-pick{font-weight:800;font-size:14px;max-width:190px;} .ov-base{font-size:11px;} .ov-vs{font-size:11.5px;font-weight:500;color:var(--text-dim);flex:1;}
+.ov-rm{margin-left:auto;width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--panel-2);color:var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;} .ov-rm svg{width:15px;height:15px;} .ov-rm:hover{color:var(--danger);border-color:var(--danger);}
+.ov-what{color:var(--text) !important;opacity:.85;}
 @media(max-width:760px){ .ov-cmp{grid-template-columns:1fr;} }
 .ov-col{min-width:0;}
 .ov-colh{font-weight:800;font-size:15px;padding:6px 0;border-bottom:2px solid var(--border-2);margin-bottom:6px;}
@@ -20706,6 +20724,7 @@ function uiAsk(msg, opt){
       ${opt.input ? '<input type="text" class="ui-ask-in" autocomplete="off">' : ''}
       <div class="ui-ask-b">${opt.no===false ? '' : `<button type="button" class="btn" data-a="no">${esc(opt.no || 'Atšaukti')}</button>`}<button type="button" class="btn ${danger ? 'danger' : 'primary'}" data-a="yes">${esc(opt.yes || (danger ? (String(msg).trim().split(/\s/)[0].replace(/[^A-Za-zĄČĘĖĮŠŲŪŽąčęėįšųūž]/g,'') || 'Taip') : 'Gerai'))}</button></div></div>`;
     el.querySelector('.ui-ask-msg').textContent = String(msg);
+    { const card = el.querySelector('.ui-ask-card'); if(card){ const x = doc.createElement('button'); x.type = 'button'; x.className = 'modal-x'; x.title = 'Uždaryti'; x.setAttribute('aria-label', 'Uždaryti'); x.dataset.a = 'no'; x.innerHTML = slIcon('close'); card.insertBefore(x, card.firstChild); } }
     const inp = el.querySelector('.ui-ask-in'); if(inp) inp.value = opt.value==null ? '' : String(opt.value);
     const done = v=>{ doc.removeEventListener('keydown', key, true); el.classList.add('out'); el.__instant = true; setTimeout(()=>el.remove(), 120); res(v); };   // it already faded (.out)
     const key = e=>{ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done(opt.input ? null : false); } else if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); e.stopPropagation(); done(opt.input ? inp.value : true); } };
@@ -20719,6 +20738,25 @@ function uiAsk(msg, opt){
 function uiDoc(){ const L = typeof TEAM!=='undefined' && TEAM.live; return L && L.popWin && !L.popWin.closed && L.popWin.document.hasFocus() ? L.popWin.document : document; }
 function uiConfirm(msg, opt){ return uiAsk(msg, Object.assign({ doc:uiDoc() }, opt)); }
 function uiPrompt(msg, value, opt){ return uiAsk(msg, Object.assign({ doc:uiDoc(), input:true, value, danger:false }, opt)); }
+// every pop-up has its × in the same place – top right. A window's own × (in its title row) is hidden and
+// pressed by this one, so whatever it does on closing still happens; without one, the window just closes
+function modalOwnX(root){
+  const top = root.getBoundingClientRect().top;
+  return [...root.querySelectorAll('button, .icon-btn, [role=button]')].find(b=>{
+    if(b.classList.contains('modal-x')) return false;
+    const r = b.getBoundingClientRect(); if(!r.width || r.top - top > 80) return false;
+    const txt = (b.textContent||'').trim(), lab = (b.getAttribute('aria-label')||'')+' '+(b.title||'');
+    return /^[✕×✖✗]$/.test(txt) || (!txt && /uždaryti|close/i.test(lab)) || (/(X|Close)$/.test(b.id||'') && txt.length<=1);
+  }) || null;
+}
+function modalCloseX(root, onClose){
+  if(!root || root.querySelector(':scope > .modal-x')) return;
+  const own = modalOwnX(root); if(own) own.classList.add('modal-own-x');
+  const x = document.createElement('button'); x.type = 'button'; x.className = 'modal-x'; x.title = 'Uždaryti (Esc)'; x.setAttribute('aria-label', 'Uždaryti');
+  x.innerHTML = slIcon('close');
+  x.onclick = e=>{ e.stopPropagation(); if(own && own.isConnected) own.click(); else if(onClose) onClose(); else closeModal(); };
+  root.insertBefore(x, root.firstChild);
+}
 function openModal(innerHtml){
   const was = !!document.getElementById('modalBackdrop');
   closeModal(true);
@@ -20730,6 +20768,7 @@ function openModal(innerHtml){
   if(was) bd.classList.add('swap');   // one dialog replaced by another: only the card animates
   document.body.appendChild(bd);
   const root = bd.querySelector('#modalRoot');
+  modalCloseX(root);
   const key = modalDraftKey(root);
   if(!key || !draftFields(root).length) return;
   // The caller fills its defaults right after openModal returns; restore after that.
@@ -22431,7 +22470,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v591';
+const APP_VER = 'v592';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31915,27 +31954,44 @@ async function offerOpen(id, n, pick){
   if(currentTab!=='offers') setTab('offers'); else offerEditorRender();
 }
 // several versions: which one to open, rename, compare two
+// what changed against the version before (short): rows added / removed / changed, the total, the header fields
+function ofDiffSummary(prev, cur){
+  if(!prev) return 'pirma versija · '+cur.sections.reduce((a, s)=>a+s.rows.length, 0)+' eil.';
+  const key = (s, r)=>r.id || (s.title+'|'+r.name), P = new Map(), C = new Map();
+  prev.sections.forEach(s=>s.rows.forEach(r=>P.set(key(s, r), r))); cur.sections.forEach(s=>s.rows.forEach(r=>C.set(key(s, r), r)));
+  let add = 0, del = 0, ch = 0;
+  C.forEach((r, k)=>{ const y = P.get(k); if(!y) add++; else if(r.name!==y.name || ['qty','price','coef'].some(f=>String(offerNum(r[f]))!==String(offerNum(y[f])))) ch++; });
+  P.forEach((r, k)=>{ if(!C.has(k)) del++; });
+  const out = [];
+  if(add) out.push('+'+add+' eil.'); if(del) out.push('−'+del+' eil.'); if(ch) out.push(ch+' pakeist'+(ch===1?'a':'os'));
+  const sn = s=>s.map(x=>x.title).join('|'); if(sn(prev.sections)!==sn(cur.sections)) out.push('skiltys');
+  [['client','klientas'],['project','projektas'],['date','data'],['location','lokacija'],['vat','PVM']].forEach(([k, l])=>{ if(String(prev[k]||'')!==String(cur[k]||'')) out.push(l); });
+  const d = offerTotals(cur).gross - offerTotals(prev).gross;
+  if(Math.abs(d) > 0.004) out.push('suma '+(d>0?'+':'−')+offerMoney(Math.abs(d)));
+  return out.length ? out.join(' · ') : 'be pakeitimų';
+}
 function ofVersionsModal(row, mode){
   const d = Object.assign(offerNew().data, row.data||{}), vs = ofVersions(d).slice().reverse();
   const curSame = vs.length && JSON.stringify(vs[0].doc)===JSON.stringify(ofSnap(d));
   const pick = new Set();
+  const asc = ofVersions(d), docOf = n=>ofVerDoc(d, n), sumOf = v=>{ const i = asc.indexOf(v); return ofDiffSummary(i>0 ? docOf(asc[i-1].n) : null, docOf(v.n)); };
   const draw = ()=>{
-    document.getElementById('ovList').innerHTML = (curSame ? '' : `<div class="ov-row"><label class="ov-chk"><input type="checkbox" data-cmp="cur" ${pick.has('cur')?'checked':''}></label><span class="ov-main"><b>Dabartinis juodraštis</b><small>neišsaugotas kaip versija · ${odE(ofWhen(row.updated_at))} · ${odE(row.updated_by||'')}</small></span><span class="ov-sum">${offerMoney(offerTotals(d).gross)}</span><button class="btn small primary" data-openv="0">Atidaryti</button></div>`)
+    document.getElementById('ovList').innerHTML = (curSame ? '' : `<div class="ov-row"><label class="ov-chk"><input type="checkbox" data-cmp="cur" ${pick.has('cur')?'checked':''}></label><span class="ov-main"><b>Dabartinis juodraštis</b><small>neišsaugotas kaip versija · ${odE(ofWhen(row.updated_at))} · ${odE(row.updated_by||'')}</small>${asc.length ? `<small class="ov-what">${odE('lyginant su '+asc[asc.length-1].name+': '+ofDiffSummary(docOf(asc[asc.length-1].n), d))}</small>` : ''}</span><span class="ov-sum">${offerMoney(offerTotals(d).gross)}</span><button class="btn small primary" data-openv="0">Atidaryti</button></div>`)
       + vs.map(v=>`<div class="ov-row ${d.finalVersion===v.n?'is-final':''}"><label class="ov-chk"><input type="checkbox" data-cmp="${v.n}" ${pick.has(String(v.n))?'checked':''}></label>
-        <span class="ov-main"><b>${odE(v.name)}</b>${d.finalVersion===v.n?' <span class="pill of-final">✓ galutinė</span>':''}<small>${odE(ofWhen(v.at))} · ${odE(v.by||'')}</small></span>
+        <span class="ov-main"><b>${odE(v.name)}</b>${d.finalVersion===v.n?' <span class="pill of-final">✓ galutinė</span>':''}<small>${odE(ofWhen(v.at))} · ${odE(v.by||'')}</small><small class="ov-what">${odE(sumOf(v))}</small></span>
         <span class="ov-sum">${offerMoney(v.total)}</span>
         ${mode==='final' ? `<button class="btn small primary" data-finalv="${v.n}">Išsaugoti kaip galutinį</button>` : `<button class="btn small" data-renv="${v.n}" title="Pervadinti">✎</button><button class="btn small primary" data-openv="${v.n}">Atidaryti</button>`}</div>`).join('');
-    const c = document.getElementById('ovCmp'); if(c){ c.disabled = pick.size!==2; c.textContent = pick.size===2 ? 'Palyginti pažymėtas (2)' : 'Palyginti: pažymėk 2'; }
+    const c = document.getElementById('ovCmp'); if(c){ c.disabled = pick.size < 2; c.textContent = pick.size >= 2 ? 'Palyginti pažymėtas ('+pick.size+')' : 'Palyginti: pažymėk 2–'+OF_CMP_MAX; }
   };
   openModal(`<h3 style="margin:0 0 4px;">${mode==='final' ? 'Kurią versiją išsaugoti kaip galutinę?' : odE(d.project||row.title||'Pasiūlymas')}</h3>
-    <div class="section-sub" style="margin:0 0 10px;">${mode==='final' ? 'Pasirinkta versija taps galutiniu pasiūlymu (ir PDF skiltyje „Pasiūlymų PDF“).' : `Pasiūlymas turi ${ofVersions(d).length} versijas. Pasirink, kurią atidaryti, arba pažymėk dvi ir palygink.`}</div>
+    <div class="section-sub" style="margin:0 0 10px;">${mode==='final' ? 'Pasirinkta versija taps galutiniu pasiūlymu (ir PDF skiltyje „Pasiūlymų PDF“).' : `Pasiūlymas turi ${ofVersions(d).length} versijas. Pasirink, kurią atidaryti, arba pažymėk kelias (iki ${OF_CMP_MAX}) ir palygink.`}</div>
     <div class="ov-list" id="ovList"></div>
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;flex-wrap:wrap;">${mode==='final' ? '<span></span>' : '<button class="btn" id="ovCmp" disabled>Palyginti</button>'}<button class="btn" id="ovX">Uždaryti</button></div>`);
   document.getElementById('modalRoot').classList.add('ov-modal');
   draw();
   const root = document.getElementById('modalRoot');
   root.addEventListener('change', e=>{ const c = e.target.closest('[data-cmp]'); if(!c) return; const k = c.dataset.cmp;
-    if(c.checked){ if(pick.size>=2){ c.checked = false; toast('Palyginti galima iki dviejų versijų.'); return; } pick.add(k); } else pick.delete(k); draw(); });
+    if(c.checked){ if(pick.size>=OF_CMP_MAX){ c.checked = false; toast('Palyginti galima iki '+OF_CMP_MAX+' versijų.'); return; } pick.add(k); } else pick.delete(k); draw(); });
   root.addEventListener('click', async e=>{
     const o = e.target.closest('[data-openv]'); if(o){ const n = +o.dataset.openv; offerOpen(row.id, n || 0, false); return; }
     const f = e.target.closest('[data-finalv]'); if(f){ closeModal(); ofFinalFromVersion(+f.dataset.finalv); return; }
@@ -31948,13 +32004,17 @@ function ofVersionsModal(row, mode){
     }
   });
   const cmp = document.getElementById('ovCmp'); if(cmp) cmp.onclick = ()=>{
-    const [a, b] = [...pick].map(k=>k==='cur' ? { label:'Dabartinis', doc:d } : { label:ofVersions(d).find(x=>x.n===+k).name, doc:ofVerDoc(d, +k), n:+k }).sort((x,y)=>(x.n||1e9)-(y.n||1e9));
-    ofCompare(a, b, ()=>ofVersionsModal(row, mode));
+    // every version one can show in the comparison (and switch to there)
+    const all = asc.map(v=>({ key:String(v.n), label:v.name, doc:docOf(v.n), n:v.n })).concat(curSame ? [] : [{ key:'cur', label:'Dabartinis', doc:d, n:1e9 }]);
+    const keys = [...pick].sort((x, y)=>(x==='cur'?1e9:+x)-(y==='cur'?1e9:+y));
+    ofCompare(all, keys, ()=>ofVersionsModal(row, mode));
   };
   document.getElementById('ovX').onclick = closeModal;
 }
-// two versions side by side, what changed is highlighted
-function ofCompare(A, B, back){
+// versions side by side (2–8): each column against the first one (the first against the second), what changed is highlighted;
+// in the window the shown versions are switched, added and removed at once
+const OF_CMP_MAX = 8;
+function ofCompare(all, keys, back){
   const hdr = [['project','Projektas'],['client','Klientas'],['contact','Vardas'],['location','Lokacija'],['date','Data'],['vat','PVM %']];
   const rowKey = (s, r)=>r.id || (s.title+'|'+r.name);
   const cell = (v, diff)=>`<td class="${diff?'ov-diff':''}">${odE(v)}</td>`;
@@ -31977,11 +32037,29 @@ function ofCompare(A, B, back){
     return `<div class="ov-col"><div class="ov-colh">${odE(X.label)}</div><table class="ov-t ov-head">${head}</table>${secs}
       <table class="ov-t ov-sumt"><tr><th>Be PVM</th>${cell(offerMoney(ta.net), Math.abs(ta.net-tb.net)>0.004)}</tr><tr><th>Su PVM</th>${cell(offerMoney(ta.gross), Math.abs(ta.gross-tb.gross)>0.004)}</tr></table></div>`;
   };
+  keys = keys.filter(k=>all.some(x=>x.key===k)).slice(0, OF_CMP_MAX);
+  const of = k=>all.find(x=>x.key===k);
+  const pickHtml = (i, k)=>`<select class="ov-pick" data-col="${i}" title="Rodyti kitą versiją">${all.map(x=>`<option value="${odE(x.key)}" ${x.key===k?'selected':''} ${x.key!==k && keys.includes(x.key)?'disabled':''}>${odE(x.label)}</option>`).join('')}</select>`;
+  const draw = ()=>{
+    const cols = keys.map((k, i)=>{ const X = of(k), Y = of(keys[i===0 ? 1 : 0]) || X;
+      return side(X, Y).replace(`<div class="ov-colh">${odE(X.label)}</div>`, `<div class="ov-colh">${pickHtml(i, k)}${i===0 ? '<span class="pill ov-base" title="Kitos versijos lyginamos su šia">bazė</span>' : `<span class="ov-vs">lyg. su ${odE(of(keys[0]).label)}</span>`}${keys.length > 2 ? `<button type="button" class="ov-rm" data-rm="${i}" title="Išimti iš palyginimo">${slIcon('close')}</button>` : ''}</div>`); });
+    const free = all.filter(x=>!keys.includes(x.key));
+    const box = document.getElementById('ovCmpBox'); box.style.setProperty('--ov-n', keys.length);
+    box.innerHTML = cols.join('');
+    const add = document.getElementById('ovAdd');
+    add.innerHTML = keys.length < OF_CMP_MAX && free.length ? `<select id="ovAddSel"><option value="">+ Pridėti versiją (${keys.length}/${OF_CMP_MAX})</option>${free.map(x=>`<option value="${odE(x.key)}">${odE(x.label)}</option>`).join('')}</select>` : `<small class="section-sub">${keys.length}/${OF_CMP_MAX} versijos</small>`;
+  };
   openModal(`<h3 style="margin:0 0 4px;">Versijų palyginimas</h3>
-    <div class="section-sub" style="margin:0 0 10px;"><span class="ov-diff ov-leg">pakeista</span> <span class="ov-new ov-leg">nauja eilutė</span> · „− N eil. nėra“ – eilutės, kurių šioje versijoje nėra</div>
-    <div class="ov-cmp">${side(A, B)}${side(B, A)}</div>
-    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button class="btn" id="ovBack">‹ Atgal į versijas</button></div>`);
+    <div class="section-sub" style="margin:0 0 10px;"><span class="ov-diff ov-leg">pakeista</span> <span class="ov-new ov-leg">nauja eilutė</span> · „− N eil. nėra“ – eilutės, kurių šioje versijoje nėra · kiekviena versija lyginama su pirma (bazė); versiją keisk viršuje esančiame sąraše</div>
+    <div class="ov-cmp ov-cmpn" id="ovCmpBox"></div>
+    <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;flex-wrap:wrap;"><span id="ovAdd"></span><button class="btn" id="ovBack">‹ Atgal į versijas</button></div>`);
   document.getElementById('modalRoot').classList.add('ov-modal', 'ov-wide');
+  draw();
+  const root = document.getElementById('modalRoot');
+  root.addEventListener('change', e=>{
+    const p = e.target.closest('.ov-pick'); if(p){ keys[+p.dataset.col] = p.value; draw(); return; }
+    if(e.target.id==='ovAddSel' && e.target.value){ keys.push(e.target.value); draw(); } });
+  root.addEventListener('click', e=>{ const r = e.target.closest('[data-rm]'); if(r && keys.length > 2){ keys.splice(+r.dataset.rm, 1); draw(); } });
   document.getElementById('ovBack').onclick = back;
 }
 function offerSettingsModal(){
@@ -32707,15 +32785,25 @@ function odSizeAsk(r){
   const sz = r.size || {}, hs = (g.legs||[]).filter(l=>l.itemId && l.h), num = v=>offerPlain(offerNum(v));
   const nm = id=>{ const it = getItem(id); return it ? it.name : '?'; };
   const deck = ctDeckOn(g);
-  openModal(`<h3 style="margin:0 0 4px;">📐 ${odE(g.name)}</h3><p class="section-sub" style="margin:0 0 10px;">${g.sizeCalc ? (deck ? 'Įrašyk dydį metrais – apskaičiuosime, kiek reikia pakylų.' : 'Įrašyk dydį metrais – apskaičiuosime m2.') : ''}${g.heightCalc ? ' Pasirink aukštį – apskaičiuosime kojas.' : ''}</p>
-    ${g.sizeCalc ? `<div class="row" style="gap:8px;"><label class="field" style="flex:1;">Plotis, m<input id="szW" value="${odE(sz.w||'')}" inputmode="decimal" placeholder="pvz. 5"></label><label class="field" style="flex:1;">Ilgis, m<input id="szL" value="${odE(sz.l||'')}" inputmode="decimal" placeholder="pvz. 3"></label></div>` : ''}
-    ${g.heightCalc ? `<label class="field">Aukštis, cm<input id="szH" value="${odE(r.h||'')}" inputmode="numeric" placeholder="pvz. 40"></label>` : ''}
+  // the size: width × length, or straight in m2 (when only the area is known)
+  let byArea = !!(sz.m2 && !sz.w);
+  openModal(`<h3 style="margin:0 0 4px;">📐 ${odE(g.name)}</h3><p class="section-sub" style="margin:0 0 10px;">${g.sizeCalc ? (deck ? 'Įrašyk dydį – apskaičiuosime, kiek reikia pakylų.' : 'Įrašyk dydį – apskaičiuosime m2.') : ''}${g.heightCalc ? ' Įrašyk kojų aukštį – apskaičiuosime kojas.' : ''}</p>
+    ${g.sizeCalc ? `<div class="seg sz-mode" id="szMode"><button type="button" class="chip ${byArea?'':'active'}" data-szm="wl">Plotis × Aukštis</button><button type="button" class="chip ${byArea?'active':''}" data-szm="m2">m²</button></div>
+      <div class="row" id="szWL" style="gap:8px;" ${byArea?'hidden':''}><label class="field" style="flex:1;">Plotis, m<input id="szW" value="${odE(sz.w||'')}" inputmode="decimal" placeholder="pvz. 5"></label><span class="sz-x">×</span><label class="field" style="flex:1;">Aukštis, m<input id="szL" value="${odE(sz.l||'')}" inputmode="decimal" placeholder="pvz. 3"></label></div>
+      <div id="szA" ${byArea?'':'hidden'}><label class="field">Plotas, m²<input id="szM2" value="${odE(sz.m2||'')}" inputmode="decimal" placeholder="pvz. 15"></label></div>` : ''}
+    ${g.heightCalc ? `<label class="field">Kojų aukštis, cm<input id="szH" value="${odE(r.h||'')}" inputmode="numeric" placeholder="pvz. 40"></label>` : ''}
     <div class="sz-out" id="szOut"></div>
     <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button class="btn" id="szX">Atšaukti</button><button class="btn primary" id="szOk">Gerai</button></div>`);
   const v = id=>{ const el = document.getElementById(id); return el ? el.value : ''; };
   const calc = ()=>{
     const o = { decks:null, h:'', leg:null, units:offerNum(r.qty) || 1 };
-    if(g.sizeCalc){ const W = offerNum(v('szW')), L = offerNum(v('szL')); if(!(W > 0 && L > 0)) return null;
+    if(g.sizeCalc && byArea){ const A = offerNum(v('szM2')); if(!(A > 0)) return null;
+      Object.assign(o, { M2:A, area:Math.round(A*100)/100 });
+      // only the area: 2×1 decks for the whole m2, one 1×1 for an odd one
+      if(deck){ const whole = Math.max(1, Math.ceil(A - 1e-9)); let n2 = Math.floor(whole/2), n1 = whole % 2; if(!g.deck1){ n2 += n1; n1 = 0; }
+        Object.assign(o, { ra:whole, decks:[[g.deck2, n2]].concat(g.deck1 ? [[g.deck1, n1]] : []), units:n2 + n1 }); }
+      else o.units = o.area; }
+    else if(g.sizeCalc){ const W = offerNum(v('szW')), L = offerNum(v('szL')); if(!(W > 0 && L > 0)) return null;
       Object.assign(o, { W, L, area:Math.round(W*L*100)/100 });
       if(deck){ const d = ctDecks(W, L); let n2 = d.n2, n1 = d.n1; if(!g.deck1){ n2 += n1; n1 = 0; }
         Object.assign(o, { rw:d.W, rl:d.L, decks:[[g.deck2, n2]].concat(g.deck1 ? [[g.deck1, n1]] : []), units:n2 + n1 }); }
@@ -32723,20 +32811,26 @@ function odSizeAsk(r){
     if(g.heightCalc){ const h = offerNum(v('szH')); if(h > 0){ o.h = offerPlain(h); const l = hs.find(x=>offerNum(x.h)===h); o.leg = l ? l.itemId : ctLegFor(h); } }
     return o; };
   const show = ()=>{ const o = calc(), out = document.getElementById('szOut');
-    if(!o){ out.innerHTML = '<span class="muted">Įrašyk plotį ir ilgį.</span>'; return; }
+    if(!o){ out.innerHTML = `<span class="muted">${byArea ? 'Įrašyk plotą m².' : 'Įrašyk plotį ir aukštį.'}</span>`; return; }
     const lines = o.area && !o.decks ? [`<b>${offerPlain(o.area)} m2</b>`].concat(offerRowParts(Object.assign({}, r, { qty:o.area, decks:undefined, leg:null })).map(([id, n])=>`${offerPlain(Math.round(n*100)/100)}× ${odE(nm(id))}`)) : (o.decks||[]).filter(([, n])=>n > 0).map(([id, n])=>`<b>${n}×</b> ${odE(nm(id))}`);
     if(o.leg) lines.push(`<b>${o.units*offerNum(g.legsPer||4)}×</b> ${odE(nm(o.leg))} <small>(${offerNum(g.legsPer||4)} vienai pakylai)</small>`);
     else if(o.h) lines.push(`<span class="muted">Kojų ${odE(o.h)} cm aukščiui sandėlyje nerasta – aukštis bus tik pavadinime.</span>`);
-    out.innerHTML = (o.decks && (o.rw!==o.W || o.rl!==o.L) ? `<small class="muted">Skaičiuojama ${o.rw}×${o.rl} m (suapvalinta iki sveikų metrų)</small><br>` : '') + (lines.join('<br>') || '—'); };
-  ['szW','szL','szH'].forEach(id=>{ const el = document.getElementById(id); if(el){ el.addEventListener('input', show); el.addEventListener('change', show); } });
-  show(); const f = document.getElementById(g.sizeCalc ? 'szW' : 'szH'); if(f) f.focus();
+    out.innerHTML = (o.decks && o.W && (o.rw!==o.W || o.rl!==o.L) ? `<small class="muted">Skaičiuojama ${o.rw}×${o.rl} m (suapvalinta iki sveikų metrų)</small><br>` : '')
+      + (o.decks && o.M2 && o.ra!==o.M2 ? `<small class="muted">Skaičiuojama ${o.ra} m² (suapvalinta iki sveikų m²)</small><br>` : '') + (lines.join('<br>') || '—'); };
+  const mode = document.getElementById('szMode');
+  if(mode) mode.addEventListener('click', e=>{ const b = e.target.closest('[data-szm]'); if(!b) return; byArea = b.dataset.szm==='m2';
+    mode.querySelectorAll('[data-szm]').forEach(x=>x.classList.toggle('active', x===b));
+    document.getElementById('szWL').hidden = byArea; document.getElementById('szA').hidden = !byArea;
+    show(); const f = document.getElementById(byArea ? 'szM2' : 'szW'); if(f) f.focus(); });
+  ['szW','szL','szH','szM2'].forEach(id=>{ const el = document.getElementById(id); if(el){ el.addEventListener('input', show); el.addEventListener('change', show); } });
+  show(); const f = document.getElementById(g.sizeCalc ? (byArea ? 'szM2' : 'szW') : 'szH'); if(f) f.focus();
   document.getElementById('szX').onclick = closeModal;
-  document.getElementById('szOk').onclick = ()=>{ const o = calc(); if(!o){ toast('Įrašyk plotį ir ilgį.'); return; }
-    if(o.W){ r.size = { w:o.W, l:o.L }; if(o.decks) r.decks = o.decks; else delete r.decks;
+  document.getElementById('szOk').onclick = ()=>{ const o = calc(); if(!o){ toast(byArea ? 'Įrašyk plotą m².' : 'Įrašyk plotį ir aukštį.'); return; }
+    if(o.W || o.M2){ r.size = o.M2 ? { m2:o.M2 } : { w:o.W, l:o.L }; if(o.decks) r.decks = o.decks; else delete r.decks;
       if(o.decks && ctUnitN(r.unit)!=='m2') r.qty = 1; else { r.qty = o.area; r.unit = 'm2'; } } else { delete r.decks; delete r.size; }
     if(o.leg){ r.leg = String(o.leg); r.legsPer = offerNum(g.legsPer || 4); } else { delete r.leg; delete r.legsPer; }
     if(o.h) r.h = o.h; else delete r.h;
-    r.name = g.name + (r.size ? ' '+num(r.size.w)+'×'+num(r.size.l)+' m' : '') + (r.h ? ', h '+r.h+' cm' : ''); r.ln = r.name;
+    r.name = g.name + (r.size ? (r.size.m2 ? ' '+num(r.size.m2)+' m²' : ' '+num(r.size.w)+'×'+num(r.size.l)+' m') : '') + (r.h ? ', h '+r.h+' cm' : ''); r.ln = r.name;
     closeModal(); offerTouch(true); };
   document.querySelectorAll('#modalRoot input').forEach(el=>el.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('szOk').click(); } }));
 }
@@ -46047,6 +46141,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-20 18:30', v:'v592', k:'new', t:'Pasiūlymų versijos, × visuose languose, dydis m²', f:'Pasiūlymo versijų sąraše prie kiekvienos versijos trumpai parašyta, kuo ji skiriasi nuo ankstesnės (+/− eilutės, pakeistos, klientas, suma ir pan.). Palyginti galima nuo 2 iki 8 versijų: lange kiekvienos stulpelio versiją galima pakeisti, pridėti naują ar išimti; visos lyginamos su pirma (bazė). Visi iškylantys langai turi × viršuje dešinėje toje pačioje vietoje. Pakylų ir LED ekranų dydis – Plotis × Aukštis arba iškart m².' },
   { d:'2026-10-20 17:30', v:'v591', k:'new', t:'Renginiai: aiškesnė lentelė ir įrangos PDF', f:'Renginių lentelėje tarpai tarp renginių ryškūs (ir kairėje, prie datos ir pavadinimo), linijos ryškesnės, spalvos sodresnės, pilki užrašai tamsesni (šviesiame režime) / šviesesni (tamsiame); prie šiandienos datos nebėra juodo apvado. Prie renginio vietoj įrangos ir pakavimo mygtukų – PDF: paspaudus gauni renginio įrangos sąrašą PDF (rezervuota įranga arba susieto projekto sąrašas); jei įrangos dar nėra – pasiūloma ją rezervuoti.' },
   { d:'2026-10-20 17:00', v:'v590', k:'fix', t:'Langai keičia temą kartu su programa', f:'Perjungus šviesų / tamsų režimą (ar pakeitus akcento spalvą, stiklą, foną) darbo erdvės langai, greitieji langai ir antras ekranas persijungia iškart kartu – nebelieka tamsių langų šviesioje programoje.' },
   { d:'2026-10-20 16:30', v:'v589', k:'fix', t:'Bendra patikra: matomumas tamsiame ir šviesiame režime', f:'Patikrinti visi puslapiai ir langai tamsiame, šviesiame režime, su balta / juoda akcento spalva ir stiklu, kompiuteryje ir telefone. Pataisyta: skaičiai aktyviuose mygtukuose (pvz. „Laukia 0“, „Visi 0“) su balta ar juoda akcento spalva buvo beveik nematomi; kalendoriuje šventinė kito mėnesio diena šviesiame režime nesimatė; tuščių sąrašų ikonos ryškesnės; Transporte automobilis be dokumentų datų nebelaužia priminimų išsaugojimo.' },
@@ -46587,7 +46682,7 @@ function popLockSync(){
    corner (it closes like Esc / a tap beside the window) */
 const POP_X_SEL = '[data-close], [data-vclose], [aria-label="Uždaryti"], [title="Uždaryti"], .hdr-pop-x, .pop-safe-x';
 function popSafeClose(){
-  if(!window.matchMedia('(max-width:760px), (pointer:coarse)').matches) return;
+  // on every screen now (not only phones): a window without its own ✕ gets one in the top right corner
   document.querySelectorAll('.modal-backdrop:not(.docked-left) > .modal, .nt-ov, .gs-pop, .of-pop, .veh-pop-bd, .ven-lightbox, .fb-lb, .gm-ov, .pp-dial').forEach(box=>{
     if(!box.getClientRects().length) return;
     // the window's own close button: marked as one, an ✕ / × button, or a button whose id ends with „X“ (hgX, cuX, vlvX…)
@@ -46597,7 +46692,7 @@ function popSafeClose(){
     if(own){ if(mine) mine.remove(); return; }
     if(mine) return;
     const x = document.createElement('button');
-    x.type = 'button'; x.className = 'pop-safe-x'; x.textContent = '✕'; x.setAttribute('aria-label', 'Uždaryti');
+    x.type = 'button'; x.className = 'pop-safe-x'; x.innerHTML = slIcon('close'); x.setAttribute('aria-label', 'Uždaryti'); x.title = 'Uždaryti (Esc)';
     x.onclick = e=>{
       e.preventDefault(); e.stopPropagation();
       if(box.classList.contains('modal')){ closeModal(); return; }
