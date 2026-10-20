@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-71eL1Z+txv2FMe+CypQjU9oq0FlOanqUrHE74pv61RQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-lspqKGXCzc2afEHN7Kb3DzyqsUujH/dfgo/zXZPY1g8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5205,6 +5205,22 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 .ed-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:3000;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;border-radius:14px;background:var(--panel);border:1px solid var(--accent);box-shadow:0 12px 40px rgba(0,0,0,.45);max-width:calc(100vw - 24px);font-size:14px;}
 .ed-bar svg{width:16px;height:16px;vertical-align:-3px;color:var(--accent);}
 .ed-bar small{color:var(--text-dim);}
+.ed-pop{max-height:calc(100vh - 16px);overflow:auto;}
+.ed-hidden{display:none !important;}
+.ed-hidmark{opacity:.35 !important;outline:2px dashed var(--danger) !important;outline-offset:2px;}
+.ed-more{margin:6px 0;}
+.ed-det{border-top:1px solid var(--border);margin-top:8px;padding-top:6px;}
+.ed-det > summary{cursor:pointer;font-weight:700;font-size:12.5px;padding:3px 0;}
+.ed-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;margin-top:6px;}
+.ed-grid .field,.ed-act .field{margin:0;}
+.ed-act{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.ed-insrow{display:flex;align-items:center;gap:4px;padding:4px 0;font-size:12.5px;}
+.ed-insrow > span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ed-pop .btn svg{width:14px;height:14px;vertical-align:-2px;}
+.ed-ins{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin:6px 0;}
+.ed-ins .ed-insb svg{width:15px;height:15px;vertical-align:-3px;}
+.ed-inst{white-space:normal;line-height:1.4;}
+.ed-insd{min-width:240px;max-width:420px;padding:12px 14px;border-radius:10px;background:var(--panel-2);border:1px solid var(--border);}
 .ed-pop{position:fixed;z-index:3001;width:320px;max-width:calc(100vw - 16px);background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.5);padding:12px;}
 .ed-pop-h{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .ed-pop-h small{color:var(--text-dim);flex:1;}
@@ -5588,6 +5604,9 @@ html.cp-editing .modal-backdrop{z-index:9500;} html.cp-editing #toast,body:has(.
 .cp-li-a{display:flex;gap:4px;flex-wrap:wrap;}
 .cp-li-a .btn svg,#cpNew svg{width:15px;height:15px;vertical-align:-3px;}
 .cp-pub{color:var(--ok);font-weight:700;}
+.cp-tabs{display:flex;flex-wrap:wrap;gap:6px;}
+.cp-tabs .chip svg{width:14px;height:14px;vertical-align:-2px;}
+.cp-tabn{font-size:10.5px;font-weight:700;background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:0 6px;}
 .sysc-card{margin:0 0 10px;padding:12px 14px;}
 .sysc-card .row .btn svg{width:15px;height:15px;vertical-align:-3px;}
 .sysc-h{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;}
@@ -22266,7 +22285,7 @@ function uilGroupsEdit(groups){ if(!Array.isArray(UIL_ED.D.groups)) UIL_ED.D.gro
    Įjungus („Super Admin“ → „Redaguoti puslapius“) paspaudus antraštę, kortelę, grafą ar mygtuką
    galima pakeisti jo pavadinimą, ikoną, vietą tarp gretimų, o suskleidžiamą – visada išskleisti / suskleisti.
    Taisyklės laikomos pagal puslapį (ar langą) ir pradinį pavadinimą: ed[scope] = { t:{raktas:tekstas}, i:{raktas:ikona}, o:{sąrašas:[raktai]}, f:{raktas:'open'|'closed'} } */
-const ED_SEL = '.card, .chip, .pf-nav-b, .hg-item, .home-tile, .fc-opt, [role="tab"], .tab-btn, .exp-tabs > button, .gr-show > button, .hs-item, .pb-sec, .sk-sec, .ct-sub, details, .section-title, #main h2, #main h3, .modal h3';
+const ED_SEL = 'button, a.btn, .card, .chip, .pf-nav-b, .hg-item, .home-tile, .fc-opt, [role="tab"], .tab-btn, .exp-tabs > button, .gr-show > button, .hs-item, .pb-sec, .sk-sec, .ct-sub, details, .section-title, #main h2, #main h3, .modal h3';
 const ED_FOLD = 'button[aria-expanded], [role="button"][aria-expanded], summary, [data-hsfold], [data-subtog], [data-stkfold], [data-stfold], [data-gfold], .pb-fold[data-fold], [data-act="toggle"], [data-hva="toggle"], .pb-fold, .np-gfold, .inv-foldbtn, .hs-fold, .stk-fold, .inv-fold-h, details > summary';
 const ED = { on:false, forcing:false, pick:false, tries:new Map(), drag:null };
 const ED_POPS = '.modal-backdrop, .hdr-pop, .of-pop, .veh-pop-bd';
@@ -22352,6 +22371,11 @@ function edApplyAll(){
       else if(lab.dataset.edt && n){ n.nodeValue = n.nodeValue.replace(n.nodeValue.trim(), lab.dataset.uo); delete lab.dataset.edt; }
       const ic = (r.i||{})[tk]; if(ic && SL[ic]) edSetIcon(lab, ic); else edUnIcon(lab);
       const f = (r.f||{})[edKey(el)]; if(f) edForceFold(el, f); else { const tg = el.querySelector('[data-edlock]'); if(tg) delete tg.dataset.edlock; }
+      // the Konstruktorius' tools: hidden, own look, own click, inserted elements after it
+      const hd = (r.h||{})[tk]; el.classList.toggle('ed-hidden', !!hd && !ED.on); el.classList.toggle('ed-hidmark', !!hd && ED.on);
+      if((r.s||{})[tk] || el.dataset.eds) edStyle(el, (r.s||{})[tk]);
+      if((r.a||{})[tk]) el.dataset.edact = '1'; else if(el.dataset.edact) delete el.dataset.edact;
+      const nx = el.nextElementSibling; if((r.n||{})[tk] || (nx && nx.dataset && nx.dataset.edins===tk)) edIns(el, (r.n||{})[tk], tk);
     });
     if(!r.o) return;
     const groups = new Map();
@@ -22423,11 +22447,11 @@ function edSave(scope, part, key, val){
 // the bar and the clicks while editing
 function edToggle(on){
   if(on && !uilCan()){ toast('Redaguoti gali tik būdamas Super Admin.'); return; }
-  ED.on = on; document.body.classList.toggle('ed-on', on);
+  ED.on = on; document.body.classList.toggle('ed-on', on); ED.dirty = true; setTimeout(edApplyAll, 0);   // hidden elements show (marked) while editing
   let bar = document.getElementById('edBar'); const pop = document.getElementById('edPop'); if(pop) pop.remove();
   if(!on){ if(bar) bar.remove(); document.querySelectorAll('.ed-hl').forEach(x=>x.classList.remove('ed-hl')); return; }
   if(!bar){ bar = document.createElement('div'); bar.id = 'edBar'; bar.className = 'ed-bar ed-ui'; document.body.appendChild(bar); }
-  bar.innerHTML = `<span>${slIcon('pencil')} <b>Redagavimo režimas</b> – paspausk antraštę, kortelę, grafą ar mygtuką; grafą ar kortelę gali nutempti į kitą vietą. <small>Alt + paspaudimas – įprastas veiksmas. Pakeitimai galioja visiems.</small></span><button type="button" class="btn small primary" id="edDone">Baigti</button>`;
+  bar.innerHTML = `<span>${slIcon('pencil')} <b>Redagavimo režimas</b> – paspausk antraštę, kortelę, grafą ar mygtuką (pervadinti, paslėpti, išvaizda, veiksmas, įterpti naują); grafą ar kortelę gali nutempti į kitą vietą. <small>Alt + paspaudimas – įprastas veiksmas. Pakeitimai galioja visiems.</small></span><button type="button" class="btn small primary" id="edDone">Baigti</button>`;
   document.getElementById('edDone').onclick = ()=>edToggle(false);
 }
 function edItemAt(t){
@@ -22437,7 +22461,14 @@ function edItemAt(t){
 }
 document.addEventListener('click', e=>{
   if(ED.forcing) return;
-  if(!ED.on){ const lk = e.target.closest && e.target.closest('[data-edlock]'); if(lk){ e.preventDefault(); e.stopImmediatePropagation(); } return; }
+  if(!ED.on){
+    // an inserted element's click, an existing element's own click (instead of / after the usual one)
+    const ib = e.target.closest && e.target.closest('.ed-ins [data-edi]');
+    if(ib){ const w = ib.closest('.ed-ins'), it = ((((edRulesAll()[edScopeOf(w)]||{}).n)||{})[w.dataset.edins]||[])[+ib.dataset.edi];
+      if(it && it.act && it.act.do){ e.preventDefault(); e.stopImmediatePropagation(); edRunAct(it.act); } return; }
+    const ex = e.target.closest && e.target.closest('[data-edact]');
+    if(ex){ const a = edActOf(ex); if(a && a.do){ if(a.mode==='after') setTimeout(()=>edRunAct(a), 350); else { e.preventDefault(); e.stopImmediatePropagation(); edRunAct(a); return; } } }
+    const lk = e.target.closest && e.target.closest('[data-edlock]'); if(lk){ e.preventDefault(); e.stopImmediatePropagation(); } return; }
   if(e.altKey) return;
   if(ED.justDragged && Date.now() - ED.justDragged < 400){ e.preventDefault(); e.stopImmediatePropagation(); ED.justDragged = 0; return; }
   const pop = document.getElementById('edPop'); if(pop && !pop.contains(e.target) && !e.target.closest('.ed-ui')) pop.remove();
@@ -22470,6 +22501,130 @@ document.addEventListener('pointerdown', e=>{
   };
   window.addEventListener('pointermove', move, true); window.addEventListener('pointerup', up, true); window.addEventListener('pointercancel', up, true);
 }, true);
+/* ---------- „Redaguoti puslapius“ with the Konstruktorius' tools: on any existing page (and its parts, windows)
+   an element can be hidden, get its own look, its own click (instead of or after its usual one) and new elements after it.
+   Rules in STATE.uiLayout.ed[scope]: h (hidden), s (look), a (click), n (inserted elements) – by the element's name key. */
+const ED_ACTS = [['', 'Kaip programoje'], ['tab', 'Atidaryti programos puslapį'], ['fn', 'Programos funkcija (paspaudimai)'], ['cp', 'Atidaryti mano sukurtą puslapį'], ['cppop', 'Atidaryti popup iš mano puslapio'], ['url', 'Atidaryti nuorodą'], ['toast', 'Rodyti pranešimą']];
+const ED_STY = { bg:'background', color:'color', fs:'font-size', fw:'font-weight', r:'border-radius', bc:'border-color' };
+function edStyle(el, st){
+  const prev = el.dataset.eds ? el.dataset.eds.split(',') : [], now = [];
+  Object.entries(st||{}).forEach(([k, v])=>{ const p = ED_STY[k]; if(!p || v==null || v==='') return; now.push(k);
+    el.style.setProperty(p, (k==='fs' || k==='r') ? (+v)+'px' : String(v), 'important'); });
+  prev.filter(k=>!now.includes(k)).forEach(k=>el.style.removeProperty(ED_STY[k]));
+  if(now.length) el.dataset.eds = now.join(','); else delete el.dataset.eds;
+}
+function edInsHtml(it, i){
+  const s = it.s||{}, st = [cpColor(s.bg) ? 'background:'+s.bg : '', cpColor(s.color) ? 'color:'+s.color : '', s.fs ? 'font-size:'+(+s.fs)+'px' : '', s.fw ? 'font-weight:'+(+s.fw) : '', s.r!=null && s.r!=='' ? 'border-radius:'+(+s.r)+'px' : ''].filter(Boolean).join(';');
+  if(it.type==='button') return `<button type="button" class="btn small ed-insb" data-edi="${i}" style="${st}">${SL[it.icon] ? slIcon(it.icon)+' ' : ''}${esc(it.text||'Mygtukas')}</button>`;
+  if(it.type==='data') return `<div class="ed-insd" data-edi="${i}" style="${st}"><div class="cp-data" data-src="${esc((it.data||{}).src||'')}"></div></div>`;
+  return `<div class="ed-inst" data-edi="${i}" style="${st}">${esc(it.text||'').replace(/\n/g, '<br>')}</div>`;
+}
+function edIns(el, list, tk){
+  const nx = el.nextElementSibling, has = nx && nx.dataset && nx.dataset.edins===tk ? nx : null, h = JSON.stringify(list||[]);
+  if(has && has.dataset.h===h) return; if(has) has.remove();
+  if(!list || !list.length) return;
+  const w = document.createElement('div'); w.className = 'ed-ui ed-ins'; w.dataset.edins = tk; w.dataset.h = h;
+  w.innerHTML = list.map(edInsHtml).join(''); el.after(w);
+  list.forEach((it, i)=>{ if(it.type!=='data') return; const box = w.querySelector('[data-edi="'+i+'"] .cp-data'), D = CP_DATA[(it.data||{}).src]; if(!D) return;
+    D.load().then(rows=>{ const d = it.data||{}; box.innerHTML = d.mode==='count' ? `<div class="cp-num">${rows.length}</div><div class="cp-numl">${esc(d.label||D.t)}</div>`
+      : `<div class="cp-dh">${esc(d.label||D.t)}</div>${rows.length ? `<ul class="cp-dl">${rows.slice(0, +d.limit||5).map(r=>`<li><b>${esc(r.t)}</b>${r.s ? `<span>${esc(r.s)}</span>` : ''}</li>`).join('')}</ul>` : '<div class="cp-de">Nėra</div>'}`; }).catch(()=>{}); });
+}
+// an action of an existing element / an inserted one – run in the program
+function edRunAct(a){
+  if(a.do==='cp'){ if(canView('cp_'+a.page)) setTab('cp_'+a.page); else toast('Puslapis nerastas arba neturi prieigos.'); return; }
+  if(a.do==='cppop'){ const p = CP.list.find(x=>x.id===a.page); if(!p){ toast('Puslapis nerastas.'); return; }
+    cpPopup({ doc:p.doc||{ frames:[] }, stack:[], pops:[], host:document.body }, a.frame, a.tr||'zoom', a.ms); return; }
+  cpDo({ doc:{ frames:[] }, stack:[], pops:[], host:document.body }, a);
+}
+function edActOf(el){ const r = edRulesAll()[edScopeOf(el)] || {}, tk = edTextKey(el); return tk && (r.a||{})[tk]; }
+// the little form for a click (an element's own or an inserted one's)
+function edActForm(a){
+  a = a||{}; const pages = CP.list.filter(p=>p.published || isSuper());
+  const pg = CP.list.find(p=>p.id===a.page), pops = pg ? ((pg.doc||{}).frames||[]).filter(f=>f.kind==='popup') : [];
+  const opt = (v, list)=>list.map(([k, l])=>`<option value="${esc(k)}" ${String(v||'')===String(k) ? 'selected' : ''}>${esc(l)}</option>`).join('');
+  return `<label class="field">Paspaudus<select data-a="do">${opt(a.do, ED_ACTS)}</select></label>
+    ${a.do && a.do!=='' ? `<label class="field">Kada<select data-a="mode">${opt(a.mode||'replace', [['replace', 'Vietoj įprasto veiksmo'], ['after', 'Po įprasto veiksmo']])}</select></label>` : ''}
+    ${a.do==='tab' ? `<label class="field">Puslapis<select data-a="tab"><option value="">— pasirink —</option>${opt(a.tab, cpTabsOpts())}</select></label>` : ''}
+    ${a.do==='cp' || a.do==='cppop' ? `<label class="field">Mano puslapis<select data-a="page"><option value="">— pasirink —</option>${opt(a.page, pages.map(p=>[p.id, p.title]))}</select></label>` : ''}
+    ${a.do==='cppop' && pg ? `<label class="field">Popup<select data-a="frame"><option value="">— pasirink —</option>${opt(a.frame, pops.map(f=>[f.id, f.name]))}</select></label>${pops.length ? '' : '<small>Šiame puslapyje dar nėra popup kadro.</small>'}` : ''}
+    ${a.do==='fn' ? `<label class="field">Funkcija iš katalogo<select data-fncat><option value="">— pasirink —</option>${Object.entries((SYS.map||{}).pages||{}).filter(([k, p])=>(p.ui||[]).length && canView(k)).map(([k, p])=>`<optgroup label="${esc(cpTabLabel(k))}">${p.ui.map(([id, l])=>`<option value="${esc(k+'|'+id)}" ${a.fid===k+'|'+id ? 'selected' : ''}>${esc(l)}</option>`).join('')}</optgroup>`).join('')}</select></label>
+      <div class="ed-row"><span>${(a.steps||[]).filter(x=>x.sel || x.text).length ? 'Įrašyta: '+esc(a.label||'paspaudimai') : 'Arba įrašyk paspaudimus'}</span><button type="button" class="btn small" data-arec>${slIcon('mic')} Įrašyti</button></div>` : ''}
+    ${a.do==='url' ? `<label class="field">Nuoroda<input type="url" data-a="url" value="${esc(a.url||'')}" placeholder="https://…"></label>` : ''}
+    ${a.do==='toast' ? `<label class="field">Pranešimas<input type="text" data-a="msg" value="${esc(a.msg||'')}" maxlength="120"></label>` : ''}`;
+}
+// wire that form: every change gives the new action to save(a)
+function edActWire(box, get, save){
+  box.addEventListener('change', e=>{
+    const t = e.target;
+    if(t.matches('[data-fncat]')){ const [tab, id] = (t.value||'').split('|'); if(!id) return; const it = ((SYS.map.pages[tab]||{}).ui||[]).find(x=>x[0]===id)||[];
+      save(Object.assign({}, get(), { fid:t.value, label:it[1]||id, steps:[{ tab }, { tab, sel:'#'+CSS.escape(id), text:it[1]||'' }] }), true); return; }
+    if(!t.dataset.a) return; const a = Object.assign({}, get()); if(t.value==='' && t.dataset.a==='do'){ save(null, true); return; }
+    a[t.dataset.a] = t.value; save(a, t.tagName==='SELECT');
+  });
+  box.addEventListener('input', e=>{ const t = e.target; if(!t.dataset.a || t.tagName==='SELECT') return; const a = Object.assign({}, get()); a[t.dataset.a] = t.value; save(a, false); });
+  box.addEventListener('click', e=>{ if(!e.target.closest('[data-arec]')) return; const a = get()||{};
+    cpRecord(((a.steps||[])[0]||{}).tab || currentTab, steps=>{ const real = steps.filter(x=>x.sel || x.text); save(Object.assign({}, a, { do:'fn', fid:'', steps, label:real.length ? real[real.length-1].text || 'paspaudimai' : '' }), true); }); });
+}
+// the extra part of the element's window: hide, look, click, inserted elements
+function edPopMore(p, el, scope, tk, reopen){
+  const r = edRulesAll()[scope] || {}, st = (r.s||{})[tk] || {}, a = (r.a||{})[tk] || null, ins = (r.n||{})[tk] || [];
+  const col = (k, v)=>`<span class="cpe-col"><input type="color" data-s="${k}" value="${cpColor(v)||'#888888'}" class="${cpColor(v) ? '' : 'unset'}"><button type="button" class="cpe-x" data-s0="${k}" title="Kaip programoje">${slIcon('close')}</button></span>`;
+  const box = document.createElement('div'); box.className = 'ed-more';
+  box.innerHTML = `<label class="checkbox-row"><input type="checkbox" id="edHide" ${(r.h||{})[tk] ? 'checked' : ''}> Paslėpti šį elementą (visiems)</label>
+    <details class="ed-det" ${Object.keys(st).length ? 'open' : ''}><summary>Išvaizda</summary><div class="ed-grid">
+      <label class="field">Fonas${col('bg', st.bg)}</label><label class="field">Teksto spalva${col('color', st.color)}</label>
+      <label class="field">Šrifto dydis<input type="number" data-s="fs" min="8" max="80" value="${esc(st.fs||'')}"></label>
+      <label class="field">Storis<select data-s="fw"><option value="">Kaip programoje</option>${[['400', 'Įprastas'], ['600', 'Pusjuodis'], ['700', 'Juodas'], ['800', 'Labai juodas']].map(([v, l])=>`<option value="${v}" ${String(st.fw||'')===v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label class="field">Kampai<input type="number" data-s="r" min="0" max="99" value="${esc(st.r==null ? '' : st.r)}"></label><label class="field">Rėmelio spalva${col('bc', st.bc)}</label></div></details>
+    <details class="ed-det" ${a ? 'open' : ''}><summary>Veiksmas paspaudus${a ? ' ●' : ''}</summary><div class="ed-act">${edActForm(a)}</div></details>
+    <details class="ed-det" ${ins.length ? 'open' : ''}><summary>Įterpti po šiuo${ins.length ? ' ('+ins.length+')' : ''}</summary>
+      ${ins.map((it, i)=>`<div class="ed-insrow"><span>${esc({ button:'Mygtukas', text:'Tekstas', data:'Duomenys' }[it.type]||it.type)}: <b>${esc(it.type==='data' ? ((CP_DATA[(it.data||{}).src]||{}).t||'') : it.text||'')}</b></span><button type="button" class="btn small" data-ie="${i}">${slIcon('pencil')}</button><button type="button" class="btn small" data-ix="${i}">${slIcon('close')}</button></div>`).join('')}
+      <div class="ed-row"><span></span><span class="cpe-btns"><button type="button" class="btn small" data-ia="button">+ Mygtukas</button><button type="button" class="btn small" data-ia="text">+ Tekstas</button><button type="button" class="btn small" data-ia="data">+ Duomenys</button></span></div></details>`;
+  p.querySelector('.row:last-child').before(box);
+  box.querySelector('#edHide').onchange = e=>{ edSave(scope, 'h', tk, e.target.checked ? 1 : null); toast(e.target.checked ? 'Paslėpta (redagavimo režime matosi permatomai).' : 'Vėl rodoma.'); };
+  const setS = (k, v)=>{ const s = Object.assign({}, (edRulesAll()[scope]||{}).s && edRulesAll()[scope].s[tk]); if(v==null || v==='') delete s[k]; else s[k] = v; edSave(scope, 's', tk, Object.keys(s).length ? s : null); };
+  box.addEventListener('input', e=>{ const k = e.target.dataset.s; if(!k) return; if(e.target.type==='color') e.target.classList.remove('unset'); setS(k, e.target.value); });
+  box.addEventListener('change', e=>{ const k = e.target.dataset.s; if(k && e.target.tagName==='SELECT') setS(k, e.target.value); });
+  box.addEventListener('click', e=>{
+    const s0 = e.target.closest('[data-s0]'); if(s0){ setS(s0.dataset.s0, null); reopen(); return; }
+    const ia = e.target.closest('[data-ia]'); if(ia){ const t = ia.dataset.ia, it = t==='button' ? { type:'button', text:'Naujas mygtukas' } : t==='text' ? { type:'text', text:'Tekstas' } : { type:'data', data:{ src:'events_next', mode:'list', limit:5 } };
+      edSave(scope, 'n', tk, ins.concat([it])); edInsPop(scope, tk, ins.length, reopen); return; }
+    const ix = e.target.closest('[data-ix]'); if(ix){ const l = ins.slice(); l.splice(+ix.dataset.ix, 1); edSave(scope, 'n', tk, l.length ? l : null); reopen(); return; }
+    const ie = e.target.closest('[data-ie]'); if(ie){ edInsPop(scope, tk, +ie.dataset.ie, reopen); }
+  });
+  edActWire(box.querySelector('.ed-act'), ()=>(edRulesAll()[scope]||{}).a && edRulesAll()[scope].a[tk], (na, redraw)=>{ edSave(scope, 'a', tk, na && na.do ? na : null); if(redraw) reopen(); });
+}
+// one inserted element: its text / data, look and click
+function edInsPop(scope, tk, i, back){
+  const list = (((edRulesAll()[scope]||{}).n||{})[tk]||[]).slice(), it = list[i]; if(!it) return;
+  const save = (nit, redraw)=>{ const l = (((edRulesAll()[scope]||{}).n||{})[tk]||[]).slice(); l[i] = nit; edSave(scope, 'n', tk, l); if(redraw) draw(); };
+  const old = document.getElementById('edPop'); if(old) old.remove();
+  const p = document.createElement('div'); p.id = 'edPop'; p.className = 'ed-pop ed-ui'; document.body.appendChild(p);
+  const draw = ()=>{
+    const cur = (((edRulesAll()[scope]||{}).n||{})[tk]||[])[i]||it, s = cur.s||{}, d = cur.data||{};
+    const col = (k, v)=>`<span class="cpe-col"><input type="color" data-s="${k}" value="${cpColor(v)||'#888888'}" class="${cpColor(v) ? '' : 'unset'}"><button type="button" class="cpe-x" data-s0="${k}">${slIcon('close')}</button></span>`;
+    p.innerHTML = `<div class="ed-pop-h"><b>${esc({ button:'Įterptas mygtukas', text:'Įterptas tekstas', data:'Įterpti duomenys' }[cur.type])}</b><button type="button" class="btn small" id="edBack">${slIcon('chevl')} Atgal</button></div>
+      ${cur.type==='data' ? `<label class="field">Duomenys<select data-d="src">${Object.entries(CP_DATA).map(([k, v])=>`<option value="${k}" ${d.src===k ? 'selected' : ''}>${esc(v.t)}</option>`).join('')}</select></label>
+        <div class="ed-grid"><label class="field">Rodyti<select data-d="mode"><option value="list" ${d.mode!=='count' ? 'selected' : ''}>Sąrašą</option><option value="count" ${d.mode==='count' ? 'selected' : ''}>Skaičių</option></select></label><label class="field">Eilučių<input type="number" data-d="limit" min="1" max="30" value="${esc(d.limit||5)}"></label></div>`
+        : `<label class="field">Tekstas<textarea data-t rows="2">${esc(cur.text||'')}</textarea></label>`}
+      ${cur.type==='button' ? `<div class="ed-row"><span>Ikona</span><button type="button" class="ed-ic" data-icp>${SL[cur.icon] ? slIcon(cur.icon) : '<small>pridėti</small>'}</button></div>` : ''}
+      <div class="ed-grid"><label class="field">Fonas${col('bg', s.bg)}</label><label class="field">Teksto spalva${col('color', s.color)}</label>
+        <label class="field">Šrifto dydis<input type="number" data-s="fs" min="8" max="80" value="${esc(s.fs||'')}"></label><label class="field">Kampai<input type="number" data-s="r" min="0" max="99" value="${esc(s.r==null ? '' : s.r)}"></label></div>
+      ${cur.type!=='data' ? `<div class="ed-act">${edActForm(cur.act)}</div>` : ''}
+      <div class="row" style="justify-content:flex-end;margin-top:8px;"><button type="button" class="btn small primary" id="edInsOk">Gerai</button></div>`;
+    const ac = p.querySelector('.ed-act'); if(ac) edActWire(ac, ()=>((((edRulesAll()[scope]||{}).n||{})[tk]||[])[i]||{}).act, (na, redraw)=>{ const c = Object.assign({}, (((edRulesAll()[scope]||{}).n||{})[tk]||[])[i]); if(na && na.do) c.act = Object.assign({}, na, { mode:'replace' }); else delete c.act; save(c, redraw); });
+    p.querySelector('#edBack').onclick = back; p.querySelector('#edInsOk').onclick = ()=>p.remove();
+  };
+  const cur = ()=>Object.assign({}, (((edRulesAll()[scope]||{}).n||{})[tk]||[])[i]);
+  p.addEventListener('input', e=>{ const t = e.target, c = cur();
+    if(t.matches('[data-t]')) c.text = t.value; else if(t.dataset.s){ c.s = Object.assign({}, c.s); if(t.type==='color') t.classList.remove('unset'); if(t.value==='') delete c.s[t.dataset.s]; else c.s[t.dataset.s] = t.value; }
+    else if(t.dataset.d && t.tagName!=='SELECT'){ c.data = Object.assign({}, c.data, { [t.dataset.d]:t.value }); } else return; save(c, false); });
+  p.addEventListener('change', e=>{ const t = e.target; if(!t.dataset.d || t.tagName!=='SELECT') return; const c = cur(); c.data = Object.assign({}, c.data, { [t.dataset.d]:t.value }); save(c, false); });
+  p.addEventListener('click', e=>{ const s0 = e.target.closest('[data-s0]'); if(s0){ const c = cur(); c.s = Object.assign({}, c.s); delete c.s[s0.dataset.s0]; save(c, true); return; }
+    if(e.target.closest('[data-icp]')) cpIconPick(cur().icon, k=>{ const c = cur(); c.icon = k; save(c, true); }); });
+  draw();
+  p.style.left = Math.max(8, (innerWidth - p.offsetWidth)/2)+'px'; p.style.top = Math.max(8, (innerHeight - p.offsetHeight)/3)+'px';
+}
 function edPop(el){
   const old = document.getElementById('edPop'); if(old) old.remove();
   const scope = edScopeOf(el), r = edRulesAll()[scope] || {}, lab = edLabelEl(el), tk = edTextKey(el), key = edKey(el);
@@ -22489,6 +22644,7 @@ function edPop(el){
     ${tog ? `<label class="field">Suskleidimas<select id="edF"><option value="">Kaip nori narys</option><option value="open" ${(r.f||{})[fkey]==='open'?'selected':''}>Visada išskleista</option><option value="closed" ${(r.f||{})[fkey]==='closed'?'selected':''}>Visada suskleista</option></select></label>` : ''}
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:8px;"><button type="button" class="btn small" id="edReset">Atstatyti</button><button type="button" class="btn small primary" id="edOk">Gerai</button></div>`;
   document.body.appendChild(p);
+  edPopMore(p, el, scope, tk, ()=>edPop(el.isConnected ? el : document.body));
   const a = el.getBoundingClientRect(), w = p.offsetWidth, h = p.offsetHeight;
   p.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, a.left))+'px';
   p.style.top = (a.bottom + 8 + h < window.innerHeight ? a.bottom + 8 : Math.max(8, a.top - h - 8))+'px';
@@ -22507,7 +22663,7 @@ function edPop(el){
   const L0 = document.getElementById('edL'), R0 = document.getElementById('edR'); if(L0) L0.onclick = ()=>mv(-1); if(R0) R0.onclick = ()=>mv(1);
   const o0 = document.getElementById('edO0'); if(o0) o0.onclick = ()=>{ edSave(scope, 'o', edCKey(el), null); toast('Pradinė tvarka grįš atnaujinus puslapį.'); edPop(el); };
   const f = document.getElementById('edF'); if(f) f.onchange = ()=>{ edSave(scope, 'f', fkey, f.value || null); };
-  document.getElementById('edReset').onclick = ()=>{ edSave(scope, 't', tk, null); edSave(scope, 'i', tk, null); edSave(scope, 'f', fkey, null); close(); };
+  document.getElementById('edReset').onclick = ()=>{ ['t', 'i', 'h', 's', 'a', 'n'].forEach(k=>edSave(scope, k, tk, null)); edSave(scope, 'f', fkey, null); close(); };
 }
 new MutationObserver(muts=>{ if(muts.some(m=>!(m.target.closest && m.target.closest('.ed-ui')))) edSoon(); }).observe(document.documentElement, { childList:true, subtree:true });
 // the header button: which level the Super Admin works in, and the layout editor
@@ -23007,7 +23163,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v607';
+const APP_VER = 'v608';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -47549,11 +47705,15 @@ function sysPagesHtml(){
       <div class="cp-li-t"><b>${esc(p.title)}</b><span class="sys-faint">${p.published ? '<span class="cp-pub">Paskelbtas</span> · '+esc(rl(p)) : 'Juodraštis – matai tik tu'} · ${((p.doc||{}).frames||[]).length} kadr. · ${esc(new Date(p.updated_at).toLocaleString('lt-LT'))}${p.updated_name ? ' · '+esc(p.updated_name) : ''}</span></div>
       <span class="cp-li-a"><button type="button" class="btn small primary" data-cpa="edit">${slIcon('pencil')} Redaguoti</button><button type="button" class="btn small" data-cpa="open">${slIcon('openext')} Atidaryti</button>
       <button type="button" class="btn small" data-cpa="ver" title="Ankstesnės versijos">${slIcon('restart')}</button><button type="button" class="btn small" data-cpa="up" title="Aukščiau meniu">${slIcon('arrowup')}</button><button type="button" class="btn small danger" data-cpa="del" title="Ištrinti">${slIcon('bin')}</button></span></div>`).join('')}</div>`
-      : '<div class="card empty-state" style="margin:0;">Puslapių dar nėra – spausk „Naujas puslapis“.</div>'}</div>`;
+      : '<div class="card empty-state" style="margin:0;">Puslapių dar nėra – spausk „Naujas puslapis“.</div>'}</div>
+    <div class="card sysc-card"><div class="sysc-h"><div><h3>Esami programos puslapiai</h3><div class="sys-faint">Bet kurį esamą puslapį ir jo dalis (skiltis, langus, korteles, mygtukus) keisk tiesiai ant jo: pervadink, paslėpk, pakeisk išvaizdą ar ikoną, nutempk į kitą vietą, priskirk kitą veiksmą paspaudus ar įterpk naujų mygtukų, tekstų ir duomenų. Pakeitimai galioja visiems, kodas nesikeičia – bet kada atstatoma.</div></div></div>
+      <div class="cp-tabs">${cpTabsOpts().map(([k, l])=>{ const n = Object.values((uil().ed||{})[k]||{}).reduce((a, x)=>a + (Array.isArray(x) ? 1 : Object.keys(x||{}).length), 0);
+        return `<button type="button" class="chip" data-edtab="${esc(k)}">${slIcon('pencil')} ${esc(l)}${n ? ` <span class="cp-tabn">${n}</span>` : ''}</button>`; }).join('')}</div></div>`;
 }
 function sysPagesWire(el){
   el.addEventListener('click', async e=>{
     if(e.target.closest('#cpNew')){ cpEdit(null); return; }
+    const et = e.target.closest('[data-edtab]'); if(et){ setTab(et.dataset.edtab); setTimeout(()=>edToggle(true), 300); return; }
     const b = e.target.closest('[data-cpa]'); if(!b) return; const p = CP.list.find(x=>x.id===b.closest('[data-cp]').dataset.cp); if(!p) return;
     const sb = getSb(), a = b.dataset.cpa;
     if(a==='edit') cpEdit(p);
@@ -48126,6 +48286,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 01:50', v:'v608', k:'new', t:'Esamų puslapių redagavimas konstruktoriaus įrankiais', f:'Redagavimo režime (Super Admin → Redaguoti puslapius arba Sistema → Puslapiai → Esami programos puslapiai) bet kurį esamo puslapio, jo skilties ar lango elementą galima ne tik pervadinti, keisti ikoną ir vietą, bet ir paslėpti, pakeisti jo spalvas, šriftą ir kampus, priskirti kitą veiksmą paspaudus (puslapis, programos funkcija, savo sukurtas puslapis ar jo popup, nuoroda) ir po juo įterpti naujų mygtukų, tekstų ar duomenų blokų.' },
   { d:'2026-10-21 01:10', v:'v607', k:'new', t:'Konstruktorius: kurk savo puslapius kaip Figmoje', f:'Sistema → Puslapiai (Super Admin): kadrai ir popup langai, tekstai, mygtukai, formos, paveikslėliai, ikonos, programos duomenys ir įterpti programos puslapiai. Mygtukui galima nurodyti, ką jis daro: eiti į kitą kadrą, atidaryti popup, atidaryti programos puslapį ar atlikti bet kurią jos funkciją (iš katalogo arba įrašius savo paspaudimus), su perėjimo ir užvedimo efektais. Peržiūra, versijos, paskelbimas pasirinktoms rolėms.' },
   { d:'2026-10-21 00:05', v:'v606', k:'new', t:'Sistema → Nustatymai: perdavimo dokumentas', f:'Jei kada prireiktų perduoti programą kitam žmogui – vienu mygtuku sugeneruojamas dokumentas pagal tos dienos būklę: kur laikomas kodas, duomenų bazė ir svetainė, kokias prieigas perduoti, kaip išleisti naują versiją, visi puslapiai, lentelės, serverio funkcijos, nustatymai ir klaidos. Be slaptažodžių ir raktų reikšmių.' },
   { d:'2026-10-20 23:45', v:'v605', k:'new', t:'Sistema → Nustatymai: sąrašai ir būsenos', f:'Super Admin gali pervadinti būsenas (renginių, paėmimų, išdavimų, projektų, gedimų, prašymų, išlaidų), keisti jų spalvas ir tvarkyti laisvus sąrašus (projektų tipai, atliktų darbų rūšys) – pridėti, pašalinti, keisti tvarką. Viskas su istorija ir grąžinimu.' },

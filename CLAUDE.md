@@ -15,3 +15,6 @@
 - **Konstruktorius** (Sistema → Puslapiai): Super Admin's own pages in `custom_pages` (`supabase/sql/custom_pages.sql`), menu keys
   `cp_<id>`; runtime `cpMount`/`cpDo`, editor `cpEdit` (state `CPE`). „Program functions“ are replayed clicks (`cpPlay`) on button
   ids – the catalog is `pages[k].ui` in `site/sys-map.json`; keep useful buttons' `id`s stable so built pages keep working.
+- Existing pages are edited in place (Super Admin → „Redaguoti puslapius“ or Sistema → Puslapiai → Esami programos puslapiai):
+  rules in `STATE.uiLayout.ed[scope]` keyed by the element's name (`edTextKey`) – t name, i icon, o order, f fold, h hidden,
+  s look, a click (`edRunAct`), n inserted elements (`edIns`). Renaming a button's text in code breaks its rules – keep names.
