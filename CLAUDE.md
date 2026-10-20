@@ -30,3 +30,7 @@
   low latency cap = (1 − Y/H) × 650 000; Ethernet backup Split / Sequential halves usable ports; 3D side-by-side halves capacity.
   Įrankiai is a launcher of tool apps (`TOOL_APPS`, `toolOpen`); the LED tool is a SmartLCT-like editor (`LP` project in localStorage
   `ledProj`, `lpDraw`, `lpWire`, `lpPattern`, `lpTotals`): free pixel canvas, several cabinet types, ports wired by hand or by pattern.
+  Only verified processors are built in (`LED_DEVICES`: h16, vx1000, vx1000pro, mctrl4k) and no cabinets (`LED_PANELS = []`): users add
+  their own (`ledPanelForm`, `ledDevForm`, a PDF read by `ledDevPdf` → `ledParseSpec`), saved for everyone (`led_db`, Super Admin) or in
+  this browser (`ledMyPanels` / `ledMyDevices`); a project keeps a copy of its cabinets in `LP.customs`. Wiring by hand never jumps to the
+  next port – the overload shows red (`lpOverFrom`, `lpHud`); patterns do move on. Quick calculation (m² or W×H → ports): `ledQuickCalc`.
