@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-nYbhIQI2DUlIAy/BRkABkyvXbizoRODhTuemyaWUbcQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-psrP95MVLZRB+TBIhtdib7M+mha8VIL1dIXDpoDUnxg=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -4296,7 +4296,10 @@ table.np-t th{position:sticky;top:0;z-index:1;background:var(--panel);text-align
 table.np-t th:hover{color:var(--accent);} table.np-t th.on{color:var(--accent);} table.np-t th i{font-style:normal;font-size:9px;margin-left:5px;}
 table.np-t th.np-tc,table.np-t th.np-tcol{cursor:default;}
 table.np-t td{padding:10px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle;}
-table.np-t tbody tr{cursor:pointer;transition:background .12s;} table.np-t tbody tr:hover{background:rgb(var(--hi-rgb) / .05);} table.np-t tbody tr.sel{background:color-mix(in srgb, var(--accent) 10%, transparent);}
+table.np-t tbody tr{cursor:pointer;} table.np-t tbody tr.sel{background:color-mix(in srgb, var(--accent) 10%, transparent);}
+/* the row under the mouse: on its cells (they have their own background on glass), at once – no fade that blinks over the blurred glass */
+table.np-t tbody tr:hover > td{background-color:rgb(var(--hi-rgb) / .09) !important;}
+table.np-t tbody tr.sel:hover > td{background-color:color-mix(in srgb, var(--accent) 16%, transparent) !important;}
 table.np-t tbody tr:last-child td{border-bottom:0;} table.np-t tr.np-done td{opacity:.6;}
 table.np-t td.num{font-variant-numeric:tabular-nums;}
 table.np-t .np-tsep{border-right:1px solid var(--border-2,var(--border));}
@@ -22559,7 +22562,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v599';
+const APP_VER = 'v600';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -46286,6 +46289,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-20 21:40', v:'v600', k:'fix', t:'Projektų sąrašas nebemirksi', f:'Vedant pele per projektų lentelę eilutė nebemirksi – eilutė po pele paryškinama iškart ir laikosi, kol pelė ant jos.' },
   { d:'2026-10-20 21:15', v:'v599', k:'new', t:'Įranga: Kur suplanuota', f:'Įrangos puslapyje mygtukas „Kur suplanuota“: įrašyk daikto pavadinimą ar kodą, pasirink laikotarpį (arba Šis mėnuo / Praėję 3 mėn. / Ateinantys 3 mėn. / Šie metai) – matysi visus renginius (rezervuota įranga), projektus (krovimo sąrašas) ir Rentman projektus, kuriuose tas daiktas įrašytas, su kiekiu ir datomis. Paspaudus renginį ar projektą – jis atsidaro.' },
   { d:'2026-10-20 20:45', v:'v598', k:'new', t:'Projektai: Ši diena ir ateinantys', f:'Projektuose (ir Rentman projektų sąraše) galima pasirinkti „Ši diena ir ateinantys“ – rodomi šiandienos ir vėlesni projektai; pasirinkimas įsimenamas ir kasdien pasislenka pats.' },
   { d:'2026-10-20 20:15', v:'v597', k:'new', t:'Failų peržiūra su mastelio keitimu · Išvaizda per visą plotį', f:'Chate atidarius PDF ar paveikslėlį – viršuje − / % / + (ir Ctrl + ratukas, Ctrl +/−, telefone dviem pirštais), nuo 25 % iki 500 %. PDF didinant persipiešia iš vektorių – lieka aštrus; paveikslėliai – pagal jų raišką. Mano erdvė → Išvaizda kompiuteryje išdėstyta horizontaliai: Dizainas, Ikonos, Fonas greta.' },
