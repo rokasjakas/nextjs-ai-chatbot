@@ -25,6 +25,9 @@
   `superFresh`). The header shield button and „Atnaujinimai“ show only in the Super Admin level. A release that must reach open windows
   at once sets `FORCE_FOR` in `site/sw.js` to its own CACHE name (windows reload right after the worker activates – never inside the activate
   waitUntil: that deadlocks, v619 left phones on a black screen; later releases are not forced).
+- Sistema → Įjungti / išjungti (`sysOffHtml`, `offPick`): pages = nav off; buttons with an id (top bar, left menu extras, right panel,
+  a page's catalog buttons) = `app_config` key `off` {ids:{selector:{t,a}}, apps} hidden by one style sheet (`offApply`, scoped by
+  `body[data-tab]`); anything else picked on the page = the page editor's `h` rule. The Super Admin (Super Admin level) sees them dimmed.
 - Existing pages are edited in place (Super Admin → „Redaguoti puslapius“ or Sistema → Puslapiai → Esami programos puslapiai):
   rules in `STATE.uiLayout.ed[scope]` keyed by the element's name (`edTextKey`) – t name, i icon, o order, f fold, h hidden,
   s look, a click (`edRunAct`), n inserted elements (`edIns`). Renaming a button's text in code breaks its rules – keep names.
