@@ -52,6 +52,8 @@
   the dossier (events by crew / manager / driver, calls, gear issues, item works; item free on a day via `dzItemFree` = `grsCalc` logic).
 - Gidas (tab `guide`, `renderGuideTab`): hand-written articles in `GUIDE` (group, tab, sections, Q&A, related); buttons and shared-data
   pages come from `site/sys-map.json`; „Klausti AI“ = ai-chat with the best articles as context. The guide shows NO changelog / updates
-  and NOTHING of the Super Admin (no Sistema article, no Super Admin text, Super Admin buttons filtered by `GD_SUP_UI`).
+  and NOTHING of the Super Admin or the Admin page (no Sistema / Admin articles, no Super Admin text, buttons filtered by `GD_SUP_UI`;
+  `gdCan` = `canView` minus `GD_NO_TAB`). Every link out of the guide, the search (`gsSearch`: pages by `canView`, header functions by
+  `gsBtnOk`) and the dossier cards re-checks the level – a level never reaches a page it may not see.
   **Every release that adds or changes a feature updates its `GUIDE` article / Q&A in the same release** (the user asked for it);
   run `python3 site-tools/guide_check.py site/index.html` at every release – it fails when a menu page has no article.

@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-lupsPvwyd9y6iOVOyowCXmyaf54OVICSOKXV1G5H2wI=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-UbtWumlq4uwMOUPc3ap/DJyGRzUE3CCJantrcNS1jvI=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -23579,7 +23579,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v627';
+const APP_VER = 'v628';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -42266,29 +42266,32 @@ function grFromUrl(){
    Randa programas (šoninio meniu skirtukus), funkcijas, narius, sandėlio
    daiktus ir projektus. Enter arba paspaudimas atidaro. */
 const GS = { at:0, hits:[] };
+// a header button the level has (not hidden by the level, not turned off in Sistema); on a phone it may sit in the „⋯“ menu – that still counts
+function gsBtnOk(id){ const b = document.getElementById(id); if(!b || b.disabled || b.hidden || b.closest('[hidden], .hidden')) return false;
+  const off = (CFG.off && CFG.off.ids) || {}; return !Object.keys(off).some(sel=>{ try{ return b.matches(sel); }catch(e){ return false; } }); }
 function gsClick(id){ const b = document.getElementById(id); if(b){ b.click(); return true; } toast('Ši funkcija dabar nepasiekiama.'); return false; }
 function gsGear(tab, form){ GR.tab = tab; if(currentTab==='gear') renderGearTab(); else setTab('gear'); if(form) grLoad().then(()=>{ if(currentTab==='gear') grForm(null, tab); }); }
 const GS_FN = [
-  { t:'Skaičiuotuvas', d:'su PVM', ic:'calc', kw:'kalkuliatorius skaiciuoti pvm', go:()=>gsClick('calcHdr') },
-  { t:'Kalendorius', d:'šventės ir renginiai', ic:'calendar', kw:'datos sventes', go:()=>gsClick('calHdr') },
-  { t:'Pridėti užduotį', d:'sau, su priminimais', ic:'tasks', kw:'uzduotis priminimas todo pastaba', go:()=>gsClick('tkHdrAdd') },
-  { t:'Priskirti užduotį', d:'kitiems nariams', ic:'users', kw:'uzduotis paskirti deleguoti', go:()=>gsClick('tkHdrAssign') },
+  { t:'Skaičiuotuvas', d:'su PVM', ic:'calc', kw:'kalkuliatorius skaiciuoti pvm', can:()=>gsBtnOk('calcHdr'), go:()=>gsClick('calcHdr') },
+  { t:'Kalendorius', d:'šventės ir renginiai', ic:'calendar', kw:'datos sventes', can:()=>gsBtnOk('calHdr'), go:()=>gsClick('calHdr') },
+  { t:'Pridėti užduotį', d:'sau, su priminimais', ic:'tasks', kw:'uzduotis priminimas todo pastaba', can:()=>gsBtnOk('tkHdrAdd'), go:()=>gsClick('tkHdrAdd') },
+  { t:'Priskirti užduotį', d:'kitiems nariams', ic:'users', kw:'uzduotis paskirti deleguoti', can:()=>gsBtnOk('tkHdrAssign'), go:()=>gsClick('tkHdrAssign') },
   { t:'Atlikti darbai', d:'Sandėlis: valymas, patikros, remontai', ic:'cog', kw:'atlikti darbai valymas patikra profilaktika remontas', can:()=>canView('inventory'), go:()=>setTab('works') },
   { t:'Pranešti apie pažeistą įrangą', d:'Įrangos gedimai / pažeidimai', ic:'alert', kw:'sugadinta pazeista sulauzyta taisyti gedimas', can:()=>canView('gear') && canView('inventory'), go:()=>gsGear('damage', true) },
   { t:'Pranešti apie dingusį daiktą', d:'Įrangos gedimai / pažeidimai', ic:'search', kw:'dingo pamestas prarastas', can:()=>canView('gear'), go:()=>gsGear('lost', true) },
-  { t:'Tikrinti įrangos likutį', d:'pagal datą ar laikotarpį', ic:'warehouse', kw:'likutis laisva uzimta rezervuota kiek yra sandelis', can:()=>canView('gear'), go:()=>gsGear('stock') },
+  { t:'Tikrinti įrangos likutį', d:'pagal datą ar laikotarpį', ic:'warehouse', kw:'likutis laisva uzimta rezervuota kiek yra sandelis', can:()=>canView('gear') && canView('inventory'), go:()=>gsGear('stock') },
   { t:'Įrangos planavimo lentelė', d:'renginių rezervacijos pagal dienas', ic:'chart', kw:'planavimas rezervacija uzimtumas', can:()=>canView('events'), go:()=>{ setTab('events'); gearPlan(); } },
   { t:'Naujas projektas', d:'Projektai', ic:'folder', kw:'sukurti projekta', can:()=>canView('newproj'), go:()=>{ setTab('newproj'); setTimeout(()=>{ const b = document.getElementById('npNew'); if(b) b.click(); }, 400); } },
   { t:'Gidas', d:'visų funkcijų aprašymai, klausimai', ic:'guide', kw:'gidas pagalba help instrukcija kaip aprasymas klausimas', go:()=>gdOpen('') },
-  { t:'Pranešti klaidą / pasiūlymą', d:'kūrėjams', ic:'chat', kw:'klaida bug pasiulymas atsiliepimas', go:()=>gsClick('fbHdr') },
-  { t:'Išsaugoti viską', d:'serveryje dabar', ic:'save', kw:'saugoti', go:()=>gsClick('saveAllBtn') },
-  { t:'Atsisiųsti atsarginę kopiją', d:'visi duomenys JSON', ic:'download', kw:'kopija backup eksportas', go:()=>gsClick('exportBtn') },
+  { t:'Pranešti klaidą / pasiūlymą', d:'kūrėjams', ic:'chat', kw:'klaida bug pasiulymas atsiliepimas', can:()=>gsBtnOk('fbHdr'), go:()=>gsClick('fbHdr') },
+  { t:'Išsaugoti viską', d:'serveryje dabar', ic:'save', kw:'saugoti', can:()=>gsBtnOk('saveAllBtn'), go:()=>gsClick('saveAllBtn') },
+  { t:'Atsisiųsti atsarginę kopiją', d:'visi duomenys JSON', ic:'download', kw:'kopija backup eksportas', can:()=>gsBtnOk('exportBtn'), go:()=>gsClick('exportBtn') },
   { t:'Prašymas: laisvos dienos', d:'Profilis → Prašymai', ic:'calendar', kw:'laisva diena prasymas', can:()=>!lowLevel(), go:()=>{ pfOpen('leave'); setTimeout(()=>lvForm('dayoff'), 300); } },
   { t:'Prašymas: atostogos', d:'Profilis → Prašymai', ic:'sun', kw:'atostogos prasymas', can:()=>!lowLevel(), go:()=>{ pfOpen('leave'); setTimeout(()=>lvForm('vacation'), 300); } },
   { t:'Atsisiųsti programėlę', d:'Android / iPhone', ic:'mobile', kw:'programele app android ios iphone apk telefonas', go:()=>pfOpen('app') },
   { t:'Pranešimų nustatymai', d:'įjungti / išjungti, tylos valandos', ic:'bell', kw:'pranesimai notifications push isjungti tyla', go:()=>pfOpen('notify') },
-  { t:'Keisti temą', d:'šviesi / tamsi', ic:'moon', kw:'tamsi sviesi tema spalvos', go:()=>gsClick('themeBtn') },
-  { t:'Atsijungti', d:'', ic:'logout', kw:'iseiti logout', go:()=>gsClick('signOutBtn') },
+  { t:'Keisti temą', d:'šviesi / tamsi', ic:'moon', kw:'tamsi sviesi tema spalvos', can:()=>gsBtnOk('themeBtn'), go:()=>gsClick('themeBtn') },
+  { t:'Atsijungti', d:'', ic:'logout', kw:'iseiti logout', can:()=>gsBtnOk('signOutBtn'), go:()=>gsClick('signOutBtn') },
 ];
 function gsSearch(q){
   const words = normalizeText(q).split(/\s+/).filter(Boolean);
@@ -42375,10 +42378,10 @@ function dzEvHtml(ev, extra){
   return `<button type="button" class="dz-ev" data-dzev="${esc(ev.id)}"><span class="dz-d">${esc(dzDate(sp[0]))}${sp[1] && sp[1]!==sp[0] ? '–'+esc(ppDM(sp[1])) : ''}</span><span class="dz-t"><b>${esc(gearEvName(ev))}</b>${ev.location ? `<small>${esc(ev.location)}</small>` : ''}</span>${extra ? `<span class="dz-x">${extra}</span>` : ''}</button>`;
 }
 function dzWire(root){
-  root.querySelectorAll('[data-dzev]').forEach(b=>b.onclick = ()=>{ const ev = EV.events.find(x=>x.id===b.dataset.dzev); if(!ev) return; closeModal(); setTab('events'); setTimeout(()=>openEventRowModal(ev), 150); });
-  root.querySelectorAll('[data-dzproj]').forEach(b=>b.onclick = ()=>{ closeModal(); setTab('newproj'); npOpen(b.dataset.dzproj); });
-  root.querySelectorAll('[data-dzgear]').forEach(b=>b.onclick = ()=>{ const g = GR.list.find(z=>z.id===b.dataset.dzgear); if(!g) return; closeModal(); GR.tab = g.kind; GR.show = 'all'; GR.focus = g.id; GR.openOnFocus = true; setTab('gear'); });
-  root.querySelectorAll('[data-dzwork]').forEach(b=>b.onclick = ()=>{ closeModal(); IW.q = b.dataset.dzwork; IW.from = IW.to = ''; iwOpen(); });
+  root.querySelectorAll('[data-dzev]').forEach(b=>b.onclick = ()=>{ const ev = EV.events.find(x=>x.id===b.dataset.dzev); if(!ev || !canView('events')) return; closeModal(); setTab('events'); setTimeout(()=>openEventRowModal(ev), 150); });
+  root.querySelectorAll('[data-dzproj]').forEach(b=>b.onclick = ()=>{ if(!canView('newproj')) return; closeModal(); setTab('newproj'); npOpen(b.dataset.dzproj); });
+  root.querySelectorAll('[data-dzgear]').forEach(b=>b.onclick = ()=>{ const g = GR.list.find(z=>z.id===b.dataset.dzgear); if(!g || !canView('gear')) return; closeModal(); GR.tab = g.kind; GR.show = 'all'; GR.focus = g.id; GR.openOnFocus = true; setTab('gear'); });
+  root.querySelectorAll('[data-dzwork]').forEach(b=>b.onclick = ()=>{ if(!canView('works')) return; closeModal(); IW.q = b.dataset.dzwork; IW.from = IW.to = ''; iwOpen(); });
   root.querySelectorAll('.dz-more').forEach(b=>b.onclick = ()=>{ b.parentElement.classList.add('dz-all'); b.remove(); });
 }
 // a list that shows `n` rows and a „Rodyti visus“ button for the rest
@@ -42424,8 +42427,8 @@ async function dzPerson(name){
   const evs = canView('events') ? dzPersonEvents(names) : [];
   const next = evs.filter(x=>x.d >= today).reverse(), past = evs.filter(x=>x.d < today);
   const calls = c ? (PP.calls||[]).filter(r=>r.contact_id===c.id && r.outcome!=='calling') : [];
-  const gear = (GR.list||[]).filter(g=>(m && g.created_by===m.id) || names.has(normalizeText(g.created_by_name||'')) || names.has(normalizeText(g.resolved_by_name||'')));
-  const works = (IW.list||[]).filter(w=>(w.done_by||[]).some(x=>names.has(normalizeText(x))));
+  const gear = !canView('gear') ? [] : (GR.list||[]).filter(g=>(m && g.created_by===m.id) || names.has(normalizeText(g.created_by_name||'')) || names.has(normalizeText(g.resolved_by_name||'')));
+  const works = canView('works') ? (IW.list||[]).filter(w=>(w.done_by||[]).some(x=>names.has(normalizeText(x)))) : [];
   const mail = m ? (m.contact_email || m.email) : c && c.email, tel = (m && m.phone) || (c && c.phone) || '', telD = tel.replace(/[^\d+]/g, '');
   const lv = c && c.levels ? Object.entries(c.levels).filter(([, v])=>v).map(([k, v])=>esc(k)+' '+esc(v)).join(', ') : '';
   const info = [
@@ -42495,12 +42498,12 @@ function dzItemDraw(id){
     .sort((a, b)=>String(b.d).localeCompare(String(a.d)));
   const past = evs.filter(x=>x.d <= today), next = evs.filter(x=>x.d > today).reverse();
   const projs = [];
-  if(NP.loaded) NP.list.forEach(p=>{ if(p.is_template) return; const dd = p.data || {}; let q = 0, a = null;
+  if(NP.loaded && canView('newproj')) NP.list.forEach(p=>{ if(p.is_template) return; const dd = p.data || {}; let q = 0, a = null;
     (dd.groups||[]).forEach(g=>(g.items||[]).forEach(r=>{ if(String(r.item)!==id) return; q += offerNum(r.qty); const sp = dd.times ? npGroupSpan(dd, g) : null; if(sp && (a==null || sp[0] < a)) a = sp[0]; }));
     if(q) projs.push({ p, q, a }); });
   projs.sort((x, y)=>(y.a||0) - (x.a||0));
-  const gear = (GR.list||[]).filter(g=>String(g.item_id)===id);
-  const works = (IW.list||[]).filter(w=>(w.item_ids||[]).map(String).includes(id));
+  const gear = canView('gear') ? (GR.list||[]).filter(g=>String(g.item_id)===id) : [];
+  const works = canView('works') ? (IW.list||[]).filter(w=>(w.item_ids||[]).map(String).includes(id)) : [];
   const repairs = works.filter(w=>/remont|daliu keit|taisym/i.test(normalizeText(w.kind||'')));
   const out = grOut(id), dims = [it.L, it.W, it.H].every(x=>+x) ? `${fmt(+it.L,0)} × ${fmt(+it.W,0)} × ${fmt(+it.H,0)} cm` : '';
   const info = [
@@ -42519,13 +42522,13 @@ function dzItemDraw(id){
     <div class="ven-fields dz-info">${info}</div>
     <div class="dz-sec dz-avail"><div class="dz-h">Ar laisvas?</div>
       <div class="dz-day"><input type="date" id="dzDay" value="${esc(d)}"><button type="button" class="chip small-chip ${d===today ? 'active' : ''}" data-dzd="${today}">Šiandien</button><button type="button" class="chip small-chip ${d===lmDay(today, 1) ? 'active' : ''}" data-dzd="${lmDay(today, 1)}">Rytoj</button><b>${avTxt}</b></div>
-      ${av.who.length ? `<div class="dz-list">${av.who.map(w=>w.ev && !w.ev.rentman ? dzEvHtml(w.ev, esc(w.kind)+' · '+fmt(w.qty, 0)+' vnt.') : w.proj ? `<button type="button" class="dz-ev" data-dzproj="${esc(w.proj)}"><span class="dz-d">Projektas</span><span class="dz-t"><b>${esc(w.name)}</b></span><span class="dz-x">${fmt(w.qty, 0)} vnt.</span></button>` : w.gear ? `<button type="button" class="dz-ev" data-dzgear="${esc(w.gear)}"><span class="dz-d">${esc(w.when)}</span><span class="dz-t"><b>${esc(w.kind)}</b><small>${esc(w.name)}</small></span><span class="dz-x">${fmt(w.qty, 0)} vnt.</span></button>` : `<div class="dz-ln"><span class="dz-d">${esc(w.kind)}</span><b>${esc(w.name)}</b><small>${fmt(w.qty, 0)} vnt.</small></div>`).join('')}</div>` : '<div class="muted dz-none">Tą dieną niekur nerezervuotas.</div>'}
+      ${av.who.length ? `<div class="dz-list">${av.who.map(w=>w.ev && !w.ev.rentman ? dzEvHtml(w.ev, esc(w.kind)+' · '+fmt(w.qty, 0)+' vnt.') : w.proj && canView('newproj') ? `<button type="button" class="dz-ev" data-dzproj="${esc(w.proj)}"><span class="dz-d">Projektas</span><span class="dz-t"><b>${esc(w.name)}</b></span><span class="dz-x">${fmt(w.qty, 0)} vnt.</span></button>` : w.gear && canView('gear') ? `<button type="button" class="dz-ev" data-dzgear="${esc(w.gear)}"><span class="dz-d">${esc(w.when)}</span><span class="dz-t"><b>${esc(w.kind)}</b><small>${esc(w.name)}</small></span><span class="dz-x">${fmt(w.qty, 0)} vnt.</span></button>` : `<div class="dz-ln"><span class="dz-d">${esc(w.kind)}</span><b>${esc(w.name)}</b><small>${fmt(w.qty, 0)} vnt.</small></div>`).join('')}</div>` : '<div class="muted dz-none">Tą dieną niekur nerezervuotas.</div>'}
     </div>
     ${canView('events') ? dzSec('Paskutiniai renginiai', dzList(past.map(x=>dzEvHtml(x.ev, fmt(x.q, 0)+' vnt.')), 5), past.length) : ''}
     ${canView('events') && next.length ? dzSec('Suplanuota ateityje', dzList(next.map(x=>dzEvHtml(x.ev, fmt(x.q, 0)+' vnt.')), 5), next.length) : ''}
     ${projs.length ? dzSec('Projektai', dzList(projs.map(x=>`<button type="button" class="dz-ev" data-dzproj="${esc(x.p.id)}"><span class="dz-d">${x.a ? esc(dzDate(calISO(new Date(x.a)))) : ''}</span><span class="dz-t"><b>${esc(x.p.name||'Projektas')}</b>${x.p.data && x.p.data.client ? `<small>${esc(String(x.p.data.client.name || x.p.data.client))}</small>` : ''}</span><span class="dz-x">${fmt(x.q, 0)} vnt.</span></button>`), 5), projs.length) : ''}
-    ${dzSec('Gedimai ir dingimai', dzList(gear.map(g=>`<button type="button" class="dz-ev" data-dzgear="${esc(g.id)}"><span class="dz-d">${esc(grWhen(g.created_at))}</span><span class="dz-t"><b>${esc(g.description || (g.kind==='lost' ? 'Dingo' : 'Gedimas'))}</b><small>${esc([g.created_by_name, g.event_name, g.resolution].filter(Boolean).join(' · '))}</small></span><span class="dz-x">${esc(g.kind==='lost' ? 'Dingo' : 'Gedimas')} · ${esc({ open:'atvira', fixed:'sutaisyta', found:'rasta', written_off:'nurašyta' }[g.status]||g.status)} · ${fmt(+g.qty||0, 0)} vnt.</span></button>`), 3), gear.length)}
-    ${dzSec('Remontai, patikros ir kiti darbai', dzList(works.map(w=>`<button type="button" class="dz-ev" data-dzwork="${esc(it.name)}"><span class="dz-d">${esc(dzDate(w.work_date))}</span><span class="dz-t"><b>${esc(w.kind||'Darbas')}</b><small>${esc([(w.done_by||[]).join(', '), w.note].filter(Boolean).join(' · '))}</small></span></button>`), 3), works.length)}
+    ${!canView('gear') ? '' : dzSec('Gedimai ir dingimai', dzList(gear.map(g=>`<button type="button" class="dz-ev" data-dzgear="${esc(g.id)}"><span class="dz-d">${esc(grWhen(g.created_at))}</span><span class="dz-t"><b>${esc(g.description || (g.kind==='lost' ? 'Dingo' : 'Gedimas'))}</b><small>${esc([g.created_by_name, g.event_name, g.resolution].filter(Boolean).join(' · '))}</small></span><span class="dz-x">${esc(g.kind==='lost' ? 'Dingo' : 'Gedimas')} · ${esc({ open:'atvira', fixed:'sutaisyta', found:'rasta', written_off:'nurašyta' }[g.status]||g.status)} · ${fmt(+g.qty||0, 0)} vnt.</span></button>`), 3), gear.length)}
+    ${!canView('works') ? '' : dzSec('Remontai, patikros ir kiti darbai', dzList(works.map(w=>`<button type="button" class="dz-ev" data-dzwork="${esc(it.name)}"><span class="dz-d">${esc(dzDate(w.work_date))}</span><span class="dz-t"><b>${esc(w.kind||'Darbas')}</b><small>${esc([(w.done_by||[]).join(', '), w.note].filter(Boolean).join(' · '))}</small></span></button>`), 3), works.length)}
     <div class="ven-actions dz-act">
       ${canView('inventory') ? '<button type="button" class="btn small" id="dzInv">Rodyti sandėlyje</button>' : ''}
       ${canView('gear') ? `<button type="button" class="btn small" id="dzStock">${slIcon('warehouse')} Likutis laikotarpiui</button><button type="button" class="btn small" id="dzBad">${slIcon('alert')} Pranešti apie gedimą</button>` : ''}
@@ -42549,7 +42552,7 @@ function dzItemDraw(id){
    Straipsnis: { id, tab (puslapis, jei yra), g (grupė), t, d, s:[[antraštė, tekstas]], q:[[klausimas, atsakymas]], rel:[id], kw }
    Tekste eilutė, prasidedanti „• “, – sąrašo punktas; „→“ žymi kelią meniu.
    ============================================================ */
-const GUIDE_GROUPS = ['Pradžia', 'Ofisas', 'Sandėlis', 'Transportas ir pinigai', 'Komanda', 'Administravimas'];
+const GUIDE_GROUPS = ['Pradžia', 'Ofisas', 'Sandėlis', 'Transportas ir pinigai', 'Komanda', 'Lygiai'];
 const GUIDE = [
 { id:'about', g:'Pradžia', t:'Kaip veikia programa', d:'Event Solutions komandos programa: renginiai, žmonės, sandėlis, transportas, sąskaitos, chatas ir paštas vienoje vietoje. Ji veikia naršyklėje, telefone (Android, iPhone) ir kompiuterio programoje.',
   s:[['Iš ko ji susideda', 'Programa suskirstyta į puslapius. Kairiajame meniu (telefone – apatinėje juostoje ir „Meniu“) matai tik tuos puslapius, kuriuos tau leidžia tavo lygis. Pradžioje puslapiai sugrupuoti: Ofisas (renginiai, žmonės, pasiūlymai, sąskaitos…), Sandėlis (projektai, įranga, rūšiavimas, krovimas…) ir atskiros plytelės (Chatas, Transportas, Ataskaitos, Mano erdvė…).'],
@@ -42693,7 +42696,7 @@ const GUIDE = [
 
 { id:'members', tab:'members', g:'Komanda', t:'Nariai', d:'Programos nariai: kas prisijungęs, kontaktai, pareigos.',
   s:[['Narys', 'Paspaudus – kortelė su telefonu, el. paštu, būsena; „Rašyti žinutę“. Pilnesnė informacija (renginiai, darbai) – paieškoje paspaudus narį.']],
-  rel:['chat','search','admin'], kw:'nariai komanda prisijunges kontaktai' },
+  rel:['chat','search'], kw:'nariai komanda prisijunges kontaktai' },
 
 /* ---------- Sandėlis ---------- */
 { id:'newproj', tab:'newproj', g:'Sandėlis', t:'Projektai', d:'Projektai su subprojektais, laikais ir įranga iš sandėlio – pagrindas rūšiavimui ir krovimui.',
@@ -42817,18 +42820,11 @@ const GUIDE = [
   q:[['Kaip paprašyti atostogų?', 'Mano erdvė → Prašymai → Atostogos (arba paieškoje „atostogos“).']],
   rel:['notify','apps','ui','fleet'], kw:'mano erdve profilis prasymai atostogos laisva diena isvaizda fonas uta pin' },
 
-/* ---------- Administravimas ---------- */
-{ id:'levels', g:'Administravimas', t:'Lygiai ir teisės', d:'Kas ką mato ir gali keisti.',
-  s:[['Lygiai', '• Admin+ – tvirtina sąskaitas, išlaidas, nurašymus, prašymus.\n• Admin – vartotojai ir teisės, transporto pridėjimas, darbų planai.\n• Office – kontaktai, sąskaitų patikra, išlaidų (kuro) patikra, įkainiai.\n• Projektų vadovas – projektai, pasiūlymai, įkainiai.\n• Tech – peržiūri renginius, savo sąskaitos, savo laikas.\n• Freelance – tik savo renginiai, savo sąskaitos ir laikas.\n• Runner – savo sąskaitos, be Prašymų ir Pirkinių.'],
-     ['Teisių lentelė', 'Admin → teisės: kiekvienam puslapiui ir lygiui – nėra / peržiūra / keisti.']],
-  rel:['admin'], kw:'lygiai teises role admin office tech freelance runner prieiga' },
+/* ---------- Lygiai ---------- */
+{ id:'levels', g:'Lygiai', t:'Lygiai ir teisės', d:'Kas ką mato ir gali keisti.',
+  s:[['Lygiai', '• Admin+ – tvirtina sąskaitas, išlaidas, nurašymus, prašymus.\n• Admin – vartotojai ir teisės, transporto pridėjimas, darbų planai.\n• Office – kontaktai, sąskaitų patikra, išlaidų (kuro) patikra, įkainiai.\n• Projektų vadovas – projektai, pasiūlymai, įkainiai.\n• Tech – peržiūri renginius, savo sąskaitos, savo laikas.\n• Freelance – tik savo renginiai, savo sąskaitos ir laikas.\n• Runner – savo sąskaitos, be Prašymų ir Pirkinių.']],
+  rel:['about'], kw:'lygiai teises role admin office tech freelance runner prieiga' },
 
-{ id:'admin', tab:'admin', g:'Administravimas', t:'Admin', d:'Vartotojų patvirtinimas, lygiai ir teisės, balsavimai, laiškų patikra, limitai.',
-  s:[['Vartotojai', 'Nauji nariai laukia patvirtinimo; lygio keitimas; paieška.'],
-     ['Teisės', 'Lentelė: puslapis × lygis.'],
-     ['Balsavimai', 'Balsavimas QR kodu su rezultatų ekranu: nominacijos, užsklandos, laikmatis; Įjungti / Išjungti (išjungtas niekaip neapkrauna programos).'],
-     ['Kita', 'Laiškų patikra (Resend), naudojimo limitai, chato GIF raktas.']],
-  rel:['levels'], kw:'admin vartotojai patvirtinti teises balsavimas qr limitai' },
 
 ];
 const GD = { id:'', q:'', map:null, mapP:null, ask:'', ai:'', aiBusy:false };
@@ -42836,7 +42832,9 @@ const GD_STOP = new Set('kaip kur kas ar man mane reikia galima galiu yra mano s
 // a word's stem (Lithuanian endings): „atostogų“ and „atostogos“ find each other
 const gdStem = w=>w.length > 5 ? w.slice(0, Math.max(5, w.length - 3)) : w;
 function gdWords(q){ return normalizeText(q||'').replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(w=>w && !GD_STOP.has(w)).map(gdStem); }
-function gdList(){ return GUIDE.filter(a=>a.id==='rfid' ? canView('inventory') : !a.tab || canView(a.tab)); }
+const GD_NO_TAB = new Set(['admin', 'system']);   // never in the guide
+const gdCan = k=>!!k && !GD_NO_TAB.has(k) && !!TABS[k] && canView(k);
+function gdList(){ return GUIDE.filter(a=>a.id==='rfid' ? canView('inventory') : !a.tab || gdCan(a.tab)); }
 function gdTxt(v){ return String(v||''); }
 // the text of an article, for searching and for the AI
 function gdFlat(a){ return [a.t, a.d, ...(a.s||[]).map(x=>x[0]+': '+x[1]), ...(a.q||[]).map(x=>'Klausimas: '+x[0]+' Atsakymas: '+x[1])].join('\n'); }
@@ -42880,7 +42878,7 @@ function gdShared(tab){
   const P = GD.map && GD.map.pages || {}, me = P[tab]; if(!me) return [];
   const common = new Set(['profiles', 'app_config', 'app_config_log', 'app_release', 'app_state', 'role_permissions', 'game_scores']);
   const mine = new Set((me.tables||[]).filter(t=>!common.has(t)));
-  return Object.entries(P).filter(([k, p])=>k!==tab && k!=='system' && canView(k)).map(([k, p])=>({ k, lab:p.label, n:(p.tables||[]).filter(t=>mine.has(t)).length })).filter(x=>x.n).sort((a, b)=>b.n - a.n).slice(0, 8);
+  return Object.entries(P).filter(([k, p])=>k!==tab && k!=='guide' && gdCan(k)).map(([k, p])=>({ k, lab:p.label, n:(p.tables||[]).filter(t=>mine.has(t)).length })).filter(x=>x.n).sort((a, b)=>b.n - a.n).slice(0, 8);
 }
 function gdOpen(id){ GD.id = id || ''; GD.q = ''; if(currentTab==='guide') renderGuideTab(); else setTab('guide'); }
 function renderGuideTab(){
@@ -42925,7 +42923,7 @@ function gdHomeHtml(list){
 }
 function gdArticleHtml(a){
   if(!a) return '';
-  const can = a.tab ? canView(a.tab) : true, ui = gdUi(a), sh = a.tab ? gdShared(a.tab) : [];
+  const can = a.tab ? gdCan(a.tab) : true, ui = gdUi(a), sh = a.tab ? gdShared(a.tab) : [];
   const rel = (a.rel||[]).map(id=>gdList().find(x=>x.id===id)).filter(Boolean);
   return `<article class="gd-art">
     <div class="gd-crumb">${esc(a.g)}</div>
@@ -42963,7 +42961,7 @@ function gdResultsHtml(list, words){
 function gdWireMain(box, words){
   if(words.length) box.querySelectorAll('.gd-res .gd-hit span, .gd-answer p, .gd-answer li').forEach(el=>{ el.innerHTML = gdMark('>'+el.innerHTML+'<', words).slice(1, -1); });
   box.querySelectorAll('[data-gd]').forEach(b=>b.onclick = ()=>{ GD.id = b.dataset.gd; GD.q = ''; const q = document.getElementById('gdQ'); if(q) q.value = ''; gdDraw(); gdNavMark(); });
-  box.querySelectorAll('[data-gdtab]').forEach(b=>b.onclick = ()=>setTab(b.dataset.gdtab));
+  box.querySelectorAll('[data-gdtab]').forEach(b=>b.onclick = ()=>{ const k = b.dataset.gdtab; if(gdCan(k)) setTab(k); else toast('Šio puslapio tavo lygis neatidaro.'); });
   box.querySelectorAll('[data-gdsearch]').forEach(b=>b.onclick = ()=>gsOpen());
   const ai = document.getElementById('gdAi'); if(ai) ai.onclick = ()=>gdAskAi(GD.q);
 }
@@ -50754,6 +50752,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 20:40', v:'v628', k:'chg', t:'Gidas ir paieška pagal lygį', f:'Gide nebėra Admin skyriaus. Gidas, viršutinė paieška ir žmogaus / daikto kortelės siūlo ir atidaro tik tuos puslapius, skyrius ir funkcijas, kuriuos gali matyti tavo lygis: nuorodos į kitus puslapius, projektai, gedimai ir atlikti darbai kortelėse rodomi tik turintiems tų puslapių teises, viršutinės juostos funkcijos – tik jei tas mygtukas tavo lygiui yra.' },
   { d:'2026-10-21 20:10', v:'v627', k:'chg', t:'Gidas be atnaujinimų ir Super Admin dalių', f:'Gide nebėra atnaujinimų istorijos ir naujausių pakeitimų, Sistemos skyriaus, Super Admin aprašymų bei Super Admin mygtukų. Kiekviena nauja ar pakeista funkcija aprašoma Gide tame pačiame atnaujinime.' },
   { d:'2026-10-21 19:30', v:'v626', k:'new', t:'Paieška: žmogaus ir daikto kortelės · Gidas', f:'Viršutinėje paieškoje (Ctrl K) paspaudus žmogų – narį, žmogų iš Žmonių ar vardą iš renginių lentelių – atsidaro visa informacija apie jį: kontaktai, grupės, lygiai, pultai, pastabos, būsimi ir buvę renginiai su pozicija (komanda, vadovas, vairuotojas), Bookingo skambučiai, pranešti gedimai ir atlikti darbai. Paspaudus daiktą – bendra informacija, ar laisvas pasirinktą dieną ir kas jį rezervavo, paskutiniai renginiai ir ateities renginiai, projektai, gedimai ir remontai. Naujas puslapis „Gidas“: visų programos dalių aprašymai (kas kur yra, kaip daroma, kas su kuo susiję), paieška tekstu, atsakymai į klausimus iš gido ir „Klausti AI pagal gidą“; prie puslapio – jo mygtukai, su kuo dalijasi duomenimis ir naujausi pakeitimai.' },
   { d:'2026-10-21 18:40', v:'v625', k:'fix', t:'Uždarymo ir kiti ikonų mygtukai – ikona per vidurį', f:'Visur, kur mygtuke yra tik ikona (✕ uždaryti ir kt.), ji dabar tiksliai per mygtuko vidurį; mygtukai su raide „×“ gavo tą pačią uždarymo ikoną.' },

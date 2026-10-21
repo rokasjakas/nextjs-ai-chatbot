@@ -7,7 +7,7 @@ s = open(sys.argv[1], encoding='utf-8').read()
 tabs = set(re.findall(r'class="rail-btn[^"]*"[^>]*data-tab="([a-z_]+)"', s))
 a = s.index('const GUIDE = ['); b = s.index('\n];', a)
 have = set(re.findall(r"\btab:'([a-z_]+)'", s[a:b]))
-skip = {'system', 'projects', 'guide'}   # Super Admin only; the old Rentman list (hidden); the guide itself
+skip = {'system', 'admin', 'projects', 'guide'}   # Sistema, Admin – not in the guide; the old Rentman list (hidden); the guide itself
 miss = sorted(tabs - have - skip)
 if miss: print('Gidas: nėra straipsnio puslapiams:', ', '.join(miss)); sys.exit(1)
 print('Gidas: visi', len(tabs - skip), 'puslapiai aprašyti')
