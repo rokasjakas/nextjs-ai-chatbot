@@ -51,5 +51,7 @@
 - Paieška (`gsSearch`, Ctrl K): people (members, Žmonės contacts, names only in events' crew) open `dzPerson(name)`, items open `dzItem(id)` –
   the dossier (events by crew / manager / driver, calls, gear issues, item works; item free on a day via `dzItemFree` = `grsCalc` logic).
 - Gidas (tab `guide`, `renderGuideTab`): hand-written articles in `GUIDE` (group, tab, sections, Q&A, related); buttons and shared-data
-  pages come from `site/sys-map.json`, news from `CHANGELOG`; „Klausti AI“ = ai-chat with the best articles as context. A new page or a
-  bigger feature gets its article / Q&A in `GUIDE` in the same release.
+  pages come from `site/sys-map.json`; „Klausti AI“ = ai-chat with the best articles as context. The guide shows NO changelog / updates
+  and NOTHING of the Super Admin (no Sistema article, no Super Admin text, Super Admin buttons filtered by `GD_SUP_UI`).
+  **Every release that adds or changes a feature updates its `GUIDE` article / Q&A in the same release** (the user asked for it);
+  run `python3 site-tools/guide_check.py site/index.html` at every release – it fails when a menu page has no article.

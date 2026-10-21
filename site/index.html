@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-d35b34WAvABR7D5f+DdpFYL1a6OftUg9OGlYeydzaIc=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-lupsPvwyd9y6iOVOyowCXmyaf54OVICSOKXV1G5H2wI=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -23579,7 +23579,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v626';
+const APP_VER = 'v627';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -42544,7 +42544,7 @@ function dzItemDraw(id){
 /* ============================================================
    TAB: Gidas – visų programos dalių aprašymai vienoje vietoje: kas kur yra, kaip daroma, kas su kuo susiję.
    Straipsniai (GUIDE) rašomi ranka; prie jų automatiškai pridedama: puslapio mygtukai ir su kuo jis dalijasi
-   duomenimis (sys-map.json), naujausi pakeitimai (CHANGELOG). Paieška tekstu per viską, klausimas – pirma
+   duomenimis (sys-map.json). Atnaujinimų ir Super Admin dalių (Sistema) gide nėra. Paieška tekstu per viską, klausimas – pirma
    atsakoma iš gido, „Klausti AI“ – ai-chat su rastais straipsniais kaip kontekstu.
    Straipsnis: { id, tab (puslapis, jei yra), g (grupė), t, d, s:[[antraštė, tekstas]], q:[[klausimas, atsakymas]], rel:[id], kw }
    Tekste eilutė, prasidedanti „• “, – sąrašo punktas; „→“ žymi kelią meniu.
@@ -42554,8 +42554,8 @@ const GUIDE = [
 { id:'about', g:'Pradžia', t:'Kaip veikia programa', d:'Event Solutions komandos programa: renginiai, žmonės, sandėlis, transportas, sąskaitos, chatas ir paštas vienoje vietoje. Ji veikia naršyklėje, telefone (Android, iPhone) ir kompiuterio programoje.',
   s:[['Iš ko ji susideda', 'Programa suskirstyta į puslapius. Kairiajame meniu (telefone – apatinėje juostoje ir „Meniu“) matai tik tuos puslapius, kuriuos tau leidžia tavo lygis. Pradžioje puslapiai sugrupuoti: Ofisas (renginiai, žmonės, pasiūlymai, sąskaitos…), Sandėlis (projektai, įranga, rūšiavimas, krovimas…) ir atskiros plytelės (Chatas, Transportas, Ataskaitos, Mano erdvė…).'],
      ['Duomenys bendri visiems', 'Viskas saugoma serveryje ir matoma kitiems iš karto: pakeitęs renginį, įrangą ar žinutę kiti pamato per kelias sekundes, perkrauti nereikia. Programa atsidaro iš įrenginio atminties akimirksniu, o naujausi duomenys atsisiunčia fone.'],
-     ['Kas ką mato', 'Ką gali matyti ir keisti, lemia tavo lygis (Super Admin, Admin+, Admin, Office, Projektų vadovas, Tech, Freelance, Runner) ir teisių lentelė. Plačiau – straipsnis „Lygiai ir teisės“.'],
-     ['Atnaujinimai', 'Nauja versija atsisiunčia pati; kai niekas neredaguojama, programa persikrauna į ją, kai į ją grįžti. Prireikus pasirodo „Programa atnaujinta – Perkrauti“.']],
+     ['Kas ką mato', 'Ką gali matyti ir keisti, lemia tavo lygis (Admin+, Admin, Office, Projektų vadovas, Tech, Freelance, Runner) ir teisių lentelė. Plačiau – straipsnis „Lygiai ir teisės“.'],
+     ['Nauja versija', 'Nauja versija atsisiunčia pati; kai niekas neredaguojama, programa persikrauna į ją, kai į ją grįžti. Prireikus pasirodo „Programa atnaujinta – Perkrauti“.']],
   q:[['Kur rasti tai, ko ieškau?', 'Spausk „Ieškoti“ viršuje (arba Ctrl K, arba „/“) ir rašyk – rasi puslapius, funkcijas, žmones, daiktus ir projektus. Arba šiame Gide įrašyk klausimą.'],
      ['Ar galiu dirbti su keliais puslapiais vienu metu?', 'Taip: kompiuteryje Pradžioje įjunk „Langai“ (2–4 darbo langai), kairiojo meniu apačioje „+“ – greitieji langai, arba antras programos langas kitame ekrane. Žr. „Valdymas ir langai“.']],
   rel:['ui','search','levels','flows'], kw:'programa apie pradzia kaip veikia' },
@@ -42755,7 +42755,7 @@ const GUIDE = [
 { id:'tools', tab:'tools', g:'Sandėlis', t:'Įrankiai: LED skaičiuoklė', d:'LED ekrano projektas kaip NovaStar SmartLCT: kabinetai, prievadai, jungimas, apkrova, galia ir svoris.',
   s:[['Redaktorius', 'Naujas projektas: procesorius, kabinetas, stulpeliai × eilės. Drobėje kabinetus dedi, tempi, žymi; pasirinkus prievadą signalą brėži pele (Esc arba tas pats prievadas – baigti) arba jungimo būdu. Viršyta apkrova rodoma raudonai. Vaizdas iš priekio / galo, PDF.'],
      ['Taisyklės', '650 000 px vienam Gigabit prievadui (60 Hz, 8 bit), mažėja didinant kadrų dažnį, perpus – 10/12 bit. Apkrova – stačiakampis aplink prievado kabinetus (UNICO Free Topology – tik kabinetai).'],
-     ['Bazė', 'Procesoriai: H serija, VX1000, VX1000 Pro, MCTRL4K; naują galima įkelti iš PDF specifikacijos. Kabinetus pridedi savo (visiems – Super Admin, arba tik šioje naršyklėje).'],
+     ['Bazė', 'Procesoriai: H serija, VX1000, VX1000 Pro, MCTRL4K; naują galima įkelti iš PDF specifikacijos. Kabinetus pridedi savo – jie išsaugomi šioje naršyklėje.'],
      ['Greitas skaičiavimas', 'Įrašai m² arba plotį × aukštį ir kabineto tipą – matai, kiek prievadų ir procesorių reikia.']],
   rel:['offers'], kw:'led skaiciuokle novastar smartlct prievadai kabinetai ekranas procesorius' },
 
@@ -42819,35 +42819,31 @@ const GUIDE = [
 
 /* ---------- Administravimas ---------- */
 { id:'levels', g:'Administravimas', t:'Lygiai ir teisės', d:'Kas ką mato ir gali keisti.',
-  s:[['Lygiai', '• Super Admin – viskas, Sistema, Atnaujinimai; veikia tik naršyklėje, kur įvestas slaptažodis.\n• Admin+ – tvirtina sąskaitas, išlaidas, nurašymus, prašymus.\n• Admin – vartotojai ir teisės, transporto pridėjimas, darbų planai.\n• Office – kontaktai, sąskaitų patikra, išlaidų (kuro) patikra, įkainiai.\n• Projektų vadovas – projektai, pasiūlymai, įkainiai.\n• Tech – peržiūri renginius, savo sąskaitos, savo laikas.\n• Freelance – tik savo renginiai, savo sąskaitos ir laikas.\n• Runner – savo sąskaitos, be Prašymų ir Pirkinių.'],
-     ['Teisių lentelė', 'Admin → teisės: kiekvienam puslapiui ir lygiui – nėra / peržiūra / keisti. Super Admin gali išjungti puslapius ir mygtukus visiems (Sistema → Įjungti / išjungti).']],
-  rel:['admin','system'], kw:'lygiai teises role admin office tech freelance runner super admin prieiga' },
+  s:[['Lygiai', '• Admin+ – tvirtina sąskaitas, išlaidas, nurašymus, prašymus.\n• Admin – vartotojai ir teisės, transporto pridėjimas, darbų planai.\n• Office – kontaktai, sąskaitų patikra, išlaidų (kuro) patikra, įkainiai.\n• Projektų vadovas – projektai, pasiūlymai, įkainiai.\n• Tech – peržiūri renginius, savo sąskaitos, savo laikas.\n• Freelance – tik savo renginiai, savo sąskaitos ir laikas.\n• Runner – savo sąskaitos, be Prašymų ir Pirkinių.'],
+     ['Teisių lentelė', 'Admin → teisės: kiekvienam puslapiui ir lygiui – nėra / peržiūra / keisti.']],
+  rel:['admin'], kw:'lygiai teises role admin office tech freelance runner prieiga' },
 
 { id:'admin', tab:'admin', g:'Administravimas', t:'Admin', d:'Vartotojų patvirtinimas, lygiai ir teisės, balsavimai, laiškų patikra, limitai.',
   s:[['Vartotojai', 'Nauji nariai laukia patvirtinimo; lygio keitimas; paieška.'],
      ['Teisės', 'Lentelė: puslapis × lygis.'],
      ['Balsavimai', 'Balsavimas QR kodu su rezultatų ekranu: nominacijos, užsklandos, laikmatis; Įjungti / Išjungti (išjungtas niekaip neapkrauna programos).'],
      ['Kita', 'Laiškų patikra (Resend), naudojimo limitai, chato GIF raktas.']],
-  rel:['levels','system'], kw:'admin vartotojai patvirtinti teises balsavimas qr limitai' },
+  rel:['levels'], kw:'admin vartotojai patvirtinti teises balsavimas qr limitai' },
 
-{ id:'system', tab:'system', g:'Administravimas', t:'Sistema (Super Admin)', d:'Programos žemėlapis, patikros ir klaidos, nustatymai be kodo, įjungti / išjungti, savi puslapiai, atsarginės kopijos.',
-  s:[['Žemėlapis ir klaidos', 'Visi puslapiai, lentelės, serverio funkcijos ir paslaugos kaip mazgai; „Patikrinti viską“; klaidų žurnalas iš visų narių su paaiškinimais.'],
-     ['Nustatymai', 'Puslapių pavadinimai, ikonos, meniu tvarka, išjungti puslapiai, rolių teisės, būsenų pavadinimai ir spalvos, laisvi sąrašai – su istorija ir grąžinimu. Atsarginės kopijos būsena, perdavimo dokumentas.'],
-     ['Įjungti / išjungti', 'Programos, puslapiai, jų mygtukai, polapiai, meniu mygtukai; „Rinktis puslapyje“.'],
-     ['Puslapiai (Konstruktorius)', 'Savi puslapiai kaip Figmoje: kadrai, popup, sąveikos, perėjimai, komponentai, paskelbimas rolėms. Esami puslapiai redaguojami vietoje („Redaguoti puslapius“).']],
-  rel:['levels','admin'], kw:'sistema super admin zemelapis klaidos nustatymai konstruktorius kopijos isjungti' },
 ];
 const GD = { id:'', q:'', map:null, mapP:null, ask:'', ai:'', aiBusy:false };
 const GD_STOP = new Set('kaip kur kas ar man mane reikia galima galiu yra mano su ir i is to ta tai apie kodel kada kiek noriu padaryti rasti matyti pamatyti ziureti pasiziureti sita sis sia kad o bet ne jei del prie per po uz nuo iki the a an to is how where what'.split(' '));
 // a word's stem (Lithuanian endings): „atostogų“ and „atostogos“ find each other
 const gdStem = w=>w.length > 5 ? w.slice(0, Math.max(5, w.length - 3)) : w;
 function gdWords(q){ return normalizeText(q||'').replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(w=>w && !GD_STOP.has(w)).map(gdStem); }
-function gdList(){ const sup = typeof sysCan==='function' && sysCan();
-  return GUIDE.filter(a=>sup || (a.id==='rfid' ? canView('inventory') : !a.tab || canView(a.tab))); }
+function gdList(){ return GUIDE.filter(a=>a.id==='rfid' ? canView('inventory') : !a.tab || canView(a.tab)); }
 function gdTxt(v){ return String(v||''); }
 // the text of an article, for searching and for the AI
 function gdFlat(a){ return [a.t, a.d, ...(a.s||[]).map(x=>x[0]+': '+x[1]), ...(a.q||[]).map(x=>'Klausimas: '+x[0]+' Atsakymas: '+x[1])].join('\n'); }
-function gdUi(a){ const p = a.tab && GD.map && GD.map.pages && GD.map.pages[a.tab]; return p ? [...new Set((p.ui||[]).map(u=>u[1]).filter(Boolean))] : []; }
+// Super Admin's own buttons are not shown in the guide
+const GD_SUP_UI = new Set(['ledDbEd', 'ledDbReset', 'ledDbOk', 'supLay', 'superBack', 'admUil', 'saBack', 'uilSave', 'clHdr', 'supHdr', 'relGo']);
+function gdUi(a){ const p = a.tab && GD.map && GD.map.pages && GD.map.pages[a.tab];
+  return p ? [...new Set((p.ui||[]).filter(u=>!GD_SUP_UI.has(u[0]) && !/super\s*admin/i.test(u.join(' '))).map(u=>u[1]).filter(Boolean))] : []; }
 function gdScore(a, words){
   if(!words.length) return 0;
   const f = { t:normalizeText(a.t), kw:normalizeText(a.kw||''), d:normalizeText(a.d), q:normalizeText((a.q||[]).map(x=>x[0]).join(' ')), all:normalizeText(gdFlat(a)+' '+gdUi(a).join(' ')) };
@@ -42863,13 +42859,6 @@ function gdQa(words, list){
     if(hit && hit >= Math.min(2, words.length)) out.push({ a, q, ans, s:s * hit / words.length }); }));
   return out.sort((x, y)=>y.s - x.s);
 }
-// the changelog entries about a topic (the "Reikia paleisti …" notes are left out)
-function gdNews(words, n){
-  if(!words.length || typeof CHANGELOG==='undefined') return [];
-  return CHANGELOG.map(x=>{ const t = normalizeText(x.t+' '+x.f); const hit = words.filter(w=>t.includes(w)).length; return { x, s:hit + (words.some(w=>normalizeText(x.t).includes(w)) ? 1 : 0), hit }; })
-    .filter(r=>r.hit >= Math.min(2, words.length)).sort((a, b)=>b.s - a.s || b.x.d.localeCompare(a.x.d)).slice(0, n).map(r=>r.x);
-}
-const gdNoSql = s=>String(s||'').replace(/\s*(Reikia|Supabase)?\s*(paleisti|paleisk)[^.]*\.(sql)?[^.]*\.?/gi, '').replace(/\s*Reikia atnaujinti[^.]*\./gi, '').trim();
 function gdBody(t){
   const lines = gdTxt(t).split('\n'); let html = '', ul = false;
   lines.forEach(l=>{ if(/^•\s/.test(l)){ if(!ul){ html += '<ul>'; ul = true; } html += '<li>'+esc(l.replace(/^•\s*/, ''))+'</li>'; }
@@ -42891,7 +42880,7 @@ function gdShared(tab){
   const P = GD.map && GD.map.pages || {}, me = P[tab]; if(!me) return [];
   const common = new Set(['profiles', 'app_config', 'app_config_log', 'app_release', 'app_state', 'role_permissions', 'game_scores']);
   const mine = new Set((me.tables||[]).filter(t=>!common.has(t)));
-  return Object.entries(P).filter(([k, p])=>k!==tab && canView(k)).map(([k, p])=>({ k, lab:p.label, n:(p.tables||[]).filter(t=>mine.has(t)).length })).filter(x=>x.n).sort((a, b)=>b.n - a.n).slice(0, 8);
+  return Object.entries(P).filter(([k, p])=>k!==tab && k!=='system' && canView(k)).map(([k, p])=>({ k, lab:p.label, n:(p.tables||[]).filter(t=>mine.has(t)).length })).filter(x=>x.n).sort((a, b)=>b.n - a.n).slice(0, 8);
 }
 function gdOpen(id){ GD.id = id || ''; GD.q = ''; if(currentTab==='guide') renderGuideTab(); else setTab('guide'); }
 function renderGuideTab(){
@@ -42938,7 +42927,6 @@ function gdArticleHtml(a){
   if(!a) return '';
   const can = a.tab ? canView(a.tab) : true, ui = gdUi(a), sh = a.tab ? gdShared(a.tab) : [];
   const rel = (a.rel||[]).map(id=>gdList().find(x=>x.id===id)).filter(Boolean);
-  const news = gdNews(gdWords(a.t + ' ' + (a.kw||'').split(' ').slice(0, 4).join(' ')), 5);
   return `<article class="gd-art">
     <div class="gd-crumb">${esc(a.g)}</div>
     <h2>${esc(a.t)}</h2>
@@ -42951,12 +42939,11 @@ function gdArticleHtml(a){
     ${rel.length ? `<section class="gd-s"><h3>Susiję skyriai</h3><div class="gd-chips">${rel.map(r=>`<button type="button" class="chip small-chip" data-gd="${esc(r.id)}">${esc(r.t)}</button>`).join('')}</div></section>` : ''}
     ${sh.length ? `<section class="gd-s"><h3>Naudoja tuos pačius duomenis</h3><p class="muted gd-small">Pakeitimai čia matomi ir šiuose puslapiuose:</p><div class="gd-chips">${sh.map(x=>{ const g = gdList().find(z=>z.tab===x.k); return `<button type="button" class="chip small-chip" ${g ? `data-gd="${esc(g.id)}"` : `data-gdtab="${esc(x.k)}"`}>${esc(x.lab)}</button>`; }).join('')}</div></section>` : ''}
     ${ui.length ? `<section class="gd-s"><h3>Mygtukai šiame puslapyje</h3><div class="gd-ui">${ui.map(u=>`<span>${esc(u)}</span>`).join('')}</div></section>` : ''}
-    ${news.length ? `<section class="gd-s"><h3>Naujausi pakeitimai</h3>${news.map(x=>`<details class="gd-qa"><summary><small>${esc(x.d.slice(0, 10).replace(/-/g, '.'))}</small> ${esc(x.t)}</summary><div><p>${esc(gdNoSql(x.f))}</p></div></details>`).join('')}</section>` : ''}
   </article>`;
 }
 function gdResultsHtml(list, words){
   const arts = list.map(a=>({ a, s:gdScore(a, words) })).filter(x=>x.s > 0).sort((x, y)=>y.s - x.s);
-  const qa = gdQa(words, list).slice(0, 4), news = gdNews(words, 4);
+  const qa = gdQa(words, list).slice(0, 4);
   const best = qa[0];
   return `<div class="gd-res">
     <h2>„${esc(GD.q.trim())}“</h2>
@@ -42971,7 +42958,6 @@ function gdResultsHtml(list, words){
     ${arts.length ? arts.slice(0, 12).map(({ a })=>{ const hit = (a.s||[]).find(([h, t])=>words.some(w=>normalizeText(h+' '+t).includes(w)));
       return `<button type="button" class="gd-hit" data-gd="${esc(a.id)}"><b>${esc(a.t)}</b><small>${esc(a.g)}</small><span>${hit ? esc(hit[0])+': '+esc(gdTxt(hit[1]).replace(/^•\s*/gm, '').slice(0, 220))+(gdTxt(hit[1]).length > 220 ? '…' : '') : esc(a.d)}</span></button>`; }).join('')
       : '<div class="muted">Gide tokių žodžių nėra. Pabandyk kitaip arba spausk „Klausti AI“.</div>'}
-    ${news.length ? `<h3>Iš atnaujinimų istorijos</h3>${news.map(x=>`<details class="gd-qa"><summary><small>${esc(x.d.slice(0, 10).replace(/-/g, '.'))}</small> ${esc(x.t)}</summary><div><p>${esc(gdNoSql(x.f))}</p></div></details>`).join('')}` : ''}
   </div>`;
 }
 function gdWireMain(box, words){
@@ -50768,6 +50754,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 20:10', v:'v627', k:'chg', t:'Gidas be atnaujinimų ir Super Admin dalių', f:'Gide nebėra atnaujinimų istorijos ir naujausių pakeitimų, Sistemos skyriaus, Super Admin aprašymų bei Super Admin mygtukų. Kiekviena nauja ar pakeista funkcija aprašoma Gide tame pačiame atnaujinime.' },
   { d:'2026-10-21 19:30', v:'v626', k:'new', t:'Paieška: žmogaus ir daikto kortelės · Gidas', f:'Viršutinėje paieškoje (Ctrl K) paspaudus žmogų – narį, žmogų iš Žmonių ar vardą iš renginių lentelių – atsidaro visa informacija apie jį: kontaktai, grupės, lygiai, pultai, pastabos, būsimi ir buvę renginiai su pozicija (komanda, vadovas, vairuotojas), Bookingo skambučiai, pranešti gedimai ir atlikti darbai. Paspaudus daiktą – bendra informacija, ar laisvas pasirinktą dieną ir kas jį rezervavo, paskutiniai renginiai ir ateities renginiai, projektai, gedimai ir remontai. Naujas puslapis „Gidas“: visų programos dalių aprašymai (kas kur yra, kaip daroma, kas su kuo susiję), paieška tekstu, atsakymai į klausimus iš gido ir „Klausti AI pagal gidą“; prie puslapio – jo mygtukai, su kuo dalijasi duomenimis ir naujausi pakeitimai.' },
   { d:'2026-10-21 18:40', v:'v625', k:'fix', t:'Uždarymo ir kiti ikonų mygtukai – ikona per vidurį', f:'Visur, kur mygtuke yra tik ikona (✕ uždaryti ir kt.), ji dabar tiksliai per mygtuko vidurį; mygtukai su raide „×“ gavo tą pačią uždarymo ikoną.' },
   { d:'2026-10-21 18:10', v:'v624', k:'chg', t:'Mažiau užklausų į Supabase: balsavimas ir paštas', f:'Balsavimo rezultatų ekranas ir balsavimo puslapis klausia serverio dažnai tik vykstant balsavimui; kai nieko nevyksta – vis rečiau, paslėptas langas – kas 30 s. Kai balsavimas išjungtas (Admin → Balsavimai), šie puslapiai ir valdymo nuoroda nebesiunčia jokių užklausų, kol jis vėl nebus įjungtas (reikia poll_enabled.sql). Pašto skaičius tikrinamas kas 3 min., atidarytas paštas – kas 45 s.' },
