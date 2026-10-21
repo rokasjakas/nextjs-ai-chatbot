@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-XmSs3ok87XguBmaOoqwFUXhg5dfSRdUaEKNMBGNvKRI=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dMKTarNE4E23IA4OqNE+tAZrbehIOLuZ7qOscA3AcBw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5646,6 +5646,10 @@ html.cp-editing .modal-backdrop{z-index:9500;} html.cp-editing #toast,body:has(.
 .cpx-pop.cpx-pass{pointer-events:none;} .cpx-pop.cpx-pass .cpx-pop-box{pointer-events:auto;}
 .cpx-pop.cpx-at-under .cpx-pop-box{box-shadow:0 12px 36px rgb(0 0 0 / .4);border-radius:10px;}
 .cp-hid{opacity:0 !important;pointer-events:none !important;}
+.sup-lock{position:fixed;inset:0;z-index:99990;display:flex;align-items:center;justify-content:center;padding:16px;background:rgb(0 0 0 / .78);backdrop-filter:blur(8px);}
+.sup-lock-box{width:min(420px,100%);padding:22px;border-radius:12px;background:var(--panel);border:1px solid var(--border-2);box-shadow:0 20px 60px rgb(0 0 0 / .5);}
+.sup-lock-box h3{margin:6px 0;} .sup-lock-box input{width:100%;margin-top:8px;box-sizing:border-box;}
+.sup-lock-ic svg{width:34px;height:34px;color:var(--accent);}
 /* Konstruktorius: the program's components (theme colours) */
 .cpt-comp{align-items:stretch;justify-content:stretch;} .cpt-comp > *{flex:1 1 auto;min-width:0;}
 .cpt-subnav{align-items:stretch;}
@@ -15188,8 +15192,9 @@ document.addEventListener('click', e=>{
 function applyAccessToNav(){
   try{ cfgApply(); }catch(e){}   // names, icons and order from Sistema → Nustatymai
   // „Atnaujinimai“ – only for the Super Admin
-  { const cl = document.getElementById('clHdr'); if(cl) cl.hidden = !isSuper(); }
-  { const sh = document.getElementById('supHdr'); if(sh){ sh.hidden = !isSuper(); sh.querySelector('.sup-hdr-i').innerHTML = slIcon('shield');
+  { const cl = document.getElementById('clHdr'); if(cl) cl.hidden = !(isSuper() && superNow()==='super'); }
+  { const sh = document.getElementById('supHdr'); if(sh){ sh.hidden = !(isSuper() && superNow()==='super' && superTrusted());   // other levels go back through „Grįžti į Super Admin“ (with the password)
+      sh.querySelector('.sup-hdr-i').innerHTML = slIcon('shield');
       sh.querySelector('.sup-hdr-t').textContent = superNow()==='super' ? 'Super Admin' : 'Kaip: '+((SUPER_VIEWS.find(x=>x[0]===superNow())||[,''])[1]); sh.onclick = ()=>supHdrOpen(sh); } }
   setTimeout(relCheck, 1500);
   document.querySelectorAll('.rail-btn[data-tab]').forEach(b=>{
@@ -20190,6 +20195,8 @@ async function renderInvoiceReply(token, a){
 
 // Super Admin tries the app as another level and comes back
 async function superSwitch(v){
+  if(!superTrusted()){ superLock(); return; }
+  if(superNow()!=='super' && !superFresh()){ superAskPass(()=>superSwitch(v)); return; }
   try{ sessionStorage.setItem(SUPER_SESS, '1'); }catch(e){}
   const role = ['super','plus','admin'].includes(v) ? 'admin' : v;
   const view = v==='plus' || v==='admin' ? v : '';
@@ -20210,10 +20217,50 @@ function superDefSet(v){ prefSet('superDefault', v==='super' ? null : v); superB
 const SUPER_SESS = 'esLvlSess';
 function superBoot(){
   if(!isSuper()) return;
+  if(!superTrusted()){ superLock(); return; }
   let seen = null; try{ seen = sessionStorage.getItem(SUPER_SESS); sessionStorage.setItem(SUPER_SESS, '1'); }catch(e){ return; }
   if(seen) return;
   const d = superDef() || 'super';
   if(superNow()!==d) superSwitch(d);
+}
+/* The Super Admin account on a shared computer: it works only where its password was typed (this browser is then
+   trusted), and coming back from another level („Kaip: Tech“) asks for the password again – a member who finds
+   it signed in on the warehouse computer can't get the Super Admin rights. */
+function superTrusted(){ try{ return !!teamMe() && localStorage.getItem('esSupTrust')===teamMe(); }catch(e){ return false; } }
+function superFresh(){ try{ return Date.now() - (+sessionStorage.getItem('esSupOk')||0) < 15*60000; }catch(e){ return false; } }
+async function superPassOk(pass){
+  const email = (ACCESS.profile||{}).email; if(!email || !pass) return false;
+  const r = await getSb().auth.signInWithPassword({ email, password:pass });
+  if(r.error) return false;
+  try{ localStorage.setItem('esSupTrust', teamMe()); sessionStorage.setItem('esSupOk', String(Date.now())); }catch(e){}
+  return true;
+}
+// asks for the Super Admin password, then goes on
+function superAskPass(then, why){
+  openModal(`<h3>${slIcon('lock')} Super Admin slaptažodis</h3><p class="section-sub">${esc(why || 'Grįžti į Super Admin ar keisti lygį galima tik įvedus slaptažodį.')}</p>
+    <form id="supPwF"><input type="password" id="supPw" autocomplete="current-password" placeholder="Slaptažodis" style="width:100%;">
+    <div class="auth-error" id="supPwE" hidden></div><div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button type="submit" class="btn primary small" id="supPwGo">Patvirtinti</button></div></form>`);
+  const inp = document.getElementById('supPw'); setTimeout(()=>inp.focus(), 50);
+  document.getElementById('supPwF').onsubmit = async e=>{ e.preventDefault(); const b = document.getElementById('supPwGo'); b.disabled = true;
+    const ok = await superPassOk(inp.value); b.disabled = false;
+    if(!ok){ const er = document.getElementById('supPwE'); er.hidden = false; er.textContent = 'Neteisingas slaptažodis.'; inp.select(); return; }
+    closeModal(); then && then(); };
+}
+// a browser where this account's password was never typed: nothing works until it is (or the member signs out)
+function superLock(){
+  if(document.getElementById('supLock')) return;
+  const o = document.createElement('div'); o.id = 'supLock'; o.className = 'sup-lock';
+  o.innerHTML = `<form class="sup-lock-box" id="supLockF"><div class="sup-lock-ic">${slIcon('lock')}</div><h3>Super Admin paskyra</h3>
+    <p class="section-sub">Šiame įrenginyje prisijungta Super Admin paskyra (${esc((ACCESS.profile||{}).email||'')}). Tęsti galima tik įvedus jos slaptažodį. Jei tai ne tavo paskyra – atsijunk ir prisijunk savo.</p>
+    <input type="password" id="supLockPw" autocomplete="current-password" placeholder="Slaptažodis"><div class="auth-error" id="supLockE" hidden></div>
+    <div class="row" style="gap:8px;justify-content:space-between;margin-top:12px;"><button type="button" class="btn small" id="supLockOut">Atsijungti</button><button type="submit" class="btn primary small" id="supLockGo">Patvirtinti</button></div></form>`;
+  document.body.appendChild(o); document.documentElement.classList.add('pop-lock');
+  setTimeout(()=>{ const i = document.getElementById('supLockPw'); if(i) i.focus(); }, 80);
+  document.getElementById('supLockOut').onclick = async ()=>{ try{ await getSb().auth.signOut(); }catch(e){} location.reload(); };
+  document.getElementById('supLockF').onsubmit = async e=>{ e.preventDefault(); const b = document.getElementById('supLockGo'), inp = document.getElementById('supLockPw'); b.disabled = true;
+    const ok = await superPassOk(inp.value); b.disabled = false;
+    if(!ok){ const er = document.getElementById('supLockE'); er.hidden = false; er.textContent = 'Neteisingas slaptažodis.'; inp.select(); return; }
+    o.remove(); document.documentElement.classList.remove('pop-lock'); try{ applyAccessToNav(); }catch(e){ superBoot(); } };
 }
 function superPickHtml(id){ const now = superNow(); return `<select id="${id}">${SUPER_VIEWS.map(([v,l])=>`<option value="${v}" ${now===v?'selected':''}>${l}</option>`).join('')}</select>`; }
 // the Admin page while the Super Admin looks at the app as another level
@@ -20229,7 +20276,7 @@ function renderSuperOnlyAdmin(){
 }
 function superBar(){
   let bar = document.getElementById('superBar');
-  if(!isSuper() || superNow()==='super' || superNow()===superDef()){ if(bar) bar.remove(); return; }
+  if(!isSuper() || superNow()==='super' || !superTrusted()){ if(bar) bar.remove(); return; }
   if(!bar){ bar = document.createElement('div'); bar.id = 'superBar'; bar.className = 'super-bar'; document.body.appendChild(bar); }
   bar.innerHTML = `<span>👁 Žiūri kaip <b>${esc((SUPER_VIEWS.find(x=>x[0]===superNow())||[,roleLabel(ACCESS.role)])[1])}</b></span><button type="button" class="btn small primary" id="superBack">Grįžti į Super Admin</button>`;
   document.getElementById('superBack').onclick = ()=>superSwitch('super');
@@ -22898,6 +22945,8 @@ function edPop(el){
 new MutationObserver(muts=>{ if(muts.some(m=>!(m.target.closest && m.target.closest('.ed-ui')))) edSoon(); }).observe(document.documentElement, { childList:true, subtree:true });
 // the header button: which level the Super Admin works in, and the layout editor
 function supHdrOpen(btn){
+  if(!superTrusted()){ superLock(); return; }
+  if(superNow()!=='super' && !superFresh()){ superAskPass(()=>supHdrOpen(btn), 'Šis langas – tik Super Admin. Įvesk slaptažodį.'); return; }
   const now = superNow();
   const p = hdrPop('supPop', 'Super Admin', `<div class="sup-pop">
       <div class="section-sub" style="margin:0 0 6px;">Kuriuo lygiu dirbti (lieka ir prisijungus iš naujo):</div>
@@ -22908,10 +22957,13 @@ function supHdrOpen(btn){
       <button type="button" class="btn small ${uilCan() ? 'primary' : ''}" id="supEd" style="width:100%;margin-bottom:6px;" ${uilCan() ? '' : 'disabled'}>${slIcon('pencil')} ${ED.on ? 'Baigti redaguoti puslapius' : 'Redaguoti puslapius (pavadinimai, ikonos, vietos, suskleidimas)'}</button>
       <button type="button" class="btn small" id="supLay" style="width:100%;" ${uilCan() ? '' : 'disabled'}>${slIcon('palette')} Išdėstymas: pavadinimai, ikonos, grupės, tvarka</button>
       ${uilCan() ? '' : '<div class="section-sub" style="margin:6px 0 0;">Redaguoti gali tik būdamas Super Admin.</div>'}
+      ${uilCan() ? `<button type="button" class="btn small" id="supOut" style="width:100%;margin-top:6px;" title="Visuose kituose kompiuteriuose ir telefonuose ši paskyra bus atjungta">${slIcon('logout')} Atjungti kituose įrenginiuose</button>` : ''}
     </div>`, btn);
   if(!p) return;
   p.querySelectorAll('[data-lv]').forEach(b=>b.onclick = ()=>{ if(b.dataset.lv===now){ p.remove(); return; } p.remove(); superSwitch(b.dataset.lv); });
   const lay = p.querySelector('#supLay'); if(lay) lay.onclick = ()=>{ p.remove(); uilEditor(); };
+  const so = p.querySelector('#supOut'); if(so) so.onclick = async ()=>{ p.remove(); if(!await uiAsk('Atjungti šią paskyrą visuose kituose įrenginiuose? Čia liksi prisijungęs.', { yes:'Atjungti', no:'Atšaukti' })) return;
+    const { error } = await getSb().auth.signOut({ scope:'others' }); toast(error ? 'Nepavyko: '+error.message : 'Kituose įrenginiuose atjungta (per kelias minutes).'); };
   const ed = p.querySelector('#supEd'); if(ed) ed.onclick = ()=>{ p.remove(); edToggle(!ED.on); };
   const df = p.querySelector('#supDef'); if(df) df.onchange = ()=>{ superDefSet(df.value); };
   const af = p.querySelector('#supAf'); if(af) af.onchange = ()=>{ const L = JSON.parse(JSON.stringify(uil())); if(af.checked) delete L.noAutoFold; else L.noAutoFold = true; STATE.uiLayout = L; saveState(); AF.done.clear(); edSoon(); toast(af.checked ? 'Visur pradžioje suskleista – galioja visiems.' : 'Automatinis suskleidimas išjungtas.'); };
@@ -23393,7 +23445,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v618';
+const APP_VER = 'v619';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -49800,6 +49852,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 12:20', v:'v619', k:'fix', t:'Super Admin paskyra apsaugota slaptažodžiu, priverstinis atnaujinimas', f:'Super Admin paskyra veikia tik naršyklėje, kurioje įvestas jos slaptažodis – kitur rodomas užraktas (slaptažodis arba atsijungti). Grįžti iš kito lygio (pvz. „Kaip: Tech“) ar perjungti lygį galima tik su slaptažodžiu. Super Admin mygtukas ir „Atnaujinimai“ rodomi tik dirbant Super Admin lygiu. Naujas mygtukas „Atjungti kituose įrenginiuose“. Šis atnaujinimas įsijungia pats – atidaryti langai persikrauna.' },
   { d:'2026-10-21 10:40', v:'v618', k:'new', t:'Konstruktorius kaip Figma: sąveikos, popup nustatymai, išmanūs perėjimai, komponentai, polapiai', f:'Sistema → Puslapiai: naujas puslapis pradedamas nuo šablono (tuščias, su polapiais, skydelis, su popup langais). Dešinėje – Dizainas ir Prototipas. Sąveika: kada (paspaudus, kol pelė virš, kol laikoma, užvedus / nuvedus, klavišu, po laiko) → ką daryti (eiti į polapį, atgal, atidaryti / pakeisti / uždaryti popup, nuslinkti, parodyti / paslėpti elementą, programos puslapis ar funkcija, nuoroda, pranešimas) → kaip (akimirksniu, išblukimas, išmanus perėjimas, įvažiuoja, išvažiuoja, pastumia, užslenka, nuslenka; kryptis, greitėjimas, trukmė). Sujungti galima tempiant taškelį ant kadro. Popup – vieta (centre, šone, po mygtuku), uždarymas paspaudus šalia, patamsinimas. Polapių juosta, programos komponentai ir spalvos pagal temą, teksto stiliai, gradientai, šešėliai; keli pažymėti, lygiavimas, grupės, kopijavimas; Schema su visomis jungtimis; pagalba „?“.' },
   { d:'2026-10-21 07:50', v:'v617', k:'fix', t:'LED skaičiuoklė: apkrova kaip SmartLCT, jungimo pabaiga Esc', f:'Prievado apkrova dabar visada skaičiuojama pagal stačiakampį, apimantį prievado kabinetus (kaip SmartLCT ir UNICO): 5 kabinetai įstrižai krauna visus 5 × 5. Tik UNICO „Free Topology“ skaičiuoja vien kabinetus. Jungimą ranka baigti – Esc arba dar kartą paspaudus tą patį prievadą; tada vėl galima perdėlioti kabinetus.' },
   { d:'2026-10-21 07:10', v:'v616', k:'fix', t:'Inventorizacija: „Sulyginti su sandėliu“ vėl slenka žemyn', f:'Inventorizacijoje atidarius „Sulyginti su sandėliu“ (ir „Palyginti inventorizacijas“) telefonu ar planšete puslapio nebuvo galima nuslinkti žemyn. Dabar lentelė slenka savo lange, o pasiekus jos galą – slenka visas puslapis.' },

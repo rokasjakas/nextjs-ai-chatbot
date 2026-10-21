@@ -5,7 +5,7 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v618';
+const CACHE = 'es-app-v619';
 const SHELL = ['./vendor/supabase-2.117.2.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png', './fonts/Barlow-Regular.woff2', './fonts/Barlow-Medium.woff2'];
 
 // Cloudflare Pages redirects /index.html to /: a redirected response can't answer a page load (the browser shows
@@ -49,8 +49,13 @@ async function pageFor(c){
 self.addEventListener('install', e=>{
   e.waitUntil(caches.open(CACHE).then(c=>Promise.all([pageFor(c), c.addAll(SHELL.map(u=>new Request(u, { cache:'reload' })))])).then(()=>self.skipWaiting()));
 });
+// a release that must not wait for „Atnaujinti“ (a security fix): every open window that gets the new page reloads at once.
+// It names its own version, so the next release (a new CACHE) does not force anything.
+const FORCE_FOR = 'es-app-v619';
 self.addEventListener('activate', e=>{
-  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE && k!==META).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE && k!==META).map(k=>caches.delete(k)))).then(()=>self.clients.claim())
+    .then(()=>FORCE_FOR===CACHE && metaGet().then(m=>m.gated ? null : self.clients.matchAll({ type:'window' }).then(L=>Promise.all(L.map(c=>c.navigate(c.url).catch(()=>{}))))))
+    .catch(()=>{}));
 });
 // the version was released to everyone (or this is the Super Admin): take the newest page now
 self.addEventListener('message', e=>{

@@ -20,6 +20,10 @@
   (smart animate matches layers by `k`, kept on frame duplicate / paste to another frame); old single `act` is read by `cpIa`.
   Design uses theme tokens `var:<name>` (`CP_TOK`), text styles `CP_TS`, button kinds, and the program's components `CP_COMPS`
   (`cpk-*` CSS); templates `CP_TPL`; overview `cpEdMap`; help `cpEdHelp`. `cpDo`/`cpPopup` keep their old signatures (used by „Redaguoti puslapius“).
+- Super Admin account safety: it works only in a browser where its password was typed (`superTrusted`, localStorage `esSupTrust`,
+  else `superLock` full-screen); from another level („Kaip: Tech“) going back / switching asks the password (`superAskPass`, 15 min
+  `superFresh`). The header shield button and „Atnaujinimai“ show only in the Super Admin level. A release that must reach open windows
+  at once sets `FORCE_FOR` in `site/sw.js` to its own CACHE name (windows reload when the worker activates; later releases are not forced).
 - Existing pages are edited in place (Super Admin → „Redaguoti puslapius“ or Sistema → Puslapiai → Esami programos puslapiai):
   rules in `STATE.uiLayout.ed[scope]` keyed by the element's name (`edTextKey`) – t name, i icon, o order, f fold, h hidden,
   s look, a click (`edRunAct`), n inserted elements (`edIns`). Renaming a button's text in code breaks its rules – keep names.
