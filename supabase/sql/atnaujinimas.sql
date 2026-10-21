@@ -12807,3 +12807,19 @@ grant select, insert, update, delete on public.app_config, public.app_config_log
 grant usage, select on sequence public.app_config_log_id_seq to service_role;
 grant select, insert, update, delete on public.custom_pages, public.custom_pages_log to service_role;
 grant usage, select on sequence public.custom_pages_log_id_seq to service_role;
+
+
+-- ===== poll_enabled.sql =====
+-- ============================================================
+-- Balsavimas: ar jis įjungtas (Admin → Balsavimai → Įjungti / Išjungti)
+--  * poll_enabled() – balsavimo, rezultatų ekrano ir valdymo puslapiai paklausia vieną kartą atsidarę;
+--    kai išjungta, jie nebesiunčia jokių užklausų, kol balsavimas vėl nebus įjungtas
+--    (sutaupo Supabase srautą ir žurnalus – ekranas gali likti atidarytas paromis)
+-- Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
+-- ============================================================
+create or replace function public.poll_enabled() returns boolean
+  language sql stable security definer set search_path = public as $$
+  select coalesce((select (data->>'pollOn')::boolean from public.app_state where key = 'uiSettings'), false)
+$$;
+revoke all on function public.poll_enabled() from public;
+grant execute on function public.poll_enabled() to anon, authenticated;

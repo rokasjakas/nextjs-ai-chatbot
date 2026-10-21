@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-EXc+pAlzN8hEtknBcffzKhHb4LN4hfgL0ElJqi7Pda8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-8yjAtuQmH+ue3MC3jcTJg95WNjDnOoLTujz1/ugKO50=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -19004,6 +19004,7 @@ async function pollEdLinkDraw(action){
 // ?balsavimai=<raktas>
 async function renderPollEditorLink(key){
   POLL.key = key;
+  if(!(await pollEnabled())){ pollOffWait(()=>{ document.getElementById('guestView').innerHTML = '<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Balsavimas išjungtas.<small>Įjunk jį programoje: Admin → Balsavimai.</small></div></div></div>'; }); return; }
   const el = document.getElementById('guestView'); el.classList.add('poll-edv');
   document.title = 'Balsavimų valdymas · Event Solutions';
   el.innerHTML = `<div class="poll-edpage"><div class="poll-edtop"><div class="brand-cube" role="img" aria-label="Event Solutions"></div><b>EVENT SOLUTIONS</b><span>Balsavimų valdymas</span></div><div id="pollEdRoot"><div class="card empty-state">Kraunama…</div></div></div>`;
@@ -19059,7 +19060,7 @@ async function pollManager(root, admin, set){
   pollSideDraw(); pollPaneDraw();
   pollStopTick();
   POLL.tick = setInterval(()=>{ if(!document.getElementById('pollEd')){ pollStopTick(); return; } pollDrawCtl(true); pollSideTick(); }, 1000);
-  POLL.resT = setInterval(()=>{ if(!document.getElementById('pollEd')){ pollStopTick(); return; } pollLoadRes(); }, 2000);
+  POLL.resT = setInterval(()=>{ if(!document.getElementById('pollEd')){ pollStopTick(); return; } if(document.visibilityState==='visible') pollLoadRes(); }, 2000);
   POLL.listT = setInterval(()=>{ if(!document.getElementById('pollEd')){ pollStopTick(); return; } if(document.visibilityState==='visible') pollListRefresh(); }, 6000);
 }
 function pollStopTick(){ clearInterval(POLL.tick); clearInterval(POLL.resT); clearInterval(POLL.listT); POLL.tick = POLL.resT = POLL.listT = null; }
@@ -19750,10 +19751,8 @@ async function renderPollVote(token){
   document.title = 'Balsavimas · Event Solutions';
   // the permanent QR: keeps asking which question runs now (the next one appears by itself);
   // started first, so a slow first answer never leaves the page waiting
-  PV.poll = setInterval(()=>{ if(document.visibilityState==='visible') pollVoteLoad(); }, 3000);
+  pollLoop(()=>document.visibilityState==='visible' ? pollVoteLoad() : null, ()=>PV.d, ()=>PV.d ? JSON.stringify([PV.d.state, PV.d.poll, PV.d.round, PV.d.question]) : '', 3000, ()=>pollVoteMsg('Balsavimas šiuo metu išjungtas.'));
   PV.t = setInterval(pollVoteTick, 250);
-  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') pollVoteLoad(); });
-  pollVoteLoad();
 }
 async function pollVoteLoad(){
   if(PV.busy && Date.now() - PV.busy < 8000) return;
@@ -19949,12 +19948,46 @@ async function renderPollResults(token){
   el.innerHTML = `<div class="poll-rs-wrap"><div class="poll-rs" id="pollStage"><div class="poll-rs-in"><div class="poll-msg">Kraunama…</div></div></div></div>`;
   document.title = 'Rezultatai · Event Solutions';
   window.addEventListener('resize', pollResFit);
-  setInterval(()=>{ pollResLoad(); }, 1500);
+  pollLoop(pollResLoad, ()=>PR.d, ()=>PR.key, 1500, ()=>{ const i = document.querySelector('.poll-rs-in'); if(i) i.innerHTML = '<div class="poll-msg">Balsavimas išjungtas.</div>'; });
   setInterval(pollResTick, 250);
   // the screen stays open for hours: when a new version of the app is out, it reloads itself (fading out first)
   setInterval(async ()=>{ try{ const t = await (await fetch('sw.js', { cache:'no-store' })).text(), m = t.match(/es-app-(v\d+)/);
     if(m && m[1]!==APP_VER){ const i = document.querySelector('.poll-rs-in'); if(i) i.classList.add('pl-fade'); setTimeout(()=>location.reload(), 1200); } }catch(e){} }, 60000);
-  pollResLoad();
+}
+/* A results screen or a voter's page is often left open for hours or days. While a question runs it asks every
+   1.5–3 s; when nothing has changed for a while it asks less and less often (an operator's button wakes it within
+   a few seconds during an event), and a hidden page only every 30 s – each ask is a request and a log line on Supabase. */
+// turned off (Admin → Balsavimai → Išjungti; poll_enabled.sql): the page sends nothing until it is turned on again –
+// it only asks once more when it comes back to the screen (and reloads when it is on). No SQL yet: works as before.
+async function pollEnabled(){
+  const sb = await pollSbReady(); if(!sb) return true;
+  const r = await pollTimeout(sb.rpc('poll_enabled', {}), 8000, { data:null, error:{ message:'timeout' } });
+  return r.error || r.data==null ? true : !!r.data;
+}
+function pollOffWait(show){
+  show();
+  const back = async ()=>{ if(document.visibilityState!=='visible') return; if(await pollEnabled()){ document.removeEventListener('visibilitychange', back); location.reload(); } };
+  document.addEventListener('visibilitychange', back);
+}
+async function pollLoop(load, data, key, fast, offMsg){
+  if(offMsg && !(await pollEnabled())){ pollOffWait(offMsg); return; }
+  let last = null, changed = Date.now(), checked = Date.now(), stop = false;
+  const next = ()=>{
+    const d = data() || {}, k = key(); if(k!==last){ last = k; changed = Date.now(); }
+    if(document.visibilityState!=='visible') return 30000;
+    if(d.state==='live' || d.state==='waiting') return fast;
+    const quiet = Date.now() - changed;
+    return quiet < 20*60000 ? Math.max(fast, 2000) : quiet < 2*3600000 ? 8000 : 20000;
+  };
+  // the next ask does not wait for the drawing; the busy flag of load() keeps two from running at once
+  const tick = async ()=>{
+    if(stop) return;
+    // while on: every 5 minutes, is it still on?
+    if(offMsg && Date.now() - checked > 5*60000){ checked = Date.now(); if(!(await pollEnabled())){ stop = true; pollOffWait(offMsg); return; } }
+    Promise.resolve(load()).catch(()=>{}); setTimeout(tick, next());
+  };
+  document.addEventListener('visibilitychange', ()=>{ if(!stop && document.visibilityState==='visible'){ changed = Date.now(); load(); } });
+  tick();
 }
 async function pollResLoad(){
   if(PR.busy && Date.now() - PR.busy < 8000) return;
@@ -23468,7 +23501,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v623';
+const APP_VER = 'v624';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -30759,11 +30792,11 @@ async function mailPoll(soft){
   if(!canView('mail') || !getSb()) return;
   if(soft && MAIL.polled && Date.now()-MAIL.polled < 30000) return;
   MAIL.polled = Date.now();
-  if(!MAIL.timer) MAIL.timer = setInterval(()=>{ if(document.visibilityState==='visible') mailPoll(); }, 60000);
+  if(!MAIL.timer) MAIL.timer = setInterval(()=>{ if(document.visibilityState==='visible') mailPoll(); }, 3*60000);
   // the mail page open: new letters are checked every 20 s (whether or not the server checks every minute)
   if(!MAIL.fastTimer) MAIL.fastTimer = setInterval(()=>{
     if(document.visibilityState==='visible' && currentTab==='mail' && MAIL.idx!==false && !MAIL.results && (MAIL.data||{}).connected) mlSync(MAIL.folder==='inbox' ? 'inbox' : MAIL.folder, true);
-  }, 20000);
+  }, 45000);
   // the letter list kept in the database: a quick count, no mail-server login
   if(MAIL.idx!==false){
     const st = await mlDbState('inbox');
@@ -30771,7 +30804,7 @@ async function mailPoll(soft){
       mlLive();
       const n = await mlDbUnseen(); mailSetUnseen(n!=null ? n : (st.unseen||0));
       // no minute-by-minute sync on the server (pg_cron): keep it fresh from here
-      if(!st.synced_at || Date.now() - Date.parse(st.synced_at) > 60000) mlSync('inbox');
+      if(!st.synced_at || Date.now() - Date.parse(st.synced_at) > 3*60000) mlSync('inbox');
       return;
     }
   }
@@ -49993,6 +50026,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 18:10', v:'v624', k:'chg', t:'Mažiau užklausų į Supabase: balsavimas ir paštas', f:'Balsavimo rezultatų ekranas ir balsavimo puslapis klausia serverio dažnai tik vykstant balsavimui; kai nieko nevyksta – vis rečiau, paslėptas langas – kas 30 s. Kai balsavimas išjungtas (Admin → Balsavimai), šie puslapiai ir valdymo nuoroda nebesiunčia jokių užklausų, kol jis vėl nebus įjungtas (reikia poll_enabled.sql). Pašto skaičius tikrinamas kas 3 min., atidarytas paštas – kas 45 s.' },
   { d:'2026-10-21 17:10', v:'v623', k:'chg', t:'Įjungti / išjungti: paryškinta eilutė po pele ar pirštu', f:'Sistema → Įjungti / išjungti: eilutė, ant kurios yra pelė ar pirštas, paryškinama; išjungtos eilutės rausvos ir perbrauktos; jungiklį perjungia ir paspaudimas bet kur eilutėje.' },
   { d:'2026-10-21 16:40', v:'v622', k:'new', t:'Sistema → Įjungti / išjungti', f:'Nauja Sistemos skiltis: jungikliais įjungi ar išjungi programas (Įrankiai), puslapius, jų mygtukus ir polapius, viršutinės juostos, kairiojo meniu ir dešiniojo skydelio mygtukus. „Rinktis puslapyje“ – spausk bet kurį mygtuką, polapį ar kortelę ir jis išsijungia visiems (Atšaukti paskutinį, Esc – baigti). Išjungta dalis dingsta nariams, Super Admin ją mato blankią ir gali įjungti atgal.' },
   { d:'2026-10-21 15:50', v:'v621', k:'fix', t:'Sistema: bolt_trips ir mail-in klaidingai rodyti kaip neveikiantys', f:'Sistemos patikrinimas lenteles, kurių dalis stulpelių specialiai apsaugota (bolt_trips kainos), nebelaiko klaida, o savo bandymų nebeįrašo į klaidų žurnalą. mail-in funkcija dabar atsako į patikrinimą iš naršyklės.' },
