@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/UZMJoBo6RF+vFpLDs8/7QZ1U/wU7r1MbReAn9EIQBM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-JdQBJn7BxFhxdnf2X2dzdf7x0+EKwMIWHw6dw0dJsTQ=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -13562,7 +13562,8 @@ async function sysFlush(){
 }
 // a failed answer from the database / a server function: read its message (a copy – the app still reads the original)
 function sysSeeResponse(url, res){
-  if(!res || res.ok || res.status===406 || /\/rest\/v1\/app_errors/.test(url)) return;
+  // limit=0: Sistema's own probes („is the table there“) – they show their answer themselves, not in the error log
+  if(!res || res.ok || res.status===406 || /\/rest\/v1\/app_errors/.test(url) || /[?&]limit=0(&|$)/.test(url)) return;
   const node = sysNodeOfUrl(url); if(!node || (node==='auth' && res.status===400)) return;
   res.clone().text().then(tx=>{
     let j = null; try{ j = JSON.parse(tx); }catch(_){}
@@ -23445,7 +23446,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v620';
+const APP_VER = 'v621';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -46785,8 +46786,12 @@ async function sysCheckAll(){
     const [t, name] = id.split(':'), t0 = performance.now();
     try{
       if(t==='table'){
-        const { error } = await sb.from(name).select('*').limit(0);
-        if(error){ const ex = sysExplain({ kind:'api', node:id, code:error.code, msg:error.message, status:error.status||0 }); SYS.checks[id] = { st:/^(42501)$/.test(error.code) ? 'warn' : 'err', msg:ex.why.replace(/<[^>]+>/g, ''), at:Date.now() }; }
+        let { error } = await sb.from(name).select('*').limit(0), part = false;
+        // a table with columns kept from the members on purpose (bolt_trips.amount – prices only through a function):
+        // „*“ is refused, but the table itself is there – ask for its id alone
+        if(error && error.code==='42501'){ const r = await sb.from(name).select('id').limit(0); if(!r.error){ error = null; part = true; } }
+        if(part) SYS.checks[id] = { st:'ok', msg:'Pasiekiama; dalis stulpelių apsaugota teisėmis – taip numatyta ('+Math.round(performance.now()-t0)+' ms)', at:Date.now() };
+        else if(error){ const ex = sysExplain({ kind:'api', node:id, code:error.code, msg:error.message, status:error.status||0 }); SYS.checks[id] = { st:/^(42501)$/.test(error.code) ? 'warn' : 'err', msg:ex.why.replace(/<[^>]+>/g, ''), at:Date.now() }; }
         else SYS.checks[id] = { st:'ok', msg:'Pasiekiama ('+Math.round(performance.now()-t0)+' ms)', at:Date.now() };
       } else if(t==='fn'){
         const r = await fetch(SUPABASE_URL.replace(/\/$/, '')+'/functions/v1/'+name, { method:'OPTIONS', headers:{ apikey:SUPABASE_KEY, Authorization:'Bearer '+(token||SUPABASE_KEY) } });
@@ -49852,6 +49857,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 15:50', v:'v621', k:'fix', t:'Sistema: bolt_trips ir mail-in klaidingai rodyti kaip neveikiantys', f:'Sistemos patikrinimas lenteles, kurių dalis stulpelių specialiai apsaugota (bolt_trips kainos), nebelaiko klaida, o savo bandymų nebeįrašo į klaidų žurnalą. mail-in funkcija dabar atsako į patikrinimą iš naršyklės.' },
   { d:'2026-10-21 15:20', v:'v620', k:'fix', t:'Programa vėl atsidaro telefone (juodas ekranas po v619)', f:'v619 priverstinis atnaujinimas telefone užstrigdavo: naujoji versija laukė, kol persikraus langas, o langas laukė naujosios versijos – programėlė rodė juodą ekraną. Priverstinis perkrovimas išjungtas ir pataisytas.' },
   { d:'2026-10-21 12:20', v:'v619', k:'fix', t:'Super Admin paskyra apsaugota slaptažodžiu, priverstinis atnaujinimas', f:'Super Admin paskyra veikia tik naršyklėje, kurioje įvestas jos slaptažodis – kitur rodomas užraktas (slaptažodis arba atsijungti). Grįžti iš kito lygio (pvz. „Kaip: Tech“) ar perjungti lygį galima tik su slaptažodžiu. Super Admin mygtukas ir „Atnaujinimai“ rodomi tik dirbant Super Admin lygiu. Naujas mygtukas „Atjungti kituose įrenginiuose“. Šis atnaujinimas įsijungia pats – atidaryti langai persikrauna.' },
   { d:'2026-10-21 10:40', v:'v618', k:'new', t:'Konstruktorius kaip Figma: sąveikos, popup nustatymai, išmanūs perėjimai, komponentai, polapiai', f:'Sistema → Puslapiai: naujas puslapis pradedamas nuo šablono (tuščias, su polapiais, skydelis, su popup langais). Dešinėje – Dizainas ir Prototipas. Sąveika: kada (paspaudus, kol pelė virš, kol laikoma, užvedus / nuvedus, klavišu, po laiko) → ką daryti (eiti į polapį, atgal, atidaryti / pakeisti / uždaryti popup, nuslinkti, parodyti / paslėpti elementą, programos puslapis ar funkcija, nuoroda, pranešimas) → kaip (akimirksniu, išblukimas, išmanus perėjimas, įvažiuoja, išvažiuoja, pastumia, užslenka, nuslenka; kryptis, greitėjimas, trukmė). Sujungti galima tempiant taškelį ant kadro. Popup – vieta (centre, šone, po mygtuku), uždarymas paspaudus šalia, patamsinimas. Polapių juosta, programos komponentai ir spalvos pagal temą, teksto stiliai, gradientai, šešėliai; keli pažymėti, lygiavimas, grupės, kopijavimas; Schema su visomis jungtimis; pagalba „?“.' },
