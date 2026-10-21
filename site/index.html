@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-rUqy2HLSAwptEbJ4hCsHU3w4CI+DIxZgihMgS1jkXAA=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-EXc+pAlzN8hEtknBcffzKhHb4LN4hfgL0ElJqi7Pda8=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5649,6 +5649,13 @@ html.cp-editing .modal-backdrop{z-index:9500;} html.cp-editing #toast,body:has(.
 .sysoff-h{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:15px;} .sysoff-h svg{width:18px;height:18px;color:var(--accent);}
 .sysoff-r{display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border);min-height:34px;} .sysoff-r > span:first-child:not(.sysoff-ic){flex:1;min-width:0;} .sysoff-ic{flex:none;}
 .sysoff-r .btn svg{width:14px;height:14px;vertical-align:-2px;}
+/* the row under the mouse or finger lights up (the switch is far right – easy to lose the line); an off row stays tinted */
+.sysoff-r{border-radius:6px;transition:background .12s, box-shadow .12s;}
+.sysoff-r:hover,.sysoff-r:active,.sysoff-r:focus-within{background:color-mix(in srgb, var(--accent) 14%, transparent);box-shadow:inset 3px 0 0 var(--accent);}
+.sysoff-r:has(> .sysoff-sw input:not(:checked)){background:color-mix(in srgb, var(--danger) 9%, transparent);}
+.sysoff-r:has(> .sysoff-sw input:not(:checked)):hover,.sysoff-r:has(> .sysoff-sw input:not(:checked)):active{background:color-mix(in srgb, var(--danger) 18%, transparent);box-shadow:inset 3px 0 0 var(--danger);}
+.sysoff-r:has(> .sysoff-sw input:not(:checked)) > span:first-child,.sysoff-r:has(> .sysoff-sw input:not(:checked)) > b{text-decoration:line-through;text-decoration-color:color-mix(in srgb, var(--danger) 60%, transparent);color:var(--text-dim);}
+.sysoff-sw:hover i{box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);}
 .sysoff-ic svg{width:18px;height:18px;color:var(--text-dim);} .sysoff-r b{font-weight:600;}
 .sysoff-n{font-size:11px;font-weight:700;color:var(--danger);}
 .sysoff-in{padding:6px 0 10px 28px;} .sysoff-sub{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);font-weight:700;margin:10px 0 2px;}
@@ -23461,7 +23468,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v622';
+const APP_VER = 'v623';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -48581,8 +48588,11 @@ function sysOffRender(){ const el = document.getElementById('sysOff'); if(el && 
 function sysOffWire(el){
   el.addEventListener('click', e=>{
     const o = e.target.closest('[data-offopen]'); if(o){ SYSOFF.open = SYSOFF.open===o.dataset.offopen ? '' : o.dataset.offopen; sysOffRender(); return; }
-    const p = e.target.closest('[data-offpick]'); if(p){ offPick(p.dataset.offpick); }
+    const p = e.target.closest('[data-offpick]'); if(p){ offPick(p.dataset.offpick); return; }
+    // a tap anywhere on the row turns its switch (the switch itself and the buttons work as usual)
+    const r = e.target.closest('.sysoff-r'); if(r && !e.target.closest('button, label, input, a')){ const i = r.querySelector(':scope > .sysoff-sw input:not(:disabled)'); if(i) i.click(); }
   });
+  el.addEventListener('touchstart', ()=>{}, { passive:true });   // iPhone: lets the row light up under the finger (:active)
   el.addEventListener('change', async e=>{
     const t = e.target, on = t.checked;
     if(t.dataset.offapp){ const k = t.dataset.offapp, a = TOOL_APPS.find(x=>x.k===k); await offSave(v=>{ if(on) delete v.apps[k]; else v.apps[k] = true; }, (on ? 'Įjungta' : 'Išjungta')+' programa: '+(a ? a.t : k)); return; }
@@ -49983,6 +49993,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 17:10', v:'v623', k:'chg', t:'Įjungti / išjungti: paryškinta eilutė po pele ar pirštu', f:'Sistema → Įjungti / išjungti: eilutė, ant kurios yra pelė ar pirštas, paryškinama; išjungtos eilutės rausvos ir perbrauktos; jungiklį perjungia ir paspaudimas bet kur eilutėje.' },
   { d:'2026-10-21 16:40', v:'v622', k:'new', t:'Sistema → Įjungti / išjungti', f:'Nauja Sistemos skiltis: jungikliais įjungi ar išjungi programas (Įrankiai), puslapius, jų mygtukus ir polapius, viršutinės juostos, kairiojo meniu ir dešiniojo skydelio mygtukus. „Rinktis puslapyje“ – spausk bet kurį mygtuką, polapį ar kortelę ir jis išsijungia visiems (Atšaukti paskutinį, Esc – baigti). Išjungta dalis dingsta nariams, Super Admin ją mato blankią ir gali įjungti atgal.' },
   { d:'2026-10-21 15:50', v:'v621', k:'fix', t:'Sistema: bolt_trips ir mail-in klaidingai rodyti kaip neveikiantys', f:'Sistemos patikrinimas lenteles, kurių dalis stulpelių specialiai apsaugota (bolt_trips kainos), nebelaiko klaida, o savo bandymų nebeįrašo į klaidų žurnalą. mail-in funkcija dabar atsako į patikrinimą iš naršyklės.' },
   { d:'2026-10-21 15:20', v:'v620', k:'fix', t:'Programa vėl atsidaro telefone (juodas ekranas po v619)', f:'v619 priverstinis atnaujinimas telefone užstrigdavo: naujoji versija laukė, kol persikraus langas, o langas laukė naujosios versijos – programėlė rodė juodą ekraną. Priverstinis perkrovimas išjungtas ir pataisytas.' },
