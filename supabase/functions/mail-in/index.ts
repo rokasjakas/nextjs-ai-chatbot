@@ -56,7 +56,11 @@ async function userFor(rcpt: string[]): Promise<{ user_id: string; email: string
 }
 
 Deno.serve(async (req) => {
-  if (req.method !== "POST") return json({ ok: true, service: "mail-in" });
+  // the app's Sistema page checks from the browser that the function is deployed: the status answer allows that
+  // (CORS for OPTIONS / GET only – the letters themselves come server to server with the secret)
+  const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "GET, OPTIONS" };
+  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+  if (req.method !== "POST") return new Response(JSON.stringify({ ok: true, service: "mail-in" }), { headers: { "Content-Type": "application/json", ...cors } });
   if (!SECRET || !timingSafeEqual(req.headers.get("x-mail-in-secret") || "", SECRET)) return json({ error: "forbidden" }, 403);
   const raw = new Uint8Array(await req.arrayBuffer());
   if (!raw.length) return json({ error: "empty" }, 400);
