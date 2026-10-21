@@ -26,11 +26,11 @@
 - Įrankiai (`tools` tab, warehouse group) → LED skaičiuoklė (`ledCalc`, `ledPorts`): 650 000 px per NovaStar Gigabit port at 60 Hz / 8 bit,
   scaled by 60/fps and halved at 10/12 bit. Devices/cabinets defaults `LED_DEVICES` / `LED_PANELS`; Super Admin overrides in
   `app_config` key `led_db` (`check:true` = figure to verify against the datasheet).
-  UNICO rules (VX Pro / VX2000 Pro / VC Pro, `unico:true`): port load = rectangle around the port's cabinets unless Free Topology;
+  Port load = rectangle around the port's cabinets for every device (SmartLCT shows 5 diagonal cabinets as 5×5), only UNICO Free Topology (`free:true`) counts the cabinets;
   low latency cap = (1 − Y/H) × 650 000; Ethernet backup Split / Sequential halves usable ports; 3D side-by-side halves capacity.
   Įrankiai is a launcher of tool apps (`TOOL_APPS`, `toolOpen`); the LED tool is a SmartLCT-like editor (`LP` project in localStorage
   `ledProj`, `lpDraw`, `lpWire`, `lpPattern`, `lpTotals`): free pixel canvas, several cabinet types, ports wired by hand or by pattern.
   Only verified processors are built in (`LED_DEVICES`: h16, vx1000, vx1000pro, mctrl4k) and no cabinets (`LED_PANELS = []`): users add
   their own (`ledPanelForm`, `ledDevForm`, a PDF read by `ledDevPdf` → `ledParseSpec`), saved for everyone (`led_db`, Super Admin) or in
   this browser (`ledMyPanels` / `ledMyDevices`); a project keeps a copy of its cabinets in `LP.customs`. Wiring by hand never jumps to the
-  next port – the overload shows red (`lpOverFrom`, `lpHud`); patterns do move on. Quick calculation (m² or W×H → ports): `ledQuickCalc`.
+  next port – the overload shows red (`lpOverFrom`, `lpHud`); Esc or the same port again ends drawing (`lpWireEnd`); patterns do move on. Quick calculation (m² or W×H → ports): `ledQuickCalc`.
