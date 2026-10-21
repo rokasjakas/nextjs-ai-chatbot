@@ -15,6 +15,11 @@
 - **Konstruktorius** (Sistema → Puslapiai): Super Admin's own pages in `custom_pages` (`supabase/sql/custom_pages.sql`), menu keys
   `cp_<id>`; runtime `cpMount`/`cpDo`, editor `cpEdit` (state `CPE`). „Program functions“ are replayed clicks (`cpPlay`) on button
   ids – the catalog is `pages[k].ui` in `site/sys-map.json`; keep useful buttons' `id`s stable so built pages keep working.
+  Model is Figma's: page frames = sub-pages (`subnav` element lists them), popup frames = overlays with `f.ov` (pos incl. `under`,
+  outside, dim); every element / frame has `ia` interactions {on → do → anim, dir, ease, ms} run by `cpBind`/`cpRun`/`cpTrans`
+  (smart animate matches layers by `k`, kept on frame duplicate / paste to another frame); old single `act` is read by `cpIa`.
+  Design uses theme tokens `var:<name>` (`CP_TOK`), text styles `CP_TS`, button kinds, and the program's components `CP_COMPS`
+  (`cpk-*` CSS); templates `CP_TPL`; overview `cpEdMap`; help `cpEdHelp`. `cpDo`/`cpPopup` keep their old signatures (used by „Redaguoti puslapius“).
 - Existing pages are edited in place (Super Admin → „Redaguoti puslapius“ or Sistema → Puslapiai → Esami programos puslapiai):
   rules in `STATE.uiLayout.ed[scope]` keyed by the element's name (`edTextKey`) – t name, i icon, o order, f fold, h hidden,
   s look, a click (`edRunAct`), n inserted elements (`edIns`). Renaming a button's text in code breaks its rules – keep names.
