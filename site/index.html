@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-1KHIaB5qmeCpFA0mKqvY0SJzMf5X0loUj780oo7h9gE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-d35b34WAvABR7D5f+DdpFYL1a6OftUg9OGlYeydzaIc=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5312,6 +5312,76 @@ b.us-ok{color:var(--teal,#2E8C77);} b.us-warn{color:var(--amber,#D08A12);} b.us-
 @media (max-width:760px){ .gs-hdr .tb-lbl{display:none;} .gs-hdr{padding-left:9px;padding-right:9px;} }
 .gs-pop{position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.45);display:flex;justify-content:center;align-items:flex-start;padding:10vh 16px 16px;}
 .gs-box{width:min(620px,100%);max-height:72vh;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.45);overflow:hidden;}
+/* Paieška → žmogaus / daikto kortelė (dzPerson, dzItem) */
+.gd{display:grid;grid-template-columns:260px minmax(0,1fr);gap:14px;align-items:start;}
+.gd-nav{position:sticky;top:8px;max-height:calc(100vh - 110px);overflow:auto;padding:12px;display:flex;flex-direction:column;gap:2px;}
+.gd-top{display:flex;align-items:center;gap:8px;font-size:17px;margin:2px 4px 10px;}
+.gd-ic svg{width:22px;height:22px;color:var(--accent);}
+.gd-search{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:10px;padding:0 8px;margin-bottom:8px;background:var(--panel-2);}
+.gd-search svg{width:18px;height:18px;opacity:.7;flex:0 0 auto;}
+.gd-search input{border:0;background:none;padding:9px 2px;width:100%;}
+.gd-ng{margin-top:8px;}
+.gd-nh{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);margin:4px 8px;}
+.gd-ni{display:block;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:6px 10px;color:var(--text);font:inherit;font-size:14px;cursor:pointer;}
+.gd-ni:hover{background:var(--panel-2);}
+.gd-ni.on{background:var(--accent);color:var(--accent-ink);}
+.gd-main{padding:22px 26px;min-height:60vh;}
+.gd-main h2{margin:0 0 6px;}
+.gd-main h3{margin:20px 0 8px;font-size:15px;}
+.gd-lead{color:var(--text-dim);line-height:1.55;margin:0 0 12px;}
+.gd-crumb{font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;}
+.gd-go{margin:4px 0 6px;}
+.gd-s p,.gd-s li,.gd-qa p,.gd-qa li,.gd-answer p,.gd-answer li,.gd-aiout p,.gd-aiout li{line-height:1.55;margin:4px 0;}
+.gd-s ul,.gd-qa ul,.gd-answer ul,.gd-aiout ul{margin:4px 0;padding-left:20px;}
+.gd-qa{border:1px solid var(--border);border-radius:10px;padding:8px 12px;margin:6px 0;background:var(--panel-2);}
+.gd-qa summary{cursor:pointer;font-weight:600;}
+.gd-qa[open] summary{margin-bottom:4px;}
+.gd-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.gd-ui{display:flex;flex-wrap:wrap;gap:6px;}
+.gd-ui span{border:1px solid var(--border);border-radius:8px;padding:3px 8px;font-size:12.5px;color:var(--text-dim);}
+.gd-small{font-size:12.5px;}
+.gd-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;}
+.gd-card{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel-2);color:var(--text);font:inherit;cursor:pointer;}
+.gd-card:hover,.gd-hit:hover{border-color:var(--accent);}
+.gd-card span{font-size:12.5px;color:var(--text-dim);line-height:1.45;}
+.gd-hit{display:flex;flex-direction:column;gap:2px;width:100%;text-align:left;padding:10px 12px;margin:6px 0;border:1px solid var(--border);border-radius:10px;background:var(--panel-2);color:var(--text);font:inherit;cursor:pointer;}
+.gd-hit small{color:var(--text-dim);font-size:11.5px;}
+.gd-hit span{font-size:13px;color:var(--text-dim);line-height:1.45;}
+.gd-answer{border:1px solid var(--accent);border-radius:12px;padding:12px 14px;margin:10px 0;}
+.gd-ah{font-size:12px;color:var(--text-dim);margin-bottom:4px;}
+.gd-link{background:none;border:0;padding:0;color:var(--accent);font:inherit;cursor:pointer;}
+.gd-ask{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0;}
+.gd-aiout{flex:1 1 100%;}
+.gd-aiout:not(:empty){border:1px solid var(--border);border-radius:12px;padding:10px 14px;background:var(--panel-2);}
+.gd mark{background:color-mix(in srgb, var(--accent) 30%, transparent);color:inherit;border-radius:3px;padding:0 1px;}
+@media (max-width:860px){ .gd{grid-template-columns:1fr;} .gd-nav{position:static;max-height:none;} .gd-main{padding:16px;} .gd.gd-in .gd-ng{display:none;} }
+.modal.dz-modal{max-width:720px;}
+.dz h3{margin:0;}
+.dz-top{display:flex;gap:14px;align-items:center;margin-bottom:10px;padding-right:34px;}
+.dz-top .pp-av{width:56px;height:56px;font-size:18px;}
+.dz-ic svg{width:28px;height:28px;}
+.dz-info .ven-f{grid-template-columns:150px 1fr;padding:7px 0;}
+.dz-act{justify-content:flex-start;margin:10px 0 4px;flex-wrap:wrap;gap:6px;}
+.dz-sec{margin-top:14px;}
+.dz-h{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);margin-bottom:6px;}
+.dz-n{display:inline-block;min-width:20px;padding:0 6px;border-radius:10px;background:var(--panel-3);color:var(--text);font-size:11.5px;text-align:center;letter-spacing:0;}
+.dz-list{display:flex;flex-direction:column;gap:4px;}
+.dz-list .dz-hid{display:none;}
+.dz-list.dz-all .dz-hid{display:flex;}
+.dz-ev,.dz-ln{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--panel-2);color:var(--text);font:inherit;}
+.dz-ev{cursor:pointer;}
+.dz-ev:hover{border-color:var(--accent);}
+.dz-d{flex:0 0 auto;min-width:86px;font-variant-numeric:tabular-nums;color:var(--text-dim);font-size:12.5px;}
+.dz-t{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;}
+.dz-t b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dz-t small,.dz-ln small{color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dz-x{flex:0 1 auto;font-size:12px;color:var(--text-dim);text-align:right;}
+.dz-more{align-self:flex-start;background:none;border:0;color:var(--accent);cursor:pointer;padding:4px 2px;font:inherit;font-size:13px;}
+.dz-none{font-size:13px;padding:2px 0;}
+.dz-day{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;}
+.dz-day input[type=date]{width:auto;}
+.dz-ok{color:var(--ok);}
+@media (max-width:600px){ .dz-info .ven-f{grid-template-columns:1fr;gap:2px;} .dz-ev{flex-wrap:wrap;} .dz-x{text-align:left;} }
 .gs-top{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);} .gs-top svg.sl{width:18px;height:18px;color:var(--text-dim);}
 .gs-top input{flex:1;min-width:0;border:0!important;background:transparent!important;box-shadow:none!important;outline:none;font-size:16px;padding:4px 0;color:var(--text);}
 .gs-list{overflow:auto;padding:6px;}
@@ -7028,6 +7098,8 @@ html.es-embed main{padding-bottom:10px !important;}
     </button>
     <button class="rail-btn" data-mobile="more" data-tab="tools" data-label="Įrankiai"><span class="rail-tip">Įrankiai</span><svg viewBox="0 0 24 24"></svg>
     </button>
+    <button class="rail-btn" data-mobile="more" data-tab="guide" data-label="Gidas"><span class="rail-tip">Gidas</span><svg viewBox="0 0 24 24"></svg>
+    </button>
     <button class="rail-btn" data-mobile="more" data-tab="system" data-label="Sistema"><span class="rail-tip">Sistema</span><svg viewBox="0 0 24 24"></svg>
     </button>
     <button class="rail-btn rail-profile" data-mobile="more" data-tab="profile" data-label="Mano erdvė"><span class="rail-tip">Mano erdvė</span>
@@ -7050,7 +7122,7 @@ html.es-embed main{padding-bottom:10px !important;}
       <div class="topbar-right">
  <span id="teamHead" class="tm-head"></span>
  <span id="cloudStatus" style="font-size:12px;align-self:center;"></span>
-        <button class="btn small gs-hdr" id="gsHdr" type="button" title="Paieška: programos, funkcijos, nariai, daiktai (Ctrl+K)">🔎 <span class="tb-lbl">Ieškoti</span><kbd>Ctrl K</kbd></button>
+        <button class="btn small gs-hdr" id="gsHdr" type="button" title="Paieška: programos, funkcijos, žmonės, daiktai (Ctrl+K)">🔎 <span class="tb-lbl">Ieškoti</span><kbd>Ctrl K</kbd></button>
         <button class="btn small sup-hdr" id="supHdr" type="button" hidden title="Super Admin: lygis ir išdėstymas"><span class="sup-hdr-i"></span><span class="sup-hdr-t">Super Admin</span></button>
         <button class="btn small cl-hdr" id="clHdr" type="button" hidden title="Atnaujinimai – kas pakeista ir pridėta"><span class="cl-hdr-i"></span><span class="cl-hdr-t">Atnaujinimai</span></button>
         <button class="btn small fb-hdr" id="fbHdr" type="button" title="Pranešti klaidą arba pasiūlyti – kol puslapis testuojamas"><span class="fb-hdr-i">🐞</span><span class="fb-hdr-t">Klaidos / pasiūlymai</span></button>
@@ -7216,11 +7288,12 @@ SL.chevl = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .
 SL.chevr = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z"/>';
 SL.today = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M284-338.18q-28-28.19-28-69Q256-448 284.18-476q28.19-28 69-28Q394-504 422-475.82q28 28.19 28 69Q450-366 421.82-338q-28.19 28-69 28Q312-310 284-338.18ZM180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Z"/>';
 SL.event = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M528-248.18q-28-28.19-28-69Q500-358 528.18-386q28.19-28 69-28Q638-414 666-385.82q28 28.19 28 69Q694-276 665.82-248q-28.19 28-69 28Q556-220 528-248.18ZM180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Z"/>';
+SL.guide = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M560-574v-48q33-14 67.5-21t72.5-7q26 0 51 4t49 10v44q-24-9-48.5-13.5T700-610q-38 0-73 9.5T560-574Zm0 220v-49q33-13.5 67.5-20.25T700-430q26 0 51 4t49 10v44q-24-9-48.5-13.5T700-390q-38 0-73 9t-67 27Zm0-110v-48q33-14 67.5-21t72.5-7q26 0 51 4t49 10v44q-24-9-48.5-13.5T700-500q-38 0-73 9.5T560-464Zm-48 214q50-25 98-37.5T712-300q38 0 78.5 6t69.5 16v-429q-34-17-71.82-25-37.82-8-76.18-8-54 0-104.5 16.5T512-677v427Zm-30 90q-51-38-111-58.5T248-239q-36.54 0-71.77 9T106-208q-23.1 11-44.55-3Q40-225 40-251v-463q0-15 7-27.5T68-761q42-20 87.5-29.5T248-800q63 0 122.5 17T482-731q51-35 109.5-52T712-800q47.18 0 92.09 9.5Q849-781 891-761q14 7 21.5 19.5T920-714v463q0 27.89-22.5 42.45Q875-194 853-208q-34-14-69.23-22.5Q748.54-239 712-239q-63 0-121 21t-109 58Z"/>';
 SL.notif = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .025 0 24)" d="M160-200v-60h80v-304q0-84 49.5-150.5T420-798v-22q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v22q81 17 130.5 83.5T720-564v304h80v60H160ZM480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80Z"/>';
 (function(){
   const RAIL = { home:'house', events:'calendar', projects:'folder', load:'cart', rentals:'pickup', handovers:'handover', inventory:'warehouse',
     rules:'package', fleet:'truck', stats:'chart', chat:'chat', members:'users', people:'card', jobs:'tasks', offers:'receipt',
-    venues:'building', admin:'shield', system:'hub', tools:'calc', profile:'user', gear:'alert', newproj:'addbox', sort:'sorting', stocktake:'checklist', stockleft:'inventory2', works:'build',
+    venues:'building', admin:'shield', system:'hub', tools:'calc', guide:'guide', profile:'user', gear:'alert', newproj:'addbox', sort:'sorting', stocktake:'checklist', stockleft:'inventory2', works:'build',
     games:'games', mail:'mail', invoices:'invoice', buy:'shopbag', tracker:'clock', expenses:'wallet', workplans:'checklist', creds:'lock', keys:'key', alarm:'siren' };
   document.querySelectorAll('.rail-btn').forEach(b=>{
     const k = b.id==='railMore' ? 'dots' : b.id==='railNotes' ? 'note' : RAIL[b.dataset.tab], s = b.querySelector('svg');
@@ -14270,6 +14343,7 @@ function canView(tab){
   if(TEAM_TABS.includes(tab)) return !!ACCESS.role && !ACCESS.fallback;
   if(tab==='admin') return ACCESS.role==='admin' || isSuper();     // Super Admin keeps it in every level (to come back)
   if(tab==='system') return sysCan();     // Sistema: only the Super Admin seeing everything
+  if(tab==='guide') return true;          // Gidas: everyone (its articles follow what the level may open)
   if(tab==='tools') return canView('inventory') || canView('events');   // Įrankiai (LED skaičiuoklė): warehouse and event people
   return accessLevel(tab)!=='none';
 }
@@ -14281,6 +14355,7 @@ function canEdit(tab){
   if(tab==='admin') return ACCESS.role==='admin' || isSuper();
   if(tab==='system') return sysCan();
   if(tab==='tools') return true;   // the tools change nothing shared
+  if(tab==='guide') return true;
   if(/^cp_/.test(tab)) return true;   // a made page has nothing to change
   if(tab==='chat' || tab==='mail') return canView(tab);      // who may see the chat / mail may also write
   if(tab==='invoices') return canView(tab);                  // who sees Sąskaitos uploads own invoices (deciding stays with Admin+)
@@ -21806,6 +21881,7 @@ const HOME_TILES = [
   {tab:'inventory', title:'Įranga', color:'#4E9BC9', desc:'Visa įranga: matmenys, svoris, žymės.'},
   {tab:'gear', title:'Įrangos gedimai / pažeidimai', color:'#E8590C', desc:'Pažeista, sugadinta ir dingusi įranga: nuotraukos, kas taiso, kas žino.'},
   {tab:'works', title:'Atlikti darbai', color:'#50AD97', desc:'Valymas, patikros, remontai: kada, su kuo ir kas darė.'},
+  {tab:'guide', title:'Gidas', color:'#6AB0F3', desc:'Visų programos funkcijų aprašymai: kas kur yra, kaip daroma, kas su kuo susiję. Paieška ir klausimai.'},
   {tab:'tools', title:'Įrankiai', color:'#7C8592', desc:'LED skaičiuoklė: ekrano raiška, NovaStar procesorių prievadai, kabinetų jungimo schema, galia ir svoris.'},
   {tab:'stockleft', title:'Likučiai', color:'#C98A3B', desc:'Einami daiktai (Tape, skočas, strečas, baterijos…) vienetais ar procentais – skaičiai iš darbų plano.'},
   {tab:'stocktake', title:'Inventorizacija', color:'#6FB7A8', desc:'Sandėlio inventorizacijos: kiekiai, istorija, palyginimas ir sulyginimas su sandėliu.'},
@@ -23503,7 +23579,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v625';
+const APP_VER = 'v626';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -42203,6 +42279,7 @@ const GS_FN = [
   { t:'Tikrinti įrangos likutį', d:'pagal datą ar laikotarpį', ic:'warehouse', kw:'likutis laisva uzimta rezervuota kiek yra sandelis', can:()=>canView('gear'), go:()=>gsGear('stock') },
   { t:'Įrangos planavimo lentelė', d:'renginių rezervacijos pagal dienas', ic:'chart', kw:'planavimas rezervacija uzimtumas', can:()=>canView('events'), go:()=>{ setTab('events'); gearPlan(); } },
   { t:'Naujas projektas', d:'Projektai', ic:'folder', kw:'sukurti projekta', can:()=>canView('newproj'), go:()=>{ setTab('newproj'); setTimeout(()=>{ const b = document.getElementById('npNew'); if(b) b.click(); }, 400); } },
+  { t:'Gidas', d:'visų funkcijų aprašymai, klausimai', ic:'guide', kw:'gidas pagalba help instrukcija kaip aprasymas klausimas', go:()=>gdOpen('') },
   { t:'Pranešti klaidą / pasiūlymą', d:'kūrėjams', ic:'chat', kw:'klaida bug pasiulymas atsiliepimas', go:()=>gsClick('fbHdr') },
   { t:'Išsaugoti viską', d:'serveryje dabar', ic:'save', kw:'saugoti', go:()=>gsClick('saveAllBtn') },
   { t:'Atsisiųsti atsarginę kopiją', d:'visi duomenys JSON', ic:'download', kw:'kopija backup eksportas', go:()=>gsClick('exportBtn') },
@@ -42226,8 +42303,19 @@ function gsSearch(q){
   add('Programos', apps, words.length ? 6 : 40);
   add('Funkcijos', GS_FN.filter(f=>!f.can || f.can()).map(f=>Object.assign({}, f, { icon:slIcon(f.ic), s:match(f.t, f.d, f.kw) })), words.length ? 6 : 0);
   if(!words.length) return out;
-  add('Nariai', (TEAM.members||[]).filter(m=>m.id).map(m=>({ t:teamName(m), d:[m.job_title, roleLabel(m.role)].filter(Boolean).join(' · '), icon:teamAvatar(m, 26), s:match(teamName(m), m.nickname, m.job_title, m.email, m.contact_email, m.phone), go:()=>openMemberCard(m.id) })), 6);
-  if(canView('inventory')) add('Įranga', allItems().filter(it=>it.name).map(it=>({ t:it.name, d:(GROUP_LABEL[it.group]||'')+' · '+fmt(stockOf(it),0)+(stockOf(it)!==(+it.qty||0) ? ' / '+fmt(+it.qty||0,0) : '')+' vnt.', icon:slIcon('package'), s:match(it.name, it.code, it.folder, GROUP_LABEL[it.group]), go:()=>{ setTab('inventory'); invFilter.q = it.name; invFilter.group = ''; refreshInv(); const q = document.getElementById('invSearch'); if(q) q.value = it.name; } })), 6);
+  // people: members, the contacts of Žmonės and names written only in the events' tables – a click opens all about them
+  const known = new Set();
+  add('Nariai', (TEAM.members||[]).filter(m=>m.id).map(m=>{ known.add(normalizeText(teamName(m))); if(m.nickname) known.add(normalizeText(m.nickname));
+    return { t:teamName(m), d:[m.job_title, roleLabel(m.role)].filter(Boolean).join(' · '), icon:teamAvatar(m, 26), s:match(teamName(m), m.nickname, m.job_title, m.email, m.contact_email, m.phone), go:()=>dzPerson(teamName(m)) }; }), 6);
+  const ppl = [];
+  if(canView('people') && PP.loaded) PP.contacts.forEach(c=>{ const n = normalizeText(ppName(c)); if(!n || known.has(n)) return; known.add(n);
+    ppl.push({ t:ppName(c), d:[(c.groups||[]).join(', '), c.phone].filter(Boolean).join(' · '), icon:ppAvatar(c), s:match(ppName(c), c.phone, c.email, (c.groups||[]).join(' ')), go:()=>dzPerson(ppName(c)) }); });
+  if(canView('events') && EV.loaded){ const seen = new Set();
+    (EV.events||[]).forEach(ev=>(ev.crew||[]).forEach(g=>(g.entries||[]).forEach(e=>{ const nm = String(e.person||'').trim(), n = normalizeText(nm); if(!n || known.has(n) || seen.has(n)) return; seen.add(n);
+      ppl.push({ t:nm, d:'iš renginių lentelių', icon:slIcon('users'), s:match(nm), go:()=>dzPerson(nm) }); }))); }
+  add('Žmonės', ppl, 6);
+  if(canView('inventory')) add('Įranga', allItems().filter(it=>it.name).map(it=>({ t:it.name, d:(GROUP_LABEL[it.group]||'')+' · '+fmt(stockOf(it),0)+(stockOf(it)!==(+it.qty||0) ? ' / '+fmt(+it.qty||0,0) : '')+' vnt.', icon:slIcon('package'), s:match(it.name, it.code, it.folder, GROUP_LABEL[it.group]), go:()=>dzItem(it.id) })), 6);
+  { const w = gdWords(q); add('Gidas', gdList().map(a=>({ t:a.t, d:'Gidas · '+a.g, icon:slIcon('guide'), s:gdScore(a, w) >= 6 ? 1 : 0, go:()=>gdOpen(a.id) })), 3); }
   if(typeof NP!=='undefined' && NP.loaded && canView('newproj')) add('Projektai', NP.list.filter(p=>!p.is_template && p.name).map(p=>({ t:p.name, d:p.data && p.data.client ? String(p.data.client) : '', icon:slIcon('folder'), s:match(p.name, p.data && p.data.client), go:()=>{ setTab('newproj'); npOpen(p.id); } })), 5);
   return out;
 }
@@ -42245,8 +42333,13 @@ function gsGo(i){ const h = GS.hits[i]; if(!h) return; gsClose(); try{ h.go(); }
 function gsOpen(){
   if(document.getElementById('gsPop')){ document.getElementById('gsIn').focus(); return; }
   if(!TEAM.members || !TEAM.members.length){ try{ teamLoadMembers(); }catch(e){} }
+  // people and events are searched too: load them once, the list redraws when they come
+  const more = [];
+  if(canView('people') && !PP.loaded) more.push(ppLoad());
+  if(canView('events') && !EV.loaded) more.push(evLoad());
+  if(more.length) Promise.all(more.map(x=>Promise.resolve(x).catch(()=>{}))).then(()=>{ if(document.getElementById('gsPop')) gsDraw(); });
   const p = document.createElement('div'); p.id = 'gsPop'; p.className = 'gs-pop';
-  p.innerHTML = `<div class="gs-box" role="dialog" aria-label="Paieška"><div class="gs-top">${slIcon('search')}<input type="search" id="gsIn" placeholder="Ieškoti programos, funkcijos, nario, daikto…" autocomplete="off" role="combobox" aria-controls="gsList"><kbd>Esc</kbd></div><div class="gs-list" id="gsList" role="listbox"></div></div>`;
+  p.innerHTML = `<div class="gs-box" role="dialog" aria-label="Paieška"><div class="gs-top">${slIcon('search')}<input type="search" id="gsIn" placeholder="Ieškoti programos, funkcijos, žmogaus, daikto…" autocomplete="off" role="combobox" aria-controls="gsList"><kbd>Esc</kbd></div><div class="gs-list" id="gsList" role="listbox"></div></div>`;
   document.body.appendChild(p);
   const q = document.getElementById('gsIn'); GS.at = 0; gsDraw(); q.focus();
   q.oninput = ()=>{ GS.at = 0; gsDraw(); };
@@ -42266,6 +42359,652 @@ document.addEventListener('keydown', e=>{
 });
 document.addEventListener('click', e=>{ if(e.target.closest && e.target.closest('#gsHdr')) gsOpen(); });
 
+/* ---------- Paieška → žmogaus / daikto kortelė ----------
+   Paspaudus žmogų (narį, kontaktą iš Žmonių ar vardą iš renginių lentelių) – viskas apie jį vienoje vietoje:
+   kontaktai, grupės, kuriuose renginiuose įrašytas (būsimi ir buvę), skambučiai, pranešti gedimai, atlikti darbai.
+   Paspaudus daiktą – bendra informacija, ar laisvas pasirinktą dieną (kas rezervavo), paskutiniai renginiai ir
+   projektai, kur jis suplanuotas, gedimai / dingimai ir atlikti darbai (remontai, patikros). */
+const DZ = { day:'' };
+const dzDate = d=>String(d||'').slice(0, 10).replace(/-/g, '.');
+function dzRow(l, v){ return v==null || v==='' ? '' : `<div class="ven-f"><div class="ven-fl">${esc(l)}</div><div class="ven-fv">${v}</div></div>`; }
+function dzSec(t, body, n){ return `<div class="dz-sec"><div class="dz-h">${esc(t)}${n!=null ? ` <span class="dz-n">${n}</span>` : ''}</div>${body}</div>`; }
+function dzLoading(t){ openModal(`<div class="dz"><h3>${esc(t)}</h3><div class="muted">Renkama informacija…</div></div>`); document.getElementById('modalRoot').classList.add('dz-modal'); }
+// an event line: date, name, place; click opens the event
+function dzEvHtml(ev, extra){
+  const sp = gearSpan(ev) || [ev.date, ev.dateEnd || ev.date];
+  return `<button type="button" class="dz-ev" data-dzev="${esc(ev.id)}"><span class="dz-d">${esc(dzDate(sp[0]))}${sp[1] && sp[1]!==sp[0] ? '–'+esc(ppDM(sp[1])) : ''}</span><span class="dz-t"><b>${esc(gearEvName(ev))}</b>${ev.location ? `<small>${esc(ev.location)}</small>` : ''}</span>${extra ? `<span class="dz-x">${extra}</span>` : ''}</button>`;
+}
+function dzWire(root){
+  root.querySelectorAll('[data-dzev]').forEach(b=>b.onclick = ()=>{ const ev = EV.events.find(x=>x.id===b.dataset.dzev); if(!ev) return; closeModal(); setTab('events'); setTimeout(()=>openEventRowModal(ev), 150); });
+  root.querySelectorAll('[data-dzproj]').forEach(b=>b.onclick = ()=>{ closeModal(); setTab('newproj'); npOpen(b.dataset.dzproj); });
+  root.querySelectorAll('[data-dzgear]').forEach(b=>b.onclick = ()=>{ const g = GR.list.find(z=>z.id===b.dataset.dzgear); if(!g) return; closeModal(); GR.tab = g.kind; GR.show = 'all'; GR.focus = g.id; GR.openOnFocus = true; setTab('gear'); });
+  root.querySelectorAll('[data-dzwork]').forEach(b=>b.onclick = ()=>{ closeModal(); IW.q = b.dataset.dzwork; IW.from = IW.to = ''; iwOpen(); });
+  root.querySelectorAll('.dz-more').forEach(b=>b.onclick = ()=>{ b.parentElement.classList.add('dz-all'); b.remove(); });
+}
+// a list that shows `n` rows and a „Rodyti visus“ button for the rest
+function dzList(rows, n){ return rows.length ? `<div class="dz-list">${rows.map((r, i)=>i < n ? r : r.replace(/^<(\w+)([^>]*?) class="/, '<$1$2 class="dz-hid ')).join('')}${rows.length > n ? `<button type="button" class="dz-more">Rodyti visus (${rows.length})</button>` : ''}</div>` : '<div class="muted dz-none">Nėra.</div>'; }
+
+/* ---- žmogus ---- */
+// all the names this person goes by (normalized): full name, nickname, the contact's name
+function dzNames(name){
+  const n = normalizeText(String(name||'').trim()), out = new Set([n]);
+  const m = (TEAM.members||[]).find(x=>x.id && (normalizeText(teamName(x))===n || (x.nickname && normalizeText(x.nickname)===n)));
+  if(m){ out.add(normalizeText(teamName(m))); if(m.nickname) out.add(normalizeText(m.nickname)); }
+  const c = canView('people') ? (PP.contacts||[]).find(x=>normalizeText(ppName(x))===n || (m && normalizeText(ppName(x))===normalizeText(teamName(m)))) : null;
+  if(c) out.add(normalizeText(ppName(c)));
+  out.delete(''); out.delete('narys');
+  return { names:out, m, c };
+}
+// the events where this person is written: crew tables (with the position), manager, driver
+function dzPersonEvents(names){
+  const out = [], lines = s=>String(s||'').split('\n').map(x=>normalizeText(x.trim())).filter(Boolean);
+  (EV.events||[]).forEach(ev=>{
+    if(!ev || ev.deletedAt) return;
+    const roles = [];
+    (ev.crew||[]).forEach(g=>(g.entries||[]).forEach(e=>{ if(names.has(normalizeText(e.person||''))) roles.push([g.title, e.pos].filter(Boolean).join(' · ') || 'Komanda'); }));
+    if([ev.manager, ev.managerOffice].some(x=>names.has(normalizeText(x||'')))) roles.push('Vadovas');
+    if(names.has(normalizeText(ev.managerTech||''))) roles.push('Tech. vadovas');
+    (ev.logistics||[]).forEach(l=>{ if(lines(l.driver).some(x=>names.has(x))) roles.push('Vairuotojas'); });
+    if(roles.length) out.push({ ev, d:(gearSpan(ev)||[ev.date||''])[0] || '', roles:[...new Set(roles)] });
+  });
+  return out.sort((a, b)=>String(b.d).localeCompare(String(a.d)));
+}
+async function dzPerson(name){
+  dzLoading(name);
+  const need = [];
+  if(canView('events') && !EV.loaded) need.push(evLoad());
+  if(canView('people') && !PP.loaded) need.push(ppLoad());
+  if(!GR.loaded) need.push(grLoad());
+  if(canView('inventory') && !IW.loaded) need.push(iwLoad());
+  if(!TEAM.members || !TEAM.members.length) need.push(Promise.resolve().then(()=>teamLoadMembers()));
+  await Promise.all(need.map(p=>Promise.resolve(p).catch(()=>{})));
+  if(!document.querySelector('#modalRoot.dz-modal')) return;   // closed meanwhile
+  const { names, m, c } = dzNames(name), today = calISO(new Date());
+  const title = m ? teamName(m) : c ? ppName(c) : String(name).trim();
+  const evs = canView('events') ? dzPersonEvents(names) : [];
+  const next = evs.filter(x=>x.d >= today).reverse(), past = evs.filter(x=>x.d < today);
+  const calls = c ? (PP.calls||[]).filter(r=>r.contact_id===c.id && r.outcome!=='calling') : [];
+  const gear = (GR.list||[]).filter(g=>(m && g.created_by===m.id) || names.has(normalizeText(g.created_by_name||'')) || names.has(normalizeText(g.resolved_by_name||'')));
+  const works = (IW.list||[]).filter(w=>(w.done_by||[]).some(x=>names.has(normalizeText(x))));
+  const mail = m ? (m.contact_email || m.email) : c && c.email, tel = (m && m.phone) || (c && c.phone) || '', telD = tel.replace(/[^\d+]/g, '');
+  const lv = c && c.levels ? Object.entries(c.levels).filter(([, v])=>v).map(([k, v])=>esc(k)+' '+esc(v)).join(', ') : '';
+  const info = [
+    m ? dzRow('Narys', esc([m.job_title, roleLabel(m.role)].filter(Boolean).join(' · ')) || 'taip') : '',
+    tel ? dzRow('Telefonas', `<a href="tel:${esc(telD)}">${esc(tel)}</a>`) : '',
+    mail ? dzRow('El. paštas', `<a href="mailto:${esc(mail)}">${esc(mail)}</a>`) : '',
+    c && (c.groups||[]).length ? dzRow('Grupės', esc(c.groups.join(', '))) : '',
+    lv ? dzRow('Lygiai', lv) : '',
+    c && (c.license||[]).length ? dzRow('Vairuotojo kategorijos', esc(c.license.join(', '))) : '',
+    c && (c.skills||[]).length ? dzRow('Mokėjimai', esc(c.skills.join(', '))) : '',
+    c && c.desks ? dzRow('Pultai', esc(c.desks)) : '',
+    c && c.address ? dzRow('Adresas', esc(c.address)) : '',
+    c && c.note ? dzRow('Pastaba', esc(c.note)) : '',
+    c ? dzRow('Žymos', [c.inactive ? 'Nebeaktyvus' : '', c.ban ? 'BAN – nebekviesti' : '', c.worked ? 'Dirbome' : ''].filter(Boolean).map(esc).join(', ')) : '',
+    evs.length ? dzRow('Renginiuose', `<b>${evs.length}</b>${past[0] ? ' · paskutinis '+esc(dzDate(past[0].d)) : ''}`) : '',
+  ].join('');
+  const evRow = x=>dzEvHtml(x.ev, esc(x.roles.join(', ')));
+  openModal(`<div class="dz">
+    <div class="dz-top">${m ? teamAvatar(m, 64, true) : c ? ppAvatar(c) : `<span class="pp-av">${esc(title.split(/\s+/).map(w=>w[0]||'').join('').slice(0, 2).toUpperCase())}</span>`}
+      <div><h3>${esc(title)}</h3><div class="muted">${[m ? 'Programos narys' : '', c ? 'Žmonių archyve' : '', !m && !c ? 'Rastas renginių lentelėse' : ''].filter(Boolean).join(' · ')}</div>${c ? ppStarsHtml(c) : ''}</div></div>
+    ${info ? `<div class="ven-fields dz-info">${info}</div>` : ''}
+    ${c ? ppRatesHtml(c) : ''}
+    <div class="ven-actions dz-act">
+      ${telD ? `<a class="btn small" href="tel:${esc(telD)}">📞 Skambinti</a>` : ''}
+      ${m && m.id!==teamMe() && canView('chat') && roleCanChat(m.role) ? '<button type="button" class="btn small" id="dzMsg">💬 Rašyti žinutę</button>' : ''}
+      ${c && canView('people') ? '<button type="button" class="btn small" id="dzPp">Atidaryti Žmonėse</button>' : ''}
+    </div>
+    ${canView('events') ? dzSec('Būsimi renginiai', dzList(next.map(evRow), 5), next.length) + dzSec('Buvę renginiai', dzList(past.map(evRow), 5), past.length) : ''}
+    ${calls.length ? dzSec('Skambučiai (Bookingas)', dzList(calls.map(r=>{ const o = PP_OUT[r.outcome] || {}; return `<div class="dz-ln"><span class="dz-d">${esc(dzDate(r.for_date))}</span><span class="pp-st ${o.cls||''}">${esc(o.label||r.outcome)}</span><small>${esc(r.caller_name||'')}${r.note ? ' · '+esc(r.note) : ''}</small></div>`; }), 5), calls.length) : ''}
+    ${gear.length ? dzSec('Pranešti gedimai / dingę daiktai', dzList(gear.map(g=>`<button type="button" class="dz-ev" data-dzgear="${esc(g.id)}"><span class="dz-d">${esc(grWhen(g.created_at))}</span><span class="dz-t"><b>${esc(g.item_name||'')}</b><small>${esc(g.description||'')}</small></span><span class="dz-x">${esc(g.kind==='lost' ? 'Dingo' : 'Gedimas')} · ${esc({ open:'atvira', fixed:'sutaisyta', found:'rasta', written_off:'nurašyta' }[g.status]||g.status)}</span></button>`), 3), gear.length) : ''}
+    ${works.length ? dzSec('Atlikti darbai sandėlyje', dzList(works.map(w=>`<button type="button" class="dz-ev" data-dzwork="${esc(title)}"><span class="dz-d">${esc(dzDate(w.work_date))}</span><span class="dz-t"><b>${esc(w.kind||'Darbas')}</b><small>${esc((w.item_names||[]).slice(0, 4).join(', ') || w.scope || '')}</small></span></button>`), 3), works.length) : ''}
+  </div>`);
+  const root = document.getElementById('modalRoot'); root.classList.add('dz-modal');
+  dzWire(root); teamFillImages(root);
+  const mb = document.getElementById('dzMsg'); if(mb) mb.onclick = ()=>{ closeModal(); chatOpenDirect(m.id); };
+  const pb = document.getElementById('dzPp'); if(pb) pb.onclick = ()=>{ closeModal(); setTab('people'); setTimeout(()=>ppContactModal(c), 200); };
+}
+
+/* ---- daiktas ---- */
+async function dzItem(id){
+  const it = getItem(id); if(!it) return;
+  dzLoading(it.name);
+  const need = [];
+  if(canView('events') && !EV.loaded) need.push(evLoad());
+  if(typeof npLoad==='function' && canView('newproj') && !NP.loaded) need.push(npLoad());
+  if(!GR.loaded) need.push(grLoad());
+  if(!IW.loaded) need.push(iwLoad());
+  await Promise.all(need.map(p=>Promise.resolve(p).catch(()=>{})));
+  if(!document.querySelector('#modalRoot.dz-modal')) return;
+  if(!DZ.day) DZ.day = calISO(new Date());
+  dzItemDraw(String(it.id));
+}
+// is the item free on day d: warehouse − broken / lost − the most booked that day (events, projects)
+function dzItemFree(id, d){
+  const evIdx = gearIndex(null), npIdx = NP.loaded ? npBusyIndex(null) : {};
+  const f = npFree(id, null, {}), s = npT(d);
+  const busy = gearUse(evIdx, id, d) + (npIdx[id] ? npPeak(npIdx[id], s, s + 864e5 - 1) : 0);
+  return { all:f.all, sub:f.sub, busy, free:f.all - busy, who:grsWho(id, [d], evIdx, npIdx) };
+}
+function dzItemDraw(id){
+  const it = getItem(id); if(!it) return;
+  const today = calISO(new Date()), d = DZ.day || today;
+  const av = dzItemFree(id, d);
+  // events where it is planned (by the gear list), newest first
+  const evs = (EV.events||[]).filter(ev=>ev && !ev.deletedAt && gearOf(ev) && gearOf(ev).items.some(r=>String(r.itemId)===id))
+    .map(ev=>({ ev, d:(gearSpan(ev)||[''])[0], q:gearOf(ev).items.filter(r=>String(r.itemId)===id).reduce((a, r)=>a + (+r.qty||0), 0) }))
+    .sort((a, b)=>String(b.d).localeCompare(String(a.d)));
+  const past = evs.filter(x=>x.d <= today), next = evs.filter(x=>x.d > today).reverse();
+  const projs = [];
+  if(NP.loaded) NP.list.forEach(p=>{ if(p.is_template) return; const dd = p.data || {}; let q = 0, a = null;
+    (dd.groups||[]).forEach(g=>(g.items||[]).forEach(r=>{ if(String(r.item)!==id) return; q += offerNum(r.qty); const sp = dd.times ? npGroupSpan(dd, g) : null; if(sp && (a==null || sp[0] < a)) a = sp[0]; }));
+    if(q) projs.push({ p, q, a }); });
+  projs.sort((x, y)=>(y.a||0) - (x.a||0));
+  const gear = (GR.list||[]).filter(g=>String(g.item_id)===id);
+  const works = (IW.list||[]).filter(w=>(w.item_ids||[]).map(String).includes(id));
+  const repairs = works.filter(w=>/remont|daliu keit|taisym/i.test(normalizeText(w.kind||'')));
+  const out = grOut(id), dims = [it.L, it.W, it.H].every(x=>+x) ? `${fmt(+it.L,0)} × ${fmt(+it.W,0)} × ${fmt(+it.H,0)} cm` : '';
+  const info = [
+    dzRow('Kodas', esc(it.code||'')),
+    dzRow('Grupė', esc([GROUP_LABEL[it.group]||it.group, it.folder].filter(Boolean).join(' › '))),
+    dzRow('Gamintojas', esc(it.brand||'')),
+    dzRow('Sandėlyje', `<b>${fmt(+it.qty||0, 0)}</b> vnt.${out ? ` · <span class="gm-bad">sugadinta / dingo ${fmt(out, 0)}</span>` : ''}${it.subrent ? ' · subnuoma' : ''}`),
+    dzRow('Matmenys', esc(dims)), dzRow('Svoris', +it.weight ? esc(fmt(+it.weight, 2))+' kg' : ''), dzRow('Galia', +it.power ? esc(fmt(+it.power, 0))+' W' : ''),
+    dzRow('Tiekėjas', esc(it.supplier||'')), dzRow('Pastaba', esc(it.note || it.comment || '')),
+    dzRow('Remontai', repairs.length ? `<b>${repairs.length}</b> · paskutinis ${esc(dzDate(repairs[0].work_date))}` : ''),
+    dzRow('Gedimai', gear.length ? `<b>${gear.length}</b>${gear.filter(g=>g.status==='open').length ? ` · <span class="gm-bad">atvirų ${gear.filter(g=>g.status==='open').length}</span>` : ''}` : ''),
+  ].join('');
+  const avTxt = av.sub ? 'Subnuoma – visada gaunamas' : av.free < 0 ? `<span class="gm-bad">Trūksta ${fmt(-av.free, 0)}</span>` : av.free===0 ? '<span class="gm-bad">Neliko nė vieno</span>' : `<span class="dz-ok">Laisva ${fmt(av.free, 0)} iš ${fmt(av.all, 0)}</span>`;
+  openModal(`<div class="dz">
+    <div class="dz-top"><span class="pp-av dz-ic">${slIcon('package')}</span><div><h3>${esc(it.name)}</h3><div class="muted">${esc(GROUP_LABEL[it.group]||'')}</div></div></div>
+    <div class="ven-fields dz-info">${info}</div>
+    <div class="dz-sec dz-avail"><div class="dz-h">Ar laisvas?</div>
+      <div class="dz-day"><input type="date" id="dzDay" value="${esc(d)}"><button type="button" class="chip small-chip ${d===today ? 'active' : ''}" data-dzd="${today}">Šiandien</button><button type="button" class="chip small-chip ${d===lmDay(today, 1) ? 'active' : ''}" data-dzd="${lmDay(today, 1)}">Rytoj</button><b>${avTxt}</b></div>
+      ${av.who.length ? `<div class="dz-list">${av.who.map(w=>w.ev && !w.ev.rentman ? dzEvHtml(w.ev, esc(w.kind)+' · '+fmt(w.qty, 0)+' vnt.') : w.proj ? `<button type="button" class="dz-ev" data-dzproj="${esc(w.proj)}"><span class="dz-d">Projektas</span><span class="dz-t"><b>${esc(w.name)}</b></span><span class="dz-x">${fmt(w.qty, 0)} vnt.</span></button>` : w.gear ? `<button type="button" class="dz-ev" data-dzgear="${esc(w.gear)}"><span class="dz-d">${esc(w.when)}</span><span class="dz-t"><b>${esc(w.kind)}</b><small>${esc(w.name)}</small></span><span class="dz-x">${fmt(w.qty, 0)} vnt.</span></button>` : `<div class="dz-ln"><span class="dz-d">${esc(w.kind)}</span><b>${esc(w.name)}</b><small>${fmt(w.qty, 0)} vnt.</small></div>`).join('')}</div>` : '<div class="muted dz-none">Tą dieną niekur nerezervuotas.</div>'}
+    </div>
+    ${canView('events') ? dzSec('Paskutiniai renginiai', dzList(past.map(x=>dzEvHtml(x.ev, fmt(x.q, 0)+' vnt.')), 5), past.length) : ''}
+    ${canView('events') && next.length ? dzSec('Suplanuota ateityje', dzList(next.map(x=>dzEvHtml(x.ev, fmt(x.q, 0)+' vnt.')), 5), next.length) : ''}
+    ${projs.length ? dzSec('Projektai', dzList(projs.map(x=>`<button type="button" class="dz-ev" data-dzproj="${esc(x.p.id)}"><span class="dz-d">${x.a ? esc(dzDate(calISO(new Date(x.a)))) : ''}</span><span class="dz-t"><b>${esc(x.p.name||'Projektas')}</b>${x.p.data && x.p.data.client ? `<small>${esc(String(x.p.data.client.name || x.p.data.client))}</small>` : ''}</span><span class="dz-x">${fmt(x.q, 0)} vnt.</span></button>`), 5), projs.length) : ''}
+    ${dzSec('Gedimai ir dingimai', dzList(gear.map(g=>`<button type="button" class="dz-ev" data-dzgear="${esc(g.id)}"><span class="dz-d">${esc(grWhen(g.created_at))}</span><span class="dz-t"><b>${esc(g.description || (g.kind==='lost' ? 'Dingo' : 'Gedimas'))}</b><small>${esc([g.created_by_name, g.event_name, g.resolution].filter(Boolean).join(' · '))}</small></span><span class="dz-x">${esc(g.kind==='lost' ? 'Dingo' : 'Gedimas')} · ${esc({ open:'atvira', fixed:'sutaisyta', found:'rasta', written_off:'nurašyta' }[g.status]||g.status)} · ${fmt(+g.qty||0, 0)} vnt.</span></button>`), 3), gear.length)}
+    ${dzSec('Remontai, patikros ir kiti darbai', dzList(works.map(w=>`<button type="button" class="dz-ev" data-dzwork="${esc(it.name)}"><span class="dz-d">${esc(dzDate(w.work_date))}</span><span class="dz-t"><b>${esc(w.kind||'Darbas')}</b><small>${esc([(w.done_by||[]).join(', '), w.note].filter(Boolean).join(' · '))}</small></span></button>`), 3), works.length)}
+    <div class="ven-actions dz-act">
+      ${canView('inventory') ? '<button type="button" class="btn small" id="dzInv">Rodyti sandėlyje</button>' : ''}
+      ${canView('gear') ? `<button type="button" class="btn small" id="dzStock">${slIcon('warehouse')} Likutis laikotarpiui</button><button type="button" class="btn small" id="dzBad">${slIcon('alert')} Pranešti apie gedimą</button>` : ''}
+    </div>
+  </div>`);
+  const root = document.getElementById('modalRoot'); root.classList.add('dz-modal');
+  dzWire(root);
+  const set = v=>{ if(!v) return; DZ.day = v; dzItemDraw(id); };
+  document.getElementById('dzDay').onchange = e=>set(e.target.value);
+  root.querySelectorAll('[data-dzd]').forEach(b=>b.onclick = ()=>set(b.dataset.dzd));
+  const inv = document.getElementById('dzInv'); if(inv) inv.onclick = ()=>{ closeModal(); setTab('inventory'); invFilter.q = it.name; invFilter.group = ''; refreshInv(); const q = document.getElementById('invSearch'); if(q) q.value = it.name; };
+  const st = document.getElementById('dzStock'); if(st) st.onclick = ()=>{ closeModal(); GRS.q = it.name; GRS.from = GRS.to = d; gsGear('stock'); };
+  const bad = document.getElementById('dzBad'); if(bad) bad.onclick = ()=>{ closeModal(); gsGear('damage', true); };
+}
+
+/* ============================================================
+   TAB: Gidas – visų programos dalių aprašymai vienoje vietoje: kas kur yra, kaip daroma, kas su kuo susiję.
+   Straipsniai (GUIDE) rašomi ranka; prie jų automatiškai pridedama: puslapio mygtukai ir su kuo jis dalijasi
+   duomenimis (sys-map.json), naujausi pakeitimai (CHANGELOG). Paieška tekstu per viską, klausimas – pirma
+   atsakoma iš gido, „Klausti AI“ – ai-chat su rastais straipsniais kaip kontekstu.
+   Straipsnis: { id, tab (puslapis, jei yra), g (grupė), t, d, s:[[antraštė, tekstas]], q:[[klausimas, atsakymas]], rel:[id], kw }
+   Tekste eilutė, prasidedanti „• “, – sąrašo punktas; „→“ žymi kelią meniu.
+   ============================================================ */
+const GUIDE_GROUPS = ['Pradžia', 'Ofisas', 'Sandėlis', 'Transportas ir pinigai', 'Komanda', 'Administravimas'];
+const GUIDE = [
+{ id:'about', g:'Pradžia', t:'Kaip veikia programa', d:'Event Solutions komandos programa: renginiai, žmonės, sandėlis, transportas, sąskaitos, chatas ir paštas vienoje vietoje. Ji veikia naršyklėje, telefone (Android, iPhone) ir kompiuterio programoje.',
+  s:[['Iš ko ji susideda', 'Programa suskirstyta į puslapius. Kairiajame meniu (telefone – apatinėje juostoje ir „Meniu“) matai tik tuos puslapius, kuriuos tau leidžia tavo lygis. Pradžioje puslapiai sugrupuoti: Ofisas (renginiai, žmonės, pasiūlymai, sąskaitos…), Sandėlis (projektai, įranga, rūšiavimas, krovimas…) ir atskiros plytelės (Chatas, Transportas, Ataskaitos, Mano erdvė…).'],
+     ['Duomenys bendri visiems', 'Viskas saugoma serveryje ir matoma kitiems iš karto: pakeitęs renginį, įrangą ar žinutę kiti pamato per kelias sekundes, perkrauti nereikia. Programa atsidaro iš įrenginio atminties akimirksniu, o naujausi duomenys atsisiunčia fone.'],
+     ['Kas ką mato', 'Ką gali matyti ir keisti, lemia tavo lygis (Super Admin, Admin+, Admin, Office, Projektų vadovas, Tech, Freelance, Runner) ir teisių lentelė. Plačiau – straipsnis „Lygiai ir teisės“.'],
+     ['Atnaujinimai', 'Nauja versija atsisiunčia pati; kai niekas neredaguojama, programa persikrauna į ją, kai į ją grįžti. Prireikus pasirodo „Programa atnaujinta – Perkrauti“.']],
+  q:[['Kur rasti tai, ko ieškau?', 'Spausk „Ieškoti“ viršuje (arba Ctrl K, arba „/“) ir rašyk – rasi puslapius, funkcijas, žmones, daiktus ir projektus. Arba šiame Gide įrašyk klausimą.'],
+     ['Ar galiu dirbti su keliais puslapiais vienu metu?', 'Taip: kompiuteryje Pradžioje įjunk „Langai“ (2–4 darbo langai), kairiojo meniu apačioje „+“ – greitieji langai, arba antras programos langas kitame ekrane. Žr. „Valdymas ir langai“.']],
+  rel:['ui','search','levels','flows'], kw:'programa apie pradzia kaip veikia' },
+
+{ id:'flows', g:'Pradžia', t:'Kas su kuo susiję', d:'Kaip viena programos dalis papildo kitą: nuo renginio iki komandos, įrangos, transporto, kuro ir sąskaitų.',
+  s:[['Renginys – centras', '• Renginiai → komanda: į renginio grafas (Montavimas, Budi renginyje, Operatoriai, Demontavimas) įrašomi žmonės iš Žmonių ir Narių. Žmonės → Bookingas parodo, kas tą dieną gali, ir „Rodyti tik laisvus“ komandos lange.\n• Įrašyti nariai gauna pranešimą, renginiui sukuriamas chato kanalas, „Renginio laiškas“ išsiunčia komandai visą informaciją (su vairuotojų kodais ir „Kuro kortele“).\n• Žmogus, įrašytas dviejuose renginiuose tą pačią dieną, pažymimas „!“. Narių laisvos dienos ir atostogos (Mano erdvė → Prašymai) neleidžia įrašyti tomis dienomis.'],
+     ['Įranga', '• Renginyje rezervuota įranga ir Projektų įrangos sąrašai mažina sandėlio likutį tomis dienomis – tai matosi Pasiūlymuose („Sandėlio kiekiai“), Įrangos plane, „Tikrinti likutį“ ir daikto kortelėje.\n• Sugadinti ir dingę daiktai (Įrangos gedimai) atimami iš kiekio, kurį galima rezervuoti; inventorizacijoje suskaičiuotas mažesnis kiekis – taip pat.\n• Projektas → Rūšiavimas (sandėlyje sudedama) → Krovimas (kas į kurį automobilį) → Paėmimai / Išdavimai (išduodama, grąžinama su nuotraukomis).\n• Atlikti darbai (remontai, patikros) ir gedimai matosi daikto kortelėje.'],
+     ['Transportas ir kuras', '• Renginio logistikoje įrašytas nuomojamas transportas patvirtinto renginio atveju pats patenka į Transportas → Transporto nuoma ir Ataskaitos → Transporto nuoma.\n• Vairuotojai gauna kodą; per automobilio QR ar „Kuro kortelę“ parodomas UTA kortelės PIN, o įkėlus UTA ataskaitą pylimas susiejamas su vairuotoju ir renginiu.\n• Nario UTA pylimai turi būti pagrįsti Išlaidose (darbo arba asmeninis); asmeniniai atimami iš balanso.\n• Automobilis „Remonte“ negali būti įrašytas į renginį tomis dienomis.'],
+     ['Pinigai', '• Freelanceriai sąskaitas pateikia per saskaitos.eventsolutions.lt su renginių išskaidymu → Sąskaitos → Freelance → patvirtintos patenka į Ataskaitos → Freelance.\n• Laiškai į saskaitos@ tampa sąskaitomis (Sąskaitų dėžutė). Transporto nuomos sąskaitos papildo Transporto nuomos ataskaitą.\n• Išlaidos (kuras, maistas, kita) → patikra Office / Admin+ → kompensacijos ir balansas.'],
+     ['Pranešimai', 'Beveik kiekvienas veiksmas, kuris liečia kitą žmogų (įrašymas į renginį, užduotis, sąskaitos sprendimas, išlaidos korekcija, gedimas, žinutė), ateina kaip pranešimas į telefoną / kompiuterį ir į Pradžios „Pranešimų“ kortelę.']],
+  rel:['events','people','inventory','newproj','fleet','expenses','invoices','stats'], kw:'rysiai sasaja saveika srautas kaip susije integracija' },
+
+{ id:'ui', g:'Pradžia', t:'Valdymas ir langai', d:'Meniu, viršutinė juosta, dešinysis skydelis, greitieji ir darbo langai, dydis, tema ir telefono juosta.',
+  s:[['Kairysis meniu', 'Suskleistas iki ikonų – užvedus pelę matosi pavadinimas ir kiek naujų. „›“ išskleidžia virš puslapio, smeigtukas palieka nuolat išskleistą. Apačioje – greitieji langai ir „+“.'],
+     ['Viršutinė juosta', '• Ieškoti (Ctrl K arba „/“) – žr. „Paieška“.\n• Skaičiuotuvas (su PVM), Kalendorius, Užduotys (pridėti sau / priskirti kitiems), Klaidos ir pasiūlymai, Dydis, Tema (šviesi / tamsi).\n• „+“ – įdėti atidarytą puslapį į greituosius langus; šalia – antras programos langas (nutempk į kitą ekraną).\n• Tavo nuotrauka – būsena: Prisijungęs, Neaktyvus, Netrukdyti (be pranešimų), Nematomas, ir kiek laiko.'],
+     ['Dešinysis skydelis', 'Pranešimai, Sąskaitos, Kalendorius, Klaidos, Užduotys, AI asistentas. Suskleistas – juosta dešiniame krašte su šiandienos data ir greitais mygtukais; smeigtukas palieka atidarytą. Kiekvieną skiltį galima prisegti suskleistą ar išskleistą.'],
+     ['Darbo erdvė (Pradžioje, kompiuteryje)', '„Langai“ jungiklis viršuje: Pradžios plytelės sumažėja, po jomis 2, 3 ar 4 darbo langai su bet kuriais puslapiais (ir Notes). Lango pavadinimą paspaudus – pakeisti programą; − / + – mastelis; tarpą tarp langų tempk – keičiasi dydis.'],
+     ['Dydis ir išvaizda', '„Dydis“ – plytelės, dešinės kortelės, meniu ir visa programa nuo 30 % iki 130 %. Mano erdvė → Išvaizda – dizainas, ikonų spalvos, savo fonas (paveikslėlis, video ar gyvas fonas), stiklo efektas, kampai.'],
+     ['Telefone', 'Apačioje: dvi tavo programos, Namai (viduryje), Notes ir Meniu. Visi langai turi ✕ viršuje dešinėje; Esc kompiuteryje uždaro langą (neišsaugoti laukai lieka juodraštyje).'],
+     ['„?“ prie antraščių', 'Paspaudus „?“ šalia antraštės parodomas tos dalies paaiškinimas.']],
+  q:[['Kaip atidaryti du puslapius šalia?', 'Pradžioje įjunk „Langai“ ir pasirink 2. Arba kairiojo meniu apačioje „+“ – greitasis langas, kurį gali tempti ir keisti dydį.'],
+     ['Kaip padidinti tekstą?', 'Viršuje „Dydis“ → „Visa programa“ + (arba Ctrl +).'],
+     ['Kaip išjungti pranešimus laikinai?', 'Paspausk savo nuotrauką viršuje → „Netrukdyti“ ir pasirink, kiek laiko.']],
+  rel:['start','search','profile','notes'], kw:'meniu juosta skydelis langai greitieji darbo erdve dydis tema tamsi sviesi telefonas busena netrukdyti' },
+
+{ id:'start', tab:'home', g:'Pradžia', t:'Pradžia', d:'Plytelės į visus puslapius, Ofiso ir Sandėlio grupės, laikas ir orai, prisegti užrašai, darbo langai.',
+  s:[['Plytelės', 'Kiekviena plytelė atidaro puslapį ar grupę. Ofisas ir Sandėlis – langas su tos grupės puslapiais; jame „Keisti tvarką“ – susidėlioji sau. „Tvarkyti“ – tempk plyteles į norimą vietą (tvarka tavo).'],
+     ['Juosta viršuje', 'Laikas, data, orai Vilniuje (paspaudus – kelių dienų prognozė).'],
+     ['Prisegti užrašai', 'Notes užrašas su „Prisegti pagrindiniame lange“ tampa sticky note Pradžioje – tempk, redaguok, atsek.'],
+     ['Darbo langai', 'Kompiuteryje „Langai“ – iki 4 puslapių po plytelėmis (žr. „Valdymas ir langai“).']],
+  q:[['Kaip pakeisti plytelių tvarką?', 'Pradžioje spausk „Tvarkyti“ ir tempk plyteles; „Baigti“ – išsaugoti. Ofiso / Sandėlio lange – „Keisti tvarką“.']],
+  rel:['ui','notes'], kw:'pagrindinis plyteles orai ofisas sandelis grupes' },
+
+{ id:'search', g:'Pradžia', t:'Paieška, žmogaus ir daikto kortelės', d:'Viena paieška visai programai: puslapiai, funkcijos, nariai, žmonės, įranga, projektai. Paspaudus žmogų ar daiktą – visa informacija apie jį.',
+  s:[['Kaip ieškoti', '„Ieškoti“ viršuje, Ctrl K arba „/“. Rašyk bet kokią dalį – vardą, telefoną, daikto pavadinimą ar kodą, funkciją („atostogos“, „likutis“). Rodyklės ↑↓ ir Enter – atidaryti, Esc – uždaryti.'],
+     ['Žmogaus kortelė', 'Paspaudus narį, žmogų iš Žmonių archyvo ar vardą iš renginių lentelių matai: telefoną, el. paštą, grupes, lygius, teises, pultus, pastabas, įkainius (Office+), būsimus ir buvusius renginius su pozicija (komanda, vadovas, vairuotojas), Bookingo skambučius, praneštus gedimus ir atliktus darbus sandėlyje. Iš čia – skambinti, rašyti žinutę, atidaryti Žmonėse.'],
+     ['Daikto kortelė', 'Paspaudus daiktą matai: kodą, grupę, kiekį sandėlyje, kiek sugadinta / dingo, matmenis, svorį, galią; „Ar laisvas?“ – pasirenki dieną ir matai, kiek laisva ir kas rezervavo (renginiai, projektai, Rentman, gedimai); paskutinius 5 renginius ir ateities renginius, kuriuose suplanuotas, projektus, gedimų istoriją ir atliktus darbus (remontai, patikros). Mygtukai – Rodyti sandėlyje, Likutis laikotarpiui, Pranešti apie gedimą.']],
+  q:[['Kaip sužinoti, kur dirbo žmogus?', 'Paieškoje įrašyk vardą ir paspausk žmogų – kortelėje „Buvę renginiai“ ir „Būsimi renginiai“ su pozicijomis.'],
+     ['Kaip patikrinti, ar daiktas laisvas konkrečią dieną?', 'Paieškoje įrašyk daiktą, paspausk jį ir kortelėje „Ar laisvas?“ pasirink dieną. Laikotarpiui – „Likutis laikotarpiui“ arba Įrangos gedimai → Tikrinti likutį.'],
+     ['Kur matyti daikto remontus?', 'Daikto kortelėje – „Gedimai ir dingimai“ ir „Remontai, patikros ir kiti darbai“. Visi darbai – Sandėlis → Atlikti darbai.']],
+  rel:['people','inventory','gear','works','events'], kw:'paieska ieskoti ctrl k kortele dosje zmogus daiktas informacija laisvas uzimtas rezervuota' },
+
+{ id:'notify', g:'Pradžia', t:'Pranešimai', d:'Pranešimai į telefoną ir kompiuterį bei Pradžios „Pranešimų“ kortelė.',
+  s:[['Kas praneša', 'Chato žinutės, paminėjimai, įrašymas į renginį, užduotys, kalendoriaus kvietimai, sąskaitų ir išlaidų sprendimai, gedimai, prašymai, darbų planai, nauji darbo laiškai ir kt.'],
+     ['Nustatymai', 'Mano erdvė → Pranešimai: įjungti telefone / kompiuteryje, temos (ką gauti), tylos valandos. „Netrukdyti“ būsena sustabdo visus pranešimus.'],
+     ['Kortelė „Pranešimai“', 'Dešiniajame skydelyje – tik nauji. Paspaudus atsidaro, iš kur pranešimas (pokalbis, renginys, sąskaita…) ir jis dingsta; „✓ Visi“ – išvalyti.'],
+     ['Jei neateina', 'Telefone atidaryk programėlę – ji užsiregistruoja iš naujo. Patikrink, ar telefono nustatymuose leisti pranešimai.']],
+  rel:['profile','ui'], kw:'pranesimai push notifications tyla neateina' },
+
+{ id:'apps', g:'Pradžia', t:'Programėlės telefonui ir kompiuteriui', d:'Android, iPhone, Windows ir Mac – Mano erdvė → Parsisiųsti.',
+  s:[['Kur atsisiųsti', 'Mano erdvė → Parsisiųsti: Android APK, iPhone (pridėti į pradžios ekraną), Windows ir Mac programos (Mac – ir per Terminalą viena komanda).'],
+     ['Atnaujinimas', 'Visos programėlės atsinaujina pačios; nieko diegti iš naujo nereikia.'],
+     ['RFID skeneris', 'Atskiras lengvas puslapis senesniems skaitytuvams (Chainway C72) – žr. „RFID skeneris“.']],
+  rel:['profile','rfid'], kw:'apk android iphone ios windows mac atsisiusti programele diegti' },
+
+/* ---------- Ofisas ---------- */
+{ id:'events', tab:'events', g:'Ofisas', t:'Renginiai', d:'Visų renginių lentelė: data ir būsena, pavadinimas, vieta, organizatorius, atsakingi, komanda pagal grafas, laikai, transportas, įranga.',
+  s:[['Lentelė', '• Vienas, 2, 3, 4, 6 ar 12 mėnesių viename lange; „Šis mėnuo“, paieška (renginys, įmonė, vieta, žmogus, auto).\n• Datos langelio spalva – būsena: geltona Nepatvirtintas, žalia Patvirtintas, raudona Atšauktas (paspaudus – keisti).\n• Stulpelių plotį tempk antraštės kraštu (galioja visiems), mastelis − / +, „per visą langą“.\n• Praėję renginiai po 2 dienų susiskleidžia patys.'],
+     ['Naujas renginys', '„+ Renginys“: tipas, pavadinimas, data(-os), vieta (paieška iš Erdvių, buvusių vietų ir žemėlapio), organizatorius su telefonu (įsimenamas, siūlomas iš Kontaktų), Office ir Tech atsakingi, ir penki blokai – Montavimas prieš renginį, Montavimas renginio dieną, Demontavimas (kiekvienam galima „+ Diena“), Budi renginyje, Operatoriai – su data, laiku ir kiek reikia Garso (A), Šviesos (L), Video (V), Crew.'],
+     ['Komanda', '• Į laukelį rašyk vardą – siūlomi žmonės. „Pridėti eilutę“ – nauja pozicija. Tuščia raudona – laisva pozicija.\n• Nustatymų mygtukas (šalia „+ Pridėti eilutę“) – komandos langas: diena, laikas, kiek reikia, dešinėje technikų sąrašas; „Rodyti tik laisvus“ – tik tie, kurie Bookinge pasakė „gali“ / „sutiko“.\n• „!“ prie vardo – žmogus tą dieną įrašytas ir kitur; „Galima – dirbs abiejuose“ jį nuima.\n• Atšauktame renginyje – „Atbookinti / perkelti žmones“.'],
+     ['Transportas', 'Logistikos stulpelyje – įmonės automobilis arba „Nuoma“ (tiekėjas, valst. nr., tipas: Fūra / Būda / Mikroautobusas). Remonte esančio automobilio įrašyti negalima. Vairuotojai gauna kodus.'],
+     ['Įranga ir PDF', 'Prie renginio – PDF: įrangos sąrašas (rezervuota arba susieto projekto). Įrangos rezervacija mažina sandėlio likutį. Įrangos planavimo lentelė – rezervacijos pagal dienas.'],
+     ['Renginio laiškas', 'Formatuotas laiškas komandai: datos, žmonės pagal dienas (montažas, renginys, demontažas) su pozicija ir atvykimo vieta / laiku, transportas, vairuotojų kodai, „Kuro kortelė“, siuntėjo parašas.'],
+     ['Importas', '„Importuoti“ – renginiai iš Excel: dublikatai neįkeliami, vardai sutikrinami su Žmonėmis, ateities renginiams sukuriami projektai ir chato kanalai.'],
+     ['Kas mato', 'Freelance mato tik renginius, kuriuose pats įrašytas; Tech – tik peržiūri.']],
+  q:[['Kaip sukurti renginį?', 'Renginiai → „+ Renginys“, užpildyk formą ir išsaugok. Naujas renginys – Nepatvirtintas (geltonas); patvirtinus pažaliuoja.'],
+     ['Kaip rasti laisvą žmogų renginiui?', 'Atidaryk komandos langą (nustatymų mygtukas grafoje) ir pažymėk „Rodyti tik laisvus“, arba Žmonės → Bookingas tai dienai.'],
+     ['Kaip išsiųsti informaciją komandai?', 'Renginio meniu – „Renginio laiškas“: patikrink peržiūrą ir siųsk.'],
+     ['Kodėl prie vardo „!“?', 'Tas žmogus tą pačią dieną įrašytas kitame renginyje. Paspausk „!“ – matysi kur; jei dirbs abiejuose – „Galima – dirbs abiejuose“.']],
+  rel:['people','newproj','fleet','venues','chat','flows'], kw:'renginys renginiai komanda montavimas demontavimas budi operatoriai logistika laiskas importas statusas patvirtintas atsauktas' },
+
+{ id:'people', tab:'people', g:'Ofisas', t:'Žmonės', d:'Visų kontaktų archyvas (freelanceriai, technikai, crew), skambučių žymos (Bookingas) ir užimtumo kalendorius.',
+  s:[['Archyvas', '• Grupės: Garsas (A/OP, A/TECH), Šviesa (L/OP, L/TECH), Video (VJ, V/TECH), Operatoriai, Crew ir kt.; kiekviena grupė – lentelė su lygiu, teisėmis, gebėjimais, pultais, miestu, įkainiu, telefonu.\n• Prie vardo – kiek renginių pradirbo (pagal tai rikiuojama), žvaigždutė – pirmenybė, „Nebeaktyvus“ – į apačią.\n• Įkainiai (valandinis / stafkė) – mato tik Office, Projektų vadovai ir Admin.\n• „Įkelti Excel“ – biuro kontaktų failas (freelanceriai, organizatoriai, RENT kompanijos).'],
+     ['Bookingas', 'Pasirenki dieną ar laikotarpį ir skambini: „Skambinti“ (šiuo įrenginiu arba pranešimu į telefoną), tada „Kuo baigėsi?“ – Sutiko, Atsisakė, Negali, Neatsiliepė, Perskambinti, Kita. Žymą iškart mato visi – niekas neskambina antrą kartą. Priminimai el. paštu apie užsakytas dienas.'],
+     ['Užimtumas', 'Mėnesio kalendorius: kas kurią dieną laisvas, kas sutiko, kam perskambinti; filtrai pagal grupę ir žymą.'],
+     ['Ryšys su renginiais', 'Renginio komandos laukeliuose siūlomi Žmonių vardai, komandos lange „Rodyti tik laisvus“ naudoja Bookingo žymas. Žmogaus kortelė (paieškoje) rodo jo renginius.']],
+  q:[['Kaip pažymėti, kad žmogus sutiko dirbti?', 'Žmonės → Bookingas, pasirink dieną, prie žmogaus „Skambinti“ arba „✎ Žyma“ → „Sutiko“.'],
+     ['Kaip pamatyti žmogaus istoriją?', 'Paspausk žmogų sąraše (arba rask paieškoje) – matysi el. paštą, adresą, pastabas, skambučius ir renginius.']],
+  rel:['events','search','members','creds'], kw:'zmones kontaktai freelanceriai bookingas skambuciai uzimtumas archyvas ikainis staf' },
+
+{ id:'offers', tab:'offers', g:'Ofisas', t:'Pasiūlymų kūrimas', d:'Komerciniai pasiūlymai su skiltimis, kainomis, nuolaidomis, sandėlio likučiu, versijomis, PDF ir vertimu į anglų kalbą.',
+  s:[['Pasiūlymas', '• Event Solutions arba Silent Concept antraštė; klientas, projektas, lokacija, datos.\n• Skiltys (GARSAS, ŠVIESOS, VAIZDAS, APTARNAVIMAS…) su spalva; eilutėje rašant pavadinimą siūloma įranga, grupės ir paslaugos (pirma – tos skilties).\n• Nuolaida skilčiai – % ir / ar €; parodoma tikroji nuolaida.\n• „+ poz.“ – pozicija (Scena, Ambient…); dublikuoti, perkelti eilutę.\n• LED ekranų ir pakylų dydis – plotis × aukštis arba m², pakylų kojos pagal aukštį.\n• Grupė su „()“ – sudėtinė: įrangos ir kiekių lentelė skliausteliuose.'],
+     ['Šoninė juosta', 'Suma, Likutis pagal skiltis (sandėlio kiekiai tomis dienomis, ⚠ – trūksta), maksimalus elektros poreikis, komentarai.'],
+     ['Veiksmai', 'Išsaugoti (Klientas, Versija, Galutinis), PDF (Peržiūrėti, Parsisiųsti, Be kainų, Siųsti klientui, Į Pasiūlymų PDF), Kita (Išversti į EN, Antraštės EN/LT, Kopija, Ištrinti). Versijos – kuo skiriasi nuo ankstesnės, palyginti iki 8 versijų.'],
+     ['Įranga / Paslaugos', 'Katalogas: kaip daiktas vadinasi pasiūlyme ir kaina, įrangos grupės (pvz. 1 m² LED = 4× kabinetai, keli variantai „arba“, ypatybės Dydis ir Aukštis), paslaugos, aptarnavimas, kita.'],
+     ['Klientai', 'Klientų sąrašas ir analizė.']],
+  q:[['Kaip padaryti pasiūlymą anglų kalba?', 'Pasiūlyme Kita → „Išversti į EN“ (nauja kopija) arba LT / EN perjungimas ir „PDF EN“.'],
+     ['Kaip matyti, ar užteks įrangos?', 'Šoninė juosta „Likutis“ – pagal pasiūlymo datas; ⚠ prie skilties reiškia, kad kažko trūksta.']],
+  rel:['jobs','inventory','newproj'], kw:'pasiulymas pasiulymai kaina nuolaida pdf versija klientas vertimas anglu silent concept' },
+
+{ id:'jobs', tab:'jobs', g:'Ofisas', t:'Pasiūlymų PDF', d:'Galutinių pasiūlymų PDF be kainų su komentarais planuojantiems.',
+  s:[['Kam', 'Iš Pasiūlymų („Į Pasiūlymų PDF“) atkeliauja galutinis pasiūlymas be kainų – sandėlis ir technikai mato, ką reikia paruošti, rašo komentarus.']],
+  rel:['offers','newproj'], kw:'pasiulymu pdf be kainu galutinis' },
+
+{ id:'invoices', tab:'invoices', g:'Ofisas', t:'Sąskaitos', d:'Gautos sąskaitos: įkėlimas, patikra ofise, tvirtinimas (Admin+), atsakymai tiekėjams, freelancerių portalas ir sąskaitų dėžutė.',
+  s:[['Įkelti', 'Kiekvienas, kas mato puslapį, gali „Įkelti sąskaitą“ (PDF / nuotrauka) – suma ir numeris nuskaitomi; mato tik savo įkeltas. Rūšys: Freelance, Paslaugų, Nuomos, Pirkinių, Transporto nuoma, Kitos.'],
+     ['Patikra ir sprendimas', 'Office ir Projektų vadovai patikrina („Sąskaita patikrinta“, „Reikia korekcijų“ – laiškas siuntėjui). Admin+ tvirtina, atmeta su priežastimi, žymi Suvesta apmokėjimui / Apmokėta, gali prisegti pavedimo kopiją.'],
+     ['Freelance portalas', 'saskaitos.eventsolutions.lt – freelanceris prisijungia el. paštu ir vienkartiniu kodu, pasirenka renginius, sumas ir išlaidas, įkelia sąskaitą (suma turi sutapti). Mato savo sąskaitų būsenas, gauna laiškus.'],
+     ['Sąskaitų dėžutė', 'Laiškai į saskaitos@ per ~15 s tampa sąskaitomis; rūšis parenkama pagal raktažodžius.'],
+     ['Transporto nuoma', 'Tokios sąskaitos detalizacija (valst. nr., dienos, suma) patenka į Ataskaitos → Transporto nuoma.']],
+  q:[['Kaip pateikti sąskaitą freelanceriui?', 'Per saskaitos.eventsolutions.lt (be programos paskyros) arba programoje Sąskaitos → „Įkelti sąskaitą“.']],
+  rel:['stats','flows','fleet'], kw:'saskaitos saskaita freelance tvirtinti apmoketa portalas dezute' },
+
+{ id:'venues', tab:'venues', g:'Ofisas', t:'Erdvės', d:'Renginių vietos: adresas, patekimas, iškrovimas, kontaktai, nuotraukos ir kiekviena erdvė atskirai.',
+  s:[['Vieta ir erdvės', 'Vietai – bendra informacija; „+ Pridėti erdvę“ – salė su išmatavimais, talpa, elektra, dūmais, liftu, kabinimo taškais, 3D turu, planais ir nuotraukomis.'],
+     ['Ryšys', 'Kuriant renginį vietos paieška siūlo Erdves.']],
+  rel:['events'], kw:'erdves vieta sale elektra patekimas planai' },
+
+{ id:'creds', tab:'creds', g:'Ofisas', t:'Prisijungimai / Kontaktai', d:'Programų prisijungimai (slaptažodžiai užšifruoti), organizatorių kontaktai ir RENT kompanijos.',
+  s:[['Kas', 'Office ir aukštesni. Slaptažodžiai užšifruoti, matosi, kas juos žiūrėjo; kopijavimo mygtukai. Renginio organizatorius su telefonu įrašomas į Kontaktus pats.']],
+  rel:['events','people'], kw:'prisijungimai slaptazodziai kontaktai organizatoriai rent' },
+
+{ id:'keys', tab:'keys', g:'Ofisas', t:'Raktai', d:'Sandėlio rakto kodas, išduoti raktai ir jų archyvas.',
+  s:[['Sandėlio raktas', '„Generuoti naują kodą“ → įvedus į spyną „Kodas ant spynos pakeistas“ – kodas įdedamas į chato kanalą #sandėlio-raktas.'],
+     ['Išduoti raktai', 'Kam, kada, kas išdavė; „Grąžintas“ – į Archyvą.']],
+  rel:['chat'], kw:'raktai raktas kodas spyna' },
+
+{ id:'alarm', tab:'alarm', g:'Ofisas', t:'Signalizacija', d:'Darbuotojų signalizacijos kodai ir laikini kodai svečiams.',
+  s:[['Kodai', 'Darbuotojų kodai (mato Admin ir Office). Laikinas kodas – vardas, pavardė, galiojimas (3 val.–30 d.), galima išsiųsti el. paštu; pasibaigęs paraudonuoja.']],
+  rel:['keys'], kw:'signalizacija kodas alarm' },
+
+{ id:'mail', tab:'mail', g:'Ofisas', t:'El. paštas', d:'Darbo paštas kaip Gmail: aplankai, skirtukai, du adresai ir parašai, automatinis atsakymas.',
+  s:[['Skaitymas', 'Kairėje aplankai, viršuje skirtukai (Pagrindiniai, Reklamos…), paieška. Prijungus Gmail (⚙️) laiškai atsidaro akimirksniu. „Kokius laiškus rodyti“ – visus, tik darbo, tik asmeninius.'],
+     ['Rašymas', '„Rašyti laišką“, „Nuo“ – darbo ar Gmail adresas; atsakant parenkama pati. Laiškas siunčiamas fone.'],
+     ['Nustatymai (⚙️)', 'Parašai (darbo ir asmeninis), automatinis atsakymas („ne biure“), Gmail prijungimas, įmonės pašto perkėlimas į Gmail, pranešimai apie naujus darbo laiškus.']],
+  rel:['notify'], kw:'pastas el pastas laiskai gmail parasas automatinis atsakymas' },
+
+{ id:'chat', tab:'chat', g:'Komanda', t:'Chatas', d:'Bendras chatas, kanalai, asmeniniai pokalbiai, gijos, skambučiai, failai.',
+  s:[['Pokalbiai', 'Bendras, kanalai (atviri ir užrakinti), renginių kanalai pagal metus, asmeniniai ir grupiniai. Paieškoje įrašius vardą – pradėti pokalbį.'],
+     ['Žinutės', 'Atsakyti gijoje, reakcijos, paminėjimai @, išsaugoti, prisegti (rodomos viršuje), redaguoti. „Matė“ po tavo žinute. Failai, nuotraukos, video (iki 200 MB), GIF; PDF, Word, Excel atsidaro programoje.'],
+     ['Kanalo užduotys', 'Kanale skirtukas „Užduotys“ – su atsakingu, atlikta žalia.'],
+     ['Skambučiai', 'Garso ar vaizdo skambutis tiesiai chate, ekrano rodymas; susitikimai su išorės svečiais (Kalendorius).'],
+     ['Automatiniai kanalai', '#automobiliai (problemos iš Transporto / QR), #sandėlio-raktas (rakto kodai), renginių kanalai.']],
+  rel:['members','events','fleet'], kw:'chatas zinute kanalas pokalbis skambutis video failai gija' },
+
+{ id:'members', tab:'members', g:'Komanda', t:'Nariai', d:'Programos nariai: kas prisijungęs, kontaktai, pareigos.',
+  s:[['Narys', 'Paspaudus – kortelė su telefonu, el. paštu, būsena; „Rašyti žinutę“. Pilnesnė informacija (renginiai, darbai) – paieškoje paspaudus narį.']],
+  rel:['chat','search','admin'], kw:'nariai komanda prisijunges kontaktai' },
+
+/* ---------- Sandėlis ---------- */
+{ id:'newproj', tab:'newproj', g:'Sandėlis', t:'Projektai', d:'Projektai su subprojektais, laikais ir įranga iš sandėlio – pagrindas rūšiavimui ir krovimui.',
+  s:[['Sąrašas', 'Lentelė kaip Rentman: spalva, pavadinimas, būsena, planavimo pradžia ir pabaiga, svoris, tūris, galia, eiga (ar užtenka įrangos, rūšiavimas / krovimas), kas sukūrė, vieta; rikiavimas, Excel, „Ši diena ir ateinantys“.'],
+     ['Projektas', '• Bendra (klientas, vieta, datos), Subprojektai su būsena (rezervuoja tik patvirtinti), Laikai.\n• Įranga: kairėje sandėlio paieška ir rinkiniai, grupės (paspaudus pavadinimą – pasirinkti), priedai sumuojami į bendrą eilutę, daiktus galima tempti.\n• Prie kiekvieno daikto – kiek laisva tomis dienomis; trūksta – raudonai. Subnuoma – iš kitų įmonių.\n• „⋯“ – kopijuoti, išsaugoti kaip šabloną, ištrinti.'],
+     ['Toliau', 'Projekto įranga → Rūšiavimas (sudėti sandėlyje) → Krovimas (į automobilius). Renginiui susietas projektas duoda renginio įrangos PDF.']],
+  q:[['Kaip sukurti projektą?', 'Projektai → „Naujas“, užpildyk Bendra, pridėk subprojektus, laikus ir įrangą.']],
+  rel:['sort','load','inventory','offers','events'], kw:'projektai projektas subprojektas iranga rezervacija sablonas rentman' },
+
+{ id:'sort', tab:'sort', g:'Sandėlis', t:'Rūšiavimas', d:'Projekto įrangos surinkimas sandėlyje: kas atrūšiuota, kiek, į kurias dėžes.',
+  s:[['Kaip', 'Pasirink projektą; „Reikia atrūšiuoti“ / „Atrūšiuota“ – braukiant kortelę į šoną ar paspaudus; skyriai pagal tai, kur daiktas įdėtas projekte (Apšvietimas, Garsas, Video, Bendra, Elektrifikacija). Keli žmonės gali rūšiuoti vienu metu – pažymėjimai matosi iš karto.']],
+  rel:['newproj','load','rules'], kw:'rusiavimas atrusiuota sandelis dezes' },
+
+{ id:'load', tab:'load', g:'Sandėlis', t:'Krovimas', d:'Krovimo simuliacija: kiek ir kokio transporto reikia, 3D vaizdas, tvarka.',
+  s:[['Kaip', 'Pasirink projektą (ar laisvą sąrašą) ir transportą – įmonės, nuomojamą ar tipą. „Palyginti visus tipus“ – kiek kurio reikės ir užpildymas. 3D vaizdas, krovimo tvarka; „Kraunama ant“ ir Pakavimas lemia, kas ant ko dedama. Krovimas neprivalomas.']],
+  rel:['newproj','rules','fleet'], kw:'krovimas krauti automobilis 3d furgonas talpa' },
+
+{ id:'rentals', tab:'rentals', g:'Sandėlis', t:'Paėmimai', d:'Nuomojamos įrangos paėmimai ir grąžinimai su nuotraukomis.',
+  s:[['Kaip', 'Ką paimti, iš ko, kada; būsena Reikia paimti → Paimta → Grąžinta; nuotraukos paimant ir grąžinant.']],
+  rel:['handovers','newproj'], kw:'paemimai nuoma paimti grazinti' },
+
+{ id:'handovers', tab:'handovers', g:'Sandėlis', t:'Išdavimai', d:'Mūsų įrangos išdavimas klientui ar nuomai su nuotraukomis ir perdavimo aktu (PDF).',
+  s:[['Kaip', 'Kam, kas, kada grąžinti; nuotraukos (išorė / vidus), perdavimo aktas PDF; kanalas chate. Išdavimai matosi ir renginių lentelėje.']],
+  rel:['rentals','events'], kw:'isdavimai isduoti nuoma aktas perdavimas' },
+
+{ id:'inventory', tab:'inventory', g:'Sandėlis', t:'Įranga', d:'Visa sandėlio įranga: kategorijos, gamintojai, kiekiai, matmenys, svoris, galia, priedai, rinkiniai, RFID kodai.',
+  s:[['Sąrašas', 'Filtrai: grupė, gamintojas, pogrupis; paieška pagal pavadinimą, kodą ar RFID kodą. ✎ prie pavadinimo – pervadinti visur (projektuose, renginiuose, inventorizacijoje).'],
+     ['Daiktas', 'Kiekis, matmenys, svoris, galia (W), „Kraunama ant“ (3D – ant kurių plokštumų galima krauti), priedai, kainos (mato Admin ir Projektų vadovai), RFID vienetai.'],
+     ['Kur suplanuota', 'Mygtukas „Kur suplanuota“ – daiktas ir laikotarpis: visi renginiai, projektai ir Rentman projektai su kiekiais.'],
+     ['Daikto kortelė', 'Paieškoje paspaudus daiktą – laisvumas pasirinktą dieną, paskutiniai renginiai, gedimai ir remontai (žr. „Paieška“).']],
+  q:[['Kaip sužinoti, kur daiktas suplanuotas?', 'Įranga → „Kur suplanuota“ arba paieškoje paspausk daiktą.'],
+     ['Kaip pervadinti daiktą?', 'Įrangoje prie pavadinimo ✎ – naujas pavadinimas pasikeičia visur.']],
+  rel:['search','gear','works','stocktake','newproj','rules'], kw:'iranga sandelis daiktas kiekis matmenys svoris galia priedai rinkiniai rfid kodas' },
+
+{ id:'gear', tab:'gear', g:'Sandėlis', t:'Įrangos gedimai / pažeidimai', d:'Pažeista, sugadinta ir dingusi įranga, likučio tikrinimas pagal datas.',
+  s:[['Pranešti', '„Pažeista / sugadinta“ arba „Dingę daiktai“: daiktas, kiekis, ar dar naudojamas, aprašymas, vieta, renginys, nuotraukos; atsakingas ir kas žino gauna pranešimus. Būsenos: atvira, sutaisyta, rasta, nurašyta (nurašyti – tik su Admin+).'],
+     ['Tikrinti likutį', 'Pasirink dieną ar laikotarpį: kiekvienam daiktui sandėlyje, sugadinta / dingo, rezervuota (daugiausia vienu metu) ir likutis; paspaudus – kas rezervavo. Galima įskaičiuoti Rentman.'],
+     ['Ryšys', 'Sugadinti / dingę daiktai mažina rezervuojamą kiekį visur; jie matosi daikto kortelėje.']],
+  q:[['Kaip pranešti apie sugedusį daiktą?', 'Paieškoje „Pranešti apie pažeistą įrangą“ arba Įrangos gedimai → Pažeista → naujas pranešimas.']],
+  rel:['inventory','works','search'], kw:'gedimai sugadinta pazeista dingo nurasyta likutis tikrinti laisva' },
+
+{ id:'works', tab:'works', g:'Sandėlis', t:'Atlikti darbai', d:'Valymai, patikros, remontai: kada, su kokiais daiktais ir kas darė.',
+  s:[['Kaip', 'Įrašas: data, darbas (Valymas, Profilaktinė patikra, Remontas, Testavimas, Kalibravimas, PĮ atnaujinimas, Dalių keitimas, Kita), daiktai arba visa grupė, kas darė, pastaba, nuotraukos. Paieška pagal laikotarpį ir žodį („sirena“ – kada ir kas daryta), filtrai pagal darbą ir žmogų.'],
+     ['Ryšys', 'Darbai rodomi daikto ir žmogaus kortelėse.']],
+  rel:['gear','inventory','search'], kw:'atlikti darbai remontas valymas patikra taisymas' },
+
+{ id:'stocktake', tab:'stocktake', g:'Sandėlis', t:'Inventorizacija', d:'Sandėlio inventorizacijos: kiekiai, atskiri vienetai, istorija, palyginimas ir sulyginimas su sandėliu.',
+  s:[['Kaip', 'Nauja inventorizacija – skaičiuoji daiktus (ar vienetus); „Palyginti inventorizacijas“, „Sulyginti su sandėliu“ – kur skiriasi ir perkelti kiekius. Suskaičiuotas mažesnis kiekis riboja rezervacijas. RFID skeneriu galima skaičiuoti žymomis.']],
+  rel:['inventory','rfid'], kw:'inventorizacija skaiciuoti kiekiai sulyginti' },
+
+{ id:'stockleft', tab:'stockleft', g:'Sandėlis', t:'Likučiai', d:'Einami daiktai (tape, skočas, strečas, baterijos…) vienetais ar procentais.',
+  s:[['Kaip', 'Kategorijas ir daiktus susikuri pats, nurodai, kada „baigiasi“. Skaičiai įrašomi pildant Darbų planą (punktas „Likutis: daiktas“) – su pokyčiu ir istorija.']],
+  rel:['workplans','buy'], kw:'likuciai tape skocas strecas baterijos eksploatacines' },
+
+{ id:'rules', tab:'rules', g:'Sandėlis', t:'Pakavimas', d:'Dėžės ir flight case\'ai – kiek vienetų telpa ir ant ko galima krauti.',
+  s:[['Kaip', 'Kiekvienam variantui – talpa ir privalomas „Kraunama ant“ (3D dėžė). Naudoja Krovimas ir Rūšiavimas.']],
+  rel:['load','sort'], kw:'pakavimas dezes case talpa' },
+
+{ id:'tools', tab:'tools', g:'Sandėlis', t:'Įrankiai: LED skaičiuoklė', d:'LED ekrano projektas kaip NovaStar SmartLCT: kabinetai, prievadai, jungimas, apkrova, galia ir svoris.',
+  s:[['Redaktorius', 'Naujas projektas: procesorius, kabinetas, stulpeliai × eilės. Drobėje kabinetus dedi, tempi, žymi; pasirinkus prievadą signalą brėži pele (Esc arba tas pats prievadas – baigti) arba jungimo būdu. Viršyta apkrova rodoma raudonai. Vaizdas iš priekio / galo, PDF.'],
+     ['Taisyklės', '650 000 px vienam Gigabit prievadui (60 Hz, 8 bit), mažėja didinant kadrų dažnį, perpus – 10/12 bit. Apkrova – stačiakampis aplink prievado kabinetus (UNICO Free Topology – tik kabinetai).'],
+     ['Bazė', 'Procesoriai: H serija, VX1000, VX1000 Pro, MCTRL4K; naują galima įkelti iš PDF specifikacijos. Kabinetus pridedi savo (visiems – Super Admin, arba tik šioje naršyklėje).'],
+     ['Greitas skaičiavimas', 'Įrašai m² arba plotį × aukštį ir kabineto tipą – matai, kiek prievadų ir procesorių reikia.']],
+  rel:['offers'], kw:'led skaiciuokle novastar smartlct prievadai kabinetai ekranas procesorius' },
+
+{ id:'rfid', g:'Sandėlis', t:'RFID skeneris', d:'Lengvas puslapis RFID skaitytuvams (Chainway C72): žymų priskyrimas, paieška, inventorizacija.',
+  s:[['Kaip', 'Sandėlis → „RFID skeneris“, prisijungti tuo pačiu el. paštu. Paieška (ir nepertraukiama), Priskirti (daiktas → žymos, vienetų kodai ES-00042), Inventorizacija. Skaitytuvo Keyboard Emulator – įjungti UHF/RFID ir Enter.']],
+  rel:['inventory','stocktake'], kw:'rfid skeneris zyma chainway c72' },
+
+/* ---------- Transportas ir pinigai ---------- */
+{ id:'fleet', tab:'fleet', g:'Transportas ir pinigai', t:'Transportas', d:'Įmonės automobiliai, jų dokumentai ir priminimai, QR kodai, problemos, taisymai, kuro pylimai, transporto nuoma ir UTA kortelės.',
+  s:[['Automobilis', 'Paspaudus: Pranešti apie problemą, Registruoti įvykį, Registruoti taisymą (įvykęs / išvežtas taisymui), Kuro pylimas, Apie automobilį. Kortelė paraudonuoja, kai baigiasi draudimas, tech. apžiūra, vinjetė ar KASKO arba automobilis remonte.'],
+     ['Dokumentai', 'Draudimas, tech. apžiūra, vinjetė, KASKO, registracijos liudijimas – įkėlus galiojimo data nuskaitoma pati; priminimai prieš pabaigą. Tepalo keitimas, profilaktika, istorija.'],
+     ['QR kodas', 'Kiekvienas automobilis turi QR lipduką: nuskenavus bet kuo telefonu – informacija, problemos registravimas (nuotraukos, video, vieta), įvykis, kuro pylimas su UTA PIN.'],
+     ['Transporto nuoma', 'Nuomojami mikroautobusai, būdos, fūros: įmonė, išmatavimai, kaina, kontaktai, dokumentai; pildosi iš renginių ir sąskaitų.'],
+     ['UTA kortelės', 'Kortelės, kam priskirtos, PIN ir CVC skaičiai, mėnesio ataskaitų įkėlimas (PDF / Excel), pylimai, pakartotiniai pylimai per 1 val., dublikatų sujungimas.'],
+     ['Kas gali', 'Pridėti automobilį – tik Admin. Tech, Freelance, Runner – peržiūra, bet problemą pranešti gali visi.']],
+  q:[['Kaip pranešti apie automobilio gedimą?', 'Transportas → paspausk automobilį → „Pranešti apie problemą“ (arba nuskenuok QR ant automobilio). Problema su nuotraukomis atsiranda #automobiliai kanale.'],
+     ['Kaip sužinoti UTA kortelės PIN?', 'Mano erdvė → UTA (tavo ir bendros kortelės), arba per automobilio QR → Kuro pylimas, arba renginio laiško „Kuro kortelė“.']],
+  rel:['expenses','stats','events','chat'], kw:'transportas automobilis masina draudimas technine vinjete kasko qr problema remontas uta kortele pin kuras nuoma' },
+
+{ id:'expenses', tab:'expenses', g:'Transportas ir pinigai', t:'Išlaidos', d:'Kuro, maisto ir kitos išlaidos, UTA pylimų pagrindimas, kompensacijos ir balansas.',
+  s:[['Pateikti', 'Data, maršrutas, priežastis, litrai / suma / km, kaip mokėta (UTA, savais, iš savo kuro), tikslas – darbo (komentaras būtinas) ar asmeninis; kvitai privalomi. Savo išlaidą gali taisyti ir trinti.'],
+     ['UTA pylimai', 'Tau priskirtos kortelės pylimai – kiekvieną pagrįsti: Darbo (komentaras ir kvitas) arba Asmeninis (kvitas); kitaip „nepagrįstas“.'],
+     ['Balansas', 'Admin+ priskiria mėnesinį balansą eurais: asmeniniai pylimai atimami, likutis pereina į kitą mėnesį; „Iš ko susideda likutis“.'],
+     ['Patikra', 'Narių išlaidos: Office ir aukštesni – kuras (Patvirtinti, Koreguoti, Prašyti paaiškinti, Nurašyti nuo balanso, keisti tikslą); kitas išlaidas – Admin+. Narys gauna pranešimus.']],
+  rel:['fleet','stats','tracker'], kw:'islaidos kuras kvitas kompensacija balansas uta pylimas asmeninis darbo' },
+
+{ id:'stats', tab:'stats', g:'Transportas ir pinigai', t:'Ataskaitos', d:'Vieno laikotarpio ataskaitos: transportas, transporto nuoma, UTA, subnuoma, freelance, darbuotojai, ofiso valymas, Bolt, Wolt, krovimai.',
+  s:[['Skiltys', '• Transportas – tvarkymai pagal automobilį. Transporto nuoma – iš renginių ir sąskaitų su kainomis. UTA – pylimai pagal kortelę, automobilį, narį (Narių kuras), PIN peržiūros.\n• Subnuoma – pagal tiekėjus. Freelance – patvirtintos sąskaitos pagal žmogų. Ofiso valymas.\n• Bolt – kelionės pagal žmogų, darbo / asmeninės, PDF ir automatinis siuntimas; Wolt – tik Admin.\n• Paieška per visas dalis, Excel.'],
+     ['Priminimai', 'Uta, Wolt, Bolt – „Priminimai“ įkelti ataskaitą (kam, kada, kiek kartų).']],
+  rel:['fleet','expenses','invoices'], kw:'ataskaitos suvestine bolt wolt uta freelance valymas subnuoma excel' },
+
+/* ---------- Komanda ---------- */
+{ id:'tracker', tab:'tracker', g:'Komanda', t:'Team Tracker', d:'Darbo laiko apskaita: pradėti / baigti darbą, veiklos, pamainų taisymas.',
+  s:[['Kaip', '„Pradėti darbą“ – pasirenki veiklą (sandėlis, vairavimas, budėjimas, montažas, demontažas, operatorius, pertrauka), keiti bet kada; „Baigti darbą“. Užfiksuojama vieta. Laiką pataisyti ar pamainą ištrinti galima tik su komentaru (matosi ataskaitoje).'],
+     ['Kas mato', 'Tech, Freelance, Runner – savo laiką; Admin, Office, Projektų vadovai – visų, Excel.']],
+  rel:['expenses'], kw:'tracker darbo laikas valandos pamaina pradeti baigti' },
+
+{ id:'buy', tab:'buy', g:'Komanda', t:'Pirkiniai', d:'Pasiūlymai, ką nupirkti, ir pirkinių sąrašai su Excel formulėmis.',
+  s:[['Pasiūlymai', 'Kiekvienas įrašo, ką pirkti (kiekis, kaina, nuoroda, svarba); priimtas pasiūlymas įkeliamas į sąrašą.'],
+     ['Sąrašai', 'VIDEO / AUDIO / LIGHT / Bendri – tik Office, Admin, Projektų vadovams: formulės, „Nupirkta“, importas ir eksportas Excel.']],
+  rel:['stockleft'], kw:'pirkiniai pirkti sarasas pasiulymas excel' },
+
+{ id:'workplans', tab:'workplans', g:'Komanda', t:'Darbų planas', d:'Periodiniai patikrinimai su Taip / Ne punktais, nuotraukomis ir priminimais.',
+  s:[['Kaip', 'Admin kuria planus (grupės, punktai, dažnumas, terminas, kam). Narys mato savo darbus, pažymi Taip / Ne, komentarą, nuotrauką ir pateikia; neatlikus – per visą ekraną „Yra neatliktų darbų“. Automobilių patikra – keli automobiliai iš eilės. Punktas „Likutis“ įrašo skaičius į Likučius.']],
+  rel:['stockleft','fleet'], kw:'darbu planas patikra checklist periodinis' },
+
+{ id:'notes', g:'Komanda', t:'Užduotys, Notes ir kalendorius', d:'Užduotys sau ir kitiems, asmeniniai užrašai, kalendorius su susitikimais.',
+  s:[['Užduotys', 'Viršuje „Pridėti užduotį“ (sau, su priminimais) ir „Priskirti užduotį“ (kitiems, terminas, atlikimas kiekvienam). Matosi dešiniajame skydelyje.'],
+     ['Notes', 'Asmeniniai užrašai (mato tik tu); „Prisegti pagrindiniame lange“ – sticky note. Telefone – „Notes“ apatinėje juostoje.'],
+     ['Kalendorius', 'Renginiai, šventės, tavo vaidmenys, kas nedirba; susitikimai su kvietimais ir online susitikimai su svečiais.']],
+  rel:['ui','start','chat'], kw:'uzduotys notes uzrasai kalendorius susitikimas priminimas sticky' },
+
+{ id:'games', tab:'games', g:'Komanda', t:'Games', d:'Retro žaidimai, rekordai ir žaidimai keliese su kolegomis.',
+  s:[['Kas yra', 'Pongas, Lenktynės, Šaudyklė ir kt.; rekordų lentelė; keliese – pakvieti kolegas.']],
+  rel:[], kw:'zaidimai games pongas lenktynes' },
+
+{ id:'profile', tab:'profile', g:'Komanda', t:'Mano erdvė', d:'Tavo profilis, UTA kortelės, išvaizda, prašymai, programėlės ir pranešimai.',
+  s:[['Grafos', '• Apie mane – vardas, nuotrauka, kontaktai, paskyra (slaptažodis).\n• UTA – tavo ir bendros kortelės su PIN (akutė).\n• Išvaizda – dizainas, ikonos, fonas, stiklas.\n• Prašymai – laisvos dienos ir atostogos (tvirtina Admin+; patvirtintomis dienomis negalima įrašyti į renginį).\n• Parsisiųsti – programėlės.\n• Pranešimai – kokius gauti, tylos valandos.']],
+  q:[['Kaip paprašyti atostogų?', 'Mano erdvė → Prašymai → Atostogos (arba paieškoje „atostogos“).']],
+  rel:['notify','apps','ui','fleet'], kw:'mano erdve profilis prasymai atostogos laisva diena isvaizda fonas uta pin' },
+
+/* ---------- Administravimas ---------- */
+{ id:'levels', g:'Administravimas', t:'Lygiai ir teisės', d:'Kas ką mato ir gali keisti.',
+  s:[['Lygiai', '• Super Admin – viskas, Sistema, Atnaujinimai; veikia tik naršyklėje, kur įvestas slaptažodis.\n• Admin+ – tvirtina sąskaitas, išlaidas, nurašymus, prašymus.\n• Admin – vartotojai ir teisės, transporto pridėjimas, darbų planai.\n• Office – kontaktai, sąskaitų patikra, išlaidų (kuro) patikra, įkainiai.\n• Projektų vadovas – projektai, pasiūlymai, įkainiai.\n• Tech – peržiūri renginius, savo sąskaitos, savo laikas.\n• Freelance – tik savo renginiai, savo sąskaitos ir laikas.\n• Runner – savo sąskaitos, be Prašymų ir Pirkinių.'],
+     ['Teisių lentelė', 'Admin → teisės: kiekvienam puslapiui ir lygiui – nėra / peržiūra / keisti. Super Admin gali išjungti puslapius ir mygtukus visiems (Sistema → Įjungti / išjungti).']],
+  rel:['admin','system'], kw:'lygiai teises role admin office tech freelance runner super admin prieiga' },
+
+{ id:'admin', tab:'admin', g:'Administravimas', t:'Admin', d:'Vartotojų patvirtinimas, lygiai ir teisės, balsavimai, laiškų patikra, limitai.',
+  s:[['Vartotojai', 'Nauji nariai laukia patvirtinimo; lygio keitimas; paieška.'],
+     ['Teisės', 'Lentelė: puslapis × lygis.'],
+     ['Balsavimai', 'Balsavimas QR kodu su rezultatų ekranu: nominacijos, užsklandos, laikmatis; Įjungti / Išjungti (išjungtas niekaip neapkrauna programos).'],
+     ['Kita', 'Laiškų patikra (Resend), naudojimo limitai, chato GIF raktas.']],
+  rel:['levels','system'], kw:'admin vartotojai patvirtinti teises balsavimas qr limitai' },
+
+{ id:'system', tab:'system', g:'Administravimas', t:'Sistema (Super Admin)', d:'Programos žemėlapis, patikros ir klaidos, nustatymai be kodo, įjungti / išjungti, savi puslapiai, atsarginės kopijos.',
+  s:[['Žemėlapis ir klaidos', 'Visi puslapiai, lentelės, serverio funkcijos ir paslaugos kaip mazgai; „Patikrinti viską“; klaidų žurnalas iš visų narių su paaiškinimais.'],
+     ['Nustatymai', 'Puslapių pavadinimai, ikonos, meniu tvarka, išjungti puslapiai, rolių teisės, būsenų pavadinimai ir spalvos, laisvi sąrašai – su istorija ir grąžinimu. Atsarginės kopijos būsena, perdavimo dokumentas.'],
+     ['Įjungti / išjungti', 'Programos, puslapiai, jų mygtukai, polapiai, meniu mygtukai; „Rinktis puslapyje“.'],
+     ['Puslapiai (Konstruktorius)', 'Savi puslapiai kaip Figmoje: kadrai, popup, sąveikos, perėjimai, komponentai, paskelbimas rolėms. Esami puslapiai redaguojami vietoje („Redaguoti puslapius“).']],
+  rel:['levels','admin'], kw:'sistema super admin zemelapis klaidos nustatymai konstruktorius kopijos isjungti' },
+];
+const GD = { id:'', q:'', map:null, mapP:null, ask:'', ai:'', aiBusy:false };
+const GD_STOP = new Set('kaip kur kas ar man mane reikia galima galiu yra mano su ir i is to ta tai apie kodel kada kiek noriu padaryti rasti matyti pamatyti ziureti pasiziureti sita sis sia kad o bet ne jei del prie per po uz nuo iki the a an to is how where what'.split(' '));
+// a word's stem (Lithuanian endings): „atostogų“ and „atostogos“ find each other
+const gdStem = w=>w.length > 5 ? w.slice(0, Math.max(5, w.length - 3)) : w;
+function gdWords(q){ return normalizeText(q||'').replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(w=>w && !GD_STOP.has(w)).map(gdStem); }
+function gdList(){ const sup = typeof sysCan==='function' && sysCan();
+  return GUIDE.filter(a=>sup || (a.id==='rfid' ? canView('inventory') : !a.tab || canView(a.tab))); }
+function gdTxt(v){ return String(v||''); }
+// the text of an article, for searching and for the AI
+function gdFlat(a){ return [a.t, a.d, ...(a.s||[]).map(x=>x[0]+': '+x[1]), ...(a.q||[]).map(x=>'Klausimas: '+x[0]+' Atsakymas: '+x[1])].join('\n'); }
+function gdUi(a){ const p = a.tab && GD.map && GD.map.pages && GD.map.pages[a.tab]; return p ? [...new Set((p.ui||[]).map(u=>u[1]).filter(Boolean))] : []; }
+function gdScore(a, words){
+  if(!words.length) return 0;
+  const f = { t:normalizeText(a.t), kw:normalizeText(a.kw||''), d:normalizeText(a.d), q:normalizeText((a.q||[]).map(x=>x[0]).join(' ')), all:normalizeText(gdFlat(a)+' '+gdUi(a).join(' ')) };
+  let s = 0, hit = 0;
+  words.forEach(w=>{ let x = 0; if(f.t.includes(w)) x += 6; if(f.kw.includes(w)) x += 4; if(f.d.includes(w)) x += 3; if(f.q.includes(w)) x += 3; if(f.all.includes(w)) x += 1; if(x){ s += x; hit++; } });
+  return hit ? s * hit / words.length : 0;
+}
+// questions & answers from all articles, best first
+function gdQa(words, list){
+  const out = [];
+  list.forEach(a=>(a.q||[]).forEach(([q, ans])=>{ const t = normalizeText(q), b = normalizeText(ans); let s = 0, hit = 0;
+    words.forEach(w=>{ const x = (t.includes(w) ? 3 : 0) + (b.includes(w) ? 1 : 0); if(x){ s += x; hit++; } });
+    if(hit && hit >= Math.min(2, words.length)) out.push({ a, q, ans, s:s * hit / words.length }); }));
+  return out.sort((x, y)=>y.s - x.s);
+}
+// the changelog entries about a topic (the "Reikia paleisti …" notes are left out)
+function gdNews(words, n){
+  if(!words.length || typeof CHANGELOG==='undefined') return [];
+  return CHANGELOG.map(x=>{ const t = normalizeText(x.t+' '+x.f); const hit = words.filter(w=>t.includes(w)).length; return { x, s:hit + (words.some(w=>normalizeText(x.t).includes(w)) ? 1 : 0), hit }; })
+    .filter(r=>r.hit >= Math.min(2, words.length)).sort((a, b)=>b.s - a.s || b.x.d.localeCompare(a.x.d)).slice(0, n).map(r=>r.x);
+}
+const gdNoSql = s=>String(s||'').replace(/\s*(Reikia|Supabase)?\s*(paleisti|paleisk)[^.]*\.(sql)?[^.]*\.?/gi, '').replace(/\s*Reikia atnaujinti[^.]*\./gi, '').trim();
+function gdBody(t){
+  const lines = gdTxt(t).split('\n'); let html = '', ul = false;
+  lines.forEach(l=>{ if(/^•\s/.test(l)){ if(!ul){ html += '<ul>'; ul = true; } html += '<li>'+esc(l.replace(/^•\s*/, ''))+'</li>'; }
+    else { if(ul){ html += '</ul>'; ul = false; } if(l.trim()) html += '<p>'+esc(l)+'</p>'; } });
+  return html + (ul ? '</ul>' : '');
+}
+function gdMark(html, words){
+  if(!words.length) return html;
+  // highlight inside text only (not in tags); diacritics-insensitive by testing each word of the text
+  return html.replace(/>([^<]+)</g, (m, txt)=>'>'+txt.replace(/[\p{L}\p{N}]+/gu, w=>{ const n = normalizeText(w); return words.some(x=>x.length > 2 && n.startsWith(x)) ? '<mark>'+w+'</mark>' : w; })+'<');
+}
+async function gdMapLoad(){
+  if(GD.map || GD.mapP) return GD.mapP;
+  GD.mapP = fetch('sys-map.json', { cache:'no-cache' }).then(r=>r.ok ? r.json() : null).then(m=>{ GD.map = m || { pages:{} }; }).catch(()=>{ GD.map = { pages:{} }; });
+  return GD.mapP;
+}
+// the pages that work with the same data (tables) as this one
+function gdShared(tab){
+  const P = GD.map && GD.map.pages || {}, me = P[tab]; if(!me) return [];
+  const common = new Set(['profiles', 'app_config', 'app_config_log', 'app_release', 'app_state', 'role_permissions', 'game_scores']);
+  const mine = new Set((me.tables||[]).filter(t=>!common.has(t)));
+  return Object.entries(P).filter(([k, p])=>k!==tab && canView(k)).map(([k, p])=>({ k, lab:p.label, n:(p.tables||[]).filter(t=>mine.has(t)).length })).filter(x=>x.n).sort((a, b)=>b.n - a.n).slice(0, 8);
+}
+function gdOpen(id){ GD.id = id || ''; GD.q = ''; if(currentTab==='guide') renderGuideTab(); else setTab('guide'); }
+function renderGuideTab(){
+  const list = gdList();
+  if(GD.id && !list.some(a=>a.id===GD.id)) GD.id = '';
+  const nav = GUIDE_GROUPS.map(g=>{ const xs = list.filter(a=>a.g===g); return xs.length ? `<div class="gd-ng"><div class="gd-nh">${esc(g)}</div>${xs.map(a=>`<button type="button" class="gd-ni ${GD.id===a.id ? 'on' : ''}" data-gd="${esc(a.id)}">${esc(a.t)}</button>`).join('')}</div>` : ''; }).join('');
+  document.getElementById('main').innerHTML = `<div class="tabpanel gd">
+    <aside class="gd-nav card">
+      <div class="gd-top"><span class="gd-ic">${slIcon('guide')}</span><b>Gidas</b></div>
+      <div class="gd-search">${slIcon('search')}<input type="search" id="gdQ" placeholder="Ieškoti gide arba užduoti klausimą…" value="${esc(GD.q)}" autocomplete="off"></div>
+      <button type="button" class="gd-ni ${!GD.id && !GD.q ? 'on' : ''}" data-gd="">Visi skyriai</button>
+      ${nav}
+    </aside>
+    <section class="gd-main card" id="gdMain"></section>
+  </div>`;
+  const q = document.getElementById('gdQ');
+  q.oninput = ()=>{ GD.q = q.value; clearTimeout(q._t); q._t = setTimeout(()=>{ GD.id = ''; gdDraw(); gdNavMark(); }, 180); };
+  q.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); GD.q = q.value; GD.id = ''; gdDraw(); gdNavMark(); } };
+  document.querySelectorAll('.gd-nav [data-gd]').forEach(b=>b.onclick = ()=>{ GD.id = b.dataset.gd; GD.q = ''; q.value = ''; gdDraw(); gdNavMark(); });
+  gdDraw();
+  if(!GD.map) gdMapLoad().then(()=>{ if(currentTab==='guide') gdDraw(); });
+}
+function gdNavMark(){ document.querySelectorAll('.gd-nav [data-gd]').forEach(b=>b.classList.toggle('on', b.dataset.gd===GD.id && !GD.q)); }
+function gdDraw(){
+  const box = document.getElementById('gdMain'); if(!box) return;
+  const list = gdList(), words = gdWords(GD.q);
+  // phone: an open article or search hides the list of chapters (the search box stays)
+  const pg = box.closest('.gd'); if(pg) pg.classList.toggle('gd-in', !!(GD.id || GD.q.trim()));
+  if(GD.q.trim()) box.innerHTML = gdResultsHtml(list, words);
+  else if(GD.id) box.innerHTML = gdArticleHtml(list.find(a=>a.id===GD.id));
+  else box.innerHTML = gdHomeHtml(list);
+  box.scrollTop = 0;
+  if(window.innerWidth <= 860 && GD.id) box.scrollIntoView({ block:'start' });
+  gdWireMain(box, words);
+}
+function gdHomeHtml(list){
+  return `<div class="gd-home">
+    <h2>Kaip galiu padėti?</h2>
+    <p class="gd-lead">Čia aprašyta, ką gali kiekvienas programos puslapis, kaip tai padaryti ir kas su kuo susiję. Rašyk klausimą ar žodį viršuje kairėje (pvz. „kaip pranešti apie sugedusį daiktą“, „atostogos“, „UTA PIN“) arba pasirink skyrių.</p>
+    ${GUIDE_GROUPS.map(g=>{ const xs = list.filter(a=>a.g===g); return xs.length ? `<div class="gd-hg"><h3>${esc(g)}</h3><div class="gd-cards">${xs.map(a=>`<button type="button" class="gd-card" data-gd="${esc(a.id)}"><b>${esc(a.t)}</b><span>${esc(a.d)}</span></button>`).join('')}</div></div>` : ''; }).join('')}
+  </div>`;
+}
+function gdArticleHtml(a){
+  if(!a) return '';
+  const can = a.tab ? canView(a.tab) : true, ui = gdUi(a), sh = a.tab ? gdShared(a.tab) : [];
+  const rel = (a.rel||[]).map(id=>gdList().find(x=>x.id===id)).filter(Boolean);
+  const news = gdNews(gdWords(a.t + ' ' + (a.kw||'').split(' ').slice(0, 4).join(' ')), 5);
+  return `<article class="gd-art">
+    <div class="gd-crumb">${esc(a.g)}</div>
+    <h2>${esc(a.t)}</h2>
+    <p class="gd-lead">${esc(a.d)}</p>
+    ${a.tab && can && a.tab!=='guide' ? `<button type="button" class="btn small primary gd-go" data-gdtab="${esc(a.tab)}">Atidaryti puslapį „${esc(a.t)}“</button>` : ''}
+    ${a.id==='rfid' ? '<a class="btn small primary gd-go" href="rfid.html" target="_blank" rel="noopener">Atidaryti RFID skenerį</a>' : ''}
+    ${a.id==='search' ? '<button type="button" class="btn small primary gd-go" data-gdsearch>Atidaryti paiešką</button>' : ''}
+    ${(a.s||[]).map(([h, t])=>`<section class="gd-s"><h3>${esc(h)}</h3>${gdBody(t)}</section>`).join('')}
+    ${(a.q||[]).length ? `<section class="gd-s"><h3>Dažni klausimai</h3>${a.q.map(([q, ans])=>`<details class="gd-qa"><summary>${esc(q)}</summary><div>${gdBody(ans)}</div></details>`).join('')}</section>` : ''}
+    ${rel.length ? `<section class="gd-s"><h3>Susiję skyriai</h3><div class="gd-chips">${rel.map(r=>`<button type="button" class="chip small-chip" data-gd="${esc(r.id)}">${esc(r.t)}</button>`).join('')}</div></section>` : ''}
+    ${sh.length ? `<section class="gd-s"><h3>Naudoja tuos pačius duomenis</h3><p class="muted gd-small">Pakeitimai čia matomi ir šiuose puslapiuose:</p><div class="gd-chips">${sh.map(x=>{ const g = gdList().find(z=>z.tab===x.k); return `<button type="button" class="chip small-chip" ${g ? `data-gd="${esc(g.id)}"` : `data-gdtab="${esc(x.k)}"`}>${esc(x.lab)}</button>`; }).join('')}</div></section>` : ''}
+    ${ui.length ? `<section class="gd-s"><h3>Mygtukai šiame puslapyje</h3><div class="gd-ui">${ui.map(u=>`<span>${esc(u)}</span>`).join('')}</div></section>` : ''}
+    ${news.length ? `<section class="gd-s"><h3>Naujausi pakeitimai</h3>${news.map(x=>`<details class="gd-qa"><summary><small>${esc(x.d.slice(0, 10).replace(/-/g, '.'))}</small> ${esc(x.t)}</summary><div><p>${esc(gdNoSql(x.f))}</p></div></details>`).join('')}</section>` : ''}
+  </article>`;
+}
+function gdResultsHtml(list, words){
+  const arts = list.map(a=>({ a, s:gdScore(a, words) })).filter(x=>x.s > 0).sort((x, y)=>y.s - x.s);
+  const qa = gdQa(words, list).slice(0, 4), news = gdNews(words, 4);
+  const best = qa[0];
+  return `<div class="gd-res">
+    <h2>„${esc(GD.q.trim())}“</h2>
+    ${best ? `<div class="gd-answer"><div class="gd-ah">Atsakymas iš gido · <button type="button" class="gd-link" data-gd="${esc(best.a.id)}">${esc(best.a.t)}</button></div><b>${esc(best.q)}</b>${gdBody(best.ans)}</div>` : ''}
+    <div class="gd-ask">
+      <button type="button" class="btn small" id="gdAi" ${GD.aiBusy ? 'disabled' : ''}>${slIcon('sparkle')} Klausti AI pagal gidą</button>
+      <span class="muted gd-small">AI atsako tik pagal šio gido tekstą (Google Gemini).</span>
+      <div class="gd-aiout" id="gdAiOut">${GD.ai && GD.ask===GD.q ? gdBody(GD.ai) : ''}</div>
+    </div>
+    ${qa.length > 1 ? `<h3>Panašūs klausimai</h3>${qa.slice(1).map(x=>`<details class="gd-qa"><summary>${esc(x.q)} <small class="muted">· ${esc(x.a.t)}</small></summary><div>${gdBody(x.ans)}</div></details>`).join('')}` : ''}
+    <h3>Skyriai</h3>
+    ${arts.length ? arts.slice(0, 12).map(({ a })=>{ const hit = (a.s||[]).find(([h, t])=>words.some(w=>normalizeText(h+' '+t).includes(w)));
+      return `<button type="button" class="gd-hit" data-gd="${esc(a.id)}"><b>${esc(a.t)}</b><small>${esc(a.g)}</small><span>${hit ? esc(hit[0])+': '+esc(gdTxt(hit[1]).replace(/^•\s*/gm, '').slice(0, 220))+(gdTxt(hit[1]).length > 220 ? '…' : '') : esc(a.d)}</span></button>`; }).join('')
+      : '<div class="muted">Gide tokių žodžių nėra. Pabandyk kitaip arba spausk „Klausti AI“.</div>'}
+    ${news.length ? `<h3>Iš atnaujinimų istorijos</h3>${news.map(x=>`<details class="gd-qa"><summary><small>${esc(x.d.slice(0, 10).replace(/-/g, '.'))}</small> ${esc(x.t)}</summary><div><p>${esc(gdNoSql(x.f))}</p></div></details>`).join('')}` : ''}
+  </div>`;
+}
+function gdWireMain(box, words){
+  if(words.length) box.querySelectorAll('.gd-res .gd-hit span, .gd-answer p, .gd-answer li').forEach(el=>{ el.innerHTML = gdMark('>'+el.innerHTML+'<', words).slice(1, -1); });
+  box.querySelectorAll('[data-gd]').forEach(b=>b.onclick = ()=>{ GD.id = b.dataset.gd; GD.q = ''; const q = document.getElementById('gdQ'); if(q) q.value = ''; gdDraw(); gdNavMark(); });
+  box.querySelectorAll('[data-gdtab]').forEach(b=>b.onclick = ()=>setTab(b.dataset.gdtab));
+  box.querySelectorAll('[data-gdsearch]').forEach(b=>b.onclick = ()=>gsOpen());
+  const ai = document.getElementById('gdAi'); if(ai) ai.onclick = ()=>gdAskAi(GD.q);
+}
+// a free question: the AI answers from the best matching articles only
+async function gdAskAi(q){
+  q = String(q||'').trim(); if(!q || GD.aiBusy) return;
+  const out = document.getElementById('gdAiOut'), btn = document.getElementById('gdAi');
+  const words = gdWords(q), list = gdList();
+  const top = list.map(a=>({ a, s:gdScore(a, words) })).sort((x, y)=>y.s - x.s).slice(0, 5).map(x=>x.a);
+  const ctx = (top.length ? top : list.slice(0, 5)).map(a=>'### '+a.t+(a.tab ? ' (puslapis)' : '')+'\n'+gdFlat(a)).join('\n\n');
+  const prompt = 'Tu esi Event Solutions programos gidas naujiems nariams. Atsakyk lietuviškai, trumpai ir aiškiai, žingsniais, jei tinka. '
+    + 'Naudok TIK žemiau pateiktą gido tekstą; jei atsakymo jame nėra – taip ir pasakyk ir patark paklausti administratoriaus. Paminėk, kuriame skyriuje (pavadinimas) daugiau informacijos.\n\n'
+    + 'GIDAS:\n'+ctx.slice(0, 10000)+'\n\nKLAUSIMAS: '+q;
+  GD.aiBusy = true; GD.ask = q; GD.ai = ''; if(btn) btn.disabled = true; if(out) out.innerHTML = '<div class="muted">Galvojama…</div>';
+  try{
+    const token = await fnToken(); if(!token) throw new Error('Prisijunk iš naujo.');
+    const res = await fetch(SUPABASE_URL.replace(/\/$/, '')+'/functions/v1/ai-chat', { method:'POST',
+      headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+token, apikey:SUPABASE_KEY }, body:JSON.stringify({ messages:[{ role:'user', content:prompt }] }) });
+    if(!res.ok){ let m = 'Serverio klaida ('+res.status+')'; try{ const j = await res.json(); if(j.error) m = j.error; }catch(e){} throw new Error(m); }
+    if(res.body && res.body.getReader){ const rd = res.body.getReader(), dec = new TextDecoder();
+      for(;;){ const { done, value } = await rd.read(); if(done) break; GD.ai += dec.decode(value, { stream:true }); const o = document.getElementById('gdAiOut'); if(o && GD.ask===GD.q) o.innerHTML = gdBody(GD.ai.replace(/\*\*/g, '').replace(/^\s*[-*]\s+/gm, '• ')); } }
+    else GD.ai = await res.text();
+    GD.ai = GD.ai.replace(/\*\*/g, '').replace(/^\s*[-*]\s+/gm, '• ');
+    const o = document.getElementById('gdAiOut'); if(o && GD.ask===GD.q) o.innerHTML = gdBody(GD.ai);
+  }catch(e){ const o = document.getElementById('gdAiOut'); if(o) o.innerHTML = `<div class="gm-bad">${esc(e.message || String(e))}</div>`; GD.ai = ''; }
+  GD.aiBusy = false; const b = document.getElementById('gdAi'); if(b) b.disabled = false;
+}
 /* ============================================================
    Profilis → Prašymai: laisvos dienos ir atostogos (public.leave_requests,
    supabase/sql/leave.sql). Prašymą mato office ir Admin+ nariai, patvirtina
@@ -49481,6 +50220,7 @@ function ledDbEditor(){
 
 const TABS = {
   home: renderHomeTab,
+  guide: renderGuideTab,
   system: renderSystemTab,
   tools: renderToolsTab,
   events: renderEventsTab,
@@ -50028,6 +50768,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 19:30', v:'v626', k:'new', t:'Paieška: žmogaus ir daikto kortelės · Gidas', f:'Viršutinėje paieškoje (Ctrl K) paspaudus žmogų – narį, žmogų iš Žmonių ar vardą iš renginių lentelių – atsidaro visa informacija apie jį: kontaktai, grupės, lygiai, pultai, pastabos, būsimi ir buvę renginiai su pozicija (komanda, vadovas, vairuotojas), Bookingo skambučiai, pranešti gedimai ir atlikti darbai. Paspaudus daiktą – bendra informacija, ar laisvas pasirinktą dieną ir kas jį rezervavo, paskutiniai renginiai ir ateities renginiai, projektai, gedimai ir remontai. Naujas puslapis „Gidas“: visų programos dalių aprašymai (kas kur yra, kaip daroma, kas su kuo susiję), paieška tekstu, atsakymai į klausimus iš gido ir „Klausti AI pagal gidą“; prie puslapio – jo mygtukai, su kuo dalijasi duomenimis ir naujausi pakeitimai.' },
   { d:'2026-10-21 18:40', v:'v625', k:'fix', t:'Uždarymo ir kiti ikonų mygtukai – ikona per vidurį', f:'Visur, kur mygtuke yra tik ikona (✕ uždaryti ir kt.), ji dabar tiksliai per mygtuko vidurį; mygtukai su raide „×“ gavo tą pačią uždarymo ikoną.' },
   { d:'2026-10-21 18:10', v:'v624', k:'chg', t:'Mažiau užklausų į Supabase: balsavimas ir paštas', f:'Balsavimo rezultatų ekranas ir balsavimo puslapis klausia serverio dažnai tik vykstant balsavimui; kai nieko nevyksta – vis rečiau, paslėptas langas – kas 30 s. Kai balsavimas išjungtas (Admin → Balsavimai), šie puslapiai ir valdymo nuoroda nebesiunčia jokių užklausų, kol jis vėl nebus įjungtas (reikia poll_enabled.sql). Pašto skaičius tikrinamas kas 3 min., atidarytas paštas – kas 45 s.' },
   { d:'2026-10-21 17:10', v:'v623', k:'chg', t:'Įjungti / išjungti: paryškinta eilutė po pele ar pirštu', f:'Sistema → Įjungti / išjungti: eilutė, ant kurios yra pelė ar pirštas, paryškinama; išjungtos eilutės rausvos ir perbrauktos; jungiklį perjungia ir paspaudimas bet kur eilutėje.' },

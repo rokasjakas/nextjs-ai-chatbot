@@ -48,3 +48,8 @@
   their own (`ledPanelForm`, `ledDevForm`, a PDF read by `ledDevPdf` → `ledParseSpec`), saved for everyone (`led_db`, Super Admin) or in
   this browser (`ledMyPanels` / `ledMyDevices`); a project keeps a copy of its cabinets in `LP.customs`. Wiring by hand never jumps to the
   next port – the overload shows red (`lpOverFrom`, `lpHud`); Esc or the same port again ends drawing (`lpWireEnd`); patterns do move on. Quick calculation (m² or W×H → ports): `ledQuickCalc`.
+- Paieška (`gsSearch`, Ctrl K): people (members, Žmonės contacts, names only in events' crew) open `dzPerson(name)`, items open `dzItem(id)` –
+  the dossier (events by crew / manager / driver, calls, gear issues, item works; item free on a day via `dzItemFree` = `grsCalc` logic).
+- Gidas (tab `guide`, `renderGuideTab`): hand-written articles in `GUIDE` (group, tab, sections, Q&A, related); buttons and shared-data
+  pages come from `site/sys-map.json`, news from `CHANGELOG`; „Klausti AI“ = ai-chat with the best articles as context. A new page or a
+  bigger feature gets its article / Q&A in `GUIDE` in the same release.
