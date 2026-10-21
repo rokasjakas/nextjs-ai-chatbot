@@ -23,7 +23,8 @@
 - Super Admin account safety: it works only in a browser where its password was typed (`superTrusted`, localStorage `esSupTrust`,
   else `superLock` full-screen); from another level („Kaip: Tech“) going back / switching asks the password (`superAskPass`, 15 min
   `superFresh`). The header shield button and „Atnaujinimai“ show only in the Super Admin level. A release that must reach open windows
-  at once sets `FORCE_FOR` in `site/sw.js` to its own CACHE name (windows reload when the worker activates; later releases are not forced).
+  at once sets `FORCE_FOR` in `site/sw.js` to its own CACHE name (windows reload right after the worker activates – never inside the activate
+  waitUntil: that deadlocks, v619 left phones on a black screen; later releases are not forced).
 - Existing pages are edited in place (Super Admin → „Redaguoti puslapius“ or Sistema → Puslapiai → Esami programos puslapiai):
   rules in `STATE.uiLayout.ed[scope]` keyed by the element's name (`edTextKey`) – t name, i icon, o order, f fold, h hidden,
   s look, a click (`edRunAct`), n inserted elements (`edIns`). Renaming a button's text in code breaks its rules – keep names.

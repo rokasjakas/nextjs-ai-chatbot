@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dMKTarNE4E23IA4OqNE+tAZrbehIOLuZ7qOscA3AcBw=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/UZMJoBo6RF+vFpLDs8/7QZ1U/wU7r1MbReAn9EIQBM=' 'sha256-jEyZTKStv8+fGhoraD9oDeCwpXO27KBi0vM/AFJJiuw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -23445,7 +23445,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v619';
+const APP_VER = 'v620';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -49178,7 +49178,7 @@ function ledParseSpec(txt, fname){
   if(/H_\d+xRJ45|output card for H|H-series controllers/i.test(t)){ out.kind = 'mod'; out.fam = 'H'; }
   else if(/^VX/i.test(out.name)) out.fam = 'VX'; else if(/^MCTRL/i.test(out.name)) out.fam = 'MCTRL'; else if(/^VC/i.test(out.name)) out.fam = 'VC Pro';
   // the port count: "16x RJ45", "10 Gigabit Ethernet ports" – never the 45 of "RJ45 Gigabit"
-  let m = t.match(/(?<![A-Za-z0-9])(\d{1,2}) ?[x×] ?RJ45/i) || t.match(/(?<![A-Za-z0-9])(\d{1,2}) ?(?:x|×|-channel|channel)? ?(?:Neutrik )?Gigabit Ethernet (?:ports|outputs)/i) || t.match(/(?:with|features|equipped with) (\d{1,2}) Ethernet ports/i);
+  let m = t.match(/(?:^|[^A-Za-z0-9])(\d{1,2}) ?[x×] ?RJ45/i) || t.match(/(?:^|[^A-Za-z0-9])(\d{1,2}) ?(?:x|×|-channel|channel)? ?(?:Neutrik )?Gigabit Ethernet (?:ports|outputs)/i) || t.match(/(?:with|features|equipped with) (\d{1,2}) Ethernet ports/i);
   if(m) out.ports = +m[1];
   m = t.match(/(?:up to |manage up to |capacity[^.]{0,40}?)([\d.]+) ?million pixels/i) || t.match(/([\d.]+) ?million pixels/i);
   if(m) out.maxPx = Math.round(parseFloat(m[1])*1e6);
@@ -49852,6 +49852,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-21 15:20', v:'v620', k:'fix', t:'Programa vėl atsidaro telefone (juodas ekranas po v619)', f:'v619 priverstinis atnaujinimas telefone užstrigdavo: naujoji versija laukė, kol persikraus langas, o langas laukė naujosios versijos – programėlė rodė juodą ekraną. Priverstinis perkrovimas išjungtas ir pataisytas.' },
   { d:'2026-10-21 12:20', v:'v619', k:'fix', t:'Super Admin paskyra apsaugota slaptažodžiu, priverstinis atnaujinimas', f:'Super Admin paskyra veikia tik naršyklėje, kurioje įvestas jos slaptažodis – kitur rodomas užraktas (slaptažodis arba atsijungti). Grįžti iš kito lygio (pvz. „Kaip: Tech“) ar perjungti lygį galima tik su slaptažodžiu. Super Admin mygtukas ir „Atnaujinimai“ rodomi tik dirbant Super Admin lygiu. Naujas mygtukas „Atjungti kituose įrenginiuose“. Šis atnaujinimas įsijungia pats – atidaryti langai persikrauna.' },
   { d:'2026-10-21 10:40', v:'v618', k:'new', t:'Konstruktorius kaip Figma: sąveikos, popup nustatymai, išmanūs perėjimai, komponentai, polapiai', f:'Sistema → Puslapiai: naujas puslapis pradedamas nuo šablono (tuščias, su polapiais, skydelis, su popup langais). Dešinėje – Dizainas ir Prototipas. Sąveika: kada (paspaudus, kol pelė virš, kol laikoma, užvedus / nuvedus, klavišu, po laiko) → ką daryti (eiti į polapį, atgal, atidaryti / pakeisti / uždaryti popup, nuslinkti, parodyti / paslėpti elementą, programos puslapis ar funkcija, nuoroda, pranešimas) → kaip (akimirksniu, išblukimas, išmanus perėjimas, įvažiuoja, išvažiuoja, pastumia, užslenka, nuslenka; kryptis, greitėjimas, trukmė). Sujungti galima tempiant taškelį ant kadro. Popup – vieta (centre, šone, po mygtuku), uždarymas paspaudus šalia, patamsinimas. Polapių juosta, programos komponentai ir spalvos pagal temą, teksto stiliai, gradientai, šešėliai; keli pažymėti, lygiavimas, grupės, kopijavimas; Schema su visomis jungtimis; pagalba „?“.' },
   { d:'2026-10-21 07:50', v:'v617', k:'fix', t:'LED skaičiuoklė: apkrova kaip SmartLCT, jungimo pabaiga Esc', f:'Prievado apkrova dabar visada skaičiuojama pagal stačiakampį, apimantį prievado kabinetus (kaip SmartLCT ir UNICO): 5 kabinetai įstrižai krauna visus 5 × 5. Tik UNICO „Free Topology“ skaičiuoja vien kabinetus. Jungimą ranka baigti – Esc arba dar kartą paspaudus tą patį prievadą; tada vėl galima perdėlioti kabinetus.' },
