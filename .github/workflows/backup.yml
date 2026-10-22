@@ -1,0 +1,144 @@
+# Atsarginės kopijos: kas naktį visa duomenų bazė (Supabase) ir visi failai (Supabase Storage + Cloudflare R2),
+# užšifruoti BACKUP_PASSWORD slaptažodžiu, į jūsų hostingą (serveriai.lt, per SFTP arba FTP). Papildomai duomenų bazės
+# kopija 7 dienas laikoma ir čia, GitHub (Actions → Atsarginės kopijos → paskutinis paleidimas → Artifacts).
+# Rezultatas (kada, ar pavyko) matomas programoje: Sistema → Nustatymai → Atsarginės kopijos.
+# Atkūrimas: docs/ATKURIMAS.md.
+#
+# Repository secrets (Settings → Secrets and variables → Actions → New repository secret):
+#   SUPABASE_DB_URL            – Supabase → Connect → „Session pooler“ eilutė (postgresql://postgres.…:SLAPTAŽODIS@…pooler.supabase.com:5432/postgres)
+#   SUPABASE_SERVICE_ROLE_KEY  – jau yra (Supabase → Settings → API → service_role)
+#   BACKUP_PASSWORD            – SAVAS ilgas slaptažodis kopijoms užšifruoti; be jo kopijų atkurti NEĮMANOMA – saugokite atskirai
+#   BACKUP_PROTO               – sftp arba ftp (ftps – FTP su šifravimu)
+#   BACKUP_HOST, BACKUP_USER, BACKUP_PASS – hostingo (FTP/SFTP) prisijungimas; BACKUP_PORT – jei ne įprastas
+#   BACKUP_DIR                 – aplankas hostinge, NE viešame public_html (pvz. atsargines-kopijos)
+#   R2_FILES_BUCKET            – Cloudflare R2 failų saugyklos pavadinimas (Supabase → Edge Functions → Secrets → R2_BUCKET);
+#                                R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY jau yra
+name: Atsarginės kopijos
+
+on:
+  schedule:
+    - cron: '17 1 * * *'   # kas naktį ~04:17 Lietuvos laiku
+  workflow_dispatch:
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+env:
+  SUPABASE_URL: https://yakmikxkcudwloxruhvx.supabase.co
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      # GitHub runs the nightly schedule only from the default branch (main): this file is kept in main too,
+      # and the program's own branch is checked out (site-tools/backup_storage.mjs lives there)
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/wizardly-cori-j2tuff
+
+      - name: Patikrinti nustatymus
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSWORD: ${{ secrets.BACKUP_PASSWORD }}
+          BACKUP_HOST: ${{ secrets.BACKUP_HOST }}
+        run: |
+          [ -n "$SUPABASE_DB_URL" ] || { echo "::error::Nėra SUPABASE_DB_URL (žr. šio failo viršų)"; exit 1; }
+          [ -n "$BACKUP_PASSWORD" ] || { echo "::error::Nėra BACKUP_PASSWORD (žr. šio failo viršų)"; exit 1; }
+          [ -n "$BACKUP_HOST" ] || echo "::warning::Nėra BACKUP_HOST – kopija daroma tik į GitHub (7 d.), failai nekopijuojami"
+          sudo apt-get update -qq && sudo apt-get install -y -qq rclone >/dev/null
+          rclone version | head -1
+
+      - name: Duomenų bazė
+        id: db
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSWORD: ${{ secrets.BACKUP_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          D=$(date -u +%Y-%m-%d)
+          mkdir -p out/db
+          # programos lentelės, duomenys ir jų teisės (public) – būtina. Teisės (GRANT) – kartu: nuo 2026-10-30 Supabase
+          # naujose lentelėse jų pats nebeduoda, tad be jų atkurta programa negautų prieigos prie savo lentelių
+          docker run --rm -v "$PWD/out/db:/out" -e DBURL="$SUPABASE_DB_URL" postgres:17 \
+            sh -c 'pg_dump "$DBURL" -Fc --no-owner -n public -f /out/public.dump'
+          # narių prisijungimai (auth) ir failų sąrašai (storage) – tik duomenys; jei nepavyktų, kopija vis tiek lieka
+          docker run --rm -v "$PWD/out/db:/out" -e DBURL="$SUPABASE_DB_URL" postgres:17 \
+            sh -c 'pg_dump "$DBURL" -Fc --no-owner --no-privileges --data-only -n auth -n storage -f /out/auth-storage.dump' \
+            || echo "::warning::Prisijungimų (auth) ir failų sąrašų kopija nepavyko – programos duomenys nukopijuoti"
+          tar -C out -czf out/db.tgz db && rm -rf out/db
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in out/db.tgz -out "out/db-$D.tgz.enc" -pass env:BACKUP_PASSWORD
+          rm out/db.tgz
+          echo "file=db-$D.tgz.enc" >> "$GITHUB_OUTPUT"
+          echo "mb=$(du -m "out/db-$D.tgz.enc" | cut -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Kopija ir į GitHub (7 dienos)
+        uses: actions/upload-artifact@v4
+        with:
+          name: duomenu-baze-${{ steps.db.outputs.file }}
+          path: out/${{ steps.db.outputs.file }}
+          retention-days: 7
+
+      - name: Į hostingą (užšifruota)
+        id: up
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BACKUP_PASSWORD: ${{ secrets.BACKUP_PASSWORD }}
+          BACKUP_PROTO: ${{ secrets.BACKUP_PROTO }}
+          BACKUP_HOST: ${{ secrets.BACKUP_HOST }}
+          BACKUP_PORT: ${{ secrets.BACKUP_PORT }}
+          BACKUP_USER: ${{ secrets.BACKUP_USER }}
+          BACKUP_PASS: ${{ secrets.BACKUP_PASS }}
+          BACKUP_DIR: ${{ secrets.BACKUP_DIR }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_FILES_BUCKET: ${{ secrets.R2_FILES_BUCKET }}
+        run: |
+          set -euo pipefail
+          if [ -z "$BACKUP_HOST" ]; then echo "skip=1" >> "$GITHUB_OUTPUT"; exit 0; fi
+          P="${BACKUP_PROTO:-sftp}"
+          # hostingas („dest“) ir užšifruota vieta jame („safe“: failai ir jų pavadinimai užšifruoti BACKUP_PASSWORD)
+          if [ "$P" = "ftps" ]; then export RCLONE_CONFIG_DEST_TYPE=ftp RCLONE_CONFIG_DEST_EXPLICIT_TLS=true; else export RCLONE_CONFIG_DEST_TYPE="$P"; fi
+          export RCLONE_CONFIG_DEST_HOST="$BACKUP_HOST" RCLONE_CONFIG_DEST_USER="$BACKUP_USER"
+          export RCLONE_CONFIG_DEST_PASS="$(rclone obscure "$BACKUP_PASS")"
+          [ -n "$BACKUP_PORT" ] && export RCLONE_CONFIG_DEST_PORT="$BACKUP_PORT"
+          export RCLONE_CONFIG_SAFE_TYPE=crypt RCLONE_CONFIG_SAFE_REMOTE="dest:${BACKUP_DIR:-atsargines-kopijos}"
+          export RCLONE_CONFIG_SAFE_PASSWORD="$(rclone obscure "$BACKUP_PASSWORD")"
+          R="--retries 5 --low-level-retries 10 --stats-one-line --stats 60s"
+          # 1) duomenų bazė (jau užšifruota) – 30 paskutinių dienų
+          rclone copy out/ "dest:${BACKUP_DIR:-atsargines-kopijos}/duomenu-baze/" $R
+          rclone delete "dest:${BACKUP_DIR:-atsargines-kopijos}/duomenu-baze/" --min-age 30d $R || true
+          # 2) Supabase Storage failai – tik nauji
+          rclone lsjson -R --files-only safe:failai/supabase > have.json 2>/dev/null || echo '[]' > have.json
+          HAVE=have.json node site-tools/backup_storage.mjs mirror > storage.json
+          cat storage.json
+          [ -d mirror ] && rclone copy mirror safe:failai/supabase $R
+          # 3) Cloudflare R2 failai – tik nauji
+          if [ -n "$R2_FILES_BUCKET" ]; then
+            export RCLONE_CONFIG_R2_TYPE=s3 RCLONE_CONFIG_R2_PROVIDER=Cloudflare RCLONE_CONFIG_R2_ACCESS_KEY_ID="$R2_ACCESS_KEY_ID"
+            export RCLONE_CONFIG_R2_SECRET_ACCESS_KEY="$R2_SECRET_ACCESS_KEY" RCLONE_CONFIG_R2_ENDPOINT="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+            rclone copy "r2:$R2_FILES_BUCKET" safe:failai/r2 $R
+            echo "r2=$(rclone size --json "r2:$R2_FILES_BUCKET" | node -pe 'const j=JSON.parse(require("fs").readFileSync(0));j.count+" failų, "+Math.round(j.bytes/1048576)+" MB"')" >> "$GITHUB_OUTPUT"
+          fi
+          echo "storage=$(node -pe 'const j=require("./storage.json");j.files+" failų, "+j.mb+" MB (nauji: "+j.new+")"')" >> "$GITHUB_OUTPUT"
+
+      - name: Pranešti programai
+        if: always()
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OK: ${{ job.status }}
+          DBF: ${{ steps.db.outputs.file }}
+          DBMB: ${{ steps.db.outputs.mb }}
+          SKIP: ${{ steps.up.outputs.skip }}
+          ST: ${{ steps.up.outputs.storage }}
+          R2: ${{ steps.up.outputs.r2 }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          [ -n "$SUPABASE_SERVICE_ROLE_KEY" ] || exit 0
+          BODY=$(node -e 'const e=process.env;console.log(JSON.stringify({key:"backup",updated_at:new Date().toISOString(),updated_name:"GitHub",value:{at:new Date().toISOString(),ok:e.OK==="success",db:e.DBF||"",dbMb:+e.DBMB||0,remote:e.SKIP!=="1",storage:e.ST||"",r2:e.R2||"",run:e.RUN}}))')
+          curl -sS -o /dev/null -w "%{http_code}\n" -X POST "$SUPABASE_URL/rest/v1/app_config" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: application/json" -H "Prefer: resolution=merge-duplicates" -d "$BODY"
