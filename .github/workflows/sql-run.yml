@@ -30,6 +30,7 @@ jobs:
           FILE: ${{ inputs.file }}
         run: |
           set -euo pipefail
+          trap 'echo "::error title=Sustojo::eilute $LINENO (kodas $?)"' ERR
           [ -n "${FILE:-}" ] || FILE=$(head -n1 supabase/sql-run.txt | tr -d '[:space:]')
           [ -n "$SUPABASE_DB_URL" ] || { echo "::error::Nėra SUPABASE_DB_URL"; exit 1; }
           echo "$FILE" | grep -Eq '^[a-z0-9_]+\.sql$' || { echo "::error::Netinkamas failo pavadinimas: $FILE"; exit 1; }
