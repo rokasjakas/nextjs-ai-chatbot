@@ -45,7 +45,11 @@ jobs:
           set -e
           cat out.txt
           # the database's answer without the address / password (a failed sign-in may print the host)
-          if [ $rc -ne 0 ]; then echo "::error title=$FILE::$(tail -n 15 out.txt | sed -E 's#postgres(ql)?://[^ ]*#<db>#g' | tr -d '\r' | awk 'BEGIN{ORS="%0A"} {gsub(/%/,"%25"); print}')"; exit $rc; fi
+          echo "::notice title=psql::kodas $rc, eiluciu $(wc -l < out.txt)"
+          if [ $rc -ne 0 ]; then
+            tail -n 8 out.txt | sed -E 's#postgres(ql)?://[^ ]*#<db>#g; s/password=[^ ]*/password=<...>/g' | tr -d '\r' | while IFS= read -r l; do echo "::warning title=DB::${l//%/%25}"; done
+            exit $rc
+          fi
           # the result also as a short notice (readable without the log) and in the run's summary
           { echo '```'; head -n 80 out.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           echo "::notice title=$FILE::$(head -n 60 out.txt | tr -d '\r' | awk 'BEGIN{ORS="%0A"} {gsub(/%/,"%25"); print}')"
