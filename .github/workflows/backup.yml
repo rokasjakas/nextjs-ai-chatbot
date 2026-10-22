@@ -32,7 +32,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
+      # GitHub runs the nightly schedule only from the default branch (main): this file is kept in main too,
+      # and the program's own branch is checked out (site-tools/backup_storage.mjs lives there)
       - uses: actions/checkout@v4
+        with:
+          ref: claude/wizardly-cori-j2tuff
 
       - name: Patikrinti nustatymus
         env:
