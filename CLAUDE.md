@@ -61,3 +61,7 @@
   (`supabase/sql/mail_off.sql`: only cron `invoice-inbox` → mail function `{action:"invoice_inbox"}`), mail-in drops letters
   (`MAIL_IN_ON`≠1). What stays: the invoice mailbox (saskaitos@ → Sąskaitos) and SENDING from the member's own mailbox
   (event letter `lm*`, invoices `invSendModal`) – connected in the small `mailSendSetup()` window. Don't bring the mailbox back unasked.
+- Running SQL on the live database: write `supabase/sql/<name>.sql`, put `<name>.sql` (+ a `# timestamp` line) into
+  `supabase/sql-run.txt` and push – `.github/workflows/sql-run.yml` runs it with the `SUPABASE_DB_URL` secret (session pooler,
+  IPv4); the result comes back as a check-run notice (read via `check-runs/<job id>/annotations`). Never send mass deletes
+  this way without the user's explicit OK; `supabase/sql/db_check.sql` is a read-only health check (cron jobs, top writers, DB size).
