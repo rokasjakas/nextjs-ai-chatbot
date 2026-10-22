@@ -44,6 +44,11 @@ export RCLONE_CONFIG_DEST_PASS="$(rclone obscure 'HOSTINGO_SLAPTAŽODIS')"
 export RCLONE_CONFIG_SAFE_TYPE=crypt RCLONE_CONFIG_SAFE_REMOTE="dest:atsargines-kopijos"
 export RCLONE_CONFIG_SAFE_PASSWORD="$(rclone obscure 'BACKUP_PASSWORD')"
 
+# arba, jei kopijos daromos į Google Drive (BACKUP_PROTO = drive):
+#   export RCLONE_CONFIG_DEST_TYPE=drive RCLONE_CONFIG_DEST_SCOPE=drive.file
+#   export RCLONE_CONFIG_DEST_TOKEN='{"access_token":…}'   # tas pats, kas BACKUP_DRIVE_TOKEN (arba iš naujo: rclone authorize "drive")
+# (tada dest: ir safe: veikia taip pat – aplankas Drive yra BACKUP_DIR)
+
 rclone ls safe:failai                       # ką turime (pavadinimai jau iššifruoti)
 rclone copy safe:failai/supabase ./failai   # Supabase Storage failai: aplankas = saugykla (bucket)
 rclone copy safe:failai/r2 ./r2             # Cloudflare R2 failai
