@@ -4,6 +4,7 @@
 --    ir kompiuteryje), paruošiami keli naujausi; pilnas tikrinimas („mail-sync“) lieka kas minutę
 -- Reikia: mail_viskas.sql (jau paleistas – „mail-sync“ veikia) ir „mail“ funkcija v17.
 -- Supabase → SQL Editor → New query → įklijuok VISĄ → Run. Saugu paleisti pakartotinai.
+-- (Vėlesnis supabase/sql/disk_io2.sql šią užduotį perrašo: naktį ji nevykdoma.)
 -- ============================================================
 do $$
 declare secret text;

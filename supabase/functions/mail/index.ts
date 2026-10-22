@@ -47,7 +47,7 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 // the app shows a warning when the deployed function is older than it expects
-const VERSION = 36;
+const VERSION = 37;
 const PAGE = 25;
 const MAX_SEND_BYTES = 15 * 1024 * 1024;
 
@@ -407,7 +407,7 @@ async function list(a: Account, folder: string, page: number) {
 // First run: the last ~60 days and the newest letters by number come first,
 // the older ones follow in the next runs (SYNC_BATCH per run).
 const SYNC_BATCH = 500, SYNC_MS = 25_000;
-type SyncState = { uidvalidity: string | null; modseq: string | null; synced_at?: string };
+type SyncState = { uidvalidity: string | null; modseq: string | null; synced_at?: string; total?: number; unseen?: number; remaining?: number };
 type IdxRow = { user_id: string; folder: string; uid: number; date: string | null; subject: string; from_addr: unknown; to_addr: unknown; seen: boolean; answered: boolean; flagged: boolean; attachments: boolean; size: number | null; updated_at: string; acct?: string; cat?: string; snippet?: string };
 const enc = encodeURIComponent;
 async function dbAllUids(user: string, folder: string): Promise<number[]> {
@@ -568,7 +568,7 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
   let wantAuto = false;
   const only = a.host === GMAIL_IMAP ? await acctPref(user) : "all";
   const gmTabs = a.host === GMAIL_IMAP && folder === "inbox" && catOk;
-  const [st] = await db<SyncState[]>(`mail_sync?select=uidvalidity,modseq,synced_at&user_id=eq.${user}&folder=eq.${enc(folder)}`);
+  const [st] = await db<SyncState[]>(`mail_sync?select=uidvalidity,modseq,synced_at,total,unseen,remaining&user_id=eq.${user}&folder=eq.${enc(folder)}`);
   return await withImap(a, async (c) => {
     const path = await folderPath(c, folder);
     let present: number[] = [];
@@ -677,7 +677,11 @@ async function syncFolder(user: string, a: Account, folder: string, quick = fals
       }
       const unseen = (((await c.search({ seen: false }, { uid: true })) || []) as number[]).filter((u) => pset.has(u)).length;
       const remaining = fresh.length - added;
-      await db("mail_sync?on_conflict=user_id,folder", {
+      // the quick check writes its row only when something changed (Supabase Disk IO: it ran every 15 s for
+      // every mailbox); the full check (every 2 min) always does – „synced_at“ stays fresh for the app
+      const same = quick && st && !added && !removed.length && !changed && st.uidvalidity === validity
+        && String(st.modseq ?? "") === String(modseq ?? "") && Number(st.total) === present.length && Number(st.unseen) === unseen && Number(st.remaining) === remaining;
+      if (!same) await db("mail_sync?on_conflict=user_id,folder", {
         method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
         body: JSON.stringify({ user_id: user, folder, uidvalidity: validity, modseq: modseq != null ? String(modseq) : null, total: present.length, unseen, remaining, synced_at: new Date().toISOString() }),
       });
@@ -865,7 +869,7 @@ async function mirrorFor(row: MirrorRow, force = false) {
 // Every new letter to the invoice mailbox becomes an invoice: its attachments are the invoice's files, the
 // total is found in a PDF's text, the sender is the supplier, and the kind comes from Admin+'s keyword rules
 // (the first rule whose words are found wins; none – the default kind). The same letter is never imported
-// twice (invoices.mail_id = its Message-ID). Checked every 15 s with the mail sync (up to 3 letters a run; 8 a minute).
+// twice (invoices.mail_id = its Message-ID). Checked with the full mail sync (every 2 min, up to 8 letters a run).
 type InboxRule = { kw?: string; where?: string; kind?: string; supplier?: string };
 type InboxRow = { id: number; email: string | null; host: string | null; secret: string | null; active: boolean; rules: InboxRule[]; default_kind: string;
   state: { uidValidity?: string; lastUid?: number; busy?: string; total?: number; last?: { at: string; n: number; skipped?: number; err?: string; errors?: { uid: number; subject: string; err: string }[]; items?: { subject: string; kind: string; rule?: number }[] } } };
@@ -1139,7 +1143,7 @@ async function runSyncAll(quick = false) {
     if (Date.now() - t0 > (quick ? 12_000 : 100_000)) break;
     try {
       // the company mailbox first: new letters copied into Gmail are seen by this same check
-      if (r.reader && r.settings?.mirror?.on) await mirrorFor(r).catch((e) => console.error("mirror", (e as Error).message));
+      if (!quick && r.reader && r.settings?.mirror?.on) await mirrorFor(r).catch((e) => console.error("mirror", (e as Error).message));
       const a = readerOf(await accountOf(r));
       done[r.email] = await syncFolder(r.user_id, a, "inbox", quick);
       if (sent) await syncFolder(r.user_id, a, "sent").catch(() => null);
@@ -1151,9 +1155,10 @@ async function runSyncAll(quick = false) {
   let auto: unknown = null, inbox: unknown = null;
   if (!quick) { try { auto = await runAutoReplies(); } catch (e) { auto = { error: (e as Error).message }; } }
   // the invoice mailbox (saskaitos@) → „Sąskaitos“
-  // (every 15 s too, in its own call of this function – a slow letter does not hold up the mail sync)
+  // (with the full check, in its own call of this function – a slow letter does not hold up the mail sync)
   const cs = Deno.env.get("CRON_SECRET");
-  if (cs) {
+  // only with the full check (every 2 min): each run writes its lock and state row (Supabase Disk IO)
+  if (cs && !quick) {
     // the call is not cut short (that could stop the run on the other side): this one stays alive until it is
     // answered (EdgeRuntime.waitUntil), while the sync's own answer goes back at once
     const call = fetch(`${env("SUPABASE_URL")}/functions/v1/mail`, { method: "POST", signal: AbortSignal.timeout(120_000),
