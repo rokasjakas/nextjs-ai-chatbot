@@ -16,7 +16,7 @@ begin
   end if;
   if secret is null then raise exception 'Nerastas CRON_SECRET – pirmiausia paleisk mail_viskas.sql.'; end if;
   perform cron.unschedule(jobid) from cron.job where jobname = 'mail-sync-fast';
-  perform cron.schedule('mail-sync-fast', '15 seconds', format($job$
+  perform cron.schedule('mail-sync-fast', '30 seconds', format($job$
     select net.http_post(
       url     := 'https://yakmikxkcudwloxruhvx.supabase.co/functions/v1/mail',
       headers := jsonb_build_object('Content-Type', 'application/json', 'x-cron-secret', %L),
