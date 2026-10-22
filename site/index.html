@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-UbtWumlq4uwMOUPc3ap/DJyGRzUE3CCJantrcNS1jvI=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-ueeuXztxjqLM/OyyVCLiHKY+g8+JFgmvFPIDBqKtJDM=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -5982,7 +5982,9 @@ body.off-picking .off-hl{outline:2px solid var(--danger) !important;outline-offs
    a touch outside the lists that scroll is stopped instead (scrollGuard) */
 @media (max-width:760px), (pointer:coarse){
   html.pop-lock, html.chat-fix{overscroll-behavior:none;}
-  html.pop-lock *, html.chat-fix *{overscroll-behavior:contain;}
+  /* only sideways: a table or strip that scrolls left–right must still pass an up–down swipe to its window (an invoice's events table
+     wider than the phone held the window still); the page itself stays locked by html{overscroll-behavior:none} and the touchmove lock */
+  html.pop-lock *, html.chat-fix *{overscroll-behavior-x:contain;}
   body.of-pop-open, body.gm-open, body.ev-full-on{overflow:visible !important;}
   .modal-backdrop, .modal, .nm-panel, .sel-pop, .xg-pop, .ltd-pop, .size-pop, .gs-pop, .veh-pop-bd, .ui-ask, .ev-more-sheet, #railMoreSheet{overscroll-behavior:contain;}
 }
@@ -23579,7 +23581,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v628';
+const APP_VER = 'v629';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -50752,6 +50754,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-22 09:30', v:'v629', k:'fix', t:'Telefone langai slenka ir per plačias lenteles', f:'Atidarius sąskaitą (ir kitus langus) telefone, braukiant per lentelę, kuri platesnė už ekraną (pvz. sąskaitos renginių sąrašas), langas nebeslinko žemyn. Dabar plati lentelė slenka tik į šonus, o braukiant aukštyn ar žemyn slenka visas langas.' },
   { d:'2026-10-21 20:40', v:'v628', k:'chg', t:'Gidas ir paieška pagal lygį', f:'Gide nebėra Admin skyriaus. Gidas, viršutinė paieška ir žmogaus / daikto kortelės siūlo ir atidaro tik tuos puslapius, skyrius ir funkcijas, kuriuos gali matyti tavo lygis: nuorodos į kitus puslapius, projektai, gedimai ir atlikti darbai kortelėse rodomi tik turintiems tų puslapių teises, viršutinės juostos funkcijos – tik jei tas mygtukas tavo lygiui yra.' },
   { d:'2026-10-21 20:10', v:'v627', k:'chg', t:'Gidas be atnaujinimų ir Super Admin dalių', f:'Gide nebėra atnaujinimų istorijos ir naujausių pakeitimų, Sistemos skyriaus, Super Admin aprašymų bei Super Admin mygtukų. Kiekviena nauja ar pakeista funkcija aprašoma Gide tame pačiame atnaujinime.' },
   { d:'2026-10-21 19:30', v:'v626', k:'new', t:'Paieška: žmogaus ir daikto kortelės · Gidas', f:'Viršutinėje paieškoje (Ctrl K) paspaudus žmogų – narį, žmogų iš Žmonių ar vardą iš renginių lentelių – atsidaro visa informacija apie jį: kontaktai, grupės, lygiai, pultai, pastabos, būsimi ir buvę renginiai su pozicija (komanda, vadovas, vairuotojas), Bookingo skambučiai, pranešti gedimai ir atlikti darbai. Paspaudus daiktą – bendra informacija, ar laisvas pasirinktą dieną ir kas jį rezervavo, paskutiniai renginiai ir ateities renginiai, projektai, gedimai ir remontai. Naujas puslapis „Gidas“: visų programos dalių aprašymai (kas kur yra, kaip daroma, kas su kuo susiję), paieška tekstu, atsakymai į klausimus iš gido ir „Klausti AI pagal gidą“; prie puslapio – jo mygtukai, su kuo dalijasi duomenimis ir naujausi pakeitimai.' },
