@@ -35,8 +35,14 @@ jobs:
           echo "$FILE" | grep -Eq '^[a-z0-9_]+\.sql$' || { echo "::error::Netinkamas failo pavadinimas: $FILE"; exit 1; }
           [ "$FILE" != "atnaujinimas.sql" ] || { echo "::error::atnaujinimas.sql per ilgas – paleisk konkretų failą"; exit 1; }
           [ -f "supabase/sql/$FILE" ] || { echo "::error::Nėra supabase/sql/$FILE"; exit 1; }
+          set +e
           docker run --rm -v "$PWD/supabase/sql:/sql:ro" -e DBURL="$SUPABASE_DB_URL" postgres:17 \
-            psql "$DBURL" -v ON_ERROR_STOP=1 -X -A -F ' | ' -f "/sql/$FILE" | tee out.txt
+            psql "$DBURL" -v ON_ERROR_STOP=1 -X -A -F ' | ' -f "/sql/$FILE" > out.txt 2>&1
+          rc=$?
+          set -e
+          cat out.txt
+          # the database's answer without the address / password (a failed sign-in may print the host)
+          if [ $rc -ne 0 ]; then echo "::error title=$FILE::$(tail -n 15 out.txt | sed -E 's#postgres(ql)?://[^ ]*#<db>#g; :a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g')"; exit $rc; fi
           # the result also as a short notice (readable without the log) and in the run's summary
           { echo '```'; head -n 80 out.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           echo "::notice title=$FILE::$(head -n 60 out.txt | sed ':a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g')"
