@@ -62,6 +62,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
   if (req.method !== "POST") return new Response(JSON.stringify({ ok: true, service: "mail-in" }), { headers: { "Content-Type": "application/json", ...cors } });
   if (!SECRET || !timingSafeEqual(req.headers.get("x-mail-in-secret") || "", SECRET)) return json({ error: "forbidden" }, 403);
+  // the El. paštas page was removed from the app (2026-10-22): forwarded letters are accepted and dropped, nothing is
+  // stored (the Cloudflare Email Routing to esmail.lt can be switched off)
+  if (Deno.env.get("MAIL_IN_ON") !== "1") return json({ ok: true, off: true });
   const raw = new Uint8Array(await req.arrayBuffer());
   if (!raw.length) return json({ error: "empty" }, 400);
   const rcpt = [req.headers.get("x-rcpt") || ""].concat((req.headers.get("x-to") || "").split(",")).map((s) => s.trim()).filter(Boolean);

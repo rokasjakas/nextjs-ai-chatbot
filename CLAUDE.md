@@ -57,3 +57,7 @@
   `gsBtnOk`) and the dossier cards re-checks the level – a level never reaches a page it may not see.
   **Every release that adds or changes a feature updates its `GUIDE` article / Q&A in the same release** (the user asked for it);
   run `python3 site-tools/guide_check.py site/index.html` at every release – it fails when a menu page has no article.
+- The El. paštas page was REMOVED (v632, the user's wish): tab `mail` is in `HIDDEN_TABS`, no rail button, no mailbox sync jobs
+  (`supabase/sql/mail_off.sql`: only cron `invoice-inbox` → mail function `{action:"invoice_inbox"}`), mail-in drops letters
+  (`MAIL_IN_ON`≠1). What stays: the invoice mailbox (saskaitos@ → Sąskaitos) and SENDING from the member's own mailbox
+  (event letter `lm*`, invoices `invSendModal`) – connected in the small `mailSendSetup()` window. Don't bring the mailbox back unasked.
