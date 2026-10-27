@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-jqo4Q2MSuYT0eYdflj18vDoNFl1yDRc1afuO5iXoAtA=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dvQa8Shx0b9GXeSDefNsETwS2VvCdC8uXAgUu14H3d0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -23636,7 +23636,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v637';
+const APP_VER = 'v638';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25215,10 +25215,6 @@ function renderEventsTab(){
         <button class="btn small" id="evRedo" title="Grąžinti (Ctrl+Y / ⌘⇧Z)" aria-label="Grąžinti" disabled>↷</button>
         <button class="btn primary small" id="evAdd">+ Renginys</button>
         <button class="btn small" id="evAddWork">+ Sandėlio darbai</button>
-        <button class="btn small" id="evFromProjects" title="Sukurti renginius iš šio mėnesio Rentman projektų">↓ Iš projektų</button>
-        <button class="btn small" id="evGearPlan" title="Kas kada užimta ir kur trūksta">📅 Įrangos planas</button>
-        <button class="btn small" id="evLists">⚙ Sąrašai</button>
-        <button class="btn small" id="evImport" title="Įkelti renginius ir paėmimus iš Google Sheets (paruošto .json failo)">⬆ Importuoti</button>
         <span class="ev-zoom"><button type="button" class="btn small" id="evZoomOut" title="Tolinti (Ctrl −)">${slIcon('zoomout')}</button><b id="evZoomV" title="Grąžinti 100 %">100 %</b><button type="button" class="btn small" id="evZoomIn" title="Artinti (Ctrl +)">${slIcon('zoomin')}</button></span>
         <button type="button" class="btn small" id="evFull" title="Atidaryti per visą langą (Esc – uždaryti)">${slIcon('fullscreen')}</button>
         <span class="xg-meta" id="evMeta"></span>
@@ -25239,10 +25235,6 @@ function renderEventsTab(){
   document.getElementById('evRedo').onclick = evRedo;
   evUndoButtons();
   document.getElementById('evAddWork').onclick = ()=> evAddNew('work');
-  document.getElementById('evFromProjects').onclick = evImportProjects;
-  document.getElementById('evLists').onclick = ()=> openEventListsModal('needs');
-  document.getElementById('evGearPlan').onclick = ()=>gearPlan();
-  document.getElementById('evImport').onclick = openEventImportModal;
   evZoomWire();
   if((canView('fleet') || canView('stats')) && typeof rvLoad==='function' && !RV.loaded) rvLoad().then(()=>{ try{ evPeopleDatalist(); }catch(e){} }).catch(()=>{});
   if(canView('people') && typeof ppLoad==='function' && !PP.loaded) ppLoad().then(()=>{ try{ evPeopleDatalist(); }catch(e){} }).catch(()=>{});
@@ -26223,8 +26215,8 @@ function renderEventList(){
   const months = new Set(evSpanMonths());
   const list = evSorted(EV.events.filter(e=> searching ? evMatches(e) : months.has(evMonthKey(e.date))));
   if(!list.length){
-    const mt0 = document.getElementById('evMeta'); if(mt0) mt0.innerHTML = '';
-    el.innerHTML = `<div class="card empty-state">${searching ? 'Nieko nerasta. Pabandyk kitą žodį ar datas.' : (evSpan() > 1 ? 'Šiais mėnesiais' : 'Šį mėnesį')+' renginių dar nėra. Spausk „+ Renginys“ arba „↓ Iš projektų“.'}</div>`;
+    const mt0 = document.getElementById('evMeta'); if(mt0){ mt0.innerHTML = `<span class="xg-fold-all">${EV_IMPORT_BTN}</span>`; document.getElementById('evImport').onclick = openEventImportModal; }
+    el.innerHTML = `<div class="card empty-state">${searching ? 'Nieko nerasta. Pabandyk kitą žodį ar datas.' : (evSpan() > 1 ? 'Šiais mėnesiais' : 'Šį mėnesį')+' renginių dar nėra. Spausk „+ Renginys“.'}</div>`;
     return;
   }
   const cols = EV.cols = evCrewColumns(list);
@@ -26242,7 +26234,7 @@ function renderEventList(){
   });
   // the count and fold buttons sit in the top button row (no separate strip above the table)
   const mt = document.getElementById('evMeta');
-  if(mt) mt.innerHTML = `<span class="xg-count">${searching ? 'Rasta: <b>'+list.length+'</b>' : ltPlural(nEv,'renginys','renginiai','renginių')+(nWork?' · '+ltPlural(nWork,'sandėlio darbai','sandėlio darbai','sandėlio darbų'):'')}</span><span class="xg-fold-all"><button type="button" class="btn small" id="evFoldAll">▸ Sutraukti visus</button><button type="button" class="btn small" id="evUnfoldAll">▾ Išskleisti visus</button></span><span class="xg-hint">← slink į šonus →</span>`;
+  if(mt) mt.innerHTML = `<span class="xg-count">${searching ? 'Rasta: <b>'+list.length+'</b>' : ltPlural(nEv,'renginys','renginiai','renginių')+(nWork?' · '+ltPlural(nWork,'sandėlio darbai','sandėlio darbai','sandėlio darbų'):'')}</span><span class="xg-fold-all"><button type="button" class="btn small" id="evFoldAll">▸ Sutraukti visus</button><button type="button" class="btn small" id="evUnfoldAll">▾ Išskleisti visus</button>${EV_IMPORT_BTN}</span><span class="xg-hint">← slink į šonus →</span>`;
   el.innerHTML = `
     <div class="xg-wrap" id="xgWrap"><table class="xg" id="xgTable">${evColgroup(cols, list)}${evGridHead(cols)}<tbody>${rows}</tbody></table></div>
     <div class="xg-hs hidden" id="xgHs"><button type="button" class="xg-hs-b" data-hs="-1" title="Į kairę">‹</button><input type="range" id="xgHsR" min="0" max="100" value="0" step="1" aria-label="Slinkti lentelę į šonus"><button type="button" class="xg-hs-b" data-hs="1" title="Į dešinę">›</button></div>`;
@@ -26253,8 +26245,11 @@ function renderEventList(){
   const setAll = fold=>{ const f = evFoldLoad(); EV.visibleIds.forEach(id=>fold ? f.add(id) : f.delete(id)); evFoldSave(); renderEventList(); };
   document.getElementById('evFoldAll').onclick = ()=>setAll(true);
   document.getElementById('evUnfoldAll').onclick = ()=>setAll(false);
+  document.getElementById('evImport').onclick = openEventImportModal;
   evFoldButtons();
 }
+// „Importuoti“ sits by „Sutraukti / Išskleisti visus“ (drawn with the list – also when the month is empty)
+const EV_IMPORT_BTN = '<button type="button" class="btn small" id="evImport" title="Įkelti renginius ir paėmimus iš Google Sheets (paruošto .json failo)">⬆ Importuoti</button>';
 // while a name is typed the column grows with it (no jumping of the surname to the next line)
 function evRefreshWidths(){
   const tbl = document.getElementById('xgTable'); if(!tbl || !EV.cols || !EV.lastList || EV.phoneLayout) return;
@@ -50881,6 +50876,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-27 14:00', v:'v638', k:'chg', t:'Renginiai: mažiau mygtukų viršuje', f:'Pašalinti mygtukai „Iš projektų“, „Įrangos planas“ ir „Sąrašai“; „Importuoti“ perkeltas šalia „Sutraukti / Išskleisti visus“. Įrangos planas atidaromas iš renginio įrangos lango ir paieškos, sąrašai – iš renginio laukų pasirinkimo („Redaguoti sąrašą“).' },
   { d:'2026-10-27 12:00', v:'v637', k:'chg', t:'Pasiūlymai: grafa – PNG paveikslėliu 1920×1080', f:'Grafos mygtukas „PDF“ pakeistas į „PNG“: išsaugomas 1920×1080 paveikslėlis tik su pasiūlymo antrašte ir tos grafos lentele (su kainomis arba be), pavadintas renginio ir grafos pavadinimu (pvz. Koncertas_Garsas.png).' },
   { d:'2026-10-27 10:00', v:'v636', k:'new', t:'Pasiūlymai: kiekviena grafa – atskiru PDF', f:'Pasiūlymo grafos (Garsas, Šviesa, Vaizdas…) antraštėje – mygtukas „PDF“: pasirenki „Su kainomis“ arba „Be kainų“, failas pavadinamas renginio ir grafos pavadinimu (pvz. Koncertas_Garsas.pdf).' },
   { d:'2026-10-26 14:00', v:'v635', k:'chg', t:'Mažiau apkrovos duomenų bazei (Disk IO)', f:'Kai programa atidaryta keliuose languose, chato kopija (laikoma tik įrenginyje) nebepatenka į nario nustatymus – anksčiau ji ten užaugdavo iki ~1 MB ir buvo perrašoma su kiekvienu nustatymo pakeitimu. Pašalintos dvi niekada neveikusios „gyvos“ prenumeratos (nauji nariai ir automobilių nurašymai tikrinami kaip anksčiau).' },
