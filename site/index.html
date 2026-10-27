@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-ONpQ9GPC38a+1eVxPtQMr5pr8dtcdFsJY1PHAKzBt4A=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Ayao/ujBQyaVa1FHJZ5cLz+udOvd8yWoJ/macJBBXgs=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -21736,6 +21736,20 @@ function uiAsk(msg, opt){
     setTimeout(()=>{ (inp || el.querySelector('[data-a="yes"]')).focus(); if(inp) inp.select(); }, 30);
   });
 }
+function uiPick(msg, choices){
+  return new Promise(res=>{
+    const el = document.createElement('div'); el.className = 'ui-ask'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+    el.innerHTML = `<div class="ui-ask-card"><button type="button" class="modal-x" title="Uždaryti" aria-label="Uždaryti" data-a="">${slIcon('close')}</button><div class="ui-ask-msg"></div>
+      <div class="ui-ask-b">${choices.map(([k, l], i)=>`<button type="button" class="btn ${i ? '' : 'primary'}" data-a="${esc(k)}">${esc(l)}</button>`).join('')}</div></div>`;
+    el.querySelector('.ui-ask-msg').textContent = String(msg);
+    const done = v=>{ document.removeEventListener('keydown', key, true); el.classList.add('out'); el.__instant = true; setTimeout(()=>el.remove(), 120); res(v || null); };
+    const key = e=>{ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done(null); } };
+    el.addEventListener('click', e=>{ const b = e.target.closest('[data-a]'); if(b) done(b.dataset.a); else if(e.target===el) done(null); });
+    document.addEventListener('keydown', key, true);
+    document.body.appendChild(el);
+    setTimeout(()=>{ const f = el.querySelector('.ui-ask-b [data-a]'); if(f) f.focus(); }, 30);
+  });
+}
 // the call's own window (when it is popped out) shows the question there
 function uiDoc(){ const L = typeof TEAM!=='undefined' && TEAM.live; return L && L.popWin && !L.popWin.closed && L.popWin.document.hasFocus() ? L.popWin.document : document; }
 function uiConfirm(msg, opt){ return uiAsk(msg, Object.assign({ doc:uiDoc() }, opt)); }
@@ -23622,7 +23636,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v635';
+const APP_VER = 'v636';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32364,7 +32378,7 @@ function odSection(d, s, si, mode, rows, cont){
   const t = offerTotals(d).secs[si];
   const list = rows || s.rows;
   const head = ed
-    ? `<div class="od-sh" style="background:${odE(s.color)}"><button class="od-color" data-color="${si}" title="Spalva" style="background:${odE(s.color)}"></button><input class="od-st" data-st="${si}" value="${odE(s.title)}"><span class="od-sact"><button data-sup="${si}" title="Aukštyn">↑</button><button data-sdown="${si}" title="Žemyn">↓</button><button data-sdel="${si}" title="Ištrinti skiltį">✕</button></span></div>`
+    ? `<div class="od-sh" style="background:${odE(s.color)}"><button class="od-color" data-color="${si}" title="Spalva" style="background:${odE(s.color)}"></button><input class="od-st" data-st="${si}" value="${odE(s.title)}"><span class="od-sact"><button data-spdf="${si}" data-ro-ok title="Šią grafą – į PDF (su kainomis arba be)">PDF</button><button data-sup="${si}" title="Aukštyn">↑</button><button data-sdown="${si}" title="Žemyn">↓</button><button data-sdel="${si}" title="Ištrinti skiltį">✕</button></span></div>`
     : `<div class="od-sh" style="background:${odE(s.color)}">${odE(s.title)}${cont?' '+odT(d,'(tęsinys)'):''}</div>`;
   const cols = np ? `<div class="od-tr od-th np"><span>#</span><span class="od-name">${odT(d,'Pavadinimas')}</span><span>${odT(d,'Kiekis')}</span></div>`
     : `<div class="od-tr od-th"><span>#</span><span class="od-name">${odT(d,'Pavadinimas')}</span><span>${odT(d,'Kiekis')}</span><span>${odT(d,'Kaina')}</span><span>${odT(d,'Koef.')}</span><span class="od-sum">${odT(d,'Suma')}</span></div>`;
@@ -32618,6 +32632,20 @@ async function offerPdfBlob(d, mode){
     pdf.setProperties({ title:(d.project||'Komercinis pasiūlymas'), subject:'Komercinis pasiūlymas', creator:'EventSolutions App' });
     return pdf.output('blob');
   } finally { host.remove(); }
+}
+// one section (Garsas, Šviesa, Vaizdas…) as its own PDF, with or without prices; the file is named by the event and the section
+async function offerSecPdf(d, si){
+  const s = d.sections[si]; if(!s) return;
+  if(!s.rows.length){ toast('Ši grafa tuščia – nėra ką išsaugoti.'); return; }
+  const mode = await uiPick('Grafą „'+(s.title||'—')+'“ išsaugoti PDF:', [['print', 'Su kainomis'], ['noprice', 'Be kainų']]);
+  if(!mode) return;
+  toast('Kuriamas PDF…');
+  try{ offerDownload(await offerPdfBlob(Object.assign({}, d, { sections:[s] }), mode), offerSecFileName(d, s, mode)); toast('📄 PDF paruoštas.'); }
+  catch(e){ toast('PDF sukurti nepavyko: '+e.message); }
+}
+function offerSecFileName(d, s, mode){
+  const part = t=>String(t||'').replace(/[\\/:*?"<>|]+/g,' ').trim().replace(/\s+/g,'_');
+  return part(d.project || d.client || 'Pasiulymas')+'_'+part(s.title || 'Grafa')+(mode==='noprice' ? '_be_kainu' : '')+'.pdf';
 }
 function offerDownload(blob, name){
   const url = URL.createObjectURL(blob), a = document.createElement('a');
@@ -33538,7 +33566,8 @@ function offerEditorBind(){
     if(error){ toast('Nepavyko: '+error.message); return; }
     OFFER.cur = null; OFFER.dirty = false; await offersLoad(); renderOffersTab(); toast('Pasiūlymas ištrintas.');
   });
-  if(!canEdit('offers')){ root.querySelectorAll('input,textarea,button').forEach(el=>el.disabled = true); return; }
+  root.querySelectorAll('[data-spdf]').forEach(b=>b.onclick = ()=>offerSecPdf(d, +b.dataset.spdf));
+  if(!canEdit('offers')){ root.querySelectorAll('input,textarea,button:not([data-spdf])').forEach(el=>el.disabled = true); return; }
   root.querySelectorAll('[data-h="footerLeft"]').forEach(el=>el.title = 'Tavo pareigos, vardas, telefonas ir el. paštas imami iš profilio');
   root.querySelectorAll('[data-h]').forEach(el=>el.addEventListener('input', ()=>{
     const k = el.dataset.h; d[k] = el.value; offerTouch(false);
@@ -42727,9 +42756,10 @@ const GUIDE = [
      ['Veiksmai', 'Išsaugoti (Klientas, Versija, Galutinis), PDF (Peržiūrėti, Parsisiųsti, Be kainų, Siųsti klientui, Į Pasiūlymų PDF), Kita (Išversti į EN, Antraštės EN/LT, Kopija, Ištrinti). Versijos – kuo skiriasi nuo ankstesnės, palyginti iki 8 versijų.'],
      ['Įranga / Paslaugos', 'Katalogas: kaip daiktas vadinasi pasiūlyme ir kaina, įrangos grupės (pvz. 1 m² LED = 4× kabinetai, keli variantai „arba“, ypatybės Dydis ir Aukštis), paslaugos, aptarnavimas, kita.'],
      ['Klientai', 'Klientų sąrašas ir analizė.']],
-  q:[['Kaip padaryti pasiūlymą anglų kalba?', 'Pasiūlyme Kita → „Išversti į EN“ (nauja kopija) arba LT / EN perjungimas ir „PDF EN“.'],
+  q:[['Kaip išsaugoti tik vieną grafą (pvz. Garsas) PDF?', 'Grafos antraštėje spausk „PDF“ ir pasirink „Su kainomis“ arba „Be kainų“. Failas pavadinamas renginio (Projektas) ir grafos pavadinimu, pvz. Koncertas_Garsas.pdf (be kainų – su „_be_kainu“ gale).'],
+     ['Kaip padaryti pasiūlymą anglų kalba?', 'Pasiūlyme Kita → „Išversti į EN“ (nauja kopija) arba LT / EN perjungimas ir „PDF EN“.'],
      ['Kaip matyti, ar užteks įrangos?', 'Šoninė juosta „Likutis“ – pagal pasiūlymo datas; ⚠ prie skilties reiškia, kad kažko trūksta.']],
-  rel:['jobs','inventory','newproj'], kw:'pasiulymas pasiulymai kaina nuolaida pdf versija klientas vertimas anglu silent concept' },
+  rel:['jobs','inventory','newproj'], kw:'pasiulymas pasiulymai kaina nuolaida pdf versija klientas vertimas anglu silent concept grafa skiltis garsas sviesa vaizdas' },
 
 { id:'jobs', tab:'jobs', g:'Ofisas', t:'Pasiūlymų PDF', d:'Galutinių pasiūlymų PDF be kainų su komentarais planuojantiems.',
   s:[['Kam', 'Iš Pasiūlymų („Į Pasiūlymų PDF“) atkeliauja galutinis pasiūlymas be kainų – sandėlis ir technikai mato, ką reikia paruošti, rašo komentarus.']],
@@ -50830,6 +50860,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-27 10:00', v:'v636', k:'new', t:'Pasiūlymai: kiekviena grafa – atskiru PDF', f:'Pasiūlymo grafos (Garsas, Šviesa, Vaizdas…) antraštėje – mygtukas „PDF“: pasirenki „Su kainomis“ arba „Be kainų“, failas pavadinamas renginio ir grafos pavadinimu (pvz. Koncertas_Garsas.pdf).' },
   { d:'2026-10-26 14:00', v:'v635', k:'chg', t:'Mažiau apkrovos duomenų bazei (Disk IO)', f:'Kai programa atidaryta keliuose languose, chato kopija (laikoma tik įrenginyje) nebepatenka į nario nustatymus – anksčiau ji ten užaugdavo iki ~1 MB ir buvo perrašoma su kiekvienu nustatymo pakeitimu. Pašalintos dvi niekada neveikusios „gyvos“ prenumeratos (nauji nariai ir automobilių nurašymai tikrinami kaip anksčiau).' },
   { d:'2026-10-26 13:00', v:'v634', k:'chg', t:'Sąskaitų dėžutė tikrinama kas valandą', f:'Laiškai į saskaitos@ tikrinami kas valandą (buvo kas 2 min.) – mažiau apkrovos duomenų bazei (Disk IO). Skubiai – „Tikrinti dabar“ sąskaitų dėžutės nustatymuose.' },
   { d:'2026-10-22 13:00', v:'v633', k:'chg', t:'Pranešimai viršutiniame meniu, automatinis persikrovimas', f:'„Žiūri kaip … / Grįžti į Super Admin“ ir „Programa atnaujinta – Perkrauti“ nebėra virš puslapio ir nesikartoja kiekviename darbo ar greitajame lange – jie rodomi vieną kartą, kompaktiškai viršutiniame meniu. Jei per 2 val. po naujos versijos programa nepersikrauna pati, ji persikrauna automatiškai (prieš tai išsaugoma; jei ką tik rašai – palaukia iki 30 min.).' },
