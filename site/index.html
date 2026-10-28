@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dvQa8Shx0b9GXeSDefNsETwS2VvCdC8uXAgUu14H3d0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-IOt/aEprlbWqDF6WqjFgyaikwRBIAXXt2zQCbtmPZcM=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -23636,7 +23636,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v638';
+const APP_VER = 'v639';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -37551,17 +37551,20 @@ function chatNotify(title, text, cid, kind, thread){
 
 /* ============================================================
    TAB: Darbų planas (supabase/sql/work_plans.sql)
-   Admin nariai kuria planus (pvz. „Automobilių priežiūra“ kas pirmadienį): grupės su
+   Tech ir aukštesni kuria planus sau ir kitiems (pvz. „Automobilių priežiūra“ kas pirmadienį): grupės su
    teiginiais (Taip / Ne, komentaras, nuotrauka), kaip dažnai, iki kada, kam priskirta.
    Narys mato tik jam priskirtus darbus ir pildo juos; kiekvieno pažymėjimo laiką įrašo serveris.
    Neatlikus iki termino – per visą ekraną „Yra neatliktų darbų“ (ir pranešimas į telefoną / kompiuterį).
-   Admin: „Planai“, „Priskirti darbai“ (kas atlikta / ne) ir „Archyvas“ (atlikti, kaip tikrinta).
+   Kūrėjas mato savo planus, Admin – visus: „Planai“, „Priskirti darbai“ (kas atlikta / ne), „Archyvas“ (atlikti, kaip tikrinta).
    ============================================================ */
 const WP = { plans:[], runs:[], loaded:false, loading:null, err:'', tab:'', arch:{ plan:'', user:'' }, ch:null, t:0 };
 const WP_FREQ = { daily:'Kas dieną', workdays:'Darbo dienomis (Pr–Pn)', weekly:'Kas savaitę', monthly:'Kas mėnesį', every_n:'Kas N dienų', once:'Vieną kartą' };
 const WP_WD = ['', 'pirmadienis', 'antradienis', 'trečiadienis', 'ketvirtadienis', 'penktadienis', 'šeštadienis', 'sekmadienis'];
 const WP_WDK = ['', 'pirmadienį', 'antradienį', 'trečiadienį', 'ketvirtadienį', 'penktadienį', 'šeštadienį', 'sekmadienį'];
 const wpAdmin = ()=>ACCESS.role==='admin';
+// Tech and above make plans too (for themselves and others) – they keep the ones they made (supabase/sql/work_plans_team.sql)
+const wpCreator = ()=>!ACCESS.fallback && ['admin','pm','office','tech'].includes(ACCESS.role);
+const wpOwn = p=>!!p && (wpAdmin() || p.created_by===teamMe());
 const wpUid = ()=>'w'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 // ---- dates (Vilnius) ----
 function wpIsoWd(d){ return ((new Date(d+'T12:00:00Z').getUTCDay()+6)%7)+1; }
@@ -37772,7 +37775,7 @@ function slfCatsEdit(){
 }
 
 function renderWorkPlansTab(){
-  const main = document.getElementById('main'), adm = wpAdmin();
+  const main = document.getElementById('main'), adm = wpCreator();
   if(!WP.loaded){ main.innerHTML = '<div class="tabpanel"><div class="card empty-state">Kraunama…</div></div>'; wpLoad().then(()=>{ if(currentTab==='workplans') renderWorkPlansTab(); wpBadge(); }); return; }
   const mine = wpMine();
   const tabs = adm ? [['mine','Mano darbai', mine.filter(x=>x.st!=='done').length], ['board','Priskirti darbai', 0], ['plans','Planai', 0], ['arch','Archyvas', 0]] : [['mine','Mano darbai', mine.filter(x=>x.st!=='done').length], ['arch','Atlikti', 0]];
@@ -37926,9 +37929,9 @@ function wpView(run, vid){
   const op = document.getElementById('wpvOpen'); if(op) op.onclick = async ()=>{ const r = await getSb().from('work_plan_runs').update({ status:'open' }).eq('id', run.id).select().single(); if(r.error){ toast('Nepavyko: '+r.error.message); return; } Object.assign(run, r.data); closeModal(); toast('Grąžinta taisyti – narys vėl gali pildyti.'); renderWorkPlansTab(); };
   const dl = document.getElementById('wpvDel'); if(dl) dl.onclick = async ()=>{ if(!(await uiConfirm('Ištrinti šį užpildymą?'))) return; const r = await getSb().from('work_plan_runs').delete().eq('id', run.id); if(r.error){ toast('Nepavyko: '+r.error.message); return; } WP.runs = WP.runs.filter(x=>x.id!==run.id); closeModal(); renderWorkPlansTab(); };
 }
-// ---- Admin: who did what (current period and the ones before) ----
+// ---- who did what in the plans this member keeps (Admin: all) – current period and the ones before ----
 function wpBoardDraw(box){
-  const plans = WP.plans.filter(p=>p.active);
+  const plans = WP.plans.filter(p=>p.active && wpOwn(p));
   box.innerHTML = plans.length ? plans.map(p=>{
     const cur = wpPeriod(p), past = []; let d = cur; for(let i=0; i<6 && d; i++){ d = wpPrev(p, d); if(d) past.push(d); }
     return `<div class="card wp-bcard"><div class="wp-bh"><b>${esc(p.title)}</b><small class="muted">${esc(wpFreqText(p))} · iki ${esc(p.due_time)}</small></div>
@@ -37943,8 +37946,8 @@ function wpBoardDraw(box){
 }
 // ---- archive: handed-in plans ----
 function wpArchDraw(box){
-  const adm = wpAdmin(), A = WP.arch;
-  let list = WP.runs.filter(r=>r.status==='done' && (adm || r.user_id===teamMe()));
+  const adm = wpCreator(), A = WP.arch;
+  let list = WP.runs.filter(r=>r.status==='done' && (r.user_id===teamMe() || wpOwn(WP.plans.find(p=>p.id===r.plan_id))));
   if(A.plan) list = list.filter(r=>r.plan_id===A.plan); if(A.user) list = list.filter(r=>r.user_id===A.user);
   list.sort((a,b)=>String(b.done_at||'').localeCompare(String(a.done_at||'')));
   const users = [...new Set(WP.runs.map(r=>r.user_id))];
@@ -37961,10 +37964,10 @@ function wpArchDraw(box){
   const su = document.getElementById('wpaU'); if(su) su.onchange = ()=>{ A.user = su.value; wpArchDraw(box); };
   box.querySelectorAll('[data-wprun]').forEach(b=>b.onclick = ()=>{ const r = WP.runs.find(x=>x.id===b.dataset.wprun); if(r) wpView(r); });
 }
-// ---- Admin: the plans ----
+// ---- the plans this member keeps (Tech and above; Admin: all) ----
 function wpPlansDraw(box){
   box.innerHTML = `<div class="row" style="justify-content:flex-end;margin-bottom:10px;"><button type="button" class="btn primary" id="wpNew">${slIcon('plus')} Naujas darbų planas</button></div>
-    ${WP.plans.length ? WP.plans.map(p=>`<div class="card wp-pcard ${p.active ? '' : 'off'}">
+    ${WP.plans.filter(wpOwn).length ? WP.plans.filter(wpOwn).map(p=>`<div class="card wp-pcard ${p.active ? '' : 'off'}">
       <div class="wp-bh"><b>${esc(p.title)}</b>${p.active ? '' : ' <span class="pill">išjungtas</span>'}<small class="muted">${esc(wpFreqText(p))} · iki ${esc(p.due_time)} · ${wpAllItems(p.groups).length} teig.</small></div>
       <div class="wp-pas">${(p.assignees||[]).map(u=>`<span class="pill">${esc(wpMemberName(u))}</span>`).join('') || '<span class="muted">niekam nepriskirta</span>'}</div>
       <div class="row" style="gap:6px;margin-top:8px;"><button type="button" class="btn small" data-wpe="${esc(p.id)}">${slIcon('pencil')} Redaguoti</button><button type="button" class="btn small" data-wpc="${esc(p.id)}">${slIcon('copy')} Kopijuoti</button><button type="button" class="btn small danger" data-wpd="${esc(p.id)}">${slIcon('bin')}</button></div>
@@ -42926,8 +42929,9 @@ const GUIDE = [
   rel:['stockleft'], kw:'pirkiniai pirkti sarasas pasiulymas excel' },
 
 { id:'workplans', tab:'workplans', g:'Komanda', t:'Darbų planas', d:'Periodiniai patikrinimai su Taip / Ne punktais, nuotraukomis ir priminimais.',
-  s:[['Kaip', 'Admin kuria planus (grupės, punktai, dažnumas, terminas, kam). Narys mato savo darbus, pažymi Taip / Ne, komentarą, nuotrauką ir pateikia; neatlikus – per visą ekraną „Yra neatliktų darbų“. Automobilių patikra – keli automobiliai iš eilės. Punktas „Likutis“ įrašo skaičius į Likučius.']],
-  rel:['stockleft','fleet'], kw:'darbu planas patikra checklist periodinis' },
+  s:[['Kaip', 'Planus kuria Tech, Office, Projektų vadovai ir Admin (grupės, punktai, dažnumas, terminas, kam) – sau ir kitiems; kiekvienas mato ir keičia savo sukurtus (Admin – visus). Narys mato savo darbus, pažymi Taip / Ne, komentarą, nuotrauką ir pateikia; neatlikus – per visą ekraną „Yra neatliktų darbų“. Automobilių patikra – keli automobiliai iš eilės. Punktas „Likutis“ įrašo skaičius į Likučius.']],
+  q:[['Kas gali pridėti darbų kitiems?', 'Tech ir aukštesni (Tech, Office, Projektų vadovai, Admin): Darbų planas → „Planai“ → „Naujas darbų planas“, skiltyje „Kam“ pažymi narius (gali ir save). Kaip sekasi – „Priskirti darbai“ ir „Archyvas“ (tik tavo sukurtų planų).']],
+  rel:['stockleft','fleet'], kw:'darbu planas patikra checklist periodinis priskirti kitiems darbai' },
 
 { id:'notes', g:'Komanda', t:'Užduotys, Notes ir kalendorius', d:'Užduotys sau ir kitiems, asmeniniai užrašai, kalendorius su susitikimais.',
   s:[['Užduotys', 'Viršuje „Pridėti užduotį“ (sau, su priminimais) ir „Priskirti užduotį“ (kitiems, terminas, atlikimas kiekvienam). Matosi dešiniajame skydelyje.'],
@@ -50876,6 +50880,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-28 10:00', v:'v639', k:'new', t:'Darbų planas: darbus priskiria ir Tech, Office, Projektų vadovai', f:'Darbų planus (sau ir kitiems) dabar kuria ne tik Admin, bet ir Tech, Office bei Projektų vadovai. Kiekvienas mato, keičia ir trina savo sukurtus planus, mato jų atlikimą (Priskirti darbai, Archyvas) ir nuotraukas; Admin – kaip anksčiau, visus.' },
   { d:'2026-10-27 14:00', v:'v638', k:'chg', t:'Renginiai: mažiau mygtukų viršuje', f:'Pašalinti mygtukai „Iš projektų“, „Įrangos planas“ ir „Sąrašai“; „Importuoti“ perkeltas šalia „Sutraukti / Išskleisti visus“. Įrangos planas atidaromas iš renginio įrangos lango ir paieškos, sąrašai – iš renginio laukų pasirinkimo („Redaguoti sąrašą“).' },
   { d:'2026-10-27 12:00', v:'v637', k:'chg', t:'Pasiūlymai: grafa – PNG paveikslėliu 1920×1080', f:'Grafos mygtukas „PDF“ pakeistas į „PNG“: išsaugomas 1920×1080 paveikslėlis tik su pasiūlymo antrašte ir tos grafos lentele (su kainomis arba be), pavadintas renginio ir grafos pavadinimu (pvz. Koncertas_Garsas.png).' },
   { d:'2026-10-27 10:00', v:'v636', k:'new', t:'Pasiūlymai: kiekviena grafa – atskiru PDF', f:'Pasiūlymo grafos (Garsas, Šviesa, Vaizdas…) antraštėje – mygtukas „PDF“: pasirenki „Su kainomis“ arba „Be kainų“, failas pavadinamas renginio ir grafos pavadinimu (pvz. Koncertas_Garsas.pdf).' },
