@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-TrvBXE76MkXzLHjKXPCxQrSD2eaPUwxhZ9VDCWMgxak=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-6FfKxN5xS3xXH3ahQ5PQ5kFluvFjkoGS2S1isNFTAeE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -23674,7 +23674,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v644';
+const APP_VER = 'v645';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -39526,7 +39526,7 @@ function stkRenderTable(box){
     if(p) h += `<tr class="stk-reason" data-stkr="${esc(it.id)}"><td colspan="${span}">
       <div class="stk-reason-in"><b>${esc(it.name)}: ${esc(stkFmt(it.qty))} → ${esc(stkFmt(p.qty))}</b>
       <input type="text" data-stkreason="${esc(it.id)}" value="${esc(p.reason||'')}" placeholder="Kodėl keičiamas kiekis? (privaloma)">
-      ${wh ? `<label class="stk-chk"><input type="checkbox" data-stkwh="${esc(it.id)}"${p.wh?' checked':''}> pakeisti ir sandėlyje (${esc(stkFmt(wh.qty))})</label>` : ''}
+      ${wh && canEdit('inventory') ? `<span class="muted">Įrangoje (${esc(stkFmt(wh.qty))}) pasikeis kartu</span>` : ''}
       <button type="button" class="btn small" data-stkundo="${esc(it.id)}">Atšaukti</button></div></td></tr>`;
     if(open) kids.forEach(k=>{ h += row(k, true); });
     return h;
@@ -39564,7 +39564,6 @@ function stkBindTable(box){
       const r = document.querySelector(`[data-stkreason="${CSS.escape(it.id)}"]`); if(r) r.focus(); }, 0);
   });
   box.querySelectorAll('[data-stkreason]').forEach(inp=>inp.oninput = ()=>{ const p = STK.pending[inp.dataset.stkreason]; if(p){ p.reason = inp.value; stkRenderPending(); } });
-  box.querySelectorAll('[data-stkwh]').forEach(c=>c.onchange = ()=>{ const p = STK.pending[c.dataset.stkwh]; if(p) p.wh = c.checked; });
   box.querySelectorAll('[data-stkundo]').forEach(b=>b.onclick = ()=>{ delete STK.pending[b.dataset.stkundo]; stkRenderBody(); stkRenderPending(); });
   box.querySelectorAll('[data-stknote]').forEach(t=>{
     t.oninput = ()=>{ t.style.height = 'auto'; t.style.height = t.scrollHeight+'px'; };
@@ -39585,6 +39584,27 @@ function stkBindTable(box){
   box.querySelectorAll('.stk-note').forEach(t=>{ t.style.height = 'auto'; t.style.height = t.scrollHeight+'px'; });
 }
 function stkRow(it){ return { id:it.id, sheet:it.sheet, section:it.section||'', name:it.name, qty:it.qty, qty_text:it.qty_text||'', comment:it.comment||'', extra:it.extra||{}, color:it.color||'', item_id:it.item_id||null, archived:!!it.archived, archived_reason:it.archived_reason||null, archived_at:it.archived_at||null, sort:it.sort||0, sheet_sort:it.sheet_sort!=null ? it.sheet_sort : null, parent_id:it.parent_id||null }; }
+// Įranga follows the inventory: a linked item's quantity = the sum of its rows (all sections, not archived)
+function stkWhSync(ids, reason, log){
+  if(!canEdit('inventory')) return 0;
+  let n = 0;
+  [...new Set(ids.filter(Boolean).map(String))].forEach(id=>{ const wh = allItems(false).find(x=>String(x.id)===id); if(!wh) return;
+    const rows = STK.items.filter(i=>String(i.item_id||'')===id && !i.archived && !i.parent_id);
+    if(rows.some(i=>i.qty==null)) return;
+    const to = Math.round(rows.reduce((a, i)=>a + (+i.qty||0), 0)*1000)/1000;
+    if(Math.abs(to - (+wh.qty||0)) < 0.001) return;
+    log.push({ stk_id:rows[0] ? rows[0].id : null, sheet:rows[0] ? rows[0].sheet : '', name:wh.name, action:'warehouse_qty', from_v:stkFmt(wh.qty), to_v:stkFmt(to), reason });
+    updateItem(id, { qty:to }); n++; });
+  return n;
+}
+// a new inventory row with no Įranga item: the item is made in Įranga too (category from the group or the section)
+function stkWhNew(row){
+  const top = stkNorm(String(row.section||'').split('/')[0].trim()), sub = String(row.section||'').split('/').slice(1).join('/').trim();
+  const g = GROUP_ORDER.find(k=>top && stkNorm(GROUP_LABEL[k]||'')===top) || (top && stkSheetGroups(top)[0]) || stkSheetGroups(row.sheet)[0] || 'kita';
+  const w = { id:uid('custom'), name:row.name, code:'', folder:sub || 'Custom', group:g, L:0, W:0, H:0, weight:0, qty:row.qty!=null ? row.qty : 0, power:0,
+    isTruss:false, orientationLocked:false, stackable:true, stackExceptionTruss:false, fragile:false, rented:false, supplier:'' };
+  STATE.customItems.push(w); saveState(); return w;
+}
 // quantity changes wait here until every one has a reason
 function stkRenderPending(){
   const el = document.getElementById('stkPend'); if(!el) return;
@@ -39600,14 +39620,15 @@ function stkRenderPending(){
 async function stkSavePending(){
   const ids = Object.keys(STK.pending);
   if(ids.some(id=>(STK.pending[id].reason||'').trim().length < STK_REASON_MIN)){ toast('Įrašyk priežastį prie kiekvieno pakeisto kiekio.'); return; }
-  const rows = [], log = [];
+  const rows = [], log = [], was = {};
   ids.forEach(id=>{ const it = STK.items.find(i=>i.id===id), p = STK.pending[id]; if(!it) return;
     log.push({ stk_id:id, sheet:it.sheet, name:it.name, action:'qty', from_v:stkFmt(it.qty), to_v:stkFmt(p.qty), reason:p.reason.trim() });
-    const wh = p.wh && stkWh(it);
-    if(wh && p.qty!=null){ updateItem(wh.id, { qty:p.qty }); log.push({ stk_id:id, sheet:it.sheet, name:wh.name, action:'warehouse_qty', from_v:stkFmt(wh.qty), to_v:stkFmt(p.qty), reason:p.reason.trim() }); }
-    it.qty = p.qty; rows.push(stkRow(it)); });
-  try{ await stkSaveItems(rows); await stkLogAdd(log); STK.pending = {}; toast('Išsaugota: '+rows.length+' pakeit.'); }
-  catch(e){ toast('Nepavyko išsaugoti: '+e.message); }
+    was[id] = it.qty; it.qty = p.qty; rows.push(stkRow(it)); });
+  try{ await stkSaveItems(rows);
+    const whIds = rows.map(r=>r.item_id), why = [...new Set(ids.map(id=>STK.pending[id].reason.trim()))].join('; ');
+    const n = stkWhSync(whIds, why, log);
+    await stkLogAdd(log); STK.pending = {}; toast('Išsaugota: '+rows.length+' pakeit.'+(n ? ' · Įrangoje pakeista: '+n : '')); }
+  catch(e){ rows.forEach(r=>{ const it = STK.items.find(i=>i.id===r.id); if(it) it.qty = was[r.id]; }); toast('Nepavyko išsaugoti: '+e.message); }
   renderStocktakeTab();
 }
 function stkRowMenu(btn, it){
@@ -39645,7 +39666,8 @@ function stkArchiveModal(it, archive){
     const reason = t.value.trim(); if(reason.length < STK_REASON_MIN) return;
     const prev = { archived:it.archived, archived_reason:it.archived_reason, archived_at:it.archived_at };
     Object.assign(it, archive ? { archived:true, archived_reason:reason, archived_at:new Date().toISOString() } : { archived:false, archived_reason:null, archived_at:null });
-    try{ await stkSaveItems([stkRow(it)]); await stkLogAdd([{ stk_id:it.id, sheet:it.sheet, name:it.name, action: archive ? 'archive' : 'restore', from_v:stkFmt(it.qty), to_v:'', reason }]); closeModal(); toast(archive ? 'Archyvuota.' : 'Grąžinta.'); renderStocktakeTab(); }
+    try{ await stkSaveItems([stkRow(it)]); const log = [{ stk_id:it.id, sheet:it.sheet, name:it.name, action: archive ? 'archive' : 'restore', from_v:stkFmt(it.qty), to_v:'', reason }];
+      const n = stkWhSync([it.item_id], reason, log); await stkLogAdd(log); closeModal(); toast((archive ? 'Archyvuota.' : 'Grąžinta.')+(n ? ' Įrangos kiekis pakeistas.' : '')); renderStocktakeTab(); }
     catch(e){ Object.assign(it, prev); toast('Nepavyko: '+e.message); }
   };
 }
@@ -39876,6 +39898,7 @@ function stkItemModal(it){
       <label class="field" style="grid-column:1/-1;">Pavadinimas<input type="text" id="stkNm" value="${esc(it ? it.name : '')}"></label>
       ${isNew ? `<label class="field">Kiekis (vnt.)<input type="text" inputmode="decimal" id="stkQt" value=""></label>` : `<div class="field">Kiekis<div class="muted" style="padding:8px 0;">${esc(stkFmt(it.qty))} – keičiamas lentelėje (su priežastimi)</div></div>`}
       <label class="field">Sandėlio daiktas<input type="text" id="stkWh" value="${esc(wh ? wh.name : '')}" placeholder="ieškoti sandėlyje…" list="stkWhL" data-id="${esc(wh ? wh.id : '')}"><datalist id="stkWhL">${allItems(false).map(x=>`<option value="${esc(x.name)}">`).join('')}</datalist></label>
+      ${isNew && canEdit('inventory') ? `<label class="stk-chk" style="grid-column:1/-1;"><input type="checkbox" id="stkWhAdd" checked> jei sandėlio daikto nepasirinkai – sukurti jį ir Įrangoje (kiekis pasikeis kartu)</label>` : ''}
       <label class="field" style="grid-column:1/-1;">Komentaras<textarea id="stkCm" rows="2">${esc(it ? it.comment||'' : '')}</textarea></label>
     </div>
     <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button type="button" class="btn" id="stkImC">Atšaukti</button><button type="button" class="btn primary" id="stkImS">${isNew ? 'Pridėti' : 'Išsaugoti'}</button></div>`);
@@ -39892,8 +39915,14 @@ function stkItemModal(it){
       const same = STK.items.filter(i=>i.sheet===sh), inSec = same.filter(i=>(i.section||'')===se);
       const sort = inSec.length ? Math.max(...inSec.map(i=>i.sort)) + 0.001 : (same.length ? Math.max(...same.map(i=>i.sort)) + 1 : (STK.items.length ? Math.max(...STK.items.map(i=>i.sort)) + 1000 : 0));
       const row = stkFixItem({ id:stkId('i'), sheet:sh, section:se, name:nm, qty, comment:cm, extra:{}, color:'', item_id: whIt ? String(whIt.id) : null, archived:false, sort, sheet_sort: same[0] && same[0].sheet_sort!=null ? same[0].sheet_sort : sort });
-      try{ await stkSaveItems([stkRow(row)]); STK.items.push(row); await stkLogAdd([{ stk_id:row.id, sheet:sh, name:nm, action:'add', from_v:'', to_v:stkFmt(qty), reason:'' }]); STK.sheet = sh; closeModal(); toast('Pridėta.'); renderStocktakeTab(); }
-      catch(e){ toast('Nepavyko: '+e.message); }
+      const mk = !whIt && document.getElementById('stkWhAdd') && document.getElementById('stkWhAdd').checked;
+      try{ let made = null; if(mk){ made = stkWhNew(row); row.item_id = String(made.id); }
+        await stkSaveItems([stkRow(row)]); STK.items.push(row);
+        const log = [{ stk_id:row.id, sheet:sh, name:nm, action:'add', from_v:'', to_v:stkFmt(qty), reason:'' }];
+        const n = whIt ? stkWhSync([whIt.id], 'pridėta inventorizacijoje', log) : 0;
+        await stkLogAdd(log); STK.sheet = sh; closeModal();
+        toast(made ? 'Pridėta ir Įrangoje.' : n ? 'Pridėta · Įrangos kiekis pakeistas.' : 'Pridėta.'); renderStocktakeTab(); }
+      catch(e){ if(row.item_id && !whIt){ STATE.customItems = STATE.customItems.filter(x=>String(x.id)!==row.item_id); saveState(); } toast('Nepavyko: '+e.message); }
     } else {
       const before = { sheet:it.sheet, section:it.section, name:it.name, comment:it.comment, item_id:it.item_id };
       Object.assign(it, { sheet:sh, section:se, name:nm, comment:cm, item_id: whIt ? String(whIt.id) : null });
@@ -39928,7 +39957,7 @@ function stkFinishSession(){
   openModal(`<h3>Užbaigti inventorizaciją</h3>
     <p>${esc(STK.sheet)} · ${esc(d.date||'')}</p>
     <p>Suskaičiuota: <b>${done}</b> iš ${items.length} daiktų${diff ? ` · nesutampa su kiekiu: <b class="stk-miss">${diff}</b>` : ''}.</p>
-    <p class="muted" style="font-size:12.5px;">Užbaigta inventorizacija lieka istorijoje ir ją galima palyginti su kitomis. Registre kiekis automatiškai nekeičiamas – jei reikia, pakeisk jį lentelėje (su priežastimi).</p>
+    <p class="muted" style="font-size:12.5px;">Užbaigta inventorizacija lieka istorijoje ir ją galima palyginti su kitomis. Registre kiekis automatiškai nekeičiamas – jei reikia, pakeisk jį lentelėje (su priežastimi); tada pasikeis ir Įrangoje.</p>
     <label class="field">Data<input type="date" id="stkFd" value="${esc(d.date||calISO(new Date()))}"></label>
     <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;"><button type="button" class="btn danger" id="stkFdel">Ištrinti šią inventorizaciją</button><span><button type="button" class="btn" id="stkFc">Tęsti vėliau</button> <button type="button" class="btn primary" id="stkFs">Užbaigti</button></span></div>`);
   document.getElementById('stkFc').onclick = ()=>closeModal();
@@ -43213,6 +43242,7 @@ const GUIDE = [
 { id:'stocktake', tab:'stocktake', g:'Sandėlis', t:'Inventorizacija', d:'Sandėlio inventorizacijos: kiekiai, atskiri vienetai, istorija, palyginimas ir sulyginimas su sandėliu.',
   s:[['Kaip', 'Nauja inventorizacija – skaičiuoji daiktus (ar vienetus); „Palyginti inventorizacijas“, „Sulyginti su sandėliu“ – kur skiriasi ir perkelti kiekius. Suskaičiuotas mažesnis kiekis riboja rezervacijas. RFID skeneriu galima skaičiuoti žymomis.'],
      ['Skyriai', '„⚙ Skyriai“ (šalia skyrių viršuje): naujas skyrius (gali būti tuščias), pervadinti (pasikeičia visur – daiktuose, inventorizacijose, istorijoje), tvarka ↑ ↓, ištrinti (su priežastimi – lieka Istorijoje).'],
+     ['Kiekiai ir Įranga', 'Inventorizacija ir Įranga eina kartu: pakeitus kiekį lentelėje (su priežastimi) arba archyvavus daiktą, susieto Įrangos daikto kiekis tampa lygus visų jo eilučių sumai. Pridedant naują daiktą be sandėlio daikto, jis sukuriamas ir Įrangoje (kategorija – pagal grupę ar skyrių) ir susiejamas. Pakeitimai Įrangoje matosi istorijoje.'],
      ['Įranga į skyrių', '„+ Iš sandėlio“: ieškai Sandėlio įrangos, pažymi kelis daiktus, pasirenki grupę – jie atsiranda pasirinktame skyriuje, susieti su sandėliu (kiekis – kiek jo sandėlyje). Esamą daiktą į kitą skyrių perkeli jį redaguodamas.'],
      ['Grupės', 'Pilkos eilutės – grupės (pvz. „32A 5pol“) ir pogrupiai (pvz. „Spare“). „⋯“ prie jų: pervadinti, priskirti šio skyriaus daiktų, „+ Iš sandėlio“, naujas pogrupis, ↑ ↓ tvarka, ištrinti (daiktai lieka be grupės / pakyla į grupę arba archyvuojami su priežastimi). „+ Grupė“ – nauja grupė. Pridedant ar redaguojant daiktą – „Grupė“ ir „Pogrupis“.']],
   q:[['Kaip pervadinti ar ištrinti inventorizacijos skyrių?', 'Inventorizacija → „⚙ Skyriai“ → „Pervadinti“ arba „Ištrinti“ (įrašai priežastį). Ten pat – „+ Naujas skyrius“ ir tvarka ↑ ↓.'],
@@ -51343,6 +51373,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-10-29 18:00', v:'v645', k:'chg', t:'Inventorizacija keičia ir Įrangą', f:'Pakeitus kiekį inventorizacijoje (su priežastimi) ar archyvavus daiktą – susieto Įrangos daikto kiekis pasitaiso pats (visų jo eilučių suma). Naujas daiktas be sandėlio daikto sukuriamas ir Įrangoje bei susiejamas.' },
   { d:'2026-10-29 17:00', v:'v644', k:'new', t:'Inventorizacija: grupės ir pogrupiai', f:'Pilkos eilutės (grupės, pvz. „32A 5pol“, ir pogrupiai, pvz. „Spare“) – „⋯“: pervadinti, priskirti daiktų, „+ Iš sandėlio“, naujas pogrupis, tvarka, ištrinti (daiktai lieka / pakyla į grupę arba archyvuojami su priežastimi). „+ Grupė“ – nauja grupė. Naujam daiktui – „Grupė“ ir „Pogrupis“ (pogrupiai siūlomi pagal grupę).' },
   { d:'2026-10-29 15:00', v:'v643', k:'new', t:'Inventorizacija: skyrių valdymas ir įranga į skyrių', f:'„⚙ Skyriai“: naujas (ir tuščias) skyrius, pervadinti (visur iš karto), tvarka, ištrinti su priežastimi. „+ Iš sandėlio“ – pažymėtą Sandėlio įrangą priskiri pasirinktam skyriui (su grupe, susieta su sandėliu).' },
   { d:'2026-10-29 12:00', v:'v642', k:'new', t:'Lygių redagavimas (Super Admin)', f:'Profilis → Paskyra → „Lygių redagavimas“: pasirink lygį ir eik per programą jo akimis. Su „Rinktis“ spausk puslapį meniu, mygtuką, polapį ar kortelę – išjungsi arba vėl įjungsi tik tam lygiui; išjungta rodoma blankiai su raudonu rėmeliu, to lygio nariai jos nemato. „Išjungta: N“ – sąrašas su „Įjungti“.' },
