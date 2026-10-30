@@ -1,0 +1,69 @@
+# iPhone / iPad app (ios/): generates the Xcode project, builds it and uploads it
+# to TestFlight. Without the App Store Connect key it only checks that the app
+# compiles (simulator build).
+# Repository secrets (Settings → Secrets and variables → Actions):
+#   APPLE_TEAM_ID   – Apple Developer → Membership → Team ID
+#   ASC_KEY_ID      – App Store Connect → Users and Access → Integrations → Key ID
+#   ASC_ISSUER_ID   – the Issuer ID shown on the same page
+#   ASC_KEY_P8      – the downloaded AuthKey_….p8 file, its whole text
+name: iPhone programa
+
+# paused for now: runs only when started by hand (Actions → iPhone programa → Run workflow)
+on:
+  workflow_dispatch:
+
+jobs:
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: ios
+    env:
+      HAS_KEY: ${{ secrets.ASC_KEY_ID != '' }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tools
+        run: brew install xcodegen
+      - name: App icon without transparency (App Store rule)
+        run: |
+          f=Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png
+          sips -s format jpeg "$f" --out /tmp/icon.jpg >/dev/null && sips -s format png /tmp/icon.jpg --out "$f" >/dev/null
+          sips -g hasAlpha "$f"
+      - name: Generate the Xcode project
+        run: xcodegen generate
+      - name: Check that it compiles (no key yet)
+        if: env.HAS_KEY != 'true'
+        run: |
+          xcodebuild -project EventSolutions.xcodeproj -scheme EventSolutions -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build | tail -30
+      - name: Build and upload to TestFlight
+        if: env.HAS_KEY == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          BUILD: ${{ github.run_number }}
+        run: |
+          set -o pipefail
+          KEY="$RUNNER_TEMP/AuthKey_$ASC_KEY_ID.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$KEY"
+          AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$KEY" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
+          xcodebuild -project EventSolutions.xcodeproj -scheme EventSolutions -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/ES.xcarchive" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CURRENT_PROJECT_VERSION="$BUILD" "${AUTH[@]}" archive | tail -40
+          cat > "$RUNNER_TEMP/export.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$APPLE_TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          EOF
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/ES.xcarchive" -exportOptionsPlist "$RUNNER_TEMP/export.plist" \
+            -exportPath "$RUNNER_TEMP/out" "${AUTH[@]}" | tail -40
+          rm -f "$KEY"

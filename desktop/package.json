@@ -1,0 +1,76 @@
+{
+  "name": "eventsolutions-desktop",
+  "productName": "Event Solutions",
+  "version": "1.8.0",
+  "description": "Event Solutions programa Windows ir Mac kompiuteriams",
+  "author": "Event Solutions",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "./build.sh",
+    "dist:mac": "electron-builder --mac zip --arm64 --x64"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3",
+    "resedit": "^2.0.3"
+  },
+  "build": {
+    "appId": "lt.eventsolutions.app",
+    "productName": "Event Solutions",
+    "copyright": "Event Solutions",
+    "files": [
+      "main.js",
+      "preload.js",
+      "popup.html",
+      "popup-preload.js",
+      "icons/**",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "res"
+    },
+    "afterPack": "./after-pack.js",
+    "win": {
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "res/icon.ico",
+      "executableName": "EventSolutions",
+      "signAndEditExecutable": false
+    },
+    "electronLanguages": [
+      "lt",
+      "en-US"
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "icon": "res/icon-mac.png",
+      "category": "public.app-category.business",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "artifactName": "EventSolutions-Mac-${arch}.${ext}",
+      "extendInfo": {
+        "NSCameraUsageDescription": "Kamera reikalinga vaizdo skambučiams chate.",
+        "NSMicrophoneUsageDescription": "Mikrofonas reikalingas skambučiams chate.",
+        "LSUIElement": false
+      }
+    }
+  }
+}
