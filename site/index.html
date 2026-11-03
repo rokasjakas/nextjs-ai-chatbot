@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-8KcKUYw6oyu9zhTTLAv4GGrk4TCcQHYlJRGdUg6Quog=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-l0YAt7QA+itH2eCKlPi/Gx1oZQbma3anFsffL0j4/jU=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -23805,7 +23805,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v656';
+const APP_VER = 'v657';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -33501,6 +33501,68 @@ function ofTableWire(root){
       OFFER.list = OFFER.list.filter(x=>x!==o); renderOffersTab(); toast('Pasiūlymas ištrintas.'); }
   });
 }
+/* ---- seni pasiūlymai iš senos skaičiuoklės (eventsolcalc, Supabase: offers → offer_sections → offer_products) ----
+   suma = kiekis × kaina × dienos (dienos → „koef.“); sekcijos nuolaida – tik ta, kuri buvo įjungta (show_discount).
+   Įrašoma su tuo pačiu id; importuojant dar kartą įkeliami tik nauji – jau įkelti (ir gal jau pakeisti programoje) neliečiami. */
+function ofOldColor(t){ const n = normalizeText(t); return /garsas/.test(n) ? '#83DACB' : /sviesa|sviesos/.test(n) ? '#F27DA0' : /vaizdas|video/.test(n) ? '#7DB9D7' : '#000000'; }
+function ofOldMap(o, vat){
+  const num = v=>{ const n = typeof v==='number' ? v : parseFloat(String(v==null ? '' : v).replace(/\s/g, '').replace(',', '.')); return isFinite(n) ? n : 0; };
+  const secs = (o.offer_sections||[]).slice().sort((a, b)=>(a.position||0) - (b.position||0));
+  const brand = secs.length && /silent concept/i.test(secs[0].section_type||'') ? 'sc' : 'es';
+  const sections = secs.map(x=>({ id:offerUid(), title:String(x.section_type||'').trim().toLocaleUpperCase('lt-LT') || 'SEKCIJA', color:ofOldColor(x.section_type),
+    discount: x.show_discount && num(x.discount) > 0 ? num(x.discount) : 0,
+    rows:(x.offer_products||[]).slice().sort((a, b)=>(a.position||0) - (b.position||0)).map(r=>({ id:offerUid(), itemId:null,
+      name:[String(r.name||'').trim(), String(r.description||'').trim()].filter(Boolean).join(' – '), qty:num(r.quantity), price:num(r.price), coef: num(r.days) || 1 })) }));
+  const who = String(o.creator||'').trim();
+  const d = { client:String(o.client_name||'').trim(), contact:String(o.client_contact_name||'').trim(), project:String(o.project_name||'').trim(), location:String(o.location||'').trim(),
+    date:String(o.date||'').slice(0, 10), preparedBy:who, createdByName:who, brand, sections, vat,
+    imported:{ from:'eventsolcalc', id:o.id, at:new Date().toISOString(), confirmed:!!o.confirmed } };
+  const t = offerTotals(d);
+  return { id:o.id, title:d.project, client:d.client, offer_date:d.date || null, status:o.confirmed ? 'final' : 'draft', data:d, total:Math.round(t.gross*100)/100,
+    created_by:null, updated_by:who || 'importas', created_at:o.created_at || new Date().toISOString(), updated_at:o.updated_at || o.created_at || new Date().toISOString() };
+}
+function ofImportPick(){
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json,application/json';
+  inp.onchange = async ()=>{ const f = inp.files && inp.files[0]; if(!f) return;
+    let j; try{ j = JSON.parse(await f.text()); }catch(e){ toast('Netinkamas failas: '+e.message); return; }
+    const list = Array.isArray(j) ? j : (j && j.offers) || [];
+    if(!list.length || !list[0] || !('offer_sections' in list[0])){ toast('Faile nerasta senų pasiūlymų (offers su offer_sections).'); return; }
+    ofImportPreview(list.filter(o=>o && o.id)); };
+  inp.click();
+}
+async function ofImportPreview(list){
+  if(!OFFER.loaded) await offersLoad();
+  const vat = offerNum(offerSettings().vat), rows = list.map(o=>ofOldMap(o, vat));
+  const have = new Set(OFFER.list.map(o=>String(o.id))), fresh = rows.filter(r=>!have.has(String(r.id))), again = rows.length - fresh.length;
+  const nRows = rows.reduce((a, r)=>a + r.data.sections.reduce((b, s)=>b + s.rows.length, 0), 0);
+  const by = {}; rows.forEach(r=>{ const k = r.data.createdByName || '—'; by[k] = (by[k]||0) + 1; });
+  const dates = rows.map(r=>r.offer_date).filter(Boolean).sort();
+  const sample = rows.slice(0, 6);
+  openModal(`<h3 style="margin:0 0 6px;">⬆ Seni pasiūlymai</h3>
+    <p class="section-sub" style="margin:0 0 10px;">Rasta <b>${rows.length}</b> pasiūlymų (${nRows} eilučių)${dates.length ? `, ${odE(dates[0])} – ${odE(dates[dates.length-1])}` : ''}. Nauji: <b>${fresh.length}</b>${again ? ` · jau įkelti (neliečiami): <b>${again}</b>` : ''}.</p>
+    <p class="section-sub" style="margin:0 0 10px;">Paruošė: ${Object.entries(by).sort((a, b)=>b[1]-a[1]).map(([k, v])=>`${odE(k)} ${v}`).join(' · ')}</p>
+    <div class="of-tw" style="margin:0 0 10px;"><table class="of-t"><thead><tr><th>Data</th><th>Klientas</th><th>Projektas</th><th>Paruošė</th><th class="n">Suma su PVM</th></tr></thead><tbody>
+      ${sample.map(r=>`<tr><td class="of-c-d">${odE(r.offer_date||'—')}</td><td>${odE(r.client||'—')}</td><td><b>${odE(r.title||'Be pavadinimo')}</b> <span class="of-tag">${r.data.sections.length} sekc.</span></td><td>${odE(r.data.createdByName||'—')}</td><td class="n">${offerMoney(r.total)}</td></tr>`).join('')}
+    </tbody></table></div>
+    <p class="section-sub" style="margin:0 0 10px;">Eilutės: kiekis × kaina × dienos (dienos – stulpelyje „koef.“); nuolaida – tik ta, kuri senoje skaičiuoklėje buvo įjungta. Patvirtinti (⭐) – kaip „Galutinis“, kiti – juodraščiai.</p>
+    <div id="ofImpP" class="section-sub" style="margin:0 0 8px;"></div>
+    <div class="row" style="justify-content:flex-end;gap:8px;"><button class="btn" id="ofImpX">Atšaukti</button><button class="btn primary" id="ofImpGo" ${fresh.length ? '' : 'disabled'}>${fresh.length ? 'Importuoti '+fresh.length : 'Naujų nėra'}</button></div>`);
+  document.getElementById('ofImpX').onclick = closeModal;
+  document.getElementById('ofImpGo').onclick = async ()=>{
+    const go = document.getElementById('ofImpGo'), pr = document.getElementById('ofImpP'); go.disabled = true; document.getElementById('ofImpX').disabled = true;
+    let done = 0;
+    try{
+      for(let i=0;i<fresh.length;i+=40){
+        const part = fresh.slice(i, i+40);
+        const { error } = await getSb().from('offers').upsert(part, { onConflict:'id', ignoreDuplicates:true });
+        if(error) throw error;
+        done += part.length; pr.textContent = 'Importuota: '+done+' / '+fresh.length;
+      }
+      closeModal(); OFFER.filter = 'all'; await offersLoad(); if(currentTab==='offers' && !OFFER.cur) renderOffersTab();
+      toast('✓ Importuota pasiūlymų: '+done, 6000);
+    }catch(e){ pr.textContent = 'Sustojo ties '+done+' / '+fresh.length+': '+e.message+' – galima paleisti dar kartą, jau įkelti nesidubliuos.'; go.disabled = false; document.getElementById('ofImpX').disabled = false; }
+  };
+}
 async function offerOpen(id, n, pick){
   const { data, error } = await getSb().from('offers').select('*').eq('id', id).single();
   if(error || !data){ toast('Nepavyko atidaryti: '+(error ? error.message : '')); return; }
@@ -33635,8 +33697,9 @@ function offerSettingsModal(){
       <label class="field">Dešinėje apačioje (rekvizitai)<textarea id="osRight" rows="7">${odE(s.right)}</textarea></label>
     </div>
     <div class="section-sub" style="margin:0;">Eilutė, prasidedanti *, bus paryškinta.</div>
-    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:10px;"><button class="btn" id="osX">Atšaukti</button><button class="btn primary" id="osSave">💾 Išsaugoti</button></div>`);
+    <div class="row" style="justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap;"><button class="btn" id="osImp" title="Pasiūlymai iš senos skaičiuoklės (eventsolcalc) – JSON failas">⬆ Importuoti senus pasiūlymus</button><span class="row" style="gap:8px;"><button class="btn" id="osX">Atšaukti</button><button class="btn primary" id="osSave">💾 Išsaugoti</button></span></div>`);
   document.getElementById('osX').onclick = closeModal;
+  document.getElementById('osImp').onclick = ()=>{ closeModal(); ofImportPick(); };
   document.getElementById('osSave').onclick = ()=>{
     STATE.offerSettings = { vat:offerNum(document.getElementById('osVat').value), left:document.getElementById('osLeft').value, right:document.getElementById('osRight').value };
     saveState(); closeModal(); toast('Nustatymai išsaugoti.');
@@ -43513,7 +43576,8 @@ const GUIDE = [
      ['Veiksmai', 'Išsaugoti (Klientas, Versija, Galutinis), PDF (Peržiūrėti, Parsisiųsti, Be kainų, Siųsti klientui, Į Pasiūlymų PDF), Kita (Išversti į EN, Antraštės EN/LT, Kopija, Ištrinti). Versijos – kuo skiriasi nuo ankstesnės, palyginti iki 8 versijų.'],
      ['Įranga / Paslaugos', 'Katalogas: kaip daiktas vadinasi pasiūlyme ir kaina, įrangos grupės (pvz. 1 m² LED = 4× kabinetai, keli variantai „arba“, ypatybės Dydis ir Aukštis), paslaugos, aptarnavimas, kita.'],
      ['Klientai', 'Klientų sąrašas ir analizė.']],
-  q:[['Kaip išsaugoti tik vieną grafą (pvz. Garsas) paveikslėliu?', 'Grafos antraštėje spausk „PNG“ ir pasirink „Su kainomis“ arba „Be kainų“. Išsaugomas 1920×1080 PNG su pasiūlymo antrašte (klientas, projektas, data) ir tos grafos lentele; failas pavadinamas renginio (Projektas) ir grafos pavadinimu, pvz. Koncertas_Garsas.png (be kainų – su „_be_kainu“ gale).'],
+  q:[['Kaip perkelti senus pasiūlymus iš senos skaičiuoklės?', 'Pasiūlymai → ⚙ Nustatymai → „⬆ Importuoti senus pasiūlymus“ → pasirink JSON failą (iš senos skaičiuoklės). Matysi, kiek ir kokių pasiūlymų rasta, tada „Importuoti“. Kartojant įkeliami tik nauji – jau įkelti neliečiami.'],
+     ['Kaip išsaugoti tik vieną grafą (pvz. Garsas) paveikslėliu?', 'Grafos antraštėje spausk „PNG“ ir pasirink „Su kainomis“ arba „Be kainų“. Išsaugomas 1920×1080 PNG su pasiūlymo antrašte (klientas, projektas, data) ir tos grafos lentele; failas pavadinamas renginio (Projektas) ir grafos pavadinimu, pvz. Koncertas_Garsas.png (be kainų – su „_be_kainu“ gale).'],
      ['Kaip padaryti pasiūlymą anglų kalba?', 'Pasiūlyme Kita → „Išversti į EN“ (nauja kopija) arba LT / EN perjungimas ir „PDF EN“.'],
      ['Kaip matyti, ar užteks įrangos?', 'Šoninė juosta „Likutis“ – pagal pasiūlymo datas; ⚠ prie skilties reiškia, kad kažko trūksta.']],
   rel:['jobs','inventory','newproj'], kw:'pasiulymas pasiulymai kaina nuolaida pdf versija klientas vertimas anglu silent concept grafa skiltis garsas sviesa vaizdas' },
@@ -51813,6 +51877,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-03 15:00', v:'v657', k:'new', t:'Pasiūlymai: seni pasiūlymai iš senos skaičiuoklės', f:'Pasiūlymai → ⚙ Nustatymai → „⬆ Importuoti senus pasiūlymus“: pasirenki JSON failą iš senos skaičiuoklės, matai kiek ir kokių pasiūlymų, ir įkeli. Kiekviena eilutė – kiekis × kaina × dienos; įkėlus dar kartą įkeliami tik nauji (jau įkelti neliečiami).' },
   { d:'2026-11-03 13:00', v:'v656', k:'chg', t:'Pasiūlymai: kompaktiška lentelė', f:'Pasiūlymų sąrašas (juodraščiai ir galutiniai) – lentelė: data, klientas, projektas, paruošė, suma, sukurta, atnaujinta ir mygtukai PDF, Redaguoti, Kopija, Ištrinti; po 25 eilutes su puslapiais.' },
   { d:'2026-11-03 11:00', v:'v655', k:'fix', t:'Kalendorius: užvedus pelę ant dienos – renginį galima paspausti', f:'Užvedus pelę ant dienos iššokęs langelis nebedingsta, kai pelę veži prie jo – renginį jame galima paspausti ir atsidaro jo briefas.' },
   { d:'2026-11-03 10:00', v:'v654', k:'new', t:'Renginiai: komentaras prie žmogaus komandoje', f:'Prie žmogaus – statuso mygtukas „·“ → „💬 Pridėti komentarą“. Šalia vardo atsiranda 💬: užvedus pelę matosi komentaras (kas ir kada rašė), paspaudus – galima papildyti ar ištrinti.' },
