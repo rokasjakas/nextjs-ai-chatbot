@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-c9zfl/9vOHhfuYLTJHL6ERsnqx6ykxJuhEqveNCNVIE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-SC+Wy9+15N/0OlUKmgKb5KSakPDoPFZtpxnbJM3J8Zo=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -2379,6 +2379,8 @@ body.of-pop-open{overflow:hidden;}
 .of-t th{text-align:left;font-weight:600;font-size:12px;color:var(--text-dim);padding:9px 10px;border-bottom:1px solid var(--border);white-space:nowrap;}
 .of-t td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
 .of-t tbody tr{cursor:pointer;}
+.of-t tbody tr.job-focus td{background:color-mix(in srgb, var(--accent) 18%, var(--panel));}
+.job-cm{cursor:help;}
 .of-t tbody tr.of-fin td{background:color-mix(in srgb, #2ea043 26%, var(--panel));}
 .of-t tbody tr.of-fin td:first-child{box-shadow:inset 4px 0 0 #2ea043;}
 .of-t tbody tr.of-fin:hover td{background:color-mix(in srgb, #2ea043 34%, var(--panel));} .of-t tbody tr:hover td{background:var(--panel-2);} .of-t tbody tr:last-child td{border-bottom:0;}
@@ -23956,7 +23958,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v662';
+const APP_VER = 'v663';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -35361,19 +35363,28 @@ function renderJobsTab(){
     return true;
   });
   const up = list.filter(j=>!j.job_date || j.job_date>=today).sort((a,b)=>String(a.job_date||'9').localeCompare(String(b.job_date||'9')));
-  const past = list.filter(j=>j.job_date && j.job_date<today);
-  const card = j=>`<div class="card job-item ${JOBS.focus===j.id?'focus':''}" data-job="${odE(j.id)}">
-      <span class="cal-up-d"><b>${j.job_date ? calParse(j.job_date).getDate() : '–'}</b><small>${j.job_date ? CAL_MON_SHORT[calParse(j.job_date).getMonth()] : ''}</small></span>
-      <span class="job-main"><b>${odE(j.title||'Be pavadinimo')}</b>
-        <small class="of-note">👤 Sukūrė: <b>${odE(who(j))}</b> · 🏢 Kam: <b>${odE(j.client||'—')}</b> · 📅 ${odE(j.job_date||'—')}</small>
-        ${j.location ? `<small>📍 ${odE(j.location)}</small>` : ''}
-        ${String(j.notes||'').trim() ? `<small class="job-notes">💬 ${odE(j.notes)}</small>` : ''}</span>
-      <span class="job-act" data-ro-ok>
-        ${j.pdf_path ? `<button class="btn small" data-pdf="${odE(j.id)}" data-ro-ok>📄 PDF</button>` : ''}
-        ${j.pdf_path && canView('chat') ? `<button class="btn small" data-jchat="${odE(j.id)}" data-ro-ok title="Įkelti PDF į chato kanalą">💬 Į chatą</button>` : ''}
-        ${j.offer_id && canView('offers') ? `<button class="btn small" data-offer="${odE(j.offer_id)}" data-ro-ok>Pasiūlymas</button>` : ''}
-        ${canEdit('jobs') ? `<button class="icon-btn" data-jdel="${odE(j.id)}" title="Ištrinti">🗑</button>` : ''}
-      </span></div>`;
+  const past = list.filter(j=>j.job_date && j.job_date<today).sort((a,b)=>String(b.job_date).localeCompare(String(a.job_date)));
+  // the same compact table as „Pasiūlymų kūrimas“: one row = one PDF
+  const row = j=>`<tr data-pdfrow="${odE(j.id)}" class="${JOBS.focus===j.id ? 'job-focus' : ''}"${j.pdf_path ? '' : ' style="cursor:default;"'}>
+      <td class="of-c-d">${odE(j.job_date||'—')}</td>
+      <td class="of-c-cl">${odE(j.client||'—')}</td>
+      <td class="of-c-p"><b>${odE(j.title||'Be pavadinimo')}</b>${j.location ? ` <span class="of-tag">📍 ${odE(String(j.location).split('\n')[0])}</span>` : ''}${String(j.notes||'').trim() ? ` <span class="of-tag job-cm" data-cmt-tip="${odE(j.notes)}">💬 komentaras</span>` : ''}</td>
+      <td class="of-c-w">${odE(who(j))}</td>
+      <td class="of-c-ts">${odE(ofDate(j.created_at))}</td>
+      <td class="of-c-act" data-ro-ok><span class="of-acts">
+        ${j.pdf_path ? `<button type="button" class="of-ab" data-pdf="${odE(j.id)}" data-ro-ok title="PDF">${slIcon('file')}</button>` : ''}
+        ${j.pdf_path && canView('chat') ? `<button type="button" class="of-ab" data-jchat="${odE(j.id)}" data-ro-ok title="Įkelti PDF į chato kanalą">💬</button>` : ''}
+        ${j.offer_id && canView('offers') ? `<button type="button" class="of-ab" data-offer="${odE(j.offer_id)}" data-ro-ok title="Atidaryti pasiūlymą">${slIcon('edit')}</button>` : ''}
+        ${canEdit('jobs') ? `<button type="button" class="of-ab" data-jdel="${odE(j.id)}" title="Ištrinti">${slIcon('bin')}</button>` : ''}</span></td></tr>`;
+  const table = rows=>`<div class="of-tw" style="margin-top:0;"><table class="of-t"><thead><tr><th>Data</th><th>Klientas</th><th>Projektas</th><th>Sukūrė</th><th class="of-c-ts">Įkelta</th><th class="of-c-act">Veiksmai</th></tr></thead><tbody>${rows.map(row).join('')}</tbody></table></div>`;
+  // the past ones by pages of 25 (as the offers)
+  const pages = Math.max(1, Math.ceil(past.length / 25)), pkey = [JOBS.q, F.from, F.to].join('|');
+  if(JOBS.pageKey!==pkey){ JOBS.pageKey = pkey; JOBS.page = 1; }
+  JOBS.page = Math.min(Math.max(1, JOBS.page||1), pages);
+  const pastRows = past.slice((JOBS.page-1)*25, JOBS.page*25);
+  const pager = pages>1 ? (()=>{ const cur = JOBS.page, nums = [];
+    for(let i=1;i<=pages;i++){ if(i===1 || i===pages || Math.abs(i-cur)<=2) nums.push(i); else if(nums[nums.length-1]!=='…') nums.push('…'); }
+    return `<div class="of-pager"><button type="button" class="of-pg" data-jbpg="${cur-1}" ${cur===1 ? 'disabled' : ''} data-ro-ok>← Ankstesnis</button>${nums.map(n=>n==='…' ? '<span class="of-pgx">…</span>' : `<button type="button" class="of-pg${n===cur ? ' on' : ''}" data-jbpg="${n}" data-ro-ok>${n}</button>`).join('')}<button type="button" class="of-pg" data-jbpg="${cur+1}" ${cur===pages ? 'disabled' : ''} data-ro-ok>Kitas →</button></div>`; })() : '';
   const active = F.from || F.to;
   main.innerHTML = `<div class="tabpanel">
     <div class="card">
@@ -35388,13 +35399,16 @@ function renderJobsTab(){
     </div>
     ${JOBS.err ? `<div class="card mail-err">${odE(JOBS.err)}</div>` : ''}
     ${!JOBS.loaded ? '<div class="card empty-state">Kraunama…</div>' : `
-      <div class="cal-up-h" style="margin:14px 0 8px;">Artėjantys</div>${up.map(card).join('') || '<div class="card empty-state">Artėjančių projektų nėra.</div>'}
-      ${past.length ? `<div class="cal-up-h" style="margin:18px 0 8px;">Praėję</div>${past.map(card).join('')}` : ''}`}
+      <div class="cal-up-h" style="margin:14px 0 8px;">Artėjantys <span class="muted">${up.length}</span></div>${up.length ? table(up) : '<div class="card empty-state">Artėjančių projektų nėra.</div>'}
+      ${past.length ? `<div class="cal-up-h" style="margin:18px 0 8px;">Praėję <span class="muted">${past.length}</span></div>${pager}${table(pastRows)}${pager}` : ''}`}
   </div>`;
   const qi = document.getElementById('jbQ'); qi.addEventListener('input', ()=>{ JOBS.q = qi.value; clearTimeout(qi._t); qi._t = setTimeout(()=>{ renderJobsTab(); const x = document.getElementById('jbQ'); x.focus(); x.selectionStart = x.selectionEnd = x.value.length; }, 250); });
   [['jbFrom','from'],['jbTo','to']].forEach(([id,k])=>document.getElementById(id).addEventListener('change', e=>{ F[k] = e.target.value; renderJobsTab(); }));
   const rs = document.getElementById('jbReset'); if(rs) rs.onclick = ()=>{ JOBS.f = { from:'', to:'' }; JOBS.q = ''; renderJobsTab(); };
-  main.querySelectorAll('[data-jchat]').forEach(b=>b.onclick = ()=>jobToChat(JOBS.list.find(x=>x.id===b.dataset.jchat)));
+  main.querySelectorAll('[data-jbpg]').forEach(b=>b.onclick = ()=>{ JOBS.page = +b.dataset.jbpg; renderJobsTab(); });
+  // a click on the row = its PDF (the buttons do their own)
+  main.querySelectorAll('[data-pdfrow]').forEach(tr=>tr.onclick = e=>{ if(e.target.closest('button')) return; const b = tr.querySelector('[data-pdf]'); if(b) b.click(); });
+  main.querySelectorAll('[data-jchat]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); jobToChat(JOBS.list.find(x=>x.id===b.dataset.jchat)); });
   main.querySelectorAll('[data-pdf]').forEach(b=>b.onclick = async ()=>{
     const j = JOBS.list.find(x=>x.id===b.dataset.pdf);
     const w = window.open('', '_blank');
@@ -35402,7 +35416,7 @@ function renderJobsTab(){
     if(error || !data){ if(w) w.close(); toast('Nepavyko atidaryti PDF: '+(error ? error.message : '')); return; }
     if(w) w.location = data.signedUrl; else location.href = data.signedUrl;
   });
-  main.querySelectorAll('[data-offer]').forEach(b=>b.onclick = ()=>offerOpen(b.dataset.offer));
+  main.querySelectorAll('[data-offer]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); offerOpen(b.dataset.offer); });
   main.querySelectorAll('[data-jdel]').forEach(b=>b.onclick = async ()=>{
     const j = JOBS.list.find(x=>x.id===b.dataset.jdel);
     if(!(await uiConfirm('Ištrinti projektą „'+j.title+'“? Pasiūlymas liks.'))) return;
@@ -35411,7 +35425,7 @@ function renderJobsTab(){
     if(error){ toast('Nepavyko: '+error.message); return; }
     JOBS.list = JOBS.list.filter(x=>x.id!==j.id); renderJobsTab(); toast('Projektas ištrintas.');
   });
-  if(JOBS.focus){ const el = main.querySelector('.job-item.focus'); if(el) el.scrollIntoView({block:'center'}); setTimeout(()=>{ JOBS.focus = null; }, 2000); }
+  if(JOBS.focus){ const el = main.querySelector('.job-focus'); if(el) el.scrollIntoView({block:'center'}); setTimeout(()=>{ JOBS.focus = null; }, 2000); }
   if(!JOBS.loaded) jobsLoad().then(()=>{ if(currentTab==='jobs') renderJobsTab(); });
 }
 
@@ -52054,6 +52068,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-03 22:00', v:'v663', k:'chg', t:'Pasiūlymų PDF – tokia pat lentelė kaip Pasiūlymų kūrime', f:'„Pasiūlymų PDF“ – kompaktiška lentelė (data, klientas, projektas, sukūrė, įkelta) su mygtukais PDF, Į chatą, Pasiūlymas, Ištrinti; artėjantys ir praėję (po 25 su puslapiais). Komentaras planuojantiems – užvedus pelę ant 💬.' },
   { d:'2026-11-03 21:00', v:'v662', k:'chg', t:'Pasiūlymai: galutiniai – žali', f:'Pasiūlymų sąraše galutiniai pasiūlymai paryškinti žaliai, kad iš karto matytųsi.' },
   { d:'2026-11-03 20:00', v:'v661', k:'new', t:'Sutikimas dėl asmens duomenų tvarkymo', f:'Privatumo politika (privatumas.html): kokie duomenys renkami, kodėl, kam perduodami, kiek saugomi ir kokias teises turi narys. Registruojantis ir saskaitos.eventsolutions.lt – privaloma varnelė „Sutinku…“ su „Skaityti daugiau“; jau prisiregistravę mato langą, kol nesutinka. Sutikimai – Admin skiltyje (mato tik Admin+ ir Super Admin).' },
   { d:'2026-11-03 18:00', v:'v660', k:'chg', t:'Žmonės: kortelė pirma tik peržiūrai; po langu puslapis neslenka', f:'Žmonėse paspaudus žmogų atsidaro jo informacija tik peržiūrai (telefonas – skambinti, el. paštas, sritys, pastabos, skambučių istorija); redaguoti – „✎ Redaguoti“. Kol atidarytas bet koks langas, puslapis po juo nebeslenka.' },
