@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-iYiWmedYB7jZgYIYpYd8H/BtbipkmGrnJNlzi7llw3k=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-HRcGUfI+TdGF4lvYd4CiNCZXIG1GDMmgwZoRHybnK+Y=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -6713,11 +6713,13 @@ table.xg .xg-rent input[type=text].miss::placeholder{color:#E5484D !important;-w
 .xg-rk{display:flex;gap:3px;flex-wrap:wrap;} .xg-rk button{flex:1 1 auto;min-width:fit-content;font:inherit;font-size:11px;padding:3px 6px;border-radius:5px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);cursor:pointer;white-space:nowrap;}
 .xg-rk.miss button{border-color:#E5484D;color:#E5484D;} .xg-rk button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink,#fff);font-weight:700;}
 #modalRoot.gp-modal{max-width:1000px;width:100%;}
-.gp-pop{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin-top:10px;}
+.gp-pop{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin-top:10px;
+  height:min(62vh, 600px);}   /* a fixed size: filtering or adding people scrolls inside, the window does not jump */
+.gp-pop>.gp-left,.gp-pop>.gp-right{min-height:0;}
 .gp-left,.gp-right{display:flex;flex-direction:column;gap:8px;min-width:0;}
 .gp-h{font-weight:700;font-size:13px;margin-top:4px;} .gp-h .muted{font-weight:500;}
 .gp-cnt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;} .gp-cnt .na-step input{pointer-events:none;}
-.gp-ents{display:flex;flex-direction:column;gap:4px;max-height:44vh;overflow-y:auto;}
+.gp-ents{display:flex;flex-direction:column;gap:4px;flex:0 1 auto;min-height:0;overflow-y:auto;}
 .gp-e{display:flex;align-items:center;gap:6px;padding:4px;border:1px solid var(--border);border-radius:var(--radius,8px);background:var(--panel-2);}
 .gp-e.vacant{border-color:color-mix(in srgb, #E5484D 55%, var(--border));} .gp-e.vacant .gp-per::placeholder{color:#E5484D;}
 .gp-pos{width:96px;flex:none;font-weight:700;text-align:center;} .gp-per{flex:1;min-width:0;}
@@ -6725,7 +6727,8 @@ table.xg .xg-rent input[type=text].miss::placeholder{color:#E5484D !important;-w
 .gp-ans.a-sutiko{background:color-mix(in srgb, #50AD97 22%, transparent);color:#50AD97;} .gp-ans.a-gali{background:color-mix(in srgb, #6AB0F3 22%, transparent);color:#6AB0F3;}
 .gp-ans.a-negali,.gp-ans.a-atsisake{background:color-mix(in srgb, #E5484D 20%, transparent);color:#E5484D;}
 .gp-free{margin:0;font-size:12.5px;}
-.gp-people{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius,8px);max-height:50vh;overflow-y:auto;}
+.gp-people{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius,8px);flex:1 1 0;min-height:0;overflow-y:auto;}
+.gp-people>.gp-p{flex:none;}
 .gp-p{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--border);color:var(--text);font:inherit;padding:7px 10px;cursor:pointer;}
 .gp-p:hover{background:rgb(var(--hi-rgb) / .06);} .gp-p b{font-weight:600;font-size:13.5px;} .gp-p small{color:var(--text-dim);font-size:11.5px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .gp-p.in{opacity:.55;} .gp-in{font-size:10.5px;color:var(--text-faint);white-space:nowrap;}
@@ -6733,7 +6736,8 @@ table.xg .xg-rent input[type=text].miss::placeholder{color:#E5484D !important;-w
 td.xg-crew input,td.xg-crew textarea{cursor:text;}
 .xg-adds button[data-act="grp-pop"]{border-style:solid;border-color:color-mix(in srgb, var(--accent) 45%, var(--border-2));color:var(--text);}
 .xg-adds button[data-act="grp-pop"]:hover{border-color:var(--accent);}
-@media (max-width:760px){ .gp-pop{grid-template-columns:1fr;} .gp-cnt{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:760px){ .gp-pop{grid-template-columns:1fr;height:auto;} .gp-cnt{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .gp-ents{max-height:34vh;} .gp-people{flex:none;height:42vh;} }
 .xg-otel{display:flex;align-items:center;gap:4px;padding:0 4px 4px;} .xg-otel svg{width:14px;height:14px;color:var(--text-dim);flex:none;}
 .xg-otel input{flex:1;min-width:0;border:0 !important;background:transparent !important;padding:2px 2px !important;font-size:12px;color:var(--text);box-shadow:none !important;}
 .xg-otel a{display:flex;padding:2px;border-radius:5px;} .xg-otel a svg{color:var(--accent);} .xg-otel a:hover{background:rgb(var(--hi-rgb) / .08);}
@@ -23807,7 +23811,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v658';
+const APP_VER = 'v659';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -51879,6 +51883,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-03 17:00', v:'v659', k:'fix', t:'Renginiai: komandos langas nebešokinėja', f:'Komandos lange (žmonių pridėjimas) dydis fiksuotas: rašant vardą paieškoje ar pridedant žmones sąrašai slenka viduje, o langas nebesikeičia ir nebešokinėja.' },
   { d:'2026-11-03 16:00', v:'v658', k:'fix', t:'Renginiai: vėl yra „✉ Laiškas komandai“', f:'Po El. pašto skilties pašalinimo dingo renginio mygtukas „✉ Laiškas komandai“ ir pasiūlymo „Siųsti klientui“ veikė ne visiems – grąžinta: mato visi, kas mato Renginius (Pasiūlymus). Laiškas siunčiamas iš prijungto siuntimo el. pašto.' },
   { d:'2026-11-03 15:00', v:'v657', k:'new', t:'Pasiūlymai: seni pasiūlymai iš senos skaičiuoklės', f:'Pasiūlymai → ⚙ Nustatymai → „⬆ Importuoti senus pasiūlymus“: pasirenki JSON failą iš senos skaičiuoklės, matai kiek ir kokių pasiūlymų, ir įkeli. Kiekviena eilutė – kiekis × kaina × dienos; įkėlus dar kartą įkeliami tik nauji (jau įkelti neliečiami).' },
   { d:'2026-11-03 13:00', v:'v656', k:'chg', t:'Pasiūlymai: kompaktiška lentelė', f:'Pasiūlymų sąrašas (juodraščiai ir galutiniai) – lentelė: data, klientas, projektas, paruošė, suma, sukurta, atnaujinta ir mygtukai PDF, Redaguoti, Kopija, Ištrinti; po 25 eilutes su puslapiais.' },
