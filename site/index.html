@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-OYqVWvwz0hYKG5KqIajN3U5K+poSkfzvI6BvJ95+E/Y=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-tyaXadDo1p4dD3avN5YFdLUJqRDGvQ7szLKBBuEm+T0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -23959,7 +23959,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v664';
+const APP_VER = 'v665';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -33084,6 +33084,9 @@ function offerDownload(blob, name){
 }
 
 /* ---------- Pasiūlymai: list ---------- */
+// made by me: my account, or (an offer brought from the old calculator, with no account) my name as „Paruošė“
+function offerIsMine(o){ if(o.created_by) return o.created_by===teamMe(); const n = normalizeText((o.data||{}).createdByName||''), me = normalizeText(offerMeName()||'');
+  return !!n && !!me && (n===me || me.split(' ')[0]===n); }
 async function offersLoad(){
   const { data, error } = await getSb().from('offers').select('*').order('updated_at', { ascending:false });
   OFFER.err = error ? (/does not exist|schema cache/i.test(error.message) ? 'Pasiūlymų lentelės dar nėra — paleisk atnaujinimas.sql.' : error.message) : '';
@@ -33574,7 +33577,8 @@ function renderOffersTab(){
   const main = document.getElementById('main'), F = OFFER.f || (OFFER.f = { from:'', to:'', who:'' });
   const q = normalizeText(OFFER.q), words = q.split(/\s+/).filter(Boolean);
   const list = OFFER.list.filter(o=>{
-    if(OFFER.filter==='mine'){ if(o.status!=='draft' || o.created_by!==teamMe()) return false; }
+    if(OFFER.filter==='mine'){ if(o.status!=='draft' || !offerIsMine(o)) return false; }
+    else if(OFFER.filter==='my'){ if(!offerIsMine(o)) return false; }
     else if(OFFER.filter!=='all' && o.status!==OFFER.filter) return false;
     if(F.from && String(o.offer_date||'') < F.from) return false;
     if(F.to && String(o.offer_date||'') > F.to) return false;
@@ -33583,16 +33587,18 @@ function renderOffersTab(){
     if(words.length){ const t = offerSearchText(o); if(!words.every(w=>t.includes(w))) return false; }
     return true;
   });
-  // by the date the offer is for (not by the last save): the latest first, „Data“ in the header turns it round; no date – at the end
-  const odt = o=>String((o.data||{}).date || o.offer_date || '').slice(0, 10);
-  list.sort((a, b)=>{ const x = odt(a), y = odt(b); if(!x !== !y) return x ? -1 : 1; const c = OFFER.dateAsc ? x.localeCompare(y) : y.localeCompare(x); return c || String(b.updated_at||'').localeCompare(String(a.updated_at||'')); });
+  // the last entered or changed first; „Galutiniai“ – by the date the offer is for (the latest first, no date at the end)
+  const changed = o=>String(o.updated_at||o.created_at||''), odt = o=>String((o.data||{}).date || o.offer_date || '').slice(0, 10);
+  list.sort(OFFER.filter==='final'
+    ? (a, b)=>{ const x = odt(a), y = odt(b); if(!x !== !y) return x ? -1 : 1; return y.localeCompare(x) || changed(b).localeCompare(changed(a)); }
+    : (a, b)=>changed(b).localeCompare(changed(a)));
   const n = k=>OFFER.list.filter(o=>o.status===k).length;
   const whos = [...new Set(OFFER.list.map(o=>(o.data||{}).createdByName).filter(Boolean))].sort((a,b)=>a.natCmp(b));
   const active = F.from || F.to || F.who || F.brand;
   main.innerHTML = `<div class="tabpanel">
     <div class="card"><div class="row between" style="flex-wrap:wrap;gap:8px;align-items:center;">
       <div class="row" style="gap:6px;flex-wrap:wrap;">
-        ${[['all','Visi',OFFER.list.length],['mine','Mano juodraščiai',OFFER.list.filter(o=>o.status==='draft' && o.created_by===teamMe()).length],['draft','Juodraščiai',n('draft')],['final','Galutiniai',n('final')]].map(([k,l,c])=>`<button class="chip ${OFFER.filter===k?'active':''}" data-of="${k}">${l} <span class="count-badge">${c}</span></button>`).join('')}
+        ${[['all','Visi',OFFER.list.length],['my','Mano pasiūlymai',OFFER.list.filter(offerIsMine).length],['mine','Mano juodraščiai',OFFER.list.filter(o=>o.status==='draft' && offerIsMine(o)).length],['draft','Juodraščiai',n('draft')],['final','Galutiniai',n('final')]].map(([k,l,c])=>`<button class="chip ${OFFER.filter===k?'active':''}" data-of="${k}">${l} <span class="count-badge">${c}</span></button>`).join('')}
       </div>
       <div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end;">
         <button class="btn small" id="ofCat">📦 Įranga / Paslaugos</button><button class="btn small" id="ofClients">👥 Klientai</button><button class="btn small" id="ofAn">📊 Pasiūlymų analizė</button>
@@ -33646,7 +33652,7 @@ function ofTableHtml(list){
   const pager = pages>1 ? (()=>{ const cur = OFFER.page, nums = [];
     for(let i=1;i<=pages;i++){ if(i===1 || i===pages || Math.abs(i-cur)<=2) nums.push(i); else if(nums[nums.length-1]!=='…') nums.push('…'); }
     return `<div class="of-pager"><button type="button" class="of-pg" data-ofpg="${cur-1}" ${cur===1 ? 'disabled' : ''}>← Ankstesnis</button>${nums.map(n=>n==='…' ? '<span class="of-pgx">…</span>' : `<button type="button" class="of-pg${n===cur ? ' on' : ''}" data-ofpg="${n}">${n}</button>`).join('')}<button type="button" class="of-pg" data-ofpg="${cur+1}" ${cur===pages ? 'disabled' : ''}>Kitas →</button></div>`; })() : '';
-  return `${pager}<div class="of-tw"><table class="of-t"><thead><tr><th class="of-sort" data-ofsort title="Rikiuoti pagal datą">Data ${OFFER.dateAsc ? '↑' : '↓'}</th><th>Klientas</th><th>Projektas</th><th>Paruošė</th><th class="n">Suma</th><th class="of-c-ts">Sukurta</th><th class="of-c-ts">Atnaujinta</th><th class="of-c-act">Veiksmai</th></tr></thead><tbody>
+  return `${pager}<div class="of-tw"><table class="of-t"><thead><tr><th>Data</th><th>Klientas</th><th>Projektas</th><th>Paruošė</th><th class="n">Suma</th><th class="of-c-ts">Sukurta</th><th class="of-c-ts">Atnaujinta</th><th class="of-c-act">Veiksmai</th></tr></thead><tbody>
     ${rows.map(o=>{ const d = o.data||{}, w = offerWhoText(o), vs = ofVersions(d).length;
       return `<tr data-open="${odE(o.id)}"${o.status==='final' ? ' class="of-fin"' : ''}>
         <td class="of-c-d">${odE(w.date||'—')}</td>
@@ -33664,7 +33670,6 @@ function ofTableHtml(list){
     </tbody></table></div>${pages>1 ? pager : ''}`;
 }
 function ofTableWire(root){
-  root.querySelectorAll('[data-ofsort]').forEach(th=>th.onclick = ()=>{ OFFER.dateAsc = !OFFER.dateAsc; renderOffersTab(); });
   root.querySelectorAll('[data-ofpg]').forEach(b=>b.onclick = ()=>{ OFFER.page = +b.dataset.ofpg; renderOffersTab(); const t = document.querySelector('.of-tw'); if(t) t.scrollIntoView({ block:'nearest' }); });
   root.querySelectorAll('[data-ofa]').forEach(b=>b.onclick = async e=>{
     e.stopPropagation(); const o = OFFER.list.find(x=>String(x.id)===b.dataset.id); if(!o) return;
@@ -52073,6 +52078,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-04 08:00', v:'v665', k:'chg', t:'Pasiūlymai: „Mano pasiūlymai“, rikiuojama pagal pakeitimą', f:'Pasiūlymai vėl rikiuojami pagal tai, kada įvesti ar paskutinį kartą pakeisti (naujausi viršuje); „Galutiniai“ – pagal pasiūlymo datą. Naujas filtras „Mano pasiūlymai“ – tik tavo pasiūlymai, viršuje paskutiniai redaguoti.' },
   { d:'2026-11-03 23:00', v:'v664', k:'fix', t:'Pasiūlymai rikiuojami pagal datą', f:'Pasiūlymų sąrašas rikiuojamas pagal datą, kuriai pasiūlymas ruoštas (vėliausia viršuje), o ne pagal paskutinį išsaugojimą – pažymėtas galutiniu nebeiššoka į viršų. Paspaudus „Data“ – tvarka atvirkščiai.' },
   { d:'2026-11-03 22:00', v:'v663', k:'chg', t:'Pasiūlymų PDF – tokia pat lentelė kaip Pasiūlymų kūrime', f:'„Pasiūlymų PDF“ – kompaktiška lentelė (data, klientas, projektas, sukūrė, įkelta) su mygtukais PDF, Į chatą, Pasiūlymas, Ištrinti; artėjantys ir praėję (po 25 su puslapiais). Komentaras planuojantiems – užvedus pelę ant 💬.' },
   { d:'2026-11-03 21:00', v:'v662', k:'chg', t:'Pasiūlymai: galutiniai – žali', f:'Pasiūlymų sąraše galutiniai pasiūlymai paryškinti žaliai, kad iš karto matytųsi.' },
