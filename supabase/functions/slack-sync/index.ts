@@ -167,6 +167,7 @@ async function syncEvent(ev: Ev, members: Member[]): Promise<Record<string, unkn
       made = await slack("conversations.create", { name, is_private: false });
       if (made.ok || made.error !== "name_taken") break;
     }
+    if (made && made.error === "restricted_action") throw new UserError("Slack neleidžia botui kurti kanalų: Slack → Tools & settings → Workspace settings → Permissions → Channel Management → „People who can create public channels“ → Everyone (be svečių).");
     if (!made || !made.ok) throw new UserError("Slack kanalo sukurti nepavyko: " + (made ? made.error : ""));
     const ch = made.channel as { id: string; name: string };
     r = { event_id: ev.id, channel_id: ch.id, name: ch.name, url: `${t.url}archives/${ch.id}`, brief_ts: null, invited: [], archived_at: null };
