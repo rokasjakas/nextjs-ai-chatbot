@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-otKbQbW/EGkEKW6dZsb4wNn+qNa7oglUASkFGtK8UbA=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-OhgcY7ab1SqAW8Ht45ISW2lnGNGSZtvmhYJR14fNIkM=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -32,6 +32,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(
 .btn.small{width:auto;padding:9px 14px;font-size:14px;margin-top:0;}
 .btn:disabled{opacity:.45;cursor:not-allowed;}
 .err{color:var(--bad);font-size:14px;margin-top:10px;white-space:pre-line;}
+.cs-chk{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--text);margin:12px 0 4px;cursor:pointer;}
+.cs-chk input{flex:none;width:18px;height:18px;margin:1px 0 0;}
+.cs-chk a{font-weight:600;white-space:nowrap;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .row2 label{margin-top:10px;}
 .line{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:color-mix(in srgb,var(--bg) 45%,var(--panel));}
@@ -167,11 +170,17 @@ function startEdit(v){
   draft.lines.forEach((l, i)=>{ if(l.date) loadEvents(i, true); });
 }
 
+// ---- the privacy policy: agreeing is required before a code is sent (kept by freelance-portal in „consents“) ----
+const CONSENT_VER = '2026-11-03';
+const CONSENT_URL = 'https://app.eventsolutions.lt/privatumas.html';
+const consentKey = e=>'flConsent:'+CONSENT_VER+':'+e;
+
 // ---- 1. e-mail ----
 function viewEmail(err){
   $app.innerHTML = `<div class="card"><h1>Sąskaitų pateikimas</h1>
     <p class="muted">Įrašyk el. paštą, kurį naudoji darbui su Event Solutions – atsiųsime vienkartinį prisijungimo kodą (galioja 1 valandą).</p>
     <form id="f"><label>El. paštas</label><input id="em" type="email" autocomplete="email" inputmode="email" value="${esc(S.email)}" required>
+    <label class="cs-chk"><input type="checkbox" id="cs" ${S.email && keep.get(consentKey(S.email)) ? 'checked' : ''}><span>Sutinku, kad UAB „Centas Plius“ (Event Solutions) tvarkytų mano asmens duomenis sąskaitų pateikimo ir atsiskaitymo tikslais, kaip aprašyta Privatumo politikoje. <a href="${CONSENT_URL}" target="_blank" rel="noopener">Skaityti daugiau</a></span></label>
     <button class="btn" id="go">Gauti kodą</button><div class="err" id="err">${esc(err||'')}</div></form></div>`;
   const f = document.getElementById('f'), em = document.getElementById('em');
   if(!S.email) em.focus();
@@ -179,6 +188,8 @@ function viewEmail(err){
     e.preventDefault();
     const email = em.value.trim().toLowerCase(), b = document.getElementById('go');
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ document.getElementById('err').textContent = 'Įrašyk teisingą el. paštą.'; return; }
+    if(!document.getElementById('cs').checked){ document.getElementById('err').textContent = 'Pažymėk, kad sutinki su asmens duomenų tvarkymu (Privatumo politika).'; return; }
+    S.consent = CONSENT_VER;
     b.disabled = true; b.textContent = 'Siunčiama…';
     try{ await call({ action:'pin', email }); S.email = email; keep.set('flEmail', email); store.set('flEmail', email); S.pinSent = true; render(); }
     catch(x){ b.disabled = false; b.textContent = 'Gauti kodą'; document.getElementById('err').textContent = x.message; }
@@ -201,7 +212,8 @@ function viewPin(){
     if(b.disabled) return;
     b.disabled = true; b.textContent = 'Tikrinama…';
     try{
-      const d = await call({ action:'login', email:S.email, pin:pin.value });
+      const d = await call({ action:'login', email:S.email, pin:pin.value, consent:S.consent || (keep.get(consentKey(S.email)) ? CONSENT_VER : ''), ua:String(navigator.userAgent||'').slice(0, 300) });
+      keep.set(consentKey(S.email), '1');
       S.token = d.token; S.name = d.name || ''; S.pinSent = false;
       store.set('flTok', d.token); store.set('flName', S.name);
       render();

@@ -65,6 +65,10 @@ open(headers_out, 'w').write(f"""/*
   Cache-Control: no-cache
 /saskaitos
   Cache-Control: no-cache
+/privatumas
+  Cache-Control: no-cache
+/privatumas.html
+  Cache-Control: no-cache
 /saskaitos.html
   Cache-Control: no-cache
 /rfid

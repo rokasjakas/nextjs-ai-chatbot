@@ -2,7 +2,7 @@
 //
 //   {action:"pin", email}                       a one-time PIN to the e-mail (valid 1 hour); only e-mails known
 //                                               to the company (Žmonės / app members) get one
-//   {action:"login", email, pin}               -> {token, name}  (the session lasts 2 hours)
+//   {action:"login", email, pin, consent?, ua?} -> {token, name}  (the session lasts 2 hours; consent = the privacy policy version agreed – kept in „consents“)
 //   {action:"events", token, date}             the events of that day (from „Renginiai“), mine first
 //   {action:"submit", token, id?, number, total, lines:[…], file:{name,type,base64}}
 //        lines: [{date, event_id?, event_name, type:"fixed"|"hourly", amount?, hours?, rate?}] – all with taxes;
@@ -425,6 +425,14 @@ Deno.serve(async (req) => {
       const who = await whoIs(email);
       const token = rnd(32);
       await db("fl_portal_sessions", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ token_hash: await sha(token + SECRET), email, name: who?.name || email, contact_id: who?.contact_id || null, expires_at: new Date(Date.now() + SESSION_MIN * 60e3).toISOString() }) });
+      // the privacy policy agreed on the page (required before the code): kept as proof, once per e-mail and version
+      const cv = String(b.consent || "").slice(0, 20);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(cv)) {
+        try {
+          const had = await db<{ id: number }[]>(`consents?select=id&email=eq.${enc(email)}&doc_version=eq.${enc(cv)}&source=eq.saskaitos&limit=1`);
+          if (!had.length) await db("consents", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ email, name: who?.name || "", doc_version: cv, source: "saskaitos", user_agent: String(b.ua || "").slice(0, 300) }) });
+        } catch (e) { console.error("consent", (e as Error).message); }   // before consents.sql: signing in still works
+      }
       return json({ ok: true, token, name: who?.name || email, email });
     }
     if (action === "events") {
