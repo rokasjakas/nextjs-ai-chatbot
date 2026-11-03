@@ -15,6 +15,7 @@
 // POST {action:"sync", event_id}     signed-in member who may edit Renginiai: make / update the event's channel
 // POST {action:"backfill"}           the same, every upcoming event (60 days) – Admin
 // POST {action:"sweep"}              header x-cron-secret: the daily run (archive old, make missing, update)
+// POST {action:"diag", event_id?}    header x-cron-secret: the connection and (optionally) one event synced – the answers as they are
 // Secrets: SLACK_BOT_TOKEN (xoxb-…, scopes channels:manage channels:read chat:write users:read users:read.email),
 // CRON_SECRET (the daily run). SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are given by Supabase.
 
@@ -251,6 +252,15 @@ Deno.serve(async (req) => {
       if (!s || req.headers.get("x-cron-secret") !== s) return json({ error: "Unauthorized" }, 401);
       if (!E("SLACK_BOT_TOKEN")) return json({ ok: true, skipped: "no token" });
       return json({ ok: true, ...(await sweep()) });
+    }
+    // a check run from the database (same secret): the connection, and one event's channel made / updated, with Slack's own answer
+    if (action === "diag") {
+      const s2 = E("CRON_SECRET");
+      if (!s2 || req.headers.get("x-cron-secret") !== s2) return json({ error: "Unauthorized" }, 401);
+      const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn() };
+      try { out.team = await team(); } catch (e) { out.team_error = (e as Error).message; return json(out); }
+      if (b.event_id) { try { const ev = await loadEvent(String(b.event_id)); out.event = ev ? ev.name : "nerastas"; if (ev) out.sync = await syncEvent(ev, await loadMembers()); } catch (e) { out.sync_error = (e as Error).message; } }
+      return json(out);
     }
     const who = await caller(req);
     if (!who) return json({ error: "Prisijunk iš naujo." }, 401);
