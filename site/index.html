@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-yNgtBbjWJ1li3+ZUgeu4XqA9TgkIsHm2IOHdqMNsxJM=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-1yA50SQDneLTqtN7r8cxv5i/zzJxbF4kbfks/n/ZB8Y=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-rhYtEZWI9+tQ25CCsIiw9vxIS8Sx/VpSvPrNbZR/VoY=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1945,7 +1945,8 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 .cal-up-t{display:flex;flex-direction:column;min-width:0;}
 .cal-up-t b,.cal-up-t small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cal-up-t small{color:var(--text-dim);font-size:12px;}
-.cal-pop{position:fixed;z-index:3600;pointer-events:none;display:none;width:300px;max-height:70vh;overflow:auto;background:var(--panel);border:1px solid var(--border-2);border-radius:12px;padding:10px 12px;box-shadow:0 14px 40px rgba(0,0,0,.55);}
+.cal-pop .calx-ev{cursor:pointer;}
+.cal-pop{position:fixed;z-index:3600;display:none;width:300px;max-height:70vh;overflow:auto;background:var(--panel);border:1px solid var(--border-2);border-radius:12px;padding:10px 12px;box-shadow:0 14px 40px rgba(0,0,0,.55);}
 .cal-pop-h{font-size:12px;color:var(--text-dim);margin-bottom:6px;text-transform:capitalize;}
 .cal-mt{border-left:3px solid var(--accent);padding:6px 0 6px 10px;margin:6px 0;display:flex;flex-direction:column;gap:3px;font-size:13px;}
 .cal-mt.focus{background:rgba(243,94,125,.08);border-radius:0 8px 8px 0;}
@@ -23452,15 +23453,19 @@ function calPopShow(cell){
   clearTimeout(calPopT);
   let pop = document.getElementById('calHoverPop');
   if(!pop){ pop = document.createElement('div'); pop.id = 'calHoverPop'; pop.className = 'cal-pop'; document.body.appendChild(pop);
+    // the mouse may go over to the pop-up and click an event there
+    pop.addEventListener('mouseenter', ()=>clearTimeout(calPopT));
+    pop.addEventListener('mouseleave', calPopHideSoon);
   }
   pop.innerHTML = `<div class="cal-pop-h">${esc(calDayLabel(iso, true))}</div>${xh}${it.meetings.length ? '<div class="cal-up-h calx-h">Susitikimai</div>' : ''}${it.meetings.map(m=>calMeetingHtml(m, false)).join('')}${it.todos.length ? '<div class="cal-up-h calx-h">Užduotys</div>' : ''}${it.todos.map(calTodoHtml).join('')}`;
   pop.style.display = 'block';
+  calxBind(pop, calPopHide, ()=>calDayModal(iso));
   const r = cell.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
   let left = r.left - w - 10; if(left < 8) left = Math.min(window.innerWidth - w - 8, r.right + 10);
   let top = Math.min(window.innerHeight - h - 8, Math.max(8, r.top - 10));
   pop.style.left = left+'px'; pop.style.top = top+'px';
 }
-function calPopHideSoon(){ clearTimeout(calPopT); calPopT = setTimeout(calPopHide, 60); }
+function calPopHideSoon(){ clearTimeout(calPopT); calPopT = setTimeout(calPopHide, 300); }   // time to move the mouse over to it
 function calPopHide(){ const p = document.getElementById('calHoverPop'); if(p) p.style.display = 'none'; }
 function calDayModal(iso, focusId){
   const it = calDayItems(iso);
@@ -23776,7 +23781,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v654';
+const APP_VER = 'v655';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -51743,6 +51748,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-03 11:00', v:'v655', k:'fix', t:'Kalendorius: užvedus pelę ant dienos – renginį galima paspausti', f:'Užvedus pelę ant dienos iššokęs langelis nebedingsta, kai pelę veži prie jo – renginį jame galima paspausti ir atsidaro jo briefas.' },
   { d:'2026-11-03 10:00', v:'v654', k:'new', t:'Renginiai: komentaras prie žmogaus komandoje', f:'Prie žmogaus – statuso mygtukas „·“ → „💬 Pridėti komentarą“. Šalia vardo atsiranda 💬: užvedus pelę matosi komentaras (kas ir kada rašė), paspaudus – galima papildyti ar ištrinti.' },
   { d:'2026-10-30 09:00', v:'v653', k:'fix', t:'Kalendorius: renginio briefe – „‹ Atgal“', f:'Renginio briefe viršuje ir apačioje – „‹ Atgal“: grįžta į kalendorių tą patį mėnesį ir dieną (arba į dienos langą).' },
   { d:'2026-10-30 01:00', v:'v652', k:'new', t:'Kalendorius: renginio briefas', f:'Paspaudus renginį kalendoriuje – trumpas briefas: laikai, kontaktai (paspaudus numerį – skambinti), kas dirba montaže, renginyje ir demontaže (su datomis, tu paryškintas), transportas su vairuotojais, įrangos PDF (projekto) ir pastabos. „Atidaryti Renginiuose →“ – visas renginys.' },
