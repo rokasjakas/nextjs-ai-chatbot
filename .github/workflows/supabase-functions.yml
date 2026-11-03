@@ -67,7 +67,7 @@ jobs:
           failed=""
           for f in ${{ steps.which.outputs.list }}; do
             echo "::group::$f"
-            if supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api; then echo "✓ $f"; else failed="$failed $f"; fi
+            if supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes; then echo "✓ $f"; else failed="$failed $f"; fi
             echo "::endgroup::"
           done
           if [ -n "$failed" ]; then echo "::error::Nepavyko:$failed"; exit 1; fi
