@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-y/9od7CM1ySaAfF27vIhc3gWL9JFPs8KPrgKAAx0iI4=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-oEEnFTkVJggEjWpU3nSDhlWQ7b41NdqgLxijODnRZSE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -17568,9 +17568,9 @@ function whView(j0){
   const ed = can && (!idea || j.created_by===me || adm), canSt = !idea && (can || (j.assignees||[]).includes(me)), author = j.created_by===me;
   const late = whLate(j), row = (l, v)=>v ? `<div class="wh-vr"><span>${l}</span><div>${v}</div></div>` : '';
   openModal(`<div class="wh-vh">${!idea ? `<span class="wh-pri" style="background:${p.c}">${+j.priority===1 ? 'Skubus!' : esc(p.l)}</span>` : '<span class="wh-st pend">💡 Pasiūlymas</span>'}
-      <span class="wh-pill" style="--c:${st.c}">${esc(st.l)}</span></div>
+      <span class="wh-pill" id="whvPill" style="--c:${st.c}">${esc(st.l)}</span></div>
     <h3 style="margin:6px 0 2px;">${esc(j.title)}</h3>
-    <p class="section-sub" style="margin:0 0 10px;">${idea ? 'Pasiūlė' : 'Sukūrė'} ${esc(j.created_by_name||'')} · ${esc(whWhen(j.created_at))}${j.approved_at && !idea ? ' · patvirtino '+esc(j.approved_by_name||'')+' '+esc(whWhen(j.approved_at)) : ''}${j.status==='done' && j.done_at ? ' · pabaigė '+esc(j.done_by_name||'')+' '+esc(whWhen(j.done_at)) : ''}</p>
+    <p class="section-sub" id="whvMeta" style="margin:0 0 10px;">${idea ? 'Pasiūlė' : 'Sukūrė'} ${esc(j.created_by_name||'')} · ${esc(whWhen(j.created_at))}${j.approved_at && !idea ? ' · patvirtino '+esc(j.approved_by_name||'')+' '+esc(whWhen(j.approved_at)) : ''}${j.status==='done' && j.done_at ? ' · pabaigė '+esc(j.done_by_name||'')+' '+esc(whWhen(j.done_at)) : ''}</p>
     ${idea && j.status==='rejected' ? `<p class="wh-st rej" style="display:inline-block;margin:0 0 8px;">Atmesta${j.decided_note ? ': '+esc(j.decided_note) : ''}</p>` : ''}
     <div class="wh-vgrid">
       ${!idea ? row('Terminas', j.due_date ? `<span class="${late ? 'wh-late' : ''}">${esc(j.due_date)}${late ? ' · vėluoja' : ''}</span>` : '<span class="muted">—</span>') : ''}
@@ -17605,8 +17605,8 @@ function whView(j0){
       const go = ()=>whAnswer(j.id, b.dataset.asend, inp.value).then(ok=>{ if(ok) drawQ(); });
       b.onclick = go; inp.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); go(); } }; }); };
   drawQ();
-  // whom the question is for: one or more of everyone registered (typed name → list); the one who added it is offered first
-  let to = j.created_by!==me ? [j.created_by] : (j.assignees||[]).filter(u=>u!==me);
+  // whom the question is for: one or more of everyone registered, chosen by hand (typed name → list); nobody is put in by itself
+  let to = [];
   const toIn = $('whvToIn'), dd = $('whvToDd');
   const drawTo = ()=>{ const b = $('whvToSel'); if(!b) return;
     b.innerHTML = to.map(u=>`<span class="chip small-chip active">${esc(whWho(u))} <button type="button" class="wh-to-x" data-unto="${esc(u)}" title="Pašalinti">×</button></span>`).join('');
@@ -17633,7 +17633,12 @@ function whView(j0){
     $('whvAskC').onclick = ()=>{ $('whvAskBox').classList.add('hidden'); ask.classList.remove('hidden'); };
     $('whvAskS').onclick = async ()=>{ if(!to.length){ toast('Pasirink, kam skirtas klausimas.'); toIn.focus(); return; } const b = $('whvAskS'); b.disabled = true; const ok = await whAsk(j.id, $('whvAskT').value, to.slice()); b.disabled = false;
       if(ok){ $('whvAskT').value = ''; $('whvAskBox').classList.add('hidden'); ask.classList.remove('hidden'); drawQ(); } }; }
-  const sv = $('whvS'); if(sv) sv.querySelectorAll('[data-s]').forEach(b=>b.onclick = async ()=>{ const r = await whSetStatus(WH.list.find(x=>x.id===j.id)||j, b.dataset.s); if(r) whView(r); });
+  // the status changes in place – the window is not drawn again (no blink)
+  const sv = $('whvS'); if(sv) sv.querySelectorAll('[data-s]').forEach(b=>b.onclick = async ()=>{
+    const k = b.dataset.s, cur = WH.list.find(x=>x.id===j.id)||j; if(cur.status===k) return;
+    const mark = v=>{ sv.querySelectorAll('[data-s]').forEach(x=>x.classList.toggle('on', x.dataset.s===v)); const pl = $('whvPill'); if(pl){ pl.textContent = WH_ST[v].l; pl.style.setProperty('--c', WH_ST[v].c); } };
+    mark(k); const r = await whSetStatus(cur, k); if(!r){ mark(cur.status); return; }
+    const m = $('whvMeta'); if(m) m.textContent = `${idea ? 'Pasiūlė' : 'Sukūrė'} ${r.created_by_name||''} · ${whWhen(r.created_at)}${r.approved_at && !idea ? ' · patvirtino '+(r.approved_by_name||'')+' '+whWhen(r.approved_at) : ''}${r.status==='done' && r.done_at ? ' · pabaigė '+(r.done_by_name||'')+' '+whWhen(r.done_at) : ''}`; });
   if($('whvEd')) $('whvEd').onclick = ()=>whForm(WH.list.find(x=>x.id===j.id)||j, j.kind);
   if($('whvOk')) $('whvOk').onclick = ()=>whForm(WH.list.find(x=>x.id===j.id)||j, j.kind);
   $('whvX').onclick = ()=>closeModal();
@@ -24479,7 +24484,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v684';
+const APP_VER = 'v686';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -52940,6 +52945,8 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-04 19:35', v:'v686', k:'fix', t:'Sandėlio darbai: būsena keičiama be mirktelėjimo', f:'Keičiant darbo būseną langas nebeperpiešiamas – pasikeičia tik mygtukas ir būsenos ženkliukas.' },
+  { d:'2026-11-04 19:20', v:'v685', k:'chg', t:'Sandėlio darbai: klausimo gavėjai renkami patys', f:'Užduodant klausimą laukelis „Kam“ tuščias – žmones pasirenki pats iš sąrašo.' },
   { d:'2026-11-04 19:10', v:'v684', k:'fix', t:'Langai nebekeičia dydžio rašant', f:'Iššokantys langai nebešokinėja: atsiradus slankjuostei plotis nesikeičia, o rašant paieškoje ar filtre langas nesumažėja. Sandėlio darbų „Kam“ sąrašas atsiveria virš lango ir nebekeičia jo dydžio.' },
   { d:'2026-11-04 18:50', v:'v683', k:'chg', t:'Sandėlio darbai: klausimas keliems žmonėms', f:'Klausimą galima užduoti keliems žmonėms iš karto – kiekvienas gauna pranešimą ir atsako atskirai; visi atsakymai pareina klaususiam ir matomi prie klausimo.' },
   { d:'2026-11-04 18:20', v:'v682', k:'new', t:'Sandėlio darbai: klausimas pasirinktam žmogui', f:'„❓ Užduoti klausimą“ – įrašai klausimą ir pasirenki, kam jis skirtas (rašai vardą, iš sąrašo – visi užsiregistravę nariai). Jis gauna pranešimą, mato tą darbą ir atsako; atsakymas pareina klaususiam.' },
