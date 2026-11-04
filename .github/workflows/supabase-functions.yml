@@ -40,9 +40,15 @@ jobs:
           if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
             echo "::error::Nėra SUPABASE_ACCESS_TOKEN (Settings → Secrets and variables → Actions)."; exit 1
           fi
+      # GitHub sometimes refuses to say which version is the newest (rate limit) – then the CLI comes from npm
       - uses: supabase/setup-cli@v1
+        id: cli
+        continue-on-error: true
         with:
           version: latest
+      - name: CLI from npm (if the step above failed)
+        if: steps.cli.outcome == 'failure'
+        run: npm install -g supabase@latest && supabase --version
       - name: Which functions
         id: which
         run: |
