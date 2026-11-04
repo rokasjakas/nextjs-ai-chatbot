@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-oEEnFTkVJggEjWpU3nSDhlWQ7b41NdqgLxijODnRZSE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-5bOImkdrBaFNfAeQfIkP7UpjUkXqgHTcg8RMrpvSPIM=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -15900,7 +15900,7 @@ async function admLoad(){
   const sb = getSb();
   const { data, error } = await sb.from('profiles').select('*').order('created_at', {ascending:false});
   ADM.error = error ? error.message : '';
-  ADM.users = (data||[]).filter(u=>!memberHid(u));
+  ADM.users = (data||[]).filter(u=>!memberHid(u) || isSuper());
   ADM.loaded = true;
 }
 /* ============================================================
@@ -21284,12 +21284,13 @@ function renderAdminUsers(){
     const hid = row.querySelector('[data-hide]');
     if(hid) hid.onclick = async ()=>{
       const on = !u.hidden, who = u.full_name || u.email;
-      if(on && !(await uiConfirm(`Paslėpti ${who}?\n\nJis nebus matomas narių sąrašuose, pasirinkimuose, chate ir Admin – jį matysi tik tu (Super Admin). Prisijungti ir dirbti jis galės kaip anksčiau.`))) return;
+      if(on && !(await uiConfirm(`Paslėpti ${who}?\n\nJis nebus matomas narių sąrašuose, pasirinkimuose ir chate (ir tau) – rasi jį tik čia, Admin → Nariai („Paslėpti“). Prisijungti ir dirbti jis galės kaip anksčiau.`))) return;
       hid.disabled = true;
       const { error } = await getSb().rpc('member_set_hidden', { uid:u.id, on_off:on });
       hid.disabled = false;
       if(error){ toast('Nepavyko: '+(/member_set_hidden|schema cache|does not exist/i.test(error.message) ? 'Supabase paleisk members_hidden.sql.' : error.message), 5000); return; }
-      u.hidden = on; const m = (TEAM.members||[]).find(x=>x.id===u.id); if(m) m.hidden = on;
+      u.hidden = on;
+      if(on) TEAM.members = (TEAM.members||[]).filter(x=>x.id!==u.id); else teamLoadMembers().catch(()=>{});
       toast(on ? who+' paslėptas – matai tik tu.' : who+' vėl matomas visiems.');
       renderAdminUsers();
     };
@@ -24484,7 +24485,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v686';
+const APP_VER = 'v687';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -32040,8 +32041,9 @@ let teamMsgT = 0;
 function teamMsgRetry(){ clearTimeout(teamMsgT); teamMsgT = setTimeout(()=>{ if(canView('chat')){ teamMsgSubscribe(); teamLoadConvs(); } }, document.visibilityState==='visible' ? 2000 : 15000); }
 function teamMsgCheck(){ if(canView('chat') && TEAM.msgCh && TEAM.msgSt!=='SUBSCRIBED' && TEAM.msgSt!=='JOINING') teamMsgRetry(); }
 window.addEventListener('online', ()=>{ teamMsgCheck(); });
-// a member hidden in Admin (members_hidden.sql): not shown anywhere – except to the Super Admin (and to themselves)
-function memberHid(p){ return !!(p && p.hidden) && p.id!==teamMe() && !(typeof isSuper==='function' && isSuper()); }
+// a member hidden in Admin (members_hidden.sql): not shown in any list or picker – for nobody, the Super Admin included;
+// only the Super Admin sees them, in Admin → Nariai (admLoad), to show them again
+function memberHid(p){ return !!(p && p.hidden) && p.id!==teamMe(); }
 async function teamLoadMembers(){
   const sb = getSb(); if(!sb) return;
   const { data, error } = await sb.from('profiles').select('*');
