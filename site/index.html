@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-+Qc0+ShWYPuwMl5AuLxaDVHudPpHTv70W6wRR2qrfxI=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-TeTRlQjtfAVXp6kb4E8L8AFkpf2TO3ASSmUtvpsKerA=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -17522,7 +17522,8 @@ function whDraw(){
   box.innerHTML = list.length ? `<div class="card wh-tw"><table class="wh-t"><thead><tr>${idea ? '<th>Pasiūlymas</th><th>Būsena</th><th>Kas pasiūlė</th><th>Kada</th><th>Aprašymas</th><th></th>'
       : '<th class="wh-c-p">Prioritetas</th><th>Darbas</th><th class="wh-c-s">Būsena</th><th>Kam priskirta</th><th class="wh-c-d">Terminas</th><th>Pastabos</th><th></th>'}</tr></thead>
     <tbody>${list.map(whRowHtml).join('')}</tbody></table></div>` : `<div class="card empty-state">${esc(empty)}</div>`;
-  box.querySelectorAll('tr[data-wh]').forEach(c=>c.onclick = e=>{ if(e.target.closest('[data-whst]')) return; const j = WH.list.find(x=>x.id===c.dataset.wh); if(j) whView(j); });
+  box.querySelectorAll('[data-whpri]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); const j = WH.list.find(x=>x.id===b.dataset.whpri); if(j) whPriMenu(b, j, ()=>whDraw()); });
+  box.querySelectorAll('tr[data-wh]').forEach(c=>c.onclick = e=>{ if(e.target.closest('[data-whst],[data-whpri]')) return; const j = WH.list.find(x=>x.id===c.dataset.wh); if(j) whView(j); });
   box.querySelectorAll('[data-whst]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); const j = WH.list.find(x=>x.id===b.dataset.whst); if(!j) return;
     evPopMenu(b, ['open', 'doing', 'done'].map(k=>({ html:`<span class="wh-dot" style="background:${WH_ST[k].c}"></span>${WH_ST[k].l}${j.status===k ? ' ✓' : ''}`, fn:()=>whSetStatus(j, k) }))); });
   teamFillImages(box).catch(()=>{});
@@ -17536,7 +17537,7 @@ function whRowHtml(j){
   if(!job) return `<tr class="wh-r" data-wh="${esc(j.id)}"><td class="wh-ti">${esc(j.title)}</td><td>${pill}</td><td>${esc(j.created_by_name||'')}</td><td class="muted">${esc(whWhen(j.created_at))}</td>
     <td class="wh-n">${esc(j.status==='rejected' && j.decided_note ? 'Atmesta: '+j.decided_note : note)}</td><td class="wh-x">${extra}</td></tr>`;
   return `<tr class="wh-r st-${esc(j.status)}${+j.priority===1 && j.status!=='done' ? ' hot' : ''}" data-wh="${esc(j.id)}" style="--pc:${p.c}">
-    <td class="wh-c-p"><span class="wh-pri" style="background:${p.c}">${+j.priority===1 ? 'Skubus!' : esc(p.l)}</span></td>
+    <td class="wh-c-p">${whCan() ? `<button type="button" class="wh-stb" data-whpri="${esc(j.id)}" title="Keisti prioritetą"><span class="wh-pri" style="background:${p.c}">${+j.priority===1 ? 'Skubus!' : esc(p.l)} ▾</span></button>` : `<span class="wh-pri" style="background:${p.c}">${+j.priority===1 ? 'Skubus!' : esc(p.l)}</span>`}</td>
     <td class="wh-ti">${esc(j.title)}<small>${esc(j.created_by_name||'')} · ${esc(whWhen(j.created_at))}</small></td>
     <td class="wh-c-s">${canSt ? `<button type="button" class="wh-stb" data-whst="${esc(j.id)}">${pill}</button>` : pill}</td>
     <td>${(j.assignees||[]).length ? j.assignees.map(u=>`<span class="wh-who1">${esc(whWho(u))}</span>`).join('') : '<span class="muted">—</span>'}</td>
@@ -17556,6 +17557,11 @@ async function whSetStatus(j, st){
   if(r){ toast(st==='done' ? '✓ Darbas pabaigtas' : 'Būsena: '+WH_ST[st].l); if(currentTab==='whjobs') whDraw(); }
   return r;
 }
+// the priority: a small menu by the label (Skubus! / Vidutinis / Žemas)
+function whPriMenu(anchor, j, after){
+  evPopMenu(anchor, [1, 2, 3].map(k=>({ html:`<span class="wh-dot" style="background:${WH_PRI[k].c}"></span>${k===1 ? 'Skubus! (aukštas)' : WH_PRI[k].l}${+j.priority===k ? ' ✓' : ''}`,
+    fn:async ()=>{ if(+j.priority===k) return; const r = await whSave(j.id, { priority:k }); if(!r) return; toast('Prioritetas: '+(k===1 ? 'Skubus!' : WH_PRI[k].l)); if(after) after(r); } })));
+}
 function whSetDone(j, on){ return whSetStatus(j, on ? 'done' : 'open'); }
 function whFileHtml(f, i, ed){
   const pic = /^image\//.test(f.type||'');
@@ -17567,7 +17573,7 @@ function whView(j0){
   const idea = j.kind==='idea', pending = idea && j.status==='pending', p = WH_PRI[j.priority] || WH_PRI[2], st = WH_ST[j.status] || WH_ST.open;
   const ed = can && (!idea || j.created_by===me || adm), canSt = !idea && (can || (j.assignees||[]).includes(me)), author = j.created_by===me;
   const late = whLate(j), row = (l, v)=>v ? `<div class="wh-vr"><span>${l}</span><div>${v}</div></div>` : '';
-  openModal(`<div class="wh-vh">${!idea ? `<span class="wh-pri" style="background:${p.c}">${+j.priority===1 ? 'Skubus!' : esc(p.l)}</span>` : '<span class="wh-st pend">💡 Pasiūlymas</span>'}
+  openModal(`<div class="wh-vh">${!idea ? (can ? `<button type="button" class="wh-stb" id="whvPri" title="Keisti prioritetą"><span class="wh-pri" style="background:${p.c}">${+j.priority===1 ? 'Skubus!' : esc(p.l)} ▾</span></button>` : `<span class="wh-pri" style="background:${p.c}">${+j.priority===1 ? 'Skubus!' : esc(p.l)}</span>`) : '<span class="wh-st pend">💡 Pasiūlymas</span>'}
       <span class="wh-pill" id="whvPill" style="--c:${st.c}">${esc(st.l)}</span></div>
     <h3 style="margin:6px 0 2px;">${esc(j.title)}</h3>
     <p class="section-sub" id="whvMeta" style="margin:0 0 10px;">${idea ? 'Pasiūlė' : 'Sukūrė'} ${esc(j.created_by_name||'')} · ${esc(whWhen(j.created_at))}${j.approved_at && !idea ? ' · patvirtino '+esc(j.approved_by_name||'')+' '+esc(whWhen(j.approved_at)) : ''}${j.status==='done' && j.done_at ? ' · pabaigė '+esc(j.done_by_name||'')+' '+esc(whWhen(j.done_at)) : ''}</p>
@@ -17633,6 +17639,7 @@ function whView(j0){
     $('whvAskC').onclick = ()=>{ $('whvAskBox').classList.add('hidden'); ask.classList.remove('hidden'); };
     $('whvAskS').onclick = async ()=>{ if(!to.length){ toast('Pasirink, kam skirtas klausimas.'); toIn.focus(); return; } const b = $('whvAskS'); b.disabled = true; const ok = await whAsk(j.id, $('whvAskT').value, to.slice()); b.disabled = false;
       if(ok){ $('whvAskT').value = ''; $('whvAskBox').classList.add('hidden'); ask.classList.remove('hidden'); drawQ(); } }; }
+  const vp = $('whvPri'); if(vp) vp.onclick = ()=>whPriMenu(vp, WH.list.find(x=>x.id===j.id)||j, r=>{ const q = WH_PRI[r.priority]; vp.innerHTML = `<span class="wh-pri" style="background:${q.c}">${+r.priority===1 ? 'Skubus!' : esc(q.l)} ▾</span>`; if(currentTab==='whjobs') whDraw(); });
   // the status changes in place – the window is not drawn again (no blink)
   const sv = $('whvS'); if(sv) sv.querySelectorAll('[data-s]').forEach(b=>b.onclick = async ()=>{
     const k = b.dataset.s, cur = WH.list.find(x=>x.id===j.id)||j; if(cur.status===k) return;
@@ -24485,7 +24492,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v688';
+const APP_VER = 'v689';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -52947,6 +52954,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-04 20:10', v:'v689', k:'chg', t:'Sandėlio darbai: prioritetas keičiamas paspaudus', f:'Paspaudus prioriteto ženkliuką („Skubus!“, „Vidutinis“, „Žemas“) lentelėje ar darbo peržiūroje – iškart pakeiti lygį.' },
   { d:'2026-11-04 19:55', v:'v688', k:'chg', t:'Kitų narių lygis nebe rodomas', f:'Narių sąraše, nario kortelėje, paieškoje ir žmonių pasirinkimuose nebe rodomas kito žmogaus prieigos lygis (vietoj jo – pareigos, jei įrašytos).' },
   { d:'2026-11-04 19:35', v:'v686', k:'fix', t:'Sandėlio darbai: būsena keičiama be mirktelėjimo', f:'Keičiant darbo būseną langas nebeperpiešiamas – pasikeičia tik mygtukas ir būsenos ženkliukas.' },
   { d:'2026-11-04 19:20', v:'v685', k:'chg', t:'Sandėlio darbai: klausimo gavėjai renkami patys', f:'Užduodant klausimą laukelis „Kam“ tuščias – žmones pasirenki pats iš sąrašo.' },
