@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-rudHNvIVDAYLtYbRPicg16wzCE602Rf7khye1i7jFHY=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-+B1R3hnjI33TqQB1PT8rA4UQUK/QVrEkG1ALtNY2wH0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1312,6 +1312,7 @@ table.xg select{background-position:right 5px center !important;padding-right:18
   .wh-t .wh-c-d small{display:inline;margin-left:4px;}
 }
 .wh-m-l{display:none;} @media (max-width:700px){ .wh-m-l{display:inline;color:var(--text-dim);} }
+.xg-drive svg{display:block;margin:auto;} .xg-drive.none{opacity:.45;} .xg-drive:not(.none){color:#1E8E3E;}
 .sd-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;} .sd-top input[type=search]{flex:1 1 240px;max-width:420px;}
 .sd-gt{margin:0 0 8px;font-size:14px;display:flex;align-items:center;gap:8px;}
 .sd-list{display:flex;flex-direction:column;gap:6px;} .sd-row{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:var(--panel-2,transparent);}
@@ -14909,7 +14910,8 @@ function cfgFromRows(rows){
   (rows||[]).forEach(r=>{ if(r.key==='lists' && r.value && typeof r.value==='object') CFG.lists = r.value;
     if(r.key==='backup' && r.value && typeof r.value==='object') CFG.backup = r.value;
     if(r.key==='led_db' && r.value && typeof r.value==='object') CFG.led = r.value;
-    if(r.key==='slack' && r.value && typeof r.value==='object') CFG.slack = r.value;   // Slack renginių kanalai (Admin → Slack)
+    if(r.key==='slack' && r.value && typeof r.value==='object') CFG.slack = r.value;
+    if(r.key==='gdrive' && r.value && typeof r.value==='object') CFG.gdrive = r.value;   // renginių Google Drive aplankai (Admin → Google Drive)   // Slack renginių kanalai (Admin → Slack)
     if(r.key==='off' && r.value && typeof r.value==='object') CFG.off = r.value;   // parts turned off (Sistema → Įjungti / išjungti)   // the LED calculator's devices and cabinets   // the nightly backup's result (written by GitHub)
     if(r.key==='nav' && r.value && typeof r.value==='object') { CFG.nav = { tabs:r.value.tabs||{}, order:Array.isArray(r.value.order) ? r.value.order : [] }; CFG.at = r.updated_at||''; CFG.by = r.updated_name||''; } });
 }
@@ -18713,6 +18715,7 @@ function renderAdminTab(){
     </div>
     ${consentAdminCard()}
     ${slackAdminCard()}
+    ${driveAdminCard()}
     <div class="card">
       <h2 class="section-title" style="margin:0;">Chatas: GIF paieška</h2>
       <p class="section-sub" style="margin:4px 0 10px;">GIF paieškai reikia nemokamo GIPHY API rakto (developers.giphy.com → Create an App → API). Be jo GIF galima siųsti kaip failą arba nuorodą.</p>
@@ -18747,7 +18750,7 @@ function renderAdminTab(){
     </div>
   </div>`;
   document.getElementById('admQ').addEventListener('input', renderAdminUsers);
-  slackAdminWire();
+  slackAdminWire(); driveAdminWire();
   consentAdminLoad().catch(e=>{ const b = document.getElementById('admCsBody'); if(b) b.innerHTML = '<div class="mail-err">'+esc(e.message)+'</div>'; });
   document.getElementById('admMailGo').onclick = async e=>{
     const b = e.currentTarget, out = document.getElementById('admMailOut');
@@ -24618,7 +24621,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v691';
+const APP_VER = 'v692';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26113,6 +26116,89 @@ function slackEvBtn(ev){
   return canEdit('events') ? `<button type="button" class="xg-more xg-slack none" data-act="slack-sync" title="Sukurti Slack kanalą">#</button>` : '';
 }
 // Admin: is Slack connected, on / off (Super Admin), channels for the upcoming events
+/* ---- Google Drive: kiekvienam renginiui – aplankas įmonės bendrame Drive (serverio funkcija gdrive, supabase/sql/event_drive.sql) ----
+   „2026-11-05 Renginys“ su Darbiniai planai, Video failai, Raideriai, Erdvės foto, Papildomi failai. Sukuriamas išsaugojus renginį;
+   prie renginio – Drive mygtukas; siunčiant renginio laišką gavėjams suteikiama prieiga ir laiške – nuoroda. Įjungia Super Admin. */
+const DRV = { map:{}, loaded:false, loading:null, t:{}, warned:false };
+function driveOn(){ return !!(CFG.gdrive && CFG.gdrive.on); }
+function driveName(ev){ return (String(ev.date||'').slice(0, 10)+' '+String(ev.name||'Renginys').replace(/[\\/]+/g, '-').trim()).trim().slice(0, 200); }
+async function driveCall(action, extra){
+  const sb = getSb(); if(!sb) throw new Error('Nėra ryšio');
+  const { data } = await sb.auth.getSession();
+  const token = data && data.session ? data.session.access_token : '';
+  const res = await fetch(SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/gdrive', { method:'POST',
+    headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token, 'apikey':SUPABASE_KEY }, body:JSON.stringify(Object.assign({ action }, extra||{})) });
+  let out = {}; try{ out = await res.json(); }catch(e){}
+  if(res.status===404 && !out.error) throw new Error('funkcija gdrive dar neįdiegta');
+  if(!res.ok || out.error) throw new Error(out.error || ('serverio klaida '+res.status));
+  return out;
+}
+function driveLoad(){
+  if(DRV.loaded || DRV.loading || !driveOn() || !canView('events')) return DRV.loading;
+  const sb = getSb(); if(!sb) return null;
+  DRV.loading = sb.from('event_drive').select('event_id,url,name').then(({ data, error })=>{
+    DRV.loading = null; if(error) return; DRV.loaded = true;
+    (data||[]).forEach(r=>{ DRV.map[r.event_id] = r; });
+    if(evTabOn() && typeof renderEventList==='function') try{ renderEventList(); }catch(e){}
+  });
+  return DRV.loading;
+}
+// after the event is saved: its folder a little later (made, or renamed when the name / date changed)
+function driveSoon(ev){
+  if(!ev || ev.kind==='work' || ev.handoverId || ev.deletedAt || !driveOn() || !canEdit('events') || !String(ev.name||'').trim() || !ev.date) return;
+  const had = DRV.map[ev.id]; if(had && had.name===driveName(ev)) return;
+  clearTimeout(DRV.t[ev.id]);
+  DRV.t[ev.id] = setTimeout(()=>{ delete DRV.t[ev.id]; driveEnsure(ev).catch(e=>{ if(!DRV.warned){ DRV.warned = true; toast('Google Drive: '+e.message, 6000); } }); }, 8000);
+}
+async function driveEnsure(ev){
+  const was = DRV.map[ev.id], r = await driveCall('ensure', { event_id:ev.id });
+  if(r.url){ DRV.map[ev.id] = { event_id:ev.id, url:r.url, name:r.name }; if(!was && typeof rerenderEventCard==='function') try{ rerenderEventCard(ev); }catch(e){} }
+  return r;
+}
+function driveEvBtn(ev){
+  if(!driveOn() || ev.kind==='work' || ev.handoverId) return '';
+  const c = DRV.map[ev.id], ic = '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M8.3 3h7.4l6.3 11h-7.4zM7.1 4.8 10.8 11.3 4.5 22 .8 15.6zM12.2 15.6h12.1L20.6 22H8.5z" transform="scale(.92) translate(1 0)"/></svg>';
+  if(c && c.url) return `<a class="xg-more xg-drive" href="${esc(c.url)}" target="_blank" rel="noopener" title="Google Drive aplankas „${esc(c.name||'')}“">${ic}</a>`;
+  return canEdit('events') ? `<button type="button" class="xg-more xg-drive none" data-act="drive-open" title="Sukurti ir atidaryti renginio Google Drive aplanką">${ic}</button>` : '';
+}
+async function driveOpen(ev, btn){
+  const w = window.open('', '_blank'); if(btn) btn.disabled = true;
+  try{ const r = await driveEnsure(ev); if(w) w.location = r.url; else location.href = r.url; }
+  catch(e){ if(w) w.close(); toast('Google Drive: '+e.message, 6000); }
+  if(btn) btn.disabled = false;
+}
+// the letter's recipients may open the folder, and the link goes into the letter
+async function driveShareLetter(ev, to){
+  const emails = [...new Set(to.map(x=>(String(x).match(/[^\s<>,;]+@[^\s<>,;]+\.[^\s<>,;]+/)||[])[0]).filter(Boolean).map(x=>x.toLowerCase()))];
+  const r = await driveCall('share', { event_id:ev.id, emails });
+  if(r.url) DRV.map[ev.id] = Object.assign({ event_id:ev.id, name:driveName(ev) }, DRV.map[ev.id]||{}, { url:r.url });
+  return r;
+}
+// Admin: is Google Drive connected, on / off (Super Admin), how to connect
+function driveAdminCard(){
+  if(!(ACCESS.role==='admin' || isSuper())) return '';
+  return `<div class="card" id="admDrive"><div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><div><h2 class="section-title" style="margin:0;">Google Drive: renginių aplankai</h2>
+    <p class="section-sub" style="margin:4px 0 0;">Kiekvienam renginiui – aplankas įmonės bendrame Drive (Darbiniai planai, Video failai, Raideriai, Erdvės foto, Papildomi failai). Mato Office ir aukštesni bei tie, kam išsiųstas renginio laiškas. Slack kanale įkeltą failą botas pasiūlo nukelti į aplanką.</p></div>
+    <span class="row" style="gap:6px;flex-wrap:wrap;">${isSuper() ? `<button class="btn small ${driveOn() ? 'primary' : ''}" id="admDrOn">${driveOn() ? '✓ Įjungta' : 'Įjungti'}</button>` : ''}<button class="btn small" id="admDrTest">Patikrinti ryšį</button></span></div>
+    <div id="admDrOut" class="section-sub" style="margin-top:8px;"></div>
+    <details style="margin-top:8px;"><summary class="section-sub" style="cursor:pointer;">Kaip prijungti (vieną kartą)</summary><ol class="section-sub" style="margin:6px 0 0 18px;line-height:1.55;">
+      <li>Google Drive → <b>Bendri diskai</b> (Shared drives) → sukurk, pvz. „Renginiai“.</li>
+      <li><a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a> → naujas projektas → įjunk <b>Google Drive API</b> → IAM → <b>Service accounts</b> → sukurk paskyrą → Keys → <b>Add key → JSON</b> (atsisiųs failą).</li>
+      <li>Bendrame diske „Renginiai“ → <b>Manage members</b> → pridėk paslaugos paskyros el. paštą (…@….iam.gserviceaccount.com) kaip <b>Content manager</b>.</li>
+      <li>Supabase → Edge Functions → Secrets: <b>GOOGLE_SA_JSON</b> = viso JSON failo turinys, <b>GDRIVE_ROOT_ID</b> = bendro disko id (adreso gale po /folders/).</li>
+      <li>Slack (nebūtina): api.slack.com/apps → tavo programėlė → OAuth & Permissions → pridėk <b>files:read</b> → Reinstall; Event Subscriptions → Request URL <code>${esc(SUPABASE_URL.replace(/\/$/,''))}/functions/v1/gdrive</code>, Bot events: <b>file_shared</b>; Interactivity → tas pats URL; Basic Information → Signing Secret → Supabase Secrets <b>SLACK_SIGNING_SECRET</b>.</li>
+      <li>Čia – „Patikrinti ryšį“, tada „Įjungti“.</li></ol></details></div>`;
+}
+function driveAdminWire(){
+  const out = document.getElementById('admDrOut'); if(!out) return;
+  const on = document.getElementById('admDrOn');
+  if(on) on.onclick = async ()=>{ on.disabled = true; if(await sysCfgSave({ on:!driveOn() }, driveOn() ? 'Google Drive išjungtas' : 'Google Drive įjungtas', 'gdrive')){ CFG.gdrive = { on:!driveOn() }; DRV.loaded = false; driveLoad(); renderAdminTab(); } else on.disabled = false; };
+  document.getElementById('admDrTest').onclick = async ()=>{ out.textContent = 'Tikrinama…';
+    try{ const r = await driveCall('status');
+      out.innerHTML = r.token && !r.error ? `✓ Prijungta: <b>${esc(r.name||'')}</b>${r.shared_drive ? ' (bendras diskas)' : ' – <span class="mail-err">tai ne bendras diskas: geriau naudok Shared drive</span>'} · aplankų: ${r.folders||0} · Slack failai: ${r.slack ? '✓ įjungta' : 'nėra SLACK_SIGNING_SECRET'}${r.on ? '' : ' · <b>išjungta</b> – aplankai nekuriami'}`
+        : `<span class="mail-err">${esc(r.error || (!r.sa ? 'Nėra GOOGLE_SA_JSON' : !r.root ? 'Nėra GDRIVE_ROOT_ID' : 'neprijungta'))}</span>`; }
+    catch(e){ out.innerHTML = `<span class="mail-err">${esc(e.message)}</span>`; } };
+}
 function slackAdminCard(){
   if(!(ACCESS.role==='admin' || isSuper())) return '';
   return `<div class="card" id="admSlack"><div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><div><h2 class="section-title" style="margin:0;">Slack: renginių kanalai</h2>
@@ -26144,7 +26230,7 @@ async function evFlushOne(table, id){
   if(table==='events') row.event_date = item.date || null;
   const { error } = await sb.from(table).upsert(row, { onConflict:'id' });
   if(error){ setCloudState('error', error.message); return false; }
-  if(table==='events') slackSoon(item);
+  if(table==='events'){ slackSoon(item); driveSoon(item); }
   if(!Object.keys(evTimers).length && !Object.keys(rentalTimers).length) setCloudState('ok');
   return true;
 }
@@ -27329,6 +27415,7 @@ function renderEventList(){
   const el = document.getElementById('evList');
   if(!el) return;
   if(typeof slackLoad==='function') slackLoad();
+  if(typeof driveLoad==='function') driveLoad();
   const searching = evSearchActive();
   const nav = document.getElementById('evMonthNav');
   if(nav) nav.classList.toggle('searching', searching);
@@ -29378,6 +29465,7 @@ function lmHtml(L){
   out.push(`<div>Renginys: <b>${esc(L.name||'')}</b></div>`);
   if(L.whLoc) out.push(`<div>Mūsų sandėlio lokacija: <b>${lmMap(L.whLoc)}</b></div>`);
   out.push(`<div>Renginio lokacija: <b>${esc(L.evLoc||'')}</b></div>`);
+  if(L.driveUrl) out.push(`<div>Renginio failai (Google Drive): <b><a href="${esc(L.driveUrl)}" target="_blank" rel="noopener">atidaryti aplanką</a></b></div>`);
   const stays = (L.stays||[]).filter(s=>s.addr||s.people||s.title);
   if(stays.length){
     out.push(`<div style="margin-top:6px;"><u>Informacija dėl nakvynės dirbantiems renginyje:</u></div><ol style="margin:6px 0 0;">`+stays.map(s=>{
@@ -29440,6 +29528,7 @@ function lmText(L){
   out.push(String(L.intro||'').replace(/\*\*/g,''), '', 'Renginys: '+(L.name||''));
   if(L.whLoc) out.push('Mūsų sandėlio lokacija: '+L.whLoc);
   out.push('Renginio lokacija: '+(L.evLoc||''));
+  if(L.driveUrl) out.push('Renginio failai (Google Drive): '+L.driveUrl);
   (L.stays||[]).filter(s=>s.addr||s.people).forEach((s,i)=>out.push('', `${i+1}. Adresas: ${[s.title,s.addr].filter(Boolean).join(', ')}`, s.people?'   Lovos: '+s.people:'', s.resp?'   Atsakingas asmuo: '+s.resp:''));
   const tr = (L.transport||[]).filter(t=>t.cars||t.drivers);
   if(tr.length){ out.push('', 'TRANSPORTAS'); tr.forEach(t=>out.push(`${t.label}: ${lmLines(t.cars).join(', ')} — vairuoja: ${lmLines(t.drivers).join(', ')}`)); if(L.fuelUrl) out.push('Kuro kortelė (PIN kodas – skaičiai kortelės gale po „CVC:“): '+L.fuelUrl); }
@@ -29642,6 +29731,7 @@ async function openEventLetter(ev){
   try{ [, fuel] = await Promise.race([Promise.all([dcEnsure(dcEvDrivers(ev)), lmFuelLink(ev)]), new Promise(r=>setTimeout(()=>r([null, '']), 4000))]); }catch(e){}
   LM = { ev, L:lmMerge(ev), files:[], chatFiles:[], sig:'', step:1, skip:new Set() };
   LM.L.fuelUrl = fuel || '';
+  if(driveOn() && DRV.map[ev.id] && DRV.map[ev.id].url) LM.L.driveUrl = DRV.map[ev.id].url;
   openModal(`<div class="lm-head"><h3>✉ Renginio laiškas</h3>${lmSteps(1)}<button type="button" class="icon-btn" data-lact="close" title="Uždaryti">✕</button></div>
     <div class="lm-body">
       <div class="lm-form" id="lmForm">${lmFormHtml()}</div>
@@ -29893,6 +29983,12 @@ async function lmSend(btn){
       }
     }
     for(const f of LM.files) atts.push({ filename:f.name, contentType:f.type||'application/octet-stream', base64:await lmB64(f) });
+    if(driveOn() && LM.ev.kind!=='work'){
+      btn.textContent = 'Bendrinamas Drive aplankas…';
+      try{ const d = await driveShareLetter(LM.ev, to); if(d.url) LM.L.driveUrl = d.url;
+        if((d.failed||[]).length) toast('Google Drive: nepavyko suteikti prieigos – '+d.failed.join(', '), 7000); }
+      catch(e){ toast('Google Drive: '+e.message+' (laiškas siunčiamas be aplanko)', 7000); }
+    }
     btn.textContent = 'Siunčiama…';
     const r = await mailCall({ action:'send', to:to.join(', '), subject:LM.L.subject, text:lmText(LM.L), html:lmHtml(LM.L), sig:true, attachments:atts });
     LM.ev.letter = Object.assign(JSON.parse(JSON.stringify(LM.L)), { sentAt:new Date().toISOString(), sentBy:teamName(ACCESS.profile), sentTo:to.length });
@@ -29940,7 +30036,7 @@ function evRowHtml(ev, cols){
       <textarea class="xg-ta xg-title" data-f="name" rows="1" placeholder="Pavadinimas">${esc(ev.name||'')}</textarea>
       <textarea class="xg-ta xg-sub" data-f="artist" rows="1" placeholder="renginio tipas">${esc(ev.artist||'')}</textarea>
       ${ev.status==='cancel' ? (n=>n ? `<button type="button" class="xg-cancel-note" data-act="cancel-people" title="Renginys atšauktas – atbookink arba perkelk žmones">${slIcon('alert')} Atbookinti / perkelti žmones (${n})</button>` : `<span class="xg-cancel-tag">Atšauktas</span>`)((ev.crew||[]).reduce((s,g)=>s+(g.entries||[]).filter(e=>(e.person||'').trim()).length, 0)) : ''}
-      <div class="xg-tools">${menu}${(()=>{ const n = gearCount(ev) || evProjGear(ev).length; return `<button type="button" class="xg-more xg-pdf ${n?'has':''}" data-act="gear-pdf" title="${n ? 'Įrangos sąrašas PDF' : 'Įrangos PDF – įranga dar nepriskirta'}">${slIcon('pdf')}</button>`; })()}${ev.chatId && canView('chat') ? `<button type="button" class="xg-more" data-act="open-chat" title="Renginio kanalas chate">💬</button>` : ''}${slackEvBtn(ev)}${mailSendCan('events') ? `<button type="button" class="xg-more xg-letter${ev.letter && ev.letter.sentAt ? ' sent' : ''}" data-act="letter" title="${ev.letter && ev.letter.sentAt ? 'Laiškas komandai išsiųstas '+esc(String(ev.letter.sentAt).slice(5,16).replace('T',' '))+' — atidaryti' : 'Laiškas komandai'}">✉</button>` : ''}</div>
+      <div class="xg-tools">${menu}${(()=>{ const n = gearCount(ev) || evProjGear(ev).length; return `<button type="button" class="xg-more xg-pdf ${n?'has':''}" data-act="gear-pdf" title="${n ? 'Įrangos sąrašas PDF' : 'Įrangos PDF – įranga dar nepriskirta'}">${slIcon('pdf')}</button>`; })()}${ev.chatId && canView('chat') ? `<button type="button" class="xg-more" data-act="open-chat" title="Renginio kanalas chate">💬</button>` : ''}${slackEvBtn(ev)}${driveEvBtn(ev)}${mailSendCan('events') ? `<button type="button" class="xg-more xg-letter${ev.letter && ev.letter.sentAt ? ' sent' : ''}" data-act="letter" title="${ev.letter && ev.letter.sentAt ? 'Laiškas komandai išsiųstas '+esc(String(ev.letter.sentAt).slice(5,16).replace('T',' '))+' — atidaryti' : 'Laiškas komandai'}">✉</button>` : ''}</div>
       <input type="range" class="xg-rowhs" min="0" max="100" value="0" step="1" title="Slinkti į šonus" aria-label="Slinkti lentelę į šonus">
     </td>
     <td class="xg-info xg-needs" data-cell="needs" tabindex="-1">
@@ -30210,6 +30306,7 @@ function bindEventListEvents(){
     if(act==='menu'){ openEventRowModal(ev); return; }
     if(act==='open-load'){ STATE.activeProjectId = ev.projectId; saveState(); setTab('load'); return; }
     if(act==='letter'){ openEventLetter(ev); return; }
+    if(act==='drive-open'){ driveOpen(ev, b); return; }
     if(act==='slack-sync'){ b.disabled = true; slackSyncNow(ev, true).then(()=>{ try{ rerenderEventCard(ev); }catch(e){} }); return; }
     if(act==='gear'){ gearModal(ev); return; }
     if(act==='gear-pdf'){ evGearPdf(ev); return; }
@@ -53085,6 +53182,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-04 22:00', v:'v692', k:'new', t:'Renginiai: Google Drive aplankai', f:'Išsaugojus renginį įmonės bendrame Google Drive sukuriamas aplankas „data pavadinimas“ su Darbiniai planai, Video failai, Raideriai, Erdvės foto, Papildomi failai. Prie renginio – Drive mygtukas (atidaro aplanką). Siunčiant renginio laišką gavėjai gauna prieigą ir laiške – nuoroda. Slack renginio kanale įkėlus failą botas paklausia, į kurį aplanką jį dėti. Įjungiama Admin → Google Drive.' },
   { d:'2026-11-04 21:00', v:'v691', k:'new', t:'Ofisas → Share dokumentai', f:'Nauja skiltis (Office ir aukštesni): bendrų dokumentų sąrašas – pavadinimas, kas tai, grupė ir Google Sheets / Docs / Drive nuoroda. Paspaudus atsidaro naujame lange. Reikia paleisti supabase/sql/shared_docs.sql.' },
   { d:'2026-11-04 20:25', v:'v690', k:'chg', t:'Sandėlio darbai telefone – kortelės', f:'Telefone darbai rodomi kaip kortelės (prioritetas, būsena, pavadinimas, kam priskirta, terminas, pastabos) – paspaudus atsidaro darbas.' },
   { d:'2026-11-04 20:10', v:'v689', k:'chg', t:'Sandėlio darbai: prioritetas keičiamas paspaudus', f:'Paspaudus prioriteto ženkliuką („Skubus!“, „Vidutinis“, „Žemas“) lentelėje ar darbo peržiūroje – iškart pakeiti lygį.' },
