@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-TeTRlQjtfAVXp6kb4E8L8AFkpf2TO3ASSmUtvpsKerA=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-gbnaSWWvpnnQLJHheP3oTJzpWERWyhWLdynYgZcuI4A=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1294,6 +1294,24 @@ table.xg select{background-position:right 5px center !important;padding-right:18
 .wh-to-dd button{display:flex;justify-content:space-between;gap:8px;width:100%;border:0;background:none;color:var(--text);text-align:left;padding:7px 10px;cursor:pointer;font:inherit;}
 .wh-to-dd button small{color:var(--text-dim);font-size:11.5px;} .wh-to-dd button:hover,.wh-to-dd button.on{background:rgb(127 127 127 / .14);}
 .wh-to-x{border:0;background:none;color:inherit;cursor:pointer;padding:0 0 0 4px;font-size:14px;line-height:1;}
+/* phone: every job a card to tap (not a long table to scroll sideways) */
+@media (max-width:700px){
+  .wh-tw{background:none;border:0;box-shadow:none;padding:0;overflow:visible;}
+  .wh-t, .wh-t tbody{display:block;} .wh-t thead{display:none;}
+  .wh-t tr.wh-r{display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"p s x" "t t t" "w w d" "n n n";gap:6px 8px;align-items:center;
+    margin:0 0 8px;padding:11px 12px;border:1px solid var(--border);border-radius:12px;background:var(--panel);}
+  .wh-t tr.wh-ri{grid-template-areas:"s s x" "t t t" "w w d" "n n n";}
+  .wh-t tr.wh-r td{display:block;padding:0;border:0;background:none !important;min-width:0;max-width:none;width:auto;opacity:1;}
+  .wh-t tr.wh-r.hot td:first-child{box-shadow:none;} .wh-t tr.wh-r.hot{border-left:4px solid #E5484D;}
+  .wh-t tr.wh-r.st-doing{background:color-mix(in srgb, #F2A93B 12%, var(--panel));} .wh-t tr.wh-r.hot{background:color-mix(in srgb, #E5484D 11%, var(--panel));}
+  .wh-t tr.wh-r.st-done{opacity:.62;}
+  .wh-t .wh-c-p{grid-area:p;} .wh-t .wh-c-s{grid-area:s;} .wh-t .wh-x{grid-area:x;justify-self:end;}
+  .wh-t .wh-ti{grid-area:t;font-size:15px;min-width:0;} .wh-t .wh-c-w{grid-area:w;} .wh-t .wh-c-d{grid-area:d;justify-self:end;text-align:right;font-size:12.5px;}
+  .wh-t .wh-n{grid-area:n;font-size:12.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal;}
+  .wh-t .wh-n:empty, .wh-t .wh-none{display:none;}
+  .wh-t .wh-c-d small{display:inline;margin-left:4px;}
+}
+.wh-m-l{display:none;} @media (max-width:700px){ .wh-m-l{display:inline;color:var(--text-dim);} }
 .wh-vh{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
 .wh-vgrid{display:flex;flex-direction:column;gap:8px;} .wh-vr{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:start;font-size:13.5px;}
 .wh-vr>span{color:var(--text-dim);font-size:12.5px;padding-top:2px;} .wh-vnote{white-space:pre-wrap;}
@@ -17534,14 +17552,14 @@ function whRowHtml(j){
   const pill = `<span class="wh-pill" style="--c:${st.c}">${esc(st.l)}${canSt ? ' ▾' : ''}</span>`;
   const extra = `${(j.files||[]).length ? `<span title="Failai">📎${j.files.length}</span>` : ''}${(j.comments||[]).length ? `<span title="Komentarai">💬${j.comments.length}</span>` : ''}`;
   const note = String(j.note||'').trim();
-  if(!job) return `<tr class="wh-r" data-wh="${esc(j.id)}"><td class="wh-ti">${esc(j.title)}</td><td>${pill}</td><td>${esc(j.created_by_name||'')}</td><td class="muted">${esc(whWhen(j.created_at))}</td>
+  if(!job) return `<tr class="wh-r wh-ri" data-wh="${esc(j.id)}"><td class="wh-ti">${esc(j.title)}</td><td class="wh-c-s">${pill}</td><td class="wh-c-w">${esc(j.created_by_name||'')}</td><td class="wh-c-d muted">${esc(whWhen(j.created_at))}</td>
     <td class="wh-n">${esc(j.status==='rejected' && j.decided_note ? 'Atmesta: '+j.decided_note : note)}</td><td class="wh-x">${extra}</td></tr>`;
   return `<tr class="wh-r st-${esc(j.status)}${+j.priority===1 && j.status!=='done' ? ' hot' : ''}" data-wh="${esc(j.id)}" style="--pc:${p.c}">
     <td class="wh-c-p">${whCan() ? `<button type="button" class="wh-stb" data-whpri="${esc(j.id)}" title="Keisti prioritetą"><span class="wh-pri" style="background:${p.c}">${+j.priority===1 ? 'Skubus!' : esc(p.l)} ▾</span></button>` : `<span class="wh-pri" style="background:${p.c}">${+j.priority===1 ? 'Skubus!' : esc(p.l)}</span>`}</td>
     <td class="wh-ti">${esc(j.title)}<small>${esc(j.created_by_name||'')} · ${esc(whWhen(j.created_at))}</small></td>
     <td class="wh-c-s">${canSt ? `<button type="button" class="wh-stb" data-whst="${esc(j.id)}">${pill}</button>` : pill}</td>
-    <td>${(j.assignees||[]).length ? j.assignees.map(u=>`<span class="wh-who1">${esc(whWho(u))}</span>`).join('') : '<span class="muted">—</span>'}</td>
-    <td class="wh-c-d ${late ? 'wh-late' : ''}">${j.due_date ? esc(j.due_date)+(late ? '<small>vėluoja</small>' : '') : '<span class="muted">—</span>'}</td>
+    <td class="wh-c-w">${(j.assignees||[]).length ? j.assignees.map(u=>`<span class="wh-who1">${esc(whWho(u))}</span>`).join('') : '<span class="muted wh-none">—</span>'}</td>
+    <td class="wh-c-d ${late ? 'wh-late' : ''}">${j.due_date ? '<span class="wh-m-l">iki </span>'+esc(j.due_date)+(late ? '<small>vėluoja</small>' : '') : '<span class="muted wh-none">—</span>'}</td>
     <td class="wh-n">${note ? esc(note.length > 160 ? note.slice(0, 160)+'…' : note) : ''}${j.status==='done' && j.done_at ? `<small>pabaigė ${esc(j.done_by_name||'')} ${esc(whWhen(j.done_at))}</small>` : ''}</td>
     <td class="wh-x">${extra}</td></tr>`;
 }
@@ -24492,7 +24510,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v689';
+const APP_VER = 'v690';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -52954,6 +52972,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-04 20:25', v:'v690', k:'chg', t:'Sandėlio darbai telefone – kortelės', f:'Telefone darbai rodomi kaip kortelės (prioritetas, būsena, pavadinimas, kam priskirta, terminas, pastabos) – paspaudus atsidaro darbas.' },
   { d:'2026-11-04 20:10', v:'v689', k:'chg', t:'Sandėlio darbai: prioritetas keičiamas paspaudus', f:'Paspaudus prioriteto ženkliuką („Skubus!“, „Vidutinis“, „Žemas“) lentelėje ar darbo peržiūroje – iškart pakeiti lygį.' },
   { d:'2026-11-04 19:55', v:'v688', k:'chg', t:'Kitų narių lygis nebe rodomas', f:'Narių sąraše, nario kortelėje, paieškoje ir žmonių pasirinkimuose nebe rodomas kito žmogaus prieigos lygis (vietoj jo – pareigos, jei įrašytos).' },
   { d:'2026-11-04 19:35', v:'v686', k:'fix', t:'Sandėlio darbai: būsena keičiama be mirktelėjimo', f:'Keičiant darbo būseną langas nebeperpiešiamas – pasikeičia tik mygtukas ir būsenos ženkliukas.' },
