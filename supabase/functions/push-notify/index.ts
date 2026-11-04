@@ -163,7 +163,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 21;
+const PUSH_FN_VERSION = 22;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -1354,6 +1354,28 @@ async function onGameInvite(uid: string, to: string[], game: string, room: strin
   if (!me || me.role === "pending") return { error: "Tik patvirtinti nariai" };
   return await sendTo(ids, { title: "🎮 " + name(me) + " kviečia pažaisti", body: game + " – atidaryk programą ir priimk kvietimą", tag: "game-" + room, url: `./?game=${encodeURIComponent(room)}`, kind: "game" }, 600);
 }
+// Sandėlio darbai (sql/wh_jobs.sql): a question to the one who added the job / proposal, and the answer back
+type WhQ = { id: string; t: string; by_id: string; a?: string; a_by_id?: string };
+async function onWhJob(uid: string, id: string, ev: string, qid: string) {
+  const [j] = await db<{ id: string; kind: string; title: string; created_by: string; questions: WhQ[] }[]>(`wh_jobs?select=id,kind,title,created_by,questions&id=eq.${encodeURIComponent(id)}`);
+  if (!j) return { error: "Darbas nerastas" };
+  const q = (j.questions ?? []).find((x) => x.id === qid);
+  if (!q) return { error: "Klausimas nerastas" };
+  const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
+  const what = j.kind === "idea" ? "pasiūlymo" : "darbo";
+  let to: string, title: string, body: string;
+  if (ev === "ask") {
+    if (q.by_id !== uid) return { error: "Tik klausimo autorius" };
+    to = j.created_by; title = `❓ Klausimas dėl ${what}: ` + String(j.title).slice(0, 90); body = name(me) + ": " + String(q.t ?? "").slice(0, 200);
+  } else {
+    if (q.a_by_id !== uid) return { error: "Tik atsakęs" };
+    to = q.by_id; title = "💬 Atsakymas: " + String(j.title).slice(0, 100); body = name(me) + ": " + String(q.a ?? "").slice(0, 200);
+  }
+  if (!to || to === uid) return { sent: 0 };
+  const ids = await wantIds([to], "tasks");
+  if (!ids.length) return { sent: 0 };
+  return await sendTo(ids, { title, body, tag: "wh-" + j.id + "-" + qid + "-" + ev, url: `./?whjob=${j.id}`, kind: "task" });
+}
 async function onFeedback(uid: string, id: string, ev: string) {
   const [f] = await db<Feedback[]>(`feedback?select=id,created_by,kind,text,status,admin_note&id=eq.${encodeURIComponent(id)}`);
   if (!f) return { error: "Įrašas nerastas" };
@@ -1703,6 +1725,7 @@ Deno.serve(async (req) => {
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : body.event === "resend" ? "resend" : "decided"));
     if (body.kind === "expense") return json(await onExpense(uid, String(body.expense_id ?? ""), ["fix", "info", "ok", "rejected", "resubmit", "deduct", "purpose"].includes(body.event) ? body.event : "ok"));
     if (body.kind === "expense-pay") return json(await onExpensePay(uid, String(body.expense_id ?? ""), Array.isArray(body.to) ? body.to.map(String) : [], String(body.note ?? "").slice(0, 2000)));
+    if (body.kind === "whjob") return json(await onWhJob(uid, String(body.job_id ?? ""), body.event === "answer" ? "answer" : "ask", String(body.q_id ?? "")));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
     if (body.kind === "leave") return json(await onLeave(uid, String(body.leave_id ?? ""), ["new", "decided", "cancelled"].includes(body.event) ? body.event : "new"));
     if (body.kind === "event") return json(await onEvent(uid, String(body.event_id ?? ""), Array.isArray(body.users) ? body.users : []));

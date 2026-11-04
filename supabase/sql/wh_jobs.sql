@@ -31,6 +31,7 @@ create table if not exists public.wh_jobs (
   assignees        uuid[] not null default '{}',
   files            jsonb not null default '[]'::jsonb,
   comments         jsonb not null default '[]'::jsonb,
+  questions        jsonb not null default '[]'::jsonb,   -- [{ id, t, by, by_id, at, a, a_by, a_by_id, a_at }] – klausimai sukūrusiam ir atsakymai
   created_by       uuid not null default auth.uid() references auth.users(id) on delete cascade,
   created_by_name  text,
   created_at       timestamptz not null default now(),
@@ -42,6 +43,7 @@ create table if not exists public.wh_jobs (
   done_at          timestamptz,
   task_id          uuid
 );
+alter table public.wh_jobs add column if not exists questions jsonb not null default '[]'::jsonb;
 alter table public.wh_jobs drop constraint if exists wh_jobs_status_check;
 alter table public.wh_jobs add constraint wh_jobs_status_check check (status in ('open', 'doing', 'done', 'pending', 'rejected'));
 create index if not exists wh_jobs_kind_status on public.wh_jobs (kind, status);
