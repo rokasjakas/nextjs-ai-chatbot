@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-mPi9XfPPsIeb59F7QFy/LCTc4TrHNC+IxUxCGVmMj70=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-EDoDfAle80WCLpkbEi9ZSbHpp+O+Elh0XopNXu3fPNE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1970,7 +1970,11 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 .hg-item{display:flex;align-items:center;gap:14px;text-align:left;background:var(--panel-2,rgb(var(--hi-rgb) / .03));border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font:inherit;cursor:pointer;}
 .hg-item:hover{border-color:var(--accent);}
 .hg-list.arranging .hg-item{cursor:grab;} .hg-list.arranging .hg-item.dragging{opacity:.45;border-style:dashed;}
-.hg-grip{display:flex;color:var(--text-dim);} .hg-grip svg{width:20px;height:20px;}
+.hg-grip{display:flex;color:var(--text-dim);cursor:grab;touch-action:none;padding:4px 2px;margin:-4px -6px -4px -4px;border-radius:6px;opacity:.55;} .hg-grip svg{width:20px;height:20px;}
+.hg-grip:hover{opacity:1;background:rgb(127 127 127 / .14);}
+.hg-item.hg-lift{position:relative;z-index:50;box-shadow:0 10px 26px rgb(0 0 0 / .4);transition:none !important;pointer-events:none;cursor:grabbing;}
+.hg-item.hg-drop-a{box-shadow:inset 0 3px 0 var(--accent);} .hg-item.hg-drop-b{box-shadow:inset 0 -3px 0 var(--accent);}
+.hg-reset{margin-top:10px;border:0;background:none;color:var(--text-dim);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;}
 .hg-mv{display:flex;gap:4px;margin-left:auto;} .hg-mv button{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid var(--border);border-radius:var(--radius,8px);background:var(--panel);color:var(--text);cursor:pointer;} .hg-mv button:disabled{opacity:.3;cursor:default;} .hg-mv button:not(:disabled):hover{border-color:var(--accent);color:var(--accent);} .hg-mv svg{width:18px;height:18px;}
 .hg-arr-tip{font-size:12px;color:var(--text-dim);margin:-4px 0 10px;}
 .hg-ic{width:46px;height:46px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;flex:none;}
@@ -23305,49 +23309,51 @@ function hgGrow(root, from, back){
   [...root.children].forEach(c=>c.animate(back ? kids.slice().reverse() : kids, o));
   return an.finished.catch(()=>{});
 }
-function homeGroupOpen(id, arrange, fromTile){
+function homeGroupOpen(id, _old, fromTile){
   const g = HOME_GROUPS.find(x=>x.id===id); if(!g) return;
   let tiles = g.tabs.filter(t=>canView(t)).map(t=>HOME_TILES.find(x=>x.tab===t)).filter(Boolean);
   // tools that are not tabs of their own, right after the tab they belong to
   (HOME_GROUP_EXTRA[id]||[]).filter(x=>x.can()).forEach(x=>{ const i = tiles.findIndex(t=>t.tab===x.after); tiles.splice(i>=0 ? i+1 : tiles.length, 0, x); });
-  // each member's own order („Keisti tvarką“), kept with the profile
+  // each member's own order (dragged by the handle), kept with the profile
   const keyOf = t=>t.key ? 'x:'+t.key : t.tab;
   tiles = byOrder(tiles, prefGet('hgOrder_'+id), keyOf);
   openModal(`<div class="row between" style="align-items:center;margin-bottom:12px;gap:8px;"><h3 style="margin:0;display:flex;align-items:center;gap:10px;flex:1;"><span class="hg-ic" style="background:${g.color}22;color:${g.color};">${g.icon}</span>${esc(g.title)}</h3>
-      <button type="button" class="btn small ${arrange ? 'primary' : ''}" id="hgArr" title="Keisti puslapių tvarką">${slIcon(arrange ? 'check' : 'sorting')} ${arrange ? 'Baigti' : 'Keisti tvarką'}</button><button class="icon-btn" id="hgX" style="font-size:20px;">✕</button></div>
-    ${arrange ? '<div class="hg-arr-tip">Tempk už rankenėlės arba spausk rodykles. Tvarka išsaugoma tik tau.</div>' : ''}
-    <div class="hg-list ${arrange ? 'arranging' : ''}" id="hgList">${tiles.map((t,i)=>`
-      <div class="hg-item" role="button" tabindex="0" data-k="${esc(keyOf(t))}" ${t.key ? `data-extra="${t.key}"` : `data-go="${t.tab}"`} ${arrange ? 'draggable="true"' : ''}>
-        ${arrange ? `<span class="hg-grip">${slIcon('drag')}</span>` : ''}
+      <button class="icon-btn" id="hgX" style="font-size:20px;" aria-label="Uždaryti">✕</button></div>
+    <div class="hg-list" id="hgList">${tiles.map(t=>`
+      <div class="hg-item" role="button" tabindex="0" data-k="${esc(keyOf(t))}" ${t.key ? `data-extra="${t.key}"` : `data-go="${t.tab}"`}>
+        <span class="hg-grip" data-hgdrag title="Tempk – perkelti aukštyn / žemyn" aria-label="Perkelti">${slIcon('drag')}</span>
         <span class="hg-ic" style="background:${t.color}22;color:${t.color};">${t.key ? t.icon() : homeRailIcon(t.tab)}</span>
         <span class="hg-t"><b>${esc(t.title)}</b><small>${(t.key ? t.stat() : homeTileStat(t.tab)) || esc(t.desc)}</small></span>
-        ${arrange ? `<span class="hg-mv"><button type="button" data-mv="-1" title="Aukštyn" ${i===0?'disabled':''}>${slIcon('arrowup')}</button><button type="button" data-mv="1" title="Žemyn" ${i===tiles.length-1?'disabled':''}>${slIcon('arrowdown')}</button></span>` : '<span class="hg-arrow">›</span>'}
       </div>`).join('')}</div>
-    ${arrange && Array.isArray(prefGet('hgOrder_'+id)) ? '<button type="button" class="btn small" id="hgReset" style="margin-top:10px;">Atstatyti pradinę tvarką</button>' : ''}`);
+    ${Array.isArray(prefGet('hgOrder_'+id)) ? '<button type="button" class="hg-reset" id="hgReset">Atstatyti pradinę tvarką</button>' : ''}`);
   document.getElementById('modalRoot').classList.add('hg-modal');
   if(fromTile){ HG_FROM = id; const bd = document.getElementById('modalBackdrop'); bd.classList.add('hg-grow'); hgGrow(document.getElementById('modalRoot'), fromTile); }
   const hgShut = ()=>{ const from = HG_FROM===id && currentTab==='home' ? document.querySelector(`.home-tile[data-group="${id}"]`) : null, bd = document.getElementById('modalBackdrop'); HG_FROM = null;
     if(!from || !bd){ closeModal(); return; } bd.classList.add('hg-out'); hgGrow(document.getElementById('modalRoot'), from, true).then(()=>closeModal(true)); };
   { const bd = document.getElementById('modalBackdrop'); bd.addEventListener('click', e=>{ if(e.target===bd){ e.stopImmediatePropagation(); hgShut(); } }, true); }
   document.getElementById('hgX').onclick = hgShut;
-  document.getElementById('hgArr').onclick = ()=>homeGroupOpen(id, !arrange);
   const list = document.getElementById('hgList');
   const save = ()=>{ prefSet('hgOrder_'+id, [...list.querySelectorAll('.hg-item')].map(x=>x.dataset.k)); if(currentTab==='home') try{ renderHome(); }catch(e){} };
-  if(arrange){
-    const rs = document.getElementById('hgReset'); if(rs) rs.onclick = ()=>{ prefSet('hgOrder_'+id, null); homeGroupOpen(id, true); };
-    list.querySelectorAll('[data-mv]').forEach(b=>b.onclick = e=>{ e.stopPropagation();
-      const it = b.closest('.hg-item'), d = +b.dataset.mv;
-      if(d<0 && it.previousElementSibling) list.insertBefore(it, it.previousElementSibling);
-      else if(d>0 && it.nextElementSibling) list.insertBefore(it.nextElementSibling, it);
-      save(); homeGroupOpen(id, true); });
-    let drag = null;
-    list.querySelectorAll('.hg-item').forEach(it=>{
-      it.addEventListener('dragstart', e=>{ drag = it; it.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; try{ e.dataTransfer.setData('text/plain', it.dataset.k); }catch(err){} });
-      it.addEventListener('dragend', ()=>{ it.classList.remove('dragging'); if(drag){ drag = null; save(); homeGroupOpen(id, true); } });
-      it.addEventListener('dragover', e=>{ if(!drag || drag===it) return; e.preventDefault(); const r = it.getBoundingClientRect(); list.insertBefore(drag, e.clientY < r.top + r.height/2 ? it : it.nextElementSibling); });
-    });
-    return;
-  }
+  const rs = document.getElementById('hgReset'); if(rs) rs.onclick = ()=>{ prefSet('hgOrder_'+id, null); if(currentTab==='home') try{ renderHome(); }catch(e){} homeGroupOpen(id); };
+  // the order: drag a page by its handle (mouse or finger) – the lifted page moves with the pointer, kept for this member only
+  list.querySelectorAll('[data-hgdrag]').forEach(h=>{
+    h.onclick = e=>{ e.stopPropagation(); };
+    h.onpointerdown = e=>{
+      if(e.button) return; e.preventDefault(); e.stopPropagation();
+      const src = h.closest('.hg-item'), y0 = e.clientY; let y = y0, tgt = null, below = false, moved = false;
+      h.setPointerCapture(e.pointerId); src.classList.add('hg-lift');
+      const clear = ()=>list.querySelectorAll('.hg-drop-a,.hg-drop-b').forEach(n=>n.classList.remove('hg-drop-a', 'hg-drop-b'));
+      h.onpointermove = ev=>{ y = ev.clientY; if(Math.abs(y - y0) > 3) moved = true; src.style.transform = `translateY(${y - y0}px)`; clear(); tgt = null;
+        const el = document.elementsFromPoint(ev.clientX, y).map(n=>n.closest && n.closest('.hg-item')).find(n=>n && n!==src && list.contains(n)); if(!el) return;
+        const r = el.getBoundingClientRect(); below = y > r.top + r.height/2; tgt = el; el.classList.add(below ? 'hg-drop-b' : 'hg-drop-a'); };
+      h.onpointerup = h.onpointercancel = ev=>{ h.onpointermove = h.onpointerup = h.onpointercancel = null;
+        src.classList.remove('hg-lift'); src.style.transform = ''; clear();
+        if(ev.type!=='pointerup' || !tgt || !moved) return;
+        list.insertBefore(src, below ? tgt.nextElementSibling : tgt); save();
+        if(!document.getElementById('hgReset')){ list.insertAdjacentHTML('afterend', '<button type="button" class="hg-reset" id="hgReset">Atstatyti pradinę tvarką</button>');
+          document.getElementById('hgReset').onclick = ()=>{ prefSet('hgOrder_'+id, null); if(currentTab==='home') try{ renderHome(); }catch(e){} homeGroupOpen(id); }; } };
+    };
+  });
   list.querySelectorAll('.hg-item').forEach(b=>b.onkeydown = e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); b.click(); } });
   list.querySelectorAll('.hg-item').forEach(b=>b.onclick = ()=>{
     closeModal();
@@ -24414,7 +24420,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v679';
+const APP_VER = 'v680';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -44495,11 +44501,11 @@ const GUIDE = [
   rel:['start','search','profile','notes'], kw:'meniu juosta skydelis langai greitieji darbo erdve dydis tema tamsi sviesi telefonas busena netrukdyti' },
 
 { id:'start', tab:'home', g:'Pradžia', t:'Pradžia', d:'Plytelės į visus puslapius, Ofiso ir Sandėlio grupės, laikas ir orai, prisegti užrašai, darbo langai.',
-  s:[['Plytelės', 'Kiekviena plytelė atidaro puslapį ar grupę. Ofisas ir Sandėlis – langas su tos grupės puslapiais; jame „Keisti tvarką“ – susidėlioji sau. „Tvarkyti“ – tempk plyteles į norimą vietą (tvarka tavo).'],
+  s:[['Plytelės', 'Kiekviena plytelė atidaro puslapį ar grupę. Ofisas ir Sandėlis – langas su tos grupės puslapiais; jame puslapius susidėlioji sau tempdamas už ⠿ rankenėlės. „Tvarkyti“ – tempk plyteles į norimą vietą (tvarka tavo).'],
      ['Juosta viršuje', 'Laikas, data, orai Vilniuje (paspaudus – kelių dienų prognozė).'],
      ['Prisegti užrašai', 'Notes užrašas su „Prisegti pagrindiniame lange“ tampa sticky note Pradžioje – tempk, redaguok, atsek.'],
      ['Darbo langai', 'Kompiuteryje „Langai“ – iki 4 puslapių po plytelėmis (žr. „Valdymas ir langai“).']],
-  q:[['Kaip pakeisti plytelių tvarką?', 'Pradžioje spausk „Tvarkyti“ ir tempk plyteles; „Baigti“ – išsaugoti. Ofiso / Sandėlio lange – „Keisti tvarką“.']],
+  q:[['Kaip pakeisti plytelių tvarką?', 'Pradžioje spausk „Tvarkyti“ ir tempk plyteles; „Baigti“ – išsaugoti. Ofiso / Sandėlio lange – tempk puslapį už ⠿ rankenėlės.']],
   rel:['ui','notes'], kw:'pagrindinis plyteles orai ofisas sandelis grupes' },
 
 { id:'search', g:'Pradžia', t:'Paieška, žmogaus ir daikto kortelės', d:'Viena paieška visai programai: puslapiai, funkcijos, nariai, žmonės, įranga, projektai. Paspaudus žmogų ar daiktą – visa informacija apie jį.',
@@ -52873,6 +52879,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-04 17:30', v:'v680', k:'chg', t:'Ofisas / Sandėlis: tvarka tempiant', f:'Lange „Ofisas“ ir „Sandėlis“ nebėra „Keisti tvarką“ – puslapiai perkeliami tempiant už ⠿ rankenėlės (pele ar pirštu), kaip pasiūlymų kūrime.' },
   { d:'2026-11-04 17:10', v:'v679', k:'new', t:'Sandėlio darbai: peržiūra, būsena ir klausimai', f:'Paspaudus darbą ar pasiūlymą pirma atsidaro peržiūra: būsenos keitimas, „❓ Užduoti klausimą“ ir „✎ Redaguoti“. Klausimą gauna darbą ar pasiūlymą sukūręs žmogus (pranešimas), jis atsako ten pat – atsakymas pareina klaususiam ir matomas atidarius darbą.' },
   { d:'2026-11-04 16:30', v:'v678', k:'new', t:'Sandėlis → Sandėlio darbai', f:'Nauja skiltis (Tech ir aukštesni lygiai): darbai su prioritetu (Aukštas / Vidutinis / Žemas), terminu, komentaru, nuotraukomis ir failais, matoma kas ir kada sukūrė. Priskirti žmonės darbą mato savo kalendoriuje ir užduotyse. „Darbų pasiūlymai“ – pasiūlymus patvirtina Admin, tada nustato prioritetą, terminą, žmones ir jie tampa darbais. Reikia paleisti supabase/sql/wh_jobs.sql.' },
   { d:'2026-11-04 14:30', v:'v677', k:'chg', t:'Pasiūlymai: siūlymai visada po pavadinimu', f:'Rašant pavadinimą iššokantis sąrašas visada lieka po laukeliu – nebeuždengia teksto, kai laukelis pailgėja ar slenki.' },
