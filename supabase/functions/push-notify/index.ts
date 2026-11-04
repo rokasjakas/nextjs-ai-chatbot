@@ -163,7 +163,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 23;
+const PUSH_FN_VERSION = 24;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -1355,7 +1355,7 @@ async function onGameInvite(uid: string, to: string[], game: string, room: strin
   return await sendTo(ids, { title: "🎮 " + name(me) + " kviečia pažaisti", body: game + " – atidaryk programą ir priimk kvietimą", tag: "game-" + room, url: `./?game=${encodeURIComponent(room)}`, kind: "game" }, 600);
 }
 // Sandėlio darbai (sql/wh_jobs.sql): a question to the one who added the job / proposal, and the answer back
-type WhQ = { id: string; t: string; by_id: string; a?: string; a_by_id?: string };
+type WhQ = { id: string; t: string; by_id: string; to_id?: string; a?: string; a_by_id?: string };
 async function onWhJob(uid: string, id: string, ev: string, qid: string) {
   const [j] = await db<{ id: string; kind: string; title: string; created_by: string; assignees: string[]; questions: WhQ[] }[]>(`wh_jobs?select=id,kind,title,created_by,assignees,questions&id=eq.${encodeURIComponent(id)}`);
   if (!j) return { error: "Darbas nerastas" };
@@ -1367,7 +1367,8 @@ async function onWhJob(uid: string, id: string, ev: string, qid: string) {
   if (ev === "ask") {
     if (q.by_id !== uid) return { error: "Tik klausimo autorius" };
     // the creator's own question goes to the people assigned, anyone else's – to the creator
-    to = uid === j.created_by ? (j.assignees ?? []) : [j.created_by];
+    // the member it is for; older questions: the creator's own – to the people assigned, anyone else's – to the creator
+    to = q.to_id ? [q.to_id] : uid === j.created_by ? (j.assignees ?? []) : [j.created_by];
     title = `❓ Klausimas dėl ${what}: ` + String(j.title).slice(0, 90); body = name(me) + ": " + String(q.t ?? "").slice(0, 200);
   } else {
     if (q.a_by_id !== uid) return { error: "Tik atsakęs" };

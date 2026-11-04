@@ -6,6 +6,7 @@
 -- priskirti žmonės mato savo darbus ir gali pažymėti „atlikta“.
 -- Priskirtas darbas tampa užduotimi (public.tasks) – todėl jis matomas priskirtųjų kalendoriuje ir užduotyse,
 -- su priminimu termino dieną. Failai – saugykloje equipment-photos, aplanke whjobs/<darbo id>/.
+-- Klausimai (questions): kam skirtas – pasirenkamas bet kuris narys (to_id); jis mato tą darbą ir atsako.
 -- Saugu paleisti pakartotinai.
 -- ============================================================
 
@@ -16,6 +17,11 @@ $$;
 create or replace function public.wh_admin() returns boolean
   language sql stable security definer set search_path = public as $$
   select coalesce(public.my_role() = 'admin', false) or coalesce(public.is_super(), false)
+$$;
+-- a member someone asked a question in that job (they may see it and answer)
+create or replace function public.wh_asked(qs jsonb) returns boolean
+  language sql stable as $$
+  select exists (select 1 from jsonb_array_elements(case when jsonb_typeof(qs) = 'array' then qs else '[]'::jsonb end) x where x->>'to_id' = auth.uid()::text)
 $$;
 revoke all on function public.wh_can(), public.wh_admin() from public, anon;
 grant execute on function public.wh_can(), public.wh_admin() to authenticated;
@@ -52,14 +58,14 @@ create index if not exists wh_jobs_assignees on public.wh_jobs using gin (assign
 alter table public.wh_jobs enable row level security;
 drop policy if exists "wh jobs view" on public.wh_jobs;
 create policy "wh jobs view" on public.wh_jobs for select to authenticated
-  using (public.wh_can() or auth.uid() = any(assignees));
+  using (public.wh_can() or auth.uid() = any(assignees) or public.wh_asked(questions));
 drop policy if exists "wh jobs add" on public.wh_jobs;
 create policy "wh jobs add" on public.wh_jobs for insert to authenticated
   with check (public.wh_can() and created_by = auth.uid());
 drop policy if exists "wh jobs change" on public.wh_jobs;
 create policy "wh jobs change" on public.wh_jobs for update to authenticated
-  using (public.wh_can() or auth.uid() = any(assignees))
-  with check (public.wh_can() or auth.uid() = any(assignees));
+  using (public.wh_can() or auth.uid() = any(assignees) or public.wh_asked(questions))
+  with check (public.wh_can() or auth.uid() = any(assignees) or public.wh_asked(questions));
 drop policy if exists "wh jobs delete" on public.wh_jobs;
 create policy "wh jobs delete" on public.wh_jobs for delete to authenticated
   using (created_by = auth.uid() or public.wh_admin());
@@ -81,6 +87,11 @@ begin
          or new.assignees is distinct from old.assignees or new.files is distinct from old.files
          or new.created_by is distinct from old.created_by then
         raise exception 'Gali tik pažymėti, kad atlikta, ir komentuoti';
+      end if;
+      -- only asked a question (not assigned): may only answer
+      if not (auth.uid() = any(old.assignees)) and (new.status is distinct from old.status or new.comments is distinct from old.comments
+         or new.done_at is distinct from old.done_at or new.done_by_name is distinct from old.done_by_name) then
+        raise exception 'Gali tik atsakyti į klausimą';
       end if;
     end if;
     if old.kind = 'idea' and (new.kind is distinct from old.kind or new.status is distinct from old.status) and not public.wh_admin() then
@@ -170,8 +181,8 @@ create or replace function public.equipment_photo_access(obj_name text, edit boo
     when 'handovers' then case when edit then public.can_edit('handovers') else public.can_view('handovers') end
     when 'gear'      then public.can_view('inventory')
     when 'works'     then case when edit then public.can_edit('inventory') else public.can_view('inventory') end
-    when 'whjobs'    then public.wh_can() or exists (select 1 from public.wh_jobs j
-                            where j.id::text = (storage.foldername(obj_name))[2] and auth.uid() = any(j.assignees))
+    when 'whjobs'    then public.wh_can() or (not edit and exists (select 1 from public.wh_jobs j
+                            where j.id::text = (storage.foldername(obj_name))[2] and (auth.uid() = any(j.assignees) or public.wh_asked(j.questions))))
     else false end
 $$;
 grant execute on function public.equipment_photo_access(text, boolean) to authenticated;
