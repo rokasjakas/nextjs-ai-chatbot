@@ -21,7 +21,7 @@ $$;
 -- a member someone asked a question in that job (they may see it and answer)
 create or replace function public.wh_asked(qs jsonb) returns boolean
   language sql stable as $$
-  select exists (select 1 from jsonb_array_elements(case when jsonb_typeof(qs) = 'array' then qs else '[]'::jsonb end) x where x->>'to_id' = auth.uid()::text)
+  select exists (select 1 from jsonb_array_elements(case when jsonb_typeof(qs) = 'array' then qs else '[]'::jsonb end) x where x->>'to_id' = auth.uid()::text or coalesce(x->'to_ids', '[]'::jsonb) ? auth.uid()::text)
 $$;
 revoke all on function public.wh_can(), public.wh_admin() from public, anon;
 grant execute on function public.wh_can(), public.wh_admin() to authenticated;

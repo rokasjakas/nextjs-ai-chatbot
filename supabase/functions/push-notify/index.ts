@@ -163,7 +163,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 24;
+const PUSH_FN_VERSION = 25;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -1355,7 +1355,7 @@ async function onGameInvite(uid: string, to: string[], game: string, room: strin
   return await sendTo(ids, { title: "🎮 " + name(me) + " kviečia pažaisti", body: game + " – atidaryk programą ir priimk kvietimą", tag: "game-" + room, url: `./?game=${encodeURIComponent(room)}`, kind: "game" }, 600);
 }
 // Sandėlio darbai (sql/wh_jobs.sql): a question to the one who added the job / proposal, and the answer back
-type WhQ = { id: string; t: string; by_id: string; to_id?: string; a?: string; a_by_id?: string };
+type WhQ = { id: string; t: string; by_id: string; to_id?: string; to_ids?: string[]; a?: string; a_by_id?: string; answers?: { a: string; by_id: string }[] };
 async function onWhJob(uid: string, id: string, ev: string, qid: string) {
   const [j] = await db<{ id: string; kind: string; title: string; created_by: string; assignees: string[]; questions: WhQ[] }[]>(`wh_jobs?select=id,kind,title,created_by,assignees,questions&id=eq.${encodeURIComponent(id)}`);
   if (!j) return { error: "Darbas nerastas" };
@@ -1368,17 +1368,18 @@ async function onWhJob(uid: string, id: string, ev: string, qid: string) {
     if (q.by_id !== uid) return { error: "Tik klausimo autorius" };
     // the creator's own question goes to the people assigned, anyone else's – to the creator
     // the member it is for; older questions: the creator's own – to the people assigned, anyone else's – to the creator
-    to = q.to_id ? [q.to_id] : uid === j.created_by ? (j.assignees ?? []) : [j.created_by];
+    to = q.to_ids?.length ? q.to_ids : q.to_id ? [q.to_id] : uid === j.created_by ? (j.assignees ?? []) : [j.created_by];
     title = `❓ Klausimas dėl ${what}: ` + String(j.title).slice(0, 90); body = name(me) + ": " + String(q.t ?? "").slice(0, 200);
   } else {
-    if (q.a_by_id !== uid) return { error: "Tik atsakęs" };
-    to = [q.by_id]; title = "💬 Atsakymas: " + String(j.title).slice(0, 100); body = name(me) + ": " + String(q.a ?? "").slice(0, 200);
+    const mine = (q.answers ?? []).filter((x) => x.by_id === uid).pop() ?? (q.a_by_id === uid ? { a: q.a ?? "", by_id: uid } : null);
+    if (!mine) return { error: "Tik atsakęs" };
+    to = [q.by_id]; title = "💬 Atsakymas: " + String(j.title).slice(0, 100); body = name(me) + ": " + String(mine.a ?? "").slice(0, 200);
   }
   to = to.filter((u) => u && u !== uid);
   if (!to.length) return { sent: 0 };
   const ids = await wantIds(to, "tasks");
   if (!ids.length) return { sent: 0 };
-  return await sendTo(ids, { title, body, tag: "wh-" + j.id + "-" + qid + "-" + ev, url: `./?whjob=${j.id}`, kind: "task" });
+  return await sendTo(ids, { title, body, tag: "wh-" + j.id + "-" + qid + "-" + ev + (ev === "answer" ? "-" + uid.slice(0, 8) : ""), url: `./?whjob=${j.id}`, kind: "task" });
 }
 async function onFeedback(uid: string, id: string, ev: string) {
   const [f] = await db<Feedback[]>(`feedback?select=id,created_by,kind,text,status,admin_note&id=eq.${encodeURIComponent(id)}`);

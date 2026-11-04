@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wKLTqZXwijQV3wvI0PE4s5g2BZiSLILSsUvHBU22Xb0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-e/hdpIq/pDGHRCmqtd+dvpAi8b3FGTCutKsapkROyPE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -17595,56 +17595,65 @@ function whView(j0){
       if(!u){ if(w) w.close(); toast('Failo atidaryti nepavyko.'); return; } if(w) w.location = u; else location.href = u; });
     teamFillImages(fb).catch(()=>{}); }
   const drawQ = ()=>{ const cur = WH.list.find(x=>x.id===j.id) || j, qs = cur.questions||[], box = $('whvQ'); if(!box) return;
-    box.innerHTML = qs.length ? qs.map(q=>`<div class="wh-q" data-q="${esc(q.id)}"><div class="wh-qq"><b>❓ ${esc(q.t)}</b><small class="muted">${esc(q.by||'')} → ${esc(q.to_id ? (q.to || whWho(q.to_id)) : q.by_id===cur.created_by ? ((cur.assignees||[]).filter(u=>u!==q.by_id).map(whWho).join(', ') || 'priskirtiems') : (cur.created_by_name||'sukūrusiam'))} · ${esc(whWhen(q.at))}</small></div>
-        ${q.a ? `<div class="wh-qa">💬 ${esc(q.a)}<small class="muted">${esc(q.a_by||'')} · ${esc(whWhen(q.a_at))}</small></div>`
-          : whMayAnswer(cur, q) ? `<div class="wh-qa-in"><input type="text" placeholder="Tavo atsakymas…" data-ain="${esc(q.id)}"><button type="button" class="btn small primary" data-asend="${esc(q.id)}">Atsakyti</button></div>`
-          : '<div class="muted" style="font-size:12px;margin-top:3px;">Laukia atsakymo</div>'}</div>`).join('')
+    box.innerHTML = qs.length ? qs.map(q=>{ const ans = whQAns(q), toIds = whQTo(cur, q), left = toIds.filter(u=>!ans.some(x=>x.by_id===u));
+      return `<div class="wh-q" data-q="${esc(q.id)}"><div class="wh-qq"><b>❓ ${esc(q.t)}</b><small class="muted">${esc(q.by||'')} → ${esc(toIds.map(u=>whWho(u)).join(', ') || 'sukūrusiam')} · ${esc(whWhen(q.at))}</small></div>
+        ${ans.map(x=>`<div class="wh-qa">💬 ${esc(x.a)}<small class="muted">${esc(x.by||'')} · ${esc(whWhen(x.at))}</small></div>`).join('')}
+        ${whMayAnswer(cur, q) ? `<div class="wh-qa-in"><input type="text" placeholder="Tavo atsakymas…" data-ain="${esc(q.id)}"><button type="button" class="btn small primary" data-asend="${esc(q.id)}">Atsakyti</button></div>`
+          : left.length ? `<div class="muted" style="font-size:12px;margin-top:3px;">Laukia atsakymo: ${esc(left.map(whWho).join(', '))}</div>` : ''}</div>`; }).join('')
       : '<div class="muted" style="font-size:13px;margin-top:4px;">Klausimų nėra.</div>';
     box.querySelectorAll('[data-asend]').forEach(b=>{ const inp = box.querySelector(`[data-ain="${CSS.escape(b.dataset.asend)}"]`);
       const go = ()=>whAnswer(j.id, b.dataset.asend, inp.value).then(ok=>{ if(ok) drawQ(); });
       b.onclick = go; inp.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); go(); } }; }); };
   drawQ();
-  // whom the question is for: anyone registered (typed name → list); the one who added it is offered first
-  let to = j.created_by!==me ? j.created_by : ((j.assignees||[]).find(u=>u!==me) || '');
-  const drawTo = ()=>{ const b = $('whvToSel'); if(!b) return; b.innerHTML = to ? `<span class="chip small-chip active">${esc(whWho(to))} <button type="button" class="wh-to-x" title="Pakeisti">×</button></span>` : '';
-    $('whvToIn').classList.toggle('hidden', !!to); const x = b.querySelector('.wh-to-x'); if(x) x.onclick = ()=>{ to = ''; drawTo(); $('whvToIn').focus(); }; };
+  // whom the question is for: one or more of everyone registered (typed name → list); the one who added it is offered first
+  let to = j.created_by!==me ? [j.created_by] : (j.assignees||[]).filter(u=>u!==me);
   const toIn = $('whvToIn'), dd = $('whvToDd');
-  const showDd = ()=>{ const q = normalizeText(toIn.value).trim(), all = (TEAM.members||[]).filter(m=>m.id!==me && m.role && !['pending','blocked'].includes(m.role)).sort((a, b)=>teamName(a).natCmp(teamName(b)));
+  const drawTo = ()=>{ const b = $('whvToSel'); if(!b) return;
+    b.innerHTML = to.map(u=>`<span class="chip small-chip active">${esc(whWho(u))} <button type="button" class="wh-to-x" data-unto="${esc(u)}" title="Pašalinti">×</button></span>`).join('');
+    b.querySelectorAll('[data-unto]').forEach(x=>x.onclick = ()=>{ to = to.filter(u=>u!==x.dataset.unto); drawTo(); toIn.focus(); });
+    toIn.placeholder = to.length ? '+ pridėti dar…' : 'Rašyk vardą…'; };
+  const showDd = ()=>{ const q = normalizeText(toIn.value).trim(), all = (TEAM.members||[]).filter(m=>m.id!==me && !to.includes(m.id) && m.role && !['pending','blocked'].includes(m.role)).sort((a, b)=>teamName(a).natCmp(teamName(b)));
     const list = all.filter(m=>!q || normalizeText(teamName(m)+' '+(m.nickname||'')).split(' ').some(w=>w.startsWith(q)) || normalizeText(teamName(m)).includes(q)).slice(0, 40);
     dd.innerHTML = list.length ? list.map((m, k)=>`<button type="button" class="${k ? '' : 'on'}" data-to="${esc(m.id)}">${esc(teamName(m))}<small>${esc(roleLabel(m.role))}</small></button>`).join('') : '<div class="muted" style="padding:8px 10px;">Nerasta</div>';
     dd.classList.remove('hidden'); };
-  const pickTo = id=>{ to = id; toIn.value = ''; dd.classList.add('hidden'); drawTo(); $('whvAskT').focus(); };
+  const pickTo = id=>{ if(!to.includes(id)) to.push(id); toIn.value = ''; drawTo(); showDd(); toIn.focus(); };
   if(toIn){ toIn.oninput = showDd; toIn.onfocus = showDd; toIn.onblur = ()=>setTimeout(()=>dd.classList.add('hidden'), 150);
     toIn.onkeydown = e=>{ const bs = [...dd.querySelectorAll('[data-to]')], i = bs.findIndex(x=>x.classList.contains('on'));
       if(e.key==='ArrowDown' || e.key==='ArrowUp'){ e.preventDefault(); if(!bs.length) return; const n = (i + (e.key==='ArrowDown' ? 1 : -1) + bs.length) % bs.length; bs.forEach((x, k)=>x.classList.toggle('on', k===n)); bs[n].scrollIntoView({ block:'nearest' }); }
-      else if(e.key==='Enter'){ e.preventDefault(); const o = bs[i>=0 ? i : 0]; if(o) pickTo(o.dataset.to); } else if(e.key==='Escape'){ e.stopPropagation(); dd.classList.add('hidden'); } };
+      else if(e.key==='Enter'){ e.preventDefault(); const o = bs[i>=0 ? i : 0]; if(o && toIn.value.trim()) pickTo(o.dataset.to); else { dd.classList.add('hidden'); $('whvAskT').focus(); } }
+      else if(e.key==='Backspace' && !toIn.value && to.length){ to.pop(); drawTo(); }
+      else if(e.key==='Escape'){ e.stopPropagation(); dd.classList.add('hidden'); } };
     dd.addEventListener('mousedown', e=>{ const o = e.target.closest('[data-to]'); if(o){ e.preventDefault(); pickTo(o.dataset.to); } }); }
-  const ask = $('whvAsk'); if(ask){ ask.onclick = ()=>{ $('whvAskBox').classList.remove('hidden'); ask.classList.add('hidden'); drawTo(); if(to) $('whvAskT').focus(); else toIn.focus(); };
+  const ask = $('whvAsk'); if(ask){ ask.onclick = ()=>{ $('whvAskBox').classList.remove('hidden'); ask.classList.add('hidden'); drawTo(); if(to.length) $('whvAskT').focus(); else toIn.focus(); };
     $('whvAskC').onclick = ()=>{ $('whvAskBox').classList.add('hidden'); ask.classList.remove('hidden'); };
-    $('whvAskS').onclick = async ()=>{ if(!to){ toast('Pasirink, kam skirtas klausimas.'); toIn.focus(); return; } const b = $('whvAskS'); b.disabled = true; const ok = await whAsk(j.id, $('whvAskT').value, to); b.disabled = false;
+    $('whvAskS').onclick = async ()=>{ if(!to.length){ toast('Pasirink, kam skirtas klausimas.'); toIn.focus(); return; } const b = $('whvAskS'); b.disabled = true; const ok = await whAsk(j.id, $('whvAskT').value, to.slice()); b.disabled = false;
       if(ok){ $('whvAskT').value = ''; $('whvAskBox').classList.add('hidden'); ask.classList.remove('hidden'); drawQ(); } }; }
   const sv = $('whvS'); if(sv) sv.querySelectorAll('[data-s]').forEach(b=>b.onclick = async ()=>{ const r = await whSetStatus(WH.list.find(x=>x.id===j.id)||j, b.dataset.s); if(r) whView(r); });
   if($('whvEd')) $('whvEd').onclick = ()=>whForm(WH.list.find(x=>x.id===j.id)||j, j.kind);
   if($('whvOk')) $('whvOk').onclick = ()=>whForm(WH.list.find(x=>x.id===j.id)||j, j.kind);
   $('whvX').onclick = ()=>closeModal();
 }
+// a question: whom it is for (several; older ones – one, or the creator / the people assigned) and its answers (several; older ones – one)
+function whQTo(j, q){ if(Array.isArray(q.to_ids) && q.to_ids.length) return q.to_ids; if(q.to_id) return [q.to_id];
+  return q.by_id===j.created_by ? (j.assignees||[]).filter(u=>u!==q.by_id) : [j.created_by]; }
+function whQAns(q){ return Array.isArray(q.answers) ? q.answers : q.a ? [{ a:q.a, by:q.a_by, by_id:q.a_by_id, at:q.a_at }] : []; }
+function whMayAnswer(j, q){ const me = teamMe(); return q.by_id!==me && whQTo(j, q).includes(me) && !whQAns(q).some(x=>x.by_id===me); }
 // the newest copy of the row, so two people writing at once do not wipe each other's questions
-function whMayAnswer(j, q){ const me = teamMe(); if(q.to_id) return q.to_id===me; if(q.by_id===me) return false; return q.by_id===j.created_by ? (j.assignees||[]).includes(me) : j.created_by===me; }
 async function whFresh(id){ const r = await getSb().from('wh_jobs').select('*').eq('id', id).single(); if(r.error){ toast('Nepavyko: '+r.error.message, 5000); return null; }
   const i = WH.list.findIndex(x=>x.id===id); if(i>=0) WH.list[i] = r.data; else WH.list.unshift(r.data); return r.data; }
-async function whAsk(id, text, toId){
+async function whAsk(id, text, toIds){
   const t = String(text||'').trim(); if(!t){ toast('Įrašyk klausimą.'); return false; }
   const cur = await whFresh(id); if(!cur) return false;
-  const q = { id:Date.now().toString(36)+Math.random().toString(36).slice(2, 6), t, by:offerMeName(), by_id:teamMe(), at:new Date().toISOString(), to_id:toId, to:whWho(toId) };
+  const q = { id:Date.now().toString(36)+Math.random().toString(36).slice(2, 6), t, by:offerMeName(), by_id:teamMe(), at:new Date().toISOString(), to_ids:toIds, tos:toIds.map(whWho), answers:[] };
   const r = await whSave(id, { questions:(cur.questions||[]).concat([q]) }); if(!r) return false;
   try{ notifyCall({ kind:'whjob', job_id:id, q_id:q.id, event:'ask' }); }catch(e){}
-  toast('✓ Klausimas išsiųstas – '+whWho(toId)+' gaus pranešimą'); if(currentTab==='whjobs') whDraw();
+  toast('✓ Klausimas išsiųstas – '+toIds.map(whWho).join(', ')+' gaus pranešimą'); if(currentTab==='whjobs') whDraw();
   return true;
 }
 async function whAnswer(id, qid, text){
   const t = String(text||'').trim(); if(!t){ toast('Įrašyk atsakymą.'); return false; }
   const cur = await whFresh(id); if(!cur) return false;
-  const qs = (cur.questions||[]).map(q=>q.id===qid ? Object.assign({}, q, { a:t, a_by:offerMeName(), a_by_id:teamMe(), a_at:new Date().toISOString() }) : q);
+  const qs = (cur.questions||[]).map(q=>q.id===qid ? Object.assign({}, q, { answers:whQAns(q).concat([{ a:t, by:offerMeName(), by_id:teamMe(), at:new Date().toISOString() }]) }) : q);
   const r = await whSave(id, { questions:qs }); if(!r) return false;
   try{ notifyCall({ kind:'whjob', job_id:id, q_id:qid, event:'answer' }); }catch(e){}
   toast('✓ Atsakymas išsiųstas'); if(currentTab==='whjobs') whDraw();
@@ -24460,7 +24469,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v682';
+const APP_VER = 'v683';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -52921,6 +52930,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-04 18:50', v:'v683', k:'chg', t:'Sandėlio darbai: klausimas keliems žmonėms', f:'Klausimą galima užduoti keliems žmonėms iš karto – kiekvienas gauna pranešimą ir atsako atskirai; visi atsakymai pareina klaususiam ir matomi prie klausimo.' },
   { d:'2026-11-04 18:20', v:'v682', k:'new', t:'Sandėlio darbai: klausimas pasirinktam žmogui', f:'„❓ Užduoti klausimą“ – įrašai klausimą ir pasirenki, kam jis skirtas (rašai vardą, iš sąrašo – visi užsiregistravę nariai). Jis gauna pranešimą, mato tą darbą ir atsako; atsakymas pareina klaususiam.' },
   { d:'2026-11-04 17:50', v:'v681', k:'chg', t:'Sandėlio darbai: klausimą gali užduoti ir sukūręs', f:'„❓ Užduoti klausimą“ matomas visiems: kitų klausimai keliauja sukūrusiam, o sukūrusiojo klausimas – priskirtiems žmonėms; jie atsako ten pat, atsakymas pareina klaususiam.' },
   { d:'2026-11-04 17:30', v:'v680', k:'chg', t:'Ofisas / Sandėlis: tvarka tempiant', f:'Lange „Ofisas“ ir „Sandėlis“ nebėra „Keisti tvarką“ – puslapiai perkeliami tempiant už ⠿ rankenėlės (pele ar pirštu), kaip pasiūlymų kūrime.' },
