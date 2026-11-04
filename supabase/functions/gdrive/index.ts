@@ -12,8 +12,12 @@
 //   POST {action:"share", event_id, emails}  the letter's recipients may view the folder → {url, shared, failed}
 // From Slack (x-slack-signature, checked with SLACK_SIGNING_SECRET): Event Subscriptions (file_shared) and
 // Interactivity (the buttons) – both Request URLs are this function's address.
-// Secrets: GOOGLE_SA_JSON (the service account's JSON key), GDRIVE_ROOT_ID (the shared drive's id, or a folder in it,
-// where the event folders go), SLACK_BOT_TOKEN (scopes also files:read), SLACK_SIGNING_SECRET.
+// Google – one of two ways:
+//   a) a Gmail account signed in once (Admin → Google Drive → „Prisijungti su Google“): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+//      (an OAuth „Web application“ client; redirect URI = this function's address + ?oauth=1). Scope drive.file – the app
+//      sees only what it made itself; the folders go into „Renginiai (Event Solutions)“ it makes in that Drive.
+//   b) a Workspace service account: GOOGLE_SA_JSON (its JSON key) and GDRIVE_ROOT_ID (a shared drive's id).
+// Slack: SLACK_BOT_TOKEN (scopes also files:read), SLACK_SIGNING_SECRET.
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are given by Supabase.
 
 const corsHeaders = {
@@ -50,10 +54,29 @@ const b64u = (b: Uint8Array | string) => {
   const s = typeof b === "string" ? btoa(unescape(encodeURIComponent(b))) : btoa(String.fromCharCode(...b));
   return s.replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
 };
+type Auth = { refresh_token: string | null; email: string | null; root_id: string | null };
+let AUTH: Auth | null = null;
+async function auth(): Promise<Auth | null> {
+  if (AUTH) return AUTH;
+  const r = await db<Auth[]>("gdrive_auth?select=refresh_token,email,root_id&id=eq.1").catch(() => []);
+  return AUTH = (r[0] && r[0].refresh_token) ? r[0] : null;
+}
+// a Gmail signed in (Admin → „Prisijungti su Google“) wins; otherwise the service account, if there is one
+const oauthMode = async () => !!(await auth()) || !E("GOOGLE_SA_JSON");
+const redirectUri = () => `${E("SUPABASE_URL")}/functions/v1/gdrive?oauth=1`;
 async function gToken(): Promise<string> {
   if (TOK && TOK.exp > Date.now() + 60_000) return TOK.t;
+  if (await oauthMode()) {
+    const a = await auth();
+    if (!a) throw new UserError("Google Drive neprijungtas: Admin → Google Drive → „Prisijungti su Google“.");
+    const r = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ client_id: E("GOOGLE_CLIENT_ID"), client_secret: E("GOOGLE_CLIENT_SECRET"), refresh_token: a.refresh_token!, grant_type: "refresh_token" }) });
+    const d = await r.json() as { access_token?: string; expires_in?: number; error?: string; error_description?: string };
+    if (!d.access_token) throw new UserError("Google prisijungimas nebegalioja (" + (d.error_description || d.error || r.status) + ") – Admin → Google Drive → „Prisijungti su Google“ iš naujo.");
+    TOK = { t: d.access_token, exp: Date.now() + (d.expires_in ?? 3600) * 1000 };
+    return TOK.t;
+  }
   const raw = E("GOOGLE_SA_JSON");
-  if (!raw) throw new UserError("Google Drive neprijungtas: Supabase → Edge Functions → Secrets įrašyk GOOGLE_SA_JSON (paslaugos paskyros raktą).");
   let sa: { client_email?: string; private_key?: string };
   try { sa = JSON.parse(raw); } catch { throw new UserError("GOOGLE_SA_JSON – ne JSON (įklijuok visą rakto failo turinį)."); }
   if (!sa.client_email || !sa.private_key) throw new UserError("GOOGLE_SA_JSON be client_email / private_key.");
@@ -81,7 +104,49 @@ async function g<T = Record<string, unknown>>(path: string, init: RequestInit = 
   }
   return (t ? JSON.parse(t) : {}) as T;
 }
-const root = () => { const r = E("GDRIVE_ROOT_ID"); if (!r) throw new UserError("Nėra GDRIVE_ROOT_ID (bendro Drive ar aplanko id) – Supabase → Edge Functions → Secrets."); return r; };
+// where the event folders go: the shared drive (service account), or the app's own folder in the Gmail Drive (made the first time)
+let ROOT = "";
+async function root(): Promise<string> {
+  if (ROOT) return ROOT;
+  if (!(await oauthMode())) { const r = E("GDRIVE_ROOT_ID"); if (!r) throw new UserError("Nėra GDRIVE_ROOT_ID (bendro Drive id) – Supabase → Edge Functions → Secrets."); return ROOT = r; }
+  const a = await auth(); if (!a) throw new UserError("Google Drive neprijungtas.");
+  if (a.root_id) { try { const f = await g<{ trashed?: boolean }>(`files/${a.root_id}?fields=id,trashed`); if (!f.trashed) return ROOT = a.root_id; } catch { /* gone – made again */ } }
+  const id = await mkFolder("Renginiai (Event Solutions)", "root");
+  await db("gdrive_auth?id=eq.1", { method: "PATCH", body: JSON.stringify({ root_id: id }) });
+  AUTH = { ...a, root_id: id };
+  return ROOT = id;
+}
+// the sign-in link's state: who asked and until when, signed (so nobody else's code can be put in)
+async function hmac(s: string): Promise<string> {
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(E("SUPABASE_SERVICE_ROLE_KEY")), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return b64u(new Uint8Array(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(s))));
+}
+async function oauthStart(who: string): Promise<string> {
+  if (!E("GOOGLE_CLIENT_ID") || !E("GOOGLE_CLIENT_SECRET")) throw new UserError("Nėra GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET (Supabase → Edge Functions → Secrets).");
+  const st = b64u(JSON.stringify({ w: who, x: Date.now() + 15 * 60_000 })), state = st + "." + await hmac(st);
+  return "https://accounts.google.com/o/oauth2/v2/auth?" + new URLSearchParams({ client_id: E("GOOGLE_CLIENT_ID"), redirect_uri: redirectUri(), response_type: "code",
+    scope: "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email", access_type: "offline", prompt: "consent", include_granted_scopes: "true", state });
+}
+const page = (title: string, text: string) => new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title>
+<body style="font-family:system-ui,sans-serif;background:#111;color:#eee;display:grid;place-items:center;min-height:90vh;margin:0"><div style="max-width:420px;padding:24px;text-align:center"><h2>${title}</h2><p>${text}</p>
+<p><a style="color:#6AB0F3" href="https://app.eventsolutions.lt/?admin=1">Grįžti į programėlę</a></p></div>`, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+async function oauthBack(u: URL): Promise<Response> {
+  const code = u.searchParams.get("code"), state = u.searchParams.get("state") || "", err = u.searchParams.get("error");
+  if (err) return page("Neprijungta", "Google: " + err.replace(/[<>&]/g, ""));
+  const [st, sig] = state.split(".");
+  if (!code || !st || !sig || sig !== await hmac(st)) return page("Neprijungta", "Netinkama nuoroda – bandyk dar kartą iš Admin.");
+  let s: { w?: string; x?: number } = {}; try { s = JSON.parse(decodeURIComponent(escape(atob(st.replace(/-/g, "+").replace(/_/g, "/"))))); } catch { /* bad */ }
+  if (!s.x || s.x < Date.now()) return page("Neprijungta", "Nuoroda pasibaigė – bandyk dar kartą iš Admin.");
+  const r = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ code, client_id: E("GOOGLE_CLIENT_ID"), client_secret: E("GOOGLE_CLIENT_SECRET"), redirect_uri: redirectUri(), grant_type: "authorization_code" }) });
+  const d = await r.json() as { access_token?: string; refresh_token?: string; error_description?: string; error?: string };
+  if (!d.refresh_token) return page("Neprijungta", "Google negrąžino ilgalaikio rakto (" + String(d.error_description || d.error || "be refresh_token").replace(/[<>&]/g, "") + ").");
+  let email = ""; try { const me = await (await fetch("https://www.googleapis.com/oauth2/v2/userinfo", { headers: { Authorization: "Bearer " + d.access_token } })).json(); email = String(me.email || ""); } catch { /* none */ }
+  const [old] = await db<{ email: string | null; root_id: string | null }[]>("gdrive_auth?select=email,root_id&id=eq.1").catch(() => []);
+  await db("gdrive_auth?on_conflict=id", { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify({ id: 1, refresh_token: d.refresh_token, email, connected_by: s.w || "", connected_at: new Date().toISOString(), root_id: old && old.email === email ? old.root_id : null }) });
+  return page("✓ Google Drive prijungtas", `Paskyra <b>${email.replace(/[<>&]/g, "")}</b>. Renginių aplankai bus kuriami aplanke „Renginiai (Event Solutions)“. Gali uždaryti šį langą.`);
+}
 const folderUrl = (id: string) => `https://drive.google.com/drive/folders/${id}`;
 async function mkFolder(name: string, parent: string): Promise<string> {
   const f = await g<{ id: string }>("files?fields=id", { method: "POST", body: JSON.stringify({ name, mimeType: FOLDER, parents: [parent] }) });
@@ -127,7 +192,7 @@ async function ensure(ev: Ev): Promise<Row> {
     row = had;
     if (had.name !== name) { await g(`files/${had.folder_id}`, { method: "PATCH", body: JSON.stringify({ name }) }); row.name = name; }
   } else {
-    const id = (await findFolder(name, root())) ?? await mkFolder(name, root());
+    const id = (await findFolder(name, await root())) ?? await mkFolder(name, await root());
     row = { event_id: ev.id, folder_id: id, url: folderUrl(id), name, subs: {}, shared: [] };
   }
   for (const [k, label] of SUBS) {
@@ -248,6 +313,7 @@ async function caller(req: Request): Promise<{ id: string; role: string; level: 
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method === "GET") { const u = new URL(req.url); if (u.searchParams.has("oauth")) { try { return await oauthBack(u); } catch (e) { return page("Neprijungta", String((e as Error).message).replace(/[<>&]/g, "")); } } }
   if (req.method !== "POST") return json({ error: "POST" }, 405);
   const body = await req.text();
   try {
@@ -274,11 +340,17 @@ Deno.serve(async (req) => {
     const action = String(b.action || "");
     if (action === "status") {
       if (!(who.role === "admin" || who.level === "super")) return json({ error: "Tik administratoriams." }, 403);
-      const out: Record<string, unknown> = { sa: !!E("GOOGLE_SA_JSON"), root: !!E("GDRIVE_ROOT_ID"), slack: !!E("SLACK_SIGNING_SECRET"), on: await driveOn() };
-      try { await gToken(); out.token = true; const f = await g<{ name?: string; driveId?: string }>(`files/${root()}?fields=name,driveId`); out.name = f.name; out.shared_drive = !!f.driveId; }
+      const om = await oauthMode(), a = om ? await auth() : null;
+      const out: Record<string, unknown> = { mode: om ? "oauth" : "sa", client: !!(E("GOOGLE_CLIENT_ID") && E("GOOGLE_CLIENT_SECRET")), email: a?.email || "", redirect: redirectUri(),
+        sa: !!E("GOOGLE_SA_JSON"), root: !!E("GDRIVE_ROOT_ID"), slack: !!E("SLACK_SIGNING_SECRET"), on: await driveOn() };
+      try { await gToken(); out.token = true; const f = await g<{ name?: string; driveId?: string }>(`files/${await root()}?fields=name,driveId`); out.name = f.name; out.shared_drive = !!f.driveId; }
       catch (e) { out.error = (e as Error).message; }
       const [n] = await db<{ count: number }[]>("event_drive?select=count").catch(() => [{ count: 0 }]); out.folders = n?.count ?? 0;
       return json(out);
+    }
+    if (action === "oauth_start") {
+      if (!(who.role === "admin" || who.level === "super")) return json({ error: "Tik administratoriams." }, 403);
+      return json({ ok: true, url: await oauthStart(who.id) });
     }
     if (action === "ensure" || action === "share") {
       if (!who.edit) return json({ error: "Aplanką kuria tie, kas redaguoja Renginius." }, 403);

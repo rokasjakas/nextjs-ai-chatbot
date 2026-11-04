@@ -45,5 +45,17 @@ create policy "drive uploads view" on public.drive_uploads for select to authent
 revoke all on public.drive_uploads from anon;
 grant select on public.drive_uploads to authenticated;
 
+-- the Google account the folders are made with (a Gmail signed in once in Admin → Google Drive): only the server function reads it
+create table if not exists public.gdrive_auth (
+  id            integer primary key default 1 check (id = 1),
+  refresh_token text,
+  email         text,
+  root_id       text,
+  connected_by  text,
+  connected_at  timestamptz not null default now()
+);
+alter table public.gdrive_auth enable row level security;   -- no policies: nobody but the server sees it
+revoke all on public.gdrive_auth from anon, authenticated;
+
 notify pgrst, 'reload schema';
 select 'event_drive ok' as result, (select count(*) from public.event_drive) as folders;
