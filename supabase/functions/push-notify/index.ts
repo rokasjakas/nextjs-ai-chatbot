@@ -163,7 +163,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 22;
+const PUSH_FN_VERSION = 23;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -1357,22 +1357,25 @@ async function onGameInvite(uid: string, to: string[], game: string, room: strin
 // Sandėlio darbai (sql/wh_jobs.sql): a question to the one who added the job / proposal, and the answer back
 type WhQ = { id: string; t: string; by_id: string; a?: string; a_by_id?: string };
 async function onWhJob(uid: string, id: string, ev: string, qid: string) {
-  const [j] = await db<{ id: string; kind: string; title: string; created_by: string; questions: WhQ[] }[]>(`wh_jobs?select=id,kind,title,created_by,questions&id=eq.${encodeURIComponent(id)}`);
+  const [j] = await db<{ id: string; kind: string; title: string; created_by: string; assignees: string[]; questions: WhQ[] }[]>(`wh_jobs?select=id,kind,title,created_by,assignees,questions&id=eq.${encodeURIComponent(id)}`);
   if (!j) return { error: "Darbas nerastas" };
   const q = (j.questions ?? []).find((x) => x.id === qid);
   if (!q) return { error: "Klausimas nerastas" };
   const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
   const what = j.kind === "idea" ? "pasiūlymo" : "darbo";
-  let to: string, title: string, body: string;
+  let to: string[], title: string, body: string;
   if (ev === "ask") {
     if (q.by_id !== uid) return { error: "Tik klausimo autorius" };
-    to = j.created_by; title = `❓ Klausimas dėl ${what}: ` + String(j.title).slice(0, 90); body = name(me) + ": " + String(q.t ?? "").slice(0, 200);
+    // the creator's own question goes to the people assigned, anyone else's – to the creator
+    to = uid === j.created_by ? (j.assignees ?? []) : [j.created_by];
+    title = `❓ Klausimas dėl ${what}: ` + String(j.title).slice(0, 90); body = name(me) + ": " + String(q.t ?? "").slice(0, 200);
   } else {
     if (q.a_by_id !== uid) return { error: "Tik atsakęs" };
-    to = q.by_id; title = "💬 Atsakymas: " + String(j.title).slice(0, 100); body = name(me) + ": " + String(q.a ?? "").slice(0, 200);
+    to = [q.by_id]; title = "💬 Atsakymas: " + String(j.title).slice(0, 100); body = name(me) + ": " + String(q.a ?? "").slice(0, 200);
   }
-  if (!to || to === uid) return { sent: 0 };
-  const ids = await wantIds([to], "tasks");
+  to = to.filter((u) => u && u !== uid);
+  if (!to.length) return { sent: 0 };
+  const ids = await wantIds(to, "tasks");
   if (!ids.length) return { sent: 0 };
   return await sendTo(ids, { title, body, tag: "wh-" + j.id + "-" + qid + "-" + ev, url: `./?whjob=${j.id}`, kind: "task" });
 }
