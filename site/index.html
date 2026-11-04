@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-5bOImkdrBaFNfAeQfIkP7UpjUkXqgHTcg8RMrpvSPIM=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-+Qc0+ShWYPuwMl5AuLxaDVHudPpHTv70W6wRR2qrfxI=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -17614,7 +17614,7 @@ function whView(j0){
     toIn.placeholder = to.length ? '+ pridėti dar…' : 'Rašyk vardą…'; };
   const showDd = ()=>{ const q = normalizeText(toIn.value).trim(), all = (TEAM.members||[]).filter(m=>m.id!==me && !to.includes(m.id) && m.role && !['pending','blocked'].includes(m.role)).sort((a, b)=>teamName(a).natCmp(teamName(b)));
     const list = all.filter(m=>!q || normalizeText(teamName(m)+' '+(m.nickname||'')).split(' ').some(w=>w.startsWith(q)) || normalizeText(teamName(m)).includes(q)).slice(0, 40);
-    dd.innerHTML = list.length ? list.map((m, k)=>`<button type="button" class="${k ? '' : 'on'}" data-to="${esc(m.id)}">${esc(teamName(m))}<small>${esc(roleLabel(m.role))}</small></button>`).join('') : '<div class="muted" style="padding:8px 10px;">Nerasta</div>';
+    dd.innerHTML = list.length ? list.map((m, k)=>`<button type="button" class="${k ? '' : 'on'}" data-to="${esc(m.id)}">${esc(teamName(m))}${m.job_title ? `<small>${esc(m.job_title)}</small>` : ''}</button>`).join('') : '<div class="muted" style="padding:8px 10px;">Nerasta</div>';
     dd.classList.remove('hidden'); placeDd(); };
   const placeDd = ()=>{ if(dd.classList.contains('hidden')) return; const r = toIn.getBoundingClientRect(), below = innerHeight - r.bottom - 10;
     Object.assign(dd.style, { left:Math.round(r.left)+'px', width:Math.round(r.width)+'px' });
@@ -24485,7 +24485,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v687';
+const APP_VER = 'v688';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -36891,14 +36891,14 @@ function renderMemberList(){
     .map(([k,l,n])=>`<button class="chip ${TEAM.memberFilter===k?'active':''}" data-f="${k}">${l} <span class="count-badge">${n}</span></button>`).join('');
   document.querySelectorAll('#tmFilters [data-f]').forEach(b=>b.onclick = ()=>{ TEAM.memberFilter = b.dataset.f; renderMemberList(); });
   const q = normalizeText(TEAM.q);
-  const rows = srchSort((TEAM.memberFilter==='online' ? online : all).filter(m=>!q || normalizeText([teamName(m), m.nickname, m.phone, m.contact_email, m.email, roleLabel(m.role)].join(' ')).includes(q)), q, m=>[teamName(m), m.nickname, m.email]);
+  const rows = srchSort((TEAM.memberFilter==='online' ? online : all).filter(m=>!q || normalizeText([teamName(m), m.nickname, m.phone, m.contact_email, m.email, m.job_title].join(' ')).includes(q)), q, m=>[teamName(m), m.nickname, m.email]);
   el.innerHTML = rows.length ? rows.map(m=>`
     <button class="tm-card" data-member="${esc(m.id)}">
       ${teamAvatar(m, 52, true)}
       <span class="tm-card-main">
         <b>${esc(teamName(m))}${m.id===teamMe()?' <span class="pill">tu</span>':''}</b>
         ${m.job_title ? `<span class="tm-job">${esc(m.job_title)}</span>` : ''}
-        <span class="tm-meta"><span data-status-text="${esc(m.id)}">${esc(teamStatusText(m))}</span> · ${esc(roleLabel(m.role))}</span>
+        <span class="tm-meta"><span data-status-text="${esc(m.id)}">${esc(teamStatusText(m))}</span></span>
       </span>
     </button>`).join('') : `<div class="card empty-state">Narių nerasta.</div>`;
   el.querySelectorAll('[data-member]').forEach(b=>b.onclick = ()=>openMemberCard(b.dataset.member));
@@ -36914,7 +36914,7 @@ function openMemberCard(id){
       <div class="tm-member-top">${teamAvatar(m, 110, true)}
         <h3 style="margin:10px 0 0;">${esc(teamName(m))}</h3>
         ${m.job_title ? `<div class="tm-job">${esc(m.job_title)}</div>` : ''}
-        <div class="tm-meta"><span data-status-text="${esc(m.id)}">${esc(teamStatusText(m))}</span> · ${esc(roleLabel(m.role))}</div>
+        <div class="tm-meta"><span data-status-text="${esc(m.id)}">${esc(teamStatusText(m))}</span></div>
       </div>
       <div class="ven-fields" style="margin-top:12px;">
         ${m.phone ? `<div class="ven-f"><div class="ven-fl">Telefonas</div><div class="ven-fv"><a href="tel:${esc(tel)}">${esc(m.phone)}</a></div></div>` : ''}
@@ -38965,7 +38965,7 @@ function memberTokens(host, members, ids, onChange){
     hits = all.filter(m=>!ids.includes(m.id)).slice(0, 8);
     at = Math.min(at, Math.max(0, hits.length - 1));
     list.hidden = !t || document.activeElement!==inp;
-    list.innerHTML = hits.length ? hits.map((m, i)=>`<button type="button" class="mtok-hit ${i===at ? 'on' : ''}" data-mth="${esc(m.id)}">${esc(label(m))} <small class="muted">${esc(roleLabel(m.role, m.level))}</small></button>`).join('')
+    list.innerHTML = hits.length ? hits.map((m, i)=>`<button type="button" class="mtok-hit ${i===at ? 'on' : ''}" data-mth="${esc(m.id)}">${esc(label(m))}${m.job_title ? ` <small class="muted">${esc(m.job_title)}</small>` : ''}</button>`).join('')
       : `<div class="mtok-none">${all.length ? 'Jau pridėta: '+esc(all.map(teamName).join(', ')) : 'Tokio nario nėra'}</div>`;
   };
   const add = id=>{ if(id && !ids.includes(id)){ ids.push(id); changed(); } inp.value = ''; at = 0; drawChips(); drawList(); inp.focus(); };
@@ -39693,7 +39693,7 @@ function chatMembersModal(c){
   const list = ids.map(id=>teamMember(id)).filter(Boolean).sort((a,b)=>teamName(a).natCmp(teamName(b)));
   openModal(`<div class="row between" style="align-items:center;"><h3 style="margin:0;">${esc(chatLabel(c))} · ${ltPlural(list.length,'narys','nariai','narių')}</h3>${c.kind!=='general' && c.kind!=='direct' ? '<button class="btn primary small" id="mmAdd">+ Pridėti narių</button>' : ''}</div>
     ${c.topic ? `<div class="section-sub" style="margin:6px 0 0;">${esc(c.topic)}</div>` : ''}
-    <div class="chat-pick-list" style="margin-top:10px;">${list.map(m=>`<button class="chat-pick" data-mm="${esc(m.id)}">${teamAvatar(m, 34, true)}<span><b>${esc(teamName(m))}${m.id===teamMe()?' <span class="pill">tu</span>':''}</b><small class="tm-meta">${esc(m.job_title||roleLabel(m.role))} · ${esc(teamStatusText(m))}</small></span></button>`).join('')}</div>
+    <div class="chat-pick-list" style="margin-top:10px;">${list.map(m=>`<button class="chat-pick" data-mm="${esc(m.id)}">${teamAvatar(m, 34, true)}<span><b>${esc(teamName(m))}${m.id===teamMe()?' <span class="pill">tu</span>':''}</b><small class="tm-meta">${esc([m.job_title, teamStatusText(m)].filter(Boolean).join(' · '))}</small></span></button>`).join('')}</div>
     <div class="row" style="justify-content:flex-end;margin-top:10px;"><button class="btn" id="mmX">Uždaryti</button></div>`);
   teamFillImages(document.getElementById('modalRoot'));
   document.getElementById('mmX').onclick = closeModal;
@@ -44293,7 +44293,7 @@ function gsSearch(q){
   // people: members, the contacts of Žmonės and names written only in the events' tables – a click opens all about them
   const known = new Set();
   add('Nariai', (TEAM.members||[]).filter(m=>m.id).map(m=>{ known.add(normalizeText(teamName(m))); if(m.nickname) known.add(normalizeText(m.nickname));
-    return { t:teamName(m), d:[m.job_title, roleLabel(m.role)].filter(Boolean).join(' · '), icon:teamAvatar(m, 26), s:match(teamName(m), m.nickname, m.job_title, m.email, m.contact_email, m.phone), go:()=>dzPerson(teamName(m)) }; }), 6);
+    return { t:teamName(m), d:m.job_title || 'Narys', icon:teamAvatar(m, 26), s:match(teamName(m), m.nickname, m.job_title, m.email, m.contact_email, m.phone), go:()=>dzPerson(teamName(m)) }; }), 6);
   const ppl = [];
   if(canView('people') && PP.loaded) PP.contacts.forEach(c=>{ const n = normalizeText(ppName(c)); if(!n || known.has(n)) return; known.add(n);
     ppl.push({ t:ppName(c), d:[(c.groups||[]).join(', '), c.phone].filter(Boolean).join(' · '), icon:ppAvatar(c), s:match(ppName(c), c.phone, c.email, (c.groups||[]).join(' ')), go:()=>dzPerson(ppName(c)) }); });
@@ -44416,7 +44416,7 @@ async function dzPerson(name){
   const mail = m ? (m.contact_email || m.email) : c && c.email, tel = (m && m.phone) || (c && c.phone) || '', telD = tel.replace(/[^\d+]/g, '');
   const lv = c && c.levels ? Object.entries(c.levels).filter(([, v])=>v).map(([k, v])=>esc(k)+' '+esc(v)).join(', ') : '';
   const info = [
-    m ? dzRow('Narys', esc([m.job_title, roleLabel(m.role)].filter(Boolean).join(' · ')) || 'taip') : '',
+    m ? dzRow('Narys', esc(m.job_title || '') || 'taip') : '',
     tel ? dzRow('Telefonas', `<a href="tel:${esc(telD)}">${esc(tel)}</a>`) : '',
     mail ? dzRow('El. paštas', `<a href="mailto:${esc(mail)}">${esc(mail)}</a>`) : '',
     c && (c.groups||[]).length ? dzRow('Grupės', esc(c.groups.join(', '))) : '',
@@ -52947,6 +52947,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-04 19:55', v:'v688', k:'chg', t:'Kitų narių lygis nebe rodomas', f:'Narių sąraše, nario kortelėje, paieškoje ir žmonių pasirinkimuose nebe rodomas kito žmogaus prieigos lygis (vietoj jo – pareigos, jei įrašytos).' },
   { d:'2026-11-04 19:35', v:'v686', k:'fix', t:'Sandėlio darbai: būsena keičiama be mirktelėjimo', f:'Keičiant darbo būseną langas nebeperpiešiamas – pasikeičia tik mygtukas ir būsenos ženkliukas.' },
   { d:'2026-11-04 19:20', v:'v685', k:'chg', t:'Sandėlio darbai: klausimo gavėjai renkami patys', f:'Užduodant klausimą laukelis „Kam“ tuščias – žmones pasirenki pats iš sąrašo.' },
   { d:'2026-11-04 19:10', v:'v684', k:'fix', t:'Langai nebekeičia dydžio rašant', f:'Iššokantys langai nebešokinėja: atsiradus slankjuostei plotis nesikeičia, o rašant paieškoje ar filtre langas nesumažėja. Sandėlio darbų „Kam“ sąrašas atsiveria virš lango ir nebekeičia jo dydžio.' },
