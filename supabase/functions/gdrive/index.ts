@@ -187,8 +187,10 @@ async function loadEvent(id: string): Promise<Ev | null> {
 }
 const folderName = (ev: Ev) => `${String(ev.date || "").slice(0, 10)} ${String(ev.name || "Renginys").replace(/[\\/]+/g, "-").trim()}`.trim().slice(0, 200);
 async function officeEmails(): Promise<string[]> {
-  const r = await db<{ email: string }[]>("profiles?select=email&role=in.(admin,pm,office)");
-  return [...new Set(r.map((x) => String(x.email || "").trim().toLowerCase()).filter((x) => /@/.test(x)))];
+  // the Google account given in the profile (Profilis → „Google paskyra“) if any, else the sign-in e-mail
+  const r = await db<{ email: string; google_email?: string | null }[]>("profiles?select=email,google_email&role=in.(admin,pm,office)")
+    .catch(() => db<{ email: string; google_email?: string | null }[]>("profiles?select=email&role=in.(admin,pm,office)"));
+  return [...new Set(r.map((x) => String(x.google_email || x.email || "").trim().toLowerCase()).filter((x) => /@/.test(x)))];
 }
 async function ensure(ev: Ev): Promise<Row> {
   if (ev.kind === "work" || ev.handoverId) throw new UserError("Sandėlio darbams ir išdavimams Drive aplanko nėra.");
@@ -207,8 +209,9 @@ async function ensure(ev: Ev): Promise<Row> {
     const id = (await findFolder(label, row.folder_id)) ?? await mkFolder(label, row.folder_id);
     row.subs[k] = { id, url: folderUrl(id) };
   }
+  const errs: string[] = [];
   // Office and up – may edit
-  const want = (await officeEmails()).filter((e) => !row.shared.includes(e)), errs: string[] = [];
+  const want = (await officeEmails()).filter((e) => !row.shared.includes(e));
   for (const e of want) { const err = await grant(row.folder_id, e, "writer"); if (err) errs.push(e + ": " + err); else row.shared.push(e); }
   await db("event_drive?on_conflict=event_id", { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
     body: JSON.stringify({ ...row, last_error: errs.length ? errs.join("; ").slice(0, 500) : null, updated_at: new Date().toISOString() }) });
