@@ -163,7 +163,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 26;
+const PUSH_FN_VERSION = 27;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -1120,10 +1120,12 @@ async function onTask(uid: string, taskId: string, ev: string) {
   }
   // a task that asks for e-mail too (e.g. a planned handover in Išdavimai): the people given it get a letter as well
   let mailErr = "";
-  if (ev === "new" && t.remind?.email && ids.length) {
-    const ps = await db<Profile[]>(`profiles?select=id,email&id=in.${inList(ids)}`);
+  // the letter goes to everyone given the task – the one who gave it too, if among them (a push is not sent to oneself)
+  const mailIds = ev === "new" ? [...new Set(t.assignees ?? [])] : [];
+  if (ev === "new" && t.remind?.email && mailIds.length) {
+    const ps = await db<Profile[]>(`profiles?select=id,email&id=in.${inList(mailIds)}`);
     const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
-      <p>${esc(me || "")} tau paskyrė:</p><p style="font-size:16px;"><b>${esc(t.title)}</b></p>
+      <p>${esc(me || "")} paskyrė:</p><p style="font-size:16px;"><b>${esc(t.title)}</b></p>
       ${t.due_at ? `<p>Kada: <b>${esc(whenLt(t.due_at))}</b></p>` : ""}${t.note ? `<p style="white-space:pre-wrap;color:#555;">${esc(t.note)}</p>` : ""}
       <p><a href="https://app.eventsolutions.lt/?task=${t.id}" style="color:#2f80d8;">Atidaryti programėlėje</a></p>
       <p style="color:#777;font-size:12px;margin-top:18px;">EventSolutions App · tą dieną gausi ir priminimą.</p></div>`;
