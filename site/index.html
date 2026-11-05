@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-BxspmTVaMLLfm1QeAqk8w/9s8WzRNyl/9ZI07Jh/Afw=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-sLqF4oBhK3MRQp1uT+M9wIivTA6iEW4d8pirNP/ISNE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -24635,7 +24635,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v697';
+const APP_VER = 'v698';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25657,7 +25657,9 @@ function wsCount(n){ const p = wsPref(); p.n = n; p.tabs = p.tabs.slice(0, n); w
   document.querySelectorAll('.ws-n [data-wsn]').forEach(b=>b.classList.toggle('on', +b.dataset.wsn===n)); wsPlace(); }
 // the pages one can open in a window, found while typing (name or its key, without ą–ž)
 function wsFind(q, tabs){
-  const all = [WS_NOTES].concat([...document.querySelectorAll('.rail-btn[data-tab]')].map(b=>b.dataset.tab)).filter((k, i, a)=>a.indexOf(k)===i && wsOk(k) && !tabs.includes(k));
+  // pages already in a window are offered too (the layout is shared by the app's windows – one open elsewhere must still be found), at the end
+  const all = [WS_NOTES].concat([...document.querySelectorAll('.rail-btn[data-tab]')].map(b=>b.dataset.tab)).filter((k, i, a)=>a.indexOf(k)===i && wsOk(k))
+    .sort((a, b)=>(tabs.includes(a) ? 1 : 0) - (tabs.includes(b) ? 1 : 0));
   const nq = normalizeText(q||'').trim();
   return all.map(k=>({ k, lab:wsTabInfo(k).lab })).filter(x=>!nq || normalizeText(x.lab+' '+x.k).includes(nq))
     .sort((a, b)=>nq ? (normalizeText(a.lab).startsWith(nq) ? 0 : 1) - (normalizeText(b.lab).startsWith(nq) ? 0 : 1) : 0);
@@ -26254,6 +26256,7 @@ async function evFlushOne(table, id){
   if(table==='events') row.event_date = item.date || null;
   const { error } = await sb.from(table).upsert(row, { onConflict:'id' });
   if(error){ setCloudState('error', error.message); return false; }
+  evBcPost({ t:'save', table, item });
   if(table==='events'){ slackSoon(item); driveSoon(item); }
   if(!Object.keys(evTimers).length && !Object.keys(rentalTimers).length) setCloudState('ok');
   return true;
@@ -26270,7 +26273,26 @@ async function evDeleteRow(table, id){
   const sb = getSb(); if(!sb) return;
   const { error } = await sb.from(table).delete().eq('id', id);
   if(error) toast('Nepavyko ištrinti serveryje: '+error.message);
+  else evBcPost({ t:'del', table, id });
 }
+// the app open in several windows (antras langas, darbo langai): what one window saved reaches the others at once
+const EV_BC = (()=>{ try{ return 'BroadcastChannel' in window ? new BroadcastChannel('es-events') : null; }catch(e){ return null; } })();
+function evBcPost(m){ try{ if(EV_BC) EV_BC.postMessage(JSON.parse(JSON.stringify(m))); }catch(e){} }
+let evBcRedraw = null;
+if(EV_BC) EV_BC.onmessage = e=>{
+  const m = e.data || {}; if(!EV.loaded || !/^(events|rentals)$/.test(m.table||'')) return;
+  const L = m.table==='events' ? EV.events : EV.rentals, timers = m.table==='events' ? evTimers : rentalTimers;
+  const id = m.t==='del' ? m.id : m.item && m.item.id; if(!id || timers[id]) return;   // this window has its own edit of it waiting – it stays
+  const i = L.findIndex(x=>x.id===id);
+  if(m.t==='del'){ if(i>=0) L.splice(i, 1); } else if(i>=0) L[i] = m.item; else L.push(m.item);
+  evCacheWrite();
+  // the open page follows (not while typing in it – then a moment later)
+  clearTimeout(evBcRedraw);
+  const redraw = ()=>{ const a = document.activeElement;
+    if(a && a.matches && a.matches('main input, main textarea, main select') && document.hasFocus()){ evBcRedraw = setTimeout(redraw, 1500); return; }
+    try{ if(m.table==='rentals' && currentTab==='rentals') renderRentalList(); else if(m.table==='events' && evTabOn() && !document.getElementById('modalBackdrop')) renderEventList(); }catch(x){} };
+  evBcRedraw = setTimeout(redraw, 200);
+};
 
 /* ---------- model helpers ---------- */
 function evNew(date, kind){
@@ -26310,6 +26332,10 @@ function evPeopleDatalist(){
   let drc = document.getElementById('dl-rvcomp');
   if(!drc){ drc = document.createElement('datalist'); drc.id = 'dl-rvcomp'; document.body.appendChild(drc); }
   drc.innerHTML = evUniq((typeof RV!=='undefined' ? RV.list : []).map(r=>r.company).concat((evOpts().suppliers||[]).map(s=>s && s.name), EV.events.flatMap(e=>(e.logistics||[]).map(l=>l.rent && l.rent.company)))).sort((a,b)=>a.natCmp(b)).map(c=>`<option value="${esc(c)}">`).join('');
+  let dm = document.getElementById('dl-members');
+  if(!dm){ dm = document.createElement('datalist'); dm.id = 'dl-members'; document.body.appendChild(dm); }
+  dm.innerHTML = evUniq((TEAM.members||[]).filter(m=>m.role && !['pending','blocked'].includes(m.role) && !(typeof memberHid==='function' && memberHid(m))).map(m=>teamName(m))).sort((a, b)=>a.natCmp(b)).map(n=>`<option value="${esc(n)}">`).join('');
+  if(!(TEAM.members||[]).length && !evPeopleDatalist.mload && typeof teamLoadMembers==='function'){ evPeopleDatalist.mload = true; teamLoadMembers().then(()=>evPeopleDatalist()).catch(()=>{}); }
   let dtl = document.getElementById('dl-timelabels');
   if(!dtl){ dtl = document.createElement('datalist'); dtl.id = 'dl-timelabels'; document.body.appendChild(dtl); }
   dtl.innerHTML = evTimeLabelList().map(t=>`<option value="${esc(t)}">`).join('');
@@ -30853,14 +30879,14 @@ function rentalCardHtml(r){
         </div>
         <label class="field rt-notes">Pastabos<textarea data-k="notes" rows="2">${esc(r.notes||'')}</textarea></label>
         <div class="field rt-person">Atsakingas
-          <input type="text" data-k="person" value="${esc(r.person||'')}" data-combo="dl-people" placeholder="Vardas">
+          <input type="text" data-k="person" value="${esc(r.person||'')}" data-combo="dl-members" placeholder="Programos narys">
           <div class="row" style="gap:6px;">
             ${person && person.phone ? `<a class="btn small" href="tel:${esc(person.phone.replace(/\s+/g,''))}">📞 Skambinti</a>` : ''}
             ${person && person.email ? `<a class="btn small" href="mailto:${esc(person.email)}?subject=${encodeURIComponent('Paėmimas: '+(r.items||'').split('\n')[0])}&body=${encodeURIComponent('Primenu: '+(r.items||'')+'\nVieta: '+(r.place||'')+' '+(r.address||'')+'\nPaėmimas: '+(r.pickupDate||'')+' '+(r.pickupTime||'')+'\nGrąžinimas: '+(r.returnDate||'')+' '+(r.returnTime||''))}">✉ Priminti</a>` : ''}
           </div>
         </div>
         <label class="field rt-event">Renginys
-          <select data-k="eventId"><option value="">—</option>${events.map(e=>`<option value="${esc(e.id)}" ${e.id===r.eventId?'selected':''}>${esc((e.date||'')+' '+(e.name||'renginys'))}</option>`).join('')}</select>
+          <input type="text" class="rt-evin" value="${esc(rtEvLabel(EV.events.find(e=>e.id===r.eventId)))}" data-combo="dl-rvev-${esc(r.id)}" placeholder="Rašyk renginio pavadinimą…" autocomplete="off">${rtEvDatalist(r, 'dl-rvev-'+r.id)}
         </label>
       </div>
       ${eqPhotosHtml('rentals', r)}
@@ -30872,6 +30898,13 @@ function rentalCardHtml(r){
   </div>`;
 }
 // A new rental is filled in a pop-up and only added when saved.
+// a rental's event: the events from the rental's day on (an earlier one only if it is the chosen one), as „data pavadinimas“
+function rtEvLabel(e){ return e ? ((e.date||'')+' '+(e.name||'renginys')).trim() : ''; }
+function rtEvList(day, keepId){ const from = day || evToday();
+  return evSorted(EV.events.filter(e=>e.kind!=='work' && !e.deletedAt && !e.handoverId && (e.id===keepId || !e.date || (e.dateEnd && e.dateEnd > e.date ? e.dateEnd : e.date) >= from))); }
+function rtEvDatalist(r, id){ return `<datalist id="${esc(id)}">${rtEvList(r.pickupDate, r.eventId).map(e=>`<option value="${esc(rtEvLabel(e))}">`).join('')}</datalist>`; }
+function rtEvFind(label, day){ const v = normalizeText(String(label||'')).trim(); if(!v) return null;
+  const l = rtEvList(day); return l.find(e=>normalizeText(rtEvLabel(e))===v) || l.find(e=>normalizeText(e.name||'')===v) || (()=>{ const m = l.filter(e=>normalizeText(rtEvLabel(e)).includes(v)); return m.length===1 ? m[0] : null; })(); }
 function openRentalNewModal(eventId){
   const r = rentalNew(eventId); EQ_PENDING[r.id] = r;
   const events = evSorted(EV.events.filter(e=>e.kind!=='work' && (!e.date || Math.abs(daysUntil(e.date))<=60 || e.id===eventId)));
@@ -30885,13 +30918,13 @@ function openRentalNewModal(eventId){
         <label class="field">Paėmimo / grąžinimo vieta<input type="text" id="rn_place" data-combo="dl-suppliers" placeholder="Tiekėjas"></label>
         <label class="field">Adresas<input type="text" id="rn_address" placeholder="Adresas"></label>
         <label class="field">Kontaktai<input type="text" id="rn_contact" placeholder="+370…"></label>
-        <label class="field">Atsakingas<input type="text" id="rn_person" data-combo="dl-people" placeholder="Vardas"></label>
+        <label class="field">Atsakingas<input type="text" id="rn_person" data-combo="dl-members" placeholder="Programos narys"></label>
       </div>
       <div class="grid cols-2" style="gap:8px;">
         <div class="field">Paėmimas<div class="rt-dt"><input type="date" id="rn_pd"><input type="time" id="rn_pt"></div></div>
         <div class="field">Grąžinimas<div class="rt-dt"><input type="date" id="rn_rd"><input type="time" id="rn_rt"></div></div>
       </div>
-      <label class="field">Renginys<select id="rn_event"><option value="">—</option>${events.map(e=>`<option value="${esc(e.id)}" ${e.id===eventId?'selected':''}>${esc((e.date||'')+' '+(e.name||'renginys'))}</option>`).join('')}</select></label>
+      <label class="field">Renginys<input type="text" id="rn_event" value="${esc(rtEvLabel(EV.events.find(e=>e.id===eventId)))}" data-combo="dl-rvev-new" placeholder="Rašyk renginio pavadinimą…" autocomplete="off"><span id="rn_evdl">${rtEvDatalist({ pickupDate:'', eventId }, 'dl-rvev-new')}</span></label>
       <label class="field">Pastabos<textarea id="rn_notes" rows="2"></textarea></label>
       ${eqPhotosHtml('rentals', r)}
     </div>
@@ -30900,6 +30933,7 @@ function openRentalNewModal(eventId){
       <button type="button" class="btn primary" id="rn_save">💾 Išsaugoti</button>
     </div>`);
   const $ = id=>document.getElementById(id);
+  if($('rn_pd')) $('rn_pd').addEventListener('change', ()=>{ const h = $('rn_evdl'); if(h) h.innerHTML = rtEvDatalist({ pickupDate:$('rn_pd').value, eventId:null }, 'dl-rvev-new'); });   // the events list follows the rental's day
   document.querySelector('#modalRoot').classList.add('rt-modal');
   $('rn_seg').addEventListener('click', e=>{ const b = e.target.closest('[data-st]'); if(!b) return; r.status = b.dataset.st; $('rn_seg').innerHTML = seg(); });
   $('rn_place').addEventListener('change', ()=>{
@@ -30914,7 +30948,7 @@ function openRentalNewModal(eventId){
     delete EQ_PENDING[r.id];
     Object.assign(r, { items, place:$('rn_place').value.trim(), address:$('rn_address').value.trim(), contact:$('rn_contact').value.trim(),
       person:$('rn_person').value.trim(), pickupDate:$('rn_pd').value, pickupTime:$('rn_pt').value, returnDate:$('rn_rd').value, returnTime:$('rn_rt').value,
-      eventId:$('rn_event').value || null, notes:$('rn_notes').value.trim() });
+      eventId:(()=>{ const v = $('rn_event').value.trim(); if(!v) return null; const e = rtEvFind(v, $('rn_pd').value) || rtEvFind(v, ''); return e ? e.id : null; })(), notes:$('rn_notes').value.trim() });
     // new suppliers / people are remembered like in the cards
     if(r.place){
       const sp = evOpts().suppliers.find(x=>x.name.toLowerCase()===r.place.toLowerCase());
@@ -30952,6 +30986,12 @@ function bindRentalEvents(){
   });
   list.addEventListener('change', e=>{
     const t = e.target, r = find(t);
+    // the event typed: found by its date and name (only the ones from the rental's day on)
+    if(r && t.classList.contains('rt-evin')){
+      const v = t.value.trim(), ev = v ? (rtEvFind(v, r.pickupDate) || rtEvFind(v, '')) : null;
+      if(v && !ev){ toast('Tokio renginio nerasta – pasirink iš sąrašo.'); t.value = rtEvLabel(EV.events.find(x=>x.id===r.eventId)); return; }
+      r.eventId = ev ? ev.id : null; t.value = rtEvLabel(ev); rentalSave(r); rentalRerender(r); return;
+    }
     if(!r || !t.dataset.k) return;
     r[t.dataset.k] = t.value;
     if(t.dataset.k==='place'){
@@ -30961,6 +31001,7 @@ function bindRentalEvents(){
     }
     if(t.dataset.k==='person') evRememberPerson(t.value);
     if(t.dataset.k==='eventId' && !t.value) r.eventId = null;
+    if(t.dataset.k==='pickupDate'){ const dl = document.getElementById('dl-rvev-'+r.id); if(dl) dl.outerHTML = rtEvDatalist(r, 'dl-rvev-'+r.id); }
     // an address / contact typed for a known supplier is kept for next time
     if((t.dataset.k==='address' || t.dataset.k==='contact') && r.place){
       const s = evOpts().suppliers.find(x=>x.name===r.place);
@@ -53328,6 +53369,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-05 14:00', v:'v698', k:'fix', t:'Keli langai, paėmimai', f:'Programa atidaryta keliuose languose (antras langas, darbo langai): paėmimas ar renginys, išsaugotas viename, iškart matomas ir kituose. Darbo lango programų sąraše randamos visos programos (ir atidarytos kitame lange). Paėmime „Atsakingas“ – tik programos nariai; renginį galima įrašyti (sąrašas rašant), rodomi tik renginiai nuo paėmimo dienos.' },
   { d:'2026-11-05 12:30', v:'v697', k:'chg', t:'Žmonės: įkainis keičiamas iš sąrašo', f:'Prie įkainio – pieštukas: iškart pakeisti valandinį ir / ar stafkę (galima įrašyti abu, jei žmogus dirba abiem būdais).' },
   { d:'2026-11-05 11:30', v:'v696', k:'chg', t:'Renginiai: laikai ranka, sąrašai, tempimas, naujos grafos', f:'Laikas rašomas ranka (telefone – skaičių klaviatūra), 1500 iškart tampa 15:00, iššokančios lentelės nebėra. Laikų eilučių pavadinimai renkami iš sąrašo, nauji įsimenami kitam kartui. Laikų eilučių tvarka keičiama tempiant už ⠿. Prie renginio „＋“ – nauja grafa: pavadinimas iš sąrašo (nauji įsimenami) ir data su laiku arba laikotarpis.' },
   { d:'2026-11-05 10:00', v:'v695', k:'chg', t:'Žmonės: įvertinimas 1–5 žvaigždutės', f:'Prie žmogaus – 5 žvaigždutės, uždedamos rankiniu būdu (paspaudus tą pačią – nuimama). Kuo daugiau žvaigždučių, tuo aukščiau sąraše; vienodai įvertintų – pagal pradirbtų renginių skaičių. Anksčiau pažymėti „pirmenybe“ rodomi su 5 žvaigždutėmis.' },
