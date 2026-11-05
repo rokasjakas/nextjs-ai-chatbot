@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-fiFvfR3MK94sjdGkGbrrP25aG3RTsBSteVTG3q0NuLY=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-X2PZchVUsgUbJ2/CsHG0JWG2sp3fvaJ3bCv62PNBY9o=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -24657,7 +24657,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v701';
+const APP_VER = 'v702';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31369,7 +31369,7 @@ function hvCardHtml(r){
       <span class="rt-badge">${st.icon} ${esc(st.label)}</span>
       <div class="rt-sum">
         <div class="rt-what">${esc(r.client || 'Nuomininkas nenurodytas')} · ${esc(lines[0]||'įranga')}${lines.length>1?` <span class="rt-more">+${lines.length-1}</span>`:''}</div>
-        <div class="rt-meta">${when?`<span class="${late?'rt-late':''}">🗓 ${esc(when)}</span>`:''}${r.person?`<span>👤 ${esc(r.person)}</span>`:''}<span class="${eqPhotosReady(r)?'':'rt-flag'}">📷 ${pc||'nėra nuotraukų'}</span>${late?'<span class="rt-flag">⚠ vėluoja grąžinti</span>':''}</div>
+        <div class="rt-meta">${when?`<span class="${late?'rt-late':''}">🗓 ${esc(when)}</span>`:''}${r.person && r.status!=='numatyta'?`<span>👤 ${esc(r.person)}</span>`:''}${r.status==='numatyta' ? '' : `<span class="${eqPhotosReady(r)?'':'rt-flag'}">📷 ${pc||'nėra nuotraukų'}</span>`}${late?'<span class="rt-flag">⚠ vėluoja grąžinti</span>':''}</div>
       </div>
       <div class="rt-side">${open?'':quick}<span class="rt-chev">${open?'▴':'▾'}</span></div>
     </div>`;
@@ -31388,7 +31388,7 @@ function hvCardHtml(r){
         <div class="field">Išdavimas<div class="rt-dt"><input type="date" data-hk="issueDate" value="${esc(r.issueDate||'')}"><input type="time" data-hk="issueTime" value="${esc(r.issueTime||'')}"></div></div>
         <div class="field">Grąžinimas<div class="rt-dt"><input type="date" data-hk="returnDate" value="${esc(r.returnDate||'')}"><input type="time" data-hk="returnTime" value="${esc(r.returnTime||'')}"></div></div>
         ${f('price','Nuomos kaina','pvz. 250 € + PVM')}${f('deposit','Užstatas','pvz. 500 €')}
-        <label class="field">Išdavė (atsakingas)<input type="text" data-hk="person" value="${esc(r.person||'')}" data-combo="dl-people" placeholder="Vardas"></label>
+        ${r.status==='numatyta' ? '' : `<label class="field">Išdavė (atsakingas)<input type="text" data-hk="person" value="${esc(r.person||'')}" data-combo="dl-people" placeholder="Vardas"></label>`}
         <label class="field hv-notes">Pastabos (bus akte)<textarea data-hk="notes" rows="2">${esc(r.notes||'')}</textarea></label>
       </div>
       ${eqPhotosHtml('handovers', r, { extra: hvPdfBlock(r) })}
@@ -31546,7 +31546,7 @@ function hvGearWire(host, r, period, save){
 }
 function hvGearShort(r){ const sp = hvSpan(r); return sp ? hvGearOf(r).filter(g=>{ const f = hvFree(g.itemId, sp[0], sp[1], r.id); return !f.sub && (+g.qty||0) > f.free; }) : []; }
 function hvNewModal(planned){
-  const r = hvNew(); EQ_PENDING[r.id] = r; if(planned){ r.status = 'numatyta'; r.issueDate = ''; }
+  const r = hvNew(); EQ_PENDING[r.id] = r; if(planned){ r.status = 'numatyta'; r.issueDate = ''; r.person = ''; }   // who hands it over – only when it is really handed over
   openModal(`<h3>${planned ? 'Numatomas išdavimas' : 'Naujas išdavimas'}</h3>${planned ? '<p class="section-sub" style="margin:-4px 0 10px;">Įranga ir paėmėjo informacija iš anksto. Išdavimo dieną atsidarai, pažymi atidėtą įrangą, įkeli nuotraukas ir užregistruoji.</p>' : ''}
     <div class="rt-new hv-new">
       <div class="field">Įranga * <small class="section-sub" style="margin:0;">(iš sandėlio – paieška; likutis tikrinamas išdavimo dienomis)</small>${hvGearHtml(r)}</div>
@@ -31561,7 +31561,7 @@ function hvNewModal(planned){
         <div class="field">Grąžinimas<div class="rt-dt"><input type="date" id="hn_rd"><input type="time" id="hn_rt"></div></div>
         <label class="field">Nuomos kaina<input type="text" id="hn_price" placeholder="pvz. 250 € + PVM"></label>
         <label class="field">Užstatas<input type="text" id="hn_deposit" placeholder="pvz. 500 €"></label>
-        <label class="field">Išdavė (atsakingas)<input type="text" id="hn_person" data-combo="dl-people" value="${esc(r.person)}"></label>
+        ${planned ? '' : `<label class="field">Išdavė (atsakingas)<input type="text" id="hn_person" data-combo="dl-people" value="${esc(r.person)}"></label>`}
       </div>
       <label class="field">Pastabos (bus akte)<textarea id="hn_notes" rows="2"></textarea></label>
       ${planned ? '' : eqPhotosHtml('handovers', r)}
@@ -31589,7 +31589,7 @@ function hvNewModal(planned){
     if(!client){ toast('Įrašyk nuomininką.'); $('hn_client').focus(); return false; }
     if(planned && !$('hn_id').value){ toast('Įrašyk numatomą išdavimo dieną.'); $('hn_id').focus(); return false; }
     Object.assign(r, { items, client, clientCode:$('hn_clientCode').value.trim(), contact:$('hn_contact').value.trim(), phone:$('hn_phone').value.trim(), email:$('hn_email').value.trim(), address:$('hn_address').value.trim(),
-      issueDate:$('hn_id').value, issueTime:$('hn_it').value, returnDate:$('hn_rd').value, returnTime:$('hn_rt').value, price:$('hn_price').value.trim(), deposit:$('hn_deposit').value.trim(), person:$('hn_person').value.trim(), notes:$('hn_notes').value.trim() });
+      issueDate:$('hn_id').value, issueTime:$('hn_it').value, returnDate:$('hn_rd').value, returnTime:$('hn_rt').value, price:$('hn_price').value.trim(), deposit:$('hn_deposit').value.trim(), person:$('hn_person') ? $('hn_person').value.trim() : '', notes:$('hn_notes').value.trim() });
     if(r.person) evRememberPerson(r.person);
     const sh = hvGearShort(r); if(sh.length) toast('⚠ Neužtenka sandėlyje: '+sh.map(g=>g.name).join(', ')+' – išsaugota, bet patikrink.', 6000);
     return true;
@@ -31639,7 +31639,7 @@ function hvRegisterModal(r){
     const left = items.filter(it=>!r.ready[it.k]);
     if(left.length){ toast('Dar nepažymėta: '+left.map(x=>x.label).slice(0, 3).join(', ')+(left.length > 3 ? ' ir kt.' : '')); const hl = $('hrList'); hl.classList.add('eq-flash'); setTimeout(()=>hl.classList.remove('eq-flash'), 1500); return; }
     if(!eqPhotosReady(r)){ eqNeedPhotosToast('handovers'); const ph = root.querySelector('.eq-photos'); if(ph){ ph.scrollIntoView({ block:'center' }); ph.classList.add('eq-flash'); setTimeout(()=>ph.classList.remove('eq-flash'), 1800); } return; }
-    r.status = 'isduota'; r.issuedAt = new Date().toISOString(); r.issuedBy = offerMeName(); if(!r.person) r.person = r.issuedBy;
+    r.status = 'isduota'; r.issuedAt = new Date().toISOString(); r.issuedBy = offerMeName(); r.person = r.issuedBy;
     hvSave(r); done(); closeModal(); HV.filter = 'aktyvus'; if(currentTab==='handovers') hvRenderList();
     toast('✓ Išdavimas užregistruotas'); hvOfferPdf(r);
   };
