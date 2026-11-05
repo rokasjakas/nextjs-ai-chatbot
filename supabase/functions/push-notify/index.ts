@@ -163,7 +163,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 27;
+const PUSH_FN_VERSION = 28;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -903,7 +903,11 @@ export function dueMoments(t: Task, now: number, windowMs = 3600000): Moment[] {
 }
 function whenLt(iso: string | null): string {
   if (!iso) return "";
-  return new Intl.DateTimeFormat("lt-LT", { timeZone: TZ, month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+  // 00:00 Lithuanian time = a day without a time (the app writes a task with no time so): the date only
+  const hm = new Intl.DateTimeFormat("lt-LT", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(iso));
+  // the full date (2026-11-06), with the time when there is one
+  const day = new Intl.DateTimeFormat("lt-LT", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(iso));
+  return /^0?0:00$/.test(hm) ? day : day + " " + hm;
 }
 function before(min: number): string {
   if (min >= 1440 && min % 1440 === 0) return `${min / 1440} d.`;
@@ -1126,7 +1130,7 @@ async function onTask(uid: string, taskId: string, ev: string) {
     const ps = await db<Profile[]>(`profiles?select=id,email&id=in.${inList(mailIds)}`);
     const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
       <p>${esc(me || "")} paskyrė:</p><p style="font-size:16px;"><b>${esc(t.title)}</b></p>
-      ${t.due_at ? `<p>Kada: <b>${esc(whenLt(t.due_at))}</b></p>` : ""}${t.note ? `<p style="white-space:pre-wrap;color:#555;">${esc(t.note)}</p>` : ""}
+      ${t.due_at ? `<p>Kada: <b>${esc(whenLt(t.due_at))}</b></p>` : ""}${t.note ? `<div style="white-space:pre-wrap;color:#333;border-left:3px solid #ddd;padding:4px 0 4px 10px;margin:8px 0;">${esc(t.note)}</div>` : ""}
       <p><a href="https://app.eventsolutions.lt/?task=${t.id}" style="color:#2f80d8;">Atidaryti programėlėje</a></p>
       <p style="color:#777;font-size:12px;margin-top:18px;">EventSolutions App · tą dieną gausi ir priminimą.</p></div>`;
     mailErr = await mailTo(ps.map((p) => p.email).filter(Boolean), "Paskirta: " + t.title.slice(0, 120), html);
