@@ -129,9 +129,11 @@ async function oauthStart(who: string): Promise<string> {
   return "https://accounts.google.com/o/oauth2/v2/auth?" + new URLSearchParams({ client_id: CID(), redirect_uri: redirectUri(), response_type: "code",
     scope: "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email", access_type: "offline", prompt: "consent", include_granted_scopes: "true", state });
 }
-const page = (title: string, text: string) => new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title>
-<body style="font-family:system-ui,sans-serif;background:#111;color:#eee;display:grid;place-items:center;min-height:90vh;margin:0"><div style="max-width:420px;padding:24px;text-align:center"><h2>${title}</h2><p>${text}</p>
-<p><a style="color:#6AB0F3" href="https://app.eventsolutions.lt/?admin=1">Grįžti į programėlę</a></p></div>`, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+// Supabase shows a function's HTML as plain text – so back to the app, which shows the result
+const page = (title: string, text: string) => {
+  const msg = (title + ". " + text).replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+  return new Response(null, { status: 302, headers: { Location: "https://app.eventsolutions.lt/?admin=drive&gd=" + (title.startsWith("✓") ? "ok" : "err") + "&gdm=" + encodeURIComponent(msg) } });
+};
 async function oauthBack(u: URL): Promise<Response> {
   const code = u.searchParams.get("code"), state = u.searchParams.get("state") || "", err = u.searchParams.get("error");
   if (err) return page("Neprijungta", "Google: " + err.replace(/[<>&]/g, ""));
@@ -150,7 +152,7 @@ async function oauthBack(u: URL): Promise<Response> {
   const [old] = await db<{ email: string | null; root_id: string | null }[]>("gdrive_auth?select=email,root_id&id=eq.1").catch(() => []);
   await db("gdrive_auth?on_conflict=id", { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
     body: JSON.stringify({ id: 1, refresh_token: d.refresh_token, email, connected_by: s.w || "", connected_at: new Date().toISOString(), root_id: old && old.email === email ? old.root_id : null }) });
-  return page("✓ Google Drive prijungtas", `Paskyra <b>${email.replace(/[<>&]/g, "")}</b>. Renginių aplankai bus kuriami aplanke „Renginiai (Event Solutions)“. Gali uždaryti šį langą.`);
+  return page("✓ Google Drive prijungtas", `Paskyra <b>${email.replace(/[<>&]/g, "")}</b>. Renginių aplankai bus kuriami aplanke „Renginiai (Event Solutions)“.`);
 }
 const folderUrl = (id: string) => `https://drive.google.com/drive/folders/${id}`;
 async function mkFolder(name: string, parent: string): Promise<string> {

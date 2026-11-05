@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-tPWckutVN5nhYV6I5C+EbSOU2SHhiWFE6unQnR/4oAk=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QutvBP1uWXg1QVotHPW+xSZ+l/blV6OOybc0DNb47zo=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -15965,9 +15965,13 @@ async function admWatch(){
 }
 // opened from the notification: ?admin=pending
 function admFromUrl(){
-  const q = new URLSearchParams(location.search).get('admin'); if(!q) return;
+  const sp = new URLSearchParams(location.search), q = sp.get('admin'); if(!q) return;
   history.replaceState(null, '', location.pathname);
   if(ACCESS.role!=='admin' && !isSuper()) return;
+  // back from „Prisijungti su Google“ (Google Drive): the result on the Admin page
+  if(q==='drive'){ const ok = sp.get('gd')==='ok', m = sp.get('gdm') || '';
+    setTab('admin'); toast((ok ? '' : '⚠ ')+m+(ok ? ' Dabar spausk „Patikrinti ryšį“ ir „Įjungti“.' : ''), 12000);
+    setTimeout(()=>{ try{ const c = $('admDrOut'); if(c) c.scrollIntoView({ block:'center' }); }catch(e){} }, 800); return; }
   ADM.filter = 'pending'; ADM.loaded = false; setTab('admin');
 }
 async function admLoad(){
@@ -24667,7 +24671,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v712';
+const APP_VER = 'v713';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -53671,6 +53675,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-06 01:00', v:'v713', k:'fix', t:'Google Drive: po prisijungimo – atgal į programą', f:'Prisijungus su Google, grįžtama tiesiai į Admin puslapį su pranešimu (anksčiau atsidarydavo puslapis su kodu).' },
   { d:'2026-11-06 00:30', v:'v712', k:'fix', t:'Google Drive – atskiri raktai', f:'Google Drive prijungimui naudojami atskiri raktai GDRIVE_CLIENT_ID ir GDRIVE_CLIENT_SECRET, kad nesusipainiotų su Google Meet skambučių raktais.' },
   { d:'2026-11-06 00:00', v:'v711', k:'new', t:'Laikas visur rašomas ranka; Slack kanalas archyvuojamas iškart ištrynus renginį', f:'Visoje programoje laiko pasirinkimo langai (ratukai) panaikinti – laikas rašomas skaičiais: 1500 → 15:00, 9 → 09:00. Renginių „diena, laikas“ langelyje Nuo / Iki irgi rašomi ranka; datos su laiku lange data renkama kalendoriuje, laikas įrašomas ranka. Ištrynus renginį, jo Slack kanalas archyvuojamas iš karto (anksčiau – tik kitą rytą).' },
   { d:'2026-11-05 23:30', v:'v710', k:'new', t:'Slack: į renginio kanalą – visi nariai', f:'Sukūrus renginį, į jo Slack kanalą iškart pakviečiami visi aktyvūs Slack nariai (be svečių). Kas prisijungs prie Slack vėliau, bus pakviestas kitą kartą išsaugojus renginį ar kasdienio atnaujinimo metu.' },
