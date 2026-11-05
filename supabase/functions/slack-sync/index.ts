@@ -298,8 +298,14 @@ Deno.serve(async (req) => {
     if (action === "sync") {
       if (!who.edit) return json({ error: "Kanalą kuria tie, kas redaguoja Renginius." }, 403);
       if (!(await slackOn())) return json({ ok: true, skipped: "išjungta" });
-      const ev = await loadEvent(String(b.event_id || ""));
-      if (!ev) return json({ error: "Renginys nerastas (dar neišsaugotas?)." }, 404);
+      const id = String(b.event_id || "");
+      const ev = await loadEvent(id);
+      if (!ev) {
+        // the event was deleted in the app: its channel – a message and archived at once
+        const [row] = await db<Row[]>(`slack_channels?event_id=eq.${enc(id)}&select=*`);
+        if (row && !row.archived_at) return json({ ok: true, ...(await syncEvent({ id, name: row.name, deletedAt: new Date().toISOString() }, [])) });
+        return json({ error: "Renginys nerastas (dar neišsaugotas?)." }, 404);
+      }
       return json({ ok: true, ...(await syncEvent(ev, await loadMembers())) });
     }
     if (action === "backfill") {
