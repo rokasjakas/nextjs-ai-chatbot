@@ -210,6 +210,12 @@ async function ensure(ev: Ev): Promise<Row> {
     row.subs[k] = { id, url: folderUrl(id) };
   }
   const errs: string[] = [];
+  // anyone with the link may view (no Google sign-in needed); adding / changing files – only those it is shared with
+  // (the owner's choice, 2026-11-05)
+  if (!row.shared.includes("anyone")) {
+    try { await g(`files/${row.folder_id}/permissions`, { method: "POST", body: JSON.stringify({ type: "anyone", role: "reader", allowFileDiscovery: false }) }); row.shared.push("anyone"); }
+    catch (e) { errs.push("nuoroda visiems: " + (e as Error).message); }
+  }
   // Office and up – may edit
   const want = (await officeEmails()).filter((e) => !row.shared.includes(e));
   for (const e of want) { const err = await grant(row.folder_id, e, "writer"); if (err) errs.push(e + ": " + err); else row.shared.push(e); }
