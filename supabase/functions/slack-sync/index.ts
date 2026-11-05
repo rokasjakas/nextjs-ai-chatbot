@@ -100,9 +100,10 @@ async function slackMembers(): Promise<string[]> {
 type Entry = { pos?: string; person?: string; status?: string };
 type Ev = { id: string; kind?: string; name?: string; title?: string; date?: string; dateEnd?: string; status?: string; deletedAt?: string; handoverId?: string;
   location?: string; organizer?: string; organizerPhone?: string; manager?: string; times?: { label?: string; time?: string }[];
-  crew?: { title?: string; entries?: Entry[] }[]; logistics?: { day?: string; vehicle?: string; driver?: string }[] };
+  crew?: { title?: string; entries?: Entry[] }[]; logistics?: { day?: string; vehicle?: string; driver?: string }[];
+  intro?: { notes?: string; links?: string[]; files?: { name: string; url?: string; error?: string }[]; ready?: boolean; at?: string } };
 type Member = { id: string; email: string; full_name?: string; first_name?: string; last_name?: string; nickname?: string; role: string };
-type Row = { event_id: string; channel_id: string; name: string; url: string; brief_ts: string | null; invited: string[]; archived_at: string | null };
+type Row = { event_id: string; channel_id: string; name: string; url: string; brief_ts: string | null; invited: string[]; archived_at: string | null; intro_ts?: string | null };
 
 const evEnd = (ev: Ev) => ev.dateEnd && ev.dateEnd > String(ev.date || "") ? ev.dateEnd : String(ev.date || "");
 function slug(ev: Ev): string {
@@ -199,6 +200,21 @@ async function syncEvent(ev: Ev, members: Member[]): Promise<Record<string, unkn
   let ts = r.brief_ts;
   if (ts) { const u = await slack("chat.update", { channel: r.channel_id, ts, text }); if (!u.ok) ts = null; }
   if (!ts) { const p = await slack("chat.postMessage", { channel: r.channel_id, text, unfurl_links: false }); if (p.ok) ts = String(p.ts); }
+  // what was added when the event was made (Naujas renginys: notes, links, files – the files in its Drive folder):
+  // one message, once; waits until the files are in Drive (or 15 min.)
+  const it = ev.intro;
+  if (it && !r.intro_ts && (it.ready || Date.now() - Date.parse(it.at || "") > 15 * 60e3)) {
+    const parts: string[] = [];
+    if (String(it.notes || "").trim()) parts.push("📝 *Pastabos*\n" + md(String(it.notes).trim()));
+    const links = (it.links || []).map((x) => String(x).trim()).filter(Boolean);
+    if (links.length) parts.push("🔗 *Nuorodos*\n" + links.map((l) => "• " + (/^https?:\/\//i.test(l) ? `<${l}>` : md(l))).join("\n"));
+    const files = it.files || [];
+    if (files.length) parts.push("📎 *Failai* (renginio Google Drive)\n" + files.map((f) => "• " + (f.url ? `<${f.url}|${md(f.name).replace(/[|<>]/g, "")}>` : md(f.name) + (f.error ? " – neįkeltas: " + md(f.error) : ""))).join("\n"));
+    if (parts.length) {
+      const p = await slack("chat.postMessage", { channel: r.channel_id, text: parts.join("\n\n"), unfurl_links: false });
+      if (p.ok) await patchRow(ev.id, { intro_ts: String(p.ts) });
+    }
+  }
   // the people: every active member of the Slack workspace (no guests, no bots, no deactivated accounts);
   // someone who joins Slack later is invited at the next sync. `invited` keeps their Slack user ids.
   const all = await slackMembers();

@@ -336,6 +336,30 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method === "GET") { const u = new URL(req.url); if (u.searchParams.has("oauth")) { try { return await oauthBack(u); } catch (e) { return page("Neprijungta", String((e as Error).message).replace(/[<>&]/g, "")); } } }
   if (req.method !== "POST") return json({ error: "POST" }, 405);
+  // a file added in the app (Naujas renginys → Failai): the bytes as the body, straight into the event's Drive folder
+  const qu = new URL(req.url);
+  if (qu.searchParams.get("upload") === "1") {
+    try {
+      const who = await caller(req);
+      if (!who) return json({ error: "Prisijunk iš naujo." }, 401);
+      if (!who.edit) return json({ error: "Failus kelia tie, kas redaguoja Renginius." }, 403);
+      if (!(await driveOn())) return json({ error: "Google Drive išjungtas (Admin → Google Drive)." }, 400);
+      const ev = await loadEvent(qu.searchParams.get("event_id") || "");
+      if (!ev) return json({ error: "Renginys nerastas (dar neišsaugotas?)." }, 404);
+      const name = String(qu.searchParams.get("name") || "failas").replace(/[\\/]+/g, "-").slice(0, 200);
+      const row = await ensure(ev), type = req.headers.get("content-type") || "application/octet-stream", len = req.headers.get("content-length");
+      const start = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id,webViewLink", {
+        method: "POST", headers: { Authorization: "Bearer " + await gToken(), "Content-Type": "application/json; charset=UTF-8", "X-Upload-Content-Type": type, ...(len ? { "X-Upload-Content-Length": len } : {}) },
+        body: JSON.stringify({ name, parents: [row.folder_id] }) });
+      const loc = start.headers.get("location"); if (!start.ok || !loc) throw new UserError("Google Drive įkėlimo pradėti nepavyko (" + start.status + ")");
+      const up = await fetch(loc, { method: "PUT", headers: { "Content-Type": type, ...(len ? { "Content-Length": len } : {}) }, body: req.body });
+      const f = await up.json() as { id?: string; webViewLink?: string; error?: { message?: string } };
+      if (!up.ok || !f.id) throw new UserError("Google Drive: " + (f.error?.message || up.status));
+      await db("drive_uploads", { method: "POST", headers: { Prefer: "return=minimal" },
+        body: JSON.stringify({ event_id: ev.id, slack_file: "app:" + crypto.randomUUID(), name, category: "root", drive_id: f.id, drive_url: f.webViewLink, by_name: who.id, done_at: new Date().toISOString() }) });
+      return json({ ok: true, name, url: f.webViewLink, folder: row.url });
+    } catch (e) { return json({ error: (e as Error).message }, e instanceof UserError ? 400 : 500); }
+  }
   const body = await req.text();
   try {
     // ---- Slack (Event Subscriptions and Interactivity point here) ----
