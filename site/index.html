@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-QnNfAJlRKvvpEfNymW/QlMF5TF2bKLDwE/5Rwuk2R5w=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-gw65noLSxXE06TD10WXAy3ELA4r5kOid7VfB+Hpf87M=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -3857,6 +3857,8 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .pp-star svg{width:13px;height:13px;}
 .pp-star.on{color:#D9B44A;opacity:.85;}
 .pp-stars.can:not(.set) .pp-star{opacity:0;transition:opacity .15s;}
+.pp-stars .pp-star svg{width:14px;height:14px;}
+.pp-stars.can:hover .pp-star{opacity:.5 !important;color:var(--text-faint);} .pp-stars.can .pp-star:hover, .pp-stars.can .pp-star:has(~ .pp-star:hover){opacity:1 !important;color:#D9B44A;}
 .pp-row:hover .pp-stars.can .pp-star,.pp-card:hover .pp-stars.can .pp-star{opacity:.45;}
 .pp-row:hover .pp-stars.can .pp-star.on,.pp-card:hover .pp-stars.can .pp-star.on{opacity:.9;}
 .pp-stars.can.set .pp-star:not(.on){opacity:0;} .pp-row:hover .pp-stars.can.set .pp-star:not(.on){opacity:.35;}
@@ -24625,7 +24627,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v694';
+const APP_VER = 'v695';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -28153,16 +28155,19 @@ function ppSections(list){
 }
 function ppSort(list){ return ppQSort(list.slice().sort((a,b)=>ppName(a).natCmp(ppName(b)))); }
 // searching: the first or last name starting with the letters first
-function ppQSort(list){ const l = srchSort(list, PP.q, c=>[c.first, c.last, ppName(c)]); return [...l.filter(c=>!c.inactive).sort((a, b)=>ppEvTotal(b) - ppEvTotal(a)), ...l.filter(c=>c.inactive)]; }
+// the more stars (set by hand, 0–5) – the higher; the same stars – the more events worked; the inactive at the bottom
+function ppQSort(list){ const l = srchSort(list, PP.q, c=>[c.first, c.last, ppName(c)]); return [...l.filter(c=>!c.inactive).sort((a, b)=>ppRating(b) - ppRating(a) || ppEvTotal(b) - ppEvTotal(a)), ...l.filter(c=>c.inactive)]; }
 // stars: 3 – visiška pirmenybė, 2 – labai dažnai dirbame, 1 – dirbome; the people with stars go first in their group
 // one star – this person has the priority (set by hand); earlier red / 1–3 stars count as it
 function ppPrio(c){ return c.prio!=null ? !!c.prio : !!c.red || +c.stars > 0; }
+// the rating: 0–5 stars set by hand (c.rating); someone marked „pirmenybė“ before (one star) counts as 5 until changed
+function ppRating(c){ const r = c && c.rating!=null ? +c.rating : (c && ppPrio(c) ? 5 : 0); return Math.max(0, Math.min(5, Math.round(r) || 0)); }
 function ppStarsHtml(c){
-  const on = ppPrio(c), can = canEdit('people');
+  const on = ppPrio(c), can = canEdit('people'), rt = ppRating(c);
   const ev = EV.loaded ? ppEvOf(c) : null;
   const evn = ev && ev.n ? `<span class="pp-evn" title="Pradirbta renginių: ${ev.n} (per paskutinius 12 mėn. – ${ev.y}) – skaičiuojami jau praėję renginiai, kurių sąraše jis liko${ev.last ? ', paskutinis '+esc(ev.last) : ''}">${ev.n}×</span>` : '';
-  if(!can) return evn + (on ? `<span class="pp-stars set"><span class="pp-star on" title="Pirmenybė">${slIcon('star')}</span></span>` : '');
-  return evn + `<span class="pp-stars can ${on ? 'set' : ''}"><button type="button" class="pp-star ${on ? 'on' : ''}" data-pact="star" data-id="${esc(c.id)}" title="${on ? 'Pirmenybė – spausk, kad nuimtum' : 'Pažymėti pirmenybe'}">${slIcon('star')}</button></span>`;
+  if(!can) return evn + (rt ? `<span class="pp-stars set" title="Įvertinimas: ${rt} iš 5">${[1,2,3,4,5].map(k=>`<span class="pp-star ${k<=rt ? 'on' : ''}">${slIcon('star')}</span>`).join('')}</span>` : '');
+  return evn + `<span class="pp-stars can ${rt ? 'set' : ''}" data-rt="${rt}">${[1,2,3,4,5].map(k=>`<button type="button" class="pp-star ${k<=rt ? 'on' : ''}" data-pact="star" data-v="${k}" data-id="${esc(c.id)}" title="${k===rt ? 'Spausk dar kartą – nuimti įvertinimą' : k+' iš 5'}">${slIcon('star')}</button>`).join('')}</span>`;
 }
 // in how many events (not cancelled) each person is written – by the name in the events' crew lists
 function ppEvCounts(){
@@ -28186,6 +28191,11 @@ function ppEvOf(c){
 // all the events one worked (the more – the higher in the list; the stars only mark the priority, they do not sort)
 function ppEvTotal(c){ return EV.loaded ? (ppEvOf(c)||{}).n||0 : 0; }
 async function ppSetPrio(c){ if(await ppSaveContact(Object.assign({}, c, { prio:!ppPrio(c) }))) ppRenderBody(); }
+// a star pressed: that many stars (the same again – none); the list is ordered by them at once
+async function ppSetRating(c, k){
+  const v = ppRating(c)===k ? 0 : k, x = Object.assign({}, c, { rating:v, prio:v>=5 });
+  if(await ppSaveContact(x)){ ppRenderBody(); toast(v ? '★ '+ppName(c)+': '+v+' iš 5' : ppName(c)+': įvertinimas nuimtas'); }
+}
 // inside a group: people for whom it is their 1st position first, then by level (Pro → Crew)
 function ppRank(list, g){
   if(!g || g==='-' || g==='Be grupės') return ppQSort(list);
@@ -28308,7 +28318,7 @@ function ppBindActions(box){
     if(b.dataset.pact==='call') ppCallModal(c);
     if(b.dataset.pact==='mail') ppMail(c);
     if(b.dataset.pact==='inactive') ppSetInactive(c, !c.inactive);
-    if(b.dataset.pact==='star') ppSetPrio(c);
+    if(b.dataset.pact==='star') ppSetRating(c, +b.dataset.v || 0);
     if(b.dataset.pact==='outcome') ppSetOutcome(b.dataset.call, b.dataset.v);
     if(b.dataset.pact==='mark') ppMarkModal(c, b.dataset.day ? [b.dataset.day] : null);
     if(b.dataset.pact==='rem') ppRemModal(c);
@@ -44884,7 +44894,7 @@ const GUIDE = [
   rel:['people','newproj','fleet','venues','chat','flows'], kw:'renginys renginiai komanda montavimas demontavimas budi operatoriai logistika laiskas importas statusas patvirtintas atsauktas' },
 
 { id:'people', tab:'people', g:'Ofisas', t:'Žmonės', d:'Visų kontaktų archyvas (freelanceriai, technikai, crew), skambučių žymos (Bookingas) ir užimtumo kalendorius.',
-  s:[['Archyvas', '• Grupės: Garsas (A/OP, A/TECH), Šviesa (L/OP, L/TECH), Video (VJ, V/TECH), Operatoriai, Crew ir kt.; kiekviena grupė – lentelė su lygiu, teisėmis, gebėjimais, pultais, miestu, įkainiu, telefonu.\n• Prie vardo – kiek renginių pradirbo (pagal tai rikiuojama), žvaigždutė – pirmenybė, „Nebeaktyvus“ – į apačią.\n• Įkainiai (valandinis / stafkė) – mato tik Office, Projektų vadovai ir Admin.\n• „Įkelti Excel“ – biuro kontaktų failas (freelanceriai, organizatoriai, RENT kompanijos).'],
+  s:[['Archyvas', '• Grupės: Garsas (A/OP, A/TECH), Šviesa (L/OP, L/TECH), Video (VJ, V/TECH), Operatoriai, Crew ir kt.; kiekviena grupė – lentelė su lygiu, teisėmis, gebėjimais, pultais, miestu, įkainiu, telefonu.\n• Prie vardo – įvertinimas 1–5 žvaigždutės (uždedamos rankiniu būdu; kuo daugiau – tuo aukščiau sąraše) ir kiek renginių pradirbo (vienodai įvertintų tvarka), „Nebeaktyvus“ – į apačią.\n• Įkainiai (valandinis / stafkė) – mato tik Office, Projektų vadovai ir Admin.\n• „Įkelti Excel“ – biuro kontaktų failas (freelanceriai, organizatoriai, RENT kompanijos).'],
      ['Bookingas', 'Pasirenki dieną ar laikotarpį ir skambini: „Skambinti“ (šiuo įrenginiu arba pranešimu į telefoną), tada „Kuo baigėsi?“ – Sutiko, Atsisakė, Negali, Neatsiliepė, Perskambinti, Kita. Žymą iškart mato visi – niekas neskambina antrą kartą. Priminimai el. paštu apie užsakytas dienas.'],
      ['Užimtumas', 'Mėnesio kalendorius: kas kurią dieną laisvas, kas sutiko, kam perskambinti; filtrai pagal grupę ir žymą.'],
      ['Ryšys su renginiais', 'Renginio komandos laukeliuose siūlomi Žmonių vardai, komandos lange „Rodyti tik laisvus“ naudoja Bookingo žymas. Žmogaus kortelė (paieškoje) rodo jo renginius.']],
@@ -53214,6 +53224,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-05 10:00', v:'v695', k:'chg', t:'Žmonės: įvertinimas 1–5 žvaigždutės', f:'Prie žmogaus – 5 žvaigždutės, uždedamos rankiniu būdu (paspaudus tą pačią – nuimama). Kuo daugiau žvaigždučių, tuo aukščiau sąraše; vienodai įvertintų – pagal pradirbtų renginių skaičių. Anksčiau pažymėti „pirmenybe“ rodomi su 5 žvaigždutėmis.' },
   { d:'2026-11-05 09:00', v:'v694', k:'chg', t:'Pasiūlymai: versijos pavadinimas ir komentaras', f:'Spaudžiant „Versija“ galima įrašyti versijos pavadinimą ir komentarą. Versijų sąraše komentaras matomas po pavadinimu, o ✎ leidžia pakeisti pavadinimą ir komentarą.' },
   { d:'2026-11-04 22:00', v:'v692', k:'new', t:'Renginiai: Google Drive aplankai', f:'Išsaugojus renginį įmonės bendrame Google Drive sukuriamas aplankas „data pavadinimas“ su Darbiniai planai, Video failai, Raideriai, Erdvės foto, Papildomi failai. Prie renginio – Drive mygtukas (atidaro aplanką). Siunčiant renginio laišką gavėjai gauna prieigą ir laiške – nuoroda. Slack renginio kanale įkėlus failą botas paklausia, į kurį aplanką jį dėti. Įjungiama Admin → Google Drive.' },
   { d:'2026-11-04 21:00', v:'v691', k:'new', t:'Ofisas → Share dokumentai', f:'Nauja skiltis (Office ir aukštesni): bendrų dokumentų sąrašas – pavadinimas, kas tai, grupė ir Google Sheets / Docs / Drive nuoroda. Paspaudus atsidaro naujame lange. Reikia paleisti supabase/sql/shared_docs.sql.' },
