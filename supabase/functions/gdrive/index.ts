@@ -141,7 +141,10 @@ async function oauthBack(u: URL): Promise<Response> {
   if (!s.x || s.x < Date.now()) return page("Neprijungta", "Nuoroda pasibaigė – bandyk dar kartą iš Admin.");
   const r = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ code, client_id: CID(), client_secret: CSEC(), redirect_uri: redirectUri(), grant_type: "authorization_code" }) });
-  const d = await r.json() as { access_token?: string; refresh_token?: string; error_description?: string; error?: string };
+  const d = await r.json() as { access_token?: string; refresh_token?: string; scope?: string; error_description?: string; error?: string };
+  // Google lets the Drive tick be left off – then only the e-mail is given and every Drive call fails
+  if (d.access_token && !/\/auth\/drive(\.file)?(\s|$)/.test(String(d.scope || ""))) return page("Neprijungta – trūksta Drive leidimo",
+    "Google lange nebuvo pažymėta varnelė prie <b>„See, edit, create and delete only the specific Google Drive files you use with this app“</b> (Drive failai). Grįžk į Admin → Google Drive → „Prisijungti su Google“ ir šį kartą <b>pažymėk visas varneles</b>.");
   if (!d.refresh_token) return page("Neprijungta", "Google negrąžino ilgalaikio rakto (" + String(d.error_description || d.error || "be refresh_token").replace(/[<>&]/g, "") + ").");
   let email = ""; try { const me = await (await fetch("https://www.googleapis.com/oauth2/v2/userinfo", { headers: { Authorization: "Bearer " + d.access_token } })).json(); email = String(me.email || ""); } catch { /* none */ }
   const [old] = await db<{ email: string | null; root_id: string | null }[]>("gdrive_auth?select=email,root_id&id=eq.1").catch(() => []);
@@ -346,7 +349,8 @@ Deno.serve(async (req) => {
       const out: Record<string, unknown> = { mode: om ? "oauth" : "sa", client: !!(CID() && CSEC()), email: a?.email || "", redirect: redirectUri(),
         sa: !!E("GOOGLE_SA_JSON"), root: !!E("GDRIVE_ROOT_ID"), slack: !!E("SLACK_SIGNING_SECRET"), on: await driveOn() };
       try { await gToken(); out.token = true; const f = await g<{ name?: string; driveId?: string }>(`files/${await root()}?fields=name,driveId`); out.name = f.name; out.shared_drive = !!f.driveId; }
-      catch (e) { out.error = (e as Error).message; }
+      catch (e) { const m = (e as Error).message; out.error = /insufficient authentication scopes|insufficientPermissions|ACCESS_TOKEN_SCOPE_INSUFFICIENT/i.test(m)
+        ? "Prijungiant nebuvo pažymėta Google Drive varnelė. Spausk „Prisijungti su Google“ dar kartą ir Google lange pažymėk visas varneles (Drive failai)." : m; }
       const [n] = await db<{ count: number }[]>("event_drive?select=count").catch(() => [{ count: 0 }]); out.folders = n?.count ?? 0;
       return json(out);
     }
