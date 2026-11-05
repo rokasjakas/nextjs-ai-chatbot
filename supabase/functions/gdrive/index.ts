@@ -29,7 +29,7 @@ const corsHeaders = {
 const E = (n: string) => Deno.env.get(n) ?? "";
 class UserError extends Error {}
 const enc = encodeURIComponent;
-const SUBS: [string, string][] = [["plans", "Darbiniai planai"], ["video", "Video failai"], ["riders", "Raideriai"], ["venue", "Erdvės foto"], ["extra", "Papildomi failai"]];
+const SUBS: [string, string][] = [["plans", "Darbiniai planai"], ["video", "Video failai"], ["riders", "Raideriai"], ["venue", "Erdvės foto"], ["renders", "Renderiai"], ["extra", "Papildomi failai"]];
 const FOLDER = "application/vnd.google-apps.folder";
 
 function json(body: unknown, status = 200): Response {
