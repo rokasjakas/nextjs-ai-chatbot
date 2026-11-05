@@ -1,5 +1,3 @@
--- Tik skaito: Google Drive būsena (ar prijungta, ar įjungta, kiek aplankų) – be raktų
-select 'prijungta' as k, coalesce((select coalesce(email,'?') || ' · aplankas ' || coalesce(root_id,'nėra') || ' · ' || coalesce(connected_by,'') || ' ' || connected_at::text || ' · raktas ' || case when refresh_token is null then 'NĖRA' else 'yra' end from public.gdrive_auth where id = 1), 'NE') as v
-union all select 'įjungta', coalesce((select value::text from public.app_config where key = 'gdrive'), 'NE')
-union all select 'aplankų', count(*)::text from public.event_drive
-union all select 'įkėlimų iš Slack', count(*)::text from public.drive_uploads;
+-- Tik skaito: renginių Drive aplankai – kam suteikta prieiga, klaidos; Office+ narių el. paštai
+select 'aplankas' as k, event_id || ' · ' || name || ' · bendrinta: ' || coalesce(array_length(shared, 1), 0)::text || ' · ' || array_to_string(shared, ', ') || ' · klaida: ' || coalesce(left(last_error, 300), '') as v from public.event_drive order by created_at desc limit 5;
+select 'office+' as k, string_agg(email, ', ') as v from public.profiles where role in ('admin','pm','office');
