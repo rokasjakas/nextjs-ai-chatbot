@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-X2PZchVUsgUbJ2/CsHG0JWG2sp3fvaJ3bCv62PNBY9o=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-6+bJbQmxyEtwwVYi/AQQ4NYF6ThvVbLSEEfQVVN0HO0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -24657,7 +24657,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v702';
+const APP_VER = 'v703';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31350,7 +31350,10 @@ function hvRenderList(){
   const all = document.getElementById('hvAll'); if(all) all.onclick = ()=>{ HV.filter = 'visi'; hvRenderList(); };
   const more = document.getElementById('hvMore'); if(more) more.onclick = ()=>{ HV.limit = limit+100; hvRenderList(); };
   el.querySelectorAll('.eq-photos').forEach(x=>teamFillImages(x));
-  hvGearWireAll(el);
+  hvGearWireAll(el); hvWhoWireAll(el);
+}
+function hvWhoWireAll(root){
+  (root||document).querySelectorAll('.hv-card .hv-who').forEach(h=>{ const c = h.closest('.hv-card'), r = c && HV.list.find(x=>x.id===c.dataset.hv); if(r) hvWhoWire(h, r, ()=>{ hvSave(r); clearTimeout(r._wt); r._wt = setTimeout(()=>hvTaskSync(r), 1200); }); });
 }
 function hvGearWireAll(root){
   (root||document).querySelectorAll('.hv-card .hvg').forEach(h=>{ const r = HV.list.find(x=>x.id===h.dataset.hvg); if(r) hvGearWire(h, r, ()=>hvSpan(r), ()=>hvSave(r)); });
@@ -31369,7 +31372,7 @@ function hvCardHtml(r){
       <span class="rt-badge">${st.icon} ${esc(st.label)}</span>
       <div class="rt-sum">
         <div class="rt-what">${esc(r.client || 'Nuomininkas nenurodytas')} · ${esc(lines[0]||'įranga')}${lines.length>1?` <span class="rt-more">+${lines.length-1}</span>`:''}</div>
-        <div class="rt-meta">${when?`<span class="${late?'rt-late':''}">🗓 ${esc(when)}</span>`:''}${r.person && r.status!=='numatyta'?`<span>👤 ${esc(r.person)}</span>`:''}${r.status==='numatyta' ? '' : `<span class="${eqPhotosReady(r)?'':'rt-flag'}">📷 ${pc||'nėra nuotraukų'}</span>`}${late?'<span class="rt-flag">⚠ vėluoja grąžinti</span>':''}</div>
+        <div class="rt-meta">${when?`<span class="${late?'rt-late':''}">🗓 ${esc(when)}</span>`:''}${r.person && r.status!=='numatyta'?`<span>👤 ${esc(r.person)}</span>`:''}${r.status==='numatyta' && (r.assignees||[]).length ? `<span title="Kas išduos">👥 ${esc(r.assignees.map(id=>{ const m = (TEAM.members||[]).find(x=>x.id===id); return m ? teamName(m) : '…'; }).join(', '))}</span>` : ''}${r.status==='numatyta' ? '' : `<span class="${eqPhotosReady(r)?'':'rt-flag'}">📷 ${pc||'nėra nuotraukų'}</span>`}${late?'<span class="rt-flag">⚠ vėluoja grąžinti</span>':''}</div>
       </div>
       <div class="rt-side">${open?'':quick}<span class="rt-chev">${open?'▴':'▾'}</span></div>
     </div>`;
@@ -31378,6 +31381,7 @@ function hvCardHtml(r){
   return `<div class="rt-card hv-card open ${st.cls}" data-hv="${esc(r.id)}">${head}
     <div class="rt-body">
       <div class="rt-seg" role="group" aria-label="Būsena">${HV_STATUS.map(s=>`<button type="button" class="${s.cls}${s.v===r.status?' on':''}" data-hva="status" data-v="${s.v}">${s.icon} ${s.label}</button>`).join('')}</div>
+      ${r.status==='numatyta' ? hvWhoHtml(r, !edit) : ''}
       ${r.status==='numatyta' && edit ? `<div class="hr-cta"><span>Išdavimo dieną – pažymėk atidėtą įrangą, įkelk nuotraukas ir užregistruok.</span><button type="button" class="btn primary small" data-hva="register">📋 Registruoti išdavimą</button></div>` : ''}
       ${r.issueComment ? `<div class="section-sub" style="margin:6px 0 0;">💬 ${esc(r.issueComment)}${r.issuedBy ? ' · išdavė '+esc(r.issuedBy) : ''}</div>` : ''}
       <div class="hv-grid">
@@ -31431,13 +31435,14 @@ function hvOfferPdf(r){
 }
 function hvRerender(r){
   const c = document.querySelector(`.hv-card[data-hv="${CSS.escape(r.id)}"]`);
-  if(c){ c.outerHTML = hvCardHtml(r); const n = document.querySelector(`.hv-card[data-hv="${CSS.escape(r.id)}"]`); if(n){ n.querySelectorAll('.eq-photos').forEach(x=>teamFillImages(x)); hvGearWireAll(n.parentElement); } }
+  if(c){ c.outerHTML = hvCardHtml(r); const n = document.querySelector(`.hv-card[data-hv="${CSS.escape(r.id)}"]`); if(n){ n.querySelectorAll('.eq-photos').forEach(x=>teamFillImages(x)); hvWhoWireAll(n.parentElement||document); hvGearWireAll(n.parentElement); } }
 }
 function hvBind(){
   const list = document.getElementById('hvList');
   const find = el=>{ const c = el.closest('.hv-card'); return c ? HV.list.find(r=>r.id===c.dataset.hv) : null; };
   list.addEventListener('input', e=>{ const t = e.target, r = find(t); if(!r || !t.dataset.hk) return; r[t.dataset.hk] = t.value; hvSave(r); });
   list.addEventListener('change', e=>{ const t = e.target, r = find(t); if(!r || !t.dataset.hk) return; r[t.dataset.hk] = t.value; if(t.dataset.hk==='person') evRememberPerson(t.value); hvSave(r);
+    if((t.dataset.hk==='issueDate' || t.dataset.hk==='issueTime' || t.dataset.hk==='client') && r.taskId){ clearTimeout(r._wt); r._wt = setTimeout(()=>hvTaskSync(r), 1500); }   // the assigned people's task follows the day
     if(t.dataset.hk==='issueDate' || t.dataset.hk==='returnDate'){ const g = t.closest('.hv-card').querySelector('.hvg'); if(g && g._refresh) g._refresh(); } if(['client','items','issueDate','returnDate','person'].includes(t.dataset.hk)){ const m = t.closest('.hv-card').querySelector('.rt-meta'); if(m) EQ_AFTER.handovers(r); } });
   const act = async e=>{
     const p = e.target.closest('[data-hvpdf]'); if(p){ const r = find(p); if(r) hvPdf(r, p.dataset.hvpdf==='share' ? 'share' : 'download'); return; }
@@ -31563,6 +31568,7 @@ function hvNewModal(planned){
         <label class="field">Užstatas<input type="text" id="hn_deposit" placeholder="pvz. 500 €"></label>
         ${planned ? '' : `<label class="field">Išdavė (atsakingas)<input type="text" id="hn_person" data-combo="dl-people" value="${esc(r.person)}"></label>`}
       </div>
+      ${planned ? hvWhoHtml(r) : ''}
       <label class="field">Pastabos (bus akte)<textarea id="hn_notes" rows="2"></textarea></label>
       ${planned ? '' : eqPhotosHtml('handovers', r)}
     </div>
@@ -31579,6 +31585,7 @@ function hvNewModal(planned){
   EQ_AFTER.handovers = x=>{ if(x.id===r.id) pdfBtn(); else prevAfter(x); };
   const finish = ()=>{ EQ_AFTER.handovers = prevAfter; };
   $('hn_cancel').onclick = async ()=>{ finish(); await eqDiscardPending('handovers', r); closeModal(); };
+  if(planned) hvWhoWire(document.querySelector('#modalRoot .hv-who'), r);
   const host = document.querySelector('#modalRoot .hvg');
   hvGearWire(host, r, ()=>{ const a = $('hn_id').value, b = $('hn_rd').value; return a ? [a, b && b>=a ? b : a] : null; }, ()=>{});
   ['hn_id', 'hn_rd'].forEach(id=>$(id).addEventListener('change', ()=>{ if(host._refresh) host._refresh(); }));
@@ -31594,7 +31601,7 @@ function hvNewModal(planned){
     const sh = hvGearShort(r); if(sh.length) toast('⚠ Neužtenka sandėlyje: '+sh.map(g=>g.name).join(', ')+' – išsaugota, bet patikrink.', 6000);
     return true;
   };
-  const store = ()=>{ delete EQ_PENDING[r.id]; HV.list.push(r); hvSave(r, true); hvLinkSoon(r, true); finish(); closeModal(); HV.filter = 'aktyvus'; HV.open = {[r.id]:true}; if(currentTab==='handovers') hvRenderList(); };
+  const store = ()=>{ delete EQ_PENDING[r.id]; HV.list.push(r); hvSave(r, true); hvLinkSoon(r, true); if(planned && (r.assignees||[]).length) hvTaskSync(r); finish(); closeModal(); HV.filter = 'aktyvus'; HV.open = {[r.id]:true}; if(currentTab==='handovers') hvRenderList(); };
   $('hn_save').onclick = ()=>{ if(!collect()) return; store(); toast(planned ? '✓ Numatomas išdavimas išsaugotas – išdavimo dieną spausk „Registruoti išdavimą“.' : 'Išdavimas išsaugotas.'+(eqPhotosReady(r) ? '' : ' Nuotraukas galėsi įkelti vėliau.')); };
   if($('hn_pdf')) $('hn_pdf').onclick = ()=>{
     if(!collect()) return;
@@ -31606,6 +31613,36 @@ function hvNewModal(planned){
 }
 
 // a planned handover, on its day: every item is ticked when it is set aside, photos and a comment, then it is registered as handed over
+// a planned handover: the people who will hand it over (app members) – a task with a reminder in their calendar and a notice
+function hvWhoHtml(r, ro){ return `<div class="field hv-who"><span>Kas išduos <small class="muted">– gaus pranešimą, matys kalendoriuje ir užduotyse</small></span>${ro ? '' : '<input type="search" class="hv-whoq" placeholder="Ieškoti nario…" autocomplete="off">'}<div class="hv-whol"></div></div>`; }
+function hvWhoWire(host, r, onChange){
+  if(!host || host._wired) return; host._wired = true; r.assignees = Array.isArray(r.assignees) ? r.assignees : [];
+  const box = host.querySelector('.hv-whol'), q = host.querySelector('.hv-whoq'), ro = !canEdit('handovers');
+  const draw = ()=>{ const t = normalizeText(q ? q.value : '').trim(), ms = (TEAM.members||[]).filter(m=>m.role && !['pending','blocked'].includes(m.role)).sort((a, b)=>teamName(a).natCmp(teamName(b)));
+    const sel = ms.filter(m=>r.assignees.includes(m.id)), rest = ro ? [] : ms.filter(m=>!r.assignees.includes(m.id) && (!t || normalizeText(teamName(m)).includes(t))).slice(0, t ? 30 : 10);
+    box.innerHTML = sel.concat(rest).map(m=>`<button type="button" class="chip small-chip ${r.assignees.includes(m.id) ? 'active' : ''}" data-u="${esc(m.id)}" ${ro ? 'disabled' : ''}>${esc(teamName(m))}</button>`).join('') || '<span class="muted">Niekas nepriskirtas.</span>';
+    box.querySelectorAll('[data-u]').forEach(b=>b.onclick = ()=>{ const i = r.assignees.indexOf(b.dataset.u); if(i>=0) r.assignees.splice(i, 1); else r.assignees.push(b.dataset.u); draw(); if(onChange) onChange(); }); };
+  if(q) q.oninput = draw;
+  draw(); if(!(TEAM.members||[]).length) teamLoadMembers().then(draw).catch(()=>{});
+}
+async function hvTaskSync(r){
+  const sb = getSb(); if(!sb) return;
+  const ids = (r.assignees||[]).slice(), open = r.status==='numatyta' || r.status==='ruosiama';
+  if(!ids.length || !open){
+    if(r.taskId){ await sb.from('tasks').delete().eq('id', r.taskId).then(()=>{}, ()=>{}); delete r.taskId; r.taskAssignees = []; hvSave(r); }
+    return;
+  }
+  const due = r.issueDate ? new Date(r.issueDate+'T'+(r.issueTime||'09:00')).toISOString() : null;
+  const row = { title:('Išdavimas: '+(r.client||'nuomininkas')).slice(0, 300), note:['Išdavimai → „Registruoti išdavimą“', r.items||''].filter(Boolean).join('\n\n').slice(0, 4000),
+    due_at:due, assignees:ids, remind:due ? { before:[0], push:true, email:true } : { email:true } };   // a notice and a letter when given, a reminder (and a letter) on the day
+  const before = r.taskAssignees || [];
+  if(r.taskId){ const u = await sb.from('tasks').update(row).eq('id', r.taskId).select('id'); if(u.error || !(u.data||[]).length) r.taskId = null; }   // made by someone else – a new one
+  if(!r.taskId){ const ins = await sb.from('tasks').insert(row).select('id').single();
+    if(ins.error){ toast('Priskirti nepavyko: '+ins.error.message, 5000); return; } r.taskId = ins.data.id; }
+  const fresh = ids.filter(u=>!before.includes(u) && u!==teamMe());
+  r.taskAssignees = ids; hvSave(r);
+  if(fresh.length && typeof tkNotify==='function') tkNotify(r.taskId, 'new');
+}
 function hvRegItems(r){
   const out = hvGearOf(r).map(g=>({ k:'g:'+g.itemId, label:(+g.qty||1)+' x '+g.name }));
   String(r.itemsExtra||'').split('\n').map(x=>x.trim()).filter(Boolean).forEach((l, i)=>out.push({ k:'x:'+i+':'+normalizeText(l).slice(0, 30), label:l }));
@@ -31640,7 +31677,7 @@ function hvRegisterModal(r){
     if(left.length){ toast('Dar nepažymėta: '+left.map(x=>x.label).slice(0, 3).join(', ')+(left.length > 3 ? ' ir kt.' : '')); const hl = $('hrList'); hl.classList.add('eq-flash'); setTimeout(()=>hl.classList.remove('eq-flash'), 1500); return; }
     if(!eqPhotosReady(r)){ eqNeedPhotosToast('handovers'); const ph = root.querySelector('.eq-photos'); if(ph){ ph.scrollIntoView({ block:'center' }); ph.classList.add('eq-flash'); setTimeout(()=>ph.classList.remove('eq-flash'), 1800); } return; }
     r.status = 'isduota'; r.issuedAt = new Date().toISOString(); r.issuedBy = offerMeName(); r.person = r.issuedBy;
-    hvSave(r); done(); closeModal(); HV.filter = 'aktyvus'; if(currentTab==='handovers') hvRenderList();
+    hvSave(r); if(r.taskId) hvTaskSync(r); done(); closeModal(); HV.filter = 'aktyvus'; if(currentTab==='handovers') hvRenderList();
     toast('✓ Išdavimas užregistruotas'); hvOfferPdf(r);
   };
   teamFillImages(root);
@@ -53552,6 +53589,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-05 19:00', v:'v703', k:'new', t:'Išdavimai: kas išduos', f:'Numatomam išdavimui priskiriamas vienas ar keli programos nariai („Kas išduos“). Jie gauna pranešimą ir laišką el. paštu, išdavimas atsiranda jų kalendoriuje ir užduotyse su priminimu išdavimo dieną.' },
   { d:'2026-11-05 18:00', v:'v701', k:'new', t:'Išdavimai: numatomi išdavimai ir registravimas', f:'Dvi formos: „+ Išdavimas“ (iškart) ir „+ Numatomas išdavimas“ – iš anksto įranga ir paėmėjo informacija. Išdavimo dieną „📋 Registruoti išdavimą“: prie kiekvieno daikto pažymima, kad atidėtas, įkeliamos nuotraukos, galima parašyti komentarą – ir išdavimas užregistruojamas.' },
   { d:'2026-11-05 16:30', v:'v700', k:'chg', t:'Paėmimai: „Pakeisti statusą“', f:'Paėmimo kortelėje vietoj raudono mygtuko – „Pakeisti statusą ▾“: Paimta, Paimta dalinai (įrašai, kas nepaimta – matosi kortelėje), Grąžinta.' },
   { d:'2026-11-05 15:30', v:'v699', k:'new', t:'Pasiūlymai: faktinės išlaidos', f:'Prie kiekvieno pasiūlymo (sąraše – piniginės mygtukas, redaktoriuje – kortelė „Faktinės išlaidos“) įrašomos realios išlaidos pagal sritis: Įranga, Žmonės, Transportas ir savos skiltys (jos įsimenamos), kiekvienoje – eilutės su suma. Į pasiūlymą ir PDF neįtraukiama; matomas palyginimas su pasiūlymo suma (pelnas, marža) ir Pasiūlymų analizėje.' },
