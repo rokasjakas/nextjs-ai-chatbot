@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-X5nwPUmBZ6Et4hHDG2TkaDpYTfDBeusUc7iQMw8D+E0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-pq1ymmS0CT6Ll68it01i/7ewf48XaYodBgRpND6fHX0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-cM+UHr9MrQFlgAe+5u4664TPCn4wgR/aqfUAtbkhxXI=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -24661,7 +24661,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v707';
+const APP_VER = 'v708';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -30821,7 +30821,11 @@ function renderRentalsTab(){
   bindRentalEvents();
   evLoad().then(renderRentalList, renderRentalList);
 }
-function rentalSortKey(r){ const order = {reikia:0, paimta:1, grazinta:2}; return (order[r.status]??3)+'|'+(r.status==='paimta' ? (r.returnDate||'') : (r.pickupDate||''))+'|'+r.createdAt; }
+// by status; inside: the coming / recent ones (from 2 weeks back) by their date first, then those without a date, then the old ones
+// (with ~1300 rentals, many imported, a new one with a later date fell beyond the first 100 shown)
+function rentalSortKey(r){ const order = {reikia:0, paimta:1, grazinta:2}, d = r.status==='paimta' ? (r.returnDate||'') : (r.pickupDate||''), from = lmDay(evToday(), -14);
+  const band = r.status==='grazinta' ? '0' : !d ? '1' : d >= from ? '0' : '2';
+  return (order[r.status]??3)+'|'+band+'|'+(r.status==='grazinta' ? String(9e15 - Date.parse(r.returnedAt || r.updatedAt || r.createdAt || 0)).padStart(16, '0') : d)+'|'+r.createdAt; }
 function renderRentalList(){
   const el = document.getElementById('rtList');
   if(!el) return;
@@ -30838,7 +30842,10 @@ function renderRentalList(){
   document.querySelectorAll('#rtFilters [data-filter]').forEach(b=>b.onclick = ()=>{ EV.rentalFilter = b.dataset.filter; EV.rentalLimit = 100; renderRentalList(); });
   const f = EV.rentalFilter;
   const rows = pool.filter(r=> f==='visi' || (f==='aktyvus' ? r.status!=='grazinta' : r.status===f));
+  // the one just saved here is shown first (so it is never hidden behind „Rodyti dar“)
   const groups = eqSorted(rows, RTQ.sort, (a,b)=>rentalSortKey(a).localeCompare(rentalSortKey(b)), r=>r.pickupDate || r.returnDate || '', r=>r.place);
+  if(EV.rtJust && groups.length){ let hit = null; groups.forEach(g=>{ const i = g.rows.findIndex(r=>r.id===EV.rtJust); if(i>=0) hit = g.rows.splice(i, 1)[0]; });
+    if(hit){ groups.forEach((g, gi)=>{ if(!g.rows.length && gi) groups.splice(gi, 1); }); groups.unshift({ head:'Ką tik pridėta', rows:[hit] }); } }
   const limit = EV.rentalLimit || 100;
   const hidden = searching && f!=='visi' ? pool.length - rows.length : 0;
   el.innerHTML = (searching ? `<div class="xg-meta">Rasta: <b>${rows.length}</b>${hidden?` · dar ${hidden} kituose skirtukuose — <button class="linklike" id="rtAll">rodyti visus</button>`:''}</div>` : '')
@@ -30983,7 +30990,7 @@ function openRentalNewModal(eventId){
     }
     if(r.person) evRememberPerson(r.person);
     evPeopleDatalist();
-    EV.rentals.push(r); rentalSave(r);
+    EV.rentals.push(r); rentalSave(r); EV.rtJust = r.id;
     closeModal();
     toast('Paėmimas išsaugotas.');
     if(currentTab==='rentals'){
@@ -53649,6 +53656,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-05 22:30', v:'v708', k:'fix', t:'Paėmimai: nauji nebepasimeta sąraše', f:'Paėmimų sąraše pirma rodomi artimiausi ir neseni (nuo 2 sav. atgal) pagal datą, toliau – be datos ir seni. Ką tik išsaugotas paėmimas visada rodomas viršuje (anksčiau dėl daugybės senų įrašų naujas atsidurdavo už „Rodyti dar“).' },
   { d:'2026-11-05 22:00', v:'v707', k:'chg', t:'Paėmimai, išdavimai: laikas ranka, nuo–iki', f:'Paėmimų ir išdavimų laikas rašomas ranka (be iššokančio pasirinkimo): 1500 → 15:00, galima ir nuo–iki: 0900–1100 (ar 09001100) → 09:00–11:00. Neįrašius laiko, laiške ir kalendoriuje jo nėra.' },
   { d:'2026-11-05 21:00', v:'v705', k:'chg', t:'Faktinės išlaidos: sąskaitos', f:'Prie faktinių išlaidų eilutės – 📎: įkeliama sąskaita ar kitas failas (PDF, Excel, Word, nuotrauka). „+ Sąskaita“ skiltyje – nauja eilutė iš įkelto failo, belieka įrašyti sumą. Failas atsidaro paspaudus.' },
   { d:'2026-11-05 20:00', v:'v704', k:'chg', t:'Išdavimai: redagavimas', f:'Prie kiekvieno išdavimo – ✎ „Redaguoti“: atsidaro ta pati forma su visa informacija (įranga, nuomininkas, kontaktai, datos, kaina, užstatas, pastabos, numatomame – kas išduos). Pakeitimai įrašomi tik paspaudus „Išsaugoti pakeitimus“.' },
