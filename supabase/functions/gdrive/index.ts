@@ -260,6 +260,11 @@ async function onFileShared(ev0: { file_id?: string; channel_id?: string; user_i
   const a = await slack("auth.test", {}, true) as { user_id?: string };
   if (info.file.user && info.file.user === a.user_id) return;   // the bot's own file
   const sh = info.file.shares || {}, ts = (sh.public?.[ev0.channel_id] || sh.private?.[ev0.channel_id] || [])[0]?.ts;
+  // the channel of an event deleted in the app (archived by the next morning's run): no Drive folder to put it in
+  if (!(await loadEvent(ch.event_id))) {
+    await slack("chat.postMessage", { channel: ev0.channel_id, ...(ts ? { thread_ts: ts } : {}), text: "Šio kanalo renginys programoje ištrintas – į Google Drive failas nekeliamas. Kelk failą į veikiančio renginio kanalą." });
+    return;
+  }
   const name = String(info.file.name || info.file.title || "failas");
   const ins = await db<{ id: string }[]>("drive_uploads?on_conflict=slack_file,event_id", { method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=representation" },
     body: JSON.stringify({ event_id: ch.event_id, slack_file: ev0.file_id, slack_ts: ts ?? null, name }) });
