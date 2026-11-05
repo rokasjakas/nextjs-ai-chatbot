@@ -173,7 +173,8 @@ drop trigger if exists wh_task_done on public.tasks;
 create trigger wh_task_done after update of done on public.tasks
   for each row execute function public.wh_task_done();
 
--- files: equipment-photos/whjobs/<job id>/… – Tech and up, and the people assigned to that job
+-- files: equipment-photos/whjobs/<job id>/… – Tech and up, and the people assigned to that job;
+-- equipment-photos/offers/<offer id>/… – the invoices of an offer's actual costs (those who see / edit offers)
 create or replace function public.equipment_photo_access(obj_name text, edit boolean) returns boolean
   language sql stable security definer set search_path = public as $$
   select case (storage.foldername(obj_name))[1]
@@ -183,6 +184,7 @@ create or replace function public.equipment_photo_access(obj_name text, edit boo
     when 'works'     then case when edit then public.can_edit('inventory') else public.can_view('inventory') end
     when 'whjobs'    then public.wh_can() or (not edit and exists (select 1 from public.wh_jobs j
                             where j.id::text = (storage.foldername(obj_name))[2] and (auth.uid() = any(j.assignees) or public.wh_asked(j.questions))))
+    when 'offers'    then case when edit then public.can_edit('offers') else public.can_view('offers') end   -- faktinių išlaidų sąskaitos
     else false end
 $$;
 grant execute on function public.equipment_photo_access(text, boolean) to authenticated;
