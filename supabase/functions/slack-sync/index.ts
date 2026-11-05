@@ -3,8 +3,8 @@
 // Every event (Renginiai, not „Sandėlio darbai“) gets its own public channel in the company Slack, as the
 // event channel in the app's chat (that one stays too):
 //   * the channel „#2026-11-05-festivalis-ruduo“ is made when the event is saved (or by the daily run);
-//   * the team is invited – app members found by name in the event's team and among its managers, matched to
-//     Slack by e-mail; Freelance members are not invited; someone added to the team later is invited then;
+//   * every active member of the Slack workspace is invited (no guests, bots or deactivated accounts); someone
+//     who joins Slack later is invited at the next sync of the event (saving it, or the daily run);
 //   * the first message is the event's brief (dates, place, times, contacts, the team by day, transport) and it
 //     is updated when the event changes;
 //   * a cancelled / deleted event: a message in the channel and the channel is archived; 7 days after the event
@@ -74,6 +74,26 @@ async function team() {
   const a = await slack("auth.test", {});
   if (!a.ok) throw new UserError("Slack: " + a.error);
   return TEAM = { url: String(a.url || "").replace(/\/?$/, "/"), team: String(a.team || ""), bot: String(a.user || "") };
+}
+
+// every active member of the workspace: no deactivated, bots, Slackbot, guests (single / multi-channel)
+let SLACK_MEMBERS: string[] | null = null, SLACK_MEMBERS_AT = 0;
+async function slackMembers(): Promise<string[]> {
+  if (SLACK_MEMBERS && Date.now() - SLACK_MEMBERS_AT < 10 * 60e3) return SLACK_MEMBERS;
+  const out: string[] = []; let cursor = "";
+  for (let k = 0; k < 50; k++) {
+    const args: Record<string, string | number> = { limit: 200 }; if (cursor) args.cursor = cursor;
+    const d = await slack("users.list", args);
+    if (!d.ok) throw new UserError("Slack narių sąrašo gauti nepavyko: " + d.error);
+    for (const u of (d.members || []) as { id: string; deleted?: boolean; is_bot?: boolean; is_app_user?: boolean; is_restricted?: boolean; is_ultra_restricted?: boolean }[]) {
+      if (u.deleted || u.is_bot || u.is_app_user || u.is_restricted || u.is_ultra_restricted || u.id === "USLACKBOT") continue;
+      out.push(u.id);
+    }
+    cursor = String(((d.response_metadata || {}) as { next_cursor?: string }).next_cursor || "");
+    if (!cursor) break;
+  }
+  SLACK_MEMBERS_AT = Date.now();
+  return SLACK_MEMBERS = out;
 }
 
 // ---- the event ----
@@ -179,20 +199,24 @@ async function syncEvent(ev: Ev, members: Member[]): Promise<Record<string, unkn
   let ts = r.brief_ts;
   if (ts) { const u = await slack("chat.update", { channel: r.channel_id, ts, text }); if (!u.ok) ts = null; }
   if (!ts) { const p = await slack("chat.postMessage", { channel: r.channel_id, text, unfurl_links: false }); if (p.ok) ts = String(p.ts); }
-  // the people
-  const { emails, unknown } = wanted(ev, members);
-  const invited = new Set((r.invited || []).map((x) => x.toLowerCase())), notInSlack: string[] = [];
+  // the people: every active member of the Slack workspace (no guests, no bots, no deactivated accounts);
+  // someone who joins Slack later is invited at the next sync. `invited` keeps their Slack user ids.
+  const all = await slackMembers();
+  const invited = new Set(r.invited || []), errors: string[] = [];
+  const todo = all.filter((id) => !invited.has(id));
   let added = 0;
-  for (const email of emails) {
-    if (invited.has(email)) continue;
-    const u = await slack("users.lookupByEmail", { email });
-    if (!u.ok) { notInSlack.push(email); continue; }
-    const uid = String((u.user as { id: string }).id);
-    const inv = await slack("conversations.invite", { channel: r.channel_id, users: uid });
-    if (inv.ok || /already_in_channel|cant_invite_self/.test(String(inv.error))) { invited.add(email); if (inv.ok) added++; }
-    else notInSlack.push(email + " (" + inv.error + ")");
+  for (let i = 0; i < todo.length; i += 500) {
+    const part = todo.slice(i, i + 500);
+    const inv = await slack("conversations.invite", { channel: r.channel_id, users: part.join(","), force: true });
+    if (inv.ok) { part.forEach((id) => invited.add(id)); added += part.length; continue; }
+    // force:true still answers an error when nobody new could be added; the per-user errors say who
+    const bad = new Set(((inv.errors || []) as { user?: string; error?: string }[]).filter((e) => !/already_in_channel|cant_invite_self/.test(String(e.error))).map((e) => String(e.user)));
+    if (/already_in_channel|cant_invite_self/.test(String(inv.error)) || Array.isArray(inv.errors)) part.forEach((id) => { if (!bad.has(id)) invited.add(id); });
+    else errors.push(String(inv.error));
+    ((inv.errors || []) as { user?: string; error?: string }[]).forEach((e) => { if (bad.has(String(e.user))) errors.push(`${e.user}: ${e.error}`); });
   }
-  await patchRow(ev.id, { brief_ts: ts, invited: [...invited], last_error: notInSlack.length ? "Slack nerasta: " + notInSlack.join(", ") : null });
+  const notInSlack = errors, unknown: string[] = [];
+  await patchRow(ev.id, { brief_ts: ts, invited: [...invited], last_error: errors.length ? "Slack kvietimas: " + errors.slice(0, 5).join(", ") : null });
   return { url: r.url, name: r.name, invited: added, total: invited.size, notInSlack, unknown };
 }
 async function loadEvent(id: string): Promise<Ev | null> {
