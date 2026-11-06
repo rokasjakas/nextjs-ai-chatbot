@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-2sQ9qONacxyzAFPYO+0qllZRTq0F+VN/zh1lLQHgZIo=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-rV9LHY9uGdQ7kloiAJikaVd9oG+acfNZjpaOovF0pRE=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-A8ofAGoj3iIZG9p4k/Krf0FjOjQOpxkWffscIW7p6R8=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-ZedTgPHEMYPT0/wy9vBqZauXXfmbBFmsS4eFUhnnYqw=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -18,11 +18,16 @@ html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-
 .wrap.narrow{max-width:520px;}
 .theme{white-space:nowrap;flex:none;background:none;border:1px solid var(--border);border-radius:999px;color:var(--text);font:inherit;font-size:13px;padding:4px 10px;cursor:pointer;}
 .fgrid{display:grid;grid-template-columns:1fr;gap:0;}
-.fgrid > .c1{grid-area:a;} .fgrid > .c2{grid-area:b;} .fgrid > .c3{grid-area:c;}
-.fgrid{grid-template-areas:"a" "b" "c";}
+.fgrid > .c1{grid-area:a;} .fgrid > .c2{grid-area:b;} .fgrid > .c3{grid-area:c;} .fgrid > .c4{grid-area:s;}
+.fgrid{grid-template-areas:"a" "s" "b" "c";}
+@media (min-width:1360px){
+  .wrap{max-width:1560px;}
+  .fgrid{grid-template-columns:minmax(360px,1fr) minmax(0,1.3fr) 360px !important;grid-template-areas:"a b s" "a c s" !important;grid-template-rows:auto 1fr !important;}
+  .fgrid > .c4{position:sticky;top:12px;align-self:start;}
+}
 @media (min-width:980px){
   .wrap{padding-left:28px;padding-right:28px;}
-  .fgrid{grid-template-columns:minmax(380px,1fr) minmax(0,1.35fr);grid-template-areas:"a b" "a c";grid-template-rows:auto 1fr;column-gap:16px;align-items:start;}
+  .fgrid{grid-template-columns:minmax(380px,1fr) minmax(0,1.35fr);grid-template-areas:"a b" "s b" "s c";grid-template-rows:auto auto 1fr;column-gap:16px;align-items:start;}
   .home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:12px;} .home-grid > .card{margin-bottom:0;}
 }
 .brand{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:13px;margin-bottom:12px;}
@@ -63,6 +68,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(
 .calc .rates{margin-top:8px;} .calc .rates > summary{cursor:pointer;font-size:13px;color:var(--accent);}
 .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;} @media (max-width:520px){ .row3{grid-template-columns:1fr 1fr;} }
 .calc-r{margin-top:10px;border-top:1px solid var(--border);padding-top:6px;}
+.calc-r .sum span small{font-size:11.5px;color:var(--dim);font-weight:400;} .calc-r .cv{display:flex;align-items:baseline;gap:8px;color:var(--text);} .calc-r .cv small{color:var(--dim);font-size:12px;}
+.c4 .row2{grid-template-columns:1fr;} .c4 .row2 label{margin-top:8px;}
 .chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text);} .chk input{width:18px;height:18px;margin:0;}
 .works{border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:12px;}
 .works-h{display:flex;flex-direction:column;gap:2px;margin-bottom:8px;} .works-h .muted{font-size:13px;}
@@ -298,8 +305,8 @@ function viewForm(){
       <div id="ftot"></div>
       <div class="row2"><div><label>Sąskaitos nr.</label><input id="num" value="${esc(draft.number)}" autocomplete="off"></div>
       <div><label>Galutinė suma su mokesčiais, €</label><input id="tot" inputmode="decimal" value="${esc(draft.total)}" placeholder="iš failo" autocomplete="off"></div></div>`}
-      ${calcHtml()}
     </div>
+    <div class="card c4"><h2>🧮 Mokesčių skaičiuoklė</h2><div id="calcIn"></div></div>
     <div class="card c2"><h2>2. Renginiai ir išlaidos</h2><div id="works"></div><div id="lines"></div>
       <button class="btn ghost" id="add">+ Pridėti renginį</button></div>
     <div class="card c3"><h2>Suvestinė</h2><div id="sum"></div>
@@ -392,13 +399,15 @@ function calcRun(){
 }
 function calcHtml(){
   const c = calcState();
-  return `<details class="calc" id="calc"${c.open ? ' open' : ''}><summary>🧮 Mokesčių skaičiuoklė</summary><div id="calcIn"></div></details>`;
+  return ``;
 }
 function calcDraw(){
   const box = document.getElementById('calcIn'); if(!box) return;
   const c = calcState(), kind = calcKind(), vat = calcVat(), r = calcRun(), iv = kind==='iv', fromMake = draft.mode==='make';
   const KL = { iv:'Individuali veikla (pažyma)', vl:'Verslo liudijimas', mb:'MB', uab:'UAB ar kita įmonė', kita:'Kita' };
-  const row = (l, v, b)=>`<div class="sum"><span>${l}</span>${b ? '<b>'+v+'</b>' : '<span>'+v+'</span>'}</div>`;
+  const pc = x=>(Math.round(x*10)/10).toLocaleString('lt-LT', { maximumFractionDigits:1 })+' %', rt = x=>(+x).toLocaleString('lt-LT', { maximumFractionDigits:2 })+' %';
+  const row = (l, v, b, p)=>`<div class="sum"><span>${l}</span><span class="cv">${p!=null ? `<small>${p}</small>` : ''}${b ? '<b>'+v+'</b>' : v}</span></div>`;
+  const share = x=>r && r.inv ? pc(x / r.inv * 100)+' sumos' : null;
   const lines = draft.lines.map((l, i)=>`<option value="${i}">${i+1}. ${esc(l.work_id ? (l.dates||l.date)+' · '+(l.ename||l.name||'') : (l.date||'')+' '+(l.name||l.ename||''))}</option>`).join('');
   box.innerHTML = `<div class="seg"><button type="button" data-cdir="net" class="${c.dir==='net' ? 'on' : ''}">Noriu gauti į rankas</button><button type="button" data-cdir="inv" class="${c.dir==='inv' ? 'on' : ''}">Turiu sąskaitos sumą</button></div>
     <div class="row2"><div><label>${c.dir==='net' ? 'Į rankas, €' : 'Sąskaitos suma, €'}</label><input id="cAmt" inputmode="decimal" value="${esc(c.amt)}" placeholder="0,00" autocomplete="off"></div>
@@ -409,7 +418,9 @@ function calcDraw(){
       <div><label>VSD, %</label><input data-cr="vsd" inputmode="decimal" value="${c.vsd}"></div><div><label>PSD, %</label><input data-cr="psd" inputmode="decimal" value="${c.psd}"></div>
       <div><label>GPM, % pelno</label><input data-cr="gpm" inputmode="decimal" value="${c.gpm}"></div></div>
       <p class="muted" style="font-size:12.5px;">GPM 5 % – kai metinis pelnas iki 20 000 €; didesniam pelnui tarifas didėja iki 15 %. Jei kaupi pensijai papildomai (+3 %), padidink VSD.</p></details>` : ''}
-    ${r ? `<div class="calc-r">${row('Sąskaitos suma'+(vat ? ' (su PVM)' : ''), eur(cents(r.inv)), true)}${vat ? row('PVM '+c.pvm+' %', eur(cents(r.pvm))) : ''}${iv ? row('GPM', eur(cents(r.gpm)))+row('VSD', eur(cents(r.vsd)))+row('PSD', eur(cents(r.psd))) : ''}${row('Į rankas (apytiksliai)', eur(cents(r.net)), true)}</div>
+    ${r ? `<div class="calc-r">${row('Sąskaitos suma'+(vat ? ' (su PVM)' : ''), eur(cents(r.inv)), true, '100 %')}${vat ? row(`PVM ${rt(c.pvm)}`, eur(cents(r.pvm)), false, share(r.pvm)) : ''}${iv ? row(`GPM <small>${rt(c.gpm)} pelno</small>`, eur(cents(r.gpm)), false, share(r.gpm))+row(`VSD <small>${rt(c.vsd)} nuo ${rt(c.base)} pelno</small>`, eur(cents(r.vsd)), false, share(r.vsd))+row(`PSD <small>${rt(c.psd)} nuo ${rt(c.base)} pelno</small>`, eur(cents(r.psd)), false, share(r.psd)) : ''}
+      ${row('Mokesčiai iš viso', eur(cents(r.inv - r.net)), false, share(r.inv - r.net))}${row('Į rankas (apytiksliai)', eur(cents(r.net)), true, share(r.net))}
+      ${iv ? `<p class="muted" style="font-size:12px;margin-top:6px;">Pelnas = ${rt(100 - c.exp)} sumos be PVM (išlaidos ${rt(c.exp)}).</p>` : ''}</div>
       <div class="row2" style="align-items:end;"><div><label>Įrašyti sąskaitos sumą į</label><select id="cTo">${lines}<option value="new">+ naują renginio eilutę</option></select></div><div><button type="button" class="btn small" id="cPut" style="width:100%;">Įrašyti ${eur(cents(r.inv))}</button></div></div>` : ''}
     <p class="muted" style="font-size:12.5px;">${iv ? 'Apytikslis skaičiavimas pagal LR tvarką (individuali veikla, supaprastintos 30 % išlaidos).' : kind==='vl' ? 'Verslo liudijimo mokestis fiksuotas, o VSD ir PSD mokami atskirai – nuo vienos sąskaitos papildomų mokesčių neskaičiuojama.' : 'MB ar įmonės mokesčiai skaičiuojami įmonės lygiu – nuo vienos sąskaitos papildomų mokesčių neskaičiuojama.'} Tikslūs dydžiai – vmi.lt ir sodra.lt.</p>`;
   const q = id=>document.getElementById(id);
@@ -425,8 +436,8 @@ function calcDraw(){
 // redraw, keeping the cursor in the field being typed in
 function calcDrawKeep(id, rate){ const a = document.activeElement, pos = a && a.selectionStart; calcDraw();
   const el = id ? document.getElementById(id) : document.querySelector(`[data-cr="${rate}"]`); if(el){ el.focus(); try{ el.setSelectionRange(pos, pos); }catch(e){} }
-  const rt = document.querySelector('#calc details.rates'); if(rate && rt) rt.open = true; }
-function calcWire(){ const d = document.getElementById('calc'); if(!d) return; d.ontoggle = ()=>{ calcState().open = d.open; if(d.open) calcDraw(); }; if(d.open) calcDraw(); }
+  const rt = document.querySelector('#calcIn details.rates'); if(rate && rt) rt.open = true; }
+function calcWire(){ calcDraw(); }
 // ---- an invoice made here (by the LR rules; the PDF is made on the server) ----
 const SELLER_KIND = [['iv','Individuali veikla (pažyma)'],['vl','Verslo liudijimas'],['mb','MB (mažoji bendrija)'],['uab','UAB ar kita įmonė']];
 async function loadProfile(){
@@ -456,7 +467,7 @@ function makeHtml(){
 }
 function makeWire(){
   const m = draft.mk; if(!m || m.loading) return;
-  document.querySelectorAll('.mk-s').forEach(el=>el[el.tagName==='SELECT' ? 'onchange' : 'oninput'] = ()=>{ m.seller[el.dataset.k] = el.value; if(el.dataset.k==='kind') viewForm(); else if(el.dataset.k==='vat' && document.getElementById('calcIn') && calcState().open) calcDraw(); });
+  document.querySelectorAll('.mk-s').forEach(el=>el[el.tagName==='SELECT' ? 'onchange' : 'oninput'] = ()=>{ m.seller[el.dataset.k] = el.value; if(el.dataset.k==='kind') viewForm(); else if(el.dataset.k==='vat' && document.getElementById('calcIn')) calcDraw(); });
   const b = (id, k)=>{ const el = document.getElementById(id); if(el) el.oninput = el.onchange = ()=>{ m[k] = el.value; }; };
   b('mkSer', 'series'); b('mkNo', 'number'); b('mkDate', 'date'); b('mkDue', 'due');
 }
