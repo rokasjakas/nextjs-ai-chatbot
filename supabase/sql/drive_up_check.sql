@@ -1,0 +1,4 @@
+-- Tik skaito: Slack → Drive įkėlimai, kanalai ir ar jų renginiai yra
+select 'ikelimas' as k, created_at::text || ' · ' || event_id || ' · ' || name || ' · ' || coalesce(category,'-') || ' · ' || coalesce(error,'') || ' · renginys ' || case when exists(select 1 from public.events e where e.id = u.event_id) then 'YRA' else 'NĖRA' end as v from public.drive_uploads u order by created_at desc limit 5;
+select 'kanalas' as k, event_id || ' · #' || name || ' · ' || coalesce(archived_at::text,'atviras') || ' · renginys ' || coalesce((select coalesce(e.data->>'name','?') || ' ' || coalesce(e.data->>'deletedAt','') from public.events e where e.id = c.event_id), 'NĖRA') as v from public.slack_channels c order by created_at desc limit 8;
+select 'renginys' as k, id || ' · ' || coalesce(data->>'name','') || ' · ' || coalesce(data->>'date','') as v from public.events where data->>'name' ilike '%testas%';
