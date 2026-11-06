@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-A8ofAGoj3iIZG9p4k/Krf0FjOjQOpxkWffscIW7p6R8=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-ZedTgPHEMYPT0/wy9vBqZauXXfmbBFmsS4eFUhnnYqw=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-kX+4XyxfrfXOJKy5TcBzF57srhzY1qAMdH4TTx9LeQs=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-oKS5osgLisoVfzOm6wUdaSUJyHsufQhLhJdNflHCQ2E=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -378,16 +378,23 @@ function toggleWork(key, yes, quiet){
   if(!quiet){ drawWorks(); drawLines(); }
 }
 // ---- the tax calculator (an estimate by the LR rules; the rates can be changed) ----
-// Individuali veikla: expenses 30 % (simplified), profit = 70 %; VSD 12,52 % and PSD 6,98 % of 90 % of the profit;
-// GPM 5 % of the profit (yearly profit up to 20 000 €; more – up to 15 %). A VAT payer adds 21 % on top.
+// Individuali veikla (2026, as on mokesciubaze.lt): expenses 30 % (simplified), taxable = 70 %; VSD 12,52 % (15,52 % with
+// the pension accumulation) and PSD 6,98 % of 90 % of the taxable; GPM 5 % while the yearly taxable is up to 20 000 €,
+// then GPM = 20 % − the credit (taxable × (0,15 − 2/300 000 × (taxable − 20 000))), 20 % from 42 500 €. A VAT payer adds 21 %.
 // Verslo liudijimas / MB / UAB: no tax per invoice (a fixed fee / at the company) – only VAT if paid.
 const CALC_DEF = { exp:30, base:90, vsd:12.52, psd:6.98, gpm:5, pvm:21 };
-function calcState(){ if(!draft.calc) draft.calc = Object.assign({ dir:'net', amt:'', open:false, kind:'', vat:false }, CALC_DEF); return draft.calc; }
+function calcState(){ if(!draft.calc) draft.calc = Object.assign({ dir:'net', amt:'', open:false, kind:'', vat:false, annual:'', pension:false }, CALC_DEF); return draft.calc; }
+// GPM of a year's taxable income (individuali veikla, 2026)
+function gpmYear(t){ if(t <= 0) return 0; if(t <= 20000) return t*0.05; if(t <= 42500) return t*0.20 - t*(0.15 - 2/300000*(t - 20000)); return t*0.20; }
+// the GPM rate used: from the yearly income if given, else the one in the rates
+function gpmRate(c){ const y = num(c.annual); if(y > 0){ const t = y * (1 - c.exp/100); return gpmYear(t) / t * 100; } return c.gpm; }
 function calcKind(){ const c = calcState(); return c.kind || (draft.mode==='make' && draft.mk && draft.mk.seller && draft.mk.seller.kind) || 'iv'; }
 function calcVat(){ const c = calcState(); return draft.mode==='make' && draft.mk && draft.mk.seller ? !!String(draft.mk.seller.vat||'').trim() : !!c.vat; }
 // the share of the sum (without VAT) the person keeps after the taxes
 function calcKeep(c, kind){ if(kind!=='iv') return { keep:1, gpm:0, vsd:0, psd:0 };
-  const p = 1 - c.exp/100, b = p * c.base/100, gpm = p * c.gpm/100, vsd = b * c.vsd/100, psd = b * c.psd/100; return { keep:1 - gpm - vsd - psd, gpm, vsd, psd }; }
+  const p = 1 - c.exp/100, b = p * c.base/100, gpm = p * gpmRate(c)/100, vsd = b * (c.vsd + (c.pension ? 3 : 0))/100;
+  // PSD: with the yearly income given and not insured elsewhere – at least 965,76 € a year (80,48 €/mėn.), spread over the year's income
+  const y = num(c.annual), psd = y > 0 && !c.insured ? Math.max(y * b * c.psd/100, 965.76) / y : b * c.psd/100; return { keep:1 - gpm - vsd - psd, gpm, vsd, psd }; }
 function calcRun(){
   const c = calcState(), kind = calcKind(), vat = calcVat(), k = calcKeep(c, kind), a = num(c.amt);
   if(!(a > 0)) return null;
@@ -413,19 +420,27 @@ function calcDraw(){
     <div class="row2"><div><label>${c.dir==='net' ? 'Į rankas, €' : 'Sąskaitos suma, €'}</label><input id="cAmt" inputmode="decimal" value="${esc(c.amt)}" placeholder="0,00" autocomplete="off"></div>
       <div><label>Veiklos forma</label>${fromMake ? `<input value="${esc(KL[kind]||kind)}${vat ? ' · PVM mokėtojas' : ''}" disabled>` : `<select id="cKind">${Object.entries(KL).map(([k, l])=>`<option value="${k}"${kind===k ? ' selected' : ''}>${l}</option>`).join('')}</select>`}</div></div>
     ${fromMake ? '' : `<label class="chk"><input type="checkbox" id="cVat"${vat ? ' checked' : ''}> Esu PVM mokėtojas (+${c.pvm} % PVM)</label>`}
+    ${iv ? `<div class="row2"><div><label>Metinės pajamos (visų klientų), € <small>nebūtina</small></label><input id="cYear" inputmode="decimal" value="${esc(c.annual)}" placeholder="pvz. 25 000" autocomplete="off"></div>
+      <div><label>&nbsp;</label><label class="chk" style="margin-top:12px;"><input type="checkbox" id="cPen"${c.pension ? ' checked' : ''}> Kaupiu pensijai (VSD 15,52 %)</label>
+        ${num(c.annual) > 0 ? `<label class="chk" style="margin-top:6px;"><input type="checkbox" id="cIns"${c.insured ? ' checked' : ''}> PSD moku kitur (pvz. darbo sutartis)</label>` : ''}</div></div>
+      ${num(c.annual) > 0 ? `<p class="muted" style="font-size:12.5px;">Pagal metines pajamas: GPM <b>${rt(Math.round(gpmRate(c)*100)/100)}</b> apmokestinamų pajamų${c.insured ? '' : '; PSD – ne mažiau 965,76 € per metus (80,48 €/mėn.)'}.</p>` : ''}` : ''}
     ${iv ? `<details class="rates"><summary>Tarifai (pakeisk, jei tavo kitokie)</summary><div class="row3">
       <div><label>Išlaidos, %</label><input data-cr="exp" inputmode="decimal" value="${c.exp}"></div><div><label>VSD bazė, % pelno</label><input data-cr="base" inputmode="decimal" value="${c.base}"></div>
       <div><label>VSD, %</label><input data-cr="vsd" inputmode="decimal" value="${c.vsd}"></div><div><label>PSD, %</label><input data-cr="psd" inputmode="decimal" value="${c.psd}"></div>
-      <div><label>GPM, % pelno</label><input data-cr="gpm" inputmode="decimal" value="${c.gpm}"></div></div>
-      <p class="muted" style="font-size:12.5px;">GPM 5 % – kai metinis pelnas iki 20 000 €; didesniam pelnui tarifas didėja iki 15 %. Jei kaupi pensijai papildomai (+3 %), padidink VSD.</p></details>` : ''}
-    ${r ? `<div class="calc-r">${row('Sąskaitos suma'+(vat ? ' (su PVM)' : ''), eur(cents(r.inv)), true, '100 %')}${vat ? row(`PVM ${rt(c.pvm)}`, eur(cents(r.pvm)), false, share(r.pvm)) : ''}${iv ? row(`GPM <small>${rt(c.gpm)} pelno</small>`, eur(cents(r.gpm)), false, share(r.gpm))+row(`VSD <small>${rt(c.vsd)} nuo ${rt(c.base)} pelno</small>`, eur(cents(r.vsd)), false, share(r.vsd))+row(`PSD <small>${rt(c.psd)} nuo ${rt(c.base)} pelno</small>`, eur(cents(r.psd)), false, share(r.psd)) : ''}
+      <div><label>GPM, % pelno</label><input data-cr="gpm" inputmode="decimal" value="${c.gpm}"${num(c.annual) > 0 ? ' disabled title="Skaičiuojama pagal metines pajamas"' : ''}></div></div>
+      <p class="muted" style="font-size:12.5px;">2026 m.: GPM 5 %, kol metinės apmokestinamos pajamos (70 % sumos) neviršija 20 000 €; toliau tarifas palaipsniui kyla iki 20 % (ties 42 500 €) – įrašyk metines pajamas, ir jis bus apskaičiuotas. PSD minimumas – 80,48 €/mėn., jei nesi draustas kitur (moki atskirai „Sodrai“).</p></details>` : ''}
+    ${r ? `<div class="calc-r">${row('Sąskaitos suma'+(vat ? ' (su PVM)' : ''), eur(cents(r.inv)), true, '100 %')}${vat ? row(`PVM ${rt(c.pvm)}`, eur(cents(r.pvm)), false, share(r.pvm)) : ''}${iv ? row(`GPM <small>${rt(Math.round(gpmRate(c)*100)/100)} pelno</small>`, eur(cents(r.gpm)), false, share(r.gpm))+row(`VSD <small>${rt(c.vsd + (c.pension ? 3 : 0))} nuo ${rt(c.base)} pelno</small>`, eur(cents(r.vsd)), false, share(r.vsd))+row(`PSD <small>${rt(c.psd)} nuo ${rt(c.base)} pelno</small>`, eur(cents(r.psd)), false, share(r.psd)) : ''}
       ${row('Mokesčiai iš viso', eur(cents(r.inv - r.net)), false, share(r.inv - r.net))}${row('Į rankas (apytiksliai)', eur(cents(r.net)), true, share(r.net))}
       ${iv ? `<p class="muted" style="font-size:12px;margin-top:6px;">Pelnas = ${rt(100 - c.exp)} sumos be PVM (išlaidos ${rt(c.exp)}).</p>` : ''}</div>
       <div class="row2" style="align-items:end;"><div><label>Įrašyti sąskaitos sumą į</label><select id="cTo">${lines}<option value="new">+ naują renginio eilutę</option></select></div><div><button type="button" class="btn small" id="cPut" style="width:100%;">Įrašyti ${eur(cents(r.inv))}</button></div></div>` : ''}
-    <p class="muted" style="font-size:12.5px;">${iv ? 'Apytikslis skaičiavimas pagal LR tvarką (individuali veikla, supaprastintos 30 % išlaidos).' : kind==='vl' ? 'Verslo liudijimo mokestis fiksuotas, o VSD ir PSD mokami atskirai – nuo vienos sąskaitos papildomų mokesčių neskaičiuojama.' : 'MB ar įmonės mokesčiai skaičiuojami įmonės lygiu – nuo vienos sąskaitos papildomų mokesčių neskaičiuojama.'} Tikslūs dydžiai – vmi.lt ir sodra.lt.</p>`;
+    <p class="muted" style="font-size:12.5px;">${iv ? 'Apytikslis skaičiavimas pagal 2026 m. LR tvarką (individuali veikla, 30 % atskaitymas).' : kind==='vl' ? 'Verslo liudijimo mokestis fiksuotas, o VSD ir PSD mokami atskirai – nuo vienos sąskaitos papildomų mokesčių neskaičiuojama.' : 'MB ar įmonės mokesčiai skaičiuojami įmonės lygiu – nuo vienos sąskaitos papildomų mokesčių neskaičiuojama.'} </p>
+    <p class="muted" style="font-size:12.5px;">Plačiau apie mokesčius: <a href="https://mokesciubaze.lt/" target="_blank" rel="noopener">mokesciubaze.lt</a> · tikslūs dydžiai – vmi.lt ir sodra.lt.</p>`;
   const q = id=>document.getElementById(id);
   box.querySelectorAll('[data-cdir]').forEach(b=>b.onclick = ()=>{ c.dir = b.dataset.cdir; calcDraw(); });
   q('cAmt').oninput = e=>{ c.amt = e.target.value; calcDrawKeep('cAmt'); };
+  if(q('cYear')) q('cYear').oninput = e=>{ c.annual = e.target.value; calcDrawKeep('cYear'); };
+  if(q('cPen')) q('cPen').onchange = e=>{ c.pension = e.target.checked; calcDraw(); };
+  if(q('cIns')) q('cIns').onchange = e=>{ c.insured = e.target.checked; calcDraw(); };
   if(q('cKind')) q('cKind').onchange = e=>{ c.kind = e.target.value; calcDraw(); };
   if(q('cVat')) q('cVat').onchange = e=>{ c.vat = e.target.checked; calcDraw(); };
   box.querySelectorAll('[data-cr]').forEach(i=>i.oninput = ()=>{ const v = num(i.value); if(v>=0) c[i.dataset.cr] = v; calcDrawKeep(null, i.dataset.cr); });
