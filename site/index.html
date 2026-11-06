@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-sVQGfBSqM64Kw1HpBVXapzXW8Fs+6JQEP30HPo/bDmg=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-3xJx1SKqgZb6wN7e6PT4jJ/N8TpR/RtDXuegjBN5Tig=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-FERJ/jqCnb4A4BCZGHflbBfZ9zFKLSJUXBcEws8Sh7Y=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -24681,7 +24681,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v719';
+const APP_VER = 'v720';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26167,14 +26167,17 @@ function slackLoad(){
 // after the event is saved: its channel a little later (several quick changes – one call)
 function slackSoon(ev){
   if(!ev || ev.kind==='work' || ev.handoverId || !slackOn() || !canEdit('events')) return;
+  // a channel is made by itself only for an event made in the app from now on (slackAuto); an older one – its „#“
+  if(SLK.loaded && !SLK.map[ev.id] && !ev.slackAuto) return;
   clearTimeout(SLK.t[ev.id]);
   SLK.t[ev.id] = setTimeout(()=>slackSyncNow(ev, false), 6000);
 }
-async function slackSyncNow(ev, loud){
+async function slackSyncNow(ev, loud, create){
   clearTimeout(SLK.t[ev.id]); delete SLK.t[ev.id];
   try{
-    const r = await slackCall('sync', { event_id:ev.id });
-    if(r.url){ const was = SLK.map[ev.id]; SLK.map[ev.id] = Object.assign({}, was||{}, { event_id:ev.id, url:r.url, name:r.name || (was||{}).name, archived_at:r.archived ? new Date().toISOString() : null });
+    const r = await slackCall('sync', { event_id:ev.id, create:create || (ev.slackAuto ? 'auto' : '') });
+    if(r.archived && SLK.map[ev.id]) SLK.map[ev.id].archived_at = SLK.map[ev.id].archived_at || new Date().toISOString();
+    else if(r.url){ const was = SLK.map[ev.id]; SLK.map[ev.id] = Object.assign({}, was||{}, { event_id:ev.id, url:r.url, name:r.name || (was||{}).name, archived_at:r.archived ? new Date().toISOString() : null });
       if(!was){ toast('Slack kanalas #'+(r.name||'')+' sukurtas'+(r.invited ? ' · pakviesta: '+r.invited : '')); if(typeof rerenderEventCard==='function') try{ rerenderEventCard(ev); }catch(e){} } }
     if(loud) toast(r.skipped ? 'Slack: '+r.skipped : r.url ? '✓ Slack kanalas atnaujintas'+((r.notInSlack||[]).length ? ' · Kvietimo klaidos: '+r.notInSlack.join(', ') : '') : '✓ Atlikta');
     return r;
@@ -26183,6 +26186,8 @@ async function slackSyncNow(ev, loud){
 function slackEvBtn(ev){
   if(!slackOn() || ev.kind==='work' || ev.handoverId) return '';
   const c = SLK.map[ev.id];
+  // archived / deleted in Slack while the event is still ahead: „#“ makes a new channel
+  if(c && c.url && c.archived_at && String((ev.dateEnd && ev.dateEnd > ev.date ? ev.dateEnd : ev.date) || '') >= evToday() && canEdit('events')) return `<button type="button" class="xg-more xg-slack none" data-act="slack-sync" title="Kanalas #${esc(c.name||'')} archyvuotas ar ištrintas – sukurti naują Slack kanalą">#</button>`;
   if(c && c.url) return `<a class="xg-more xg-slack${c.archived_at ? ' arch' : ''}" href="${esc(c.url)}" target="_blank" rel="noopener" title="Slack kanalas #${esc(c.name||'')}${c.archived_at ? ' (archyvuotas)' : ''}${c.last_error ? '\n'+esc(c.last_error) : ''}">#</a>`;
   return canEdit('events') ? `<button type="button" class="xg-more xg-slack none" data-act="slack-sync" title="Sukurti Slack kanalą">#</button>` : '';
 }
@@ -26276,8 +26281,8 @@ function driveAdminWire(){
 function slackAdminCard(){
   if(!(ACCESS.role==='admin' || isSuper())) return '';
   return `<div class="card" id="admSlack"><div class="row between" style="align-items:center;gap:8px;flex-wrap:wrap;"><div><h2 class="section-title" style="margin:0;">Slack: renginių kanalai</h2>
-    <p class="section-sub" style="margin:4px 0 0;">Kiekvienam renginiui – viešas kanalas įmonės Slack su briefu; pakviečiami visi aktyvūs Slack nariai (be svečių). Po renginio praėjus 7 d. (ar atšaukus) kanalas archyvuojamas.</p></div>
-    <span class="row" style="gap:6px;flex-wrap:wrap;">${isSuper() ? `<button class="btn small ${slackOn() ? 'primary' : ''}" id="admSlOn">${slackOn() ? '✓ Įjungta' : 'Įjungti'}</button>` : ''}<button class="btn small" id="admSlTest">Patikrinti ryšį</button>${slackOn() ? '<button class="btn small" id="admSlFill" title="Sukurti / atnaujinti kanalus artimiausių 60 d. renginiams">Kanalai artėjantiems</button>' : ''}</span></div>
+    <p class="section-sub" style="margin:4px 0 0;">Naujai sukurtam renginiui – viešas kanalas įmonės Slack (pavadinimas, datos, vieta, organizatoriaus kontaktai, pastabos, failai); senesniam – paspaudus „#“ prie renginio. Pakviečiami visi aktyvūs Slack nariai (be svečių). Po renginio praėjus 7 d. (ar atšaukus / ištrynus) kanalas archyvuojamas.</p></div>
+    <span class="row" style="gap:6px;flex-wrap:wrap;">${isSuper() ? `<button class="btn small ${slackOn() ? 'primary' : ''}" id="admSlOn">${slackOn() ? '✓ Įjungta' : 'Įjungti'}</button>` : ''}<button class="btn small" id="admSlTest">Patikrinti ryšį</button></span></div>
     <div id="admSlOut" class="section-sub" style="margin-top:8px;"></div></div>`;
 }
 function slackAdminWire(){
@@ -26951,6 +26956,7 @@ function evAddNew(kind){
     }
     if($('na_notes').dataset.offer) ev.offerId = $('na_notes').dataset.offer;
     ev.autoChat = !!($('na_chat') && $('na_chat').checked);
+    if(!work) ev.slackAuto = true;   // its Slack channel is made by itself (older events – by „#“)
     if(work){ ev.title = name; ev.time = $('na_time').value.trim(); if(!o.workTitles.includes(name)){ o.workTitles.push(name); saveState(); } }
     else {
       evNewApply(ev, name);
@@ -30598,7 +30604,7 @@ function bindEventListEvents(){
     if(act==='letter'){ openEventLetter(ev); return; }
     if(act==='drive-open'){ driveOpen(ev, b); return; }
     if(act==='add-col'){ evNewColPop(ev); return; }
-    if(act==='slack-sync'){ b.disabled = true; slackSyncNow(ev, true).then(()=>{ try{ rerenderEventCard(ev); }catch(e){} }); return; }
+    if(act==='slack-sync'){ b.disabled = true; slackSyncNow(ev, true, 'force').then(()=>{ try{ rerenderEventCard(ev); }catch(e){} }); return; }
     if(act==='gear'){ gearModal(ev); return; }
     if(act==='gear-pdf'){ evGearPdf(ev); return; }
     if(act==='open-chat'){ const h = ev.handoverId && HV.list.find(x=>x.id===ev.handoverId); TEAM.open = (h && h.chatId) || ev.chatId; TEAM.thread = null; TEAM.view = 'home'; setTab('chat'); return; }
@@ -45438,7 +45444,7 @@ const GUIDE = [
      ['Renginio laiškas', 'Formatuotas laiškas komandai: datos, žmonės pagal dienas (montažas, renginys, demontažas) su pozicija ir atvykimo vieta / laiku, transportas, vairuotojų kodai, „Kuro kortelė“, siuntėjo parašas. Laiškas siunčiamas iš tavo @eventsolutions.lt pašto – jį prijungi vieną kartą (paieškoje „Siuntimo el. paštas“ arba laiško lange „Prijungti siuntimo paštą“).'],
      ['Importas', '„Importuoti“ – renginiai iš Excel: dublikatai neįkeliami, vardai sutikrinami su Žmonėmis, ateities renginiams sukuriami projektai ir chato kanalai.'],
      ['Kas mato', 'Freelance mato tik renginius, kuriuose pats įrašytas; Tech – tik peržiūri.']],
-  q:[['Kas yra „#“ prie renginio?', 'Renginio kanalas įmonės Slack (kai Slack įjungtas). Jame – renginio briefas, kuris atnaujinamas keičiant renginį; pakviečiami visi aktyvūs Slack nariai (be svečių). Pilkas „#“ – kanalo dar nėra, paspaudus jis sukuriamas. Po renginio praėjus 7 d. ar jį atšaukus kanalas archyvuojamas.'],
+  q:[['Kas yra „#“ prie renginio?', 'Renginio kanalas įmonės Slack (kai Slack įjungtas). Naujai sukurtam renginiui jis sukuriamas savaime; senesniam – paspaudus pilką „#“ (kanalo dar nėra arba jis Slack’e archyvuotas / ištrintas). Jame – pavadinimas, datos, vieta, organizatoriaus kontaktai, pastabos ir failai; atnaujinama keičiant renginį. Pakviečiami visi aktyvūs Slack nariai (be svečių). Po renginio praėjus 7 d. ar jį atšaukus kanalas archyvuojamas.'],
      ['Kaip prie žmogaus pridėti komentarą?', 'Komandos stulpelyje prie žmogaus spausk statuso mygtuką „·“ → „💬 Pridėti komentarą“. Šalia vardo atsiras 💬 – užvedus pelę matosi komentaras (kas ir kada rašė), paspaudus – papildai ar ištrini.'],
      ['Kaip sukurti renginį?', 'Renginiai → „+ Renginys“, užpildyk formą ir išsaugok. Naujas renginys – Nepatvirtintas (geltonas); patvirtinus pažaliuoja.'],
      ['Kaip rasti laisvą žmogų renginiui?', 'Atidaryk komandos langą (nustatymų mygtukas grafoje) ir pažymėk „Rodyti tik laisvus“, arba Žmonės → Bookingas tai dienai.'],
@@ -53778,6 +53784,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-06 10:45', v:'v720', k:'chg', t:'Slack: kanalai tik naujiems renginiams', f:'Slack kanalas sukuriamas savaime tik naujai sukurtam renginiui; senesniam – paspaudus „#“ prie renginio (kasdienis darbas kanalų nebekuria, tik atnaujina esamus). Kanalo žinutėje – pavadinimas, datos, vieta, organizatoriaus kontaktai, pastabos ir failai (be komandos, laikų ir transporto). Slack’e archyvuotas ar ištrintas kanalas paliekamas ramybėje; „#“ sukuria naują.' },
   { d:'2026-11-06 03:30', v:'v719', k:'new', t:'Naujas renginys: pastabos, nuorodos ir failai – į Slack ir Drive', f:'Naujo renginio formoje – blokas „Į renginio Slack kanalą“: pastabos (savo ar iš pasiūlymo), nuorodos ir failai (PDF, nuotraukos ir kt.). Failai įkeliami į renginio Google Drive aplanką, o pastabos, nuorodos ir failų nuorodos – viena žinute renginio Slack kanale. Programoje jie nerodomi.' },
   { d:'2026-11-06 03:00', v:'v718', k:'new', t:'Naujas renginys: pastabos iš pasiūlymo', f:'Naujo renginio formoje – didesnis „Pastabos“ laukas ir mygtukas „📋 Iš pasiūlymo“: rodomi pasiūlymai su „Komentarai planuojantiems“, pirmiausia atitinkantys renginio pavadinimą ir datą (galima ieškoti). Paspaudus pastabos įterpiamas į laukelį – jas galima taisyti ar rašyti savo.' },
   { d:'2026-11-06 02:30', v:'v717', k:'new', t:'Google Drive: aplanką peržiūrėti galima be prisijungimo', f:'Renginio Drive aplanką peržiūrėti ir failus atsisiųsti gali kiekvienas, turintis nuorodą (programoje ar laiške), be Google prisijungimo. Įkelti ir keisti failus – Office ir aukštesni, prisijungę su Google paskyra.' },

@@ -2,10 +2,12 @@
 //
 // Every event (Renginiai, not „Sandėlio darbai“) gets its own public channel in the company Slack, as the
 // event channel in the app's chat (that one stays too):
-//   * the channel „#2026-11-05-festivalis-ruduo“ is made when the event is saved (or by the daily run);
+//   * the channel „#2026-11-05-festivalis-ruduo“ is made when a NEW event is made in the app (create "auto"), or for an older
+//     event when its „#“ is pressed (create "force"); the daily run and saving only update channels that exist;
 //   * every active member of the Slack workspace is invited (no guests, bots or deactivated accounts); someone
 //     who joins Slack later is invited at the next sync of the event (saving it, or the daily run);
-//   * the first message is the event's brief (dates, place, times, contacts, the team by day, transport) and it
+//   * a channel archived or deleted in Slack is left alone (until „#“ makes a new one);
+//   * the first message is the event's brief (name, dates, place, the organizer's contacts, notes) and it
 //     is updated when the event changes;
 //   * a cancelled / deleted event: a message in the channel and the channel is archived; 7 days after the event
 //     ended the channel is archived by the daily run.
@@ -99,7 +101,7 @@ async function slackMembers(): Promise<string[]> {
 // ---- the event ----
 type Entry = { pos?: string; person?: string; status?: string };
 type Ev = { id: string; kind?: string; name?: string; title?: string; date?: string; dateEnd?: string; status?: string; deletedAt?: string; handoverId?: string;
-  location?: string; organizer?: string; organizerPhone?: string; manager?: string; times?: { label?: string; time?: string }[];
+  location?: string; notes?: string; organizer?: string; organizerPhone?: string; manager?: string; times?: { label?: string; time?: string }[];
   crew?: { title?: string; entries?: Entry[] }[]; logistics?: { day?: string; vehicle?: string; driver?: string }[];
   intro?: { notes?: string; links?: string[]; files?: { name: string; url?: string; error?: string }[]; ready?: boolean; at?: string } };
 type Member = { id: string; email: string; full_name?: string; first_name?: string; last_name?: string; nickname?: string; role: string };
@@ -130,20 +132,17 @@ function wanted(ev: Ev, members: Member[]): { emails: Set<string>; unknown: stri
   });
   return { emails, unknown };
 }
+// the brief: the name, dates and place, the organizer's contacts and the notes (not the team, times or transport)
 function brief(ev: Ev): string {
   const L: string[] = [];
   const range = dm(String(ev.date || "")) + (evEnd(ev) !== ev.date ? " – " + dm(evEnd(ev)) : "");
   const loc = String(ev.location || "").split("\n")[0].trim();
   L.push(`*🎉 ${md(ev.name || "Renginys")}*`);
   L.push(`📅 ${md(range)}${loc ? `  ·  📍 <https://maps.google.com/?q=${enc(loc)}|${md(loc)}>` : ""}${ev.status === "unconf" ? "  ·  _nepatvirtintas_" : ""}`);
-  const times = (ev.times || []).filter((t) => String(t.time || "").trim());
-  if (times.length) { L.push("", "*⏰ Laikai*"); times.forEach((t) => L.push(`• *${md(t.time)}* ${md(t.label || "")}`)); }
-  const org = String(ev.organizer || "").split("\n")[0].trim(), mgr = String(ev.manager || "").trim();
-  if (org || mgr) { L.push("", "*📞 Kontaktai*"); if (org) L.push(`• Organizatorius: ${md(org)}${ev.organizerPhone ? " " + md(ev.organizerPhone) : ""}`); if (mgr) L.push(`• Atsakingi: ${md(mgr.replace(/\n/g, ", "))}`); }
-  const groups = (ev.crew || []).map((g) => ({ t: String(g.title || "").trim(), p: (g.entries || []).filter((e) => String(e.person || "").trim()) })).filter((g) => g.p.length);
-  if (groups.length) { L.push("", "*👥 Komanda*"); groups.forEach((g) => L.push(`• *${md(g.t || "Komanda")}*: ${g.p.map((e) => (e.pos ? md(e.pos) + " " : "") + md(e.person) + (/negali|atsisake/.test(String(e.status || "")) ? " ~(negali)~" : "")).join(", ")}`)); }
-  const tr = (ev.logistics || []).filter((l) => String(l.vehicle || "").trim() || String(l.driver || "").trim());
-  if (tr.length) { L.push("", "*🚚 Transportas*"); tr.forEach((l) => L.push(`• ${l.day ? md(String(l.day).trim()) + " d.: " : ""}${md(String(l.vehicle || "").split("\n").join(", "))}${l.driver ? " – " + md(String(l.driver).split("\n").join(", ")) : ""}`)); }
+  const org = String(ev.organizer || "").split("\n")[0].trim(), tel = String(ev.organizerPhone || "").trim();
+  if (org || tel) L.push("", "*📞 Organizatorius*", `${md(org)}${tel ? (org ? "  ·  " : "") + md(tel) : ""}`);
+  const notes = String(ev.notes || "").trim();
+  if (notes) L.push("", "*📝 Pastabos*", md(notes));
   L.push("", `<${APP}/?ev=${enc(ev.id)}|Atidaryti programoje> · _atnaujinta ${new Intl.DateTimeFormat("lt-LT", { timeZone: "Europe/Vilnius", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date())}_`);
   return L.join("\n");
 }
@@ -163,7 +162,9 @@ async function patchRow(eventId: string, f: Record<string, unknown>) {
 }
 
 // make / update one event's channel
-async function syncEvent(ev: Ev, members: Member[]): Promise<Record<string, unknown>> {
+// create: "auto" – a channel is made only if the event never had one (a new event made in the app);
+// "force" – the „#“ pressed: made also when its earlier channel was archived or deleted in Slack; none – only an existing one is updated
+async function syncEvent(ev: Ev, members: Member[], create: "" | "auto" | "force" = ""): Promise<Record<string, unknown>> {
   if (!ev || ev.kind === "work" || ev.handoverId) return { skipped: "ne renginys" };
   const [row] = await db<Row[]>(`slack_channels?event_id=eq.${enc(ev.id)}&select=*`);
   const gone = ev.status === "cancel" || !!ev.deletedAt;
@@ -177,9 +178,19 @@ async function syncEvent(ev: Ev, members: Member[]): Promise<Record<string, unkn
     return { skipped: "atšauktas" };
   }
   if (!ev.date) return { skipped: "be datos" };
-  if (row && row.archived_at) return { url: row.url, archived: true };
+  let r: Row | null = row ?? null;
+  // archived or deleted in Slack by someone: not written to any more
+  if (r && !r.archived_at) {
+    const info = await slack("conversations.info", { channel: r.channel_id });
+    const ch = info.channel as { is_archived?: boolean } | undefined;
+    if (!info.ok && /channel_not_found/.test(String(info.error)) || ch?.is_archived) { await patchRow(ev.id, { archived_at: new Date().toISOString() }); r.archived_at = new Date().toISOString(); }
+  }
+  if (r && r.archived_at) {
+    if (create !== "force") return { url: r.url, archived: true };
+    await db(`slack_channels?event_id=eq.${enc(ev.id)}`, { method: "DELETE", headers: { Prefer: "return=minimal" } }); r = null;
+  }
+  if (!r && !create) return { skipped: "kanalo nėra – spausk „#“ prie renginio" };
   const t = await team();
-  let r = row;
   if (!r) {
     const base = slug(ev);
     let made: SlackRes | null = null, name = base;
@@ -284,7 +295,7 @@ async function caller(req: Request): Promise<{ id: string; role: string; level: 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "POST" }, 405);
-  let b: { action?: string; event_id?: string } = {};
+  let b: { action?: string; event_id?: string; create?: string } = {};
   try { b = await req.json(); } catch { /* empty */ }
   const action = String(b.action || "");
   try {
@@ -322,13 +333,14 @@ Deno.serve(async (req) => {
         if (row && !row.archived_at) return json({ ok: true, ...(await syncEvent({ id, name: row.name, deletedAt: new Date().toISOString() }, [])) });
         return json({ error: "Renginys nerastas (dar neišsaugotas?)." }, 404);
       }
-      return json({ ok: true, ...(await syncEvent(ev, await loadMembers())) });
+      const cr = b.create === "force" ? "force" : b.create === "auto" ? "auto" : "";
+      return json({ ok: true, ...(await syncEvent(ev, await loadMembers(), cr)) });
     }
     if (action === "backfill") {
       if (!(who.role === "admin" || who.level === "super")) return json({ error: "Tik administratoriams." }, 403);
       if (!(await slackOn())) return json({ error: "Slack išjungtas – įjunk Admin skiltyje." }, 400);
       const members = await loadMembers(), list = await upcoming(), out = { synced: 0, errors: [] as string[] };
-      for (const ev of list) { try { const r = await syncEvent(ev, members); if (!r.skipped) out.synced++; } catch (e) { out.errors.push(`${ev.name}: ${(e as Error).message}`); } }
+      for (const ev of list) { try { const r = await syncEvent(ev, members, ""); if (!r.skipped && !r.archived) out.synced++; } catch (e) { out.errors.push(`${ev.name}: ${(e as Error).message}`); } }
       return json({ ok: true, ...out, events: list.length });
     }
     return json({ error: "Nežinomas veiksmas." }, 400);
