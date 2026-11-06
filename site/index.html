@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-1NOKNAaWdTZ4AEF9tZRSQzEkocIv4EHCsudqqXoqzW4=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-01RsxOR02knSgUPzY47OWt62lZoYgb2HPeEco4EbPjA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-IGa9eCNYAHoiq7R1k5iwqDR4JtLpeZBSUR5w8P1oC3c=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-01RsxOR02knSgUPzY47OWt62lZoYgb2HPeEco4EbPjA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -24972,7 +24972,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v727';
+const APP_VER = 'v728';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27744,7 +27744,7 @@ function evNewApply(ev, name){
   [office, tech].forEach(n=>{ if(n) evRememberPerson(n); });
   const group = (test, title)=>{ let g = ev.crew.find(x=>test(normalizeText(x.title))); if(!g){ g = {id:uid('g'), title, note:'', entries:[]}; ev.crew.push(g); } return g; };
   // montage before / on the day / dismantling: „day, time“ and the A / L / V / Crew places in one column
-  const num = {};
+  // (each table numbers its own places: montage V1 V2, dismantling V1 V2 again)
   // several days of one part: one table each, the earliest on top, the next ones right under it
   EV_NEW_PARTS.forEach(p=>{
     const days = [...document.querySelectorAll('#modalRoot .na-part[data-p="'+p.k+'"] .na-day')].map(el=>{ const v = f=>((el.querySelector('[data-f="'+f+'"]')||{}).value||'').trim();
@@ -27756,6 +27756,7 @@ function evNewApply(ev, name){
     if(!di) g = group(x=>p.re.test(x), p.title);
     else { g = {id:uid('g'), title:p.title, note:'', entries:[]}; ev.crew.splice(ev.crew.indexOf(prev) + 1, 0, g); }
     prev = g;
+    const num = {}; g.entries.forEach(e=>{ const m = /^([A-Z])(\d+)$/.exec(e.pos||''); if(m) num[m[1]] = Math.max(num[m[1]]||0, +m[2]); });
     if(d || t) g.note = [d ? (+d.slice(8,10))+'d.' : '', t].filter(Boolean).join(' ');
     cnt.forEach(([k, n])=>{ for(let i=0;i<n;i++){ if(p.pos){ g.entries.push({ pos:p.pos[k], person:'', status:'' }); continue; } if(k==='C'){ g.entries.push({ pos:'CREW', person:'', status:'' }); continue; } num[k] = (num[k]||0) + 1; g.entries.push({ pos:k+num[k], person:'', status:'' }); } });
     });
@@ -54122,6 +54123,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-06 20:30', v:'v728', k:'fix', t:'Naujas renginys: pozicijos kiekvienoje grupėje nuo 1', f:'Kuriant renginį, kiekviena grupė (montažas diena prieš, montažas renginio dieną, demontažas, kitos dienos) numeruoja pozicijas nuo 1: pvz. montaže V1, V2 ir demontaže vėl V1, V2 (anksčiau demontaže būdavo V3, V4).' },
   { d:'2026-11-06 20:00', v:'v727', k:'new', t:'Darbų apskaita (3 etapas): laukiamų sąskaitų priminimai', f:'Darbų apskaitoje – „Laukiama sąskaitų“: kas dar nepateikė sąskaitų, už kokius darbus, kiek ir nuo kada, „✉ Priminti dabar“. Admin → „Darbų apskaita: sąskaitų priminimai“: įjungus, praėjus nustatytam dienų skaičiui po renginio pabaigos, kartą per savaitę laiškas freelanceriui ir renginio Office atsakingam; gavus sąskaitą – sustoja. Pagal nutylėjimą išjungta.' },
   { d:'2026-11-06 18:00', v:'v726', k:'new', t:'Darbų apskaita (2 etapas): sąskaitos susiejamos su darbais', f:'Freelancerių portale (saskaitos.eventsolutions.lt) žmogus mato savo darbus be sąskaitos su sutartomis sumomis ir pažymi, už kuriuos teikia sąskaitą (vieną ar kelis, iš kelių renginių); jei suma kita nei sutarta – reikia pastabos. Programoje sąskaitos kortelėje – „Darbai“: kurie darbai susieti, suma palyginama su sąskaita, „Susieti su darbais“ – ranka. Darbų būsena seka sąskaitą: gauta → patvirtinta → apmokėta; netvirtinta ar ištrinta – darbas vėl laukia sąskaitos.' },
   { d:'2026-11-06 16:00', v:'v725', k:'chg', t:'Darbų apskaita: darbas be sumos – raudonas', f:'Kalendoriuje ir sąraše darbas, kuriam nenurodyta suma (nėra įkainio ar valandų), pažymėtas raudonai („be sumos“).' },
