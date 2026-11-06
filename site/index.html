@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Pp3hXs+LCfqKHFtII0+48oITkcbTFiqseTmJ5KbhWrw=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-01RsxOR02knSgUPzY47OWt62lZoYgb2HPeEco4EbPjA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-6u8c5v33+0Um7VxHuwvG/js428mYQSdvLq5ss6Ya7FQ=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-tjnOSvSO64ZYJJqZmTYcsom6DLLHa2D8DaKPRD3zlsQ=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -19374,12 +19374,12 @@ function invLinesHtml(v){
 function invPortalHtml(v){
   if(!invPortal(v)) return '';
   const fc = v.file_check, ft = v.file_total!=null ? Number(v.file_total) : null, same = ft!=null && Math.abs(ft-Number(v.amount||0)) < 0.005;
-  const file = fc==='ok' && ft!=null ? (same ? `✓ Faile nurodyta suma ${invMoney(ft)} sutampa su įvesta` : `⚠ Faile nurodyta ${invMoney(ft)}, įvesta ${invMoney(v.amount)}`)
+  const file = fc==='made' ? `🧾 Sąskaita sukurta portale (pagal LR reikalavimus) – suma ${invMoney(ft!=null ? ft : v.amount)} iš eilučių` : fc==='ok' && ft!=null ? (same ? `✓ Faile nurodyta suma ${invMoney(ft)} sutampa su įvesta` : `⚠ Faile nurodyta ${invMoney(ft)}, įvesta ${invMoney(v.amount)}`)
     : fc==='unread' ? '⚠ Faile sumos rasti nepavyko – patikrink rankiniu būdu' : fc ? 'Failo suma nepatikrinta (AI neįjungtas)' : '';
   const L = v.ext_mail_log;
   const mail = L ? (L.ok ? `📧 Laiškas „${L.subject||''}“ išsiųstas ${fbWhen(L.at)} → ${L.to||''}` : `⚠ Laiško išsiųsti nepavyko (${fbWhen(L.at)}): ${L.error||''}`)
     : ['rejected','approved','sent','queued','paid'].includes(v.status) ? '📧 Laiškas freelanceriui dar neišsiųstas' : '';
-  return `${file ? `<div class="section-sub" style="margin:4px 0;color:${fc==='ok' && same ? '#2F9E73' : '#E0A030'};">${esc(file)}</div>` : ''}${mail ? `<div class="section-sub" id="invMailSt" style="margin:4px 0;${L && !L.ok ? 'color:#E5484D;' : ''}">${esc(mail)}</div>` : ''}`;
+  return `${file ? `<div class="section-sub" style="margin:4px 0;color:${(fc==='ok' && same) || fc==='made' ? '#2F9E73' : '#E0A030'};">${esc(file)}</div>` : ''}${mail ? `<div class="section-sub" id="invMailSt" style="margin:4px 0;${L && !L.ok ? 'color:#E5484D;' : ''}">${esc(mail)}</div>` : ''}`;
 }
 async function invMailAgain(v){
   const b = document.getElementById('idMail'); if(b) b.disabled = true;
@@ -25024,7 +25024,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v729';
+const APP_VER = 'v730';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -45873,7 +45873,7 @@ const GUIDE = [
 { id:'invoices', tab:'invoices', g:'Ofisas', t:'Sąskaitos', d:'Gautos sąskaitos: įkėlimas, patikra ofise, tvirtinimas (Admin+), atsakymai tiekėjams, freelancerių portalas ir sąskaitų dėžutė.',
   s:[['Įkelti', 'Kiekvienas, kas mato puslapį, gali „Įkelti sąskaitą“ (PDF / nuotrauka) – suma ir numeris nuskaitomi; mato tik savo įkeltas. Rūšys: Freelance, Paslaugų, Nuomos, Pirkinių, Transporto nuoma, Kitos.'],
      ['Patikra ir sprendimas', 'Office ir Projektų vadovai patikrina („Sąskaita patikrinta“, „Reikia korekcijų“ – laiškas siuntėjui). Admin+ tvirtina, atmeta su priežastimi, žymi Suvesta apmokėjimui / Apmokėta, gali prisegti pavedimo kopiją.'],
-     ['Freelance portalas', 'saskaitos.eventsolutions.lt – freelanceris prisijungia el. paštu ir vienkartiniu kodu, pasirenka renginius, sumas ir išlaidas, įkelia sąskaitą (suma turi sutapti). Mato savo sąskaitų būsenas, gauna laiškus.'],
+     ['Freelance portalas', 'saskaitos.eventsolutions.lt – freelanceris prisijungia el. paštu ir vienkartiniu kodu, pasirenka renginius (ar savo užregistruotus darbus), sumas ir išlaidas, įkelia sąskaitą (suma turi sutapti) arba „Sukurti sąskaitą čia“ – įrašo savo rekvizitus (individuali veikla, verslo liudijimas, MB ar įmonė; PVM kodas, jei moka PVM), ir sąskaita faktūra (ar PVM sąskaita faktūra) sukuriama PDF pagal LR reikalavimus; rekvizitai ir numeracija išsaugomi kitam kartui. Mato savo sąskaitų būsenas, gauna laiškus.'],
      ['Sąskaitų dėžutė', 'Laiškai į saskaitos@ per ~1 val. tampa sąskaitomis; rūšis parenkama pagal raktažodžius.'],
      ['Siųsti el. paštu', 'Patvirtintą sąskaitą Admin+ siunčia buhalterijai („Siųsti el. paštu“) iš savo @eventsolutions.lt pašto – jei jis neprijungtas, atsidaro „Siuntimo el. paštas“ langas.'],
      ['Transporto nuoma', 'Tokios sąskaitos detalizacija (valst. nr., dienos, suma) patenka į Ataskaitos → Transporto nuoma.']],
@@ -54187,6 +54187,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-06 23:00', v:'v730', k:'new', t:'Freelance portalas: sąskaitą galima sukurti pačiame puslapyje', f:'saskaitos.eventsolutions.lt – „Sukurti sąskaitą čia“: freelanceris įrašo savo rekvizitus (individuali veikla, verslo liudijimas, MB ar įmonė; PVM kodas, jei moka PVM), seriją ir numerį, pasirenka darbus – sukuriama sąskaita faktūra (ar PVM sąskaita faktūra) PDF pagal LR reikalavimus (pardavėjas, pirkėjas, serija ir numeris, data, paslaugos, sumos, suma žodžiais). Galima peržiūrėti prieš siunčiant; rekvizitai ir numeracija išsaugomi kitam kartui. Arba, kaip anksčiau, įkelti savo sąskaitą.' },
   { d:'2026-11-06 21:00', v:'v729', k:'chg', t:'Darbų apskaita: priminimų gavėjai – Admin; sąskaitą galima įkelti ranka', f:'Admin → „Darbų apskaita: sąskaitų priminimai“: pasirenkami žmonės, kuriems siunčiama laukiamų sąskaitų suvestinė (vietoj renginio atsakingų). Nepasirinkus – siunčiama tik freelanceriams. „Laukiama sąskaitų“ – „📎 Įkelti sąskaitą“: atsiųstą sąskaitą galima įkelti ranka prie žmogaus ir iš karto susieti su jo darbais.' },
   { d:'2026-11-06 20:30', v:'v728', k:'fix', t:'Naujas renginys: pozicijos kiekvienoje grupėje nuo 1', f:'Kuriant renginį, kiekviena grupė (montažas diena prieš, montažas renginio dieną, demontažas, kitos dienos) numeruoja pozicijas nuo 1 ir jas rikiuoja: A1 A2 A3, L1 L2 L3, V1 V2 V3, tada Crew (pvz. montaže V1, V2 ir demontaže vėl V1, V2 – anksčiau demontaže būdavo V3, V4).' },
   { d:'2026-11-06 20:00', v:'v727', k:'new', t:'Darbų apskaita (3 etapas): laukiamų sąskaitų priminimai', f:'Darbų apskaitoje – „Laukiama sąskaitų“: kas dar nepateikė sąskaitų, už kokius darbus, kiek ir nuo kada, „✉ Priminti dabar“. Admin → „Darbų apskaita: sąskaitų priminimai“: įjungus, praėjus nustatytam dienų skaičiui po renginio pabaigos, kartą per savaitę laiškas freelanceriui ir suvestinė pasirinktiems žmonėms; gavus sąskaitą – sustoja. Pagal nutylėjimą išjungta.' },

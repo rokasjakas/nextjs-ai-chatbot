@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Pp3hXs+LCfqKHFtII0+48oITkcbTFiqseTmJ5KbhWrw=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-01RsxOR02knSgUPzY47OWt62lZoYgb2HPeEco4EbPjA=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-6u8c5v33+0Um7VxHuwvG/js428mYQSdvLq5ss6Ya7FQ=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-tjnOSvSO64ZYJJqZmTYcsom6DLLHa2D8DaKPRD3zlsQ=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -46,6 +46,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(
 .seg button{flex:1;padding:10px 6px;border:0;background:none;color:var(--text);font:inherit;font-size:14px;cursor:pointer;}
 .seg button.on{background:var(--accent);color:#0c1b2a;font-weight:700;}
 .hint{font-size:13px;color:var(--warn);margin-top:6px;}
+.seg.mode{margin:4px 0 12px;} .seg.mode button{flex:1;}
 .works{border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:12px;}
 .works-h{display:flex;flex-direction:column;gap:2px;margin-bottom:8px;} .works-h .muted{font-size:13px;}
 .work{display:grid;grid-template-columns:22px 92px 1fr auto;gap:8px;align-items:center;padding:7px 4px;border-top:1px solid var(--border);cursor:pointer;font-size:14px;}
@@ -267,22 +268,26 @@ function viewForm(){
       <p class="muted">1) Įkelk sąskaitą – jos galutinė suma bus nuskaityta automatiškai. 2) Nurodyk renginius, kuriuose dirbai, ir papildomas išlaidas. Visos sumos – <b>su mokesčiais</b>; renginių ir išlaidų suma turi sutapti su sąskaitos galutine suma.</p>
       ${draft.wasRejected && draft.why ? `<div class="why"><b>${draft.fixMode ? 'Reikia korekcijų:' : 'Nepatvirtinta, nes:'}</b> ${esc(draft.why)}</div>` : ''}</div>
     <div class="card"><h2>1. Sąskaita</h2>
+      ${draft.editId ? '' : `<div class="seg mode"><button type="button" data-mode="upload" class="${draft.mode!=='make' ? 'on' : ''}">📎 Įkelti savo sąskaitą</button><button type="button" data-mode="make" class="${draft.mode==='make' ? 'on' : ''}">🧾 Sukurti sąskaitą čia</button></div>`}
+      ${draft.mode==='make' ? makeHtml() : `
       <label>Sąskaitos failas (geriausia elektroninė PDF sąskaita)</label>
       <label class="file" id="fl"><span>📎</span><span id="fname">${draft.file ? '<b>'+esc(draft.file.name)+'</b>' : draft.oldFile ? '<b>'+esc(draft.oldFile.name)+'</b> <span class="muted">(paliekamas – spausk, jei nori pakeisti)</span>' : 'Pasirink sąskaitos failą…'}</span><input id="file" type="file" accept="application/pdf,image/*"></label>
       <div id="ftot"></div>
       <div class="row2"><div><label>Sąskaitos nr.</label><input id="num" value="${esc(draft.number)}" autocomplete="off"></div>
-      <div><label>Galutinė suma su mokesčiais, €</label><input id="tot" inputmode="decimal" value="${esc(draft.total)}" placeholder="iš failo" autocomplete="off"></div></div>
+      <div><label>Galutinė suma su mokesčiais, €</label><input id="tot" inputmode="decimal" value="${esc(draft.total)}" placeholder="iš failo" autocomplete="off"></div></div>`}
     </div>
     <div class="card"><h2>2. Renginiai ir išlaidos</h2><div id="works"></div><div id="lines"></div>
       <button class="btn ghost" id="add">+ Pridėti renginį</button></div>
     <div class="card"><h2>Suvestinė</h2><div id="sum"></div>
       <label>Pastaba (nebūtina)</label><textarea id="note">${esc(draft.note)}</textarea>
-      <button class="btn" id="send" disabled>Siųsti sąskaitą</button><div class="err" id="err"></div></div>`;
+      ${draft.mode==='make' ? '<button class="btn ghost" id="prev" type="button">👁 Peržiūrėti sąskaitą</button>' : ''}<button class="btn" id="send" disabled>${draft.mode==='make' ? 'Sukurti ir siųsti sąskaitą' : 'Siųsti sąskaitą'}</button><div class="err" id="err"></div></div>`;
   const q = id=>document.getElementById(id);
-  q('num').oninput = e=>{ draft.number = e.target.value; drawSum(); };
-  q('tot').oninput = e=>{ draft.total = e.target.value; drawSum(); };
+  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick = ()=>{ if(draft.mode===b.dataset.mode) return; draft.mode = b.dataset.mode; if(draft.mode==='make') loadProfile(); viewForm(); });
+  if(draft.mode==='make') makeWire();
+  if(q('num')) q('num').oninput = e=>{ draft.number = e.target.value; drawSum(); };
+  if(q('tot')) q('tot').oninput = e=>{ draft.total = e.target.value; drawSum(); };
   q('note').oninput = e=>{ draft.note = e.target.value; drawSum(); };
-  q('file').onchange = e=>{
+  if(q('file')) q('file').onchange = e=>{
     const f = e.target.files[0]; if(!f) return;
     if(f.size > 10*1024*1024){ q('err').textContent = 'Failas per didelis (iki 10 MB).'; e.target.value = ''; return; }
     if(!/^(application\/pdf|image\/)/.test(f.type)){ q('err').textContent = 'Įkelk PDF arba nuotrauką.'; e.target.value = ''; return; }
@@ -291,6 +296,7 @@ function viewForm(){
   };
   q('add').onclick = ()=>{ draft.lines.push(newLine()); drawLines(); const els = document.querySelectorAll('.l-date'); els[els.length-1].focus(); };
   q('send').onclick = submit;
+  if(q('prev')) q('prev').onclick = previewMade;
   q('back').onclick = ()=>{ draft = null; render(); };
   if(draft.editId) q('send').textContent = 'Siųsti pataisytą sąskaitą';
   drawLines(); loadWorks();
@@ -325,6 +331,50 @@ function toggleWork(id, yes, quiet){
     if(blank>=0) draft.lines.splice(blank, 1, l); else draft.lines.push(l);
   } else { draft.lines = draft.lines.filter(l=>l.work_id!==id); if(!draft.lines.length) draft.lines.push(newLine()); }
   if(!quiet){ drawWorks(); drawLines(); }
+}
+// ---- an invoice made here (by the LR rules; the PDF is made on the server) ----
+const SELLER_KIND = [['iv','Individuali veikla (pažyma)'],['vl','Verslo liudijimas'],['mb','MB (mažoji bendrija)'],['uab','UAB ar kita įmonė']];
+async function loadProfile(){
+  if(draft.mk) return;
+  draft.mk = { seller:{ kind:'iv', name:S.name||'' }, series:'', number:'0001', date:todayStr(), due:'', loading:true };
+  try{ const d = await call({ action:'profile', token:S.token }); if(!draft || !draft.mk) return;
+    Object.assign(draft.mk, { seller:Object.assign({ kind:'iv' }, d.seller||{}), series:d.series || initials(d.seller && d.seller.name || S.name), number:d.number || '0001', buyer:d.buyer, loading:false }); }
+  catch(x){ if(!S.token) return render(); draft.mk.loading = false; draft.mk.err = x.message; }
+  if(draft && draft.mode==='make') viewForm();
+}
+const initials = n=>String(n||'').split(/\s+/).filter(Boolean).map(w=>w[0]).join('').toUpperCase().replace(/[^A-ZĄČĘĖĮŠŲŪŽ]/g, '').slice(0, 4) || 'SF';
+function makeHtml(){
+  const m = draft.mk || { seller:{}, loading:true }, sl = m.seller||{}, codeL = sl.kind==='vl' ? 'Verslo liudijimo Nr.' : sl.kind==='mb' || sl.kind==='uab' ? 'Įmonės kodas' : 'Individualios veiklos pažymos Nr.';
+  if(m.loading) return '<p class="muted">Kraunami tavo duomenys…</p>';
+  const f = (k, label, ph, extra)=>`<div><label>${label}</label><input class="mk-s" data-k="${k}" value="${esc(sl[k]||'')}" placeholder="${esc(ph||'')}" autocomplete="off"${extra||''}></div>`;
+  return `<p class="muted">Užpildyk savo duomenis (išsaugomi kitam kartui). Sąskaita sukuriama pagal LR buhalterinės apskaitos įstatymo reikalavimus; jei esi PVM mokėtojas – įrašyk PVM kodą, bus PVM sąskaita faktūra (PVM 21 % – iš sutartų sumų).</p>
+    <label>Veiklos forma</label><select class="mk-s" data-k="kind">${SELLER_KIND.map(([k, l])=>`<option value="${k}"${sl.kind===k ? ' selected' : ''}>${l}</option>`).join('')}</select>
+    <div class="row2">${f('name', sl.kind==='mb' || sl.kind==='uab' ? 'Įmonės pavadinimas' : 'Vardas, pavardė', '')}${f('code', codeL, '')}</div>
+    ${f('address', 'Adresas', 'gatvė, namas, miestas')}
+    <div class="row2">${f('iban', 'Banko sąskaita (IBAN)', 'LT12 3456 …')}${f('bank', 'Bankas (nebūtina)', 'pvz. Swedbank')}</div>
+    <div class="row2">${f('vat', 'PVM mokėtojo kodas (jei esi PVM mokėtojas)', 'LT…')}${f('phone', 'Telefonas (nebūtina)', '+370…')}</div>
+    <div class="row2"><div><label>Serija</label><input id="mkSer" value="${esc(m.series||'')}" autocomplete="off"></div><div><label>Numeris</label><input id="mkNo" value="${esc(m.number||'')}" autocomplete="off"></div></div>
+    <div class="row2"><div><label>Sąskaitos data</label><input type="date" id="mkDate" value="${esc(m.date||todayStr())}"></div><div><label>Apmokėti iki (nebūtina)</label><input type="date" id="mkDue" value="${esc(m.due||'')}"></div></div>
+    ${m.buyer ? `<p class="muted" style="font-size:13px;">Pirkėjas: <b>${esc(m.buyer.name)}</b>, įm. k. ${esc(m.buyer.code)}, PVM k. ${esc(m.buyer.vat)}, ${esc(m.buyer.address)}</p>` : ''}
+    ${m.err ? `<div class="err">${esc(m.err)}</div>` : ''}
+    <p class="muted" style="font-size:13px;">Sumą sudarys renginiai ir išlaidos žemiau. Prieš siųsdamas gali peržiūrėti sąskaitą.</p>`;
+}
+function makeWire(){
+  const m = draft.mk; if(!m || m.loading) return;
+  document.querySelectorAll('.mk-s').forEach(el=>el[el.tagName==='SELECT' ? 'onchange' : 'oninput'] = ()=>{ m.seller[el.dataset.k] = el.value; if(el.dataset.k==='kind') viewForm(); });
+  const b = (id, k)=>{ const el = document.getElementById(id); if(el) el.oninput = el.onchange = ()=>{ m[k] = el.value; }; };
+  b('mkSer', 'series'); b('mkNo', 'number'); b('mkDate', 'date'); b('mkDue', 'due');
+}
+const makeOf = ()=>{ const m = draft.mk||{}; return { seller:m.seller, series:m.series, number:m.number, date:m.date, due:m.due }; };
+async function previewMade(){
+  const err = document.getElementById('err'), b = document.getElementById('prev'); if(err) err.textContent = '';
+  b.disabled = true; b.textContent = 'Kuriama…';
+  try{
+    const d = await call({ action:'preview', token:S.token, total:num(draft.total), note:draft.note.trim(), lines:await linesOut(), make:makeOf() });
+    const bin = atob(d.preview), u8 = new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u8[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([u8], { type:'application/pdf' })); window.open(url, '_blank');
+  }catch(x){ if(!S.token) return render(); if(err) err.textContent = x.message; }
+  b.disabled = false; b.textContent = '👁 Peržiūrėti sąskaitą';
 }
 function extrasHtml(l, i){
   return `<div class="extras">${(l.extras||[]).map((x, j)=>`<div class="extra">
@@ -421,10 +471,12 @@ function drawSum(){
   const box = document.getElementById('sum'); if(!box) return;
   const sum = draft.lines.reduce((t, l)=>t+lineCents(l), 0), tn = num(draft.total), tot = tn>0 ? cents(tn) : 0;
   const ex = draft.lines.reduce((t, l)=>t+(l.extras||[]).reduce((u, x)=>u+extraCents(x), 0), 0);
-  const bad = draft.lines.findIndex(l=>!lineOk(l)), ft = fileTotal(), busy = !!(draft.scan && draft.scan.busy);
-  drawFileTotal(tot);
+  if(draft.mode==='make'){ draft.total = sum ? String(sum/100).replace('.', ',') : ''; }
+  const bad = draft.lines.findIndex(l=>!lineOk(l)), ft = draft.mode==='make' ? (sum || null) : fileTotal(), busy = !!(draft.scan && draft.scan.busy);
+  if(draft.mode!=='make') drawFileTotal(tot);
   let m = '';
-  if(busy) m = '<div class="match wait">⏳ Laukiama sąskaitos sumos…</div>';
+  if(draft.mode==='make') m = sum ? `<div class="match ok">🧾 Sąskaita bus sukurta ${eur(sum)} sumai</div>` : '<div class="match bad">Pažymėk darbus ar įrašyk renginius žemiau.</div>';
+  else if(busy) m = '<div class="match wait">⏳ Laukiama sąskaitos sumos…</div>';
   else if(ft==null) m = `<div class="match bad">${draft.file || draft.oldFile ? 'Sąskaitos galutinė suma nenuskaityta – įkelk aiškesnį sąskaitos failą.' : 'Įkelk sąskaitos failą – jo galutinė suma bus palyginta su renginiais.'}</div>`;
   else if(tot && ft!==tot) m = `<div class="match bad">✗ Sąskaitoje nurodyta ${eur(ft)}, o įvesta ${eur(tot)}.</div>`;
   else if(sum===ft) m = `<div class="match ok">✓ Renginių ir išlaidų suma sutampa su sąskaita (${eur(ft)})</div>`;
@@ -433,9 +485,10 @@ function drawSum(){
   if(bad>=0) miss.push(`užpildyk ${bad+1} eilutę (data, renginys, suma${(draft.lines[bad].extras||[]).length ? ', išlaidos' : ''})`);
   const differ = draft.lines.some(l=>l.work_id && l.agreed!=null && lineCents(l)!==cents(l.agreed));
   if(differ && !String(draft.note||'').trim()) miss.push('parašyk pastaboje, kodėl suma kita nei sutarta');
-  box.innerHTML = `<div class="sum"><span>Renginiai (${draft.lines.length})</span><b>${eur(sum-ex)}</b></div>${ex ? `<div class="sum"><span>Papildomos išlaidos</span><b>${eur(ex)}</b></div>` : ''}<div class="sum"><span>Iš viso</span><b>${eur(sum)}</b></div><div class="sum"><span>Sąskaitoje (iš failo)</span><b>${ft!=null ? eur(ft) : '—'}</b></div>${m}${miss.length ? `<p class="muted">Dar: ${miss.join(', ')}.</p>` : ''}`;
+  box.innerHTML = `<div class="sum"><span>Renginiai (${draft.lines.length})</span><b>${eur(sum-ex)}</b></div>${ex ? `<div class="sum"><span>Papildomos išlaidos</span><b>${eur(ex)}</b></div>` : ''}<div class="sum"><span>Iš viso</span><b>${eur(sum)}</b></div>${draft.mode==='make' ? '' : `<div class="sum"><span>Sąskaitoje (iš failo)</span><b>${ft!=null ? eur(ft) : '—'}</b></div>`}${m}${miss.length ? `<p class="muted">Dar: ${miss.join(', ')}.</p>` : ''}`;
   const send = document.getElementById('send');
-  if(send) send.disabled = !(ft!=null && !busy && tot===ft && sum===ft && bad<0 && !(differ && !String(draft.note||'').trim()));
+  const totOk = draft.mode==='make' ? sum>0 : (tot===ft && sum===ft);
+  if(send) send.disabled = !(ft!=null && !busy && totOk && bad<0 && !(differ && !String(draft.note||'').trim()));
 }
 function fileB64(f){
   return new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = ()=>rej(new Error('Nepavyko perskaityti failo.')); r.readAsDataURL(f); });
@@ -445,6 +498,17 @@ async function submit(){
   if(b.disabled) return;
   b.disabled = true; b.textContent = 'Siunčiama…'; err.textContent = '';
   try{
+    const lines = await linesOut();
+    const f = draft.mode==='make' ? null : draft.file;
+    const d = await call({ action:'submit', token:S.token, id:draft.editId || undefined, number:draft.number.trim(), total:num(draft.total), note:draft.note.trim(), lines,
+      ...(draft.mode==='make' ? { make:makeOf() } : { file: f ? { name:f.name, type:f.type, base64:draft.b64 || await fileB64(f) } : null }) });
+    submitDone(d);
+  }catch(x){
+    if(!S.token){ render(); return; }
+    b.disabled = false; b.textContent = draft && draft.editId ? 'Siųsti pataisytą sąskaitą' : draft && draft.mode==='make' ? 'Sukurti ir siųsti sąskaitą' : 'Siųsti sąskaitą'; err.textContent = x.message;
+  }
+}
+async function linesOut(){
     const lines = [];
     for(const l of draft.lines){
       const man = manual(l), o = { date:l.date, event_id:man ? null : l.ev, event_name:man ? l.name.trim() : '', type:l.type, extras:[], ...(l.work_id ? { work_id:l.work_id } : {}) };
@@ -452,19 +516,15 @@ async function submit(){
       for(const x of l.extras||[]) o.extras.push({ what:x.what.trim(), amount:num(x.amount), keep:x.keep, file: x.file ? { name:x.file.name, type:x.file.type, base64:await fileB64(x.file) } : null });
       lines.push(o);
     }
-    const f = draft.file;
-    const d = await call({ action:'submit', token:S.token, id:draft.editId || undefined, number:draft.number.trim(), total:num(draft.total), note:draft.note.trim(), lines,
-      file: f ? { name:f.name, type:f.type, base64:draft.b64 || await fileB64(f) } : null });
+    return lines;
+}
+function submitDone(d){
     draft = null;
     $app.innerHTML = `<div class="card done"><div class="big">✅</div><h1>${d.edited ? 'Pataisyta sąskaita išsiųsta' : 'Sąskaita išsiųsta'}</h1>
       <p class="muted">Gavome jūsų sąskaitą (${eur(cents(d.total))}). Ji perduota tvirtinimui – kai bus patvirtinta, gausite el. laišką.</p>
       <button class="btn" id="again">Mano sąskaitos</button><button class="btn ghost" id="bye">Atsijungti</button></div>`;
     document.getElementById('again').onclick = ()=>render();
     document.getElementById('bye').onclick = ()=>{ logout(); render(); };
-  }catch(x){
-    if(!S.token){ render(); return; }
-    b.disabled = false; b.textContent = draft && draft.editId ? 'Siųsti pataisytą sąskaitą' : 'Siųsti sąskaitą'; err.textContent = x.message;
-  }
 }
 
 render();

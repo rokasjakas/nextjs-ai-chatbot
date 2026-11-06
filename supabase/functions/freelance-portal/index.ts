@@ -17,11 +17,18 @@
 //   {action:"file", token, id}                  a short-lived link to the invoice's file
 //   {action:"scan", token, file:{type,base64}}  the total written in the invoice file (read by Claude) – the page
 //                                               shows it at once; „submit“ refuses an invoice whose file says otherwise
+//   {action:"profile", token}                   my saved details for a made invoice (seller) and the next number
+//   {action:"preview", token, make, lines, note} the invoice made here as a PDF (base64) – nothing saved
+//   submit with make:{seller, series, number, date, due} instead of a file: the invoice is made here (a PDF by the
+//        LR rules: seller, buyer, series and number, date, services, sums, VAT if the seller pays it, the sum in words)
 // ANTHROPIC_API_KEY: without it the file's total is not checked (the invoice is marked „nepatikrinta“).
 //
 // Secrets: RESEND_API_KEY, REMINDER_FROM (as for the other e-mails), CRON_SECRET (to tell Admin+).
 // Deploy: supabase functions deploy freelance-portal --no-verify-jwt
 import Anthropic from "npm:@anthropic-ai/sdk";
+import { PDFDocument, rgb } from "npm:pdf-lib@1.17.1";
+import fontkit from "npm:@pdf-lib/fontkit@1.1.1";
+import { buildInvoicePdf, BUYER, totals, type Seller, type InvLine } from "./invoice_pdf.ts";
 import { extractText, getDocumentProxy } from "npm:unpdf@1.8.1";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -223,6 +230,62 @@ async function scanCached(s: { token_hash?: string; scans?: Record<string, Scan>
   return r;
 }
 const eurTxt = (n: number) => n.toFixed(2).replace(".", ",") + " €";
+// ---- an invoice made on the page ----
+type Make = { seller?: Partial<Seller>; series?: string; number?: string; date?: string; due?: string };
+let FONTS: { regular: Uint8Array; bold: Uint8Array } | null = null;
+async function fonts() {
+  if (FONTS) return FONTS;
+  const get = async (f: string) => {
+    for (const base of ["https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/", "https://unpkg.com/dejavu-fonts-ttf@2.37.3/ttf/"]) {
+      try { const r = await fetch(base + f, { signal: AbortSignal.timeout(15000) }); if (r.ok) return new Uint8Array(await r.arrayBuffer()); } catch { /* the next one */ }
+    }
+    throw new UserError("Sąskaitos sukurti nepavyko (šriftas) – pabandyk po minutės arba įkelk savo sąskaitą.");
+  };
+  const [regular, bold] = await Promise.all([get("DejaVuSans.ttf"), get("DejaVuSans-Bold.ttf")]);
+  return FONTS = { regular, bold };
+}
+const KIND_LT: Record<string, string> = { montazas: "montažas", demontazas: "demontažas", aptarnavimas: "aptarnavimas", operatorius: "operatoriaus darbas", sandelis: "sandėlio darbai", vairavimas: "vairavimas" };
+function cleanSeller(x: Partial<Seller> = {}): Seller {
+  const t = (v: unknown, n = 200) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, n);
+  const kind = (["iv", "vl", "mb", "uab", "kita"].includes(String(x.kind)) ? x.kind : "iv") as Seller["kind"];
+  const sl: Seller = { kind, name: t(x.name), code: t(x.code, 40), address: t(x.address), vat: t(x.vat, 20).toUpperCase(), iban: t(x.iban, 40).toUpperCase(), bank: t(x.bank, 80), email: t(x.email, 120), phone: t(x.phone, 40) };
+  if (!sl.name) throw new UserError("Sąskaitai: įrašyk vardą, pavardę ar įmonės pavadinimą.");
+  if (!sl.code) throw new UserError(kind === "iv" ? "Sąskaitai: įrašyk individualios veiklos pažymos numerį." : kind === "vl" ? "Sąskaitai: įrašyk verslo liudijimo numerį." : "Sąskaitai: įrašyk įmonės kodą.");
+  if (!sl.address) throw new UserError("Sąskaitai: įrašyk adresą.");
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9 ]{10,32}$/.test(sl.iban || "")) throw new UserError("Sąskaitai: įrašyk banko sąskaitos numerį (IBAN, pvz. LT12 3456 …).");
+  if (sl.vat && !/^LT\d{9}(\d{3})?$/.test(sl.vat.replace(/\s/g, ""))) throw new UserError("PVM mokėtojo kodas – LT ir 9 ar 12 skaitmenų (jei nesi PVM mokėtojas – palik tuščią).");
+  return sl;
+}
+// the invoice's lines from the checked rows: the work (with its kind if registered), the extras apart
+function invLines(clean: { date: string; event: string; type?: string; hours?: number; rate?: number; amount?: number; extras: { what: string; amount: number }[]; work_id?: string }[], kinds: Map<string, string>): InvLine[] {
+  const out: InvLine[] = [];
+  for (const l of clean) {
+    const k = l.work_id ? KIND_LT[kinds.get(l.work_id) || ""] : "";
+    const what = `Renginio techninis aptarnavimas${k ? " (" + k + ")" : ""} – ${l.event} (${l.date})`;
+    if (l.type === "hourly" && l.hours && l.rate) out.push({ text: what, qty: Number(l.hours), unit: "val.", total: round2(Number(l.hours) * Number(l.rate)) });
+    else if (Number(l.amount) > 0) out.push({ text: what, qty: 1, unit: "vnt.", total: round2(Number(l.amount)) });
+    for (const x of l.extras) out.push({ text: `Papildomos išlaidos: ${x.what} – ${l.event} (${l.date})`, qty: 1, unit: "vnt.", total: round2(x.amount) });
+  }
+  return out;
+}
+function cleanMake(m: Make) {
+  const series = String(m.series || "").replace(/[^A-Za-zĄČĘĖĮŠŲŪŽąčęėįšųūž0-9-]/g, "").toUpperCase().slice(0, 10);
+  const number = String(m.number || "").replace(/[^0-9A-Za-z-]/g, "").slice(0, 20);
+  if (!series || !number) throw new UserError("Sąskaitai: įrašyk seriją ir numerį (pvz. OZ 0001).");
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(String(m.date)) ? String(m.date) : today();
+  const due = /^\d{4}-\d{2}-\d{2}$/.test(String(m.due)) ? String(m.due) : "";
+  return { seller: cleanSeller(m.seller), series, number, date, due };
+}
+async function makePdf(mk: ReturnType<typeof cleanMake>, lines: InvLine[], note: string) {
+  const f = await fonts();
+  return await buildInvoicePdf({ seller: mk.seller, buyer: BUYER, series: mk.series, number: mk.number, date: mk.date, due: mk.due || undefined, lines, note }, { PDFDocument, rgb, fontkit, regular: f.regular, bold: f.bold });
+}
+async function saveProfile(email: string, mk: ReturnType<typeof cleanMake>) {
+  try { await db("fl_portal_profiles?on_conflict=email", { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify({ email, seller: mk.seller, last_series: mk.series, last_number: mk.number, updated_at: new Date().toISOString() }) }); }
+  catch (e) { console.error("profile", (e as Error).message); }
+}
+const nextNo = (n: string) => { const m = /^(.*?)(\d+)$/.exec(n || ""); return m ? m[1] + String(+m[2] + 1).padStart(m[2].length, "0") : "0001"; };
 // the invoice's total must be read from the file and be the same as the entered one
 function mustMatch(scan: Scan, total: number) {
   if (!scan.found || scan.total == null) {
@@ -290,7 +353,7 @@ async function upload(path: string, bytes: Uint8Array, type: string) {
   const up = await fetch(`${SUPABASE_URL}/storage/v1/object/invoice-files/${path}`, { method: "POST", headers: hdr({ "Content-Type": type, "x-upsert": "true" }), body: bytes });
   if (!up.ok) throw new Error("upload " + up.status + " " + (await up.text()).slice(0, 200));
 }
-async function submit(s: { email: string; name: string; token_hash?: string; scans?: Record<string, Scan> }, b: { id?: string; number?: string; total?: number; lines?: Line[]; file?: In; note?: string }) {
+async function submit(s: { email: string; name: string; token_hash?: string; scans?: Record<string, Scan> }, b: { id?: string; number?: string; total?: number; lines?: Line[]; file?: In; note?: string; make?: Make }, dry = false) {
   const lines = Array.isArray(b.lines) ? b.lines.slice(0, 80) : [];
   if (!lines.length) throw new UserError("Įrašyk bent vieną renginį.");
   const ids = [...new Set(lines.map((l) => String(l.event_id || "")).filter(Boolean))];
@@ -335,6 +398,19 @@ async function submit(s: { email: string; name: string; token_hash?: string; sca
   }
   if (!(total > 0)) throw new UserError("Įrašyk sąskaitos sumą.");
   if (Math.abs(sum - total) > 0.005) throw new UserError(`Sumos nesutampa: renginių ir išlaidų suma ${eurTxt(sum)}, sąskaitos suma ${eurTxt(total)}.`);
+  // made here: the PDF from these lines (a preview returns it and stops)
+  let made: { bytes: Uint8Array; mk: ReturnType<typeof cleanMake> } | null = null;
+  if (b.make) {
+    const mk = cleanMake(b.make), kinds = new Map(open.map((o) => [o.id, o.kind]));
+    if (wantWorks.length && !open.length) open = await openWorks(s as never, b.id ? String(b.id) : null);
+    open.forEach((o) => kinds.set(o.id, o.kind));
+    const il = invLines(clean as never, kinds), sumL = round2(il.reduce((t, l) => t + l.total, 0));
+    if (Math.abs(sumL - total) > 0.005) throw new UserError(`Sumos nesutampa: eilutėse ${eurTxt(sumL)}, sąskaitoje ${eurTxt(total)}.`);
+    const bytes = await makePdf(mk, il, String(b.note || "").trim().slice(0, 500));
+    if (dry) return { preview: btoa(Array.from(bytes, (c) => String.fromCharCode(c)).join("")), total, vat: totals({ seller: mk.seller, buyer: BUYER, series: "", number: "", date: "", lines: il }).vat };
+    made = { bytes, mk };
+    b.number = mk.series + " " + mk.number;
+  } else if (dry) throw new UserError("Nėra ką peržiūrėti.");
   const editId = b.id ? String(b.id) : "";
   const old = editId ? (await mine(s.email, editId))[0] : null;
   if (editId && !old) throw new UserError("Sąskaita nerasta.");
@@ -344,7 +420,10 @@ async function submit(s: { email: string; name: string; token_hash?: string; sca
   // the invoice file: a new one is read and must say the same total; a kept one was read when it came
   const f = b.file || {};
   let main: { bytes: Uint8Array; type: string; name: string } | null = null, scan: Scan | null = null;
-  if (f.base64) {
+  if (made) {
+    main = { bytes: made.bytes, type: "application/pdf", name: `Saskaita_${made.mk.series}${made.mk.number}.pdf` };
+    scan = { found: true, total, checked: true } as unknown as Scan;   // made here from these very sums
+  } else if (f.base64) {
     const d = decode(f, "Sąskaita");
     scan = await scanCached(s, String(f.base64), d.type);
     mustMatch(scan, total);
@@ -389,7 +468,7 @@ async function submit(s: { email: string; name: string; token_hash?: string; sca
   }
   const row = {
     number: String(b.number || "").trim().slice(0, 80) || null, amount: total, note: String(b.note || "").trim().slice(0, 1000) || null,
-    lines: lineRows, files, ext_name: s.name, ...(scan ? { file_total: scan.total, file_check: "ok" } : {}),
+    lines: lineRows, files, ext_name: s.name, ...(scan ? { file_total: scan.total, file_check: made ? "made" : "ok" } : {}),
   };
   const cs = Deno.env.get("CRON_SECRET");
   if (old) {
@@ -415,6 +494,7 @@ async function submit(s: { email: string; name: string; token_hash?: string; sca
     try { await db("rpc/wi_link_invoice", { method: "POST", body: JSON.stringify({ p_inv: id, p_ids: wantWorks }) }); }
     catch (e) { console.error("link works", (e as Error).message); }
   }
+  if (made) await saveProfile(s.email, made.mk);
   // Admin+ are told (push-notify, with the cron secret)
   if (cs) await fetch(SUPABASE_URL + "/functions/v1/push-notify", { method: "POST", headers: { "Content-Type": "application/json", "x-cron-secret": cs }, body: JSON.stringify({ mode: "invoice-portal", invoice_id: id, edited: !!old }) }).catch(() => {});
   return { ok: true, id, total, edited: !!old };
@@ -502,6 +582,15 @@ Deno.serve(async (req) => {
       if (!f.base64) throw new UserError("Nėra failo.");
       if (f.base64.length > MAX_FILE * 1.4) throw new UserError("Failas per didelis (iki 10 MB).");
       return json(await scanCached(s as never, f.base64, String(f.type || "")));
+    }
+    if (action === "profile") {
+      const s = await session(b.token);
+      const [p] = await db<{ seller: Seller; last_series: string | null; last_number: string | null }[]>(`fl_portal_profiles?select=*&email=eq.${enc(s.email)}`).catch(() => []);
+      return json({ seller: p?.seller || { kind: "iv", name: s.name }, series: p?.last_series || "", number: p?.last_number ? nextNo(p.last_number) : "0001", buyer: BUYER });
+    }
+    if (action === "preview") {
+      const s = await session(b.token);
+      return json(await submit(s, b as never, true));
     }
     if (action === "submit") {
       const s = await session(b.token);
