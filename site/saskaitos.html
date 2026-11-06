@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-kX+4XyxfrfXOJKy5TcBzF57srhzY1qAMdH4TTx9LeQs=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-oKS5osgLisoVfzOm6wUdaSUJyHsufQhLhJdNflHCQ2E=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wVM2qB98J9FQPkCwkDyE5PankBoc/jbBwZM8GMfC3dg=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -378,7 +378,7 @@ function toggleWork(key, yes, quiet){
   if(!quiet){ drawWorks(); drawLines(); }
 }
 // ---- the tax calculator (an estimate by the LR rules; the rates can be changed) ----
-// Individuali veikla (2026, as on mokesciubaze.lt): expenses 30 % (simplified), taxable = 70 %; VSD 12,52 % (15,52 % with
+// Individuali veikla (2026): expenses 30 % (simplified), taxable = 70 %; VSD 12,52 % (15,52 % with
 // the pension accumulation) and PSD 6,98 % of 90 % of the taxable; GPM 5 % while the yearly taxable is up to 20 000 €,
 // then GPM = 20 % − the credit (taxable × (0,15 − 2/300 000 × (taxable − 20 000))), 20 % from 42 500 €. A VAT payer adds 21 %.
 // Verslo liudijimas / MB / UAB: no tax per invoice (a fixed fee / at the company) – only VAT if paid.
@@ -434,7 +434,7 @@ function calcDraw(){
       ${iv ? `<p class="muted" style="font-size:12px;margin-top:6px;">Pelnas = ${rt(100 - c.exp)} sumos be PVM (išlaidos ${rt(c.exp)}).</p>` : ''}</div>
       <div class="row2" style="align-items:end;"><div><label>Įrašyti sąskaitos sumą į</label><select id="cTo">${lines}<option value="new">+ naują renginio eilutę</option></select></div><div><button type="button" class="btn small" id="cPut" style="width:100%;">Įrašyti ${eur(cents(r.inv))}</button></div></div>` : ''}
     <p class="muted" style="font-size:12.5px;">${iv ? 'Apytikslis skaičiavimas pagal 2026 m. LR tvarką (individuali veikla, 30 % atskaitymas).' : kind==='vl' ? 'Verslo liudijimo mokestis fiksuotas, o VSD ir PSD mokami atskirai – nuo vienos sąskaitos papildomų mokesčių neskaičiuojama.' : 'MB ar įmonės mokesčiai skaičiuojami įmonės lygiu – nuo vienos sąskaitos papildomų mokesčių neskaičiuojama.'} </p>
-    <p class="muted" style="font-size:12.5px;">Plačiau apie mokesčius: <a href="https://mokesciubaze.lt/" target="_blank" rel="noopener">mokesciubaze.lt</a> · tikslūs dydžiai – vmi.lt ir sodra.lt.</p>`;
+    <p class="muted" style="font-size:12.5px;">Tikslūs dydžiai – vmi.lt ir sodra.lt.</p>`;
   const q = id=>document.getElementById(id);
   box.querySelectorAll('[data-cdir]').forEach(b=>b.onclick = ()=>{ c.dir = b.dataset.cdir; calcDraw(); });
   q('cAmt').oninput = e=>{ c.amt = e.target.value; calcDrawKeep('cAmt'); };
