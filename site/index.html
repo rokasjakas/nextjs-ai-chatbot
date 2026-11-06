@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-6u8c5v33+0Um7VxHuwvG/js428mYQSdvLq5ss6Ya7FQ=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-tjnOSvSO64ZYJJqZmTYcsom6DLLHa2D8DaKPRD3zlsQ=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-SbGIFMLHQv3cvV0O0SNA4LuSyiFpIjzn+V8gI5QjVRo=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-OK0fj8zmdf/QRRucYlfIpRWL/kPfI9FocwiYKUoF+5c=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -17668,6 +17668,14 @@ function lbDraw(){
   box.querySelectorAll('[data-lbq]').forEach(b=>b.onclick = ()=>{ LB.q = b.dataset.lbq; const q = document.getElementById('lbQ'); if(q) q.value = LB.q; lbDraw(); });
   if(money) box.querySelectorAll('[data-lb]').forEach(el=>el.onclick = ()=>{ const w = LB.list.find(x=>x.id===el.dataset.lb); if(w) lbEdit(w); });
 }
+// one event's days together (one row, one invoice line); two events on one day – two rows
+function lbByEvent(ws){
+  const m = new Map(); ws.forEach(w=>{ const k = w.event_id ? 'ev:'+w.event_id : 'pl:'+(w.place||''); const g = m.get(k) || { k, ws:[] }; g.ws.push(w); m.set(k, g); });
+  return [...m.values()].map(g=>{ g.ws.sort((a, b)=>a.work_date.localeCompare(b.work_date)); const ds = g.ws.map(w=>w.work_date), m0 = ds[0].slice(0, 8);
+    g.dates = ds.length > 1 && ds.every(d=>d.slice(0, 8)===m0) ? ds[0]+', '+ds.slice(1).map(d=>+d.slice(8)).join(', ') : ds.join(', ');
+    g.name = lbEvName(g.ws[0].event_id) || g.ws[0].place || '—'; g.kinds = [...new Set(g.ws.map(w=>lbKindL(w.kind)))].join(', ');
+    g.total = g.ws.some(w=>lbTotal(w)==null) ? null : g.ws.reduce((t, w)=>t + lbTotal(w), 0); return g; }).sort((a, b)=>a.ws[0].work_date.localeCompare(b.ws[0].work_date));
+}
 // „Laukiama sąskaitų“: everyone with done works and no invoice (all months), oldest first; „Priminti dabar“
 async function lbWaitDraw(box){
   if(!LB.wait){ box.innerHTML = '<div class="card empty-state">Kraunama…</div>';
@@ -17686,7 +17694,7 @@ async function lbWaitDraw(box){
   box.innerHTML = `<div class="card"><div class="lb-tot">Laukiama sąskaitų: <b>${list.length}</b> žmonių · <b>${lbEur(total)}</b> · priminimai: ${c.on ? `<b style="color:#2F9E73;">įjungti</b> (${c.days} d. po renginio, renginiams nuo ${esc(c.from||'—')}; suvestinė: ${esc(lbRemPeople().filter(m=>(c.to||[]).includes(m.id)).map(teamName).join(', ') || 'niekam')})` : '<b>išjungti</b> (Admin → Darbų apskaita: sąskaitų priminimai)'}</div>
     ${list.length ? list.map(g=>`<details class="lb-wait"><summary><b>${esc(g.name)}</b><span>${g.ws.length} d.</span><span>${lbEur(g.sum)}</span><span class="${g.days > (c.days||14) ? 'lb-warn' : ''}">seniausias – prieš ${g.days} d.</span><span class="lb-dim">${g.email ? esc(g.email) : '<span class="lb-warn">nėra el. pašto</span>'}${g.last ? ' · priminta '+esc(g.last.slice(0, 10)) : ''}</span>
         <button type="button" class="btn small" data-lbinv="${esc(g.k)}">📎 Įkelti sąskaitą</button>${g.email ? `<button type="button" class="btn small" data-lbrem="${esc(g.k)}">✉ Priminti dabar</button>` : ''}</summary>
-        <table class="lb-tbl"><tbody>${g.ws.map(w=>`<tr data-lb="${esc(w.id)}" class="lb-click"><td>${esc(w.work_date)}</td><td>${esc(lbEvName(w.event_id) || w.place || '—')} <small>renginio pabaiga ${esc(endOf(w))}</small></td><td>${esc(lbKindL(w.kind))}</td><td class="num">${lbTotal(w)==null ? '<span class="lb-warn">be sumos</span>' : lbEur(lbTotal(w))}</td></tr>`).join('')}</tbody></table></details>`).join('')
+        <table class="lb-tbl"><tbody>${lbByEvent(g.ws).map(e=>`<tr data-lb="${esc(e.ws[0].id)}" class="lb-click"><td>${esc(e.dates)}</td><td>${esc(e.name)} <small>renginio pabaiga ${esc(endOf(e.ws[0]))}</small></td><td>${esc(e.kinds)}${e.ws.length > 1 ? ` <small>${e.ws.length} d.</small>` : ''}</td><td class="num">${e.total==null ? '<span class="lb-warn">be sumos</span>' : lbEur(e.total)}</td></tr>`).join('')}</tbody></table></details>`).join('')
       : '<div class="empty-state">Visos sąskaitos gautos 🎉</div>'}</div>`;
   box.querySelectorAll('[data-lbrem]').forEach(b=>b.onclick = async e=>{ e.preventDefault(); e.stopPropagation(); b.disabled = true; b.textContent = 'Siunčiama…';
     const r = await notifyCall({ mode:'labor-remind-one', key:b.dataset.lbrem }, { once:true });
@@ -17706,11 +17714,11 @@ function lbInvUpload(person, works){
       <label class="field">Sąskaitos data<input type="date" id="lbiDate" value="${esc(evToday())}"></label>
       <label class="field">Apmokėti iki<input type="date" id="lbiDue"></label>
     </div>
-    <div class="field">Už kuriuos darbus<div class="inv-wpick" id="lbiW">${works.map(w=>`<label><input type="checkbox" data-lbiw="${esc(w.id)}" checked><span>${esc(w.work_date)}</span><span>${esc(lbEvName(w.event_id) || w.place || '—')} <small>${esc(lbKindL(w.kind))}</small></span><b>${lbTotal(w)==null ? '—' : esc(lbEur(lbTotal(w)))}</b></label>`).join('')}</div>
+    <div class="field">Už kuriuos renginius<div class="inv-wpick" id="lbiW">${lbByEvent(works).map(e=>`<label><input type="checkbox" data-lbiw="${esc(e.ws.map(w=>w.id).join(','))}" checked><span>${esc(e.dates)}</span><span>${esc(e.name)} <small>${esc(e.kinds)}${e.ws.length > 1 ? ' · '+e.ws.length+' d.' : ''}</small></span><b>${e.total==null ? '—' : esc(lbEur(e.total))}</b></label>`).join('')}</div>
       <div class="inv-wsum" id="lbiSum"></div></div>
     <label class="field">Pastaba<textarea id="lbiNote" rows="2"></textarea></label>
     <div class="row" style="justify-content:flex-end;gap:8px;margin-top:10px;"><button type="button" class="btn" id="lbiX">Atšaukti</button><button type="button" class="btn primary" id="lbiGo">💾 Įkelti ir susieti</button></div>`);
-  const $ = id=>document.getElementById(id), chosen = ()=>works.filter(w=>{ const c = document.querySelector(`[data-lbiw="${w.id}"]`); return c && c.checked; });
+  const $ = id=>document.getElementById(id), chosen = ()=>{ const ids = new Set([...document.querySelectorAll('[data-lbiw]')].filter(c=>c.checked).flatMap(c=>c.dataset.lbiw.split(','))); return works.filter(w=>ids.has(w.id)); };
   let typed = false;
   const sum = ()=>{ const s2 = chosen().reduce((t, w)=>t + (lbTotal(w)||0), 0); if(!typed) $('lbiAmt').value = s2 ? String(Math.round(s2*100)/100).replace('.', ',') : '';
     const a = offerNum($('lbiAmt').value||'0'), ok = Math.abs(a - s2) < 0.005;
@@ -17724,7 +17732,7 @@ function lbInvUpload(person, works){
     if(!files.length){ toast('Pridėk sąskaitos failą.'); return; }
     if(files.some(f=>f.size > 25*1024*1024)){ toast('Failas per didelis (iki 25 MB).'); return; }
     if(!(amt > 0)){ toast('Įrašyk sąskaitos sumą.'); $('lbiAmt').focus(); return; }
-    if(!ws.length){ toast('Pažymėk bent vieną darbą.'); return; }
+    if(!ws.length){ toast('Pažymėk bent vieną renginį.'); return; }
     if(Math.abs(amt - s2) > 0.005 && !$('lbiNote').value.trim()){ toast('Suma skiriasi nuo pažymėtų darbų – parašyk pastabą, kodėl.', 6000); $('lbiNote').focus(); return; }
     const btn = e.target; btn.disabled = true; btn.textContent = 'Įkeliama…';
     const id = crypto.randomUUID(), me = teamMe(), up = [];
@@ -25024,7 +25032,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v730';
+const APP_VER = 'v731';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -54187,6 +54195,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-07 00:00', v:'v731', k:'chg', t:'Darbų apskaita: renginys – viena eilutė, skaičiuojama nuo lapkričio 5 d.', f:'Tas pats žmogus tame pačiame renginyje kelias dienas (pvz. 16 ir 17 d.) – viena eilutė ir viena sąskaitos eilutė (portale ir „Laukiama sąskaitų“); dviejuose renginiuose tą pačią dieną – dvi. Įkeliant sąskaitą ranka – pažymimi renginiai. Portale ranka įrašytas renginys sulyginamas su lentele – sąskaita priskiriama tiems darbams. Darbų apskaita – nuo 2026-11-05: senesni sąskaitų laukimai ištrinti ir iš senų renginių nebeatsiranda.' },
   { d:'2026-11-06 23:00', v:'v730', k:'new', t:'Freelance portalas: sąskaitą galima sukurti pačiame puslapyje', f:'saskaitos.eventsolutions.lt – „Sukurti sąskaitą čia“: freelanceris įrašo savo rekvizitus (individuali veikla, verslo liudijimas, MB ar įmonė; PVM kodas, jei moka PVM), seriją ir numerį, pasirenka darbus – sukuriama sąskaita faktūra (ar PVM sąskaita faktūra) PDF pagal LR reikalavimus (pardavėjas, pirkėjas, serija ir numeris, data, paslaugos, sumos, suma žodžiais). Galima peržiūrėti prieš siunčiant; rekvizitai ir numeracija išsaugomi kitam kartui. Arba, kaip anksčiau, įkelti savo sąskaitą.' },
   { d:'2026-11-06 21:00', v:'v729', k:'chg', t:'Darbų apskaita: priminimų gavėjai – Admin; sąskaitą galima įkelti ranka', f:'Admin → „Darbų apskaita: sąskaitų priminimai“: pasirenkami žmonės, kuriems siunčiama laukiamų sąskaitų suvestinė (vietoj renginio atsakingų). Nepasirinkus – siunčiama tik freelanceriams. „Laukiama sąskaitų“ – „📎 Įkelti sąskaitą“: atsiųstą sąskaitą galima įkelti ranka prie žmogaus ir iš karto susieti su jo darbais.' },
   { d:'2026-11-06 20:30', v:'v728', k:'fix', t:'Naujas renginys: pozicijos kiekvienoje grupėje nuo 1', f:'Kuriant renginį, kiekviena grupė (montažas diena prieš, montažas renginio dieną, demontažas, kitos dienos) numeruoja pozicijas nuo 1 ir jas rikiuoja: A1 A2 A3, L1 L2 L3, V1 V2 V3, tada Crew (pvz. montaže V1, V2 ir demontaže vėl V1, V2 – anksčiau demontaže būdavo V3, V4).' },

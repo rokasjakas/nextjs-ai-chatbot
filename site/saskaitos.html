@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-6u8c5v33+0Um7VxHuwvG/js428mYQSdvLq5ss6Ya7FQ=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-tjnOSvSO64ZYJJqZmTYcsom6DLLHa2D8DaKPRD3zlsQ=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-SbGIFMLHQv3cvV0O0SNA4LuSyiFpIjzn+V8gI5QjVRo=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-OK0fj8zmdf/QRRucYlfIpRWL/kPfI9FocwiYKUoF+5c=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Sąskaitos · Event Solutions</title>
@@ -169,7 +169,7 @@ async function viewHome(){
 function startEdit(v){
   if(!v) return;
   draft = { editId:v.id, wasRejected:v.status==='rejected' || v.fix_note!=null, fixMode:v.status!=='rejected' && v.fix_note!=null, why:(v.status==='rejected' ? v.decision_note : v.fix_note)||'', number:v.number||'', total:String(v.amount||'').replace('.', ','), note:v.note||'', file:null, oldFile:(v.files||[])[0]||null, oldTotal:v.file_total!=null ? Number(v.file_total) : null,
-    lines:(v.lines||[]).map(l=>Object.assign(newLine(l.date), { work_id:l.work_id||'', ename:l.event||'', ev:l.event_id || '__manual', name:l.event_id ? '' : (l.event||''), type:l.type==='hourly' ? 'hourly' : 'fixed',
+    lines:(v.lines||[]).map(l=>Object.assign(newLine(l.date), { work_ids:l.work_ids || (l.work_id ? [l.work_id] : []), work_id:(l.work_ids && l.work_ids.length) || l.work_id ? (l.event_id ? 'ev:'+l.event_id : 'pl:'+(l.event||'')) : '', dates:l.dates||'', ename:l.event||'', ev:l.event_id || '__manual', name:l.event_id ? '' : (l.event||''), type:l.type==='hourly' ? 'hourly' : 'fixed',
       amount:l.type==='hourly' ? '' : (Number(l.amount) ? String(l.amount).replace('.', ',') : ''), hours:l.type==='hourly' ? String(l.hours).replace('.', ',') : '', rate:l.type==='hourly' ? String(l.rate).replace('.', ',') : '',
       extras:(l.extras||[]).map(x=>({ what:x.what||'', amount:String(x.amount||'').replace('.', ','), file:null, keep:x.file_idx>0 ? x.file_idx : -1, keepName:x.file_idx>0 && v.files[x.file_idx] ? v.files[x.file_idx].name : '' })) })) };
   if(!draft.lines.length) draft.lines.push(newLine());
@@ -305,7 +305,9 @@ function viewForm(){
 async function loadWorks(){
   const box = document.getElementById('works'); if(!box || !draft) return;
   if(!draft.works){ box.innerHTML = '<p class="muted">Ieškoma tavo darbų…</p>';
-    try{ const d = await call({ action:'works', token:S.token, id:draft.editId || undefined }); if(!draft) return; draft.works = d.works || []; }catch(x){ if(!S.token) return render(); draft.works = []; } }
+    try{ const d = await call({ action:'works', token:S.token, id:draft.editId || undefined }); if(!draft) return; draft.works = d.works || []; }catch(x){ if(!S.token) return render(); draft.works = []; }
+    // a corrected invoice: its lines get the agreed sums back
+    const G = workGroups(); draft.lines.forEach(l=>{ const g = l.work_id && G.find(x=>x.k===l.work_id); if(g){ l.agreed = g.total; l.dates = g.dates; l.work_ids = g.ws.map(w=>w.id); } }); drawLines(); }
   drawWorks();
 }
 const KIND = { montazas:'Montažas', demontazas:'Demontažas', aptarnavimas:'Aptarnavimas', operatorius:'Operatorius', sandelis:'Sandėlis', vairavimas:'Vairavimas', kita:'Darbas' };
@@ -313,23 +315,34 @@ function drawWorks(){
   const box = document.getElementById('works'); if(!box || !draft) return;
   const W = draft.works || [];
   if(!W.length){ box.innerHTML = ''; return; }
-  const on = id=>draft.lines.some(l=>l.work_id===id);
-  box.innerHTML = `<div class="works"><div class="works-h"><b>Tavo darbai, už kuriuos dar nėra sąskaitos</b><span class="muted">Pažymėk, už kuriuos teiki šią sąskaitą – suma įrašoma pagal sutartą.</span></div>
-    ${W.map(w=>`<label class="work${on(w.id) ? ' on' : ''}"><input type="checkbox" data-w="${esc(w.id)}"${on(w.id) ? ' checked' : ''}><span class="w-d">${esc(w.work_date)}</span><span class="w-n">${esc(w.event_name || w.place || '—')}<small>${esc(KIND[w.kind] || w.kind || '')}${w.pos ? ' · '+esc(w.pos) : ''}</small></span><span class="w-s">${w.total!=null ? eur(cents(w.total)) : '<span class="muted">suma nesutarta</span>'}</span></label>`).join('')}
+  const G = workGroups(), on = k=>draft.lines.some(l=>l.work_id===k);
+  box.innerHTML = `<div class="works"><div class="works-h"><b>Tavo darbai, už kuriuos dar nėra sąskaitos</b><span class="muted">Pažymėk renginius, už kuriuos teiki šią sąskaitą (kelios to paties renginio dienos – kartu) – suma įrašoma pagal sutartą.</span></div>
+    ${G.map(g=>`<label class="work${on(g.k) ? ' on' : ''}"><input type="checkbox" data-w="${esc(g.k)}"${on(g.k) ? ' checked' : ''}><span class="w-d">${esc(g.dates)}</span><span class="w-n">${esc(g.name)}<small>${esc([...new Set(g.ws.map(w=>KIND[w.kind] || w.kind || ''))].join(', '))}${g.ws.length > 1 ? ' · '+g.ws.length+' d.' : ''}</small></span><span class="w-s">${g.total!=null ? eur(cents(g.total)) : '<span class="muted">suma nesutarta</span>'}</span></label>`).join('')}
     <button type="button" class="lnk" id="wAll">Pažymėti visus</button></div>`;
   box.querySelectorAll('[data-w]').forEach(el=>el.onchange = ()=>toggleWork(el.dataset.w, el.checked));
-  document.getElementById('wAll').onclick = ()=>{ W.forEach(w=>{ if(!on(w.id)) toggleWork(w.id, true, true); }); drawWorks(); drawLines(); };
+  document.getElementById('wAll').onclick = ()=>{ G.forEach(g=>{ if(!on(g.k)) toggleWork(g.k, true, true); }); drawWorks(); drawLines(); };
 }
-function toggleWork(id, yes, quiet){
-  const w = (draft.works||[]).find(x=>x.id===id); if(!w) return;
+// the same event on several days – one row (one line of the invoice); two events on one day – two
+function workGroups(){
+  const m = new Map();
+  (draft.works||[]).forEach(w=>{ const k = w.event_id ? 'ev:'+w.event_id : 'pl:'+(w.place||w.event_name||''); const g = m.get(k) || { k, ws:[], event_id:w.event_id, name:w.event_name || w.place || '—' }; g.ws.push(w); m.set(k, g); });
+  return [...m.values()].map(g=>{ g.ws.sort((a, b)=>a.work_date.localeCompare(b.work_date));
+    const ds = g.ws.map(w=>w.work_date), m0 = ds[0].slice(0, 8);
+    g.dates = ds.length > 1 && ds.every(d=>d.slice(0, 8)===m0) ? ds[0]+(ds.length ? ', '+ds.slice(1).map(d=>+d.slice(8)).join(', ') : '') : ds.join(', ');
+    g.total = g.ws.some(w=>w.total==null) ? null : Math.round(g.ws.reduce((t, w)=>t + +w.total, 0)*100)/100;
+    return g; }).sort((a, b)=>a.ws[0].work_date.localeCompare(b.ws[0].work_date));
+}
+function toggleWork(key, yes, quiet){
+  const g = workGroups().find(x=>x.k===key); if(!g) return;
+  const w = g.ws[0];
   if(yes){
-    if(draft.lines.some(l=>l.work_id===id)) return;
-    const l = Object.assign(newLine(w.work_date), { work_id:w.id, agreed:w.total, ename:w.event_name, type:'fixed', amount:w.total!=null ? String(w.total).replace('.', ',') : '' });
+    if(draft.lines.some(l=>l.work_id===key)) return;
+    const l = Object.assign(newLine(w.work_date), { work_id:key, work_ids:g.ws.map(x=>x.id), dates:g.dates, agreed:g.total, ename:w.event_name, type:'fixed', amount:g.total!=null ? String(g.total).replace('.', ',') : '' });
     if(w.event_id){ l.ev = w.event_id; l.events = [{ id:w.event_id, name:w.event_name || 'Renginys' }]; } else { l.ev = '__manual'; l.events = []; l.name = w.place || w.event_name || 'Darbas'; }
     // the first empty line goes (it was only the start)
     const blank = draft.lines.findIndex(x=>!x.work_id && !x.date && !x.amount && !x.hours && !(x.extras||[]).length);
     if(blank>=0) draft.lines.splice(blank, 1, l); else draft.lines.push(l);
-  } else { draft.lines = draft.lines.filter(l=>l.work_id!==id); if(!draft.lines.length) draft.lines.push(newLine()); }
+  } else { draft.lines = draft.lines.filter(l=>l.work_id!==key); if(!draft.lines.length) draft.lines.push(newLine()); }
   if(!quiet){ drawWorks(); drawLines(); }
 }
 // ---- an invoice made here (by the LR rules; the PDF is made on the server) ----
@@ -398,7 +411,7 @@ function drawLines(){
       if(man) evHtml += `<label>Renginio pavadinimas</label><input class="l-name" data-i="${i}" value="${esc(l.name)}" placeholder="pvz. Įmonės vakarėlis, Vilnius" autocomplete="off">`;
     }
     const c = lineCents(l), ag = l.work_id && l.agreed!=null ? cents(l.agreed) : null, differs = ag!=null && workCents(l) + (l.extras||[]).reduce((t, x)=>t+extraCents(x), 0) !== ag;
-    return `<div class="line${l.work_id ? ' wline' : ''}"><div class="line-h"><span>${i+1}.</span>${l.work_id ? `<span class="wtag">📌 ${esc(l.date)} · ${esc(l.ev && l.ev!=='__manual' ? l.ename || 'Renginys' : l.name)}</span>` : ''}<span class="sp"></span><span class="amt">${c ? eur(c) : ''}</span>${draft.lines.length>1 || l.work_id ? `<button class="x l-rm" data-i="${i}" title="Pašalinti">✕</button>` : ''}</div>
+    return `<div class="line${l.work_id ? ' wline' : ''}"><div class="line-h"><span>${i+1}.</span>${l.work_id ? `<span class="wtag">📌 ${esc(l.dates || l.date)} · ${esc(l.ev && l.ev!=='__manual' ? l.ename || 'Renginys' : l.name)}</span>` : ''}<span class="sp"></span><span class="amt">${c ? eur(c) : ''}</span>${draft.lines.length>1 || l.work_id ? `<button class="x l-rm" data-i="${i}" title="Pašalinti">✕</button>` : ''}</div>
       ${l.work_id ? `${ag!=null ? `<div class="muted" style="font-size:13px;">Sutarta: <b>${eur(ag)}</b>${differs ? ' · <span style="color:var(--warn);">suma kita – parašyk pastaboje, kodėl</span>' : ''}</div>` : ''}`
         : `<label>Data</label><input type="date" class="l-date" data-i="${i}" value="${esc(l.date)}" max="${todayStr()}">
       ${evHtml}`}
@@ -511,7 +524,7 @@ async function submit(){
 async function linesOut(){
     const lines = [];
     for(const l of draft.lines){
-      const man = manual(l), o = { date:l.date, event_id:man ? null : l.ev, event_name:man ? l.name.trim() : '', type:l.type, extras:[], ...(l.work_id ? { work_id:l.work_id } : {}) };
+      const man = manual(l), o = { date:l.date, event_id:man ? null : l.ev, event_name:man ? l.name.trim() : '', type:l.type, extras:[], ...(l.work_ids && l.work_ids.length ? { work_ids:l.work_ids, dates:l.dates||'' } : {}) };
       if(l.type==='hourly'){ o.hours = num(l.hours); o.rate = num(l.rate); } else o.amount = num(l.amount) || 0;
       for(const x of l.extras||[]) o.extras.push({ what:x.what.trim(), amount:num(x.amount), keep:x.keep, file: x.file ? { name:x.file.name, type:x.file.type, base64:await fileB64(x.file) } : null });
       lines.push(o);

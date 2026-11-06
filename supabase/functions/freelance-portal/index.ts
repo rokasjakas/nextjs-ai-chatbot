@@ -257,14 +257,14 @@ function cleanSeller(x: Partial<Seller> = {}): Seller {
   return sl;
 }
 // the invoice's lines from the checked rows: the work (with its kind if registered), the extras apart
-function invLines(clean: { date: string; event: string; type?: string; hours?: number; rate?: number; amount?: number; extras: { what: string; amount: number }[]; work_id?: string }[], kinds: Map<string, string>): InvLine[] {
+function invLines(clean: { date: string; event: string; type?: string; hours?: number; rate?: number; amount?: number; extras: { what: string; amount: number }[]; work_ids?: string[]; dates?: string }[], kinds: Map<string, string>): InvLine[] {
   const out: InvLine[] = [];
   for (const l of clean) {
-    const k = l.work_id ? KIND_LT[kinds.get(l.work_id) || ""] : "";
-    const what = `Renginio techninis aptarnavimas${k ? " (" + k + ")" : ""} – ${l.event} (${l.date})`;
+    const ks = [...new Set((l.work_ids || []).map((id) => KIND_LT[kinds.get(id) || ""]).filter(Boolean))];
+    const what = `Renginio techninis aptarnavimas${ks.length ? " (" + ks.join(", ") + ")" : ""} – ${l.event} (${l.dates || l.date})`;
     if (l.type === "hourly" && l.hours && l.rate) out.push({ text: what, qty: Number(l.hours), unit: "val.", total: round2(Number(l.hours) * Number(l.rate)) });
     else if (Number(l.amount) > 0) out.push({ text: what, qty: 1, unit: "vnt.", total: round2(Number(l.amount)) });
-    for (const x of l.extras) out.push({ text: `Papildomos išlaidos: ${x.what} – ${l.event} (${l.date})`, qty: 1, unit: "vnt.", total: round2(x.amount) });
+    for (const x of l.extras) out.push({ text: `Papildomos išlaidos: ${x.what} – ${l.event} (${l.dates || l.date})`, qty: 1, unit: "vnt.", total: round2(x.amount) });
   }
   return out;
 }
@@ -333,7 +333,7 @@ function history(v: Mine) {
 // a line: the work at one event (fixed or hourly) plus extra costs (what, how much, a receipt photo or another invoice)
 type In = { name?: string; type?: string; base64?: string };
 type Extra = { what?: string; amount?: number; file?: In; keep?: number };
-type Line = { date?: string; event_id?: string; event_name?: string; type?: string; amount?: number; hours?: number; rate?: number; extras?: Extra[]; work_id?: string };
+type Line = { date?: string; event_id?: string; event_name?: string; type?: string; amount?: number; hours?: number; rate?: number; extras?: Extra[]; work_id?: string; work_ids?: string[]; dates?: string };
 type OpenWork = { id: string; work_date: string; kind: string; pos: string; event_id: string | null; event_name: string; place: string; total: number | null; invoice_id: string | null };
 async function openWorks(s: { name: string; contact_id?: string | null }, inv?: string | null): Promise<OpenWork[]> {
   try {
@@ -382,19 +382,27 @@ async function submit(s: { email: string; name: string; token_hash?: string; sca
       if (!(a >= 0 && a < 1_000_000) || (!(a > 0) && !extras.length)) throw new UserError(`${n} eilutė: įrašyk sutartą sumą.`);
       work = { type: "fixed", amount: round2(a) };
     }
-    return { date, event_id: id, event, ...work, extras, total: round2(Number(work.amount) + ex), manual: !id, ...(l.work_id ? { work_id: String(l.work_id) } : {}) };
+    const wids = (Array.isArray(l.work_ids) ? l.work_ids : l.work_id ? [l.work_id] : []).map(String).filter(Boolean).slice(0, 60);
+    return { date, event_id: id, event, ...work, extras, total: round2(Number(work.amount) + ex), manual: !id, ...(wids.length ? { work_ids: wids, dates: String(l.dates || "").slice(0, 120) } : {}) };
   });
   const sum = round2(clean.reduce((t, l) => t + l.total, 0)), total = round2(Number(b.total));
   // the registered works chosen: mine, still open (or on this invoice already); a sum other than agreed needs a note
-  const wantWorks = lines.map((l) => String(l.work_id || "")).filter(Boolean);
-  let open: OpenWork[] = [];
+  const wantWorks = clean.flatMap((l) => (l as { work_ids?: string[] }).work_ids || []);
+  const open: OpenWork[] = await openWorks(s as never, b.id ? String(b.id) : null);
   if (wantWorks.length) {
-    open = await openWorks(s as never, b.id ? String(b.id) : null);
     const bad = wantWorks.filter((w) => !open.some((o) => o.id === w));
     if (bad.length) throw new UserError("Kai kurie pažymėti darbai jau turi sąskaitą arba nebe tavo – atnaujink puslapį.");
     if (new Set(wantWorks).size !== wantWorks.length) throw new UserError("Tas pats darbas pažymėtas du kartus.");
-    const diff = clean.filter((l, i) => { const w = open.find((o) => o.id === String(lines[i].work_id || "")); return w && w.total != null && Math.abs(Number(w.total) - l.total) > 0.005; });
-    if (diff.length && !String(b.note || "").trim()) throw new UserError(`Suma skiriasi nuo sutartos (${diff.map((l) => l.date).join(", ")}) – parašyk pastaboje, kodėl.`);
+    // a line of several days of one event: the sum of those days is what was agreed
+    const diff = clean.filter((l) => { const ws = ((l as { work_ids?: string[] }).work_ids || []).map((id) => open.find((o) => o.id === id)).filter(Boolean) as OpenWork[];
+      return ws.length && ws.every((w) => w.total != null) && Math.abs(ws.reduce((t, w) => t + Number(w.total), 0) - l.total) > 0.005; });
+    if (diff.length && !String(b.note || "").trim()) throw new UserError(`Suma skiriasi nuo sutartos (${diff.map((l) => l.event).join(", ")}) – parašyk pastaboje, kodėl.`);
+  }
+  // an event written by hand that has my registered works in the table: those works are on this invoice too
+  for (const l of clean as { event_id: string | null; work_ids?: string[] }[]) {
+    if ((l.work_ids || []).length || !l.event_id) continue;
+    const ws = open.filter((o) => o.event_id === l.event_id && !wantWorks.includes(o.id));
+    if (ws.length) { l.work_ids = ws.map((o) => o.id); wantWorks.push(...l.work_ids); }
   }
   if (!(total > 0)) throw new UserError("Įrašyk sąskaitos sumą.");
   if (Math.abs(sum - total) > 0.005) throw new UserError(`Sumos nesutampa: renginių ir išlaidų suma ${eurTxt(sum)}, sąskaitos suma ${eurTxt(total)}.`);
@@ -402,8 +410,6 @@ async function submit(s: { email: string; name: string; token_hash?: string; sca
   let made: { bytes: Uint8Array; mk: ReturnType<typeof cleanMake> } | null = null;
   if (b.make) {
     const mk = cleanMake(b.make), kinds = new Map(open.map((o) => [o.id, o.kind]));
-    if (wantWorks.length && !open.length) open = await openWorks(s as never, b.id ? String(b.id) : null);
-    open.forEach((o) => kinds.set(o.id, o.kind));
     const il = invLines(clean as never, kinds), sumL = round2(il.reduce((t, l) => t + l.total, 0));
     if (Math.abs(sumL - total) > 0.005) throw new UserError(`Sumos nesutampa: eilutėse ${eurTxt(sumL)}, sąskaitoje ${eurTxt(total)}.`);
     const bytes = await makePdf(mk, il, String(b.note || "").trim().slice(0, 500));
