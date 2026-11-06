@@ -163,7 +163,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 28;
+const PUSH_FN_VERSION = 29;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -1655,6 +1655,70 @@ async function onEvent(uid: string, id: string, users: string[]) {
   return { sent, skipped };
 }
 
+
+// ---- Darbų apskaita: laukiamų sąskaitų priminimai (3 etapas; kol neįjungta Admin skiltyje – nesiunčiami) ----
+type LbItem = { id: string; event_id: string | null; person: string; contact_id: string | null; work_date: string; kind: string; place: string; pos: string;
+  pay_type: string; hours: number | null; rate: number | null; amount: number | null; extras: { t?: string; sum?: number }[]; status: string };
+const LB_KIND: Record<string, string> = { montazas: "Montažas", demontazas: "Demontažas", aptarnavimas: "Aptarnavimas", operatorius: "Operatorius", sandelis: "Sandėlis", vairavimas: "Vairavimas", kita: "Kita" };
+function lbTotal(w: LbItem): number | null {
+  const base = w.pay_type === "hour" ? (w.hours != null && w.rate != null ? +w.hours * +w.rate : null) : (w.amount != null ? +w.amount : (w.pay_type === "day" && w.rate != null ? +w.rate : null));
+  const x = (w.extras || []).reduce((s, e) => s + (+(e.sum ?? 0) || 0), 0);
+  return base == null && !x ? null : (base || 0) + x;
+}
+const lbEur = (n: number) => (Math.round(n * 100) / 100).toLocaleString("lt-LT", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+const lbDate = (d: string) => d ? d.slice(0, 10) : "";
+function lbRows(items: LbItem[], evName: (id: string | null) => string, today: string): string {
+  return items.map((w) => { const t = lbTotal(w), days = Math.max(0, Math.round((Date.parse(today) - Date.parse(w.work_date)) / 864e5));
+    return `<tr><td style="padding:6px 8px;border-bottom:1px solid #eee;white-space:nowrap;">${esc(lbDate(w.work_date))}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;">${esc(evName(w.event_id) || w.place || "—")}<br><span style="color:#777;font-size:12px;">${esc(LB_KIND[w.kind] || w.kind)}${w.pos ? " · " + esc(w.pos) : ""}</span></td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap;">${t == null ? '<span style="color:#c05621;">suma nenurodyta</span>' : esc(lbEur(t))}<br><span style="color:#777;font-size:12px;">prieš ${days} d.</span></td></tr>`; }).join("");
+}
+const lbBtn = (href: string, label: string) => `<p style="margin:18px 0;"><a href="${href}" style="background:#1B6EF3;color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:bold;display:inline-block;">${label}</a></p>`;
+const lbWrap = (inner: string, test: boolean) => `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;max-width:620px;line-height:1.5;">
+  ${test ? '<div style="background:#FFF4D6;border:1px solid #F2C94C;border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:13px;"><b>BANDOMASIS LAIŠKAS</b> – taip atrodys priminimas. Niekam kitam neišsiųsta.</div>' : ""}
+  ${inner}<p style="color:#999;font-size:12px;margin-top:22px;">Event Solutions · app.eventsolutions.lt</p></div>`;
+// to the freelancer: the works we still wait an invoice for
+function lbFreelancerMail(name: string, items: LbItem[], evName: (id: string | null) => string, today: string, manager: string, test: boolean) {
+  const sum = items.reduce((s, w) => s + (lbTotal(w) || 0), 0);
+  const html = lbWrap(`<p>Sveiki, ${esc(name.split(" ")[0] || name)},</p>
+    <p>pagal mūsų įrašus už šiuos darbus dar <b>negavome sąskaitos</b>:</p>
+    <table style="border-collapse:collapse;width:100%;font-size:14px;"><thead><tr style="background:#f5f5f7;"><th style="padding:6px 8px;text-align:left;">Data</th><th style="padding:6px 8px;text-align:left;">Renginys / darbas</th><th style="padding:6px 8px;text-align:right;">Sutarta</th></tr></thead>
+      <tbody>${lbRows(items, evName, today)}</tbody>
+      <tfoot><tr><td></td><td style="padding:8px;text-align:right;"><b>Iš viso</b></td><td style="padding:8px;text-align:right;white-space:nowrap;"><b>${esc(lbEur(sum))}</b></td></tr></tfoot></table>
+    <p>Sąskaitą galite pateikti už vieną ar kelis darbus kartu – sąskaitos suma turi sutapti su pažymėtų darbų suma.</p>
+    ${lbBtn("https://saskaitos.eventsolutions.lt", "Pateikti sąskaitą")}
+    <p style="color:#555;font-size:13px;">Jei kuris nors darbas ar suma neteisingi – atsakykite į šį laišką${manager ? " arba susisiekite su " + esc(manager) : ""}.</p>`, test);
+  return { subject: `${test ? "[BANDOMASIS] " : ""}Laukiame sąskaitos: ${items.length} ${items.length === 1 ? "darbas" : "darbai"}, ${lbEur(sum)}`, html };
+}
+// to the event's responsible: whose invoices we are waiting for
+function lbManagerMail(name: string, groups: { person: string; contact: string; items: LbItem[] }[], evName: (id: string | null) => string, today: string, test: boolean) {
+  const all = groups.flatMap((g) => g.items), sum = all.reduce((s, w) => s + (lbTotal(w) || 0), 0);
+  const html = lbWrap(`<p>Sveiki, ${esc(name.split(" ")[0] || name)},</p>
+    <p>tavo renginiuose dar <b>negautos ${all.length} darbų sąskaitos</b> (${esc(lbEur(sum))}), praėjus 14 d. po darbo:</p>
+    ${groups.map((g) => { const s = g.items.reduce((a, w) => a + (lbTotal(w) || 0), 0);
+      return `<h3 style="margin:18px 0 6px;font-size:15px;">${esc(g.person)} <span style="color:#777;font-weight:normal;font-size:13px;">· ${g.items.length} d. · ${esc(lbEur(s))}${g.contact ? " · " + esc(g.contact) : ""}</span></h3>
+        <table style="border-collapse:collapse;width:100%;font-size:14px;"><tbody>${lbRows(g.items, evName, today)}</tbody></table>`; }).join("")}
+    <p>Freelanceriams priminimas išsiųstas atskirai. Gavus ir susiejus sąskaitą su darbais, priminimai sustoja savaime.</p>
+    ${lbBtn("https://app.eventsolutions.lt/?tab=labor", "Atidaryti Darbų apskaitą")}`, test);
+  return { subject: `${test ? "[BANDOMASIS] " : ""}Laukiamos sąskaitos: ${groups.length} ${groups.length === 1 ? "žmogus" : "žmonės"}, ${lbEur(sum)}`, html };
+}
+// a test: both letters to one address, made from real works waiting for an invoice (oldest first)
+async function laborPreview(to: string) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return { error: "neteisingas adresas" };
+  const today = new Date(Date.now() + 2 * 3600e3).toISOString().slice(0, 10);
+  const items = await db<LbItem[]>(`work_items?select=*&status=eq.done&invoice_id=is.null&order=work_date.asc&limit=400`);
+  const evIds = [...new Set(items.map((w) => w.event_id).filter(Boolean))] as string[];
+  const evs = evIds.length ? await db<{ id: string; data: { name?: string; title?: string; manager?: string } }[]>(`events?select=id,data&id=in.(${evIds.map((x) => `"${x}"`).join(",")})`) : [];
+  const evName = (id: string | null) => { const e = evs.find((x) => x.id === id); return e ? String(e.data?.name || e.data?.title || "") : ""; };
+  const byP = new Map<string, LbItem[]>(); items.forEach((w) => { const k = w.contact_id || w.person; byP.set(k, (byP.get(k) || []).concat([w])); });
+  const groups = [...byP.values()].sort((a, b) => b.length - a.length).slice(0, 3).map((it) => ({ person: it[0].person, contact: "", items: it.slice(0, 6) }));
+  if (!groups.length) return { error: "nėra atliktų darbų be sąskaitos" };
+  const f = lbFreelancerMail(groups[0].person, groups[0].items, evName, today, "Rokas Jakas", true);
+  const m = lbManagerMail("Rokas Jakas", groups, evName, today, true);
+  const e1 = await mailTo([to], f.subject, f.html), e2 = await mailTo([to], m.subject, m.html);
+  return { ok: !e1 && !e2, freelancer: e1 || "išsiųsta", manager: e2 || "išsiųsta", sample: groups.map((g) => g.person + " (" + g.items.length + ")") };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
@@ -1684,6 +1748,12 @@ Deno.serve(async (req) => {
         await db(`message_push?at=lt.${new Date(Date.now() - 3 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
       }
       return json({ ...tr, inv: ir, tracker: tt, reports: rr, workplans: wp, report_mail: rm });
+    }
+    // Darbų apskaita: a test of the invoice reminders – both letters to one address (cron secret)
+    if (body?.mode === "labor-preview") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      return json(await laborPreview(String(body.to ?? "")));
     }
     // a new member signed up (called by user-access with the cron secret): every admin is told
     if (body?.mode === "new-user") {
