@@ -1695,7 +1695,7 @@ function lbFreelancerMail(name: string, items: LbItem[], evName: (id: string | n
 function lbManagerMail(name: string, groups: { person: string; contact: string; items: LbItem[] }[], evName: (id: string | null) => string, today: string, test: boolean) {
   const all = groups.flatMap((g) => g.items), sum = all.reduce((s, w) => s + (lbTotal(w) || 0), 0);
   const html = lbWrap(`<p>Sveiki, ${esc(name.split(" ")[0] || name)},</p>
-    <p>tavo renginiuose dar <b>negautos ${all.length} darbų sąskaitos</b> (${esc(lbEur(sum))}), praėjus ${LB_DAYS} d. po renginio pabaigos:</p>
+    <p>dar <b>negautos ${all.length} darbų sąskaitos</b> (${esc(lbEur(sum))}), praėjus ${LB_DAYS} d. po renginio pabaigos:</p>
     ${groups.map((g) => { const s = g.items.reduce((a, w) => a + (lbTotal(w) || 0), 0);
       return `<h3 style="margin:18px 0 6px;font-size:15px;">${esc(g.person)} <span style="color:#777;font-weight:normal;font-size:13px;">· ${g.items.length} d. · ${esc(lbEur(s))}${g.contact ? " · " + esc(g.contact) : ""}</span></h3>
         <table style="border-collapse:collapse;width:100%;font-size:14px;"><tbody>${lbRows(g.items, evName, today)}</tbody></table>`; }).join("")}
@@ -1705,7 +1705,7 @@ function lbManagerMail(name: string, groups: { person: string; contact: string; 
 }
 // the real reminders (once a day, ~9 Vilnius): only when turned on in Admin; a person – once a week at most
 const lbNorm = (t: string) => String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, "");
-type LbCfg = { on?: boolean; days?: number; from?: string };
+type LbCfg = { on?: boolean; days?: number; from?: string; to?: string[] };
 async function lbCfg(): Promise<LbCfg> { const r = await db<{ value: LbCfg }[]>("app_config?select=value&key=eq.labor_remind").catch(() => []); return r[0]?.value || {}; }
 type LbFull = LbItem & { reminded_at: string | null; mgr_reminded_at: string | null; created_by: string | null };
 async function lbContext(items: LbFull[]) {
@@ -1718,19 +1718,6 @@ async function lbContext(items: LbFull[]) {
   const endOf = (w: LbItem) => { const e = evs.find((x) => x.id === w.event_id); const d = String(e?.data?.date || ""), de = String(e?.data?.dateEnd || "");
     return (de && de > d ? de : d) || w.work_date; };
   return { evs, cs, evName, endOf };
-}
-async function lbManagersOf(items: LbFull[], evs: { id: string; data: { manager?: string; managerOffice?: string } }[], profs: Profile[]) {
-  // the event's Office responsible (by name); a work without one – who registered it
-  const byName = (n: string) => profs.find((p) => [p.full_name, [p.first_name, p.last_name].filter(Boolean).join(" "), p.nickname].some((x) => x && lbNorm(x) === lbNorm(n)));
-  const out = new Map<string, { prof: Profile; items: LbFull[] }>();
-  for (const w of items) {
-    const e = evs.find((x) => x.id === w.event_id);
-    const names = String((e?.data?.managerOffice ?? e?.data?.manager) || "").split(/[,;\n]+/).map((x) => x.replace(/\(tech\)/i, "").trim()).filter(Boolean);
-    let ps = names.map(byName).filter(Boolean) as Profile[];
-    if (!ps.length && w.created_by) { const p = profs.find((x) => x.id === w.created_by); if (p) ps = [p]; }
-    for (const p of ps) { const g = out.get(p.id) || { prof: p, items: [] }; g.items.push(w); out.set(p.id, g); }
-  }
-  return out;
 }
 async function laborReminders(force = false) {
   const cfg = await lbCfg();
@@ -1745,17 +1732,18 @@ async function laborReminders(force = false) {
   const { evs, cs, evName, endOf } = await lbContext(all);
   const items = all.filter((w) => { const e = endOf(w); return e <= until && e >= from; });
   if (!items.length) return { waiting: 0 };
-  const profs = await db<Profile[]>("profiles?select=*&role=in.(admin,pm,office)");
+  const profs = (cfg.to || []).length ? await db<Profile[]>(`profiles?select=*&id=in.${inList(cfg.to || [])}`) : [];
   const out = { freelancers: 0, managers: 0, errors: [] as string[] };
   // freelancers: all their waiting works, when one of them was not reminded this week
   const byP = new Map<string, LbFull[]>(); items.forEach((w) => { const k = w.contact_id || "n:" + lbNorm(w.person); byP.set(k, (byP.get(k) || []).concat([w])); });
-  const mgrOf = await lbManagersOf(items, evs, profs);
+  // the responsible: the members chosen in Admin get one summary of all (not the events' own responsible)
+  const chosen = profs.filter((p) => (cfg.to || []).includes(p.id));
+  const mgrOf = new Map<string, { prof: Profile; items: LbFull[] }>(chosen.map((p) => [p.id, { prof: p, items }]));
   for (const [, list] of byP) {
     if (!list.some((w) => !w.reminded_at || w.reminded_at < week)) continue;
     const c = cs.find((x) => x.id === list[0].contact_id), to = String(c?.data?.email || "").trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) continue;
-    const mg = [...mgrOf.values()].find((g) => g.items.some((w) => list.includes(w)));
-    const m = lbFreelancerMail(list[0].person, list, evName, today, mg ? name(mg.prof) : "", false);
+    const m = lbFreelancerMail(list[0].person, list, evName, today, chosen[0] ? name(chosen[0]) : "", false);
     const err = await mailTo([to], m.subject, m.html);
     if (err) { out.errors.push(list[0].person + ": " + err); continue; }
     out.freelancers++;
