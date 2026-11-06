@@ -9,6 +9,10 @@
 //        the lines must add up to the invoice total, then the invoice goes to „Sąskaitos“ → Freelance.
 //        With id: a not yet approved / rejected invoice of this e-mail is corrected (the file may stay) and
 //        goes back to „Naujos“
+//   {action:"works", token, id?}                my registered works still waiting for an invoice (Darbų apskaita),
+//                                               with the agreed sums; with id – also the ones on that invoice
+//        a line may carry work_id: the invoice is linked to those works (their sum – exactly per work);
+//        a sum other than the agreed one needs a note
 //   {action:"list", token}                      the invoices this e-mail sent, with their state
 //   {action:"file", token, id}                  a short-lived link to the invoice's file
 //   {action:"scan", token, file:{type,base64}}  the total written in the invoice file (read by Claude) – the page
@@ -266,7 +270,13 @@ function history(v: Mine) {
 // a line: the work at one event (fixed or hourly) plus extra costs (what, how much, a receipt photo or another invoice)
 type In = { name?: string; type?: string; base64?: string };
 type Extra = { what?: string; amount?: number; file?: In; keep?: number };
-type Line = { date?: string; event_id?: string; event_name?: string; type?: string; amount?: number; hours?: number; rate?: number; extras?: Extra[] };
+type Line = { date?: string; event_id?: string; event_name?: string; type?: string; amount?: number; hours?: number; rate?: number; extras?: Extra[]; work_id?: string };
+type OpenWork = { id: string; work_date: string; kind: string; pos: string; event_id: string | null; event_name: string; place: string; total: number | null; invoice_id: string | null };
+async function openWorks(s: { name: string; contact_id?: string | null }, inv?: string | null): Promise<OpenWork[]> {
+  try {
+    return await db<OpenWork[]>("rpc/wi_open_works", { method: "POST", body: JSON.stringify({ p_contact: s.contact_id || null, p_name: s.name || "", p_inv: inv || null }) });
+  } catch (e) { console.error("works", (e as Error).message); return []; }   // before work_invoices.sql: the page works as before
+}
 type FileRow = { path: string; name: string; type: string; size: number; role?: string };
 const cleanName = (n: string) => String(n || "failas").replace(/[\\/\u0000-\u001f]+/g, "_").slice(0, 120);
 function decode(f: In, label: string) {
@@ -309,9 +319,20 @@ async function submit(s: { email: string; name: string; token_hash?: string; sca
       if (!(a >= 0 && a < 1_000_000) || (!(a > 0) && !extras.length)) throw new UserError(`${n} eilutė: įrašyk sutartą sumą.`);
       work = { type: "fixed", amount: round2(a) };
     }
-    return { date, event_id: id, event, ...work, extras, total: round2(Number(work.amount) + ex), manual: !id };
+    return { date, event_id: id, event, ...work, extras, total: round2(Number(work.amount) + ex), manual: !id, ...(l.work_id ? { work_id: String(l.work_id) } : {}) };
   });
   const sum = round2(clean.reduce((t, l) => t + l.total, 0)), total = round2(Number(b.total));
+  // the registered works chosen: mine, still open (or on this invoice already); a sum other than agreed needs a note
+  const wantWorks = lines.map((l) => String(l.work_id || "")).filter(Boolean);
+  let open: OpenWork[] = [];
+  if (wantWorks.length) {
+    open = await openWorks(s as never, b.id ? String(b.id) : null);
+    const bad = wantWorks.filter((w) => !open.some((o) => o.id === w));
+    if (bad.length) throw new UserError("Kai kurie pažymėti darbai jau turi sąskaitą arba nebe tavo – atnaujink puslapį.");
+    if (new Set(wantWorks).size !== wantWorks.length) throw new UserError("Tas pats darbas pažymėtas du kartus.");
+    const diff = clean.filter((l, i) => { const w = open.find((o) => o.id === String(lines[i].work_id || "")); return w && w.total != null && Math.abs(Number(w.total) - l.total) > 0.005; });
+    if (diff.length && !String(b.note || "").trim()) throw new UserError(`Suma skiriasi nuo sutartos (${diff.map((l) => l.date).join(", ")}) – parašyk pastaboje, kodėl.`);
+  }
   if (!(total > 0)) throw new UserError("Įrašyk sąskaitos sumą.");
   if (Math.abs(sum - total) > 0.005) throw new UserError(`Sumos nesutampa: renginių ir išlaidų suma ${eurTxt(sum)}, sąskaitos suma ${eurTxt(total)}.`);
   const editId = b.id ? String(b.id) : "";
@@ -389,6 +410,11 @@ async function submit(s: { email: string; name: string; token_hash?: string; sca
       body: JSON.stringify({ ...row, id, created_by: owner, kind: "freelance", supplier: s.name, invoice_date: today(), ext_email: s.email, source: "portal", uploader_seen: true }),
     });
   }
+  // the works: on this invoice now (the ones taken off – waiting again)
+  if (wantWorks.length || old) {
+    try { await db("rpc/wi_link_invoice", { method: "POST", body: JSON.stringify({ p_inv: id, p_ids: wantWorks }) }); }
+    catch (e) { console.error("link works", (e as Error).message); }
+  }
   // Admin+ are told (push-notify, with the cron secret)
   if (cs) await fetch(SUPABASE_URL + "/functions/v1/push-notify", { method: "POST", headers: { "Content-Type": "application/json", "x-cron-secret": cs }, body: JSON.stringify({ mode: "invoice-portal", invoice_id: id, edited: !!old }) }).catch(() => {});
   return { ok: true, id, total, edited: !!old };
@@ -440,6 +466,11 @@ Deno.serve(async (req) => {
       const date = String(b.date || "");
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new UserError("Pasirink datą.");
       return json({ events: await eventsOn(date, s.name) });
+    }
+    if (action === "works") {
+      const s = await session(b.token);
+      const ws = await openWorks(s as never, b.id ? String(b.id) : null);
+      return json({ works: ws.map((w) => ({ ...w, total: w.total == null ? null : Number(w.total) })) });
     }
     if (action === "list") {
       const s = await session(b.token);
