@@ -163,7 +163,7 @@ function bytesToB64u(b: Uint8Array): string {
 // push fail with 403 (Google rejects the signature). Devices subscribed with
 // the wrong key renew themselves in the app.
 let vapidPublic = "";
-const PUSH_FN_VERSION = 29;
+const PUSH_FN_VERSION = 30;
 let vapidD: Uint8Array | null = null;
 // The public key is worked out from the private key, so the pair always
 // matches. Signing and encryption use @noble (plain JavaScript): the Supabase
@@ -1659,6 +1659,7 @@ async function onEvent(uid: string, id: string, users: string[]) {
 // ---- Darbų apskaita: laukiamų sąskaitų priminimai (3 etapas; kol neįjungta Admin skiltyje – nesiunčiami) ----
 type LbItem = { id: string; event_id: string | null; person: string; contact_id: string | null; work_date: string; kind: string; place: string; pos: string;
   pay_type: string; hours: number | null; rate: number | null; amount: number | null; extras: { t?: string; sum?: number }[]; status: string };
+let LB_DAYS = 14;
 const LB_KIND: Record<string, string> = { montazas: "Montažas", demontazas: "Demontažas", aptarnavimas: "Aptarnavimas", operatorius: "Operatorius", sandelis: "Sandėlis", vairavimas: "Vairavimas", kita: "Kita" };
 function lbTotal(w: LbItem): number | null {
   const base = w.pay_type === "hour" ? (w.hours != null && w.rate != null ? +w.hours * +w.rate : null) : (w.amount != null ? +w.amount : (w.pay_type === "day" && w.rate != null ? +w.rate : null));
@@ -1694,13 +1695,101 @@ function lbFreelancerMail(name: string, items: LbItem[], evName: (id: string | n
 function lbManagerMail(name: string, groups: { person: string; contact: string; items: LbItem[] }[], evName: (id: string | null) => string, today: string, test: boolean) {
   const all = groups.flatMap((g) => g.items), sum = all.reduce((s, w) => s + (lbTotal(w) || 0), 0);
   const html = lbWrap(`<p>Sveiki, ${esc(name.split(" ")[0] || name)},</p>
-    <p>tavo renginiuose dar <b>negautos ${all.length} darbų sąskaitos</b> (${esc(lbEur(sum))}), praėjus 14 d. po darbo:</p>
+    <p>tavo renginiuose dar <b>negautos ${all.length} darbų sąskaitos</b> (${esc(lbEur(sum))}), praėjus ${LB_DAYS} d. po renginio pabaigos:</p>
     ${groups.map((g) => { const s = g.items.reduce((a, w) => a + (lbTotal(w) || 0), 0);
       return `<h3 style="margin:18px 0 6px;font-size:15px;">${esc(g.person)} <span style="color:#777;font-weight:normal;font-size:13px;">· ${g.items.length} d. · ${esc(lbEur(s))}${g.contact ? " · " + esc(g.contact) : ""}</span></h3>
         <table style="border-collapse:collapse;width:100%;font-size:14px;"><tbody>${lbRows(g.items, evName, today)}</tbody></table>`; }).join("")}
     <p>Freelanceriams priminimas išsiųstas atskirai. Gavus ir susiejus sąskaitą su darbais, priminimai sustoja savaime.</p>
     ${lbBtn("https://app.eventsolutions.lt/?tab=labor", "Atidaryti Darbų apskaitą")}`, test);
   return { subject: `${test ? "[BANDOMASIS] " : ""}Laukiamos sąskaitos: ${groups.length} ${groups.length === 1 ? "žmogus" : "žmonės"}, ${lbEur(sum)}`, html };
+}
+// the real reminders (once a day, ~9 Vilnius): only when turned on in Admin; a person – once a week at most
+const lbNorm = (t: string) => String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, "");
+type LbCfg = { on?: boolean; days?: number; from?: string };
+async function lbCfg(): Promise<LbCfg> { const r = await db<{ value: LbCfg }[]>("app_config?select=value&key=eq.labor_remind").catch(() => []); return r[0]?.value || {}; }
+type LbFull = LbItem & { reminded_at: string | null; mgr_reminded_at: string | null; created_by: string | null };
+async function lbContext(items: LbFull[]) {
+  const evIds = [...new Set(items.map((w) => w.event_id).filter(Boolean))] as string[];
+  const evs = evIds.length ? await db<{ id: string; data: { name?: string; title?: string; kind?: string; manager?: string; managerOffice?: string; date?: string; dateEnd?: string } }[]>(`events?select=id,data&id=in.(${evIds.map((x) => `"${x}"`).join(",")})`) : [];
+  const cIds = [...new Set(items.map((w) => w.contact_id).filter(Boolean))] as string[];
+  const cs = cIds.length ? await db<{ id: string; data: { email?: string; phone?: string; first?: string; last?: string } }[]>(`contacts?select=id,data&id=in.(${cIds.map((x) => `"${x}"`).join(",")})`) : [];
+  const evName = (id: string | null) => { const e = evs.find((x) => x.id === id); return e ? String(e.data?.kind === "work" ? (e.data?.title || "Sandėlio darbai") : (e.data?.name || "")) : ""; };
+  // the day the period is counted from: the event's last day (a work without an event – its own day)
+  const endOf = (w: LbItem) => { const e = evs.find((x) => x.id === w.event_id); const d = String(e?.data?.date || ""), de = String(e?.data?.dateEnd || "");
+    return (de && de > d ? de : d) || w.work_date; };
+  return { evs, cs, evName, endOf };
+}
+async function lbManagersOf(items: LbFull[], evs: { id: string; data: { manager?: string; managerOffice?: string } }[], profs: Profile[]) {
+  // the event's Office responsible (by name); a work without one – who registered it
+  const byName = (n: string) => profs.find((p) => [p.full_name, [p.first_name, p.last_name].filter(Boolean).join(" "), p.nickname].some((x) => x && lbNorm(x) === lbNorm(n)));
+  const out = new Map<string, { prof: Profile; items: LbFull[] }>();
+  for (const w of items) {
+    const e = evs.find((x) => x.id === w.event_id);
+    const names = String((e?.data?.managerOffice ?? e?.data?.manager) || "").split(/[,;\n]+/).map((x) => x.replace(/\(tech\)/i, "").trim()).filter(Boolean);
+    let ps = names.map(byName).filter(Boolean) as Profile[];
+    if (!ps.length && w.created_by) { const p = profs.find((x) => x.id === w.created_by); if (p) ps = [p]; }
+    for (const p of ps) { const g = out.get(p.id) || { prof: p, items: [] }; g.items.push(w); out.set(p.id, g); }
+  }
+  return out;
+}
+async function laborReminders(force = false) {
+  const cfg = await lbCfg();
+  if (!cfg.on) return { off: true };
+  const nowV = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Vilnius" }));
+  if (!force && !(nowV.getHours() === 9 && nowV.getMinutes() < 5)) return { wait: true };
+  const days = Math.max(1, Number(cfg.days) || 14); LB_DAYS = days; const from = /^\d{4}-\d{2}-\d{2}$/.test(String(cfg.from || "")) ? String(cfg.from) : "2000-01-01";
+  const today = nowV.toISOString().slice(0, 10), until = new Date(Date.parse(today) - days * 864e5).toISOString().slice(0, 10), week = new Date(Date.now() - 6.5 * 864e5).toISOString();
+  // counted from the end of the event (the event over and „days“ gone), only events ended since „from“ (turned on)
+  const all = await db<LbFull[]>(`work_items?select=*&status=eq.done&invoice_id=is.null&work_date=lte.${until}&order=work_date.asc&limit=3000`);
+  if (!all.length) return { waiting: 0 };
+  const { evs, cs, evName, endOf } = await lbContext(all);
+  const items = all.filter((w) => { const e = endOf(w); return e <= until && e >= from; });
+  if (!items.length) return { waiting: 0 };
+  const profs = await db<Profile[]>("profiles?select=*&role=in.(admin,pm,office)");
+  const out = { freelancers: 0, managers: 0, errors: [] as string[] };
+  // freelancers: all their waiting works, when one of them was not reminded this week
+  const byP = new Map<string, LbFull[]>(); items.forEach((w) => { const k = w.contact_id || "n:" + lbNorm(w.person); byP.set(k, (byP.get(k) || []).concat([w])); });
+  const mgrOf = await lbManagersOf(items, evs, profs);
+  for (const [, list] of byP) {
+    if (!list.some((w) => !w.reminded_at || w.reminded_at < week)) continue;
+    const c = cs.find((x) => x.id === list[0].contact_id), to = String(c?.data?.email || "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) continue;
+    const mg = [...mgrOf.values()].find((g) => g.items.some((w) => list.includes(w)));
+    const m = lbFreelancerMail(list[0].person, list, evName, today, mg ? name(mg.prof) : "", false);
+    const err = await mailTo([to], m.subject, m.html);
+    if (err) { out.errors.push(list[0].person + ": " + err); continue; }
+    out.freelancers++;
+    await db(`work_items?id=in.${inList(list.map((w) => w.id))}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ reminded_at: new Date().toISOString() }) });
+  }
+  // the responsible: whose invoices are missing in their events (once a week)
+  for (const [, g] of mgrOf) {
+    if (!g.items.some((w) => !w.mgr_reminded_at || w.mgr_reminded_at < week) || !g.prof.email) continue;
+    const gp = new Map<string, LbFull[]>(); g.items.forEach((w) => { const k = w.contact_id || "n:" + lbNorm(w.person); gp.set(k, (gp.get(k) || []).concat([w])); });
+    const groups = [...gp.values()].map((it) => { const c = cs.find((x) => x.id === it[0].contact_id); return { person: it[0].person, contact: [c?.data?.phone, c?.data?.email].filter(Boolean).join(" · ") || "nėra el. pašto – priminimas neišsiųstas", items: it }; });
+    const m = lbManagerMail(name(g.prof), groups, evName, today, false);
+    const err = await mailTo([g.prof.email], m.subject, m.html);
+    if (err) { out.errors.push(name(g.prof) + ": " + err); continue; }
+    out.managers++;
+    await db(`work_items?id=in.${inList(g.items.map((w) => w.id))}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ mgr_reminded_at: new Date().toISOString() }) });
+  }
+  return { waiting: items.length, ...out };
+}
+// „Priminti dabar“ from the app (Office, PV, Admin): this person's waiting works – one letter now (works also when the reminders are off)
+async function laborRemindOne(uid: string, key: string) {
+  const [me] = await db<Profile[]>(`profiles?select=*&id=eq.${uid}`);
+  if (!me || !["admin", "pm", "office"].includes(String((me as Profile & { role?: string }).role))) return { error: "Tik Office, PV ir Admin." };
+  const today = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Vilnius" })).toISOString().slice(0, 10);
+  const all = await db<LbFull[]>(`work_items?select=*&status=eq.done&invoice_id=is.null&order=work_date.asc&limit=3000`);
+  const list = all.filter((w) => (key.startsWith("n:") ? !w.contact_id && "n:" + lbNorm(w.person) === key : w.contact_id === key));
+  if (!list.length) return { error: "Šis žmogus neturi darbų, laukiančių sąskaitos." };
+  const { cs, evName } = await lbContext(list);
+  const c = cs.find((x) => x.id === list[0].contact_id), to = String(c?.data?.email || "").trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return { error: "Žmonėse šiam žmogui neįrašytas el. paštas." };
+  const m = lbFreelancerMail(list[0].person, list, evName, today, name(me), false);
+  const err = await mailTo([to], m.subject, m.html);
+  if (err) return { error: err };
+  await db(`work_items?id=in.${inList(list.map((w) => w.id))}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ reminded_at: new Date().toISOString() }) });
+  return { ok: true, to, works: list.length };
 }
 // a test: both letters to one address, made from real works waiting for an invoice (oldest first)
 async function laborPreview(to: string) {
@@ -1736,6 +1825,8 @@ Deno.serve(async (req) => {
       let rr: unknown = null, wp: unknown = null;
       try { rr = await reportReminders(); } catch (e) { rr = { error: String(e) }; }   // before report_reminders.sql the table is missing
       try { wp = await workPlanReminders(); } catch (e) { wp = { error: String(e) }; }   // before work_plans.sql the tables are missing
+      let lr: unknown = null;
+      try { lr = await laborReminders(); } catch (e) { lr = { error: String(e) }; }   // Darbų apskaita: only when turned on in Admin
       // Bolt / Wolt monthly reports sent by themselves (reports-mail, sql/report_mail.sql)
       let rm: unknown = null;
       try {
@@ -1747,7 +1838,12 @@ Deno.serve(async (req) => {
         await db(`user_notifications?created_at=lt.${new Date(Date.now() - 30 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
         await db(`message_push?at=lt.${new Date(Date.now() - 3 * 86400000).toISOString()}`, { method: "DELETE" }).catch(() => {});
       }
-      return json({ ...tr, inv: ir, tracker: tt, reports: rr, workplans: wp, report_mail: rm });
+      return json({ ...tr, inv: ir, tracker: tt, reports: rr, workplans: wp, labor: lr, report_mail: rm });
+    }
+    // Darbų apskaita: „Priminti dabar“ (a member's token)
+    if (body?.mode === "labor-remind-one") {
+      const uid = await caller(req); if (!uid) return json({ error: "Prisijunk iš naujo." }, 401);
+      return json(await laborRemindOne(uid, String(body.key ?? "")));
     }
     // Darbų apskaita: a test of the invoice reminders – both letters to one address (cron secret)
     if (body?.mode === "labor-preview") {
