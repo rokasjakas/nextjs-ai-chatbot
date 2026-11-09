@@ -12977,6 +12977,7 @@ create table if not exists public.rental_links (
   revoked_at      timestamptz,
   opened          jsonb not null default '[]'::jsonb      -- [{name, at}] kas atidarė
 );
+alter table public.rental_links add column if not exists token text;
 create index if not exists rental_links_exp_idx on public.rental_links (expires_at);
 alter table public.rental_links enable row level security;
 revoke all on public.rental_links from anon, authenticated;

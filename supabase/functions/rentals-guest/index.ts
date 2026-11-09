@@ -1,7 +1,8 @@
 // Supabase Edge Function: rentals-guest
 //
 // Paėmimai through a temporary link (app.eventsolutions.lt/paemimai.html?t=…), for people without an app account:
-//   * a member who may edit Paėmimai makes a link (48 h); only its sha256 is kept (public.rental_links, rental_links.sql);
+//   * a member who may edit Paėmimai makes a link (48 h); it is checked by its sha256 (public.rental_links, rental_links.sql);
+//     the link itself is kept too, so that such a member can copy it again (the table is read by this function only);
 //   * whoever has the link writes their name and surname, then sees the rentals (to take, taken, returned in the last 14 days),
 //     ticks what was taken / returned, writes comments and units, adds photos, changes the status and reports a missing
 //     item (Slack #dingę-daiktai, through slack-sync with CRON_SECRET);
@@ -175,12 +176,12 @@ Deno.serve(async (req) => {
       if (!m) return json({ error: "Prisijunk iš naujo." }, 401);
       if (action === "create") {
         const token = newToken(), exp = new Date(Date.now() + HOURS * 3600e3).toISOString();
-        await db("rental_links", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ token_hash: await sha(token), created_by: m.id, created_by_name: m.name, expires_at: exp }) });
+        await db("rental_links", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ token_hash: await sha(token), token, created_by: m.id, created_by_name: m.name, expires_at: exp }) });
         return json({ ok: true, token, url: `${APP}/paemimai.html#${token}`, expires_at: exp });
       }
       if (action === "links") {
-        const rows = await db<(Link & { created_at: string })[]>(`rental_links?select=id,created_at,expires_at,revoked_at,opened,created_by_name&revoked_at=is.null&expires_at=gt.${enc(new Date().toISOString())}&order=created_at.desc`);
-        return json({ ok: true, links: rows });
+        const rows = await db<(Link & { created_at: string; token: string | null })[]>(`rental_links?select=id,created_at,expires_at,revoked_at,opened,created_by_name,token&revoked_at=is.null&expires_at=gt.${enc(new Date().toISOString())}&order=created_at.desc`);
+        return json({ ok: true, links: rows.map(({ token, ...l }) => ({ ...l, url: token ? `${APP}/paemimai.html#${token}` : "" })) });
       }
       await db(`rental_links?id=eq.${enc(String(b.id || ""))}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ revoked_at: new Date().toISOString() }) });
       return json({ ok: true });
