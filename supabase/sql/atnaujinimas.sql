@@ -12963,3 +12963,22 @@ do $$ declare t text; begin
 end $$;
 select tablename as k, 'realtime' as v from pg_publication_tables
  where pubname = 'supabase_realtime' and schemaname = 'public' and tablename in ('events', 'rentals', 'handovers', 'work_items');
+
+-- ============================================================
+-- Paėmimai: laikinos nuorodos (rental_links.sql)
+-- ============================================================
+create table if not exists public.rental_links (
+  id              uuid primary key default gen_random_uuid(),
+  token_hash      text not null unique,
+  created_by      uuid,
+  created_by_name text not null default '',
+  created_at      timestamptz not null default now(),
+  expires_at      timestamptz not null,
+  revoked_at      timestamptz,
+  opened          jsonb not null default '[]'::jsonb      -- [{name, at}] kas atidarė
+);
+create index if not exists rental_links_exp_idx on public.rental_links (expires_at);
+alter table public.rental_links enable row level security;
+revoke all on public.rental_links from anon, authenticated;
+notify pgrst, 'reload schema';
+select 'rental_links' as k, count(*)::text as v from public.rental_links;

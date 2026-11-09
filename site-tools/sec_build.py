@@ -71,6 +71,11 @@ open(headers_out, 'w').write(f"""/*
   Cache-Control: no-cache
 /saskaitos.html
   Cache-Control: no-cache
+/paemimai
+  Cache-Control: no-cache
+/paemimai.html
+  Cache-Control: no-cache
+  Referrer-Policy: no-referrer
 /rfid
   Cache-Control: no-cache
 /rfid.html

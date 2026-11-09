@@ -18,6 +18,7 @@
 // POST {action:"backfill"}           the same, every upcoming event (60 days) – Admin
 // POST {action:"sweep"}              header x-cron-secret: the daily run (archive old, make missing, update)
 // POST {action:"diag", event_id?}    header x-cron-secret: the connection and (optionally) one event synced – the answers as they are
+// POST {action:"missing_internal", rental_id, item_id, by}  header x-cron-secret: the same from the temporary Paėmimai link (rentals-guest)
 // POST {action:"missing", rental_id, item_id}  member who may edit Paėmimai: a missing item found on the return – a message
 //                                    in #dingę-daiktai (made if there is none, every active member invited) with @channel,
 //                                    buttons Rasta / Nerasta / Grąžinta and „Kam kasdien priminti“ (handled by the gdrive function,
@@ -443,6 +444,13 @@ Deno.serve(async (req) => {
         } catch (e) { out.missing_error = (e as Error).message; }
       }
       return json(out);
+    }
+    // a missing item from the temporary Paėmimai link (rentals-guest, with the same secret): who reported it is given
+    if (action === "missing_internal") {
+      const s3 = E("CRON_SECRET");
+      if (!s3 || req.headers.get("x-cron-secret") !== s3) return json({ error: "Unauthorized" }, 401);
+      if (!(await slackOn())) return json({ error: "Slack išjungtas – pranešti nepavyko." }, 400);
+      return json({ ok: true, ...(await reportMissing(String(b.rental_id || ""), String(b.item_id || ""), String((b as { by?: string }).by || "nuoroda").slice(0, 100))) });
     }
     const who = await caller(req);
     if (!who) return json({ error: "Prisijunk iš naujo." }, 401);

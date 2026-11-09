@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-DQWJUNt3t/VE6WzkhYCr/xxj47XeliarUpOLHWZNyeE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-8JlHFktBHHpGlZfCxJczO5Yuh1ozUIFf+lU4nxLt/PE=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Paėmimai · Event Solutions</title>
+<link rel="icon" href="icons/icon-192.png">
+<style>
+:root{--bg:#141414;--panel:#1f1f1f;--panel2:#262626;--border:#343434;--text:#ececec;--dim:#9a9a9a;--accent:#6BB4F5;--ok:#3fb950;--warn:#F2A93B;--bad:#EF5A5A;--ret:#50AD97;color-scheme:dark;}
+@media (prefers-color-scheme: light){ :root{--bg:#f3f4f6;--panel:#fff;--panel2:#f6f7f9;--border:#dcdfe4;--text:#1d2229;--dim:#6b7280;--accent:#1e6fd9;color-scheme:light;} }
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+.wrap{max-width:860px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px));}
+.brand{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:13px;margin-bottom:12px;flex-wrap:wrap;}
+.brand img{width:28px;height:28px;border-radius:7px;}
+.brand .sp{flex:1;}
+a{color:var(--accent);}
+.linkbtn{background:none;border:0;color:var(--accent);font:inherit;cursor:pointer;padding:0;text-decoration:underline;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;}
+h1{font-size:21px;margin:0 0 6px;} h2{font-size:16px;margin:0 0 8px;} h3{font-size:15px;margin:14px 0 8px;}
+.dim{color:var(--dim);} .small{font-size:12.5px;}
+input[type=text],input[type=number],input[type=search]{width:100%;font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:0;}
+input:focus{outline:2px solid var(--accent);outline-offset:0;}
+.btn{font:inherit;font-weight:700;border:1px solid var(--border);background:var(--panel2);color:var(--text);border-radius:10px;padding:9px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;justify-content:center;text-decoration:none;}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#0b1220;}
+.btn.danger{border-color:var(--bad);color:var(--bad);}
+.btn.small{padding:5px 10px;font-size:13px;border-radius:8px;}
+.btn:disabled{opacity:.55;cursor:default;}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px;}
+.chip{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:999px;padding:6px 12px;cursor:pointer;}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#0b1220;}
+.chip b{opacity:.75;margin-left:4px;}
+.rc{display:flex;gap:12px;align-items:flex-start;cursor:pointer;border-left:6px solid var(--st);}
+.rc:hover{border-color:var(--accent);border-left-color:var(--st);}
+.st-reikia{--st:var(--bad);} .st-paimta{--st:var(--warn);} .st-grazinta{--st:var(--ret);}
+.badge{display:inline-block;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;padding:4px 8px;border-radius:8px;background:var(--st);color:#111;white-space:nowrap;}
+.st-reikia .badge{color:#fff;}
+.rc .main{flex:1;min-width:0;}
+.rc .what{font-weight:800;font-size:15.5px;}
+.meta{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:13px;color:var(--dim);margin-top:4px;}
+.date{display:inline-block;padding:1px 8px;border-radius:12px;font-weight:800;font-size:13px;background:color-mix(in srgb, var(--accent) 18%, transparent);color:var(--text);}
+.date.late{background:color-mix(in srgb, var(--bad) 20%, transparent);color:var(--bad);}
+.flag{color:var(--bad);font-weight:700;}
+.pill{font-size:12px;font-weight:700;padding:1px 8px;border-radius:12px;background:color-mix(in srgb, var(--text) 9%, transparent);}
+.pill.all{background:color-mix(in srgb, var(--ok) 25%, transparent);}
+.info{display:grid;gap:5px;margin:4px 0 6px;font-size:14px;}
+.info > div{display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;}
+.k{flex:0 0 96px;color:var(--dim);font-size:12.5px;}
+.it{border:1px solid var(--border);border-radius:10px;padding:8px 10px;margin-bottom:6px;background:var(--panel2);}
+.it.ok{border-color:color-mix(in srgb, var(--ok) 60%, var(--border));background:color-mix(in srgb, var(--ok) 9%, var(--panel2));}
+.it.short{border-color:color-mix(in srgb, var(--bad) 60%, var(--border));background:color-mix(in srgb, var(--bad) 8%, var(--panel2));}
+.it .top{display:flex;gap:10px;align-items:center;}
+.it .chk{width:26px;height:26px;flex:0 0 auto;accent-color:var(--ok);margin:0;}
+.it .nm{flex:1;min-width:0;}
+.it .nm b{font-size:15px;} .it .q{color:var(--accent);font-weight:800;white-space:nowrap;}
+.it .nt{display:block;color:var(--dim);font-size:12.5px;}
+.it .ev{font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:10px;background:color-mix(in srgb, var(--accent) 16%, transparent);white-space:nowrap;}
+.it .sub{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;padding-left:36px;}
+.it .sub input[type=text]{flex:1 1 200px;}
+.it .sub input[type=number]{width:84px;flex:0 0 auto;}
+.it .who{flex:1 1 100%;font-size:12px;color:var(--dim);}
+.short-line{flex:1 1 100%;color:var(--bad);font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.file{position:relative;overflow:hidden;}
+.file input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.seg button{font:inherit;font-weight:800;font-size:12.5px;border:2px solid color-mix(in srgb, var(--st) 50%, transparent);color:var(--st);background:transparent;border-radius:10px;padding:10px 4px;cursor:pointer;}
+.seg button.on{background:var(--st);color:#111;border-color:var(--st);}
+.seg .st-reikia.on{color:#fff;}
+.phs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;margin-top:8px;}
+.phs img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;display:block;cursor:zoom-in;background:var(--panel2);}
+.phs figure{margin:0;} .phs figcaption{font-size:11px;color:var(--dim);text-align:center;}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:50;}
+.lb img{max-width:96vw;max-height:88vh;}
+.lb .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px;}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;max-width:92vw;box-shadow:0 8px 24px rgba(0,0,0,.35);}
+.err{color:var(--bad);font-weight:700;}
+.empty{text-align:center;color:var(--dim);padding:24px;}
+@media (max-width:560px){ .seg{grid-template-columns:repeat(2,1fr);} .k{flex-basis:100%;} .it .sub{padding-left:0;} }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="card empty">Kraunama…</div></div>
+<script>
+const FN = "https://yakmikxkcudwloxruhvx.supabase.co/functions/v1/rentals-guest";
+const TOKEN = (location.hash.slice(1) || new URLSearchParams(location.search).get('t') || '').trim();
+const S = { name:'', rentals:[], exp:'', filter:'aktyvus', q:'', open:null, photos:{}, busy:false };
+try{ S.name = localStorage.getItem('rgName') || ''; }catch(e){}
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s==null ? '' : s).replace(/[&<>"']/g, c=>({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+const n = v=>String(v).replace('.', ',');
+const ST = { reikia:['⏳', 'Reikia paimti'], paimta:['📦', 'Paimta'], grazinta:['✅', 'Grąžinta'] };
+const LOST = { found:'🔎 Rasta', notfound:'❌ Nerasta', returned:'✅ Grąžinta' };
+function toast(t){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(()=>d.remove(), 3200); }
+async function call(action, extra){
+  const r = await fetch(FN, { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify(Object.assign({ action, token:TOKEN, name:S.name }, extra||{})) });
+  let d = {}; try{ d = await r.json(); }catch(e){}
+  if(!r.ok || d.error) throw new Error(d.error || ('Serverio klaida '+r.status));
+  return d;
+}
+const today = ()=>new Intl.DateTimeFormat('en-CA', { timeZone:'Europe/Vilnius' }).format(new Date());
+function dayLabel(d){ if(!d) return ''; const t = today(); if(d===t) return 'Šiandien';
+  const dt = new Date(d+'T12:00:00'), diff = Math.round((dt - new Date(t+'T12:00:00'))/864e5);
+  if(diff===1) return 'Rytoj'; if(diff===-1) return 'Vakar';
+  const M = ['saus.','vas.','kov.','bal.','geg.','birž.','liep.','rugp.','rugs.','spal.','lapkr.','gruod.'], W = ['Sk','Pr','An','Tr','Kt','Pn','Š'];
+  return M[dt.getMonth()]+' '+dt.getDate()+' d., '+W[dt.getDay()]; }
+const missOf = i=>{ const h = +i.qty, g = i.backQty==='' || i.backQty==null ? NaN : +i.backQty; return i.qty!=='' && isFinite(h) && isFinite(g) && g < h ? Math.round((h-g)*1000)/1000 : 0; };
+const keyDate = r=>(r.status==='reikia' ? r.pickupDate || r.returnDate : r.returnDate || r.pickupDate) || '';
+function telOf(r){ const m = String(r.contact||'').match(/\+?\d[\d\s-]{5,}\d/); return m ? m[0].trim() : ''; }
+
+/* ---- the name ---- */
+function gate(msg){
+  $('#app').innerHTML = `<div class="brand"><img src="icons/icon-192.png" alt=""><span>Event Solutions · Paėmimai</span></div>
+    <div class="card" style="max-width:460px;margin:30px auto;">
+      <h1>Paėmimai</h1>
+      <p class="dim">Laikina nuoroda: gali matyti paėmimus, pažymėti, kas paimta ir grąžinta, įkelti nuotraukas ir pranešti apie trūkstamus daiktus.</p>
+      ${msg ? `<p class="err">${esc(msg)}</p>` : ''}
+      ${TOKEN ? `<form id="nf"><label class="small dim">Tavo vardas ir pavardė</label>
+        <input type="text" id="nm" autocomplete="name" value="${esc(S.name)}" placeholder="Vardas Pavardė" style="margin:6px 0 12px;">
+        <button class="btn primary" style="width:100%;">Tęsti</button></form>` : ''}
+    </div>`;
+  const f = $('#nf'); if(!f) return;
+  setTimeout(()=>$('#nm').focus(), 50);
+  f.onsubmit = async e=>{ e.preventDefault(); const v = $('#nm').value.replace(/\s+/g, ' ').trim();
+    if(v.split(' ').filter(w=>w.length>1).length < 2){ toast('Įrašyk vardą ir pavardę.'); return; }
+    S.name = v; try{ localStorage.setItem('rgName', v); }catch(x){}
+    try{ const d = await call('hello'); S.exp = d.expires_at; await load(); }catch(x){ gate(x.message); } };
+}
+async function load(){
+  const d = await call('list'); S.rentals = d.rentals || []; S.exp = d.expires_at || S.exp; render();
+}
+/* ---- the list ---- */
+function header(){
+  const exp = S.exp ? new Date(S.exp).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
+  return `<div class="brand"><img src="icons/icon-192.png" alt=""><span>Event Solutions · Paėmimai</span><span class="sp"></span>
+    <span>👤 ${esc(S.name)} <button class="linkbtn" data-a="rename">keisti</button></span>${exp ? `<span>· galioja iki ${esc(exp)}</span>` : ''}</div>`;
+}
+function render(){
+  if(S.open){ const r = S.rentals.find(x=>x.id===S.open); if(r) return renderOne(r); S.open = null; }
+  const q = S.q.toLowerCase(), f = S.filter;
+  const pool = S.rentals.filter(r=>!q || [r.place, r.address, r.person, r.notes, ...r.list.map(i=>i.name), ...r.events.map(e=>e.name)].join(' ').toLowerCase().includes(q));
+  const cnt = k=>pool.filter(r=>k==='aktyvus' ? r.status!=='grazinta' : k==='visi' || r.status===k).length;
+  const rows = pool.filter(r=>f==='visi' || (f==='aktyvus' ? r.status!=='grazinta' : r.status===f));
+  const t = new Date(today()+'T12:00:00'), dist = r=>{ const d = keyDate(r); if(!d) return 1e9; const x = Math.round((new Date(d+'T12:00:00') - t)/864e5); return x >= 0 ? x*2 : -x*2+1; };
+  rows.sort((a,b)=>dist(a)-dist(b));
+  $('#app').innerHTML = header()+`
+    <h1>Paėmimai</h1>
+    <div class="chips">${[['aktyvus','Aktyvūs'],['reikia','Reikia paimti'],['paimta','Paimta'],['grazinta','Grąžinta'],['visi','Visi']].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-f="${k}">${l}<b>${cnt(k)}</b></button>`).join('')}</div>
+    <div class="row" style="margin-bottom:10px;"><input type="search" id="q" placeholder="Ieškoti: tiekėjas, daiktas, renginys…" value="${esc(S.q)}" style="flex:1;"><button class="btn small" data-a="reload">↻</button></div>
+    ${rows.map(card).join('') || '<div class="card empty">Nieko nėra.</div>'}`;
+  const qi = $('#q'); qi.oninput = ()=>{ S.q = qi.value; const p = qi.selectionStart; render(); const q2 = $('#q'); q2.focus(); try{ q2.setSelectionRange(p, p); }catch(e){} };
+}
+function card(r){
+  const [ic, lb] = ST[r.status] || ST.reikia, done = r.list.filter(i=>i.ok).length, back = r.list.filter(i=>i.back).length;
+  const due = r.status==='reikia' && r.pickupDate && r.pickupDate<=today(), late = r.status==='paimta' && r.returnDate && r.returnDate<today();
+  const short = r.list.filter(i=>missOf(i) && !(i.lost && i.lost.status==='returned')).length;
+  return `<div class="card rc st-${esc(r.status)}" data-open="${esc(r.id)}">
+    <span class="badge">${ic} ${esc(r.status==='paimta' && r.partial ? 'Paimta dalinai' : lb)}</span>
+    <div class="main"><div class="what">🏢 ${esc(r.place || (r.list[0]||{}).name || 'Paėmimas')}
+      ${r.pickupDate ? ` <span class="date ${due?'late':''}">🗓 ${esc(dayLabel(r.pickupDate))}${r.pickupTime ? ' '+esc(r.pickupTime) : ''}</span>` : ''}
+      ${r.list.length ? ` <span class="pill ${done===r.list.length?'all':''}">✓ ${done}/${r.list.length}</span>` : ''}</div>
+      <div class="meta">${r.status!=='reikia' && r.returnDate ? `<span class="${late?'flag':''}">↩ Grąžinti ${esc(dayLabel(r.returnDate))}</span>` : ''}
+        ${r.address ? `<span>📍 ${esc(r.address)}</span>` : ''}${r.events.map(e=>`<span>🎪 ${esc(e.name)}</span>`).join('')}
+        ${r.status!=='reikia' && r.list.length ? `<span>↩ ${back}/${r.list.length} grąžinta</span>` : ''}${short ? `<span class="flag">⚠ trūksta: ${short}</span>` : ''}</div></div>
+  </div>`;
+}
+/* ---- one rental ---- */
+function itemRow(r, i, ret){
+  const miss = ret ? missOf(i) : 0, cls = ret ? (i.back ? 'ok' : '')+(miss ? ' short' : '') : (i.ok ? 'ok' : '');
+  const ev = i.ev ? (r.events.find(e=>e.id===i.ev)||{}).name : '';
+  const when = t=>t ? new Date(t).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
+  return `<div class="it ${cls}" data-item="${esc(i.id)}" data-ret="${ret?1:0}">
+    <div class="top"><input type="checkbox" class="chk" data-k="${ret?'back':'ok'}" ${(ret ? i.back : i.ok) ? 'checked' : ''} aria-label="${ret?'Grąžinta':'Paimta'}">
+      <span class="nm"><b>${esc(i.name)}</b> ${i.qty!=='' ? `<span class="q">${ret?'paimta ':''}${esc(n(i.qty))} vnt.</span>` : ''} ${ev ? `<span class="ev">🎪 ${esc(ev)}</span>` : ''}${i.note ? `<span class="nt">${esc(i.note)}</span>` : ''}</span></div>
+    <div class="sub">
+      ${ret ? `<input type="number" min="0" step="any" inputmode="decimal" data-k="backQty" value="${esc(i.backQty)}" placeholder="${esc(i.qty)}" aria-label="Grąžinama vnt."><span class="dim small">vnt.</span>` : ''}
+      <input type="text" data-k="${ret?'backNote':'okNote'}" value="${esc(ret ? i.backNote : i.okNote)}" placeholder="${ret ? 'Grąžinant: komentaras' : 'Paimant: komentaras'}">
+      <label class="btn small file">📷 ${(ret ? i.backPhotos : i.photos) || ''}<input type="file" accept="image/*" multiple data-up="${ret?'back':'item'}"></label>
+      ${miss ? `<span class="short-line">⚠ Trūksta ${esc(n(miss))} vnt.
+        ${i.lost ? `<span class="dim small">📣 Pranešta ${esc(when(i.lost.at))}</span>${i.lost.status ? `<span class="pill">${esc(LOST[i.lost.status]||i.lost.status)}</span>` : ''}` : ''}
+        <button class="btn small ${i.lost?'':'danger'}" data-a="lost">📣 ${i.lost ? 'Pranešti dar kartą' : 'Pranešti apie trūkumą'}</button></span>` : ''}
+      ${(ret ? i.back && i.backByName : i.ok && i.okByName) ? `<span class="who">${ret?'↩':'✓'} ${esc(ret ? i.backByName : i.okByName)} · ${esc(when(ret ? i.backAt : i.okAt))}</span>` : ''}
+    </div></div>`;
+}
+function renderOne(r){
+  const [ic, lb] = ST[r.status] || ST.reikia, tel = telOf(r), cur = r.status==='paimta' && r.partial ? 'dalinai' : r.status;
+  const ph = S.photos[r.id];
+  $('#app').innerHTML = header()+`
+    <button class="btn small" data-a="back" style="margin-bottom:10px;">← Visi paėmimai</button>
+    <div class="card st-${esc(r.status)}">
+      <div class="row"><span class="badge">${ic} ${esc(r.status==='paimta' && r.partial ? 'Paimta dalinai' : lb)}</span><h1 style="margin:0;">🏢 ${esc(r.place || 'Paėmimas')}</h1></div>
+      <div class="info" style="margin-top:10px;">
+        ${r.pickupDate ? `<div><span class="k">Paėmimas</span><span class="date">🗓 ${esc(dayLabel(r.pickupDate))}${r.pickupTime ? ' '+esc(r.pickupTime) : ''}</span></div>` : ''}
+        ${r.returnDate ? `<div><span class="k">Grąžinimas</span><span>↩ ${esc(dayLabel(r.returnDate))}${r.returnTime ? ' '+esc(r.returnTime) : ''}</span></div>` : ''}
+        ${r.address ? `<div><span class="k">Vieta</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.address)}" target="_blank" rel="noopener">📍 ${esc(r.address)}</a></div>` : ''}
+        ${tel ? `<div><span class="k">Telefonas</span><span>📞 ${esc(tel)} <a class="btn small" href="tel:${esc(tel.replace(/[\s-]/g,''))}">Skambinti</a></span></div>` : r.contact ? `<div><span class="k">Kontaktai</span><span>${esc(r.contact)}</span></div>` : ''}
+        ${r.person ? `<div><span class="k">Atsakingas</span><span>👤 ${esc(r.person)}</span></div>` : ''}
+        ${r.events.length ? `<div><span class="k">Renginiai</span><span>${r.events.map(e=>`🎪 ${esc(e.name)}${e.note ? ` <i class="dim">– ${esc(e.note)}</i>` : ''}`).join('<br>')}</span></div>` : ''}
+        ${r.notes ? `<div><span class="k">Pastabos</span><span style="white-space:pre-wrap;">${esc(r.notes)}</span></div>` : ''}
+        ${r.partial && r.missing ? `<div><span class="k">Nepaimta</span><span class="flag">⚠ ${esc(r.missing)}</span></div>` : ''}
+      </div>
+    </div>
+    <div class="card"><h2>Daiktai – paėmimas <span class="pill">✓ ${r.list.filter(i=>i.ok).length}/${r.list.length}</span></h2>
+      ${r.list.map(i=>itemRow(r, i, false)).join('') || '<div class="dim">Daiktų nėra.</div>'}</div>
+    ${r.status!=='reikia' ? `<div class="card"><h2>↩ Grąžinimas <span class="pill">${r.list.filter(i=>i.back).length}/${r.list.length}</span></h2>
+      <p class="dim small" style="margin-top:-4px;">Pažymėk grąžinamus; jei randi mažiau – įrašyk, kiek vienetų, ir pranešk apie trūkumą.</p>
+      ${r.list.map(i=>itemRow(r, i, true)).join('')}</div>` : ''}
+    <div class="card"><h2>📷 Nuotraukos</h2>
+      <div class="row">
+        <label class="btn small file">＋ Išorės (${r.photos.out})<input type="file" accept="image/*" multiple data-up="out"></label>
+        <label class="btn small file">＋ Vidaus (${r.photos.in})<input type="file" accept="image/*" multiple data-up="in"></label>
+        <label class="row small" style="gap:6px;"><input type="checkbox" data-k="noInside" ${r.photos.noInside?'checked':''}> Vidaus nuotraukų padaryti negalima</label>
+        <button class="btn small" data-a="photos">${ph ? '↻ Atnaujinti' : '👁 Peržiūrėti visas'}</button>
+      </div>
+      ${ph ? `<div class="phs">${ph.map((p, k)=>`<figure><img src="${esc(p.url)}" data-lb="${k}" alt="" loading="lazy"><figcaption>${esc(p.side==='out' ? 'Išorė' : p.side==='in' ? 'Vidus' : (p.side==='back' ? '↩ ' : '')+((r.list.find(i=>i.id===p.item)||{}).name||''))}</figcaption></figure>`).join('') || '<div class="dim small">Nuotraukų dar nėra.</div>'}</div>` : ''}
+      ${r.status==='reikia' && !(r.photos.out && (r.photos.in || r.photos.noInside)) ? '<p class="dim small">Prieš pažymint „Paimta“ – įkelk išorės ir vidaus nuotraukas.</p>' : ''}
+    </div>
+    <div class="card"><h2>Būsena</h2>
+      <div class="seg">${[['reikia','⏳ Reikia paimti','st-reikia'],['paimta','📦 Paimta','st-paimta'],['dalinai','⚠ Paimta dalinai','st-paimta'],['grazinta','✅ Grąžinta','st-grazinta']].map(([k,t,c])=>`<button class="${c} ${cur===k?'on':''}" data-st="${k}">${t}</button>`).join('')}</div>
+    </div>`;
+}
+function replace(r){ const i = S.rentals.findIndex(x=>x.id===r.id); if(i>=0) S.rentals[i] = r; else S.rentals.push(r); }
+async function save(rid, op, keepFocus){
+  try{ const d = await call('save', { rental_id:rid, op }); replace(d.rental); if(!keepFocus) render(); return true; }
+  catch(e){ toast(e.message); render(); return false; }
+}
+// a photo: made smaller on the phone (≤1600 px, JPEG) before it is sent
+function shrink(file){ return new Promise(ok=>{
+  const url = URL.createObjectURL(file), im = new Image();
+  im.onload = ()=>{ const k = Math.min(1, 1600/Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width*k); c.height = Math.round(im.height*k);
+    c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(url); c.toBlob(b=>ok(b ? { blob:b, type:'image/jpeg' } : { blob:file, type:file.type }), 'image/jpeg', .85); };
+  im.onerror = ()=>{ URL.revokeObjectURL(url); ok({ blob:file, type:file.type || 'image/jpeg' }); };
+  im.src = url; }); }
+const b64 = blob=>new Promise((ok, no)=>{ const fr = new FileReader(); fr.onload = ()=>ok(String(fr.result).split(',')[1]); fr.onerror = no; fr.readAsDataURL(blob); });
+async function upload(rid, side, itemId, files){
+  let k = 0;
+  for(const f of files){
+    toast(`Keliama nuotrauka ${++k}/${files.length}…`);
+    try{ const s = await shrink(f); const d = await call('upload', { rental_id:rid, side, item_id:itemId||'', type:s.type, data:await b64(s.blob) }); replace(d.rental); delete S.photos[rid]; }
+    catch(e){ toast('Nepavyko: '+e.message); }
+  }
+  render(); toast('Nuotraukos įkeltos.');
+}
+document.addEventListener('click', async e=>{
+  const t = e.target;
+  const o = t.closest('[data-open]'); if(o){ S.open = o.dataset.open; render(); scrollTo(0, 0); return; }
+  const f = t.closest('[data-f]'); if(f){ S.filter = f.dataset.f; render(); return; }
+  const lb = t.closest('[data-lb]'); if(lb){ const d = document.createElement('div'); d.className = 'lb'; d.innerHTML = `<img src="${esc(lb.src)}" alt=""><button class="btn x">✕</button>`; d.onclick = ()=>d.remove(); document.body.appendChild(d); return; }
+  const st = t.closest('[data-st]');
+  if(st && S.open){ let v = st.dataset.st, op = { t:'status', v };
+    if(v==='dalinai'){ const r = S.rentals.find(x=>x.id===S.open), def = r.list.filter(i=>!i.ok).map(i=>(i.qty!=='' ? n(i.qty)+' x ' : '')+i.name).join('; ');
+      const m = prompt('Kas nepaimta?', r.missing || def); if(m===null) return; if(!m.trim()){ toast('Įrašyk, kas nepaimta.'); return; } op = { t:'status', v:'paimta', partial:true, missing:m.trim() }; }
+    if(await save(S.open, op)) toast('Būsena pakeista.'); return; }
+  const a = t.closest('[data-a]'); if(!a) return;
+  const act = a.dataset.a;
+  if(act==='back'){ S.open = null; render(); return; }
+  if(act==='reload'){ a.disabled = true; try{ await load(); }catch(x){ toast(x.message); } return; }
+  if(act==='rename'){ S.name = ''; gate(''); return; }
+  if(act==='photos'){ a.disabled = true; try{ const d = await call('photos', { rental_id:S.open }); S.photos[S.open] = d.photos.filter(p=>p.url); render(); }catch(x){ toast(x.message); a.disabled = false; } return; }
+  if(act==='lost'){ const it = a.closest('[data-item]'); a.disabled = true; a.textContent = '⏳ Siunčiama…';
+    try{ await save(S.open, { t:'item', item_id:it.dataset.item, set:{ backQty:it.querySelector('[data-k="backQty"]').value } }, true);
+      const d = await call('missing', { rental_id:S.open, item_id:it.dataset.item }); replace(d.rental); render(); toast('📣 Pranešta Slack kanale #dingę-daiktai.'); }
+    catch(x){ toast('Nepavyko: '+x.message); render(); } }
+});
+document.addEventListener('change', async e=>{
+  const t = e.target;
+  if(t.dataset.up){ const it = t.closest('[data-item]'); const files = [...t.files]; t.value = ''; if(files.length) upload(S.open, t.dataset.up, it ? it.dataset.item : '', files); return; }
+  if(t.dataset.k==='noInside'){ save(S.open, { t:'noInside', v:t.checked }); return; }
+  const it = t.closest('[data-item]'); if(!it || !t.dataset.k) return;
+  const k = t.dataset.k, v = t.type==='checkbox' ? t.checked : t.value;
+  save(S.open, { t:'item', item_id:it.dataset.item, set:{ [k]:v } }, k==='okNote' || k==='backNote');
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.matches('.it input[type=text], .it input[type=number]')){ e.preventDefault(); e.target.blur(); } });
+// the list follows what others do (every 30 s while the page is open; not while typing)
+setInterval(()=>{ if(document.hidden || !S.name || !S.rentals.length) return; const a = document.activeElement; if(a && a.matches('input[type=text], input[type=number], input[type=search]')) return; load().catch(()=>{}); }, 30000);
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && S.name && S.rentals.length) load().catch(()=>{}); });
+(async ()=>{
+  if(!TOKEN){ gate('Nuoroda neteisinga – atidaryk visą nuorodą, kurią gavai.'); return; }
+  if(!S.name){ gate(''); return; }
+  try{ const d = await call('hello'); S.exp = d.expires_at; await load(); }catch(e){ gate(e.message); }
+})();
+</script>
+</body>
+</html>

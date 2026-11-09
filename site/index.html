@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bB4b1+16roccxRtyo1OLfCM6CaadYFkjAemBuBuXo5o=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-DQWJUNt3t/VE6WzkhYCr/xxj47XeliarUpOLHWZNyeE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-8JlHFktBHHpGlZfCxJczO5Yuh1ozUIFf+lU4nxLt/PE=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -25128,7 +25128,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v749';
+const APP_VER = 'v750';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31539,6 +31539,7 @@ function renderRentalsTab(){
       <div class="ev-actions">
         <button class="btn primary small" id="rtAdd">+ Paėmimas</button>
         <button class="btn small" id="rtSuppliers">⚙ Tiekėjai</button>
+        ${canEdit('rentals') ? '<button class="btn small" id="rtLink" title="Nuoroda žmonėms be paskyros – galioja 48 val.">🔗 Laikina nuoroda</button>' : ''}
       </div>
     </div>
     <div id="rtError"></div>
@@ -31546,6 +31547,7 @@ function renderRentalsTab(){
   </div>`;
   document.getElementById('rtAdd').onclick = ()=>openRentalNewModal(null);
   document.getElementById('rtSuppliers').onclick = ()=>openEventListsModal('suppliers');
+  const lk = document.getElementById('rtLink'); if(lk) lk.onclick = openRentalLinks;
   const q = document.getElementById('rtQ');
   q.addEventListener('input', ()=>{ RTQ.q = q.value; EV.rentalLimit = 100; clearTimeout(rtSearchTimer); rtSearchTimer = setTimeout(renderRentalList, 180); });
   document.getElementById('rtFrom').addEventListener('change', e=>{ RTQ.from = e.target.value; EV.rentalLimit = 100; renderRentalList(); });
@@ -32053,6 +32055,51 @@ async function rtPdf(r){
     offerDownload(blob, name);
     toast('📄 PDF parsisiųstas.');
   }catch(e){ toast('Nepavyko sukurti PDF: '+(e.message||e)); }
+}
+/* ---- Paėmimai: laikina nuoroda (48 val.) žmonėms be paskyros – paemimai.html, serverio funkcija rentals-guest ---- */
+async function rgCall(action, extra){
+  const sb = getSb(); if(!sb) throw new Error('Nėra ryšio');
+  const { data } = await sb.auth.getSession();
+  const res = await fetch(SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/rentals-guest', { method:'POST',
+    headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+(data && data.session ? data.session.access_token : ''), 'apikey':SUPABASE_KEY }, body:JSON.stringify(Object.assign({ action }, extra||{})) });
+  let out = {}; try{ out = await res.json(); }catch(e){}
+  if(res.status===404 && !out.error) throw new Error('funkcija rentals-guest dar neįdiegta');
+  if(!res.ok || out.error) throw new Error(out.error || ('serverio klaida '+res.status));
+  return out;
+}
+async function openRentalLinks(){
+  const when = t=>{ try{ return new Date(t).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }); }catch(_){ return ''; } };
+  openModal(`<h3>🔗 Laikina nuoroda į Paėmimus</h3>
+    <p class="section-sub" style="margin-top:0;">Nuoroda galioja <b>48 val.</b> Ją atidaręs žmogus (be paskyros) įrašo savo vardą ir pavardę, mato paėmimus, gali pažymėti paėmimą ir grąžinimą, įkelti nuotraukas ir pranešti apie trūkstamus daiktus. Kas ką pažymėjo – matosi prie daikto („Vardas Pavardė (nuoroda)“).</p>
+    <div id="rgNew"><button type="button" class="btn primary" id="rgMake">＋ Sukurti nuorodą</button></div>
+    <h4 style="margin:16px 0 6px;">Galiojančios nuorodos</h4><div id="rgList" class="section-sub">Kraunama…</div>
+    <div class="row" style="justify-content:flex-end;margin-top:14px;"><button type="button" class="btn" id="rgClose">Uždaryti</button></div>`);
+  const $ = id=>document.getElementById(id);
+  $('rgClose').onclick = ()=>closeModal();
+  const list = async ()=>{ try{ const d = await rgCall('links'); const box = $('rgList'); if(!box) return;
+      box.innerHTML = (d.links||[]).length ? (d.links||[]).map(l=>`<div class="card" style="margin:0 0 6px;padding:8px 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span style="flex:1;min-width:200px;">Sukūrė <b>${esc(l.created_by_name||'')}</b> · ${esc(when(l.created_at))} · galioja iki <b>${esc(when(l.expires_at))}</b>
+        ${(l.opened||[]).length ? `<br><small>Atidarė: ${(l.opened||[]).map(o=>esc(o.name)).join(', ')}</small>` : '<br><small>Dar niekas neatidarė.</small>'}</span>
+        <button type="button" class="btn small danger" data-rgrev="${esc(l.id)}">Atšaukti</button></div>`).join('') : 'Galiojančių nuorodų nėra.';
+    }catch(e){ const box = $('rgList'); if(box) box.textContent = 'Nepavyko: '+e.message; } };
+  $('rgList').addEventListener('click', async e=>{ const b = e.target.closest('[data-rgrev]'); if(!b) return;
+    if(!(await uiConfirm('Atšaukti šią nuorodą? Ja nebebus galima naudotis.'))) return;
+    try{ await rgCall('revoke', { id:b.dataset.rgrev }); toast('Nuoroda atšaukta.'); list(); }catch(x){ toast('Nepavyko: '+x.message); } });
+  const make = async ()=>{
+    const b = $('rgMake'); b.disabled = true; b.textContent = '⏳ Kuriama…';
+    try{
+      const d = await rgCall('create');
+      $('rgNew').innerHTML = `<label class="field">Nuoroda (galioja iki ${esc(when(d.expires_at))})<input type="text" id="rgUrl" readonly value="${esc(d.url)}"></label>
+        <div class="row" style="gap:8px;margin-top:6px;"><button type="button" class="btn primary small" id="rgCopy">⧉ Kopijuoti</button>${navigator.share ? '<button type="button" class="btn small" id="rgShare">📨 Siųsti…</button>' : ''}<button type="button" class="btn small" id="rgMake2">＋ Dar viena</button></div>`;
+      $('rgCopy').onclick = async ()=>{ const ok = await copyText(d.url); if(!ok){ $('rgUrl').select(); } toast(ok ? 'Nuoroda nukopijuota.' : 'Pažymėta – kopijuok (Ctrl/⌘+C).'); };
+      if($('rgShare')) $('rgShare').onclick = ()=>navigator.share({ title:'Paėmimai', text:'Paėmimai (nuoroda galioja 48 val.)', url:d.url }).catch(()=>{});
+      $('rgMake2').onclick = ()=>{ $('rgNew').innerHTML = '<button type="button" class="btn primary" id="rgMake">＋ Sukurti nuorodą</button>'; $('rgMake').onclick = make; };
+      $('rgUrl').focus(); $('rgUrl').select();
+      list();
+    }catch(e){ toast('Nepavyko: '+e.message); b.disabled = false; b.textContent = '＋ Sukurti nuorodą'; }
+  };
+  $('rgMake').onclick = make;
+  list();
 }
 // Cards are compact (status, what, where, when) and open on tap for editing.
 const RENTAL_ICON = {reikia:'⏳', paimta:'📦', grazinta:'✅'};
@@ -46611,7 +46658,7 @@ const GUIDE = [
   rel:['newproj','rules','fleet'], kw:'krovimas krauti automobilis 3d furgonas talpa' },
 
 { id:'rentals', tab:'rentals', g:'Sandėlis', t:'Paėmimai', d:'Nuomojamos įrangos paėmimai ir grąžinimai su nuotraukomis.',
-  s:[['Kaip', 'Ką paimti, iš ko, kada; daiktai po vieną – pavadinimas, vienetai, komentaras; paimant – varnelė, komentaras ir nuotraukos prie kiekvieno daikto; būsena Reikia paimti → Paimta → Grąžinta; nuotraukos paimant ir grąžinant.']],
+  s:[['Laikina nuoroda', '„🔗 Laikina nuoroda“ – nuoroda žmonėms be paskyros (galioja 48 val.): įrašę vardą ir pavardę jie mato paėmimus, pažymi paėmimą ir grąžinimą, įkelia nuotraukas, praneša apie trūkstamus daiktus; galiojančias nuorodas matai ir gali atšaukti ten pat.'], ['Kaip', 'Ką paimti, iš ko, kada; daiktai po vieną – pavadinimas, vienetai, komentaras; paimant – varnelė, komentaras ir nuotraukos prie kiekvieno daikto; būsena Reikia paimti → Paimta → Grąžinta; nuotraukos paimant ir grąžinant.']],
   rel:['handovers','newproj'], kw:'paemimai nuoma paimti grazinti' },
 
 { id:'handovers', tab:'handovers', g:'Sandėlis', t:'Išdavimai', d:'Mūsų įrangos išdavimas klientui ar nuomai su nuotraukomis ir perdavimo aktu (PDF).',
@@ -54881,6 +54928,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-09 23:00', v:'v750', k:'new', t:'Paėmimai: laikina nuoroda (48 val.) žmonėms be paskyros', f:'„🔗 Laikina nuoroda“ Paėmimuose sukuria nuorodą, galiojančią 48 val. Ją atidaręs žmogus įrašo vardą ir pavardę ir mato paėmimus (paimti, paimti, per 14 d. grąžinti): pažymi paimtus ir grąžintus daiktus, rašo vienetus ir komentarus, įkelia nuotraukas, keičia būseną, praneša apie trūkstamus daiktus (Slack #dingę-daiktai). Pakeitimai programoje matomi iš karto, prie daikto – „Vardas Pavardė (nuoroda)“. Galiojančias nuorodas (ir kas jas atidarė) matai ir gali atšaukti.' },
   { d:'2026-11-09 21:30', v:'v749', k:'new', t:'Renginio laiškas: tekstą galima taisyti tiesiai peržiūroje', f:'Laiško lange dešinėje (peržiūroje) spaudi ant teksto – temos, įžangos, renginio, vietų, nakvynės, transporto, aprangos, komandos eilučių, laikų, pastabų, programos, taisyklių – ir taisai ten pat; pakeitimas iškart persikelia į atitinkamą laukelį kairėje ir išsaugomas. Enter vienos eilutės laukelyje – baigti, Esc – išeiti; nuoroda peržiūroje atsidaro su Ctrl / ⌘.' },
   { d:'2026-11-09 21:00', v:'v748', k:'new', t:'Paėmimai: grąžinimo sąrašas ir pranešimas apie trūkumą į Slack #dingę-daiktai', f:'Paimto paėmimo lange – „↩ Grąžinimas“: kiekvieno daikto varnelė, kiek vienetų grąžinama, komentaras ir nuotraukos. Radus mažiau – „📣 Pranešti apie trūkumą“: Slack kanale #dingę-daiktai (sukuriamas, jei nėra; pakviečiami visi nariai) – žinutė su @channel: kas, kiek trūksta, kuriam renginiui buvo priskirta. Po žinute mygtukai „Rasta“, „Nerasta“, „Grąžinta“ – paspaudus Slack’e, daikto būsena pasikeičia ir programoje (Grąžinta – visi vienetai grąžinti); laukelyje „Kam kasdien priminti“ pažymėti nariai kasdien gauna asmeninį priminimą, kol būsena nepažymėta.' },
   { d:'2026-11-09 19:45', v:'v747', k:'fix', t:'Paėmimai: priskirti daiktai kartais nepasižymėdavo prie renginio', f:'Grįžęs iš serverio tavo paties išsaugojimas buvo palaikomas kito žmogaus pakeitimu ir atidarytas priskyrimo langas dirbdavo su senu sąrašu – dabar priskyrimas visada išsaugomas.' },
