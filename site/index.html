@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-5sxkv2GCSMnLL5D7+wWCcDBT04/DFHbVc7qWTvSDIg8=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bB4b1+16roccxRtyo1OLfCM6CaadYFkjAemBuBuXo5o=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -3893,6 +3893,8 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .lm-form{overflow-y:auto;padding:12px 18px 30px;border-right:1px solid var(--border);}
 .lm-prev{display:flex;flex-direction:column;min-height:0;background:var(--panel-2);}
 .lm-prev-h{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--text-faint);padding:8px 14px;}
+.lm-prev-tip{text-transform:none;letter-spacing:0;font-size:11.5px;color:var(--accent);margin-left:8px;}
+.lm-form .lm-flash{outline:2px solid var(--accent);outline-offset:1px;transition:outline-color .6s;}
 .lm-frame{flex:1;border:0;background:#fff;margin:0 12px 12px;border-radius:var(--radius);}
 .lm-sec{border-top:1px solid var(--border);padding:12px 0 6px;}
 .lm-sec:first-child{border-top:0;}
@@ -25126,7 +25128,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v748';
+const APP_VER = 'v749';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -30279,40 +30281,43 @@ function lmPeople(L, dir){
   add(L.lead, '', 'lead');
   return [...map.values()];
 }
-function lmHtml(L){
+// edit: the preview – the texts typed in the form can be changed right there (data-lk = the form field; data-line = its n-th line)
+function lmHtml(L, edit){
   const people = lmPeople(L);
+  const E = (lk, html, o)=>{ if(!edit) return html; o = o || {}; const tag = o.block ? 'div' : 'span';
+    return `<${tag} data-lk="${esc(lk)}"${o.md ? ' data-md="1"' : ''}${o.multi ? ' data-multi="1"' : ''}${o.line!=null ? ` data-line="${o.line}"` : ''} contenteditable="true" spellcheck="false">${html}</${tag}>`; };
   const F = 'font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#000;';
   const TD = 'border:1px solid #000;padding:6px 8px;vertical-align:top;'+F;
   const TH = 'border:1px solid #000;padding:8px;background:#d9d9d9;text-align:center;font-weight:bold;'+F;
   const H2 = 'font-size:20px;font-weight:bold;margin:26px 0 8px;padding-bottom:6px;border-bottom:1px solid #555;';
   const out = [];
-  lmLines(L.intro).length && out.push(String(L.intro).split(/\n\s*\n/).map(p=>`<p style="margin:0 0 12px;">${lmInline(p).replace(/\n/g,'<br>')}</p>`).join(''));
-  out.push(`<div>Renginys: <b>${esc(L.name||'')}</b></div>`);
-  if(L.whLoc) out.push(`<div>Mūsų sandėlio lokacija: <b>${lmMap(L.whLoc)}</b></div>`);
-  out.push(`<div>Renginio lokacija: <b>${esc(L.evLoc||'')}</b></div>`);
+  lmLines(L.intro).length && out.push(E('intro', String(L.intro).split(/\n\s*\n/).map(p=>`<p style="margin:0 0 12px;">${lmInline(p).replace(/\n/g,'<br>')}</p>`).join(''), { block:true, md:true, multi:true }));
+  out.push(`<div>Renginys: <b>${E('name', esc(L.name||''))}</b></div>`);
+  if(L.whLoc) out.push(`<div>Mūsų sandėlio lokacija: <b>${edit ? E('whLoc', esc(L.whLoc)) : lmMap(L.whLoc)}</b></div>`);
+  out.push(`<div>Renginio lokacija: <b>${E('evLoc', esc(L.evLoc||''))}</b></div>`);
   if(L.driveUrl) out.push(`<div>Renginio failai (Google Drive): <b><a href="${esc(L.driveUrl)}" target="_blank" rel="noopener">atidaryti aplanką</a></b></div>`);
   const stays = (L.stays||[]).filter(s=>s.addr||s.people||s.title);
   if(stays.length){
     out.push(`<div style="margin-top:6px;"><u>Informacija dėl nakvynės dirbantiems renginyje:</u></div><ol style="margin:6px 0 0;">`+stays.map(s=>{
-      const ppl = String(s.people||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean);
-      return `<li style="margin-bottom:10px;">Adresas: <b>${esc(s.title||'')}</b>${s.title&&s.addr?', ':''}${lmMap(s.addr)}
-        ${ppl.length ? `<div style="margin-top:6px;">${ppl.length} ${ppl.length===1?'lova':ppl.length<10?'lovos':'lovų'}: <b>${esc(ppl.join(', '))}</b></div>` : ''}
-        ${s.resp ? `<div>Atsakingas asmuo, priduoti raktus: <b>${esc(s.resp)}</b></div>` : ''}</li>`;
+      const ppl = String(s.people||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean), si = (L.stays||[]).indexOf(s);
+      return `<li style="margin-bottom:10px;">Adresas: <b>${E('stays.'+si+'.title', esc(s.title||''))}</b>${s.title&&s.addr?', ':''}${edit ? E('stays.'+si+'.addr', esc(s.addr||'')) : lmMap(s.addr)}
+        ${ppl.length ? `<div style="margin-top:6px;">${ppl.length} ${ppl.length===1?'lova':ppl.length<10?'lovos':'lovų'}: <b>${E('stays.'+si+'.people', esc(ppl.join(', ')))}</b></div>` : ''}
+        ${s.resp ? `<div>Atsakingas asmuo, priduoti raktus: <b>${E('stays.'+si+'.resp', esc(s.resp))}</b></div>` : ''}</li>`;
     }).join('')+`</ol>`);
   }
   const tr = (L.transport||[]).filter(t=>t.cars||t.drivers);
   if(tr.length){
     out.push(`<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:16px;min-width:520px;">
       <tr><td colspan="4" style="${TH}">TRANSPORTAS</td></tr>
-      ${tr.map(t=>`<tr><td style="${TD}text-align:center;">${esc(t.label||'').replace(/\s(\d+ d\.)$/, '<br>$1')}</td><td style="${TD}text-align:center;font-weight:bold;">${lmLines(t.cars).map(esc).join('<br>')}</td><td style="${TD}">Vairuoja:</td><td style="${TD}text-align:center;font-weight:bold;">${lmLines(t.drivers).map(esc).join('<br>')}</td></tr>`).join('')}
-    </table>${L.transportNote ? `<div style="font-style:italic;margin-top:4px;">${esc(L.transportNote)}</div>` : ''}
+      ${tr.map(t=>{ const ti = (L.transport||[]).indexOf(t); return `<tr><td style="${TD}text-align:center;">${edit ? E('transport.'+ti+'.label', esc(t.label||'')) : esc(t.label||'').replace(/\s(\d+ d\.)$/, '<br>$1')}</td><td style="${TD}text-align:center;font-weight:bold;">${E('transport.'+ti+'.cars', lmLines(t.cars).map(esc).join('<br>'), { multi:true })}</td><td style="${TD}">Vairuoja:</td><td style="${TD}text-align:center;font-weight:bold;">${E('transport.'+ti+'.drivers', lmLines(t.drivers).map(esc).join('<br>'), { multi:true })}</td></tr>`; }).join('')}
+    </table>${L.transportNote ? `<div style="font-style:italic;margin-top:4px;">${E('transportNote', esc(L.transportNote))}</div>` : ''}
     ${L.fuelUrl ? `<div style="margin-top:8px;"><a href="${esc(L.fuelUrl)}" style="font-weight:bold;">Kuro kortelė</a> – nurašyk skaičius kortelės gale po „CVC:“ ir pamatysi jos PIN kodą (veikia renginio dienomis).</div>` : ''}`);
   }
   const lead = L.lead ? people.find(p=>p.where.has('lead')) : null;
   const byDept = LM_DEPTS.map(d=>({ d, list:people.filter(p=>p.where.has('team') && (p.dept||'Kita')===d) })).filter(x=>x.list.length);
   if(byDept.length || lead){
     out.push(`<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:18px;min-width:520px;">
-      <tr><td colspan="2" style="${TH}">KOMANDA${lead ? `<br>Atsakingas už montažą - ${esc(lead.name)} ${lmTel(lead.phone)}` : ''}</td></tr>
+      <tr><td colspan="2" style="${TH}">KOMANDA${lead ? `<br>Atsakingas už montažą - ${edit ? E('lead', esc(L.lead)) : esc(lead.name)} ${lmTel(lead.phone)}` : ''}</td></tr>
       ${byDept.map(x=>`<tr><td style="${TD}text-align:center;width:130px;">${esc(x.d)}</td><td style="${TD}text-align:center;font-weight:bold;">${x.list.map(p=>`${p.pos && lmIsOp(p.pos) ? esc(lmOpPos(p.pos))+' ' : ''}${esc(p.name)} ${lmTel(p.phone)}`).join('<br>')}</td></tr>`).join('')}
     </table>`);
   }
@@ -30325,26 +30330,26 @@ function lmHtml(L){
   if(L.dressMont || L.dressEvent){
     out.push(`<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:18px;min-width:520px;">
       <tr><td colspan="2" style="${TH}">APRANGA</td></tr>
-      ${L.dressMont ? `<tr><td style="${TD}width:130px;">Montažo metu</td><td style="${TD}">${esc(L.dressMont)}</td></tr>` : ''}
-      ${L.dressEvent ? `<tr><td style="${TD}width:130px;">Renginio metu</td><td style="${TD}">${esc(L.dressEvent)}</td></tr>` : ''}
+      ${L.dressMont ? `<tr><td style="${TD}width:130px;">Montažo metu</td><td style="${TD}">${E('dressMont', esc(L.dressMont))}</td></tr>` : ''}
+      ${L.dressEvent ? `<tr><td style="${TD}width:130px;">Renginio metu</td><td style="${TD}">${E('dressEvent', esc(L.dressEvent))}</td></tr>` : ''}
     </table>`);
   }
   if(gearHtml) out.push(gearHtml);
   L.phases.forEach((p, i)=>{
     const team = lmLines(p.team), times = lmLines(p.times);
     if(!team.length && !times.length) return;
-    const teamLine = l=>{ const x = lmParseLine(l), a = x ? lmArrText(p, x.name) : ''; return esc(l)+(a ? ` – <b>${esc(a)}</b>` : ''); };
+    const teamLine = (l, n)=>{ const x = lmParseLine(l), a = x ? lmArrText(p, x.name) : ''; return E('phases.'+i+'.team', esc(l), { line:n })+(a ? `<span contenteditable="false"> – <b>${esc(a)}</b></span>` : ''); };
     out.push(`<div style="${H2}">${LM_PHASES[i].title} ${esc(lmSpan(p.date, p.dateTo))}</div>
       ${team.length ? `<div style="font-weight:bold;margin-bottom:8px;">KOMANDA:</div><div style="line-height:1.55;">${team.map(teamLine).join('<br>')}</div>` : ''}
-      ${times.length ? `<div style="font-weight:bold;margin:14px 0 4px;">PAGRINDINIAI LAIKAI:</div><div style="line-height:1.6;">${times.map(lmTimeLine).join('<br>')}</div>` : ''}
-      ${p.note ? `<div style="font-style:italic;font-size:12px;margin-top:10px;">${esc(p.note)}</div>` : ''}`);
+      ${times.length ? `<div style="font-weight:bold;margin:14px 0 4px;">PAGRINDINIAI LAIKAI:</div><div style="line-height:1.6;">${E('phases.'+i+'.times', times.map(lmTimeLine).join('<br>'), { block:true, multi:true })}</div>` : ''}
+      ${p.note ? `<div style="font-style:italic;font-size:12px;margin-top:10px;">${E('phases.'+i+'.note', esc(p.note))}</div>` : ''}`);
   });
   const prog = lmLines(L.program), rules = lmLines(L.rules);
   if(prog.length || L.script || rules.length){
     out.push(`<div style="margin-top:30px;font-weight:bold;"><u>S V A R B I &nbsp;informacija:</u></div>`);
-    if(prog.length) out.push(`<div style="font-weight:bold;margin:14px 0 4px;">RENGINIO PROGRAMA</div><div style="line-height:1.6;">${prog.map(lmTimeLine).join('<br>')}</div>`);
-    if(L.script) out.push(`<div style="margin-top:16px;">Renginio scenarijus:<br>${/^https?:\/\//.test(L.script.trim()) ? `<a href="${esc(L.script.trim())}" style="color:#1155cc;word-break:break-all;">${esc(L.script.trim())}</a>` : lmInline(L.script)}</div>`);
-    if(rules.length) out.push(`<div style="margin-top:20px;">${rules.map(r=>`<p style="margin:0 0 14px;font-weight:bold;"><u>${lmInline(r)}</u></p>`).join('')}</div>`);
+    if(prog.length) out.push(`<div style="font-weight:bold;margin:14px 0 4px;">RENGINIO PROGRAMA</div><div style="line-height:1.6;">${E('program', prog.map(lmTimeLine).join('<br>'), { block:true, multi:true })}</div>`);
+    if(L.script) out.push(`<div style="margin-top:16px;">Renginio scenarijus:<br>${edit ? E('script', esc(L.script.trim())) : /^https?:\/\//.test(L.script.trim()) ? `<a href="${esc(L.script.trim())}" style="color:#1155cc;word-break:break-all;">${esc(L.script.trim())}</a>` : lmInline(L.script)}</div>`);
+    if(rules.length) out.push(`<div style="margin-top:20px;">${rules.map((r, n)=>`<p style="margin:0 0 14px;font-weight:bold;"><u>${E('rules', lmInline(r), { line:n, md:true })}</u></p>`).join('')}</div>`);
   }
   return `<div style="${F}line-height:1.45;">${out.join('\n')}</div>`;
 }
@@ -30479,12 +30484,18 @@ function lmPreview(){
   if(!LM) return;
   const fr = document.getElementById('lmFrame'); if(!fr) return;
   const sig = LM.sig ? LM.sig : '';
-  const body = `<div style="font:13px Arial;color:#555;margin-bottom:12px;border-bottom:1px solid #ddd;padding-bottom:8px;"><b style="color:#000;font-size:16px;">${esc(LM.L.subject||'(be temos)')}</b></div>
-    ${lmHtml(LM.L)}${sig}`;
+  // typing in the preview right now: it is not redrawn under the cursor (after leaving it – yes)
+  if(LM.prevEditing){ LM.prevDirty = true; const pe0 = document.getElementById('lmPeople'); if(pe0) pe0.innerHTML = lmPeopleHtml(); return; }
+  const body = `<div style="font:13px Arial;color:#555;margin-bottom:12px;border-bottom:1px solid #ddd;padding-bottom:8px;"><b style="color:#000;font-size:16px;">${canEdit('events') ? `<span data-lk="subject" contenteditable="true" spellcheck="false">${esc(LM.L.subject||'')}</span>` : esc(LM.L.subject||'(be temos)')}</b></div>
+    ${lmHtml(LM.L, canEdit('events'))}${sig}`;
   // already shown: only its content changes – the preview stays where it was scrolled (no jump to the top)
   const d = fr.dataset.ok ? (()=>{ try{ return fr.contentDocument; }catch(e){ return null; } })() : null;
   if(d && d.body){ if(d.body.innerHTML!==body) d.body.innerHTML = body; }
-  else { fr.onload = ()=>{ fr.dataset.ok = '1'; }; fr.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><base target="_blank"><style>body{margin:0;padding:16px 18px;background:#fff;color:#000;font:14px Arial,Helvetica,sans-serif;}table{max-width:100%;}</style></head><body>${body}</body></html>`; }
+  else { fr.onload = ()=>{ fr.dataset.ok = '1'; lmPrevBind(fr); }; fr.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><base target="_blank"><style>body{margin:0;padding:16px 18px;background:#fff;color:#000;font:14px Arial,Helvetica,sans-serif;}table{max-width:100%;}
+    [contenteditable="true"]{border-radius:3px;outline:1px dashed transparent;outline-offset:1px;cursor:text;transition:background .15s;}
+    [contenteditable="true"]:hover{outline-color:#8ab4f8;background:#f1f6ff;}
+    [contenteditable="true"]:focus{outline:2px solid #1a73e8;background:#e8f0fe;}
+    [contenteditable="true"]:empty::before{content:"…";color:#aaa;}</style></head><body>${body}</body></html>`; }
   const pe = document.getElementById('lmPeople'); if(pe) pe.innerHTML = lmPeopleHtml();
 }
 async function lmLoadExtras(){
@@ -30550,6 +30561,47 @@ async function lmFuelLink(ev){
     return location.origin + location.pathname.replace(/[^/]*$/, '') + (location.protocol==='https:' ? 'auto' : 'auto.html') + '?pin=' + data;
   }catch(e){ return ''; }
 }
+// a part of the preview → the text of its form field (bold back to **…**, lines kept)
+function lmPrevText(el){
+  if(!el.dataset.md) return String(el.innerText||'').replace(/\u00a0/g, ' ').replace(/\n+$/, '');
+  const walk = n=>n.nodeType===3 ? n.nodeValue : [...n.childNodes].map(c=>{ const t = c.nodeName;
+      if(t==='BR') return '\n';
+      const inner = walk(c);
+      if(t==='B' || t==='STRONG') return inner.trim() ? '**'+inner+'**' : inner;
+      if(t==='P') return inner+'\n\n';
+      if(t==='DIV') return inner+'\n';
+      return inner; }).join('');
+  return walk(el).replace(/\u00a0/g, ' ').replace(/\*\*\*\*/g, '').replace(/\n{3,}/g, '\n\n').replace(/\s+$/, '');
+}
+function lmPrevBind(fr){
+  const d = fr.contentDocument; if(!d || d.lmBound) return; d.lmBound = true;
+  d.addEventListener('input', e=>{
+    const el = e.target.closest && e.target.closest('[data-lk]'); if(!el || !LM) return;
+    const lk = el.dataset.lk; let v = lmPrevText(el);
+    if(el.dataset.line!=null){   // one line of a field (a team member, a rule): the others stay
+      const raw = String(lmGet(lk)||'').split('\n'); let n = -1;
+      const at = raw.findIndex(x=>x.trim() && ++n===+el.dataset.line);
+      v = v.replace(/\n+/g, ' ');
+      if(at>=0) raw[at] = v; else raw.push(v);
+      v = raw.join('\n');
+    } else if(!el.dataset.multi) v = v.replace(/\n+/g, ' ');
+    lmSet(lk, v); lmSaveSoon();
+    const f = document.querySelector('#lmForm [data-lk="'+CSS.escape(lk)+'"]');
+    if(f){ f.value = v; if(f.tagName==='TEXTAREA') f.rows = Math.max(f.rows, lmLines(v).length+1); f.classList.add('lm-flash'); clearTimeout(f._fl); f._fl = setTimeout(()=>f.classList.remove('lm-flash'), 900); }
+    const m = /^phases\.(\d+)\.team$/.exec(lk); if(m){ clearTimeout(LM.arrT); LM.arrT = setTimeout(()=>{ const b = document.getElementById('lmArr'+m[1]); if(b) b.innerHTML = lmArrHtml(+m[1]); }, 400); }
+  });
+  d.addEventListener('focusin', e=>{ if(e.target.closest && e.target.closest('[data-lk]')) LM.prevEditing = true; });
+  d.addEventListener('focusout', ()=>{ setTimeout(()=>{ if(!LM) return; const a = d.activeElement; if(a && a.closest && a.closest('[data-lk]')) return; LM.prevEditing = false; if(LM.prevDirty || true){ LM.prevDirty = false; lmPreview(); } }, 0); });
+  // only text (no formatting from elsewhere); Enter: a new line where the field has lines, else done
+  d.addEventListener('paste', e=>{ const el = e.target.closest && e.target.closest('[data-lk]'); if(!el) return; e.preventDefault(); const t = (e.clipboardData && e.clipboardData.getData('text/plain')) || ''; d.execCommand('insertText', false, el.dataset.multi ? t : t.replace(/\s*\n\s*/g, ' ')); });
+  d.addEventListener('keydown', e=>{ const el = e.target.closest && e.target.closest('[data-lk]'); if(!el) return;
+    if(e.key==='Escape'){ e.preventDefault(); el.blur(); return; }
+    if(e.key==='Enter' && !el.dataset.multi){ e.preventDefault(); el.blur(); }
+    else if(e.key==='Enter'){ e.preventDefault(); d.execCommand('insertLineBreak'); } });
+  // a link in the preview opens only with Ctrl / ⌘ (a plain click – to edit)
+  d.addEventListener('click', e=>{ const a = e.target.closest && e.target.closest('a'); if(a && a.closest('[contenteditable="true"]') && !(e.ctrlKey || e.metaKey)) e.preventDefault(); });
+}
+function lmGet(path){ let o = LM.L; for(const k of path.split('.')){ if(o==null) return ''; o = o[/^\d+$/.test(k) ? +k : k]; } return o; }
 async function openEventLetter(ev){
   // the drivers' codes go into the letter, and the „Kuro kortelė“ link
   let fuel = '';
@@ -30560,7 +30612,7 @@ async function openEventLetter(ev){
   openModal(`<div class="lm-head"><h3>✉ Renginio laiškas</h3>${lmSteps(1)}<button type="button" class="icon-btn" data-lact="close" title="Uždaryti">✕</button></div>
     <div class="lm-body">
       <div class="lm-form" id="lmForm">${lmFormHtml()}</div>
-      <div class="lm-prev"><div class="lm-prev-h">Peržiūra</div><iframe id="lmFrame" class="lm-frame" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe></div>
+      <div class="lm-prev"><div class="lm-prev-h">Peržiūra <span class="lm-prev-tip">✎ spausk ant teksto ir taisyk čia – pasikeis ir kairėje</span></div><iframe id="lmFrame" class="lm-frame" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe></div>
     </div>
     <div class="lm-foot"><span class="section-sub" id="lmSaved">Pakeitimai išsaugomi prie renginio.</span><span style="flex:1"></span>
       <button type="button" class="btn lm-only-phone" data-lact="toggle-prev">Peržiūra</button>
@@ -54829,6 +54881,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-09 21:30', v:'v749', k:'new', t:'Renginio laiškas: tekstą galima taisyti tiesiai peržiūroje', f:'Laiško lange dešinėje (peržiūroje) spaudi ant teksto – temos, įžangos, renginio, vietų, nakvynės, transporto, aprangos, komandos eilučių, laikų, pastabų, programos, taisyklių – ir taisai ten pat; pakeitimas iškart persikelia į atitinkamą laukelį kairėje ir išsaugomas. Enter vienos eilutės laukelyje – baigti, Esc – išeiti; nuoroda peržiūroje atsidaro su Ctrl / ⌘.' },
   { d:'2026-11-09 21:00', v:'v748', k:'new', t:'Paėmimai: grąžinimo sąrašas ir pranešimas apie trūkumą į Slack #dingę-daiktai', f:'Paimto paėmimo lange – „↩ Grąžinimas“: kiekvieno daikto varnelė, kiek vienetų grąžinama, komentaras ir nuotraukos. Radus mažiau – „📣 Pranešti apie trūkumą“: Slack kanale #dingę-daiktai (sukuriamas, jei nėra; pakviečiami visi nariai) – žinutė su @channel: kas, kiek trūksta, kuriam renginiui buvo priskirta. Po žinute mygtukai „Rasta“, „Nerasta“, „Grąžinta“ – paspaudus Slack’e, daikto būsena pasikeičia ir programoje (Grąžinta – visi vienetai grąžinti); laukelyje „Kam kasdien priminti“ pažymėti nariai kasdien gauna asmeninį priminimą, kol būsena nepažymėta.' },
   { d:'2026-11-09 19:45', v:'v747', k:'fix', t:'Paėmimai: priskirti daiktai kartais nepasižymėdavo prie renginio', f:'Grįžęs iš serverio tavo paties išsaugojimas buvo palaikomas kito žmogaus pakeitimu ir atidarytas priskyrimo langas dirbdavo su senu sąrašu – dabar priskyrimas visada išsaugomas.' },
   { d:'2026-11-09 19:20', v:'v746', k:'fix', t:'Paėmimai: priskiriant daiktus renginiui – kitiems renginiams jau priskirti daiktai nerodomi', f:'Lange „📦 Priskirti daiktus“ rodomi tik dar nepriskirti ir šiam renginiui priskirti daiktai (po padalijimo likę vienetai – rodomi).' },
