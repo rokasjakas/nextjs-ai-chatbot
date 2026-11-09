@@ -23,7 +23,7 @@
 //                                    in #dingę-daiktai (made if there is none, every active member invited) with @channel,
 //                                    buttons Rasta / Nerasta / Grąžinta and „Kam kasdien priminti“ (handled by the gdrive function,
 //                                    Slack's Interactivity URL); the daily run sends those people a direct message until it is marked
-// Secrets: SLACK_BOT_TOKEN (xoxb-…, scopes channels:manage channels:read chat:write users:read users:read.email;
+// Secrets: SLACK_BOT_TOKEN (xoxb-…, scopes channels:manage channels:read chat:write users:read users:read.email; emoji:read – the icons;
 //   for #dingę-daiktai also channels:join (a channel made by a person) and im:write (the daily reminders)),
 // CRON_SECRET (the daily run). SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are given by Supabase.
 
@@ -60,11 +60,49 @@ const norm = (s: unknown) => String(s ?? "").toLowerCase().normalize("NFD").repl
 const md = (s: unknown) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const dm = (d: string) => d ? d.slice(5).replace("-", ".") : "";
 
+// ---- Slack icons: Material Symbols (Outlined, Fill · Apache 2.0) uploaded as the workspace's own emoji „ms-…“
+// (app.eventsolutions.lt/slack-emoji/); the usual emoji is swapped for one only once that picture is in Slack
+// (emoji.list, scope emoji:read; read again every 10 min.) – before that, and without the scope, nothing changes
+const ICONS: [RegExp, string][] = [[/🎉|🎪/g, "ms-event"], [/📅/g, "ms-calendar"], [/📍/g, "ms-location"], [/📞/g, "ms-call"], [/📝/g, "ms-note"], [/❌/g, "ms-cancel"],
+  [/🔗/g, "ms-link"], [/📎/g, "ms-attach"], [/🔔/g, "ms-bell"], [/⚠️?/g, "ms-warning"], [/📦/g, "ms-package"], [/💬/g, "ms-chat"], [/🔎/g, "ms-search"], [/✅/g, "ms-check"],
+  [/📁/g, "ms-folder"], [/⏳/g, "ms-hourglass"]];
+let EMO: Set<string> | null = null, EMO_AT = 0;
+async function emojiSet(): Promise<Set<string>> {
+  if (EMO && Date.now() - EMO_AT < 10 * 60e3) return EMO;
+  EMO_AT = Date.now();
+  try {
+    const r = await fetch("https://slack.com/api/emoji.list", { headers: { Authorization: `Bearer ${E("SLACK_BOT_TOKEN")}` } });
+    const d = await r.json() as { ok: boolean; emoji?: Record<string, string> };
+    EMO = new Set(d.ok ? Object.keys(d.emoji || {}).filter((k) => k.startsWith("ms-")) : []);
+  } catch { EMO = new Set(); }
+  return EMO;
+}
+function iconText(s: string, have: Set<string>): string { let t = s; for (const [re, n] of ICONS) if (have.has(n)) t = t.replace(re, `:${n}:`); return t; }
+const KEEP = new Set(["action_id", "value", "block_id", "url", "channel", "ts", "thread_ts", "image_url", "user", "users"]);
+async function iconize<T>(x: T): Promise<T> {
+  const have = await emojiSet(); if (!have.size) return x;
+  const walk = (v: unknown): unknown => {
+    if (typeof v === "string") return iconText(v, have);
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === "object") {
+      const o = Object.fromEntries(Object.entries(v as Record<string, unknown>).map(([k, w]) => [k, KEEP.has(k) ? w : walk(w)])) as Record<string, unknown>;
+      if (o.type === "plain_text") o.emoji = true;   // the icon in a button / a placeholder
+      return o;
+    }
+    return v;
+  };
+  return walk(x) as T;
+}
 // ---- Slack Web API ----
 type SlackRes = { ok: boolean; error?: string; [k: string]: unknown };
 async function slack(method: string, args: Record<string, string | boolean | number>): Promise<SlackRes> {
   const token = E("SLACK_BOT_TOKEN");
   if (!token) throw new UserError("Slack neprijungtas: Supabase → Edge Functions → Secrets įrašyk SLACK_BOT_TOKEN.");
+  if (/^chat\.(postMessage|update)$/.test(method)) {   // the icons
+    args = { ...args };
+    if (typeof args.text === "string") args.text = await iconize(args.text);
+    if (typeof args.blocks === "string") { try { args.blocks = JSON.stringify(await iconize(JSON.parse(args.blocks))); } catch { /* as it is */ } }
+  }
   const body = new URLSearchParams(); Object.entries(args).forEach(([k, v]) => body.set(k, String(v)));
   for (let i = 0; i < 3; i++) {
     const r = await fetch(`https://slack.com/api/${method}`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/x-www-form-urlencoded" }, body });
@@ -431,7 +469,7 @@ Deno.serve(async (req) => {
     if (action === "diag") {
       const s2 = E("CRON_SECRET");
       if (!s2 || req.headers.get("x-cron-secret") !== s2) return json({ error: "Unauthorized" }, 401);
-      const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn() };
+      const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn(), icons: [...await emojiSet()] };
       try { out.team = await team(); } catch (e) { out.team_error = (e as Error).message; return json(out); }
       if (b.event_id) { try { const ev = await loadEvent(String(b.event_id)); out.event = ev ? ev.name : "nerastas"; if (ev) out.sync = await syncEvent(ev, await loadMembers()); } catch (e) { out.sync_error = (e as Error).message; } }
       // a missing item reported as from the app (the one who saved the rental last)

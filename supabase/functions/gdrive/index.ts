@@ -18,7 +18,7 @@
 //      (an OAuth „Web application“ client; redirect URI = this function's address + ?oauth=1). Scope drive.file – the app
 //      sees only what it made itself; the folders go into „Renginiai (Event Solutions)“ it makes in that Drive.
 //   b) a Workspace service account: GOOGLE_SA_JSON (its JSON key) and GDRIVE_ROOT_ID (a shared drive's id).
-// Slack: SLACK_BOT_TOKEN (scopes also files:read), SLACK_SIGNING_SECRET.
+// Slack: SLACK_BOT_TOKEN (scopes also files:read; emoji:read – the icons), SLACK_SIGNING_SECRET.
 // Also the #dingę-daiktai buttons (Paėmimai, from slack-sync „missing“): Rasta / Nerasta / Grąžinta → the rental's item.
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are given by Supabase.
 
@@ -235,8 +235,42 @@ async function share(ev: Ev, emails: string[]) {
 }
 
 // ---- Slack ----
+// ---- Slack icons: Material Symbols (Outlined, Fill · Apache 2.0) uploaded as the workspace's own emoji „ms-…“
+// (app.eventsolutions.lt/slack-emoji/); the usual emoji is swapped for one only once that picture is in Slack
+// (emoji.list, scope emoji:read; read again every 10 min.) – before that, and without the scope, nothing changes
+const ICONS: [RegExp, string][] = [[/🎉|🎪/g, "ms-event"], [/📅/g, "ms-calendar"], [/📍/g, "ms-location"], [/📞/g, "ms-call"], [/📝/g, "ms-note"], [/❌/g, "ms-cancel"],
+  [/🔗/g, "ms-link"], [/📎/g, "ms-attach"], [/🔔/g, "ms-bell"], [/⚠️?/g, "ms-warning"], [/📦/g, "ms-package"], [/💬/g, "ms-chat"], [/🔎/g, "ms-search"], [/✅/g, "ms-check"],
+  [/📁/g, "ms-folder"], [/⏳/g, "ms-hourglass"]];
+let EMO: Set<string> | null = null, EMO_AT = 0;
+async function emojiSet(): Promise<Set<string>> {
+  if (EMO && Date.now() - EMO_AT < 10 * 60e3) return EMO;
+  EMO_AT = Date.now();
+  try {
+    const r = await fetch("https://slack.com/api/emoji.list", { headers: { Authorization: `Bearer ${E("SLACK_BOT_TOKEN")}` } });
+    const d = await r.json() as { ok: boolean; emoji?: Record<string, string> };
+    EMO = new Set(d.ok ? Object.keys(d.emoji || {}).filter((k) => k.startsWith("ms-")) : []);
+  } catch { EMO = new Set(); }
+  return EMO;
+}
+function iconText(s: string, have: Set<string>): string { let t = s; for (const [re, n] of ICONS) if (have.has(n)) t = t.replace(re, `:${n}:`); return t; }
+const KEEP = new Set(["action_id", "value", "block_id", "url", "channel", "ts", "thread_ts", "image_url", "user", "users"]);
+async function iconize<T>(x: T): Promise<T> {
+  const have = await emojiSet(); if (!have.size) return x;
+  const walk = (v: unknown): unknown => {
+    if (typeof v === "string") return iconText(v, have);
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === "object") {
+      const o = Object.fromEntries(Object.entries(v as Record<string, unknown>).map(([k, w]) => [k, KEEP.has(k) ? w : walk(w)])) as Record<string, unknown>;
+      if (o.type === "plain_text") o.emoji = true;   // the icon in a button / a placeholder
+      return o;
+    }
+    return v;
+  };
+  return walk(x) as T;
+}
 async function slack(method: string, args: Record<string, unknown>, form = false): Promise<Record<string, unknown>> {
   const token = E("SLACK_BOT_TOKEN"); if (!token) throw new UserError("Nėra SLACK_BOT_TOKEN.");
+  if (/^chat\.(postMessage|update)$/.test(method)) args = await iconize(args);
   const r = await fetch(`https://slack.com/api/${method}`, form
     ? { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(args as Record<string, string>) }
     : { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json; charset=utf-8" }, body: JSON.stringify(args) });
@@ -305,7 +339,7 @@ async function onLostRemind(p: LostP) {
   const d = row?.data as { list?: { id: string; lost?: Record<string, unknown> }[] } | undefined;
   const it = d?.list?.find((x) => x.id === i);
   if (it && it.lost) { it.lost = { ...it.lost, remind: users }; await db(`rentals?id=eq.${enc(r)}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ data: d, updated_at: new Date().toISOString(), updated_by: "Slack: priminimai" }) }); }
-  if (p.response_url) await fetch(p.response_url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ replace_original: true, text: p.message?.text || "", blocks: lostBlocks(p, users, null) }) });
+  if (p.response_url) await fetch(p.response_url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(await iconize({ replace_original: true, text: p.message?.text || "", blocks: lostBlocks(p, users, null) })) });
 }
 async function onLostButton(p: LostP) {
   const a = p.actions?.[0]; const st = LOST_ST[String(a?.action_id || "")]; if (!a || !st) return;
@@ -325,12 +359,12 @@ async function onLostButton(p: LostP) {
   // the message: the same, with what was marked (the buttons stay – it can be changed)
   const time = new Intl.DateTimeFormat("lt-LT", { timeZone: "Europe/Vilnius", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date());
   const blocks = lostBlocks(p, it?.lost?.remind ? it.lost.remind as string[] : null, it ? `*${st[1]}* – pažymėjo ${who} · ${time}${st[0] === "returned" ? " (programoje pažymėta grąžinta)" : ""}${(it.lost?.remind || []).length ? " · kasdieniai priminimai sustabdyti" : ""}` : "⚠️ Šis daiktas programoje nebeegzistuoja.");
-  if (p.response_url) await fetch(p.response_url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ replace_original: true, text: p.message?.text || "", blocks }) });
+  if (p.response_url) await fetch(p.response_url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(await iconize({ replace_original: true, text: p.message?.text || "", blocks })) });
 }
 // a button pressed: the file from Slack straight into that Drive folder (streamed, not kept in memory)
 async function onButton(p: { user?: { name?: string; username?: string }; channel?: { id: string }; message?: { ts: string }; actions?: { value: string }[]; response_url?: string }) {
   let v: { u?: string; k?: string } = {}; try { v = JSON.parse(p.actions?.[0]?.value || "{}"); } catch { /* bad */ }
-  const say = async (text: string) => { if (p.response_url) await fetch(p.response_url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ replace_original: true, text }) }); };
+  const say = async (text: string) => { if (p.response_url) await fetch(p.response_url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(await iconize({ replace_original: true, text })) }); };
   const [u] = await db<{ id: string; event_id: string; slack_file: string; name: string; drive_url: string | null }[]>(`drive_uploads?select=*&id=eq.${enc(v.u || "")}`);
   if (!u) { await say("Šis failas nebežinomas."); return; }
   const who = p.user?.name || p.user?.username || "";
