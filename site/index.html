@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-iG7kcdjtd1YHkhttZBkFGsjBCYjdj8/HaVidIQmrqKw=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wKOfNTR7oIDDb6XNh7+m8yN8vJUqQ6CPmMQ1xmeEkKc=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1527,9 +1527,24 @@ table.xg .xg-pos:focus{background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
 /* ---------- Paėmimai: open card layout ---------- */
 .rt-body .rt-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
-  grid-template-areas:"place contact person" "pick ret event" "notes notes notes";grid-template-rows:auto;gap:10px 14px;}
+  grid-template-areas:"place contact person" "pick ret notes" "event event event";grid-template-rows:auto;gap:10px 14px;}
 /* the items: one row each – tick, name, units, comment; when taken: a comment and photos */
 .rt-list,.rt-list-new{margin:4px 0 12px;}
+.rti-ev{flex:0 0 auto;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:12px;background:color-mix(in srgb, var(--accent) 16%, transparent);white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+.rt-evbox{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.rt-ev{border:1px solid var(--border);border-radius:var(--radius);padding:8px;display:flex;flex-direction:column;gap:6px;}
+.rt-ev-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.rt-ev-h b{flex:1 1 200px;min-width:0;}
+.rt-ev input,.rt-evadd{width:100%;box-sizing:border-box;}
+.rv-evs{display:flex;flex-direction:column;gap:2px;} .rv-evn{color:var(--text-dim);}
+.rt-asg-bd{position:fixed;inset:0;z-index:2500;background:rgb(0 0 0 / .55);display:flex;align-items:center;justify-content:center;padding:16px;}
+.rt-asg{background:var(--panel);border:1px solid var(--border-2);border-radius:12px;width:100%;max-width:520px;max-height:86vh;overflow:auto;padding:16px 18px;box-shadow:0 20px 50px rgb(0 0 0 / .4);}
+.rt-asg h3{margin:0 0 6px;}
+.rt-asg-list{display:flex;flex-direction:column;gap:4px;}
+.rt-asg-i{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;}
+.rt-asg-i input{width:20px;height:20px;margin:0;flex:0 0 auto;}
+.rt-asg-i span{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline;}
+.rt-asg-o{color:var(--text-dim);flex:1 1 100%;}
 .rv-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 34px 10px 0;}
 .rv-top h3{margin:0;font-size:18px;}
 .rv-info{display:grid;gap:6px;margin:0 0 14px;font-size:14px;}
@@ -1564,7 +1579,8 @@ table.xg .xg-pos:focus{background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .rti.pick .rti-chk input{width:26px;height:26px;}
 .rti.ok .rti-name{text-decoration:line-through;text-decoration-color:color-mix(in srgb, #3fb950 70%, transparent);}
 .rti-qty{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;}
-.rti-qty input{width:68px;}
+.rti-qty input,.rt-new .rti-qty input{width:68px;flex:0 0 auto;}
+.rt-new .rti-main > input[type=text]{width:auto;}
 .rti-qty small{color:var(--text-dim);}
 .rti-note{flex:2 1 160px;}
 .rti-b{flex:0 0 auto;border:1px solid var(--border-2);background:transparent;color:var(--text);border-radius:6px;padding:5px 8px;cursor:pointer;font:inherit;font-size:12.5px;white-space:nowrap;}
@@ -1598,7 +1614,7 @@ table.xg .xg-pos:focus{background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .rt-body .rt-grid textarea{max-width:100%;}
 @media (max-width:1000px){
   .rt-body .rt-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    grid-template-areas:"place contact" "pick ret" "person event" "notes notes";}
+    grid-template-areas:"place contact" "pick ret" "person notes" "event event";}
 }
 @media (max-width:640px){
   .rt-body .rt-grid{grid-template-columns:minmax(0,1fr);
@@ -17662,7 +17678,7 @@ async function lbLoad(force){
       }
       LB.err = '';
     }catch(e){ LB.err = /work_items|work_calendar|schema cache|does not exist/i.test(e.message||'') ? 'Darbų apskaita dar neparuošta serveryje (work_items.sql).' : (e.message||String(e)); }
-    LB.loaded = true; LB.at = Date.now();
+    LB.loaded = true; LB.at = Date.now(); appLive();
   })();
   try{ await LB.loading; } finally { LB.loading = null; }
 }
@@ -25098,7 +25114,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v742';
+const APP_VER = 'v744';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26398,10 +26414,12 @@ async function evLoad(force){
       // keep local edits that are still waiting to be uploaded
       const pendingEv = new Set(Object.keys(evTimers)), pendingR = new Set(Object.keys(rentalTimers));
       EV.events = (e1.data||[]).map(r=>r.data).filter(Boolean).filter(e=>!pendingEv.has(e.id)).concat(EV.events.filter(e=>pendingEv.has(e.id))); evVehDedup(EV.events);
-      EV.rentals = (e2.data||[]).map(r=>r.data).filter(Boolean).filter(r=>!pendingR.has(r.id)).concat(EV.rentals.filter(r=>pendingR.has(r.id)));
+      const oldR = new Map(EV.rentals.map(r=>[r.id, r]));
+      EV.rentals = (e2.data||[]).map(r=>r.data).filter(Boolean).filter(r=>!pendingR.has(r.id)).map(n=>{ const o = oldR.get(n.id); if(!o) return n; Object.keys(o).forEach(k=>{ if(!(k in n)) delete o[k]; }); return Object.assign(o, n); }).concat(EV.rentals.filter(r=>pendingR.has(r.id)));
       evLimit(); evCacheWrite();
     }
     EV.loaded = true;
+    appLive();
     evNotifyBase();
     if(!EV.error) evMergeAvlAll().catch(()=>{});
   })();
@@ -26787,20 +26805,80 @@ async function evDeleteRow(table, id){
 const EV_BC = (()=>{ try{ return 'BroadcastChannel' in window ? new BroadcastChannel('es-events') : null; }catch(e){ return null; } })();
 function evBcPost(m){ try{ if(EV_BC) EV_BC.postMessage(JSON.parse(JSON.stringify(m))); }catch(e){} }
 let evBcRedraw = null;
-if(EV_BC) EV_BC.onmessage = e=>{
-  const m = e.data || {}; if(!EV.loaded || !/^(events|rentals)$/.test(m.table||'')) return;
+if(EV_BC) EV_BC.onmessage = e=>evApplyRemote(e.data || {});
+// a change saved elsewhere (another window, or another person – Supabase realtime) → here
+function evApplyRemote(m){
+  if(!EV.loaded || !/^(events|rentals)$/.test(m.table||'')) return;
   const L = m.table==='events' ? EV.events : EV.rentals, timers = m.table==='events' ? evTimers : rentalTimers;
   const id = m.t==='del' ? m.id : m.item && m.item.id; if(!id || timers[id]) return;   // this window has its own edit of it waiting – it stays
   const i = L.findIndex(x=>x.id===id);
-  if(m.t==='del'){ if(i>=0) L.splice(i, 1); } else if(i>=0) L[i] = m.item; else L.push(m.item);
+  if(m.t!=='del' && i>=0 && JSON.stringify(L[i])===JSON.stringify(m.item)) return;   // the echo of our own save
+  if(m.t==='del'){ if(i>=0) L.splice(i, 1); }
+  else if(i>=0){
+    // a rental is changed in place – an open pop-up keeps working with the same record
+    const o = L[i]; Object.keys(o).forEach(k=>{ if(!(k in m.item)) delete o[k]; }); Object.assign(o, m.item);
+  } else L.push(m.item);
   evCacheWrite();
+  if(m.table==='rentals'){
+    const r = m.t==='del' ? null : L.find(x=>x.id===id);
+    const vh = document.getElementById('rtViewHost'), eh = document.querySelector('#rtEditHost .rt-card[data-r="'+CSS.escape(id)+'"]');
+    if(m.t==='del' && ((vh && vh.dataset.r===id) || eh)){ closeModal(); toast('Šį paėmimą ką tik ištrynė kitas žmogus.'); }
+    else if(r){
+      const typing = h=>{ const a = document.activeElement; return h && a && h.contains(a) && a.matches('input[type=text], input[type=number], input:not([type]), textarea'); };
+      if(vh && vh.dataset.r===id && !typing(vh)) rtViewRedraw(r);
+      if(eh && !typing(document.getElementById('rtEditHost'))) rentalRerender(r);
+      if(evTabOn()) rtEvs(r).forEach(x=>{ const ev = EV.events.find(y=>y.id===x.id); if(ev) try{ rerenderEventCard(ev); }catch(_){} });
+    }
+  }
   // the open page follows (not while typing in it – then a moment later)
+  if(m.table==='events' && evTabOn() && !document.getElementById('modalBackdrop')){ const ev = EV.events.find(x=>x.id===id);
+    if(ev && document.querySelector('tr[data-ev="'+CSS.escape(id)+'"], [data-v2="'+CSS.escape(id)+'"]')){ liveSoon('evc'+id, ()=>{ if(document.getElementById('modalBackdrop')) return; try{ rerenderEventCard(ev); }catch(_){ renderEventList(); } }); return; } }
   clearTimeout(evBcRedraw);
   const redraw = ()=>{ const a = document.activeElement;
     if(a && a.matches && a.matches('main input, main textarea, main select') && document.hasFocus()){ evBcRedraw = setTimeout(redraw, 1500); return; }
     try{ if(m.table==='rentals' && currentTab==='rentals') renderRentalList(); else if(m.table==='events' && evTabOn() && !document.getElementById('modalBackdrop')) renderEventList(); }catch(x){} };
   evBcRedraw = setTimeout(redraw, 200);
-};
+}
+/* ---- Gyvi pakeitimai: ką kolega išsaugo renginiuose, paėmimuose, išdavimuose ir darbų apskaitoje – matoma iš karto
+   (Supabase realtime, live_tables.sql); grįžus į programą atidaryta skiltis perskaitoma iš naujo. Kitos skiltys
+   (užduotys, susitikimai, sąskaitos, chatas, žmonės ir kt.) savo gyvus kanalus turi atskirai. */
+const LIVE = { ch:null, t:{} };
+function liveTyping(){ const a = document.activeElement; return !!(a && a.matches && a.matches('input:not([type=checkbox]):not([type=radio]):not([type=search]), textarea, select, [contenteditable="true"]') && document.hasFocus()); }
+function liveSoon(key, fn, ms){ clearTimeout(LIVE.t[key]); LIVE.t[key] = setTimeout(function run(){ if(liveTyping()){ LIVE.t[key] = setTimeout(run, 1500); return; } try{ fn(); }catch(e){} }, ms||300); }
+function hvApplyRemote(t, item, id){
+  if(!HV.loaded || !id || HV.timers[id]) return;   // our own edit is waiting – it stays
+  const i = HV.list.findIndex(x=>x.id===id);
+  if(t==='del'){ if(i<0) return; HV.list.splice(i, 1); }
+  else if(i>=0){ if(JSON.stringify(HV.list[i])===JSON.stringify(item)) return; const o = HV.list[i]; Object.keys(o).forEach(k=>{ if(!(k in item)) delete o[k]; }); Object.assign(o, item); }
+  else HV.list.push(item);
+  try{ localStorage.setItem('hvCache', JSON.stringify(HV.list)); }catch(e){}
+  if(currentTab==='handovers') liveSoon('hv', ()=>{ if(currentTab==='handovers' && !document.getElementById('modalBackdrop')) hvRenderList(); });
+}
+function appLive(){
+  const sb = getSb(); if(!sb || LIVE.ch) return;
+  const row = (table, apply)=>p=>{ if(p.eventType==='DELETE'){ const id = p.old && p.old.id; if(id) apply('del', null, id); return; } const d = p.new && p.new.data; if(d && d.id) apply('save', d, d.id); };
+  try{
+    LIVE.ch = sb.channel('app-live')
+      .on('postgres_changes', { event:'*', schema:'public', table:'events' }, row('events', (t, item, id)=>evApplyRemote(t==='del' ? { t, table:'events', id } : { t, table:'events', item })))
+      .on('postgres_changes', { event:'*', schema:'public', table:'rentals' }, row('rentals', (t, item, id)=>evApplyRemote(t==='del' ? { t, table:'rentals', id } : { t, table:'rentals', item })))
+      .on('postgres_changes', { event:'*', schema:'public', table:'handovers' }, row('handovers', hvApplyRemote))
+      .on('postgres_changes', { event:'*', schema:'public', table:'work_items' }, ()=>{
+        if(typeof LB==='undefined' || !LB.loaded || currentTab!=='labor') { if(typeof LB!=='undefined') LB.loaded = false; return; }
+        liveSoon('lb', ()=>{ if(currentTab==='labor' && !document.getElementById('modalBackdrop')) lbLoad(true).then(()=>{ if(currentTab==='labor') renderLaborTab(); }); }, 800); })
+      .subscribe();
+  }catch(e){ LIVE.ch = null; }
+}
+// back in the app (phone unlocked, another window): the open section is read again – what changed meanwhile shows
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState!=='visible') return;
+  if(Date.now() - (LIVE.seen||0) < 20000) return; LIVE.seen = Date.now();
+  appLive();
+  if(document.getElementById('rtEditHost')) return;
+  if(currentTab==='rentals' && EV.loaded){ const before = JSON.stringify(EV.rentals); evLoad(true).then(()=>{ if(currentTab==='rentals' && JSON.stringify(EV.rentals)!==before) liveSoon('rt', renderRentalList); }).catch(()=>{}); }
+  else if(evTabOn() && EV.loaded){ const before = JSON.stringify(EV.events); evLoad(true).then(()=>{ if(evTabOn() && JSON.stringify(EV.events)!==before) liveSoon('ev', ()=>{ if(evTabOn() && !document.getElementById('modalBackdrop')) renderEventList(); }); }).catch(()=>{}); }
+  else if(currentTab==='handovers' && HV.loaded){ const before = JSON.stringify(HV.list); hvLoad(true).then(()=>{ if(currentTab==='handovers' && JSON.stringify(HV.list)!==before) liveSoon('hv', ()=>{ if(!document.getElementById('modalBackdrop')) hvRenderList(); }); }).catch(()=>{}); }
+  else if(currentTab==='labor' && typeof LB!=='undefined' && LB.loaded && !document.getElementById('modalBackdrop')) lbLoad(true).then(()=>{ if(currentTab==='labor') liveSoon('lb', renderLaborTab); }).catch(()=>{});
+});
 
 /* ---------- model helpers ---------- */
 function evNew(date, kind){
@@ -28500,9 +28578,9 @@ function evLogCellHtml(ev){
     <div class="xg-adds"><button type="button" data-act="add-log">+ auto</button></div></td>`;
 }
 function evNotesCellHtml(ev){
-  const rs = EV.rentals.filter(r=>r.eventId===ev.id);
+  const rs = EV.rentals.filter(r=>rtHasEvent(r, ev.id));
   return `<td class="xg-notes" data-cell="notes" tabindex="-1">${evTa('notes', ev.notes, 'pastabos…')}
-    ${rs.map(r=>{ const st = RENTAL_STATUS.find(s=>s.v===r.status)||RENTAL_STATUS[0]; return `<div class="xg-rt"><span class="pill ${st.cls}">${st.label}</span> ${esc((r.items||'').split('\n')[0]||'—')}</div>`; }).join('')}</td>`;
+    ${rs.map(r=>{ const st = RENTAL_STATUS.find(s=>s.v===r.status)||RENTAL_STATUS[0]; return `<div class="xg-rt"><span class="pill ${st.cls}">${st.label}</span> ${esc((()=>{ const mine = rtList(r).filter(i=>i.ev===ev.id && String(i.name||'').trim()); return mine.length ? rtItemsText(mine).split('\n').join(', ') : (r.place ? r.place+': ' : '')+((r.items||'').split('\n')[0]||'—'); })())}${(rtEvs(r).find(x=>x.id===ev.id)||{}).note ? ` <i>– ${esc(rtEvs(r).find(x=>x.id===ev.id).note)}</i>` : ''}</div>`; }).join('')}</td>`;
 }
 const EV_ST = [['unconf','Nepatvirtintas','#F2C94C'], ['conf','Patvirtintas','#50AD97'], ['cancel','Atšauktas','#E5484D']];
 function evDateCellHtml(ev){
@@ -31465,6 +31543,7 @@ function rtList(r){ return Array.isArray(r.list) ? r.list : rtParseItems(r.items
 function rtListOwn(r){ if(!Array.isArray(r.list)) r.list = rtParseItems(r.items); return r.list; }
 function rtItemsText(list){ return list.filter(i=>String(i.name||'').trim()).map(i=>(i.qty!=='' && i.qty!=null ? String(i.qty).replace('.', ',')+' x ' : '')+String(i.name).trim()+(String(i.note||'').trim() ? ' – '+String(i.note).trim() : '')).join('\n'); }
 function rtListSync(r){ r.items = rtItemsText(r.list||[]); }
+function rtSave(r){ if(!EQ_PENDING[r.id]) rentalSave(r); }
 // the item names typed before (remembered + from every rental), most used first – the drop-down when typing an item
 function rtItemsDatalist(){
   let dl = document.getElementById('dl-rtitems');
@@ -31478,42 +31557,44 @@ function rtRememberItem(v){ v = String(v||'').trim(); if(!v) return; const o = e
   if(o.rentItems.some(x=>normalizeText(x)===normalizeText(v))) return; o.rentItems.push(v); if(o.rentItems.length > 1000) o.rentItems.splice(0, o.rentItems.length-1000); saveState(); rtItemsDatalist(); }
 function rtListHtml(r, opt){
   if(!document.getElementById('dl-rtitems')) rtItemsDatalist();
-  const pick = !!(opt && opt.pick);
+  const pick = !!(opt && opt.pick), plain = !!(opt && opt.plain), evs = rtEvs(r);
+  const evChip = it=>{ if(!it.ev) return ''; const e = EV.events.find(x=>x.id===it.ev); return e ? `<span class="rti-ev" title="${esc(rtEvLabel(e))}">🎪 ${esc(e.name||'renginys')}</span>` : ''; };
   const list = rtList(r), edit = canEdit('rentals'), done = list.filter(i=>i.ok).length, op = EV.rtItemOpen || {};
   const when = t=>{ try{ return new Date(t).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }); }catch(_){ return ''; } };
   const row = it=>{ const ph = it.photos || [], up = EQ_UPLOADING['ri:'+it.id], more = it.ok || it.okNote || ph.length || up || op[it.id];
     if(pick && !String(it.name||'').trim()) return '';
     return `<div class="rti ${it.ok?'ok':''} ${pick?'pick':''}" data-ri="${esc(it.id)}">
       <div class="rti-main">
-        <label class="rti-chk" title="${it.ok?'Paimta':'Pažymėk, kai paimsi'}"><input type="checkbox" data-rik="ok" ${it.ok?'checked':''} ${edit?'':'disabled'} aria-label="Paimta"></label>
-        ${pick ? `<span class="rti-txt"><b>${esc(it.name)}</b>${it.qty!=='' && it.qty!=null ? ` <span class="rti-q">${esc(String(it.qty).replace('.', ','))} vnt.</span>` : ''}${it.note ? `<small>${esc(it.note)}</small>` : ''}</span>
+        ${plain ? '' : `<label class="rti-chk" title="${it.ok?'Paimta':'Pažymėk, kai paimsi'}"><input type="checkbox" data-rik="ok" ${it.ok?'checked':''} ${edit?'':'disabled'} aria-label="Paimta"></label>`}
+        ${pick ? `<span class="rti-txt"><b>${esc(it.name)}</b>${it.qty!=='' && it.qty!=null ? ` <span class="rti-q">${esc(String(it.qty).replace('.', ','))} vnt.</span>` : ''}${evChip(it)}${it.note ? `<small>${esc(it.note)}</small>` : ''}</span>
         <button type="button" class="rti-b" data-ria="more" title="Komentaras ir nuotraukos">📷${ph.length?` <b>${ph.length}</b>`:''}${it.okNote?' 💬':''}</button>` : `<input type="text" class="rti-name" data-rik="name" data-combo="dl-rtitems" autocomplete="off" value="${esc(it.name||'')}" placeholder="Daiktas, pvz. 16A dėžutė" aria-label="Daiktas">
         <span class="rti-qty"><input type="number" min="0" step="any" inputmode="decimal" data-rik="qty" value="${esc(it.qty==null ? '' : String(it.qty))}" placeholder="0" aria-label="Vienetai"><small>vnt.</small></span>
         <input type="text" class="rti-note" data-rik="note" value="${esc(it.note||'')}" placeholder="Komentaras (nebūtina)" aria-label="Komentaras">
-        <button type="button" class="rti-b" data-ria="more" title="Paimant: komentaras ir nuotraukos">📷${ph.length?` <b>${ph.length}</b>`:''}${it.okNote?' 💬':''}</button>
+        ${evChip(it)}
+        ${plain ? '' : `<button type="button" class="rti-b" data-ria="more" title="Paimant: komentaras ir nuotraukos">📷${ph.length?` <b>${ph.length}</b>`:''}${it.okNote?' 💬':''}</button>`}
         ${edit?`<button type="button" class="rti-b rti-x" data-ria="del" title="Pašalinti daiktą" aria-label="Pašalinti">✕</button>`:''}`}
       </div>
-      ${more ? `<div class="rti-take">
+      ${more && !plain ? `<div class="rti-take">
         <input type="text" data-rik="okNote" value="${esc(it.okNote||'')}" placeholder="Paimant: komentaras (pvz. 1 vnt. su įbrėžimu)" aria-label="Komentaras paimant">
         <div class="rti-phs">${ph.map((x, k)=>`<span class="rti-ph"><button type="button" data-ria="view" data-n="${k}"><img data-bucket="${EQ_BUCKET}" data-path="${esc(x.path)}" alt=""></button>${edit?`<button type="button" class="rti-phx" data-ria="phdel" data-n="${k}" title="Pašalinti nuotrauką" aria-label="Pašalinti">✕</button>`:''}</span>`).join('')}${up ? '<span class="rti-ph rti-up"><span class="eq-spin"></span></span>' : ''}${edit?`<label class="rti-add" data-ro-ok><input type="file" accept="image/*" multiple data-riadd hidden>＋ 📷 Foto</label>`:''}</div>
         ${it.ok && (it.okByName || it.okAt) ? `<small class="muted rti-who">✓ ${esc(it.okByName||'')}${it.okAt ? ' · '+esc(when(it.okAt)) : ''}</small>` : ''}
       </div>` : ''}
     </div>`; };
   return `<div class="rt-list" data-rl="${esc(r.id)}">
-    <div class="rt-list-h"><b>Daiktai</b>${list.length ? `<span class="rt-more ${done && done===list.length ? 'all' : ''}">✓ ${done}/${list.length} paimta</span>` : ''}</div>
+    <div class="rt-list-h"><b>Daiktai${plain ? ' *' : ''}</b>${list.length && !plain ? `<span class="rt-more ${done && done===list.length ? 'all' : ''}">✓ ${done}/${list.length} paimta</span>` : ''}</div>
     ${list.map(row).join('') || '<div class="muted rt-list-empty">Daiktų dar nėra.</div>'}
     ${edit && !pick ? `<button type="button" class="btn small rt-list-add" data-ria="add">＋ Pridėti daiktą</button>` : ''}
   </div>`;
 }
 function rtListFind(el){
   const box = el.closest && el.closest('.rt-list[data-rl]'); if(!box) return null;
-  const r = EV.rentals.find(x=>x.id===box.dataset.rl); if(!r) return null;
+  const r = EV.rentals.find(x=>x.id===box.dataset.rl) || EQ_PENDING[box.dataset.rl]; if(!r) return null;
   const row = el.closest('[data-ri]'), it = row ? rtListOwn(r).find(x=>x.id===row.dataset.ri) : null;
   return { box, r, row, it };
 }
 function rtListRedraw(r, focusId, sel){
   document.querySelectorAll('.rt-list[data-rl="'+CSS.escape(r.id)+'"]').forEach(box=>{
-    const t = document.createElement('div'); t.innerHTML = rtListHtml(r, { pick:!!box.closest('#rtViewHost') }); const n = t.firstElementChild; box.replaceWith(n); teamFillImages(n);
+    const t = document.createElement('div'); t.innerHTML = rtListHtml(r, { pick:!!box.closest('#rtViewHost'), plain:!!box.closest('.rt-new') }); const n = t.firstElementChild; box.replaceWith(n); teamFillImages(n);
     if(focusId){ const f = n.querySelector('[data-ri="'+CSS.escape(focusId)+'"] '+(sel||'.rti-name')); if(f) f.focus(); }
   });
 }
@@ -31528,7 +31609,7 @@ async function rtItemUpload(r, it, files){
       const path = `rentals/${r.id}/item-${it.id}-${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}.${ext.toLowerCase()}`;
       const { error } = await stFrom(EQ_BUCKET).upload(path, blob, { contentType:type, upsert:false });
       if(error) throw error;
-      it.photos.push({ path, at:new Date().toISOString(), by:teamMe() }); done++; rentalSave(r);
+      it.photos.push({ path, at:new Date().toISOString(), by:teamMe() }); done++; rtSave(r);
     }catch(e){ toast('Nepavyko įkelti nuotraukos: '+(e.message||e)); }
   }
   delete EQ_UPLOADING[key]; rtListRedraw(r);
@@ -31538,7 +31619,7 @@ document.addEventListener('input', e=>{
   const t = e.target; if(!t.dataset || !t.dataset.rik || t.dataset.rik==='ok') return;
   const f = rtListFind(t); if(!f || !f.it) return;
   const k = t.dataset.rik; f.it[k] = k==='qty' ? (t.value==='' ? '' : +t.value) : t.value;
-  rtListSync(f.r); rentalSave(f.r);
+  rtListSync(f.r); rtSave(f.r);
 });
 document.addEventListener('change', e=>{
   const t = e.target; if(!t.dataset) return;
@@ -31547,22 +31628,26 @@ document.addEventListener('change', e=>{
     f.it.ok = t.checked;
     if(t.checked){ f.it.okBy = teamMe(); f.it.okByName = ACCESS.profile ? teamName(ACCESS.profile) : ''; f.it.okAt = new Date().toISOString(); }
     else { delete f.it.okBy; delete f.it.okByName; delete f.it.okAt; }
-    rentalSave(f.r); rentalRerender(f.r); rtListRedraw(f.r);
+    rtSave(f.r); rentalRerender(f.r); rtListRedraw(f.r);
     if(t.checked && f.r.list.every(x=>x.ok || !String(x.name||'').trim()) && f.r.status==='reikia') toast('Visi daiktai pažymėti – gali pažymėti „Paimta“.');
     return;
   }
   if(t.dataset.rik==='name'){ rtRememberItem(t.value); return; }
   if(t.matches && t.matches('[data-riadd]')){ const f = rtListFind(t); if(!f || !f.it) return; const files = Array.from(t.files||[]); t.value = ''; rtItemUpload(f.r, f.it, files); }
 });
+// (capture: before the app's „Enter presses the window's main button“)
 document.addEventListener('keydown', e=>{
-  const t = e.target; if(e.key!=='Enter' || !t.dataset || !['name','qty','note'].includes(t.dataset.rik)) return;
+  const t = e.target; if(e.key!=='Enter' || !t.dataset) return;
+  if(t.classList && t.classList.contains('rt-evadd')){ if(comboInput===t && comboIdx>=0) return; e.preventDefault(); t.dispatchEvent(new Event('change', { bubbles:true })); return; }
+  if(t.hasAttribute && (t.hasAttribute('data-evnote') || t.dataset.rik==='okNote')){ e.preventDefault(); t.blur(); return; }
+  if(!['name','qty','note'].includes(t.dataset.rik)) return;
   if(comboInput===t && comboIdx>=0) return;
   const f = rtListFind(t); if(!f || !f.it) return; e.preventDefault();
   const l = rtListOwn(f.r), i = l.indexOf(f.it);
   if(i < l.length-1){ const n = f.box.querySelector('[data-ri="'+CSS.escape(l[i+1].id)+'"] .rti-name'); if(n) n.focus(); return; }
   if(!String(f.it.name||'').trim()) return;
-  const it = { id:uid('ri'), name:'', qty:1, note:'' }; l.push(it); rtListRedraw(f.r, it.id);
-});
+  const it = { id:uid('ri'), name:'', qty:'', note:'' }; l.push(it); rtListRedraw(f.r, it.id);
+}, true);
 document.addEventListener('click', async e=>{
   const b = e.target.closest && e.target.closest('[data-ria]'); if(!b) return;
   const f = rtListFind(b); if(!f) return;
@@ -31570,21 +31655,21 @@ document.addEventListener('click', async e=>{
   const a = b.dataset.ria, r = f.r;
   if(a==='add'){ const l = rtListOwn(r), last = l[l.length-1];
     if(last && !String(last.name||'').trim()){ rtListRedraw(r, last.id); return; }
-    const it = { id:uid('ri'), name:'', qty:1, note:'' }; l.push(it); rtListRedraw(r, it.id); return; }
+    const it = { id:uid('ri'), name:'', qty:'', note:'' }; l.push(it); rtListRedraw(r, it.id); return; }
   if(!f.it) return;
   if(a==='del'){
     if((String(f.it.name||'').trim() || (f.it.photos||[]).length) && !(await uiConfirm('Pašalinti „'+(String(f.it.name||'').trim() || 'daiktą')+'“?'))) return;
     const ph = (f.it.photos||[]).map(x=>x.path);
-    r.list = rtListOwn(r).filter(x=>x!==f.it); rtListSync(r); rentalSave(r); rentalRerender(r);
+    r.list = rtListOwn(r).filter(x=>x!==f.it); rtListSync(r); rtSave(r); rentalRerender(r); rtListRedraw(r); rtEvsRedraw(r);
     if(ph.length){ try{ await stFrom(EQ_BUCKET).remove(ph); }catch(_){} }
     return;
   }
   if(a==='more'){ EV.rtItemOpen = EV.rtItemOpen || {}; EV.rtItemOpen[f.it.id] = !EV.rtItemOpen[f.it.id]; rtListRedraw(r, f.it.id, '[data-rik="okNote"]'); return; }
-  if(a==='view'){ const urls = await sbSignedUrls(EQ_BUCKET, (f.it.photos||[]).map(x=>x.path)); venLightbox({ photos:urls.map(u=>({ url:u })) }, +b.dataset.n); return; }
+  if(a==='view'){ const all = eqAllPhotos(r), x = (f.it.photos||[])[+b.dataset.n]; const urls = await sbSignedUrls(EQ_BUCKET, all.map(y=>y.path)); venLightbox({ photos:urls.map(u=>({ url:u })) }, Math.max(0, all.indexOf(x))); return; }
   if(a==='phdel'){
     const x = (f.it.photos||[])[+b.dataset.n]; if(!x) return;
     if(!(await uiConfirm('Pašalinti šią nuotrauką?'))) return;
-    f.it.photos.splice(+b.dataset.n, 1); rentalSave(r); rtListRedraw(r);
+    f.it.photos.splice(+b.dataset.n, 1); rtSave(r); rtListRedraw(r);
     try{ await stFrom(EQ_BUCKET).remove([x.path]); }catch(_){}
   }
 });
@@ -31598,7 +31683,7 @@ async function rtAskMissing(r){
 function rtSetStatus(r, v, partial){
   partial = v==='paimta' && !!partial;
   if(r.status===v && !!r.partial===partial) return;
-  if(r.status===v && v==='paimta'){ if(partial) r.partial = true; else { delete r.partial; delete r.missing; } rentalSave(r); renderRentalList(); rtViewRedraw(r); toast(partial ? 'Pažymėta: paimta dalinai.' : 'Pažymėta: paimta.'); return; }
+  if(r.status===v && v==='paimta'){ if(partial) r.partial = true; else { delete r.partial; delete r.missing; } rtSave(r); renderRentalList(); rtViewRedraw(r); toast(partial ? 'Pažymėta: paimta dalinai.' : 'Pažymėta: paimta.'); return; }
   if(r.status==='reikia' && v!=='reikia' && !eqPhotosReady(r)){
     if(!document.querySelector('#modalRoot .eq-photos[data-eq="rentals:'+CSS.escape(r.id)+'"]')) openRentalView(r);
     eqNeedPhotosToast('rentals');
@@ -31607,7 +31692,7 @@ function rtSetStatus(r, v, partial){
   }
   r.status = v;
   if(partial) r.partial = true; else if(v!=='grazinta'){ delete r.partial; delete r.missing; }   // returned: what was missing stays written
-  rentalSave(r);
+  rtSave(r);
   renderRentalList();   // the card may move or leave the current filter
   rtViewRedraw(r);
   document.querySelectorAll('#rtEditHost .rt-card[data-r="'+CSS.escape(r.id)+'"]').forEach(()=>rentalRerender(r));
@@ -31637,7 +31722,7 @@ function rtViewHtml(r){
       ${loc ? `<div><span class="rv-k">Vieta</span><a class="rt-map" data-rv="maps" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}" target="_blank" rel="noopener" title="Atidaryti Google Maps">📍 ${esc(loc)}</a></div>` : ''}
       ${tel ? `<div><span class="rv-k">Telefonas</span><span class="rt-tel">📞 ${esc(tel)} <button type="button" class="rt-tb" data-rv="tel-copy" data-tel="${esc(tel)}">⧉ Kopijuoti</button><a class="rt-tb" href="tel:${esc(tel.replace(/[\s-]/g,''))}">📞 Skambinti</a></span></div>` : ''}
       ${r.person ? `<div><span class="rv-k">Atsakingas</span><span>👤 ${esc(r.person)}</span></div>` : ''}
-      ${ev ? `<div><span class="rv-k">Renginys</span><span>🎪 ${esc(rtEvLabel(ev))}</span></div>` : ''}
+      ${rtEvs(r).length ? `<div><span class="rv-k">${rtEvs(r).length>1 ? 'Renginiai' : 'Renginys'}</span><span class="rv-evs">${rtEvs(r).map(x=>{ const e = EV.events.find(y=>y.id===x.id); return `<span>🎪 ${esc(e ? rtEvLabel(e) : '?')}${x.note ? ` <i class="rv-evn">– ${esc(x.note)}</i>` : ''}</span>`; }).join('')}</span></div>` : ''}
       ${r.notes ? `<div class="rv-notes"><span class="rv-k">Pastabos</span><span>${esc(r.notes)}</span></div>` : ''}
       ${r.partial && r.status!=='reikia' && r.missing ? `<div><span class="rv-k">Nepaimta</span><span class="rt-flag">⚠ ${esc(r.missing)}</span></div>` : ''}
     </div>
@@ -31646,7 +31731,7 @@ function rtViewHtml(r){
     <div class="rt-seg rv-seg" role="group" aria-label="Būsena">${segs.map(([v, t, c])=>`<button type="button" class="${c}${v===cur?' on':''}" data-rvst="${v}" ${edit?'':'disabled'}>${t}</button>`).join('')}</div>
     ${eqPhotosHtml('rentals', r)}
     <div class="row rv-foot">
-      ${edit ? `<button type="button" class="btn" data-rv="edit">✎ Redaguoti viską</button>` : ''}
+      <span class="row" style="gap:8px;">${edit ? `<button type="button" class="btn" data-rv="edit">✎ Redaguoti viską</button>` : ''}<button type="button" class="btn" data-rv="pdf">⬇ PDF</button></span>
       <button type="button" class="btn primary" data-rv="close">Uždaryti</button>
     </div>
   </div>`;
@@ -31668,6 +31753,7 @@ function openRentalView(r){
     const a = b.dataset.rv;
     if(a==='close'){ closeModal(); return; }
     if(a==='edit'){ openRentalEdit(r); return; }
+    if(a==='pdf'){ rtPdf(r); return; }
     if(a==='tel-copy'){ const ok = await copyText(b.dataset.tel); toast(ok ? 'Nukopijuota: '+b.dataset.tel : 'Nepavyko nukopijuoti – '+b.dataset.tel); }
   });
 }
@@ -31675,6 +31761,142 @@ function openRentalEdit(r){
   openModal(`<div id="rtEditHost">${rentalCardHtml(r, 'edit')}</div>`);
   const m = document.getElementById('modalRoot'); m.classList.add('rt-modal', 'rv-modal');
   const h = document.getElementById('rtEditHost'); teamFillImages(h); bindRentalEvents(h);
+}
+/* ---- Paėmimo renginiai: keli vienam paėmimui; kiekvienam – komentaras (pvz. „vežti iškart į vietą“) ir jam priskirti daiktai.
+   r.evs = [{ id, note }], daikto it.ev = renginio id; r.eventId – pirmasis (senesniems vaizdams). */
+function rtEvs(r){ return Array.isArray(r.evs) ? r.evs : (r.eventId ? [{ id:r.eventId, note:'' }] : []); }
+function rtEvsOwn(r){ if(!Array.isArray(r.evs)) r.evs = r.eventId ? [{ id:r.eventId, note:'' }] : []; return r.evs; }
+function rtEvsSync(r){ r.eventId = (r.evs && r.evs[0] && r.evs[0].id) || null; }
+function rtHasEvent(r, id){ return rtEvs(r).some(x=>x.id===id); }
+function rtEvsHtml(r){
+  const evs = rtEvs(r), list = rtList(r), edit = canEdit('rentals'), dl = 'dl-rvev-'+r.id;
+  return `<div class="rt-evbox" data-rid="${esc(r.id)}">
+    ${evs.map(x=>{ const e = EV.events.find(y=>y.id===x.id), n = list.filter(i=>i.ev===x.id && String(i.name||'').trim()).length;
+      return `<div class="rt-ev" data-evid="${esc(x.id)}">
+        <div class="rt-ev-h"><b>🎪 ${esc(e ? rtEvLabel(e) : 'Renginys nerastas')}</b><span class="rt-more">${n ? ltPlural(n, 'daiktas', 'daiktai', 'daiktų') : 'daiktų nepriskirta'}</span>
+          ${edit ? `<button type="button" class="btn small" data-evact="assign">📦 Priskirti daiktus</button><button type="button" class="rti-b rti-x" data-evact="rm" title="Pašalinti renginį" aria-label="Pašalinti">✕</button>` : ''}</div>
+        <input type="text" data-evnote value="${esc(x.note||'')}" placeholder="Komentaras, pvz. vežti iškart į vietą" ${edit?'':'readonly'}>
+      </div>`; }).join('')}
+    ${edit ? `<input type="text" class="rt-evadd" data-combo="${esc(dl)}" placeholder="＋ Pridėti renginį – rašyk pavadinimą…" autocomplete="off"><datalist id="${esc(dl)}">${rtEvList(r.pickupDate, null).filter(e=>!evs.some(x=>x.id===e.id)).map(e=>`<option value="${esc(rtEvLabel(e))}">`).join('')}</datalist>` : ''}
+  </div>`;
+}
+function rtEvsRedraw(r){
+  document.querySelectorAll('.rt-evbox[data-rid="'+CSS.escape(r.id)+'"]').forEach(b=>{ const t = document.createElement('div'); t.innerHTML = rtEvsHtml(r); b.replaceWith(t.firstElementChild); });
+  rtListRedraw(r);
+  if(!EQ_PENDING[r.id]){ document.querySelectorAll('#rtList .rt-card[data-r="'+CSS.escape(r.id)+'"]').forEach(()=>{ const c = document.querySelector('#rtList .rt-card[data-r="'+CSS.escape(r.id)+'"]'); const t = document.createElement('div'); t.innerHTML = rentalCardHtml(r); c.replaceWith(t.firstElementChild); });
+    if(evTabOn()) rtEvs(r).forEach(x=>{ const ev = EV.events.find(e=>e.id===x.id); if(ev) rerenderEventCard(ev); }); }
+}
+function rtEvFindBox(el){ const b = el.closest && el.closest('.rt-evbox[data-rid]'); if(!b) return null; const r = EV.rentals.find(x=>x.id===b.dataset.rid) || EQ_PENDING[b.dataset.rid]; if(!r) return null;
+  const row = el.closest('[data-evid]'); return { r, id:row ? row.dataset.evid : null }; }
+document.addEventListener('change', e=>{
+  const t = e.target; if(!t.classList || !t.classList.contains('rt-evadd')) return;
+  const f = rtEvFindBox(t); if(!f) return; const v = t.value.trim(); if(!v) return;
+  const ev = rtEvFind(v, f.r.pickupDate) || rtEvFind(v, '');
+  if(!ev){ toast('Tokio renginio nerasta – pasirink iš sąrašo.'); return; }
+  const l = rtEvsOwn(f.r); if(l.some(x=>x.id===ev.id)){ toast('Šis renginys jau pridėtas.'); t.value = ''; return; }
+  l.push({ id:ev.id, note:'' }); rtEvsSync(f.r); rtSave(f.r); rtEvsRedraw(f.r);
+  const n = document.querySelector('.rt-evbox[data-rid="'+CSS.escape(f.r.id)+'"] [data-evid="'+CSS.escape(ev.id)+'"] [data-evact="assign"]'); if(n) n.focus();
+});
+document.addEventListener('input', e=>{
+  const t = e.target; if(!t.hasAttribute || !t.hasAttribute('data-evnote')) return;
+  const f = rtEvFindBox(t); if(!f || !f.id) return; const x = rtEvsOwn(f.r).find(y=>y.id===f.id); if(!x) return;
+  x.note = t.value; rtSave(f.r);
+});
+document.addEventListener('click', async e=>{
+  const b = e.target.closest && e.target.closest('[data-evact]'); if(!b) return;
+  const f = rtEvFindBox(b); if(!f || !f.id) return; e.stopPropagation();
+  const r = f.r, e0 = EV.events.find(x=>x.id===f.id);
+  if(b.dataset.evact==='rm'){
+    const n = rtList(r).filter(i=>i.ev===f.id).length;
+    if(n && !(await uiConfirm('Pašalinti renginį „'+(e0 ? e0.name : '')+'“? Jam priskirti daiktai liks paėmime, tik be renginio.'))) return;
+    r.evs = rtEvsOwn(r).filter(x=>x.id!==f.id); rtListOwn(r).forEach(i=>{ if(i.ev===f.id) delete i.ev; });
+    rtEvsSync(r); rtSave(r); rtEvsRedraw(r); return;
+  }
+  if(b.dataset.evact==='assign') rtAssignPop(r, f.id);
+});
+// the items of this rental for one event – a pop-up over the window: tick them, a comment for the event
+function rtAssignPop(r, evId){
+  const items = rtListOwn(r).filter(i=>String(i.name||'').trim()), x = rtEvsOwn(r).find(y=>y.id===evId), e0 = EV.events.find(y=>y.id===evId);
+  if(!items.length){ toast('Pirma įrašyk daiktus.'); return; }
+  const bd = document.createElement('div'); bd.className = 'rt-asg-bd';
+  const other = i=>{ if(!i.ev || i.ev===evId) return ''; const o = EV.events.find(y=>y.id===i.ev); return `<small class="rt-asg-o">dabar: 🎪 ${esc(o ? o.name : '?')}</small>`; };
+  bd.innerHTML = `<div class="rt-asg" role="dialog" aria-label="Priskirti daiktus">
+    <h3>📦 Daiktai renginiui</h3><div class="muted" style="margin:-4px 0 10px;">🎪 ${esc(e0 ? rtEvLabel(e0) : '')}</div>
+    <div class="row" style="gap:8px;margin-bottom:8px;"><button type="button" class="btn small" data-asg="all">Pažymėti visus</button><button type="button" class="btn small" data-asg="none">Nuimti visus</button></div>
+    <div class="rt-asg-list">${items.map(i=>`<label class="rt-asg-i"><input type="checkbox" value="${esc(i.id)}" ${i.ev===evId?'checked':''}><span><b>${esc(i.name)}</b>${i.qty!=='' && i.qty!=null ? ` · ${esc(String(i.qty).replace('.', ','))} vnt.` : ''}${other(i)}</span></label>`).join('')}</div>
+    <label class="field" style="margin-top:10px;">Komentaras renginiui<input type="text" id="rtAsgNote" value="${esc((x && x.note)||'')}" placeholder="pvz. vežti iškart į vietą"></label>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px;"><button type="button" class="btn" data-asg="cancel">Atšaukti</button><button type="button" class="btn primary" data-asg="save">💾 Priskirti</button></div>
+  </div>`;
+  document.body.appendChild(bd);
+  const close = ()=>{ bd.remove(); document.removeEventListener('keydown', esc1, true); };
+  const esc1 = ev=>{ if(ev.key==='Escape'){ ev.stopPropagation(); ev.preventDefault(); close(); } };
+  document.addEventListener('keydown', esc1, true);
+  bd.addEventListener('click', ev=>{
+    if(ev.target===bd){ close(); return; }
+    const a = ev.target.closest('[data-asg]'); if(!a) return;
+    if(a.dataset.asg==='all' || a.dataset.asg==='none'){ bd.querySelectorAll('.rt-asg-list input').forEach(c=>c.checked = a.dataset.asg==='all'); return; }
+    if(a.dataset.asg==='cancel'){ close(); return; }
+    const on = new Set([...bd.querySelectorAll('.rt-asg-list input:checked')].map(c=>c.value));
+    items.forEach(i=>{ if(on.has(i.id)) i.ev = evId; else if(i.ev===evId) delete i.ev; });
+    if(x) x.note = bd.querySelector('#rtAsgNote').value.trim();
+    rtSave(r); close(); rtEvsRedraw(r); rtViewRedraw(r);
+    toast(on.size ? ltPlural(on.size, 'daiktas priskirtas', 'daiktai priskirti', 'daiktų priskirta')+' renginiui.' : 'Renginiui daiktų nepriskirta.');
+  });
+  setTimeout(()=>{ const c = bd.querySelector('.rt-asg-list input'); if(c) c.focus(); }, 30);
+}
+/* ---- Paėmimo PDF: tiekėjas, datos, vieta, renginiai, daiktai (kiekis, komentaras, renginys, paimta) ---- */
+async function rtPdf(r){
+  toast('📄 Ruošiamas PDF…');
+  try{
+    await loadScriptOnce('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js', ()=>!!window.html2canvas);
+    await loadScriptOnce('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js', ()=>!!(window.jspdf && window.jspdf.jsPDF));
+    const st = RENTAL_STATUS.find(x=>x.v===r.status)||RENTAL_STATUS[0], { loc, tel } = rtWhere(r);
+    const items = rtList(r).filter(i=>String(i.name||'').trim()), evs = rtEvs(r);
+    const evName = id=>{ const e = EV.events.find(x=>x.id===id); return e ? rtEvLabel(e) : ''; };
+    const d = (a, b)=>a ? a+(b ? ' '+b : '') : '—';
+    const host = document.createElement('div');
+    host.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#111;font:13px/1.45 Arial,Helvetica,sans-serif;padding:48px 52px;box-sizing:border-box;';
+    const row = (k, v)=>v ? `<tr><td style="color:#666;padding:3px 14px 3px 0;white-space:nowrap;vertical-align:top;">${k}</td><td style="padding:3px 0;">${v}</td></tr>` : '';
+    host.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:14px;">
+        <div><div style="font-size:22px;font-weight:700;">Paėmimas${r.place ? ' – '+esc(r.place) : ''}</div><div style="color:#666;margin-top:2px;">Būsena: ${esc(r.status==='paimta' && r.partial ? 'Paimta dalinai' : st.label)}</div></div>
+        <div style="text-align:right;color:#666;font-size:11px;">EventSolutions<br>${esc(new Date().toLocaleString('lt-LT'))}</div></div>
+      <table style="border-collapse:collapse;margin-bottom:14px;">
+        ${row('Paėmimas', esc(d(r.pickupDate, r.pickupTime)))}${row('Grąžinimas', esc(d(r.returnDate, r.returnTime)))}
+        ${row('Adresas', esc(loc))}${row('Kontaktai', esc(r.contact || tel))}${row('Atsakingas', esc(r.person||''))}
+        ${row('Renginiai', evs.map(x=>esc(evName(x.id))+(x.note ? ' <i style="color:#555;">– '+esc(x.note)+'</i>' : '')).join('<br>'))}
+        ${row('Pastabos', esc(r.notes||'').replace(/\n/g, '<br>'))}
+        ${row('Nepaimta', r.partial && r.missing ? esc(r.missing) : '')}
+      </table>
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+        <thead><tr style="background:#f0f0f3;">${['Nr.', 'Daiktas', 'Kiekis', 'Komentaras', 'Renginys', 'Paimta'].map((h, i)=>`<th style="text-align:${i===2||i===5?'center':'left'};padding:7px 8px;border-bottom:1px solid #bbb;">${h}</th>`).join('')}</tr></thead>
+        <tbody>${items.map((i, k)=>`<tr style="border-bottom:1px solid #ddd;">
+          <td style="padding:6px 8px;vertical-align:top;">${k+1}</td>
+          <td style="padding:6px 8px;vertical-align:top;font-weight:600;">${esc(i.name)}</td>
+          <td style="padding:6px 8px;vertical-align:top;text-align:center;white-space:nowrap;">${i.qty!=='' && i.qty!=null ? esc(String(i.qty).replace('.', ','))+' vnt.' : ''}</td>
+          <td style="padding:6px 8px;vertical-align:top;">${esc(i.note||'')}${i.okNote ? `<div style="color:#555;font-style:italic;">Paimant: ${esc(i.okNote)}</div>` : ''}</td>
+          <td style="padding:6px 8px;vertical-align:top;">${esc(i.ev ? ((EV.events.find(x=>x.id===i.ev)||{}).name || '') : '')}</td>
+          <td style="padding:6px 8px;vertical-align:top;text-align:center;font-size:15px;">${i.ok ? '✔' : '☐'}</td></tr>`).join('') || '<tr><td colspan="6" style="padding:10px;color:#777;">Daiktų nėra.</td></tr>'}</tbody>
+      </table>
+      <div style="display:flex;gap:40px;margin-top:40px;color:#666;font-size:12px;"><div style="flex:1;border-top:1px solid #999;padding-top:4px;">Paėmė (vardas, parašas)</div><div style="flex:1;border-top:1px solid #999;padding-top:4px;">Išdavė (vardas, parašas)</div></div>`;
+    document.body.appendChild(host);
+    let blob;
+    try{
+      const canvas = await window.html2canvas(host, { scale:2, backgroundColor:'#ffffff', logging:false, width:794, windowWidth:794 });
+      const pdf = new window.jspdf.jsPDF({ unit:'pt', format:'a4', compress:true });
+      const pageH = Math.round(canvas.width * 841.89 / 595.28);
+      for(let y = 0, n = 0; y < canvas.height; y += pageH, n++){
+        const c = document.createElement('canvas'); c.width = canvas.width; c.height = Math.min(pageH, canvas.height - y);
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(canvas, 0, -y);
+        if(n) pdf.addPage();
+        pdf.addImage(c.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, 595.28, c.height * 595.28 / c.width, undefined, 'FAST');
+      }
+      pdf.setProperties({ title:'Paėmimas '+(r.place||''), creator:'EventSolutions App' });
+      blob = pdf.output('blob');
+    } finally { host.remove(); }
+    const name = ('Paemimas-'+(r.place||'')+'-'+(r.pickupDate||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w.-]+/g,'-').replace(/-+$/,'').slice(0,90)+'.pdf';
+    offerDownload(blob, name);
+    toast('📄 PDF parsisiųstas.');
+  }catch(e){ toast('Nepavyko sukurti PDF: '+(e.message||e)); }
 }
 // Cards are compact (status, what, where, when) and open on tap for editing.
 const RENTAL_ICON = {reikia:'⏳', paimta:'📦', grazinta:'✅'};
@@ -31713,7 +31935,7 @@ function rentalCardHtml(r, mode){
           ${loc?`<a class="rt-map" data-act="maps" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}" target="_blank" rel="noopener" title="Atidaryti Google Maps">📍 ${esc(loc)}</a>`:''}
           ${tel?`<span class="rt-tel">📞 ${esc(tel)} <button type="button" class="rt-tb" data-act="tel-copy" data-tel="${esc(tel)}" title="Kopijuoti numerį">⧉ Kopijuoti</button><a class="rt-tb" data-act="tel-call" href="tel:${esc(tel.replace(/[\s-]/g,''))}" title="Skambinti">📞 Skambinti</a></span>`:''}
           ${r.person?`<span>👤 ${esc(r.person)}</span>`:''}
-          ${ev?`<span>🎪 ${esc(ev.name||'renginys')}</span>`:''}
+          ${rtEvs(r).map(x=>{ const e = EV.events.find(y=>y.id===x.id); return e ? `<span>🎪 ${esc(e.name||'renginys')}</span>` : ''; }).join('')}
           ${eqPhotoCount(r) ? `<span>📷 ${eqPhotoCount(r)}</span>` : r.status==='reikia' ? '<span class="rt-flag">📷 reikės nuotraukų</span>' : ''}
           ${r.partial && r.status!=='reikia' && r.missing ? `<span class="rt-flag" title="Ko nepaimta">⚠ nepaimta: ${esc(r.missing)}</span>` : ''}
           ${late?'<span class="rt-flag">⚠ vėluoja grąžinti</span>':''}${due?'<span class="rt-flag">⚠ laikas paimti</span>':''}
@@ -31750,13 +31972,11 @@ function rentalCardHtml(r, mode){
             ${person && person.email ? `<a class="btn small" href="mailto:${esc(person.email)}?subject=${encodeURIComponent('Paėmimas: '+(r.items||'').split('\n')[0])}&body=${encodeURIComponent('Primenu: '+(r.items||'')+'\nVieta: '+(r.place||'')+' '+(r.address||'')+'\nPaėmimas: '+(r.pickupDate||'')+' '+(r.pickupTime||'')+'\nGrąžinimas: '+(r.returnDate||'')+' '+(r.returnTime||''))}">✉ Priminti</a>` : ''}
           </div>
         </div>
-        <label class="field rt-event">Renginys
-          <input type="text" class="rt-evin" value="${esc(rtEvLabel(EV.events.find(e=>e.id===r.eventId)))}" data-combo="dl-rvev-${esc(r.id)}" placeholder="Rašyk renginio pavadinimą…" autocomplete="off">${rtEvDatalist(r, 'dl-rvev-'+r.id)}
-        </label>
+        <div class="field rt-event">Renginiai ${rtEvsHtml(r)}</div>
       </div>
       ${eqPhotosHtml('rentals', r)}
       <div class="row" style="justify-content:space-between;margin-top:8px;gap:8px;">
-        <button type="button" class="btn small danger" data-act="del">Ištrinti</button>
+        <span class="row" style="gap:8px;"><button type="button" class="btn small danger" data-act="del">Ištrinti</button><button type="button" class="btn small" data-act="pdf">⬇ PDF</button></span>
         <button type="button" class="btn small primary" data-act="close-edit">✓ Baigti redaguoti</button>
       </div>
     </div>
@@ -31778,7 +31998,7 @@ function openRentalNewModal(eventId){
     <h3>Naujas paėmimas</h3>
     <div class="rt-seg" id="rn_seg">${seg()}</div>
     <div class="rt-new">
-      <div class="field">Daiktai *<div class="rt-list-new"><div id="rn_list"></div><button type="button" class="btn small rt-list-add" id="rn_add">＋ Pridėti daiktą</button></div></div>
+      <div class="rt-list-new" id="rn_listw"></div>
       <div class="grid cols-2" style="gap:8px;">
         <label class="field">Paėmimo / grąžinimo vieta<input type="text" id="rn_place" data-combo="dl-suppliers" placeholder="Tiekėjas"></label>
         <label class="field">Adresas<input type="text" id="rn_address" placeholder="Adresas"></label>
@@ -31789,7 +32009,7 @@ function openRentalNewModal(eventId){
         <div class="field">Paėmimas<div class="rt-dt"><input type="date" id="rn_pd"><input type="text" class="tm-in" inputmode="numeric" maxlength="11" autocomplete="off" placeholder="pvz. 1500 ar 0900–1100" id="rn_pt"></div></div>
         <div class="field">Grąžinimas<div class="rt-dt"><input type="date" id="rn_rd"><input type="text" class="tm-in" inputmode="numeric" maxlength="11" autocomplete="off" placeholder="pvz. 1500 ar 0900–1100" id="rn_rt"></div></div>
       </div>
-      <label class="field">Renginys<input type="text" id="rn_event" value="${esc(rtEvLabel(EV.events.find(e=>e.id===eventId)))}" data-combo="dl-rvev-new" placeholder="Rašyk renginio pavadinimą…" autocomplete="off"><span id="rn_evdl">${rtEvDatalist({ pickupDate:'', eventId }, 'dl-rvev-new')}</span></label>
+      <div class="field">Renginiai <span id="rn_evw"></span></div>
       <label class="field">Pastabos<textarea id="rn_notes" rows="2"></textarea></label>
       ${eqPhotosHtml('rentals', r)}
     </div>
@@ -31798,22 +32018,10 @@ function openRentalNewModal(eventId){
       <button type="button" class="btn primary" id="rn_save">💾 Išsaugoti</button>
     </div>`);
   const $ = id=>document.getElementById(id);
-  if($('rn_pd')) $('rn_pd').addEventListener('change', ()=>{ const h = $('rn_evdl'); if(h) h.innerHTML = rtEvDatalist({ pickupDate:$('rn_pd').value, eventId:null }, 'dl-rvev-new'); });   // the events list follows the rental's day
+  r.list = [{ id:uid('ri'), name:'', qty:'', note:'' }]; rtEvsOwn(r);
+  rtItemsDatalist(); $('rn_listw').innerHTML = rtListHtml(r, { plain:true }); $('rn_evw').innerHTML = rtEvsHtml(r);
+  if($('rn_pd')) $('rn_pd').addEventListener('change', ()=>{ r.pickupDate = $('rn_pd').value; rtEvsRedraw(r); });   // the events list follows the rental's day
   document.querySelector('#modalRoot').classList.add('rt-modal');
-  const nl = [{ id:uid('ri'), name:'', qty:1, note:'' }];
-  const nlDraw = focus=>{ $('rn_list').innerHTML = nl.map(it=>`<div class="rti" data-ni="${esc(it.id)}"><div class="rti-main">
-      <input type="text" class="rti-name" data-nk="name" data-combo="dl-rtitems" autocomplete="off" value="${esc(it.name)}" placeholder="Daiktas, pvz. 16A dėžutė" aria-label="Daiktas">
-      <span class="rti-qty"><input type="number" min="0" step="any" inputmode="decimal" data-nk="qty" value="${esc(String(it.qty))}" placeholder="0" aria-label="Vienetai"><small>vnt.</small></span>
-      <input type="text" class="rti-note" data-nk="note" value="${esc(it.note)}" placeholder="Komentaras (nebūtina)" aria-label="Komentaras">
-      <button type="button" class="rti-b rti-x" data-nx title="Pašalinti" aria-label="Pašalinti">✕</button></div></div>`).join('');
-    if(focus){ const f = $('rn_list').querySelector('[data-ni="'+CSS.escape(focus)+'"] .rti-name'); if(f) f.focus(); } };
-  const nlAdd = ()=>{ const last = nl[nl.length-1]; if(last && !last.name.trim()){ nlDraw(last.id); return; } const it = { id:uid('ri'), name:'', qty:1, note:'' }; nl.push(it); nlDraw(it.id); };
-  rtItemsDatalist(); nlDraw();
-  $('rn_add').onclick = nlAdd;
-  $('rn_list').addEventListener('input', e=>{ const row = e.target.closest('[data-ni]'), k = e.target.dataset.nk; if(!row || !k) return; const it = nl.find(x=>x.id===row.dataset.ni); if(it) it[k] = k==='qty' ? (e.target.value==='' ? '' : +e.target.value) : e.target.value; });
-  $('rn_list').addEventListener('keydown', e=>{ if(e.key!=='Enter' || !e.target.dataset.nk || (comboInput===e.target && comboIdx>=0)) return; e.preventDefault(); const row = e.target.closest('[data-ni]'), i = nl.findIndex(x=>x.id===row.dataset.ni);
-    if(i < nl.length-1){ const n = $('rn_list').querySelector('[data-ni="'+CSS.escape(nl[i+1].id)+'"] .rti-name'); if(n) n.focus(); } else nlAdd(); });
-  $('rn_list').addEventListener('click', e=>{ const x = e.target.closest('[data-nx]'); if(!x) return; const row = x.closest('[data-ni]'), i = nl.findIndex(y=>y.id===row.dataset.ni); if(i>=0) nl.splice(i, 1); if(!nl.length) nl.push({ id:uid('ri'), name:'', qty:1, note:'' }); nlDraw(); });
   $('rn_seg').addEventListener('click', e=>{ const b = e.target.closest('[data-st]'); if(!b) return; r.status = b.dataset.st; $('rn_seg').innerHTML = seg(); });
   $('rn_place').addEventListener('change', ()=>{
     const sp = evOpts().suppliers.find(x=>x.name===$('rn_place').value);
@@ -31821,15 +32029,16 @@ function openRentalNewModal(eventId){
   });
   $('rn_cancel').onclick = async ()=>{ await eqDiscardPending('rentals', r); closeModal(); };
   $('rn_save').onclick = ()=>{
-    const list = nl.filter(i=>String(i.name||'').trim()).map(i=>({ id:i.id, name:i.name.trim(), qty:i.qty, note:String(i.note||'').trim() }));
+    const list = rtListOwn(r).filter(i=>String(i.name||'').trim()).map(i=>Object.assign(i, { name:i.name.trim(), note:String(i.note||'').trim() }));
     const items = rtItemsText(list);
-    if(!items){ toast('Įrašyk bent vieną daiktą, kurį reikia paimti.'); nlDraw(nl[0].id); return; }
+    if(!items){ toast('Įrašyk bent vieną daiktą, kurį reikia paimti.'); rtListRedraw(r, rtListOwn(r)[0] && rtListOwn(r)[0].id); return; }
     if(r.status!=='reikia' && !eqPhotosReady(r)){ eqNeedPhotosToast('rentals'); const ph = document.querySelector('#modalRoot .eq-photos'); if(ph){ ph.scrollIntoView({block:'center'}); ph.classList.add('eq-flash'); setTimeout(()=>ph.classList.remove('eq-flash'), 1800); } return; }
     delete EQ_PENDING[r.id];
     list.forEach(i=>rtRememberItem(i.name));
     Object.assign(r, { items, list, place:$('rn_place').value.trim(), address:$('rn_address').value.trim(), contact:$('rn_contact').value.trim(),
       person:$('rn_person').value.trim(), pickupDate:$('rn_pd').value, pickupTime:$('rn_pt').value, returnDate:$('rn_rd').value, returnTime:$('rn_rt').value,
-      eventId:(()=>{ const v = $('rn_event').value.trim(); if(!v) return null; const e = rtEvFind(v, $('rn_pd').value) || rtEvFind(v, ''); return e ? e.id : null; })(), notes:$('rn_notes').value.trim() });
+      notes:$('rn_notes').value.trim() });
+    rtEvsSync(r);
     // new suppliers / people are remembered like in the cards
     if(r.place){
       const sp = evOpts().suppliers.find(x=>x.name.toLowerCase()===r.place.toLowerCase());
@@ -31847,9 +32056,9 @@ function openRentalNewModal(eventId){
       renderRentalList();
       const c = document.querySelector('.rt-card[data-r="'+r.id+'"]');
       if(c){ c.scrollIntoView({block:'center'}); c.classList.add('rt-flash'); setTimeout(()=>c.classList.remove('rt-flash'), 1800); }
-    } else if(evTabOn()){ const ev = EV.events.find(e=>e.id===r.eventId); if(ev) rerenderEventCard(ev); }
+    } else if(evTabOn()){ rtEvs(r).forEach(x=>{ const ev = EV.events.find(e=>e.id===x.id); if(ev) rerenderEventCard(ev); }); }
   };
-  setTimeout(()=>nlDraw(nl[0].id), 50);
+  setTimeout(()=>{ const f = $('rn_listw').querySelector('.rti-name'); if(f) f.focus(); }, 50);
 }
 function rentalRerender(r){
   document.querySelectorAll('.rt-card[data-r="'+CSS.escape(r.id)+'"]').forEach(c=>{
@@ -31903,6 +32112,7 @@ function bindRentalEvents(root){
     if(act==='tel-copy'){ e.stopPropagation(); e.preventDefault(); const ok = await copyText(b.dataset.tel); toast(ok ? 'Nukopijuota: '+b.dataset.tel : 'Nepavyko nukopijuoti – '+b.dataset.tel); return; }
     if(act==='toggle'){ openRentalView(r); return; }   // a tap: the pop-up – items to tick, photos, status
     if(act==='close-edit'){ closeModal(); openRentalView(r); return; }
+    if(act==='pdf'){ rtPdf(r); return; }
     // the status from a list: Paimta, Paimta dalinai (what was not taken is written), Grąžinta (and back to Reikia paimti)
     if(act==='status-menu'){
       e.stopPropagation();
@@ -32009,10 +32219,15 @@ async function eqRemove(kind, rec, side, i){
   eqRerender(kind, rec);
   try{ await stFrom(EQ_BUCKET).remove([x.path]); }catch(e){}
 }
+function eqAllPhotos(rec){
+  const p = eqPhotos(rec), all = [...p.out, ...p.in];
+  if(Array.isArray(rec.list)) rec.list.forEach(it=>(it.photos||[]).forEach(x=>all.push(x)));
+  return all;
+}
 async function eqView(rec, side, i){
-  const list = eqPhotos(rec)[side];
-  const urls = await sbSignedUrls(EQ_BUCKET, list.map(x=>x.path));
-  venLightbox({ photos: urls.map(u=>({ url:u })) }, i);
+  const all = eqAllPhotos(rec), x = (eqPhotos(rec)[side]||[])[i];
+  const urls = await sbSignedUrls(EQ_BUCKET, all.map(y=>y.path));
+  venLightbox({ photos: urls.map(u=>({ url:u })) }, Math.max(0, all.indexOf(x)));
 }
 // one set of listeners for every photo block (cards and pop-ups)
 document.addEventListener('change', e=>{
@@ -32067,6 +32282,7 @@ async function hvLoad(force){
       try{ localStorage.setItem('hvCache', JSON.stringify(HV.list)); }catch(e){}
     }
     HV.loaded = true;
+    appLive();
   })();
   try{ await HV.loading; } finally { HV.loading = null; }
 }
@@ -32878,7 +33094,9 @@ function venLightbox(v, start){
         <button class="btn small" data-lb="x">✕ Uždaryti</button></div>
       ${photos.length>1 ? '<button class="ven-lb-nav prev" data-lb="-1">‹</button><button class="ven-lb-nav next" data-lb="1">›</button>' : ''}`;
   };
+  ['pointerdown', 'mousedown', 'mouseup', 'pointerup'].forEach(t=>box.addEventListener(t, e=>e.stopPropagation()));
   box.addEventListener('click', e=>{
+    e.stopPropagation();
     const b = e.target.closest('[data-lb]');
     if(!b){ if(e.target===box) fadeAway(box); return; }
     if(b.dataset.lb==='x'){ fadeAway(box); return; }
@@ -32888,9 +33106,10 @@ function venLightbox(v, start){
   let x0 = null;
   box.addEventListener('touchstart', e=>{ x0 = e.touches[0].clientX; }, {passive:true});
   box.addEventListener('touchend', e=>{ if(x0===null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if(Math.abs(dx)>50 && photos.length>1){ i = (i + (dx<0?1:-1) + photos.length) % photos.length; show(); } });
-  const onKey = e=>{ if(!document.body.contains(box)){ document.removeEventListener('keydown', onKey); return; }
-    if(e.key==='Escape'){ e.preventDefault(); fadeAway(box); } else if(e.key==='ArrowRight'){ i=(i+1)%photos.length; show(); } else if(e.key==='ArrowLeft'){ i=(i-1+photos.length)%photos.length; show(); } };
-  document.addEventListener('keydown', onKey);
+  const onKey = e=>{ if(!document.body.contains(box) || box.classList.contains('fading')){ document.removeEventListener('keydown', onKey, true); return; }
+    if(e.key==='Escape'){ e.preventDefault(); e.stopImmediatePropagation(); document.removeEventListener('keydown', onKey, true); fadeAway(box); }
+    else if(e.key==='ArrowRight'){ e.stopImmediatePropagation(); i=(i+1)%photos.length; show(); } else if(e.key==='ArrowLeft'){ e.stopImmediatePropagation(); i=(i-1+photos.length)%photos.length; show(); } };
+  document.addEventListener('keydown', onKey, true);
   document.body.appendChild(box); show();
 }
 
@@ -54504,6 +54723,8 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-09 18:30', v:'v744', k:'fix', t:'Gyvi pakeitimai: renginiai, paėmimai, išdavimai, darbų apskaita – kolegos pakeitimai matomi iš karto; nuotraukos – viena eile', f:'Kitų žmonių sukurti, pakeisti ar ištrinti renginiai, paėmimai, išdavimai ir darbai atsiranda be perkrovimo (ne kol rašai – tada akimirką vėliau); atidarytas paėmimo langas atsinaujina; grįžus į programą sąrašas perskaitomas iš naujo. Nuotraukų peržiūroje – visos įrašo nuotraukos iš eilės (išorės, vidaus, daiktų); uždarius peržiūrą (✕ ar Esc) paėmimo / išdavimo langas lieka atidarytas.' },
+  { d:'2026-11-09 18:00', v:'v743', k:'new', t:'Paėmimai: PDF, keli renginiai vienam paėmimui, daiktų priskyrimas renginiui su komentaru; naujo daikto kiekis – tuščias', f:'„⬇ PDF“ – paėmimo lange ir redaguojant. Prie paėmimo galima pridėti kelis renginius; prie kiekvieno – „📦 Priskirti daiktus“ (iš sąrašo pažymi, kurie daiktai tam renginiui) ir komentaras (pvz. „vežti iškart į vietą“). Daikto renginys matomas sąraše, renginių lentelėje – tam renginiui priskirti daiktai. Naujo daikto vienetai nebeįrašomi savaime.' },
   { d:'2026-11-09 16:30', v:'v742', k:'new', t:'Paėmimai ir Išdavimai: rūšiavimas „Data: arčiausia viršuje“ (Paėmimuose – pagal nutylėjimą)', f:'Viršuje – arčiausios dienos data (šiandien, rytoj, vakar…); paimti – pagal paėmimo, jau paimti – pagal grąžinimo datą; be datos – apačioje.' },
   { d:'2026-11-09 16:00', v:'v741', k:'new', t:'Paėmimai: paspaudus – langas paimti (varnelės, nuotraukos, komentarai, būsena); viskas redaguojama per „✎ Redaguoti viską“', f:'Kortelė nebeišsiskleidžia: paspaudus atsidaro langas su pagrindine informacija (data, vieta – Google Maps, telefonas – kopijuoti / skambinti), daiktų sąrašu su varnelėmis, komentarais ir nuotraukomis bei būsena. Visi laukai (daiktai, tiekėjas, datos, atsakingas, renginys) – mygtukas „✎ Redaguoti viską“ atidaro redagavimo langą.' },
   { d:'2026-11-09 14:30', v:'v740', k:'new', t:'Paėmimai: daiktai po vieną – vienetai, komentaras; paimant – varnelė, komentaras ir nuotraukos', f:'Vietoj laisvo teksto – „＋ Pridėti daiktą“: pavadinimas (rašant – sąrašas anksčiau įrašytų daiktų), vienetai ir (jei reikia) komentaras. Paimantis žmogus prie kiekvieno daikto pažymi varnelę, gali parašyti komentarą ir įkelti nuotraukų; kortelėje matyti, kiek paimta (pvz. ✓ 3/5). Senesni įrašai – daiktai paimti iš teksto eilučių.' },
