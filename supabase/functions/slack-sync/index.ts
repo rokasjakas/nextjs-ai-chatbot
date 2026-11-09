@@ -417,6 +417,15 @@ Deno.serve(async (req) => {
       const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn() };
       try { out.team = await team(); } catch (e) { out.team_error = (e as Error).message; return json(out); }
       if (b.event_id) { try { const ev = await loadEvent(String(b.event_id)); out.event = ev ? ev.name : "nerastas"; if (ev) out.sync = await syncEvent(ev, await loadMembers()); } catch (e) { out.sync_error = (e as Error).message; } }
+      // a missing item reported as from the app (the one who saved the rental last)
+      if (b.rental_id && b.item_id) {
+        try {
+          const [rw] = await db<{ updated_by: string | null }[]>(`rentals?select=updated_by&id=eq.${enc(String(b.rental_id))}`);
+          const em = String(rw?.updated_by || "").replace(/^Slack: /, "");
+          const [pr] = em.includes("@") ? await db<{ full_name?: string }[]>(`profiles?select=full_name&email=eq.${enc(em)}`) : [];
+          out.missing = await reportMissing(String(b.rental_id), String(b.item_id), pr?.full_name || em || "programa");
+        } catch (e) { out.missing_error = (e as Error).message; }
+      }
       return json(out);
     }
     const who = await caller(req);
