@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-xOVss0LjfoeT3Q1CsVyc6wpXoB+kF+M12lKGINWTU7s=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-iG7kcdjtd1YHkhttZBkFGsjBCYjdj8/HaVidIQmrqKw=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -25098,7 +25098,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v741';
+const APP_VER = 'v742';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31326,12 +31326,18 @@ async function runEventImport(data){
 function rentalNew(eventId){
   return { id:uid('rt'), status:'reikia', items:'', place:'', address:'', contact:'', pickupDate:'', pickupTime:'', returnDate:'', returnTime:'', notes:'', person:'', eventId: eventId||null, createdAt:new Date().toISOString() };
 }
-var RTQ = { q:'', from:'', to:'', sort:(()=>{ try{ return localStorage.getItem('rtSort')||'status'; }catch(e){ return 'status'; } })() };
+var RTQ = { q:'', from:'', to:'', sort:(()=>{ try{ return localStorage.getItem('rtSort2')||'near'; }catch(e){ return 'near'; } })() };
 // sorting of Paėmimai / Išdavimai: by status and deadline, by date both ways, by company both ways
-const EQ_SORTS = [['status','Pagal būseną ir terminą'],['new','Data: naujausi viršuje'],['old','Data: seniausi viršuje'],['az','Įmonė A–Ž'],['za','Įmonė Ž–A']];
+const EQ_SORTS = [['near','Data: arčiausia viršuje'],['status','Pagal būseną ir terminą'],['new','Data: naujausi viršuje'],['old','Data: seniausi viršuje'],['az','Įmonė A–Ž'],['za','Įmonė Ž–A']];
 function eqSortSelect(id, v){ return `<label class="eq-sort" title="Rūšiuoti">${slIcon('sortlines')}<select id="${id}" aria-label="Rūšiuoti">${EQ_SORTS.map(([k,l])=>`<option value="${k}" ${v===k?'selected':''}>${l}</option>`).join('')}</select></label>`; }
 // rows sorted by `mode`; date(r) gives the record's date, co(r) its company; returns [{ head, rows }]
-function eqSorted(rows, mode, statusCmp, date, co){
+function eqSorted(rows, mode, statusCmp, date, co, near){
+  // the nearest date first (today, tomorrow, yesterday…; the coming one before the past one), no date – last
+  if(mode==='near'){
+    const day = near || date, t = new Date(evToday()+'T12:00:00');
+    const dist = r=>{ const d = day(r); if(!d) return Infinity; const n = Math.round((new Date(String(d).slice(0,10)+'T12:00:00') - t)/864e5); return n >= 0 ? n*2 : -n*2+1; };
+    return [{ head:null, rows:rows.slice().sort((a,b)=>dist(a)-dist(b) || String(day(a)||'').localeCompare(String(day(b)||'')) || String(b.createdAt||'').localeCompare(String(a.createdAt||''))) }];
+  }
   const byDate = (a,b)=>String(date(a)||'').localeCompare(String(date(b)||'')) || String(a.createdAt||'').localeCompare(String(b.createdAt||''));
   const coKey = r=>String(co(r)||'').trim();
   if(mode==='new' || mode==='old'){
@@ -31401,7 +31407,7 @@ function renderRentalsTab(){
   document.getElementById('rtFrom').addEventListener('change', e=>{ RTQ.from = e.target.value; EV.rentalLimit = 100; renderRentalList(); });
   document.getElementById('rtTo').addEventListener('change', e=>{ RTQ.to = e.target.value; EV.rentalLimit = 100; renderRentalList(); });
   document.getElementById('rtDatesT').onclick = e=>e.currentTarget.parentElement.classList.toggle('show-dates');
-  document.getElementById('rtSort').onchange = e=>{ RTQ.sort = e.target.value; try{ localStorage.setItem('rtSort', RTQ.sort); }catch(x){} EV.rentalLimit = 100; renderRentalList(); };
+  document.getElementById('rtSort').onchange = e=>{ RTQ.sort = e.target.value; try{ localStorage.setItem('rtSort2', RTQ.sort); }catch(x){} EV.rentalLimit = 100; renderRentalList(); };
   document.getElementById('rtClear').onclick = ()=>{
     RTQ.q = RTQ.from = RTQ.to = '';
     ['rtQ','rtFrom','rtTo'].forEach(id=>{ document.getElementById(id).value = ''; });
@@ -31433,7 +31439,8 @@ function renderRentalList(){
   const f = EV.rentalFilter;
   const rows = pool.filter(r=> f==='visi' || (f==='aktyvus' ? r.status!=='grazinta' : r.status===f));
   // the one just saved here is shown first (so it is never hidden behind „Rodyti dar“)
-  const groups = eqSorted(rows, RTQ.sort, (a,b)=>rentalSortKey(a).localeCompare(rentalSortKey(b)), r=>r.pickupDate || r.returnDate || '', r=>r.place);
+  const groups = eqSorted(rows, RTQ.sort, (a,b)=>rentalSortKey(a).localeCompare(rentalSortKey(b)), r=>r.pickupDate || r.returnDate || '', r=>r.place,
+    r=>(r.status==='reikia' ? r.pickupDate || r.returnDate : r.returnDate || r.pickupDate) || '');
   if(EV.rtJust && groups.length){ let hit = null; groups.forEach(g=>{ const i = g.rows.findIndex(r=>r.id===EV.rtJust); if(i>=0) hit = g.rows.splice(i, 1)[0]; });
     if(hit){ groups.forEach((g, gi)=>{ if(!g.rows.length && gi) groups.splice(gi, 1); }); groups.unshift({ head:'Ką tik pridėta', rows:[hit] }); } }
   const limit = EV.rentalLimit || 100;
@@ -32166,7 +32173,7 @@ function hvRenderList(){
   const clr = document.getElementById('hvClear'); if(clr) clr.classList.toggle('hidden', !searching);
   const rows = pool.filter(r=>HV.filter==='visi' || (HV.filter==='aktyvus' ? r.status!=='grazinta' : r.status===HV.filter));
   const groups = eqSorted(rows, HV.sort, (a,b)=>(order[a.status]-order[b.status]) || String(a.status==='isduota' ? a.returnDate||'9' : a.issueDate||'9').localeCompare(String(b.status==='isduota' ? b.returnDate||'9' : b.issueDate||'9')) || String(b.createdAt).localeCompare(String(a.createdAt)),
-    r=>r.issueDate || r.returnDate || '', r=>r.client);
+    r=>r.issueDate || r.returnDate || '', r=>r.client, r=>(r.status==='isduota' ? r.returnDate || r.issueDate : r.issueDate || r.returnDate) || '');
   const hidden = searching && HV.filter!=='visi' ? pool.length - rows.length : 0, limit = HV.limit || 100;
   el.innerHTML = (searching ? `<div class="xg-meta">Rasta: <b>${rows.length}</b>${hidden?` · dar ${hidden} kituose skirtukuose — <button class="linklike" id="hvAll">rodyti visus</button>`:''}</div>` : '')
     + (rows.length ? eqGroupsHtml(groups, hvCardHtml, limit) + (rows.length>limit ? `<button class="btn" id="hvMore" style="width:100%;">Rodyti dar (${rows.length-limit})</button>` : '')
@@ -54497,6 +54504,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-09 16:30', v:'v742', k:'new', t:'Paėmimai ir Išdavimai: rūšiavimas „Data: arčiausia viršuje“ (Paėmimuose – pagal nutylėjimą)', f:'Viršuje – arčiausios dienos data (šiandien, rytoj, vakar…); paimti – pagal paėmimo, jau paimti – pagal grąžinimo datą; be datos – apačioje.' },
   { d:'2026-11-09 16:00', v:'v741', k:'new', t:'Paėmimai: paspaudus – langas paimti (varnelės, nuotraukos, komentarai, būsena); viskas redaguojama per „✎ Redaguoti viską“', f:'Kortelė nebeišsiskleidžia: paspaudus atsidaro langas su pagrindine informacija (data, vieta – Google Maps, telefonas – kopijuoti / skambinti), daiktų sąrašu su varnelėmis, komentarais ir nuotraukomis bei būsena. Visi laukai (daiktai, tiekėjas, datos, atsakingas, renginys) – mygtukas „✎ Redaguoti viską“ atidaro redagavimo langą.' },
   { d:'2026-11-09 14:30', v:'v740', k:'new', t:'Paėmimai: daiktai po vieną – vienetai, komentaras; paimant – varnelė, komentaras ir nuotraukos', f:'Vietoj laisvo teksto – „＋ Pridėti daiktą“: pavadinimas (rašant – sąrašas anksčiau įrašytų daiktų), vienetai ir (jei reikia) komentaras. Paimantis žmogus prie kiekvieno daikto pažymi varnelę, gali parašyti komentarą ir įkelti nuotraukų; kortelėje matyti, kiek paimta (pvz. ✓ 3/5). Senesni įrašai – daiktai paimti iš teksto eilučių.' },
   { d:'2026-11-09 13:00', v:'v739', k:'fix', t:'Paėmimai: paėmimo data aiškiai šalia tiekėjo pavadinimo', f:'Sutrauktoje kortelėje data rodoma ryškiu ženkliuku prie tiekėjo („Šiandien“, „Rytoj“ ar „lapkr. 12 d., Kt“ ir laikas); jei paimti jau laikas – raudona.' },
