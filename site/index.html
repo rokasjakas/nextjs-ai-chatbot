@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-XFSIz0IJguaDg9/GjIcQCUZf7LscIf4v6NEATDf7gRk=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-2OuivFBTTbNksQ38rpRDvh9UrbqRrwz6EP5Jcry1Q2w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Qxn1/rAB1ehIwkFK/MdpP5SYqGbDhcPl0qvQVQDSMNE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-2OuivFBTTbNksQ38rpRDvh9UrbqRrwz6EP5Jcry1Q2w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -25158,7 +25158,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v756';
+const APP_VER = 'v757';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26802,7 +26802,7 @@ function slackAdminWire(){
   const on = document.getElementById('admSlOn');
   if(on) on.onclick = async ()=>{ on.disabled = true; if(await sysCfgSave({ on:!slackOn() }, slackOn() ? 'Slack išjungtas' : 'Slack įjungtas', 'slack')){ CFG.slack = { on:!slackOn() }; renderAdminTab(); } else on.disabled = false; };
   document.getElementById('admSlTest').onclick = async ()=>{ out.textContent = 'Tikrinama…';
-    try{ const r = await slackCall('status'); out.innerHTML = r.connected ? `✓ Prijungta: <b>${esc(r.team||'')}</b> (${esc(r.url||'')}), botas <b>${esc(r.bot||'')}</b> · atvirų kanalų: ${r.open||0}${r.on ? '' : ' · <b>išjungta</b> – kanalai nekuriami'}<br><small>Boto ikonos (Material Symbols): <a href="/slack-emoji/" target="_blank" rel="noopener">atsisiųsti ir įkelti į Slack kaip emoji</a></small>` : `<span class="mail-err">${esc(r.error||'neprijungta')}</span>`; }
+    try{ const r = await slackCall('status'); out.innerHTML = r.connected ? `✓ Prijungta: <b>${esc(r.team||'')}</b> (${esc(r.url||'')}), botas <b>${esc(r.bot||'')}</b> · atvirų kanalų: ${r.open||0}${r.on ? '' : ' · <b>išjungta</b> – kanalai nekuriami'}<br><small>Boto ikonos (Material Symbols): <a href="/slack-emoji/ikonos.html" target="_blank" rel="noopener">atsisiųsti ir įkelti į Slack kaip emoji</a></small>` : `<span class="mail-err">${esc(r.error||'neprijungta')}</span>`; }
     catch(e){ out.innerHTML = `<span class="mail-err">${esc(e.message)}</span>`; } };
   const fill = document.getElementById('admSlFill');
   if(fill) fill.onclick = async ()=>{ fill.disabled = true; out.textContent = 'Kuriami kanalai… (gali užtrukti minutę)';
@@ -55058,6 +55058,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-10 02:30', v:'v757', k:'fix', t:'Kiti svetainės puslapiai nebeatidaro programos', f:'Adresas, kuris baigiasi „/“ (pvz. Slack ikonų puslapis), buvo atidaromas kaip programa ir rodė „Duomenų bazės adresas dar nesukonfigūruotas“ – dabar atidaromas pats puslapis.' },
   { d:'2026-11-10 01:50', v:'v756', k:'fix', t:'Prisijungimas: „Nepavyko prisijungti prie duomenų bazės“ atidarius per nuorodą', f:'Programa savo failus (duomenų bazės biblioteką, šriftus, ikonas) visada ima iš svetainės šaknies – nebeprisideda prie nuorodos kelio; jei biblioteka vis tiek neįsikėlė, prisijungiant ji dar kartą įkeliama (ir iš atsarginio šaltinio), o klaidos tekstas paaiškina, ką daryti.' },
   { d:'2026-11-10 01:20', v:'v755', k:'fix', t:'Paėmimai: „Pranešti apie trūkumą“ suveikia iš pirmo karto', f:'Įrašius vienetus ir iškart spaudžiant „📣 Pranešti apie trūkumą“ paspaudimas nebepradingsta (eilutė nebeperpiešiama tą akimirką, kai išeinama iš laukelio).' },
   { d:'2026-11-10 01:00', v:'v754', k:'fix', t:'Paėmimai: grąžinamų vienetų laukelis spalvą keičia iš karto', f:'„Atidėti grąžinimui“ – kol nieko neįrašyta, laukelis pilkas; įrašius visą kiekį – žalias; įrašius mažiau, nei paimta – iškart raudonas ir atsiranda „📣 Pranešti apie trūkumą“ (nebereikia spausti kitur). Tas pats – laikinos nuorodos puslapyje.' },

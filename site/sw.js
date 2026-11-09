@@ -5,7 +5,7 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v756';
+const CACHE = 'es-app-v757';
 const SHELL = ['./vendor/supabase-2.117.2.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png', './fonts/Barlow-Regular.woff2', './fonts/Barlow-Medium.woff2'];
 
 // Cloudflare Pages redirects /index.html to /: a redirected response can't answer a page load (the browser shows
@@ -79,7 +79,9 @@ self.addEventListener('fetch', e=>{
   if(url.origin!==self.location.origin) return;           // Supabase, CDN, fonts: straight to the network
   if(/\.(apk|exe|part\d+)$|\/EventSolutions-Setup\.json$/i.test(url.pathname)) return;   // app downloads: never cached (and never stored as index.html)
   // other pages (the voting page …): from the network, the saved copy only offline
-  if(req.mode==='navigate' && !/\/(index\.html)?$/.test(url.pathname)){
+  // (the app is only the root: a folder's page, e.g. /slack-emoji/, is another page – it used to open the app instead)
+  const root = new URL('./', self.registration.scope).pathname;
+  if(req.mode==='navigate' && url.pathname!==root && url.pathname!==root+'index.html'){
     e.respondWith(fetch(req).then(res=>{ if(res.ok && !res.redirected){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put(url.pathname, copy)); } return res; }).catch(()=>caches.match(url.pathname).then(plain)));
     return;
   }
