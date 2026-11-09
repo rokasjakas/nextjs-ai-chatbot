@@ -370,8 +370,14 @@ async function reportMissing(rentalId: string, itemId: string, by: string): Prom
       { type: "multi_users_select", action_id: "lost_remind", placeholder: { type: "plain_text", text: "🔔 Kam kasdien priminti (asmeniškai)?" } },
     ] },
   ];
-  const p = await slack("chat.postMessage", { channel: ch, text: lines.join("\n"), blocks: JSON.stringify(blocks), unfurl_links: false });
-  if (!p.ok) throw new UserError("Slack žinutės išsiųsti nepavyko: " + p.error);
+  // Slack may refuse a part of the layout: then simpler (without the reminder picker, then without the buttons) – the message goes anyway
+  const why = (x: SlackRes) => String(x.error) + (x.response_metadata ? " " + JSON.stringify(x.response_metadata).slice(0, 400) : "");
+  let p = await slack("chat.postMessage", { channel: ch, text: lines.join("\n"), blocks: JSON.stringify(blocks), unfurl_links: false });
+  const refused: string[] = [];
+  if (!p.ok && /invalid_blocks/.test(String(p.error))) { refused.push(why(p)); p = await slack("chat.postMessage", { channel: ch, text: lines.join("\n"), blocks: JSON.stringify(blocks.slice(0, 2)), unfurl_links: false }); }
+  if (!p.ok && /invalid_blocks/.test(String(p.error))) { refused.push(why(p)); p = await slack("chat.postMessage", { channel: ch, text: lines.join("\n"), unfurl_links: false }); }
+  if (!p.ok) throw new UserError("Slack žinutės išsiųsti nepavyko: " + why(p));
+  if (refused.length) console.error("slack-sync missing: blocks refused", refused.join(" | "));
   const t = await team();
   const lost = { at: new Date().toISOString(), qty: miss, by, ts: String(p.ts), channel: ch, url: `${t.url}archives/${ch}/p${String(p.ts).replace(".", "")}`, status: "", remind: [] as string[] };
   // kept on the item at once (the app's copy follows through realtime / the answer)
@@ -380,7 +386,7 @@ async function reportMissing(rentalId: string, itemId: string, by: string): Prom
     const d = cur.data as { list?: (RItem & { lost?: unknown })[] }; const x = (d.list || []).find((y) => y.id === itemId);
     if (x) { x.lost = lost; await db(`rentals?id=eq.${enc(rentalId)}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ data: d, updated_at: new Date().toISOString(), updated_by: "Slack: " + by }) }); }
   }
-  return { ...lost, missing: miss };
+  return { ...lost, missing: miss, ...(refused.length ? { refused } : {}) };
 }
 // who calls: a signed-in member (their role, and whether they may edit Renginiai)
 async function caller(req: Request): Promise<{ id: string; role: string; level: string; edit: boolean } | null> {
