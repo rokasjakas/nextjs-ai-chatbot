@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-DELWPdZijac8RvhgXxIDZy0/Vvx9rwPWd7Ozde4fpMs=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-hg8wMFZsNgf1EkdDpiZxeAvyBlrXDvuLSIGS5vsY/9U=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bE6LanA8c77Ue4pvO08go2d6v/wQYsqhaf+2vFo6qG0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-2OuivFBTTbNksQ38rpRDvh9UrbqRrwz6EP5Jcry1Q2w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -25149,7 +25149,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v754';
+const APP_VER = 'v755';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31865,7 +31865,9 @@ document.addEventListener('change', e=>{
     else { delete f.it.backByName; delete f.it.backAt; }
     rtSave(f.r); rtListRedraw(f.r); rentalRerender(f.r); return;
   }
-  if(t.dataset.rik==='backQty'){ const f = rtListFind(t); if(!f || !f.it) return; if(t.value!=='' && !f.it.back){ f.it.back = true; f.it.backByName = ACCESS.profile ? teamName(ACCESS.profile) : ''; f.it.backAt = new Date().toISOString(); } rtSave(f.r); rtListRedraw(f.r, f.it.id, '[data-rik="backQty"]'); rentalRerender(f.r); return; }
+  // the units kept: the row is not redrawn here (its colour follows already while typing) – a button pressed right after
+  // leaving the field (e.g. „Pranešti apie trūkumą“) stays the same button and its press is not lost
+  if(t.dataset.rik==='backQty'){ const f = rtListFind(t); if(!f || !f.it) return; if(t.value!=='' && !f.it.back){ f.it.back = true; f.it.backByName = ACCESS.profile ? teamName(ACCESS.profile) : ''; f.it.backAt = new Date().toISOString(); } rtSave(f.r); rtCardOnly(f.r); return; }
 });
 // (capture: before the app's „Enter presses the window's main button“)
 document.addEventListener('keydown', e=>{
@@ -32381,6 +32383,8 @@ function openRentalNewModal(eventId){
   };
   setTimeout(()=>{ const f = $('rn_listw').querySelector('.rti-name'); if(f) f.focus(); }, 50);
 }
+// only the folded card in the list (not the open pop-up)
+function rtCardOnly(r){ document.querySelectorAll('#rtList .rt-card[data-r="'+CSS.escape(r.id)+'"]').forEach(c=>{ const t = document.createElement('div'); t.innerHTML = rentalCardHtml(r); c.replaceWith(t.firstElementChild); }); }
 function rentalRerender(r){
   document.querySelectorAll('.rt-card[data-r="'+CSS.escape(r.id)+'"]').forEach(c=>{
     const t = document.createElement('div'); t.innerHTML = rentalCardHtml(r, c.closest('#rtEditHost') ? 'edit' : ''); const n = t.firstElementChild;
@@ -55045,6 +55049,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-10 01:20', v:'v755', k:'fix', t:'Paėmimai: „Pranešti apie trūkumą“ suveikia iš pirmo karto', f:'Įrašius vienetus ir iškart spaudžiant „📣 Pranešti apie trūkumą“ paspaudimas nebepradingsta (eilutė nebeperpiešiama tą akimirką, kai išeinama iš laukelio).' },
   { d:'2026-11-10 01:00', v:'v754', k:'fix', t:'Paėmimai: grąžinamų vienetų laukelis spalvą keičia iš karto', f:'„Atidėti grąžinimui“ – kol nieko neįrašyta, laukelis pilkas; įrašius visą kiekį – žalias; įrašius mažiau, nei paimta – iškart raudonas ir atsiranda „📣 Pranešti apie trūkumą“ (nebereikia spausti kitur). Tas pats – laikinos nuorodos puslapyje.' },
   { d:'2026-11-10 00:40', v:'v753', k:'new', t:'Paėmimai: „Atidėti grąžinimui“, o „Grąžinta“ – kai parvežta tiekėjui', f:'Prie kiekvieno paimto daikto – „↩ Atidėti grąžinimui“ (telefone galima ir braukti į kairę): palygini su paimant daryta nuotrauka, įrašai vienetus ir spaudi „✓ Atidėta grąžinimui“; trūkstant – „Pranešti apie trūkumą“. Kai daiktai fiziškai parvežti tiekėjui – būsena „Grąžinta tiekėjui“. Tas pats – laikinos nuorodos puslapyje.' },
   { d:'2026-11-10 00:10', v:'v752', k:'new', t:'Paėmimai: paėmimas ir grąžinimas – viename sąraše', f:'Paėmimo lange vienas daiktų sąrašas: paimant – varnelė, komentaras ir nuotrauka. Grąžinant – telefone paimtą daiktą braukite į kairę (kompiuteryje – ↩ prie daikto): matai paimant darytą nuotrauką, įrašai, kiek vienetų grąžinama („Visi“ – visi), komentarą, nuotrauką ir „✓ Grąžinta“. Jei vienetų mažiau – „⚠ Trūksta“ ir „📣 Pranešti apie trūkumą“. Tas pats – laikinos nuorodos puslapyje.' },
