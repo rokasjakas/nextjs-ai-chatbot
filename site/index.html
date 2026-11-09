@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-2YAHKI0P3affsqFpdt9y6C29Lj9mh+nCWzq7hEqs+JY=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-/B7GQL8/wx1iys4WimAG4Qt9NkW2kwMNcTthXU8wBKc=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1467,6 +1467,11 @@ table.xg textarea.xg-vrep{color:var(--danger) !important;background-color:color-
 .rt-more{font-weight:600;font-size:11.5px;color:var(--text-dim);background:rgb(var(--hi-rgb) / .07);border-radius:10px;padding:1px 6px;}
 .rt-meta{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:12.5px;color:var(--text-dim);margin-top:3px;}
 .rt-meta .rt-late{color:var(--danger);font-weight:700;}
+.rt-meta .rt-map{color:var(--accent);text-decoration:none;}
+.rt-meta .rt-map:hover{text-decoration:underline;}
+.rt-tel{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.rt-tb{font:inherit;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:12px;border:1px solid var(--border-2);background:transparent;color:var(--text);cursor:pointer;text-decoration:none;white-space:nowrap;}
+.rt-tb:hover{border-color:var(--accent);}
 .rt-side{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
 .rt-quick{border-color:var(--rs) !important;color:var(--text) !important;white-space:nowrap;}
 .rt-chev{color:var(--text-dim);font-size:14px;width:14px;text-align:center;}
@@ -25032,7 +25037,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v737';
+const APP_VER = 'v738';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -31396,15 +31401,22 @@ function rentalCardHtml(r){
   const when = r.status==='reikia'
     ? (r.pickupDate ? 'Paimti '+rentalShortDate(r.pickupDate, r.pickupTime) : '')
     : (r.returnDate ? 'Grąžinti '+rentalShortDate(r.returnDate, r.returnTime) : (r.pickupDate ? 'Paimta '+rentalShortDate(r.pickupDate) : ''));
+  // the supplier's address and phone (from the card, else as saved for that supplier)
+  const sup = r.place ? (evOpts().suppliers||[]).find(x=>x.name===r.place) : null;
+  const loc = String(r.address || (sup && sup.address) || '').trim();
+  const telM = String(r.contact || (sup && sup.contact) || '').match(/\+?\d[\d\s-]{5,}\d/);
+  const tel = telM ? telM[0].trim() : '';
   const quick = r.status!=='grazinta' ? `<button type="button" class="btn small rt-quick rt-stmenu" data-act="status-menu">Pakeisti statusą ▾</button>` : '';
   const head = `
     <div class="rt-head" data-act="toggle" role="button" tabindex="0" aria-expanded="${open}">
       <span class="rt-badge">${RENTAL_ICON[r.status]||''} ${esc(r.status==='paimta' && r.partial ? 'Paimta dalinai' : st.label)}</span>
       <div class="rt-sum">
-        <div class="rt-what">${esc(lines[0]||'Nauja įranga')}${lines.length>1?` <span class="rt-more">+${lines.length-1}</span>`:''}</div>
+        <div class="rt-what">${r.place ? `🏢 ${esc(r.place)}` : esc(lines[0]||'Nauja įranga')}${!r.place && lines.length>1?` <span class="rt-more">+${lines.length-1}</span>`:''}${r.place && lines.length?` <span class="rt-more" title="${esc(lines.join('\n'))}">${lines.length} poz.</span>`:''}</div>
         <div class="rt-meta">
-          ${r.place?`<span>📍 ${esc(r.place)}</span>`:''}
-          ${when?`<span class="${late||due?'rt-late':''}">🗓 ${esc(when)}</span>`:''}
+          ${r.pickupDate?`<span class="${due?'rt-late':''}">🗓 Paėmimas ${esc(rentalShortDate(r.pickupDate, r.pickupTime))}</span>`:''}
+          ${r.status!=='reikia' && r.returnDate?`<span class="${late?'rt-late':''}">↩ Grąžinti ${esc(rentalShortDate(r.returnDate, r.returnTime))}</span>`:''}
+          ${loc?`<a class="rt-map" data-act="maps" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}" target="_blank" rel="noopener" title="Atidaryti Google Maps">📍 ${esc(loc)}</a>`:''}
+          ${tel?`<span class="rt-tel">📞 ${esc(tel)} <button type="button" class="rt-tb" data-act="tel-copy" data-tel="${esc(tel)}" title="Kopijuoti numerį">⧉ Kopijuoti</button><a class="rt-tb" data-act="tel-call" href="tel:${esc(tel.replace(/[\s-]/g,''))}" title="Skambinti">📞 Skambinti</a></span>`:''}
           ${r.person?`<span>👤 ${esc(r.person)}</span>`:''}
           ${ev?`<span>🎪 ${esc(ev.name||'renginys')}</span>`:''}
           ${eqPhotoCount(r) ? `<span>📷 ${eqPhotoCount(r)}</span>` : r.status==='reikia' ? '<span class="rt-flag">📷 reikės nuotraukų</span>' : ''}
@@ -31575,6 +31587,8 @@ function bindRentalEvents(){
     const r = find(b);
     if(!r) return;
     const act = b.dataset.act;
+    if(act==='maps' || act==='tel-call'){ e.stopPropagation(); return; }   // the link opens by itself, the card stays as it is
+    if(act==='tel-copy'){ e.stopPropagation(); e.preventDefault(); const ok = await copyText(b.dataset.tel); toast(ok ? 'Nukopijuota: '+b.dataset.tel : 'Nepavyko nukopijuoti – '+b.dataset.tel); return; }
     if(act==='toggle'){
       // one card open at a time: the others fold back to their summary
       const opening = !EV.rtOpen[r.id];
@@ -54208,6 +54222,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-09 12:30', v:'v738', k:'new', t:'Paėmimai: sutrauktoje kortelėje – tiekėjas, paėmimo data, vieta ir telefonas', f:'Vietoj įrangos sąrašo matyti iš ko imama, kada paėmimas, adresas (paspaudus atsidaro Google Maps) ir telefonas su mygtukais „Kopijuoti“ ir „Skambinti“. Įranga matoma išskleidus kortelę.' },
   { d:'2026-11-09 10:00', v:'v737', k:'fix', t:'Team tracker: pakeitus pradžią atgaline data – galima nurodyti ir pabaigą', f:'Keičiant vykstančios pamainos pradžią (pvz. pamiršai pažymėti vakar) atsirado laukelis „Pabaiga“: nurodžius pamaina išsaugoma su pradžia ir pabaiga, pakeitimai su komentaru ir vieta matomi istorijoje.' },
   { d:'2026-11-07 03:30', v:'v736', k:'chg', t:'Freelance portalas: be nuorodos į išorinę svetainę', f:'Mokesčių skaičiuoklėje išimta nuoroda į išorinę mokesčių svetainę; liko nuoroda į vmi.lt ir sodra.lt.' },
   { d:'2026-11-07 03:00', v:'v735', k:'fix', t:'Freelance portalas: mokesčių skaičiuoklė pagal 2026 m. tarifus', f:'GPM 5 %, kol metinės apmokestinamos pajamos iki 20 000 €, toliau – kyla iki 20 % (ties 42 500 €), su kreditu; įrašius metines pajamas tarifas apskaičiuojamas. „Kaupiu pensijai“ – VSD 15,52 %. PSD minimumas 80,48 €/mėn. (jei nedraustas kitur).' },
