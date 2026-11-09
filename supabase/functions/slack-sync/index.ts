@@ -67,8 +67,8 @@ const ICONS: [RegExp, string][] = [[/🎉|🎪/g, "ms-event"], [/📅/g, "ms-cal
   [/🔗/g, "ms-link"], [/📎/g, "ms-attach"], [/🔔/g, "ms-bell"], [/⚠️?/g, "ms-warning"], [/📦/g, "ms-package"], [/💬/g, "ms-chat"], [/🔎/g, "ms-search"], [/✅/g, "ms-check"],
   [/📁/g, "ms-folder"], [/⏳/g, "ms-hourglass"]];
 let EMO: Set<string> | null = null, EMO_AT = 0, EMO_INFO: Record<string, unknown> = {};
-async function emojiSet(): Promise<Set<string>> {
-  if (EMO && Date.now() - EMO_AT < 10 * 60e3) return EMO;
+async function emojiSet(force = false): Promise<Set<string>> {
+  if (!force && EMO && Date.now() - EMO_AT < (EMO.size ? 10 * 60e3 : 60e3)) return EMO;   // none yet / a refusal: asked again after a minute
   EMO_AT = Date.now();
   try {
     const r = await fetch("https://slack.com/api/emoji.list", { headers: { Authorization: `Bearer ${E("SLACK_BOT_TOKEN")}` } });
@@ -471,7 +471,7 @@ Deno.serve(async (req) => {
     if (action === "diag") {
       const s2 = E("CRON_SECRET");
       if (!s2 || req.headers.get("x-cron-secret") !== s2) return json({ error: "Unauthorized" }, 401);
-      const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn(), icons: [...await emojiSet()], icons_info: EMO_INFO };
+      const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn(), icons: [...await emojiSet(true)], icons_info: EMO_INFO };
       try { out.team = await team(); } catch (e) { out.team_error = (e as Error).message; return json(out); }
       if (b.event_id) { try { const ev = await loadEvent(String(b.event_id)); out.event = ev ? ev.name : "nerastas"; if (ev) out.sync = await syncEvent(ev, await loadMembers()); } catch (e) { out.sync_error = (e as Error).message; } }
       // a missing item reported as from the app (the one who saved the rental last)

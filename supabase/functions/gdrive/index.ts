@@ -242,8 +242,8 @@ const ICONS: [RegExp, string][] = [[/🎉|🎪/g, "ms-event"], [/📅/g, "ms-cal
   [/🔗/g, "ms-link"], [/📎/g, "ms-attach"], [/🔔/g, "ms-bell"], [/⚠️?/g, "ms-warning"], [/📦/g, "ms-package"], [/💬/g, "ms-chat"], [/🔎/g, "ms-search"], [/✅/g, "ms-check"],
   [/📁/g, "ms-folder"], [/⏳/g, "ms-hourglass"]];
 let EMO: Set<string> | null = null, EMO_AT = 0;
-async function emojiSet(): Promise<Set<string>> {
-  if (EMO && Date.now() - EMO_AT < 10 * 60e3) return EMO;
+async function emojiSet(force = false): Promise<Set<string>> {
+  if (!force && EMO && Date.now() - EMO_AT < (EMO.size ? 10 * 60e3 : 60e3)) return EMO;   // none yet / a refusal: asked again after a minute
   EMO_AT = Date.now();
   try {
     const r = await fetch("https://slack.com/api/emoji.list", { headers: { Authorization: `Bearer ${E("SLACK_BOT_TOKEN")}` } });
