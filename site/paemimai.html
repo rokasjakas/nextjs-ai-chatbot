@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-T4G1qkHy+pbGvmI1ROLNdNdvvh2UL8PHHzqhzM8WZVo=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-g1NUCfIgCo1tbrMlamSs8Zd5axFidXV7BEu9T1Enp2k=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-DELWPdZijac8RvhgXxIDZy0/Vvx9rwPWd7Ozde4fpMs=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-hg8wMFZsNgf1EkdDpiZxeAvyBlrXDvuLSIGS5vsY/9U=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
@@ -74,6 +74,10 @@ input:focus{outline:2px solid var(--accent);outline-offset:0;}
 .rbadge.bad{background:color-mix(in srgb, var(--bad) 25%, transparent);color:var(--bad);}
 .rb{font-weight:800;white-space:nowrap;} .rb.on{border-color:var(--ret);background:color-mix(in srgb, var(--ret) 25%, transparent);}
 .retp{margin-top:8px;padding:8px 0 0 36px;border-top:1px dashed var(--border);display:flex;flex-direction:column;gap:8px;}
+.retp [data-k="backQty"]{transition:border-color .15s, background .15s;}
+.retp.q-ok [data-k="backQty"]{border-color:var(--ok);background:color-mix(in srgb, var(--ok) 16%, transparent);}
+.retp.q-short [data-k="backQty"]{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 16%, transparent);}
+.short-line[hidden]{display:none !important;}
 .retp .phs{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));margin-top:0;}
 @media (max-width:560px){ .retp{padding-left:0;} }
 .short-line{flex:1 1 100%;color:var(--bad);font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
@@ -198,7 +202,7 @@ function itemRow(r, i){
       <label class="btn small file">📷 ${i.photos || ''}<input type="file" accept="image/*" capture="environment" multiple data-up="item"></label>
       ${i.ok && i.okByName ? `<span class="who">✓ ${esc(i.okByName)} · ${esc(when(i.okAt))}</span>` : ''}
     </div>
-    ${open ? `<div class="retp">
+    ${open ? `<div class="retp ${i.backQty==='' || i.backQty==null ? 'q-empty' : miss ? 'q-short' : 'q-ok'}">
       <div><b>↩ Atidėti grąžinimui</b> <span class="dim small">${i.photos ? 'paimant nufotografuota – palygink' : 'paimant nuotraukos nėra'}</span></div>
       ${i.photos ? (shots ? `<div class="phs">${shots.map(p=>`<img src="${esc(p.url)}" data-lb="1" alt="">`).join('')}</div>` : `<button class="btn small" data-a="photos">👁 Rodyti paimant darytas nuotraukas</button>`) : ''}
       <div class="row"><span>Grąžinama</span><input type="number" min="0" step="any" inputmode="decimal" data-k="backQty" value="${esc(i.backQty)}" placeholder="${esc(i.qty)}" aria-label="Grąžinama vnt." style="width:90px;"><span class="dim small">vnt.</span>
@@ -206,9 +210,9 @@ function itemRow(r, i){
         ${i.back ? `<button class="btn small" data-a="retundo">Atšaukti atidėjimą</button>` : `<button class="btn small primary" data-a="retdone">✓ Atidėta grąžinimui</button>`}</div>
       <div class="row"><input type="text" data-k="backNote" value="${esc(i.backNote)}" placeholder="Grąžinant: komentaras" style="flex:1;">
         <label class="btn small file">📷 ${i.backPhotos || ''}<input type="file" accept="image/*" capture="environment" multiple data-up="back"></label></div>
-      ${miss ? `<div class="short-line">⚠ Trūksta ${esc(n(miss))} vnt.
+      <div class="short-line" data-shortline ${miss ? '' : 'hidden'}>⚠ Trūksta <span data-misstxt>${esc(n(miss))} vnt.</span>
         ${i.lost ? `<span class="dim small">📣 Pranešta ${esc(when(i.lost.at))}</span>${i.lost.status ? `<span class="pill">${esc(LOST[i.lost.status]||i.lost.status)}</span>` : ''}` : ''}
-        <button class="btn small ${i.lost?'':'danger'}" data-a="lost">📣 ${i.lost ? 'Pranešti dar kartą' : 'Pranešti apie trūkumą'}</button></div>` : ''}
+        <button class="btn small ${i.lost?'':'danger'}" data-a="lost">📣 ${i.lost ? 'Pranešti dar kartą' : 'Pranešti apie trūkumą'}</button></div>
       ${i.back && i.backByName ? `<span class="who">↩ atidėjo ${esc(i.backByName)} · ${esc(when(i.backAt))}</span>` : ''}
     </div>` : ''}
     </div></div>`;
@@ -305,6 +309,16 @@ document.addEventListener('change', async e=>{
   if(t.dataset.k==='backQty') S.retOpen.add(it.dataset.item);
   const k = t.dataset.k, v = t.type==='checkbox' ? t.checked : t.value;
   save(S.open, { t:'item', item_id:it.dataset.item, set:{ [k]:v } }, k==='okNote' || k==='backNote');
+});
+// the units being typed: grey (nothing yet) / green (all) / red (fewer – „Pranešti apie trūkumą“ shows) at once
+document.addEventListener('input', e=>{
+  const t = e.target; if(t.dataset.k!=='backQty') return;
+  const row = t.closest('[data-item]'), r = S.rentals.find(x=>x.id===S.open), i = r && r.list.find(x=>x.id===row.dataset.item); if(!i) return;
+  const had = +i.qty, raw = String(t.value).trim().replace(',', '.'), v = raw==='' ? null : +raw;
+  const miss = v!=null && isFinite(v) && i.qty!=='' && isFinite(had) && v < had ? Math.round((had-v)*1000)/1000 : 0;
+  const box = row.querySelector('.retp'); if(box){ box.classList.toggle('q-empty', v==null); box.classList.toggle('q-short', !!miss); box.classList.toggle('q-ok', v!=null && !miss); }
+  row.classList.toggle('short', !!miss);
+  const sl = row.querySelector('[data-shortline]'); if(sl){ sl.hidden = !miss; const m = sl.querySelector('[data-misstxt]'); if(m) m.textContent = n(miss)+' vnt.'; }
 });
 // a taken item swiped to the left: its return opens; to the right – closes
 (()=>{ let st = null;
