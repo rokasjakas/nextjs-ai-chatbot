@@ -332,6 +332,18 @@ async function inviteAll(channel: string) {
   const all = await slackMembers();
   for (let i = 0; i < all.length; i += 500) await slack("conversations.invite", { channel, users: all.slice(i, i + 500).join(","), force: true }).catch(() => null);
 }
+function lostPickerBlock(rentalId: string, itemId: string) {
+  return { type: "section", block_id: `lostrm|${rentalId}|${itemId}`.slice(0, 255), text: { type: "mrkdwn", text: "🔔 *Kam kasdien priminti?* (asmeninė žinutė, kol nepažymėta)" },
+    accessory: { type: "multi_users_select", action_id: "lost_remind", placeholder: { type: "plain_text", text: "Pasirink narius" } } };
+}
+// the picker under an earlier message (a reply in its thread)
+async function lostPickerReply(rentalId: string, itemId: string): Promise<Record<string, unknown>> {
+  const [row] = await db<{ data: { list?: RItem[] } }[]>(`rentals?select=data&id=eq.${enc(rentalId)}`);
+  const it = (row?.data?.list || []).find((x) => x.id === itemId) as (RItem & { lost?: { ts?: string; channel?: string } }) | undefined;
+  if (!it?.lost?.ts || !it.lost.channel) throw new UserError("Apie šį daiktą dar nepranešta.");
+  const p = await slack("chat.postMessage", { channel: it.lost.channel, thread_ts: it.lost.ts, text: "Kam kasdien priminti?", blocks: JSON.stringify([lostPickerBlock(rentalId, itemId)]) });
+  return { ok: p.ok, error: p.error, meta: p.response_metadata };
+}
 type RItem = { id: string; name?: string; qty?: number | string; note?: string; ev?: string; back?: boolean; backQty?: number | string; backNote?: string };
 async function reportMissing(rentalId: string, itemId: string, by: string): Promise<Record<string, unknown>> {
   const [row] = await db<{ data: Record<string, unknown> }[]>(`rentals?select=data&id=eq.${enc(rentalId)}`);
@@ -365,10 +377,8 @@ async function reportMissing(rentalId: string, itemId: string, by: string): Prom
       { type: "button", text: { type: "plain_text", text: "❌ Nerasta" }, action_id: "lost_notfound", value: val, style: "danger" },
       { type: "button", text: { type: "plain_text", text: "✅ Grąžinta" }, action_id: "lost_returned", value: val, style: "primary" },
     ] },
-    // who gets a daily reminder (a direct message) until it is marked Rasta / Nerasta / Grąžinta
-    { type: "actions", block_id: `lostrm|${rentalId}|${itemId}`.slice(0, 255), elements: [
-      { type: "multi_users_select", action_id: "lost_remind", placeholder: { type: "plain_text", text: "🔔 Kam kasdien priminti (asmeniškai)?" } },
-    ] },
+    // who gets a daily reminder (a direct message) until it is marked Rasta / Nerasta / Grąžinta (a multi-select: only as a section's accessory)
+    lostPickerBlock(rentalId, itemId),
   ];
   // Slack may refuse a part of the layout: then simpler (without the reminder picker, then without the buttons) – the message goes anyway
   const why = (x: SlackRes) => String(x.error) + (x.response_metadata ? " " + JSON.stringify(x.response_metadata).slice(0, 400) : "");
@@ -429,7 +439,7 @@ Deno.serve(async (req) => {
           const [rw] = await db<{ updated_by: string | null }[]>(`rentals?select=updated_by&id=eq.${enc(String(b.rental_id))}`);
           const em = String(rw?.updated_by || "").replace(/^Slack: /, "");
           const [pr] = em.includes("@") ? await db<{ full_name?: string }[]>(`profiles?select=full_name&email=eq.${enc(em)}`) : [];
-          out.missing = await reportMissing(String(b.rental_id), String(b.item_id), pr?.full_name || em || "programa");
+          out.missing = (b as { picker?: boolean }).picker ? await lostPickerReply(String(b.rental_id), String(b.item_id)) : await reportMissing(String(b.rental_id), String(b.item_id), pr?.full_name || em || "programa");
         } catch (e) { out.missing_error = (e as Error).message; }
       }
       return json(out);

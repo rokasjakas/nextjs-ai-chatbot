@@ -289,7 +289,8 @@ type LostP = { user?: { id?: string; name?: string; username?: string }; message
 // the message again: the reminder picker shows who is chosen; the state line under it
 function lostBlocks(p: LostP, remind: string[] | null, state: string | null): Record<string, unknown>[] {
   const blocks = (p.message?.blocks || []).map((b) => {
-    if (remind && String(b.block_id || "").startsWith("lostrm|")) return { ...b, elements: ((b.elements || []) as Record<string, unknown>[]).map((e) => e.action_id === "lost_remind" ? { ...e, initial_users: remind } : e) };
+    if (remind && String(b.block_id || "").startsWith("lostrm|")) return b.accessory ? { ...b, accessory: { ...(b.accessory as Record<string, unknown>), initial_users: remind } }
+      : { ...b, elements: ((b.elements || []) as Record<string, unknown>[]).map((e) => e.action_id === "lost_remind" ? { ...e, initial_users: remind } : e) };
     return b;
   }).filter((b) => !(state !== null && b.block_id === "lost_state") && !(remind && b.block_id === "lost_rmtxt"));
   if (remind) blocks.push({ type: "context", block_id: "lost_rmtxt", elements: [{ type: "mrkdwn", text: remind.length ? `🔔 Kasdien primenama: ${remind.map((u) => `<@${u}>`).join(", ")} – kol nepažymėta Rasta / Nerasta / Grąžinta` : "🔔 Kasdien niekam nepriminama." }] });
