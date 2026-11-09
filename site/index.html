@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Qxn1/rAB1ehIwkFK/MdpP5SYqGbDhcPl0qvQVQDSMNE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-2OuivFBTTbNksQ38rpRDvh9UrbqRrwz6EP5Jcry1Q2w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-MgLFAK1+yFcwYy6kE84ZpTbNUFa0jRTEMYy7GWi0jUA=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-2OuivFBTTbNksQ38rpRDvh9UrbqRrwz6EP5Jcry1Q2w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -2220,6 +2220,14 @@ body:has(#app.hidden) .pwa-bar{bottom:calc(12px + env(safe-area-inset-bottom,0px
 .cal-mt-act{gap:6px;margin-top:4px;}
 .cal-td{font-size:13px;border-left:3px solid #50AD97;padding:4px 0 4px 10px;margin:6px 0;}
 .modal.cal-modal{max-width:620px;}
+.mt-scope{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:4px;}
+.mt-sc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;padding:8px 10px;border-radius:var(--radius);border:1px solid var(--border-2);background:transparent;color:var(--text);cursor:pointer;}
+.mt-sc small{color:var(--text-dim);font-size:11.5px;line-height:1.3;}
+.mt-sc.on{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 14%, transparent);}
+.mt-sc:disabled{opacity:.45;cursor:default;}
+.mt-sc-note{display:block;margin-top:4px;}
+.cal-mt-kind{font-weight:700;}
+@media (max-width:640px){ .mt-scope{grid-template-columns:1fr;} }
 .mt-members{display:flex;flex-direction:column;gap:2px;max-height:200px;overflow:auto;border:1px solid var(--border);border-radius:8px;padding:4px;}
 .mt-members small{color:var(--text-dim);}
 .mt-when input{min-width:0;width:100%;box-sizing:border-box;}
@@ -24809,11 +24817,12 @@ function calMeetingHtml(m, full){
   const who = calWho(m), me = teamMe(), org = m.created_by===me ? 'Tu' : teamShort(teamMember(m.created_by));
   return `<div class="cal-mt" data-mt="${esc(m.id)}">
     <div class="cal-mt-h"><b>${esc(m.title)}</b><span class="cal-mt-time">🕐 ${esc(calTime(m))}</span></div>
+    ${m.scope==='all' ? '<div class="cal-mt-row cal-mt-kind">👥 Bendras – visa komanda · Slack #general</div>' : m.scope==='private' ? '<div class="cal-mt-row cal-mt-kind">🔒 Privatus · uždaras Slack kanalas</div>' : ''}
     ${full ? `<div class="cal-mt-row">📅 ${esc(calDayLabel(m.meet_date, true))}</div>` : ''}
     ${m.location ? `<div class="cal-mt-row">📍 ${esc(m.location)}</div>` : ''}
     ${m.description ? `<div class="cal-mt-desc">${esc(m.description)}</div>` : ''}
     <div class="cal-mt-row">👤 Organizatorius: ${esc(org)}</div>
-    ${who.length ? `<div class="cal-mt-row">👥 ${esc(who.join(', '))}</div>` : ''}
+    ${who.length ? `<div class="cal-mt-row">👥 ${m.scope==='all' ? 'Visa komanda ('+who.length+')' : esc(who.join(', '))}</div>` : ''}
     ${m.online ? `<div class="cal-mt-row">💻 Online susitikimas${full && m.conversation_id ? ` <button class="btn small primary" data-mchat="${esc(m.conversation_id)}">💬 Pokalbis ir skambutis</button>` : ''}</div>` : ''}
     ${full && (m.emails||[]).length ? `<div class="cal-mg" data-mg="${esc(m.id)}"><small class="muted">Kraunami atsakymai…</small></div>` : ''}
     ${full && m.online ? `<label class="field cal-mt-notes">📝 Bendri užrašai <small class="muted">— mato ir svečiai; išsiunčiami su santrauka</small><textarea rows="4" data-mnotes="${esc(m.id)}" placeholder="Darbotvarkė, sprendimai, kas ką daro…">${esc(m.notes||'')}</textarea></label>` : ''}
@@ -24898,9 +24907,14 @@ async function calGuestsLoad(list){
 const CAL_EMAIL_RE = /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/;
 function calMeetingForm(m, iso){
   const editing = !!m, me = teamMe();
-  m = m || { title:'', meet_date:iso||calISO(new Date()), start_time:'', end_time:'', location:'', description:'', attendees:[], emails:[] };
+  m = m || { title:'', meet_date:iso||calISO(new Date()), start_time:'', end_time:'', location:'', description:'', attendees:[], emails:[], scope:'' };
+  let scope = m.scope || '';
   const members = TEAM.members.filter(x=>x.id!==me).sort((a,b)=>teamName(a).natCmp(teamName(b)));
   openModal(`<h3 style="margin:0 0 10px;">${editing ? '✎ Redaguoti įvykį' : '📅 Naujas susitikimas / įvykis'}</h3>
+    <div class="field"><span>Kokio tipo</span>
+      <div class="mt-scope" role="radiogroup">${[['', '📅 Įprastas', 'Tik pasirinkti nariai ir el. paštai, be Slack'], ['all', '👥 Bendras', 'Visa komanda: laiškas visiems (į Google kalendorių), Slack #general pranešimas su @channel ir priminimai'], ['private', '🔒 Privatus', 'Pasirinkti nariai: laiškai, uždaras Slack kanalas su jais ir priminimai ten']]
+        .map(([k, t, h])=>`<button type="button" class="mt-sc ${scope===k?'on':''}" data-sc="${k}" ${editing && (m.scope||'')!==k && (m.scope||'') ? 'disabled' : ''} title="${esc(h)}"><b>${t}</b><small>${esc(h)}</small></button>`).join('')}</div>
+      <small class="section-sub mt-sc-note" id="mtScNote"></small></div>
     <label class="field">Tema<input type="text" id="mtTitle" value="${esc(m.title)}" placeholder="pvz. Susitikimas su klientu" maxlength="200"></label>
     <div class="grid cols-3 mt-when" style="gap:10px;">
       <label class="field">Data<input type="date" id="mtDate" value="${esc(m.meet_date)}"></label>
@@ -24909,7 +24923,7 @@ function calMeetingForm(m, iso){
     </div>
     <label class="field">Vieta (nebūtina)<input type="text" id="mtLoc" value="${esc(m.location||'')}" placeholder="pvz. Terminalo g. 8 arba Teams"></label>
     <label class="field">Trumpas aprašymas<textarea id="mtDesc" rows="3" placeholder="Ką aptarsime, ką atsinešti…">${esc(m.description||'')}</textarea></label>
-    <div class="field"><span>Nariai <small class="section-sub" style="margin:0;">— gaus pranešimą programėlėje ir matys kalendoriuje</small></span>
+    <div class="field" id="mtMembersBox"><span>Nariai <small class="section-sub" style="margin:0;">— gaus pranešimą programėlėje ir matys kalendoriuje</small></span>
       <input type="search" id="mtQ" placeholder="Ieškoti nario…" style="margin:4px 0 6px;">
       <div class="mt-members">${members.map(x=>`<label class="chat-pick" data-s="${esc(normalizeText(teamName(x)+' '+(x.nickname||'')))}"><input type="checkbox" value="${esc(x.id)}" ${(m.attendees||[]).includes(x.id)?'checked':''}>${teamAvatar(x, 28, true)}<span><b>${esc(teamName(x))}</b>${x.job_title?` <small>${esc(x.job_title)}</small>`:''}</span></label>`).join('') || '<div class="section-sub">Kitų narių nėra.</div>'}</div>
     </div>
@@ -24921,6 +24935,15 @@ function calMeetingForm(m, iso){
   document.getElementById('modalRoot').classList.add('cal-modal');
   teamFillImages(document.getElementById('modalRoot'));
   document.getElementById('mtX').onclick = closeModal;
+  // the kind: common – everyone (no picking), private – chosen members (a private Slack channel)
+  const scDraw = ()=>{
+    document.querySelectorAll('.mt-sc').forEach(b=>b.classList.toggle('on', b.dataset.sc===scope));
+    document.getElementById('mtMembersBox').classList.toggle('hidden', scope==='all');
+    document.getElementById('mtScNote').innerHTML = scope==='all' ? `Kviečiami visi programos nariai (${members.length + 1}). Laiškas su kvietimu į kalendorių, Slack #general – pranešimas visiems ir priminimai: dieną prieš 10:00, tą dieną 1 val., 30, 15 ir 5 min. prieš.`
+      : scope==='private' ? 'Pažymėk narius žemiau. Jiems – laiškas su kvietimu į kalendorių; Slack’e sukuriamas uždaras kanalas su jais, ten – pranešimas ir tie patys priminimai.' : '';
+  };
+  document.querySelectorAll('.mt-sc').forEach(b=>b.onclick = ()=>{ if(b.disabled) return; scope = b.dataset.sc; scDraw(); });
+  scDraw();
   document.getElementById('mtQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); document.querySelectorAll('.mt-members [data-s]').forEach(l=>l.classList.toggle('hidden', !!q && !l.dataset.s.includes(q))); srchSortDom(document.querySelectorAll('.mt-members [data-s]'), q, l=>l.dataset.s); });
   if(!EV_TOUCH) document.getElementById('mtTitle').focus();
   const was = editing ? { d:m.meet_date, f:calHM(m.start_time), t:calHM(m.end_time), l:m.location||'' } : null;
@@ -24939,13 +24962,15 @@ function calMeetingForm(m, iso){
     const emails = [...new Set(v('mtEmails').split(/[\s,;]+/).map(x=>x.trim().toLowerCase()).filter(Boolean))];
     const bad = emails.find(e=>!CAL_EMAIL_RE.test(e)); if(bad){ toast('Netinkamas el. paštas: '+bad); return; }
     const row = { title, meet_date:date, start_time:from||null, end_time:to||null, location:v('mtLoc'), description:v('mtDesc'),
-      attendees:Array.from(document.querySelectorAll('.mt-members input:checked')).map(i=>i.value), emails, updated_at:new Date().toISOString() };
+      attendees:scope==='all' ? members.map(x=>x.id) : Array.from(document.querySelectorAll('.mt-members input:checked')).map(i=>i.value), emails, updated_at:new Date().toISOString() };
+    if(scope==='private' && !row.attendees.length){ toast('Privačiam susitikimui pažymėk bent vieną narį.'); return; }
+    if(scope || m.scope) row.scope = scope;
     const online = document.getElementById('mtOnline').checked;
     if(online || m.online) row.online = online;
     const btn = document.getElementById('mtSave'); btn.disabled = true; btn.textContent = 'Siunčiama…';
     const sb = getSb();
     const res = editing ? await sb.from('meetings').update(row).eq('id', m.id).select().single() : await sb.from('meetings').insert(row).select().single();
-    if(res.error){ toast(/online/.test(res.error.message) ? 'Online susitikimams reikia atnaujinti duomenų bazę (guest_meetings.sql).' : 'Nepavyko: '+res.error.message); btn.disabled = false; btn.textContent = editing ? '💾 Išsaugoti' : '📨 Išsaugoti ir siųsti pakvietimus'; return; }
+    if(res.error){ toast(/online/.test(res.error.message) ? 'Online susitikimams reikia atnaujinti duomenų bazę (guest_meetings.sql).' : /scope/.test(res.error.message) ? 'Bendriems / privatiems susitikimams reikia atnaujinti duomenų bazę (meetings_slack.sql).' : 'Nepavyko: '+res.error.message); btn.disabled = false; btn.textContent = editing ? '💾 Išsaugoti' : '📨 Išsaugoti ir siųsti pakvietimus'; return; }
     const mode = editing && document.getElementById('mtNotifyAll').checked ? 'update' : 'new';
     const r = (row.attendees.length || emails.length || online) ? await notifyCall({ kind:'meeting', meeting_id:res.data.id, mode }) : { members:0, mailed:0 };
     closeModal();
@@ -24954,6 +24979,7 @@ function calMeetingForm(m, iso){
       const parts = [];
       if(r.members) parts.push(ltPlural(r.members,'nariui','nariams','narių'));
       if(r.mailed) parts.push(r.mailed+' el. paštu');
+      if(scope) parts.push(scope==='all' ? 'Slack #general' : 'Slack uždaras kanalas');
       toast(parts.length ? '📨 Pakvietimai išsiųsti: '+parts.join(', ')+'.' + ((r.failed||[]).length ? ' Nepavyko: '+r.failed.join(', ') : '') : (editing ? 'Įvykis atnaujintas.' : 'Įvykis įrašytas į kalendorių.'));
     }
     const d = calParse(date); CAL.month = new Date(d.getFullYear(), d.getMonth(), 1);
@@ -25158,7 +25184,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v757';
+const APP_VER = 'v758';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -55058,6 +55084,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-10 03:30', v:'v758', k:'new', t:'Kalendorius: bendri ir privatūs susitikimai su Slack', f:'Kalendoriuje paspaudus datą → „+ Susitikimas“ → tipas. 👥 Bendras – kviečiama visa komanda: laiškas visiems su kvietimu į Google kalendorių, Slack #general – pranešimas su @channel, priminimai: dieną prieš 10:00, tą dieną 1 val., 30, 15 ir 5 min. prieš. 🔒 Privatus – pasirinkti nariai: laiškai, Slack’e sukuriamas uždaras kanalas su jais, ten – pranešimas ir tie patys priminimai. Pakeitus – pranešama iš naujo, atšaukus – pranešama (privatus kanalas archyvuojamas).' },
   { d:'2026-11-10 02:30', v:'v757', k:'fix', t:'Kiti svetainės puslapiai nebeatidaro programos', f:'Adresas, kuris baigiasi „/“ (pvz. Slack ikonų puslapis), buvo atidaromas kaip programa ir rodė „Duomenų bazės adresas dar nesukonfigūruotas“ – dabar atidaromas pats puslapis.' },
   { d:'2026-11-10 01:50', v:'v756', k:'fix', t:'Prisijungimas: „Nepavyko prisijungti prie duomenų bazės“ atidarius per nuorodą', f:'Programa savo failus (duomenų bazės biblioteką, šriftus, ikonas) visada ima iš svetainės šaknies – nebeprisideda prie nuorodos kelio; jei biblioteka vis tiek neįsikėlė, prisijungiant ji dar kartą įkeliama (ir iš atsarginio šaltinio), o klaidos tekstas paaiškina, ką daryti.' },
   { d:'2026-11-10 01:20', v:'v755', k:'fix', t:'Paėmimai: „Pranešti apie trūkumą“ suveikia iš pirmo karto', f:'Įrašius vienetus ir iškart spaudžiant „📣 Pranešti apie trūkumą“ paspaudimas nebepradingsta (eilutė nebeperpiešiama tą akimirką, kai išeinama iš laukelio).' },

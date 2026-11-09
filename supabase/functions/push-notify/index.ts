@@ -63,6 +63,7 @@ type Profile = {
   full_name: string | null;
   nickname: string | null;
   email: string;
+  google_email?: string | null;
   notify_prefs: Prefs | null;
 };
 type Prefs = {
@@ -561,6 +562,7 @@ type Meeting = {
   location: string; description: string; attendees: string[]; emails: string[];
   notified: { users?: string[]; emails?: string[]; seq?: number } | null; created_by: string;
   online?: boolean; conversation_id?: string | null; notes?: string; summary_sent_at?: string | null;
+  scope?: string; slack?: Record<string, unknown> | null;
 };
 type Guest = { id: string; meeting_id: string; email: string; name: string | null; token: string; status: string };
 const APP = () => (Deno.env.get("APP_URL") || "https://app.eventsolutions.lt").replace(/\/$/, "");
@@ -615,6 +617,17 @@ export function meetingIcs(m: Meeting, organizer: { name: string; email: string 
     "STATUS:" + (cancel ? "CANCELLED" : "CONFIRMED"), "END:VEVENT", "END:VCALENDAR", "",
   ].filter((l, i, a) => l !== "" || i === a.length - 1).map(icsFold).join("\r\n");
 }
+// the invitation for one member's calendar: METHOD:REQUEST with them as the attendee – Gmail / Google Calendar puts it in
+export function meetingIcsFor(m: Meeting, organizer: { name: string; email: string }, who: { name: string; email: string }, cancel: boolean, seq: number): string {
+  const base = meetingIcs(m, organizer, cancel, seq).split("\r\n");
+  const out: string[] = [];
+  for (const l of base) {
+    if (l.startsWith("METHOD:")) { out.push("METHOD:" + (cancel ? "CANCEL" : "REQUEST")); continue; }
+    if (l === "END:VEVENT") out.push(icsFold(`ATTENDEE;CN=${icsText(who.name || who.email)};ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${who.email}`));
+    out.push(l);
+  }
+  return out.join("\r\n");
+}
 const escHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 // the guest's own buttons: answer, and (online meeting) the meeting page with chat, files and the call
 export function guestLinksHtml(token: string, online: boolean): string {
@@ -656,7 +669,8 @@ async function resendMail(to: string, subject: string, html: string, replyTo: st
     body: JSON.stringify({
       from: Deno.env.get("REMINDER_FROM") || Deno.env.get("ACCESS_FROM") || "Event Solutions <onboarding@resend.dev>",
       to: [to], subject, html, reply_to: replyTo || undefined,
-      attachments: [{ filename: "kvietimas.ics", content: b64(new TextEncoder().encode(ics)), content_type: "text/calendar; charset=utf-8" }],
+      // a calendar invitation (REQUEST / CANCEL) says so in its type – Gmail then shows it in Google Calendar
+      attachments: [{ filename: "kvietimas.ics", content: b64(new TextEncoder().encode(ics)), content_type: "text/calendar; charset=utf-8" + (/^METHOD:(REQUEST|CANCEL)$/m.test(ics) ? "; method=" + (ics.match(/^METHOD:(\w+)/m) || [])[1] : "") }],
     }),
   });
   if (!res.ok) throw new Error(`Resend ${res.status}: ${(await res.text()).slice(0, 200)}`);
@@ -665,7 +679,8 @@ async function resendMail(to: string, subject: string, html: string, replyTo: st
 async function onMeeting(uid: string, id: string, mode: string) {
   const [m] = await db<Meeting[]>(`meetings?select=*&id=eq.${encodeURIComponent(id)}`);
   if (!m || m.created_by !== uid) return { sent: 0, skipped: "not your meeting" };
-  const profiles = await db<Profile[]>(`profiles?select=id,role,first_name,last_name,full_name,nickname,email,notify_prefs&role=in.(${APPROVED.join(",")})`);
+  const profiles = await db<Profile[]>(`profiles?select=id,role,first_name,last_name,full_name,nickname,email,google_email,notify_prefs&role=in.(${APPROVED.join(",")})`).catch(() =>
+    db<Profile[]>(`profiles?select=id,role,first_name,last_name,full_name,nickname,email,notify_prefs&role=in.(${APPROVED.join(",")})`));
   const byId = new Map(profiles.map((p) => [p.id, p]));
   const me = byId.get(uid);
   const organizer = name(me);
@@ -708,6 +723,31 @@ async function onMeeting(uid: string, id: string, mode: string) {
       }
     }
   }
+  // a common (whole team) or a private meeting: every invited member gets the e-mail too, with the invitation for their
+  // calendar (Google Calendar adds it), and Slack is told (#general / the private channel; the reminders – slack-sync)
+  let memberMails = 0;
+  const team = m.scope === "all" || m.scope === "private";
+  if (team) {
+    const sent = new Set((notified as { memberMails?: string[] }).memberMails ?? []);
+    const peopleT = m.scope === "all" ? [organizer, "visa komanda"] : people;
+    for (const u of (m.attendees ?? []).filter((x) => x !== uid && byId.has(x) && (all || !sent.has(x)))) {
+      const p = byId.get(u)!, to = String(p.google_email || p.email || "").trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) continue;
+      try {
+        const ics = meetingIcsFor(m, { name: organizer, email: me?.email ?? "" }, { name: name(p), email: to }, mode === "cancel", seq);
+        const subject = (mode === "cancel" ? "Atšaukta: " : mode === "update" ? "Pakeista: " : "Kvietimas: ") + m.title + " · " + when;
+        await resendMail(to, subject, meetingEmailHtml(m, organizer, peopleT, mode, ""), me?.email ?? "", ics);
+        sent.add(u); memberMails++;
+      } catch (err) { console.error("member invite mail", to, (err as Error).message); failed.push(to); }
+    }
+    (notified as { memberMails?: string[] }).memberMails = [...sent];
+    try {
+      const r = await fetch(`${env("SUPABASE_URL")}/functions/v1/slack-sync`, { method: "POST", headers: { "Content-Type": "application/json", "x-cron-secret": env("CRON_SECRET") },
+        body: JSON.stringify({ action: "meeting", meeting_id: m.id, mode }) });
+      const d = await r.json().catch(() => ({})) as { error?: string };
+      if (!r.ok || d.error) failed.push("Slack: " + (d.error || r.status));
+    } catch (err) { failed.push("Slack: " + (err as Error).message); }
+  }
   if (mode === "cancel") {
     await db(`meetings?id=eq.${m.id}`, { method: "DELETE" });
   } else {
@@ -718,10 +758,11 @@ async function onMeeting(uid: string, id: string, mode: string) {
         users: [...new Set([...(notified.users ?? []), ...users])],
         emails: [...new Set([...(notified.emails ?? []), ...okEmails])],
         seq,
+        ...(team ? { memberMails: (notified as { memberMails?: string[] }).memberMails ?? [] } : {}),
       } }),
     });
   }
-  return { members: users.length, pushed: push.sent, mailed, failed };
+  return { members: users.length, pushed: push.sent, mailed: mailed + memberMails, failed };
 }
 
 

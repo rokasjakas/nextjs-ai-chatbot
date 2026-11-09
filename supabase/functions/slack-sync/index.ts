@@ -18,13 +18,17 @@
 // POST {action:"backfill"}           the same, every upcoming event (60 days) – Admin
 // POST {action:"sweep"}              header x-cron-secret: the daily run (archive old, make missing, update)
 // POST {action:"diag", event_id?}    header x-cron-secret: the connection and (optionally) one event synced – the answers as they are
+// POST {action:"meeting", meeting_id, mode}  header x-cron-secret (push-notify): a common / private calendar meeting – #general or a
+//                                    private channel (made, the chosen members invited), the announcement with @channel
+// POST {action:"meet_tick"}         header x-cron-secret (pg_cron, every minute): the meetings' reminders that are due
 // POST {action:"missing_internal", rental_id, item_id, by}  header x-cron-secret: the same from the temporary Paėmimai link (rentals-guest)
 // POST {action:"missing", rental_id, item_id}  member who may edit Paėmimai: a missing item found on the return – a message
 //                                    in #dingę-daiktai (made if there is none, every active member invited) with @channel,
 //                                    buttons Rasta / Nerasta / Grąžinta and „Kam kasdien priminti“ (handled by the gdrive function,
 //                                    Slack's Interactivity URL); the daily run sends those people a direct message until it is marked
 // Secrets: SLACK_BOT_TOKEN (xoxb-…, scopes channels:manage channels:read chat:write users:read users:read.email; emoji:read – the icons;
-//   for #dingę-daiktai also channels:join (a channel made by a person) and im:write (the daily reminders)),
+//   for #dingę-daiktai also channels:join (a channel made by a person) and im:write (the daily reminders);
+//   private meetings: groups:write (a private channel, inviting members)),
 // CRON_SECRET (the daily run). SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are given by Supabase.
 
 const corsHeaders = {
@@ -439,6 +443,134 @@ async function reportMissing(rentalId: string, itemId: string, by: string): Prom
   }
   return { ...lost, missing: miss, ...(refused.length ? { refused } : {}) };
 }
+// ---- Calendar meetings: common (the whole team – #general) and private (chosen members – a private channel) ----
+// the announcement with @channel; reminders: the day before at 10:00, then 1 h, 30, 15 and 5 min. before (meet_tick, every minute)
+type Mt = { id: string; title: string; meet_date: string; start_time: string | null; end_time: string | null; location: string; description: string;
+  attendees: string[]; created_by: string; scope?: string; online?: boolean; slack?: { channel?: string; ts?: string; private?: boolean; sent?: string[]; invited?: string[] } | null };
+const TZ = "Europe/Vilnius";
+const hm5 = (t: string | null) => String(t || "").slice(0, 5);
+function vUtc(date: string, time: string): Date {
+  const [y, mo, d] = date.split("-").map(Number), [h, mi] = time.split(":").map(Number);
+  const guess = Date.UTC(y, mo - 1, d, h, mi);
+  const p = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false })
+    .formatToParts(new Date(guess)).reduce((o, x) => ({ ...o, [x.type]: x.value }), {} as Record<string, string>);
+  return new Date(guess - (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute) - guess));
+}
+const LT_MON = ["sausio", "vasario", "kovo", "balandžio", "gegužės", "birželio", "liepos", "rugpjūčio", "rugsėjo", "spalio", "lapkričio", "gruodžio"];
+const LT_WD = ["sekmadienis", "pirmadienis", "antradienis", "trečiadienis", "ketvirtadienis", "penktadienis", "šeštadienis"];
+function mtWhen(m: Mt): string {
+  const [y, mo, d] = m.meet_date.split("-").map(Number);
+  return `${LT_MON[mo - 1]} ${d} d., ${LT_WD[new Date(Date.UTC(y, mo - 1, d)).getUTCDay()]}${m.start_time ? " · " + hm5(m.start_time) + (m.end_time ? "–" + hm5(m.end_time) : "") : " · visą dieną"}`;
+}
+let GENERAL = "";
+async function generalChannel(): Promise<string> {
+  if (GENERAL) return GENERAL;
+  let cursor = "", found: { id: string; is_member?: boolean } | null = null;
+  for (let k = 0; k < 30 && !found; k++) {
+    const args: Record<string, string | number | boolean> = { limit: 1000, exclude_archived: true, types: "public_channel" }; if (cursor) args.cursor = cursor;
+    const d = await slack("conversations.list", args);
+    if (!d.ok) throw new UserError("Slack kanalų sąrašo gauti nepavyko: " + d.error);
+    found = ((d.channels || []) as { id: string; is_general?: boolean; is_member?: boolean }[]).find((c) => c.is_general) || null;
+    cursor = String(((d.response_metadata || {}) as { next_cursor?: string }).next_cursor || ""); if (!cursor) break;
+  }
+  if (!found) throw new UserError("Nerastas Slack bendras kanalas (#general).");
+  if (!found.is_member) { const j = await slack("conversations.join", { channel: found.id }); if (!j.ok && j.error !== "already_in_channel") throw new UserError("Botas negali prisijungti prie #general: " + j.error); }
+  return GENERAL = found.id;
+}
+// the members' Slack accounts (by their e-mail)
+async function slackIdsOf(userIds: string[]): Promise<{ ids: string[]; missing: string[] }> {
+  if (!userIds.length) return { ids: [], missing: [] };
+  const ps = await db<{ id: string; email: string; full_name?: string; first_name?: string; last_name?: string }[]>(`profiles?select=id,email,full_name,first_name,last_name&id=in.(${userIds.map(enc).join(",")})`);
+  const ids: string[] = [], missing: string[] = [];
+  for (const p of ps) {
+    const r = p.email ? await slack("users.lookupByEmail", { email: p.email }) : { ok: false } as SlackRes;
+    if (r.ok && r.user) ids.push(String((r.user as { id: string }).id)); else missing.push(p.full_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || p.email);
+  }
+  return { ids, missing };
+}
+async function privateChannel(m: Mt): Promise<string> {
+  const base = (`meet-${m.meet_date.slice(5)}-` + norm(m.title).replace(/[^a-z0-9]+/g, "-")).replace(/-+$/, "").slice(0, 70);
+  for (let k = 1; k <= 6; k++) {
+    const name = k === 1 ? base : `${base}-${k}`;
+    const r = await slack("conversations.create", { name, is_private: true });
+    if (r.ok) { const id = (r.channel as { id: string }).id; await slack("conversations.setPurpose", { channel: id, purpose: `${m.title} · ${mtWhen(m)} · iš Event Solutions programos` }).catch(() => null); return id; }
+    if (r.error !== "name_taken") throw new UserError("Privataus Slack kanalo sukurti nepavyko: " + r.error);
+  }
+  throw new UserError("Privataus Slack kanalo sukurti nepavyko (pavadinimas užimtas).");
+}
+async function meetSave(m: Mt, slackPart: Record<string, unknown>) {
+  await db(`meetings?id=eq.${enc(m.id)}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ slack: slackPart }) });
+}
+async function onMeeting(id: string, mode: string): Promise<Record<string, unknown>> {
+  const [m] = await db<Mt[]>(`meetings?select=*&id=eq.${enc(id)}`);
+  if (!m || !["all", "private"].includes(String(m.scope))) return { skipped: "ne bendras / privatus" };
+  if (!(await slackOn())) return { skipped: "Slack išjungtas" };
+  const sl = { ...(m.slack || {}) } as NonNullable<Mt["slack"]>;
+  const [org] = await db<{ full_name?: string; first_name?: string; last_name?: string; email?: string }[]>(`profiles?select=full_name,first_name,last_name,email&id=eq.${enc(m.created_by)}`);
+  const orgName = org ? (org.full_name || [org.first_name, org.last_name].filter(Boolean).join(" ") || org.email || "") : "";
+  const link = `<${APP}/?meeting=${enc(m.id)}|Atidaryti programoje>`;
+  if (mode === "cancel") {
+    if (sl.channel) {
+      await slack("chat.postMessage", { channel: sl.channel, text: `<!channel> ❌ *Atšaukta:* ${md(m.title)} (${md(mtWhen(m))})` });
+      if (sl.private) await slack("conversations.archive", { channel: sl.channel }).catch(() => null);
+    }
+    return { ok: true, cancelled: true };
+  }
+  const out: Record<string, unknown> = {};
+  if (!sl.channel) { sl.channel = m.scope === "all" ? await generalChannel() : await privateChannel(m); sl.private = m.scope === "private"; sl.sent = []; }
+  // a private channel: the chosen members (and the organizer) – the ones added later too
+  if (sl.private) {
+    const { ids, missing } = await slackIdsOf([...new Set([m.created_by, ...(m.attendees || [])])]);
+    const todo = ids.filter((x) => !(sl.invited || []).includes(x));
+    if (todo.length) { const inv = await slack("conversations.invite", { channel: sl.channel, users: todo.join(","), force: true }); if (inv.ok || Array.isArray(inv.errors)) sl.invited = [...new Set([...(sl.invited || []), ...todo])]; else out.invite_error = inv.error; }
+    if (missing.length) out.not_in_slack = missing;
+  }
+  const head = mode === "update" ? "✏️ *Pakeista:*" : m.scope === "all" ? "📅 *Bendras susitikimas:*" : "📅 *Susitikimas:*";
+  const lines = [
+    `<!channel> ${head} *${md(m.title)}*`,
+    `📅 ${md(mtWhen(m))}${m.location ? `  ·  📍 ${md(m.location)}` : ""}${m.online ? "  ·  💻 online" : ""}`,
+    m.description ? `📝 ${md(m.description)}` : "",
+    `👤 Organizatorius: ${md(orgName)}${m.scope === "all" ? "  ·  dalyvauja visa komanda" : ""}`,
+    `✉ Kvietimai išsiųsti el. paštu (įtraukiami į Google kalendorių) · ${link}`,
+    m.start_time ? "🔔 Priminsiu: dieną prieš 10:00, tą dieną 1 val., 30, 15 ir 5 min. prieš." : "🔔 Priminsiu dieną prieš 10:00.",
+  ].filter(Boolean);
+  const p = await slack("chat.postMessage", { channel: sl.channel, text: lines.join("\n"), unfurl_links: false });
+  if (!p.ok) throw new UserError("Slack žinutės išsiųsti nepavyko: " + p.error);
+  sl.ts = String(p.ts);
+  if (mode === "update") sl.sent = [];   // the time may have changed: the reminders again
+  await meetSave(m, sl);
+  return { ok: true, channel: sl.channel, ...out };
+}
+// every minute: the reminders that are due (a missed one more than 15 min. ago is not sent late)
+async function meetTick(): Promise<number> {
+  if (!(await slackOn())) return 0;
+  const from = addDays(today(), -1), to = addDays(today(), 2), now = Date.now();
+  const rows = await db<Mt[]>(`meetings?select=*&meet_date=gte.${from}&meet_date=lte.${to}&scope=in.(all,private)`).catch(() => [] as Mt[]);
+  let n = 0;
+  for (const m of rows) {
+    const sl = m.slack || {}; if (!sl.channel) continue;
+    const start = m.start_time ? vUtc(m.meet_date, hm5(m.start_time)).getTime() : vUtc(m.meet_date, "08:00").getTime();
+    if (now > start) continue;
+    const t = m.start_time ? hm5(m.start_time) : "";
+    const due: [string, number, string][] = [["d1", vUtc(addDays(m.meet_date, -1), "10:00").getTime(), `🔔 Rytoj${t ? " " + t : ""}: *${md(m.title)}*`]];
+    if (m.start_time) {
+      due.push(["h1", start - 60 * 60e3, `🔔 Po valandos (${t}): *${md(m.title)}*`], ["m30", start - 30 * 60e3, `🔔 Po 30 min. (${t}): *${md(m.title)}*`],
+        ["m15", start - 15 * 60e3, `🔔 Po 15 min. (${t}): *${md(m.title)}*`], ["m5", start - 5 * 60e3, `🔔 Po 5 min. prasideda: *${md(m.title)}*`]);
+    }
+    // the ones due now: only the newest is sent (after a pause no pile of reminders); an old one (>10 min.) – none
+    const sent = new Set(sl.sent || []), now_due = due.filter(([k, at]) => !sent.has(k) && now >= at);
+    if (!now_due.length) continue;
+    now_due.forEach(([k]) => sent.add(k));
+    const [, at, text] = now_due.sort((a, b) => b[1] - a[1])[0];
+    if (now - at <= 10 * 60e3) {
+      const where = m.location ? `  ·  📍 ${md(m.location)}` : "";
+      const r = await slack("chat.postMessage", { channel: sl.channel, text: `<!channel> ${text}${where}\n<${APP}/?meeting=${enc(m.id)}|Atidaryti programoje>`, unfurl_links: false });
+      if (r.ok) n++;
+    }
+    await meetSave(m, { ...sl, sent: [...sent] });
+  }
+  return n;
+}
 // who calls: a signed-in member (their role, and whether they may edit Renginiai)
 async function caller(req: Request): Promise<{ id: string; role: string; level: string; edit: boolean } | null> {
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
@@ -484,6 +616,14 @@ Deno.serve(async (req) => {
         } catch (e) { out.missing_error = (e as Error).message; }
       }
       return json(out);
+    }
+    // calendar meetings (push-notify, with the same secret): the announcement / change / cancel; meet_tick – the reminders (cron, every minute)
+    if (action === "meeting" || action === "meet_tick") {
+      const s4 = E("CRON_SECRET");
+      if (!s4 || req.headers.get("x-cron-secret") !== s4) return json({ error: "Unauthorized" }, 401);
+      if (!E("SLACK_BOT_TOKEN")) return json({ ok: true, skipped: "no token" });
+      if (action === "meet_tick") return json({ ok: true, sent: await meetTick() });
+      return json(await onMeeting(String((b as { meeting_id?: string }).meeting_id || ""), String((b as { mode?: string }).mode || "new")));
     }
     // a missing item from the temporary Paėmimai link (rentals-guest, with the same secret): who reported it is given
     if (action === "missing_internal") {
