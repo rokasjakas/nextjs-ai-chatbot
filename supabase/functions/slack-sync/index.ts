@@ -603,7 +603,8 @@ Deno.serve(async (req) => {
     if (action === "diag") {
       const s2 = E("CRON_SECRET");
       if (!s2 || req.headers.get("x-cron-secret") !== s2) return json({ error: "Unauthorized" }, 401);
-      const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn(), icons: [...await emojiSet(true)], icons_info: EMO_INFO };
+      const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn(), icons: [...await emojiSet(true)], icons_info: EMO_INFO,
+        scopes: await fetch("https://slack.com/api/auth.test", { method: "POST", headers: { Authorization: `Bearer ${E("SLACK_BOT_TOKEN")}` } }).then((r) => r.headers.get("x-oauth-scopes") || "").catch(() => "") };
       try { out.team = await team(); } catch (e) { out.team_error = (e as Error).message; return json(out); }
       if (b.event_id) { try { const ev = await loadEvent(String(b.event_id)); out.event = ev ? ev.name : "nerastas"; if (ev) out.sync = await syncEvent(ev, await loadMembers()); } catch (e) { out.sync_error = (e as Error).message; } }
       // a missing item reported as from the app (the one who saved the rental last)
