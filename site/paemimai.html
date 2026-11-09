@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-OpF+Ss/Zxk2J4MwaQSt2dNXwfK+ilLaxAmQrfsSszPM=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-8JlHFktBHHpGlZfCxJczO5Yuh1ozUIFf+lU4nxLt/PE=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-OvUmmshu2TppBTQI9AtiM+0vuoM+FTiWaDwWg13jR4g=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-6j3lfcejilHK6UnjyCV90U9gBL4EsNl5+diSj+Rwtr4=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
@@ -63,6 +63,19 @@ input:focus{outline:2px solid var(--accent);outline-offset:0;}
 .it .sub input[type=text]{flex:1 1 200px;}
 .it .sub input[type=number]{width:84px;flex:0 0 auto;}
 .it .who{flex:1 1 100%;font-size:12px;color:var(--dim);}
+.it{position:relative;overflow:hidden;padding:0;}
+.it > .face{position:relative;padding:8px 10px;background:var(--panel2);transition:transform .2s ease;touch-action:pan-y;}
+.it.ok > .face{background:color-mix(in srgb, var(--ok) 9%, var(--panel2));}
+.it.ret > .face{background:color-mix(in srgb, var(--ret) 14%, var(--panel2));} .it.ret{border-color:color-mix(in srgb, var(--ret) 70%, var(--border));}
+.it.short > .face{background:color-mix(in srgb, var(--bad) 8%, var(--panel2));}
+.it.swiping > .face{transition:none;}
+.it .under{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding-right:16px;background:var(--ret);color:#0b1a16;font-weight:800;font-size:13px;}
+.rbadge{flex:0 0 auto;font-size:12px;font-weight:800;padding:2px 8px;border-radius:12px;background:color-mix(in srgb, var(--ret) 30%, transparent);white-space:nowrap;}
+.rbadge.bad{background:color-mix(in srgb, var(--bad) 25%, transparent);color:var(--bad);}
+.rb{font-weight:800;} .rb.on{border-color:var(--ret);background:color-mix(in srgb, var(--ret) 25%, transparent);}
+.retp{margin-top:8px;padding:8px 0 0 36px;border-top:1px dashed var(--border);display:flex;flex-direction:column;gap:8px;}
+.retp .phs{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));margin-top:0;}
+@media (max-width:560px){ .retp{padding-left:0;} }
 .short-line{flex:1 1 100%;color:var(--bad);font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .file{position:relative;overflow:hidden;}
 .file input{position:absolute;inset:0;opacity:0;cursor:pointer;}
@@ -87,7 +100,7 @@ input:focus{outline:2px solid var(--accent);outline-offset:0;}
 <script>
 const FN = "https://yakmikxkcudwloxruhvx.supabase.co/functions/v1/rentals-guest";
 const TOKEN = (location.hash.slice(1) || new URLSearchParams(location.search).get('t') || '').trim();
-const S = { name:'', rentals:[], exp:'', filter:'aktyvus', q:'', open:null, photos:{}, busy:false };
+const S = { name:'', rentals:[], exp:'', filter:'aktyvus', q:'', open:null, photos:{}, busy:false, retOpen:new Set() };
 try{ S.name = localStorage.getItem('rgName') || ''; }catch(e){}
 const $ = s=>document.querySelector(s);
 const esc = s=>String(s==null ? '' : s).replace(/[&<>"']/g, c=>({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
@@ -168,21 +181,36 @@ function card(r){
   </div>`;
 }
 /* ---- one rental ---- */
-function itemRow(r, i, ret){
-  const miss = ret ? missOf(i) : 0, cls = ret ? (i.back ? 'ok' : '')+(miss ? ' short' : '') : (i.ok ? 'ok' : '');
-  const ev = i.ev ? (r.events.find(e=>e.id===i.ev)||{}).name : '';
+function itemRow(r, i){
+  const miss = missOf(i), open = i.ok && (S.retOpen.has(i.id) || miss > 0), ev = i.ev ? (r.events.find(e=>e.id===i.ev)||{}).name : '';
   const when = t=>t ? new Date(t).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
-  return `<div class="it ${cls}" data-item="${esc(i.id)}" data-ret="${ret?1:0}">
-    <div class="top"><input type="checkbox" class="chk" data-k="${ret?'back':'ok'}" ${(ret ? i.back : i.ok) ? 'checked' : ''} aria-label="${ret?'Grąžinta':'Paimta'}">
-      <span class="nm"><b>${esc(i.name)}</b> ${i.qty!=='' ? `<span class="q">${ret?'paimta ':''}${esc(n(i.qty))} vnt.</span>` : ''} ${ev ? `<span class="ev">🎪 ${esc(ev)}</span>` : ''}${i.note ? `<span class="nt">${esc(i.note)}</span>` : ''}</span></div>
+  const cls = [i.ok ? 'ok' : '', i.back ? 'ret' : '', miss ? 'short' : ''].join(' ');
+  const shots = S.photos[r.id] ? S.photos[r.id].filter(p=>p.side==='item' && p.item===i.id) : null;
+  return `<div class="it ${cls}" data-item="${esc(i.id)}" ${i.ok ? 'data-swipe="1"' : ''}>
+    ${i.ok ? '<div class="under">↩ Grąžinimas</div>' : ''}
+    <div class="face">
+    <div class="top"><input type="checkbox" class="chk" data-k="ok" ${i.ok ? 'checked' : ''} aria-label="Paimta">
+      <span class="nm"><b>${esc(i.name)}</b> ${i.qty!=='' ? `<span class="q">${esc(n(i.qty))} vnt.</span>` : ''} ${ev ? `<span class="ev">🎪 ${esc(ev)}</span>` : ''}${i.note ? `<span class="nt">${esc(i.note)}</span>` : ''}</span>
+      ${i.back ? `<span class="rbadge ${miss?'bad':''}">↩ ${esc(n(i.backQty==='' ? i.qty : i.backQty))}${i.qty!=='' ? '/'+esc(n(i.qty)) : ''}</span>` : ''}
+      ${i.ok ? `<button class="btn small rb ${open?'on':''}" data-a="ret" title="Grąžinimas">↩</button>` : ''}</div>
     <div class="sub">
-      ${ret ? `<input type="number" min="0" step="any" inputmode="decimal" data-k="backQty" value="${esc(i.backQty)}" placeholder="${esc(i.qty)}" aria-label="Grąžinama vnt."><span class="dim small">vnt.</span>` : ''}
-      <input type="text" data-k="${ret?'backNote':'okNote'}" value="${esc(ret ? i.backNote : i.okNote)}" placeholder="${ret ? 'Grąžinant: komentaras' : 'Paimant: komentaras'}">
-      <label class="btn small file">📷 ${(ret ? i.backPhotos : i.photos) || ''}<input type="file" accept="image/*" multiple data-up="${ret?'back':'item'}"></label>
-      ${miss ? `<span class="short-line">⚠ Trūksta ${esc(n(miss))} vnt.
+      <input type="text" data-k="okNote" value="${esc(i.okNote)}" placeholder="Paimant: komentaras">
+      <label class="btn small file">📷 ${i.photos || ''}<input type="file" accept="image/*" capture="environment" multiple data-up="item"></label>
+      ${i.ok && i.okByName ? `<span class="who">✓ ${esc(i.okByName)} · ${esc(when(i.okAt))}</span>` : ''}
+    </div>
+    ${open ? `<div class="retp">
+      <div><b>↩ Grąžinimas</b> <span class="dim small">${i.photos ? 'paimant nufotografuota – palygink' : 'paimant nuotraukos nėra'}</span></div>
+      ${i.photos ? (shots ? `<div class="phs">${shots.map(p=>`<img src="${esc(p.url)}" data-lb="1" alt="">`).join('')}</div>` : `<button class="btn small" data-a="photos">👁 Rodyti paimant darytas nuotraukas</button>`) : ''}
+      <div class="row"><span>Grąžinama</span><input type="number" min="0" step="any" inputmode="decimal" data-k="backQty" value="${esc(i.backQty)}" placeholder="${esc(i.qty)}" aria-label="Grąžinama vnt." style="width:90px;"><span class="dim small">vnt.</span>
+        ${i.qty!=='' ? `<button class="btn small" data-a="retall">Visi (${esc(n(i.qty))})</button>` : ''}
+        ${i.back ? `<button class="btn small" data-a="retundo">Atšaukti</button>` : `<button class="btn small primary" data-a="retdone">✓ Grąžinta</button>`}</div>
+      <div class="row"><input type="text" data-k="backNote" value="${esc(i.backNote)}" placeholder="Grąžinant: komentaras" style="flex:1;">
+        <label class="btn small file">📷 ${i.backPhotos || ''}<input type="file" accept="image/*" capture="environment" multiple data-up="back"></label></div>
+      ${miss ? `<div class="short-line">⚠ Trūksta ${esc(n(miss))} vnt.
         ${i.lost ? `<span class="dim small">📣 Pranešta ${esc(when(i.lost.at))}</span>${i.lost.status ? `<span class="pill">${esc(LOST[i.lost.status]||i.lost.status)}</span>` : ''}` : ''}
-        <button class="btn small ${i.lost?'':'danger'}" data-a="lost">📣 ${i.lost ? 'Pranešti dar kartą' : 'Pranešti apie trūkumą'}</button></span>` : ''}
-      ${(ret ? i.back && i.backByName : i.ok && i.okByName) ? `<span class="who">${ret?'↩':'✓'} ${esc(ret ? i.backByName : i.okByName)} · ${esc(when(ret ? i.backAt : i.okAt))}</span>` : ''}
+        <button class="btn small ${i.lost?'':'danger'}" data-a="lost">📣 ${i.lost ? 'Pranešti dar kartą' : 'Pranešti apie trūkumą'}</button></div>` : ''}
+      ${i.back && i.backByName ? `<span class="who">↩ ${esc(i.backByName)} · ${esc(when(i.backAt))}</span>` : ''}
+    </div>` : ''}
     </div></div>`;
 }
 function renderOne(r){
@@ -203,11 +231,9 @@ function renderOne(r){
         ${r.partial && r.missing ? `<div><span class="k">Nepaimta</span><span class="flag">⚠ ${esc(r.missing)}</span></div>` : ''}
       </div>
     </div>
-    <div class="card"><h2>Daiktai – paėmimas <span class="pill">✓ ${r.list.filter(i=>i.ok).length}/${r.list.length}</span></h2>
-      ${r.list.map(i=>itemRow(r, i, false)).join('') || '<div class="dim">Daiktų nėra.</div>'}</div>
-    ${r.status!=='reikia' ? `<div class="card"><h2>↩ Grąžinimas <span class="pill">${r.list.filter(i=>i.back).length}/${r.list.length}</span></h2>
-      <p class="dim small" style="margin-top:-4px;">Pažymėk grąžinamus; jei randi mažiau – įrašyk, kiek vienetų, ir pranešk apie trūkumą.</p>
-      ${r.list.map(i=>itemRow(r, i, true)).join('')}</div>` : ''}
+    <div class="card"><h2>Daiktai <span class="pill">✓ ${r.list.filter(i=>i.ok).length}/${r.list.length} paimta</span>${r.list.some(i=>i.ok) ? ` <span class="pill">↩ ${r.list.filter(i=>i.back).length}/${r.list.length} grąžinta</span>` : ''}</h2>
+      <p class="dim small" style="margin-top:-4px;">Paimant – pažymėk ir nufotografuok daiktą.${r.list.some(i=>i.ok) ? (matchMedia('(pointer:coarse)').matches ? ' Grąžinant – paimtą daiktą braukite į kairę 👈' : ' Grąžinant – spausk ↩ prie daikto.') + ' Palygink su nuotrauka, įrašyk vienetus; jei trūksta – pranešk.' : ''}</p>
+      ${r.list.map(i=>itemRow(r, i)).join('') || '<div class="dim">Daiktų nėra.</div>'}</div>
     <div class="card"><h2>📷 Nuotraukos</h2>
       <div class="row">
         <label class="btn small file">＋ Išorės (${r.photos.out})<input type="file" accept="image/*" multiple data-up="out"></label>
@@ -256,7 +282,13 @@ document.addEventListener('click', async e=>{
     if(await save(S.open, op)) toast('Būsena pakeista.'); return; }
   const a = t.closest('[data-a]'); if(!a) return;
   const act = a.dataset.a;
-  if(act==='back'){ S.open = null; render(); return; }
+  if(act==='back'){ S.open = null; S.retOpen.clear(); render(); return; }
+  if(act==='ret'){ const id = a.closest('[data-item]').dataset.item; if(S.retOpen.has(id)) S.retOpen.delete(id); else S.retOpen.add(id); render(); return; }
+  if(act==='retall' || act==='retdone'){ const it = a.closest('[data-item]'), id = it.dataset.item, r = S.rentals.find(x=>x.id===S.open), i = r.list.find(x=>x.id===id);
+    const v = act==='retall' || i.backQty==='' ? i.qty : i.backQty;
+    if(await save(S.open, { t:'item', item_id:id, set:{ back:true, backQty:v } }, true)){ const r2 = S.rentals.find(x=>x.id===S.open), i2 = r2.list.find(x=>x.id===id); if(!missOf(i2)) S.retOpen.delete(id); render();
+      if(r2.list.every(x=>x.back)) toast(r2.list.some(x=>missOf(x)) ? 'Visi peržiūrėti – kai kurių trūksta.' : 'Visi daiktai grąžinti – gali pažymėti „Grąžinta“.'); } return; }
+  if(act==='retundo'){ const id = a.closest('[data-item]').dataset.item; save(S.open, { t:'item', item_id:id, set:{ back:false, backQty:'' } }); return; }
   if(act==='reload'){ a.disabled = true; try{ await load(); }catch(x){ toast(x.message); } return; }
   if(act==='rename'){ S.name = ''; gate(''); return; }
   if(act==='photos'){ a.disabled = true; try{ const d = await call('photos', { rental_id:S.open }); S.photos[S.open] = d.photos.filter(p=>p.url); render(); }catch(x){ toast(x.message); a.disabled = false; } return; }
@@ -270,9 +302,22 @@ document.addEventListener('change', async e=>{
   if(t.dataset.up){ const it = t.closest('[data-item]'); const files = [...t.files]; t.value = ''; if(files.length) upload(S.open, t.dataset.up, it ? it.dataset.item : '', files); return; }
   if(t.dataset.k==='noInside'){ save(S.open, { t:'noInside', v:t.checked }); return; }
   const it = t.closest('[data-item]'); if(!it || !t.dataset.k) return;
+  if(t.dataset.k==='backQty') S.retOpen.add(it.dataset.item);
   const k = t.dataset.k, v = t.type==='checkbox' ? t.checked : t.value;
   save(S.open, { t:'item', item_id:it.dataset.item, set:{ [k]:v } }, k==='okNote' || k==='backNote');
 });
+// a taken item swiped to the left: its return opens; to the right – closes
+(()=>{ let st = null;
+  document.addEventListener('touchstart', e=>{ const f = e.target.closest('.it[data-swipe="1"] > .face'); st = null;
+    if(!f || e.target.closest('input, button, label, a') || e.touches.length!==1) return; st = { f, row:f.parentElement, x:e.touches[0].clientX, y:e.touches[0].clientY, dx:0, on:false }; }, { passive:true });
+  document.addEventListener('touchmove', e=>{ if(!st) return; const dx = e.touches[0].clientX - st.x, dy = e.touches[0].clientY - st.y;
+    if(!st.on){ if(Math.abs(dx) < 10) return; if(Math.abs(dy) > Math.abs(dx)){ st = null; return; } st.on = true; st.row.classList.add('swiping'); }
+    st.dx = Math.max(-130, Math.min(130, dx)); st.f.style.transform = `translateX(${Math.min(0, st.dx)}px)`; if(e.cancelable) e.preventDefault(); }, { passive:false });
+  document.addEventListener('touchend', ()=>{ if(!st) return; const { f, row, dx, on } = st; st = null; if(!on) return; f.style.transform = ''; row.classList.remove('swiping');
+    const id = row.dataset.item;
+    if(dx < -60 && !S.retOpen.has(id)){ S.retOpen.add(id); render(); try{ navigator.vibrate && navigator.vibrate(12); }catch(_){} const q = document.querySelector(`.it[data-item="${CSS.escape(id)}"] [data-k="backQty"]`); if(q) q.focus(); }
+    else if(dx > 60 && S.retOpen.has(id)){ S.retOpen.delete(id); render(); } });
+})();
 document.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.matches('.it input[type=text], .it input[type=number]')){ e.preventDefault(); e.target.blur(); } });
 // the list follows what others do (every 30 s while the page is open; not while typing)
 setInterval(()=>{ if(document.hidden || !S.name || !S.rentals.length) return; const a = document.activeElement; if(a && a.matches('input[type=text], input[type=number], input[type=search]')) return; load().catch(()=>{}); }, 30000);
