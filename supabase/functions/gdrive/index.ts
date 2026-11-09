@@ -19,6 +19,7 @@
 //      sees only what it made itself; the folders go into „Renginiai (Event Solutions)“ it makes in that Drive.
 //   b) a Workspace service account: GOOGLE_SA_JSON (its JSON key) and GDRIVE_ROOT_ID (a shared drive's id).
 // Slack: SLACK_BOT_TOKEN (scopes also files:read), SLACK_SIGNING_SECRET.
+// Also the #dingę-daiktai buttons (Paėmimai, from slack-sync „missing“): Rasta / Nerasta / Grąžinta → the rental's item.
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are given by Supabase.
 
 const corsHeaders = {
@@ -282,6 +283,49 @@ async function onFileShared(ev0: { file_id?: string; channel_id?: string; user_i
   ];
   await slack("chat.postMessage", { channel: ev0.channel_id, ...(ts ? { thread_ts: ts } : {}), text: `Kur dėti „${name}“ renginio Google Drive?`, blocks });
 }
+// ---- Paėmimai: #dingę-daiktai buttons (the message from slack-sync) – Rasta / Nerasta / Grąžinta → the item in the app ----
+const LOST_ST: Record<string, [string, string]> = { lost_found: ["found", "🔎 Rasta"], lost_notfound: ["notfound", "❌ Nerasta"], lost_returned: ["returned", "✅ Grąžinta"] };
+type LostP = { user?: { id?: string; name?: string; username?: string }; message?: { ts: string; text?: string; blocks?: Record<string, unknown>[] }; actions?: { action_id: string; value?: string; block_id?: string; selected_users?: string[] }[]; response_url?: string };
+// the message again: the reminder picker shows who is chosen; the state line under it
+function lostBlocks(p: LostP, remind: string[] | null, state: string | null): Record<string, unknown>[] {
+  const blocks = (p.message?.blocks || []).map((b) => {
+    if (remind && String(b.block_id || "").startsWith("lostrm|")) return { ...b, elements: ((b.elements || []) as Record<string, unknown>[]).map((e) => e.action_id === "lost_remind" ? { ...e, initial_users: remind } : e) };
+    return b;
+  }).filter((b) => !(state !== null && b.block_id === "lost_state") && !(remind && b.block_id === "lost_rmtxt"));
+  if (remind) blocks.push({ type: "context", block_id: "lost_rmtxt", elements: [{ type: "mrkdwn", text: remind.length ? `🔔 Kasdien primenama: ${remind.map((u) => `<@${u}>`).join(", ")} – kol nepažymėta Rasta / Nerasta / Grąžinta` : "🔔 Kasdien niekam nepriminama." }] });
+  if (state !== null) blocks.push({ type: "context", block_id: "lost_state", elements: [{ type: "mrkdwn", text: state }] });
+  return blocks;
+}
+async function onLostRemind(p: LostP) {
+  const a = p.actions?.[0]; if (!a) return;
+  const [, r, i] = String(a.block_id || "").split("|");
+  const users = (a.selected_users || []).slice(0, 20);
+  const [row] = await db<{ data: Record<string, unknown> }[]>(`rentals?select=data&id=eq.${enc(r || "")}`);
+  const d = row?.data as { list?: { id: string; lost?: Record<string, unknown> }[] } | undefined;
+  const it = d?.list?.find((x) => x.id === i);
+  if (it && it.lost) { it.lost = { ...it.lost, remind: users }; await db(`rentals?id=eq.${enc(r)}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ data: d, updated_at: new Date().toISOString(), updated_by: "Slack: priminimai" }) }); }
+  if (p.response_url) await fetch(p.response_url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ replace_original: true, text: p.message?.text || "", blocks: lostBlocks(p, users, null) }) });
+}
+async function onLostButton(p: LostP) {
+  const a = p.actions?.[0]; const st = LOST_ST[String(a?.action_id || "")]; if (!a || !st) return;
+  let v: { r?: string; i?: string } = {}; try { v = JSON.parse(a.value || "{}"); } catch { /* bad */ }
+  let who = p.user?.name || p.user?.username || "";
+  try { const u = await slack("users.info", { user: p.user?.id || "" }, true) as { ok: boolean; user?: { real_name?: string; profile?: { real_name?: string; display_name?: string } } }; if (u.ok && u.user) who = u.user.profile?.real_name || u.user.real_name || who; } catch { /* the username then */ }
+  const [row] = await db<{ data: Record<string, unknown> }[]>(`rentals?select=data&id=eq.${enc(v.r || "")}`);
+  const d = row?.data as { list?: { id: string; name?: string; qty?: number | string; back?: boolean; backQty?: number | string; backBy?: string; backByName?: string; backAt?: string; lost?: Record<string, unknown> & { remind?: string[] } }[] } | undefined;
+  const it = d?.list?.find((x) => x.id === v.i);
+  const at = new Date().toISOString();
+  if (it) {
+    it.lost = { ...(it.lost || {}), status: st[0], statusBy: who, statusAt: at };
+    // returned: all the units are back
+    if (st[0] === "returned") { it.back = true; it.backQty = it.qty ?? it.backQty; it.backByName = who; it.backAt = at; }
+    await db(`rentals?id=eq.${enc(v.r || "")}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ data: d, updated_at: at, updated_by: "Slack: " + who }) });
+  }
+  // the message: the same, with what was marked (the buttons stay – it can be changed)
+  const time = new Intl.DateTimeFormat("lt-LT", { timeZone: "Europe/Vilnius", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date());
+  const blocks = lostBlocks(p, it?.lost?.remind ? it.lost.remind as string[] : null, it ? `*${st[1]}* – pažymėjo ${who} · ${time}${st[0] === "returned" ? " (programoje pažymėta grąžinta)" : ""}${(it.lost?.remind || []).length ? " · kasdieniai priminimai sustabdyti" : ""}` : "⚠️ Šis daiktas programoje nebeegzistuoja.");
+  if (p.response_url) await fetch(p.response_url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ replace_original: true, text: p.message?.text || "", blocks }) });
+}
 // a button pressed: the file from Slack straight into that Drive folder (streamed, not kept in memory)
 async function onButton(p: { user?: { name?: string; username?: string }; channel?: { id: string }; message?: { ts: string }; actions?: { value: string }[]; response_url?: string }) {
   let v: { u?: string; k?: string } = {}; try { v = JSON.parse(p.actions?.[0]?.value || "{}"); } catch { /* bad */ }
@@ -370,6 +414,8 @@ Deno.serve(async (req) => {
       if (/x-www-form-urlencoded/.test(ct)) {
         const p = JSON.parse(new URLSearchParams(body).get("payload") || "{}");
         if (p.type === "block_actions" && String(p.actions?.[0]?.action_id || "").startsWith("gd_")) later(onButton(p));
+        if (p.type === "block_actions" && p.actions?.[0]?.action_id === "lost_remind") later(onLostRemind(p));
+        else if (p.type === "block_actions" && String(p.actions?.[0]?.action_id || "").startsWith("lost_")) later(onLostButton(p));
         return new Response("");
       }
       const b = JSON.parse(body || "{}");

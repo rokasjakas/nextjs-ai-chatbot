@@ -18,7 +18,12 @@
 // POST {action:"backfill"}           the same, every upcoming event (60 days) – Admin
 // POST {action:"sweep"}              header x-cron-secret: the daily run (archive old, make missing, update)
 // POST {action:"diag", event_id?}    header x-cron-secret: the connection and (optionally) one event synced – the answers as they are
-// Secrets: SLACK_BOT_TOKEN (xoxb-…, scopes channels:manage channels:read chat:write users:read users:read.email),
+// POST {action:"missing", rental_id, item_id}  member who may edit Paėmimai: a missing item found on the return – a message
+//                                    in #dingę-daiktai (made if there is none, every active member invited) with @channel,
+//                                    buttons Rasta / Nerasta / Grąžinta and „Kam kasdien priminti“ (handled by the gdrive function,
+//                                    Slack's Interactivity URL); the daily run sends those people a direct message until it is marked
+// Secrets: SLACK_BOT_TOKEN (xoxb-…, scopes channels:manage channels:read chat:write users:read users:read.email;
+//   for #dingę-daiktai also channels:join (a channel made by a person) and im:write (the daily reminders)),
 // CRON_SECRET (the daily run). SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are given by Supabase.
 
 const corsHeaders = {
@@ -255,6 +260,27 @@ async function upcoming(): Promise<Ev[]> {
   const rows = await db<{ id: string; data: Ev }[]>(`events?select=id,data&event_date=gte.${from}&event_date=lte.${to}`);
   return rows.map((e) => ({ ...e.data, id: e.id })).filter((e) => e.date);
 }
+// Paėmimai: a direct message every day to those chosen under the #dingę-daiktai message, until it is marked
+// Rasta / Nerasta / Grąžinta (or the item is gone)
+async function lostReminders(): Promise<number> {
+  const rows = await db<{ id: string; data: { place?: string; list?: { id: string; name?: string; lost?: { qty?: number; url?: string; status?: string; remind?: string[]; remindDay?: string } }[] } }[]>("rentals?select=id,data");
+  const day = today(); let sent = 0;
+  for (const row of rows) {
+    let changed = false;
+    for (const it of row.data?.list || []) {
+      const l = it.lost; if (!l || l.status || !(l.remind || []).length || l.remindDay === day) continue;
+      for (const u of l.remind || []) {
+        let ch = u; const o = await slack("conversations.open", { users: u }); if (o.ok) ch = String((o.channel as { id: string }).id);
+        const m = await slack("chat.postMessage", { channel: ch, unfurl_links: false,
+          text: `🔔 Priminimas: vis dar trūksta *${md(it.name || "")}* – ${String(l.qty ?? "").replace(".", ",")} vnt. (paėmimas: ${md(row.data.place || "—")}). ${l.url ? `<${l.url}|Atidaryk žinutę #dingę-daiktai>` : ""} ir pažymėk: Rasta, Nerasta ar Grąžinta.` });
+        if (m.ok) sent++;
+      }
+      l.remindDay = day; changed = true;
+    }
+    if (changed) await db(`rentals?id=eq.${enc(row.id)}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ data: row.data, updated_at: new Date().toISOString(), updated_by: "Slack: priminimai" }) });
+  }
+  return sent;
+}
 // the daily run: archive channels 7 days after their event, cancelled / deleted ones too; make the missing, update the brief
 async function sweep(): Promise<Record<string, unknown>> {
   const out = { archived: 0, synced: 0, errors: [] as string[] };
@@ -269,6 +295,7 @@ async function sweep(): Promise<Record<string, unknown>> {
     out.archived++;
   }
   if (await slackOn()) {
+    try { (out as Record<string, unknown>).lostReminders = await lostReminders(); } catch (e) { out.errors.push("dingę daiktai: " + (e as Error).message); }
     const members = await loadMembers();
     for (const ev of await upcoming()) {
       try { await syncEvent(ev, members); out.synced++; } catch (e) { out.errors.push(`${ev.name}: ${(e as Error).message}`); }
@@ -277,6 +304,84 @@ async function sweep(): Promise<Record<string, unknown>> {
   return out;
 }
 
+// ---- Paėmimai: a missing item (the return) → #dingę-daiktai ----
+const LOST_NAMES = ["dingę-daiktai", "dinge-daiktai", "dingę_daiktai", "dinge_daiktai"];
+let LOST_CH = "";
+async function lostChannel(): Promise<string> {
+  if (LOST_CH) return LOST_CH;
+  let cursor = "", found: { id: string; is_member?: boolean } | null = null;
+  for (let k = 0; k < 30 && !found; k++) {
+    const args: Record<string, string | number | boolean> = { limit: 1000, exclude_archived: true, types: "public_channel" }; if (cursor) args.cursor = cursor;
+    const d = await slack("conversations.list", args);
+    if (!d.ok) throw new UserError("Slack kanalų sąrašo gauti nepavyko: " + d.error);
+    found = ((d.channels || []) as { id: string; name: string; is_member?: boolean }[]).find((c) => LOST_NAMES.includes(c.name)) || null;
+    cursor = String(((d.response_metadata || {}) as { next_cursor?: string }).next_cursor || ""); if (!cursor) break;
+  }
+  if (found) {
+    if (!found.is_member) { const j = await slack("conversations.join", { channel: found.id }); if (!j.ok && j.error !== "already_in_channel") throw new UserError("Botas negali prisijungti prie #dingę-daiktai: " + j.error + " – pakviesk jį į kanalą (/invite) Slack'e."); }
+    return LOST_CH = found.id;
+  }
+  let made = await slack("conversations.create", { name: LOST_NAMES[0], is_private: false });
+  if (!made.ok && /invalid_name/.test(String(made.error))) made = await slack("conversations.create", { name: LOST_NAMES[1], is_private: false });
+  if (!made.ok) throw new UserError("Kanalo #dingę-daiktai sukurti nepavyko: " + made.error);
+  const id = (made.channel as { id: string }).id;
+  await slack("conversations.setPurpose", { channel: id, purpose: "Trūkstami daiktai grąžinant paėmimus – iš Event Solutions programos" }).catch(() => null);
+  return LOST_CH = id;
+}
+async function inviteAll(channel: string) {
+  const all = await slackMembers();
+  for (let i = 0; i < all.length; i += 500) await slack("conversations.invite", { channel, users: all.slice(i, i + 500).join(","), force: true }).catch(() => null);
+}
+type RItem = { id: string; name?: string; qty?: number | string; note?: string; ev?: string; back?: boolean; backQty?: number | string; backNote?: string };
+async function reportMissing(rentalId: string, itemId: string, by: string): Promise<Record<string, unknown>> {
+  const [row] = await db<{ data: Record<string, unknown> }[]>(`rentals?select=data&id=eq.${enc(rentalId)}`);
+  const r = row && row.data as { place?: string; pickupDate?: string; returnDate?: string; person?: string; list?: RItem[]; evs?: { id: string; note?: string }[]; eventId?: string } | undefined;
+  if (!r) throw new UserError("Paėmimas nerastas (dar neišsaugotas?).");
+  const it = (r.list || []).find((x) => x.id === itemId);
+  if (!it) throw new UserError("Daiktas nerastas – palauk akimirką ir bandyk dar kartą.");
+  const had = Number(it.qty), got = it.backQty === "" || it.backQty == null ? NaN : Number(it.backQty);
+  const miss = isFinite(had) && isFinite(got) ? Math.round((had - got) * 1000) / 1000 : NaN;
+  if (!(miss > 0)) throw new UserError("Pagal įrašą nieko netrūksta – įrašyk, kiek vienetų grąžinama.");
+  const evIds = it.ev ? [it.ev] : (r.evs && r.evs.length ? r.evs.map((x) => x.id) : (r.eventId ? [r.eventId] : []));
+  const evs = evIds.length ? await db<{ id: string; data: Ev }[]>(`events?select=id,data&id=in.(${evIds.map((x) => `"${String(x).replace(/"/g, "")}"`).join(",")})`) : [];
+  const evTxt = evs.map((e) => `${md(e.data.name || e.data.title || "Renginys")}${e.data.date ? " (" + dm(String(e.data.date)) + ")" : ""}`).join(", ");
+  const n = (v: number) => String(v).replace(".", ",");
+  const lines = [
+    `<!channel> ⚠️ *Trūksta daikto:* ${md(it.name || "")} – *${n(miss)} vnt.*`,
+    `Buvo paimta ${n(had)} vnt., grąžinant rasta ${n(got)} vnt.`,
+    evTxt ? `🎪 Renginys: ${evTxt}` : "",
+    `📦 Paėmimas: ${md(r.place || "—")}${r.pickupDate ? " · paimta " + dm(String(r.pickupDate)) : ""}${r.returnDate ? " · grąžinti " + dm(String(r.returnDate)) : ""}${r.person ? " · atsakingas " + md(r.person) : ""}`,
+    it.backNote ? `💬 ${md(it.backNote)}` : "",
+    `Pranešė: ${md(by)} · <${APP}|Event Solutions programa>`,
+  ].filter(Boolean);
+  const ch = await lostChannel();
+  await inviteAll(ch);
+  // buttons under it: Rasta / Nerasta / Grąžinta – pressed in Slack, the item changes in the app (the gdrive function gets Slack's buttons)
+  const val = JSON.stringify({ r: rentalId, i: itemId });
+  const blocks = [
+    { type: "section", text: { type: "mrkdwn", text: lines.join("\n") } },
+    { type: "actions", block_id: `lost|${rentalId}|${itemId}`.slice(0, 255), elements: [
+      { type: "button", text: { type: "plain_text", text: "🔎 Rasta" }, action_id: "lost_found", value: val },
+      { type: "button", text: { type: "plain_text", text: "❌ Nerasta" }, action_id: "lost_notfound", value: val, style: "danger" },
+      { type: "button", text: { type: "plain_text", text: "✅ Grąžinta" }, action_id: "lost_returned", value: val, style: "primary" },
+    ] },
+    // who gets a daily reminder (a direct message) until it is marked Rasta / Nerasta / Grąžinta
+    { type: "actions", block_id: `lostrm|${rentalId}|${itemId}`.slice(0, 255), elements: [
+      { type: "multi_users_select", action_id: "lost_remind", placeholder: { type: "plain_text", text: "🔔 Kam kasdien priminti (asmeniškai)?" } },
+    ] },
+  ];
+  const p = await slack("chat.postMessage", { channel: ch, text: lines.join("\n"), blocks: JSON.stringify(blocks), unfurl_links: false });
+  if (!p.ok) throw new UserError("Slack žinutės išsiųsti nepavyko: " + p.error);
+  const t = await team();
+  const lost = { at: new Date().toISOString(), qty: miss, by, ts: String(p.ts), channel: ch, url: `${t.url}archives/${ch}/p${String(p.ts).replace(".", "")}`, status: "", remind: [] as string[] };
+  // kept on the item at once (the app's copy follows through realtime / the answer)
+  const [cur] = await db<{ data: Record<string, unknown> }[]>(`rentals?select=data&id=eq.${enc(rentalId)}`);
+  if (cur) {
+    const d = cur.data as { list?: (RItem & { lost?: unknown })[] }; const x = (d.list || []).find((y) => y.id === itemId);
+    if (x) { x.lost = lost; await db(`rentals?id=eq.${enc(rentalId)}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ data: d, updated_at: new Date().toISOString(), updated_by: "Slack: " + by }) }); }
+  }
+  return { ...lost, missing: miss };
+}
 // who calls: a signed-in member (their role, and whether they may edit Renginiai)
 async function caller(req: Request): Promise<{ id: string; role: string; level: string; edit: boolean } | null> {
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
@@ -295,7 +400,7 @@ async function caller(req: Request): Promise<{ id: string; role: string; level: 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "POST" }, 405);
-  let b: { action?: string; event_id?: string; create?: string } = {};
+  let b: { action?: string; event_id?: string; create?: string; rental_id?: string; item_id?: string } = {};
   try { b = await req.json(); } catch { /* empty */ }
   const action = String(b.action || "");
   try {
@@ -335,6 +440,15 @@ Deno.serve(async (req) => {
       }
       const cr = b.create === "force" ? "force" : b.create === "auto" ? "auto" : "";
       return json({ ok: true, ...(await syncEvent(ev, await loadMembers(), cr)) });
+    }
+    if (action === "missing") {
+      let ok = who.role === "admin" || who.level === "super";
+      if (!ok) { const [x] = await db<{ can_edit: boolean }[]>(`role_permissions?select=can_edit&section=eq.rentals&role=eq.${enc(who.role)}`); ok = !!(x && x.can_edit); }
+      if (!ok) return json({ error: "Pranešti gali tie, kas redaguoja Paėmimus." }, 403);
+      if (!(await slackOn())) return json({ error: "Slack išjungtas – įjunk Admin skiltyje." }, 400);
+      const [p] = await db<{ full_name?: string; first_name?: string; last_name?: string; email?: string }[]>(`profiles?select=full_name,first_name,last_name,email&id=eq.${enc(who.id)}`);
+      const by = p ? (p.full_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || p.email || "") : "";
+      return json({ ok: true, ...(await reportMissing(String(b.rental_id || ""), String(b.item_id || ""), by)) });
     }
     if (action === "backfill") {
       if (!(who.role === "admin" || who.level === "super")) return json({ error: "Tik administratoriams." }, 403);
