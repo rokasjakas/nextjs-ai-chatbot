@@ -66,7 +66,7 @@ const dm = (d: string) => d ? d.slice(5).replace("-", ".") : "";
 const ICONS: [RegExp, string][] = [[/🎉|🎪/g, "ms-event"], [/📅/g, "ms-calendar"], [/📍/g, "ms-location"], [/📞/g, "ms-call"], [/📝/g, "ms-note"], [/❌/g, "ms-cancel"],
   [/🔗/g, "ms-link"], [/📎/g, "ms-attach"], [/🔔/g, "ms-bell"], [/⚠️?/g, "ms-warning"], [/📦/g, "ms-package"], [/💬/g, "ms-chat"], [/🔎/g, "ms-search"], [/✅/g, "ms-check"],
   [/📁/g, "ms-folder"], [/⏳/g, "ms-hourglass"]];
-let EMO: Set<string> | null = null, EMO_AT = 0;
+let EMO: Set<string> | null = null, EMO_AT = 0, EMO_INFO: Record<string, unknown> = {};
 async function emojiSet(): Promise<Set<string>> {
   if (EMO && Date.now() - EMO_AT < 10 * 60e3) return EMO;
   EMO_AT = Date.now();
@@ -74,7 +74,9 @@ async function emojiSet(): Promise<Set<string>> {
     const r = await fetch("https://slack.com/api/emoji.list", { headers: { Authorization: `Bearer ${E("SLACK_BOT_TOKEN")}` } });
     const d = await r.json() as { ok: boolean; emoji?: Record<string, string> };
     EMO = new Set(d.ok ? Object.keys(d.emoji || {}).filter((k) => k.startsWith("ms-")) : []);
-  } catch { EMO = new Set(); }
+    const all = Object.keys(d.emoji || {});
+    EMO_INFO = d.ok ? { total: all.length, like: all.filter((k) => /ms|warning|check|bell|event|calendar/i.test(k)).slice(0, 40) } : { error: (d as { error?: string }).error, needed: (d as { needed?: string }).needed };
+  } catch (e) { EMO = new Set(); EMO_INFO = { error: (e as Error).message }; }
   return EMO;
 }
 function iconText(s: string, have: Set<string>): string { let t = s; for (const [re, n] of ICONS) if (have.has(n)) t = t.replace(re, `:${n}:`); return t; }
@@ -469,7 +471,7 @@ Deno.serve(async (req) => {
     if (action === "diag") {
       const s2 = E("CRON_SECRET");
       if (!s2 || req.headers.get("x-cron-secret") !== s2) return json({ error: "Unauthorized" }, 401);
-      const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn(), icons: [...await emojiSet()] };
+      const out: Record<string, unknown> = { token: E("SLACK_BOT_TOKEN") ? "yra" : "NĖRA", on: await slackOn(), icons: [...await emojiSet()], icons_info: EMO_INFO };
       try { out.team = await team(); } catch (e) { out.team_error = (e as Error).message; return json(out); }
       if (b.event_id) { try { const ev = await loadEvent(String(b.event_id)); out.event = ev ? ev.name : "nerastas"; if (ev) out.sync = await syncEvent(ev, await loadMembers()); } catch (e) { out.sync_error = (e as Error).message; } }
       // a missing item reported as from the app (the one who saved the rental last)
