@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-WaRLaQK5XlJeYbaIBZ+299O1/Rj8kjHT0s4NntkZBc0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-v/mNFAYCY+wgVOiTtTKwxvQAdyqeRbMdmULGoPftQw0=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -25232,7 +25232,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v762';
+const APP_VER = 'v763';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -26970,7 +26970,7 @@ function hvApplyRemote(t, item, id){
   if(!HV.loaded || !id || HV.timers[id]) return;   // our own edit is waiting – it stays
   const i = HV.list.findIndex(x=>x.id===id);
   if(t==='del'){ if(i<0) return; HV.list.splice(i, 1); }
-  else if(i>=0){ if(evStable(HV.list[i])===evStable(item)) return; const o = HV.list[i]; Object.keys(o).forEach(k=>{ if(!(k in item)) delete o[k]; }); Object.assign(o, item); }
+  else if(i>=0){ if(evStable(HV.list[i])===evStable(item)) return; if(HV.list[i].updatedAt && item.updatedAt && String(item.updatedAt) < String(HV.list[i].updatedAt)) return; const o = HV.list[i]; Object.keys(o).forEach(k=>{ if(!(k in item)) delete o[k]; }); Object.assign(o, item); }
   else HV.list.push(item);
   try{ localStorage.setItem('hvCache', JSON.stringify(HV.list)); }catch(e){}
   if(currentTab==='handovers') liveSoon('hv', ()=>{ if(currentTab==='handovers' && !document.getElementById('modalBackdrop')) hvRenderList(); });
@@ -26995,9 +26995,10 @@ document.addEventListener('visibilitychange', ()=>{
   if(Date.now() - (LIVE.seen||0) < 20000) return; LIVE.seen = Date.now();
   appLive();
   if(document.getElementById('rtEditHost')) return;
+  if(Object.values(EQ_UPLOADING).some(u=>u && Object.keys(u).length) || Object.keys(EQ_UPLOADING).some(k=>/^r[ib]:/.test(k))) return;   // a photo going up (back from the camera)
   if(currentTab==='rentals' && EV.loaded){ const before = JSON.stringify(EV.rentals); evLoad(true).then(()=>{ if(currentTab==='rentals' && JSON.stringify(EV.rentals)!==before) liveSoon('rt', renderRentalList); }).catch(()=>{}); }
   else if(evTabOn() && EV.loaded){ const before = JSON.stringify(EV.events); evLoad(true).then(()=>{ if(evTabOn() && JSON.stringify(EV.events)!==before) liveSoon('ev', ()=>{ if(evTabOn() && !document.getElementById('modalBackdrop')) renderEventList(); }); }).catch(()=>{}); }
-  else if(currentTab==='handovers' && HV.loaded){ const before = JSON.stringify(HV.list); hvLoad(true).then(()=>{ if(currentTab==='handovers' && JSON.stringify(HV.list)!==before) liveSoon('hv', ()=>{ if(!document.getElementById('modalBackdrop')) hvRenderList(); }); }).catch(()=>{}); }
+  else if(currentTab==='handovers' && HV.loaded && !document.getElementById('modalBackdrop')){ const before = JSON.stringify(HV.list); hvLoad(true).then(()=>{ if(currentTab==='handovers' && JSON.stringify(HV.list)!==before) liveSoon('hv', ()=>{ if(!document.getElementById('modalBackdrop')) hvRenderList(); }); }).catch(()=>{}); }
   else if(currentTab==='labor' && typeof LB!=='undefined' && LB.loaded && !document.getElementById('modalBackdrop')) lbLoad(true).then(()=>{ if(currentTab==='labor') liveSoon('lb', renderLaborTab); }).catch(()=>{});
 });
 
@@ -31916,7 +31917,8 @@ async function rtItemUpload(r, it, files, side){
       const path = `rentals/${r.id}/${side==='back' ? 'back' : 'item'}-${it.id}-${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}.${ext.toLowerCase()}`;
       const { error } = await stFrom(EQ_BUCKET).upload(path, blob, { contentType:type, upsert:false });
       if(error) throw error;
-      it[fld].push({ path, at:new Date().toISOString(), by:teamMe() }); done++; rtSave(r);
+      const cur = (EV.rentals.find(x=>x.id===r.id) || EQ_PENDING[r.id] || r), ci = rtListOwn(cur).find(x=>x.id===it.id) || it;
+      (ci[fld] = ci[fld] || []).push({ path, at:new Date().toISOString(), by:teamMe() }); done++; rtSave(cur);
     }catch(e){ toast('Nepavyko įkelti nuotraukos: '+(e.message||e)); }
   }
   delete EQ_UPLOADING[key]; rtListRedraw(r);
@@ -32662,9 +32664,11 @@ async function eqUpload(kind, rec, side, files){
       const path = `${kind}/${rec.id}/${side}-${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}.${ext.toLowerCase()}`;
       const { error } = await stFrom(EQ_BUCKET).upload(path, blob, { contentType:type, upsert:false });
       if(error) throw error;
-      p[side].push({ path, at:new Date().toISOString(), by:teamMe() });
+      const cur = EQ_KINDS[kind].find(rec.id) || rec;   // the same record, maybe refreshed meanwhile (the camera app was open)
+      eqPhotos(cur)[side].push({ path, at:new Date().toISOString(), by:teamMe() });
+      if(cur!==rec) eqPhotos(rec)[side] = eqPhotos(cur)[side];
       done++;
-      EQ_KINDS[kind].save(rec);
+      EQ_KINDS[kind].save(cur);
     }catch(e){ failed++; toast('Nepavyko įkelti nuotraukos: '+(/bucket|not found|row-level/i.test(e.message||'') ? 'paleisk atnaujinimas.sql' : (e.message||e))); }
   }
   delete up[side];
@@ -32673,6 +32677,7 @@ async function eqUpload(kind, rec, side, files){
   if(!wasReady && eqPhotosReady(rec) && EQ_KINDS[kind].onReady) EQ_KINDS[kind].onReady(rec);
 }
 async function eqRemove(kind, rec, side, i){
+  rec = EQ_KINDS[kind].find(rec.id) || rec;
   const p = eqPhotos(rec), x = p[side][i]; if(!x) return;
   if(!(await uiConfirm('Pašalinti šią nuotrauką?'))) return;
   p[side].splice(i, 1);
@@ -32740,7 +32745,10 @@ async function hvLoad(force){
     else {
       HV.error = '';
       const pending = new Set(Object.keys(HV.timers));
-      HV.list = (data||[]).map(r=>r.data).filter(Boolean).filter(r=>!pending.has(r.id)).concat(HV.list.filter(r=>pending.has(r.id)));
+      const oldH = new Map(HV.list.map(r=>[r.id, r]));
+      HV.list = (data||[]).map(r=>r.data).filter(Boolean).filter(r=>!pending.has(r.id)).map(n=>{ const o = oldH.get(n.id); if(!o) return n;
+        if(o.updatedAt && n.updatedAt && String(n.updatedAt) < String(o.updatedAt)) return o;   // ours is newer (not saved yet)
+        Object.keys(o).forEach(k=>{ if(!(k in n)) delete o[k]; }); return Object.assign(o, n); }).concat(HV.list.filter(r=>pending.has(r.id)));
       try{ localStorage.setItem('hvCache', JSON.stringify(HV.list)); }catch(e){}
     }
     HV.loaded = true;
@@ -55223,6 +55231,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-12 14:00', v:'v763', k:'fix', t:'Išdavimai ir Paėmimai: kelios nuotraukos iš kameros nebepakeičia viena kitos', f:'Fotografuojant tiesiai iš programos (atsidaro kameros programa ir grįžtama) antra nuotrauka nebepakeičia pirmosios – visos lieka. Grįžus į programą atidarytas langas nebeperkraunamas po juo.' },
   { d:'2026-11-12 13:00', v:'v762', k:'new', t:'Paėmimai: pranešimas atsakingam; sąrašas visada atsinaujina', f:'Paėmime nurodžius atsakingą programos narį, jis gauna pranešimą programoje ir el. laišką su paėmimo informacija (tiekėjas, data, vieta, kontaktai, daiktai, renginiai); paspaudus – atsidaro tas paėmimas. Uždarius redagavimo ar paėmimo langą sąrašas visada atsinaujina, o vėliau iš serverio grįžusi senesnė kopija nebeperrašo naujesnio pakeitimo.' },
   { d:'2026-11-12 11:00', v:'v761', k:'fix', t:'Paėmimai: grafos arčiau viena kitos, atskirtos linija', f:'Sąraše nebėra didelio tarpo tarp būsenos ir datos; grafos (ir jų pavadinimai viršuje) atskirtos plona vertikalia linija, kaip lentelėje.' },
   { d:'2026-11-12 10:00', v:'v760', k:'new', t:'Paėmimai: tvarkingas, išlygiuotas sąrašas; „Papildomas paėmimas“', f:'Kiekvienas paėmimas – tomis pačiomis grafomis kaip lentelėje (viršuje – pavadinimai, kaip Renginiuose): BŪSENA | PAĖMIMO DATA (Šiandien / Rytoj / data) | ĮMONĖ, po jais VIETA | NUMERIS | ATSAKINGAS | KUR PRISKIRTA. Telefone – po dvi grafas su pavadinimais. Jei ta pati įmonė pridėta dar kartą, kol ankstesnis jos paėmimas dar nebaigtas (iki grąžinimo dienos ar kol negrąžinta), vėlesnis pažymimas „➕ Papildomas paėmimas · prie 11 d.“.' },
