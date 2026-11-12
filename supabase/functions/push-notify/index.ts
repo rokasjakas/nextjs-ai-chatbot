@@ -25,6 +25,7 @@
 // Topics can be switched off in Profilis → Pranešimai (tasks, events, gear …).
 // POST {"kind":"dial","phone","name"}    -> the caller's own devices: "call this
 //      person" — tapping it on the phone starts the call (Žmonės → Bookingas)
+// POST {"kind":"rental","rental_id","user_id"}  Paėmimai: the member put in charge gets a notice and an e-mail with the rental
 // POST {"kind":"meeting","meeting_id","mode":"new"|"update"|"cancel"}
 //      Calendar invitation from its creator: invited members get a push
 //      notification, invited e-mail addresses get an e-mail with an .ics
@@ -662,7 +663,7 @@ function b64(bytes: Uint8Array): string {
   for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return btoa(s);
 }
-async function resendMail(to: string, subject: string, html: string, replyTo: string, ics: string) {
+async function resendMail(to: string, subject: string, html: string, replyTo: string, ics = "") {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${env("RESEND_API_KEY")}`, "Content-Type": "application/json" },
@@ -670,12 +671,60 @@ async function resendMail(to: string, subject: string, html: string, replyTo: st
       from: Deno.env.get("REMINDER_FROM") || Deno.env.get("ACCESS_FROM") || "Event Solutions <onboarding@resend.dev>",
       to: [to], subject, html, reply_to: replyTo || undefined,
       // a calendar invitation (REQUEST / CANCEL) says so in its type – Gmail then shows it in Google Calendar
-      attachments: [{ filename: "kvietimas.ics", content: b64(new TextEncoder().encode(ics)), content_type: "text/calendar; charset=utf-8" + (/^METHOD:(REQUEST|CANCEL)$/m.test(ics) ? "; method=" + (ics.match(/^METHOD:(\w+)/m) || [])[1] : "") }],
+      attachments: ics ? [{ filename: "kvietimas.ics", content: b64(new TextEncoder().encode(ics)), content_type: "text/calendar; charset=utf-8" + (/^METHOD:(REQUEST|CANCEL)$/m.test(ics) ? "; method=" + (ics.match(/^METHOD:(\w+)/m) || [])[1] : "") }] : undefined,
     }),
   });
   if (!res.ok) throw new Error(`Resend ${res.status}: ${(await res.text()).slice(0, 200)}`);
 }
 
+// ---------- Paėmimai: the person in charge (a member) – a notice in the app and an e-mail with the rental ----------
+type RentalItem = { name?: string; qty?: number | string; note?: string; ev?: string };
+type RentalD = { id: string; place?: string; address?: string; contact?: string; pickupDate?: string; pickupTime?: string; returnDate?: string; returnTime?: string;
+  notes?: string; person?: string; items?: string; list?: RentalItem[]; evs?: { id: string; note?: string }[]; eventId?: string };
+export function rentalEmailHtml(r: RentalD, by: string, events: string[]): string {
+  const ltDate = (d?: string) => { if (!d) return ""; const [y, mo, dd] = d.split("-").map(Number); return `${LT_MONTHS[mo - 1]} ${dd} d., ${LT_DAYS[new Date(Date.UTC(y, mo - 1, dd)).getUTCDay()]}`; };
+  const row = (k: string, v: string) => v ? `<tr><td style="padding:4px 14px 4px 0;color:#666;vertical-align:top;white-space:nowrap;">${k}</td><td style="padding:4px 0;">${v}</td></tr>` : "";
+  const items = (r.list && r.list.length ? r.list.filter((i) => String(i.name || "").trim()).map((i) => `${i.qty !== "" && i.qty != null ? escHtml(String(i.qty).replace(".", ",")) + " × " : ""}${escHtml(String(i.name))}${i.note ? ` <span style="color:#666;">– ${escHtml(i.note)}</span>` : ""}`)
+    : String(r.items || "").split("\n").map((x) => x.trim()).filter(Boolean).map(escHtml));
+  const maps = r.address ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.address)}" style="color:#1155cc;">${escHtml(r.address)}</a>` : "";
+  return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;max-width:560px;">
+<div style="font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#e0a030;font-weight:bold;">Tau priskirtas paėmimas</div>
+<h2 style="margin:6px 0 14px;font-size:22px;">${escHtml(r.place || "Paėmimas")}</h2>
+<table cellpadding="0" cellspacing="0" style="font-size:14px;border-collapse:collapse;">
+${row("Paėmimas", escHtml(ltDate(r.pickupDate) + (r.pickupTime ? " · " + r.pickupTime : "")))}
+${row("Grąžinimas", escHtml(ltDate(r.returnDate) + (r.returnTime ? " · " + r.returnTime : "")))}
+${row("Vieta", maps)}
+${row("Kontaktai", escHtml(r.contact || ""))}
+${row("Renginiai", events.map(escHtml).join("<br>"))}
+${row("Pastabos", escHtml(r.notes || "").replace(/\n/g, "<br>"))}
+${row("Priskyrė", escHtml(by))}
+</table>
+${items.length ? `<div style="margin:16px 0 6px;font-weight:bold;">Daiktai (${items.length})</div><ol style="margin:0;padding-left:20px;line-height:1.6;">${items.map((x) => `<li>${x}</li>`).join("")}</ol>` : ""}
+<div style="margin-top:20px;"><a href="${escHtml(APP())}/?rental=${encodeURIComponent(r.id)}" style="display:inline-block;padding:11px 18px;border-radius:10px;background:#e0a030;color:#111;font-weight:bold;text-decoration:none;">Atidaryti paėmimą programoje</a></div>
+</div>`;
+}
+async function onRental(uid: string, id: string, to: string) {
+  if (!to || to === uid) return { sent: 0, skipped: "self" };
+  const [row] = await db<{ data: RentalD }[]>(`rentals?select=data&id=eq.${encodeURIComponent(id)}`);
+  const r = row?.data; if (!r) return { error: "Paėmimas nerastas" };
+  const ps = await db<Profile[]>(`profiles?select=id,role,first_name,last_name,full_name,nickname,email,notify_prefs&id=in.${inList([uid, to])}&role=in.(${APPROVED.join(",")})`);
+  const me = ps.find((p) => p.id === uid), who = ps.find((p) => p.id === to);
+  if (!me) return { error: "Neleista" };
+  if (!who) return { error: "Narys nerastas" };
+  const evIds = Array.isArray(r.evs) && r.evs.length ? r.evs.map((x) => x.id) : (r.eventId ? [r.eventId] : []);
+  const evs = evIds.length ? await db<{ id: string; data: { name?: string; title?: string; date?: string } }[]>(`events?select=id,data&id=in.${inList(evIds)}`).catch(() => []) : [];
+  const evNames = evs.map((e) => `${e.data.date ? e.data.date.slice(5).replace("-", ".") + " " : ""}${e.data.name || e.data.title || "Renginys"}`);
+  const when = r.pickupDate ? r.pickupDate.slice(5).replace("-", ".") + (r.pickupTime ? " " + r.pickupTime : "") : "";
+  const ids = await wantIds([to], "tasks");
+  const push = ids.length ? await sendTo(ids, { title: "📦 Tau priskirtas paėmimas: " + (r.place || "paėmimas"), body: `${when ? when + " · " : ""}${r.address || ""}${evNames.length ? "\n🎪 " + evNames.join(", ") : ""}\n${name(me)} priskyrė`.trim(),
+    tag: "rental-" + r.id, url: `./?rental=${encodeURIComponent(r.id)}`, kind: "task" }) : { sent: 0 };
+  let mailed = 0;
+  if (who.email) {
+    try { await resendMail(who.email, "Tau priskirtas paėmimas: " + (r.place || "") + (when ? " · " + when : ""), rentalEmailHtml(r, name(me), evNames), me.email ?? ""); mailed = 1; }
+    catch (e) { console.error("rental mail", (e as Error).message); }
+  }
+  return { sent: push.sent, mailed };
+}
 async function onMeeting(uid: string, id: string, mode: string) {
   const [m] = await db<Meeting[]>(`meetings?select=*&id=eq.${encodeURIComponent(id)}`);
   if (!m || m.created_by !== uid) return { sent: 0, skipped: "not your meeting" };
@@ -1942,6 +1991,7 @@ Deno.serve(async (req) => {
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : body.event === "resend" ? "resend" : "decided"));
     if (body.kind === "expense") return json(await onExpense(uid, String(body.expense_id ?? ""), ["fix", "info", "ok", "rejected", "resubmit", "deduct", "purpose"].includes(body.event) ? body.event : "ok"));
     if (body.kind === "expense-pay") return json(await onExpensePay(uid, String(body.expense_id ?? ""), Array.isArray(body.to) ? body.to.map(String) : [], String(body.note ?? "").slice(0, 2000)));
+    if (body.kind === "rental") return json(await onRental(uid, String(body.rental_id ?? ""), String(body.user_id ?? "")));
     if (body.kind === "whjob") return json(await onWhJob(uid, String(body.job_id ?? ""), body.event === "answer" ? "answer" : "ask", String(body.q_id ?? "")));
     if (body.kind === "feedback") return json(await onFeedback(uid, String(body.feedback_id ?? ""), body.event === "new" ? "new" : "resolved"));
     if (body.kind === "leave") return json(await onLeave(uid, String(body.leave_id ?? ""), ["new", "decided", "cancelled"].includes(body.event) ? body.event : "new"));
