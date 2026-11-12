@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-yYIHWurLj2okVkiJe10BA0KsHu2FVFtoNu06kcj1hPU=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-2OuivFBTTbNksQ38rpRDvh9UrbqRrwz6EP5Jcry1Q2w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-+v/AJV4g0OOZS3pq8T/QnUMhQgMrw1rGIkucte8Bsr8=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
@@ -46,6 +46,7 @@ input:focus{outline:2px solid var(--accent);outline-offset:0;}
 .date.late{background:color-mix(in srgb, var(--bad) 20%, transparent);color:var(--bad);}
 .flag{color:var(--bad);font-weight:700;}
 .pill{font-size:12px;font-weight:700;padding:1px 8px;border-radius:12px;background:color-mix(in srgb, var(--text) 9%, transparent);}
+.pill.xtra{background:color-mix(in srgb, #8E6CEF 25%, transparent);text-transform:uppercase;font-size:11px;}
 .pill.all{background:color-mix(in srgb, var(--ok) 25%, transparent);}
 .info{display:grid;gap:5px;margin:4px 0 6px;font-size:14px;}
 .info > div{display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;}
@@ -170,6 +171,18 @@ function render(){
     ${rows.map(card).join('') || '<div class="card empty">Nieko nėra.</div>'}`;
   const qi = $('#q'); qi.oninput = ()=>{ S.q = qi.value; const p = qi.selectionStart; render(); const q2 = $('#q'); q2.focus(); try{ q2.setSelectionRange(p, p); }catch(e){} };
 }
+// the same company again while its earlier pickup is still on – „Papildomas paėmimas“
+function extraOf(r){
+  const k = String(r.place||'').toLowerCase().trim(); if(!k || !r.pickupDate) return null;
+  let best = null;
+  for(const o of S.rentals){
+    if(o.id===r.id || !o.pickupDate || String(o.place||'').toLowerCase().trim()!==k || !(o.pickupDate < r.pickupDate)) continue;
+    const end = o.returnDate || (o.status==='grazinta' ? o.pickupDate : '9999-12-31');
+    if(r.pickupDate > end) continue;
+    if(!best || o.pickupDate < best.pickupDate) best = o;
+  }
+  return best;
+}
 function card(r){
   const [ic, lb] = ST[r.status] || ST.reikia, done = r.list.filter(i=>i.ok).length, back = r.list.filter(i=>i.back).length;
   const due = r.status==='reikia' && r.pickupDate && r.pickupDate<=today(), late = r.status==='paimta' && r.returnDate && r.returnDate<today();
@@ -178,7 +191,7 @@ function card(r){
     <span class="badge">${ic} ${esc(r.status==='paimta' && r.partial ? 'Paimta dalinai' : lb)}</span>
     <div class="main"><div class="what">🏢 ${esc(r.place || (r.list[0]||{}).name || 'Paėmimas')}
       ${r.pickupDate ? ` <span class="date ${due?'late':''}">🗓 ${esc(dayLabel(r.pickupDate))}${r.pickupTime ? ' '+esc(r.pickupTime) : ''}</span>` : ''}
-      ${r.list.length ? ` <span class="pill ${done===r.list.length?'all':''}">✓ ${done}/${r.list.length}</span>` : ''}</div>
+      ${r.list.length ? ` <span class="pill ${done===r.list.length?'all':''}">✓ ${done}/${r.list.length}</span>` : ''}${(()=>{ const x = extraOf(r); return x ? ` <span class="pill xtra">➕ Papildomas paėmimas · prie ${esc(dayLabel(x.pickupDate))}</span>` : ''; })()}</div>
       <div class="meta">${r.status!=='reikia' && r.returnDate ? `<span class="${late?'flag':''}">↩ Grąžinti ${esc(dayLabel(r.returnDate))}</span>` : ''}
         ${r.address ? `<span>📍 ${esc(r.address)}</span>` : ''}${r.events.map(e=>`<span>🎪 ${esc(e.name)}</span>`).join('')}
         ${r.status!=='reikia' && r.list.length ? `<span>↩ ${back}/${r.list.length} grąžinta</span>` : ''}${short ? `<span class="flag">⚠ trūksta: ${short}</span>` : ''}</div></div>
