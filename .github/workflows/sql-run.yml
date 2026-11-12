@@ -1,0 +1,55 @@
+# SQL paleidimas: vienas supabase/sql/*.sql failas paleidžiamas Supabase duomenų bazėje (tas pats SUPABASE_DB_URL,
+# kaip naktinėms kopijoms). Paleidžiama, kai pasikeičia supabase/sql-run.txt (jame – failo pavadinimas), arba rankiniu
+# būdu (Actions → „SQL paleidimas“, kai darbas yra pagrindinėje šakoje). Leidžiami tik repozitorijoje esantys supabase/sql
+# failai; rezultatas – šio paleidimo žurnale.
+name: SQL paleidimas
+
+on:
+  push:
+    branches: [claude/wizardly-cori-j2tuff]
+    paths: ['supabase/sql-run.txt']
+  workflow_dispatch:
+    inputs:
+      file:
+        description: 'Failas iš supabase/sql (pvz. mail_off.sql)'
+        required: true
+
+concurrency:
+  group: sql-run
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Paleisti
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          FILE: ${{ inputs.file }}
+        run: |
+          set -euo pipefail
+          trap 'echo "::error title=Sustojo::eilute $LINENO (kodas $?)"' ERR
+          [ -n "${FILE:-}" ] || FILE=$(head -n1 supabase/sql-run.txt | tr -d '[:space:]')
+          [ -n "$SUPABASE_DB_URL" ] || { echo "::error::Nėra SUPABASE_DB_URL"; exit 1; }
+          echo "$FILE" | grep -Eq '^[a-z0-9_]+\.sql$' || { echo "::error::Netinkamas failo pavadinimas: $FILE"; exit 1; }
+          [ "$FILE" != "atnaujinimas.sql" ] || { echo "::error::atnaujinimas.sql per ilgas – paleisk konkretų failą"; exit 1; }
+          [ -f "supabase/sql/$FILE" ] || { echo "::error::Nėra supabase/sql/$FILE"; exit 1; }
+          docker pull -q postgres:17 > /dev/null
+          set +e
+          # $DBURL / $F are read inside the container (the address never stands on a command line)
+          docker run --rm -v "$PWD/supabase/sql:/sql:ro" -e DBURL="$SUPABASE_DB_URL" -e F="$FILE" postgres:17 \
+            sh -c 'psql "$DBURL" -v ON_ERROR_STOP=1 -X -A -F " | " -f "/sql/$F"' > out.txt 2>&1
+          rc=$?
+          set -e
+          cat out.txt
+          # the database's answer without the address / password (a failed sign-in may print the host)
+          echo "::notice title=psql::kodas $rc, eiluciu $(wc -l < out.txt)"
+          if [ $rc -ne 0 ]; then
+            tail -n 8 out.txt | sed -E 's#postgres(ql)?://[^ ]*#<db>#g; s/password=[^ ]*/password=<...>/g' | tr -d '\r' | while IFS= read -r l; do echo "::warning title=DB::${l//%/%25}"; done
+            exit $rc
+          fi
+          # the result also as a short notice (readable without the log) and in the run's summary
+          { echo '```'; head -n 80 out.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          echo "::notice title=$FILE::$(head -n 60 out.txt | tr -d '\r' | awk 'BEGIN{ORS="%0A"} {gsub(/%/,"%25"); print}')"

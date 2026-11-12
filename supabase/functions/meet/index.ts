@@ -1,0 +1,462 @@
+// Supabase Edge Function: meet
+//
+// Video calls in the chat. Two providers:
+//  * Daily.co (when DAILY_API_KEY is set): the call runs INSIDE the app, in
+//    the chat channel. This function creates a private room for the
+//    conversation and hands out join tokens only to its members.
+//  * Google Meet (otherwise): a meeting created with one Google account that
+//    an administrator connects once (Admin → Vaizdo skambučiai); it opens in
+//    its own window.
+//
+// POST {"action":"config"}            (chat users) -> { provider: "daily" | "meet" }
+// POST {"action":"create","conversation_id","media":"video"|"audio"}  Daily: creates the room and the
+//      call row -> { provider:"daily", call }; Meet: -> { url } (see below)
+// POST {"action":"join","call_id"}    -> Daily: { provider, url, token }
+//                                        Meet:  { provider, url }
+//
+// POST {"action":"left","call_id","session_id"}  (anyone, no login: guests too) someone left the call;
+//      when nobody else is in it any more the call is ended for everybody, and an online
+//      meeting's summary goes out (notes, files, chat)
+// POST {"action":"check","call_ids":[…]}  (chat users) calls shown as going on: any that nobody is in
+//      any more (a phone that was switched off, a closed app, two people leaving together) is ended
+//      -> { ended: [ids] }
+// POST {"action":"status"}            (admin)  -> { configured, connected, email }
+// POST {"action":"connect","origin"}  (admin)  -> { url } Google consent page
+// GET  ?code=…&state=…                (Google redirects here after consent)
+//      stores the refresh token (encrypted) and sends the browser back to
+//      the app with ?google=ok or ?google=error&msg=…
+// POST {"action":"disconnect"}        (admin)  -> { ok }
+// POST {"action":"create"}            (any approved member who uses the chat)
+//      -> { url: "https://meet.google.com/abc-defg-hij" }
+//      or { error, code: "not_connected" } when no account is connected yet
+//
+// Deploy WITHOUT the JWT check (Google's redirect carries no token):
+//   supabase functions deploy meet --no-verify-jwt
+// Every POST checks the caller's token itself.
+//
+// Secrets: DAILY_API_KEY (Daily.co → Developers → API keys), GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET (Google Cloud → OAuth client,
+// type "Web application", redirect URI = this function's URL),
+// MEET_SECRET (optional; falls back to MAIL_SECRET) for encrypting the token.
+// SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+};
+const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
+const MEET_SCOPE = "https://www.googleapis.com/auth/meetings.space.created";
+const SCOPE = MEET_SCOPE + " openid email";
+export const VERSION = 6;
+const DAILY_HOURS = 4;   // a Daily room lives this long after the call starts
+
+function json(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json; charset=utf-8" },
+  });
+}
+function env(name: string): string {
+  const v = Deno.env.get(name);
+  if (!v) throw new Error(`${name} is not configured`);
+  return v;
+}
+const secret = () => Deno.env.get("MEET_SECRET") || env("MAIL_SECRET");
+const selfUrl = () => `${env("SUPABASE_URL").replace(/\/$/, "")}/functions/v1/meet`;
+
+async function db<T = unknown>(path: string, init: RequestInit = {}): Promise<T> {
+  const key = env("SUPABASE_SERVICE_ROLE_KEY");
+  const res = await fetch(`${env("SUPABASE_URL")}/rest/v1/${path}`, {
+    ...init,
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", ...(init.headers ?? {}) },
+  });
+  if (!res.ok) throw new Error(`Database ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  const text = await res.text();
+  return (text ? JSON.parse(text) : null) as T;
+}
+
+type Who = { id: string; role: string; canChat: boolean; name: string };
+async function caller(req: Request): Promise<Who | null> {
+  const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+  if (!token) return null;
+  const res = await fetch(`${env("SUPABASE_URL")}/auth/v1/user`, {
+    headers: { apikey: env("SUPABASE_SERVICE_ROLE_KEY"), Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return null;
+  const u = await res.json();
+  if (!u?.id) return null;
+  const [p] = await db<{ role: string; first_name: string | null; last_name: string | null; nickname: string | null; email: string | null }[]>(
+    `profiles?select=role,first_name,last_name,nickname,email&id=eq.${u.id}`,
+  );
+  const role = p?.role ?? "pending";
+  const name = [p?.first_name, p?.last_name].filter(Boolean).join(" ") || p?.nickname || (p?.email ?? "").split("@")[0] || "Narys";
+  let canChat = role === "admin";
+  if (!canChat && APPROVED.includes(role)) {
+    const perms = await db<{ can_view: boolean; can_edit: boolean }[]>(
+      `role_permissions?select=can_view,can_edit&section=eq.chat&role=eq.${role}`,
+    );
+    canChat = !perms.length || perms.some((x) => x.can_view || x.can_edit);
+  }
+  return { id: u.id, role, canChat, name };
+}
+
+// ---------- encryption (AES-GCM) and signed state ----------
+const b64 = (b: Uint8Array) => btoa(String.fromCharCode(...b));
+const unb64 = (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+const b64u = (b: Uint8Array) => b64(b).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const unb64u = (s: string) => unb64(s.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((s.length + 3) % 4));
+async function aesKey() {
+  const raw = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("meet:" + secret()));
+  return crypto.subtle.importKey("raw", raw, "AES-GCM", false, ["encrypt", "decrypt"]);
+}
+export async function encrypt(plain: string): Promise<string> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await aesKey(), new TextEncoder().encode(plain)));
+  const out = new Uint8Array(iv.length + ct.length); out.set(iv); out.set(ct, iv.length);
+  return b64(out);
+}
+export async function decrypt(enc: string): Promise<string> {
+  const b = unb64(enc);
+  const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b.subarray(0, 12) }, await aesKey(), b.subarray(12));
+  return new TextDecoder().decode(pt);
+}
+async function hmac(data: string): Promise<string> {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode("meet-state:" + secret()), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return b64u(new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(data))));
+}
+// state = base64url(json{uid, origin, exp}).signature
+export async function makeState(uid: string, origin: string, now = Date.now()): Promise<string> {
+  const body = b64u(new TextEncoder().encode(JSON.stringify({ uid, origin, exp: now + 15 * 60e3 })));
+  return body + "." + await hmac(body);
+}
+export async function readState(state: string, now = Date.now()): Promise<{ uid: string; origin: string } | null> {
+  const [body, sig] = String(state || "").split(".");
+  if (!body || !sig || await hmac(body) !== sig) return null;
+  try {
+    const s = JSON.parse(new TextDecoder().decode(unb64u(body)));
+    if (!s.uid || !s.origin || !(s.exp > now)) return null;
+    return { uid: s.uid, origin: s.origin };
+  } catch { return null; }
+}
+export function cleanOrigin(o: string): string {
+  try {
+    const u = new URL(String(o || ""));
+    if (u.protocol !== "https:" && !(u.protocol === "http:" && (u.hostname === "localhost" || u.hostname === "127.0.0.1"))) return "";
+    return u.origin + u.pathname.replace(/[^/]*$/, "");
+  } catch { return ""; }
+}
+
+// ---------- Google ----------
+async function google(url: string, init: RequestInit): Promise<Record<string, unknown>> {
+  const res = await fetch(url, init);
+  const text = await res.text();
+  let j: Record<string, unknown> = {};
+  try { j = text ? JSON.parse(text) : {}; } catch { j = { raw: text.slice(0, 300) }; }
+  if (!res.ok) {
+    const e = j.error as Record<string, unknown> | string | undefined;
+    const msg = typeof e === "string" ? `${e}${j.error_description ? ": " + j.error_description : ""}` : (e?.message as string) || `HTTP ${res.status}`;
+    const err = new Error(msg) as Error & { status?: number; code?: string };
+    err.status = res.status; err.code = typeof e === "string" ? e : (e?.status as string);
+    throw err;
+  }
+  return j;
+}
+function form(o: Record<string, string>) {
+  return { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(o).toString() };
+}
+export function consentUrl(state: string): string {
+  const q = new URLSearchParams({
+    client_id: env("GOOGLE_CLIENT_ID"), redirect_uri: selfUrl(), response_type: "code", scope: SCOPE,
+    access_type: "offline", prompt: "consent", include_granted_scopes: "true", state,
+  });
+  return "https://accounts.google.com/o/oauth2/v2/auth?" + q.toString();
+}
+function emailFromIdToken(idt: unknown): string {
+  try { return JSON.parse(new TextDecoder().decode(unb64u(String(idt).split(".")[1]))).email || ""; } catch { return ""; }
+}
+// the access token is kept for its lifetime, but only for the account that is
+// still connected (disconnecting or reconnecting drops it at once)
+let cached: { token: string; exp: number; key: string } | null = null;
+async function accessToken(): Promise<string | null> {
+  const [row] = await db<{ refresh_token: string; connected_at: string }[]>("google_meet_auth?select=refresh_token,connected_at&id=eq.1");
+  if (!row) { cached = null; return null; }
+  if (cached && cached.key === row.connected_at && cached.exp > Date.now() + 60e3) return cached.token;
+  const j = await google("https://oauth2.googleapis.com/token", form({
+    grant_type: "refresh_token", refresh_token: await decrypt(row.refresh_token),
+    client_id: env("GOOGLE_CLIENT_ID"), client_secret: env("GOOGLE_CLIENT_SECRET"),
+  }));
+  cached = { token: String(j.access_token), exp: Date.now() + Number(j.expires_in || 3000) * 1000, key: row.connected_at };
+  return cached.token;
+}
+export async function createSpace(token: string): Promise<string> {
+  const call = (body: unknown) => google("https://meet.googleapis.com/v2/spaces", {
+    method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify(body),
+  });
+  let j: Record<string, unknown>;
+  try {
+    // anyone with the link joins without waiting to be let in
+    j = await call({ config: { accessType: "OPEN", entryPointAccess: "ALL" } });
+  } catch (e) {
+    if ((e as { status?: number }).status !== 400) throw e;
+    j = await call({});            // some (personal) accounts do not allow these settings
+  }
+  const uri = String(j.meetingUri || "");
+  if (!/^https:\/\/meet\.google\.com\/[a-z0-9-]+$/.test(uri)) throw new Error("Google negrąžino susitikimo nuorodos.");
+  return uri;
+}
+
+
+// ---------- Daily.co ----------
+const dailyOn = () => !!Deno.env.get("DAILY_API_KEY");
+async function daily(path: string, body: unknown): Promise<Record<string, unknown>> {
+  const res = await fetch(`https://api.daily.co/v1/${path}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${env("DAILY_API_KEY")}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`Daily ${res.status}: ${j.info || j.error || "klaida"}`);
+  return j;
+}
+// this month's call minutes (Admin → „Limitai ir naudojimas“): the sum of every
+// participant's time in every call since the 1st (Daily bills per participant minute)
+export async function dailyUsage(fetchPage = dailyGet): Promise<{ minutes: number; calls: number }> {
+  const d = new Date(), from = Math.floor(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1) / 1000);
+  let after = "", seconds = 0, calls = 0;
+  for (let page = 0; page < 50; page++) {
+    const j = await fetchPage(`meetings?timeframe_start=${from}&limit=100${after ? "&starting_after=" + encodeURIComponent(after) : ""}`);
+    const list = (j.data ?? []) as { id: string; participants?: { duration?: number }[] }[];
+    for (const m of list) {
+      calls++;
+      for (const p of m.participants ?? []) seconds += Number(p.duration) || 0;
+    }
+    if (list.length < 100) break;
+    after = list[list.length - 1].id;
+  }
+  return { minutes: Math.round(seconds / 60), calls };
+}
+async function dailyGet(path: string): Promise<Record<string, unknown>> {
+  const res = await fetch(`https://api.daily.co/v1/${path}`, { headers: { Authorization: `Bearer ${env("DAILY_API_KEY")}` } });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`Daily ${res.status}: ${j.info || j.error || "klaida"}`);
+  return j;
+}
+// may this person take part in calls of that conversation? (#bendras: everyone who uses the chat)
+async function inConversation(uid: string, conversationId: string): Promise<boolean> {
+  const [c] = await db<{ kind: string }[]>(`conversations?select=kind&id=eq.${encodeURIComponent(conversationId)}`);
+  if (!c) return false;
+  if (c.kind === "general") return true;
+  const m = await db<unknown[]>(`conversation_members?select=user_id&conversation_id=eq.${encodeURIComponent(conversationId)}&user_id=eq.${uid}`);
+  return m.length > 0;
+}
+type Call = { id: string; conversation_id: string; created_by: string; meet_url: string; provider: string; room: string | null; media?: string; created_at: string; ended_at: string | null };
+const mediaOf = (v: unknown) => (v === "audio" ? "audio" : "video");
+async function dailyCreate(who: Who, conversationId: string, media = "video") {
+  if (!await inConversation(who.id, conversationId)) return json({ error: "Tu nesi šio pokalbio narys." }, 403);
+  const exp = Math.floor(Date.now() / 1000) + DAILY_HOURS * 3600;
+  const room = await daily("rooms", {
+    name: "es-" + crypto.randomUUID().replace(/-/g, "").slice(0, 16),
+    privacy: "private",
+    // an audio call starts with every camera off (it can still be switched on)
+    properties: { exp, eject_at_room_exp: true, enable_prejoin_ui: false, enable_screenshare: true, enable_chat: false, enable_knocking: false, start_video_off: media === "audio" },
+  });
+  const [call] = await db<Call[]>("calls", {
+    method: "POST", headers: { Prefer: "return=representation" },
+    body: JSON.stringify({ conversation_id: conversationId, created_by: who.id, provider: "daily", meet_url: room.url, room: room.name, media }),
+  });
+  await db("call_responses", { method: "POST", body: JSON.stringify({ call_id: call.id, user_id: who.id, status: "accepted" }) });
+  return json({ provider: "daily", call });
+}
+async function join(who: Who, callId: string) {
+  const [call] = await db<Call[]>(`calls?select=*&id=eq.${encodeURIComponent(callId)}`);
+  if (!call) return json({ error: "Skambutis nerastas." }, 404);
+  if (!await inConversation(who.id, call.conversation_id)) return json({ error: "Tu nesi šio pokalbio narys." }, 403);
+  if (call.ended_at) return json({ error: "Skambutis jau baigtas.", code: "ended" });
+  if (call.provider !== "daily") return json({ provider: "meet", url: call.meet_url });
+  if (Date.now() - new Date(call.created_at).getTime() > DAILY_HOURS * 3600e3) return json({ error: "Skambutis jau baigtas.", code: "ended" });
+  const t = await daily("meeting-tokens", { properties: {
+    room_name: call.room, user_name: who.name.slice(0, 60), user_id: who.id, is_owner: call.created_by === who.id,
+    exp: Math.floor(new Date(call.created_at).getTime() / 1000) + DAILY_HOURS * 3600,
+  } });
+  return json({ provider: "daily", url: call.meet_url, token: t.token, media: mediaOf(call.media) });
+}
+
+// someone left: is anybody else still in the room? Nobody -> the call is over
+// (asked again after a moment: two people leaving together each still see the other)
+async function presence(room: string): Promise<{ id: string; userId: string }[]> {
+  const j = await dailyGet(`rooms/${encodeURIComponent(room)}/presence`);
+  return ((j.data ?? []) as { id: string; userId: string }[]);
+}
+export async function callLeft(callId: string, sessionId: string, wait = (ms: number) => new Promise((r) => setTimeout(r, ms))) {
+  if (!/^[0-9a-f-]{36}$/i.test(callId)) return { ended: false };
+  const [call] = await db<Call[]>(`calls?select=*&id=eq.${callId}`);
+  if (!call || call.ended_at || call.provider !== "daily" || !call.room || !dailyOn()) return { ended: false };
+  // Daily's list of who is in the room lags a little behind: ask a few times
+  for (let i = 0; i < 4; i++) {
+    const others = (await presence(call.room)).filter((p) => p.id !== sessionId);
+    if (!others.length) break;
+    if (i === 3) return { ended: false, present: others.length };
+    await wait(5000);
+  }
+  return await callEnd(call);
+}
+// calls still shown as going on: end each one nobody is in (a minute after it was started at the
+// earliest – the one who started it is still joining); a phone switched off or an app closed
+// without saying goodbye leaves the call open otherwise
+export async function callCheck(ids: string[]) {
+  const ok = ids.filter((x) => /^[0-9a-f-]{36}$/i.test(x)).slice(0, 20);
+  if (!ok.length || !dailyOn()) return { ended: [] };
+  const calls = await db<Call[]>(`calls?select=*&id=in.(${ok.join(",")})&ended_at=is.null`);
+  const ended: string[] = [];
+  for (const call of calls) {
+    if (call.provider !== "daily" || !call.room) continue;
+    const age = Date.now() - Date.parse(call.created_at);
+    if (age < 60e3) continue;
+    let empty = age > DAILY_HOURS * 3600e3;
+    if (!empty) {
+      try { empty = !(await presence(call.room)).length; } catch (e) {
+        // the room is gone at Daily (expired or deleted): nobody can be in it
+        empty = /Daily 404/.test((e as Error).message);
+      }
+    }
+    if (empty && (await callEnd(call)).ended) ended.push(call.id);
+  }
+  return { ended };
+}
+async function callEnd(call: Call) {
+  const callId = call.id;
+  const now = new Date().toISOString();
+  const [ended] = await db<Call[]>(`calls?id=eq.${callId}&ended_at=is.null`, { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ ended_at: now }) });
+  if (!ended) return { ended: false };
+  // an online meeting with guests: a call of a few minutes at least sends out the summary
+  let summary = false;
+  if (Date.now() - Date.parse(call.created_at) > 3 * 60e3) {
+    const [m] = await db<{ id: string }[]>(`meetings?select=id&conversation_id=eq.${call.conversation_id}&online=is.true&summary_sent_at=is.null`);
+    if (m && Deno.env.get("CRON_SECRET")) {
+      const r = await fetch(`${env("SUPABASE_URL")}/functions/v1/push-notify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-cron-secret": env("CRON_SECRET"), Authorization: `Bearer ${env("SUPABASE_SERVICE_ROLE_KEY")}` },
+        body: JSON.stringify({ mode: "meeting-summary", meeting_id: m.id }),
+      }).catch(() => null);
+      summary = !!r?.ok;
+      await r?.body?.cancel().catch(() => {});
+    }
+  }
+  return { ended: true, summary };
+}
+
+// ---------- handlers ----------
+async function onCallback(url: URL): Promise<Response> {
+  const st = await readState(url.searchParams.get("state") || "");
+  const back = (ok: boolean, msg = "") => {
+    const to = new URL(st?.origin || "https://app.eventsolutions.lt/");
+    to.searchParams.set("google", ok ? "ok" : "error");
+    if (msg) to.searchParams.set("msg", msg.slice(0, 200));
+    return new Response(null, { status: 302, headers: { Location: to.toString() } });
+  };
+  if (!st) return back(false, "Nuoroda nebegalioja — bandyk prijungti dar kartą.");
+  if (url.searchParams.get("error")) return back(false, url.searchParams.get("error") === "access_denied" ? "Prijungimas atšauktas." : String(url.searchParams.get("error")));
+  const [p] = await db<{ role: string }[]>(`profiles?select=role&id=eq.${st.uid}`);
+  if (p?.role !== "admin") return back(false, "Prijungti gali tik administratorius.");
+  try {
+    const j = await google("https://oauth2.googleapis.com/token", form({
+      grant_type: "authorization_code", code: url.searchParams.get("code") || "", redirect_uri: selfUrl(),
+      client_id: env("GOOGLE_CLIENT_ID"), client_secret: env("GOOGLE_CLIENT_SECRET"),
+    }));
+    // Google lets people untick single permissions; without this one no meeting can be created
+    if (!String(j.scope ?? "").split(/\s+/).includes(MEET_SCOPE)) {
+      return back(false, "Nepažymėtas leidimas kurti Google Meet susitikimus. Prijunk dar kartą ir Google lange uždėk varnelę prie Google Meet (arba „Select all“).");
+    }
+    if (!j.refresh_token) return back(false, "Google negrąžino ilgalaikio rakto. Atjunk programą Google paskyroje (myaccount.google.com → Saugumas → Trečiųjų šalių programos) ir bandyk vėl.");
+    const email = emailFromIdToken(j.id_token);
+    const at = new Date().toISOString();
+    await db("google_meet_auth?on_conflict=id", {
+      method: "POST", headers: { Prefer: "resolution=merge-duplicates" },
+      body: JSON.stringify({ id: 1, refresh_token: await encrypt(String(j.refresh_token)), email, connected_by: st.uid, connected_at: at }),
+    });
+    cached = { token: String(j.access_token), exp: Date.now() + Number(j.expires_in || 3000) * 1000, key: at };
+    return back(true, email);
+  } catch (e) {
+    return back(false, (e as Error).message);
+  }
+}
+
+export async function handle(req: Request): Promise<Response> {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  try {
+    const url = new URL(req.url);
+    if (req.method === "GET") {
+      if (url.searchParams.has("state")) return await onCallback(url);
+      return json({ ok: true, version: VERSION });
+    }
+    if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
+    const body = await req.json().catch(() => ({}));
+    if (body.action === "left") return json(await callLeft(String(body.call_id ?? ""), String(body.session_id ?? "")));
+    const who = await caller(req);
+    if (!who || !APPROVED.includes(who.role)) return json({ error: "Reikia prisijungti." }, 401);
+    const configured = !!(Deno.env.get("GOOGLE_CLIENT_ID") && Deno.env.get("GOOGLE_CLIENT_SECRET"));
+    const admin = who.role === "admin";
+    if (body.action === "config") return json({ provider: dailyOn() ? "daily" : "meet", version: VERSION });
+    if (body.action === "join") {
+      if (!who.canChat) return json({ error: "Nėra prieigos prie chato." }, 403);
+      return await join(who, String(body.call_id ?? ""));
+    }
+    if (body.action === "check") {
+      if (!who.canChat) return json({ error: "Nėra prieigos prie chato." }, 403);
+      return json(await callCheck(Array.isArray(body.call_ids) ? body.call_ids.map(String) : []));
+    }
+    if (body.action === "usage") {
+      if (!admin) return json({ error: "Tik administratoriui." }, 403);
+      if (!dailyOn()) return json({ daily: false });
+      try { return json({ daily: true, ...(await dailyUsage()) }); } catch (e) { return json({ daily: true, error: (e as Error).message }); }
+    }
+    if (body.action === "status") {
+      if (!admin) return json({ error: "Tik administratoriui." }, 403);
+      const [row] = await db<{ email: string; connected_at: string }[]>("google_meet_auth?select=email,connected_at&id=eq.1");
+      return json({ version: VERSION, daily: dailyOn(), configured, connected: !!row, email: row?.email ?? "", connected_at: row?.connected_at ?? null, redirect_uri: selfUrl() });
+    }
+    if (body.action === "connect") {
+      if (!admin) return json({ error: "Tik administratoriui." }, 403);
+      if (!configured) return json({ error: "Serveryje nenustatyti GOOGLE_CLIENT_ID ir GOOGLE_CLIENT_SECRET." }, 400);
+      const origin = cleanOrigin(body.origin);
+      if (!origin) return json({ error: "Neteisingas programos adresas." }, 400);
+      return json({ url: consentUrl(await makeState(who.id, origin)) });
+    }
+    if (body.action === "disconnect") {
+      if (!admin) return json({ error: "Tik administratoriui." }, 403);
+      await db("google_meet_auth?id=eq.1", { method: "DELETE" });
+      cached = null;
+      return json({ ok: true });
+    }
+    if (body.action === "create") {
+      if (!who.canChat) return json({ error: "Nėra prieigos prie chato." }, 403);
+      if (dailyOn() && body.conversation_id) {
+        try { return await dailyCreate(who, String(body.conversation_id), mediaOf(body.media)); } catch (e) { return json({ error: (e as Error).message }); }
+      }
+      // Google Meet is no longer offered for chat calls: only Daily (inside the app)
+      if (body.conversation_id) return json({ error: "Skambučiai dar neįjungti – administratorius turi serveryje nustatyti DAILY_API_KEY.", code: "not_configured" });
+      if (!configured) return json({ error: "Google Meet neprijungtas.", code: "not_connected" });
+      try {
+        const token = await accessToken();
+        if (!token) return json({ error: "Google Meet neprijungtas.", code: "not_connected" });
+        return json({ url: await createSpace(token) });
+      } catch (e) {
+        const err = e as Error & { code?: string; status?: number };
+        if (err.status === 403 && /scope/i.test(err.message)) {
+          return json({ error: "Prijungta Google paskyra neturi leidimo kurti Google Meet susitikimų — administratorius turi ją prijungti iš naujo ir pažymėti Google Meet leidimą.", code: "not_connected" });
+        }
+        if (err.code === "invalid_grant") {
+          cached = null;
+          return json({ error: "Google paskyros prieiga nebegalioja — administratorius turi ją prijungti iš naujo.", code: "not_connected" });
+        }
+        return json({ error: "Google Meet: " + err.message });
+      }
+    }
+    return json({ error: "Nežinomas veiksmas." }, 400);
+  } catch (e) {
+    console.error(e);
+    return json({ error: (e as Error).message }, 500);
+  }
+}
+
+if (import.meta.main) Deno.serve(handle);
