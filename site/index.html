@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-+v/AJV4g0OOZS3pq8T/QnUMhQgMrw1rGIkucte8Bsr8=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-n20JGYzmOCIuyepTEJaHiTKSApzfHlxyVHgk5NPiAl4=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -1459,11 +1459,18 @@ table.xg textarea.xg-vrep{color:var(--danger) !important;background-color:color-
 .rt-card.rs-grazinta{opacity:.8;}
 .rt-head{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;}
 /* the aligned columns (cards and the header above them) */
-.rt-g{flex:1;min-width:0;display:grid;grid-template-columns:minmax(0,1.35fr) 190px 170px minmax(0,1.15fr);grid-template-areas:"st date co co" "loc tel who ev";gap:6px 14px;align-items:center;}
+.rt-g{flex:1;min-width:0;display:grid;grid-template-columns:minmax(150px,230px) 175px minmax(140px,190px) minmax(0,1fr);grid-template-areas:"st date co co" "loc tel who ev";gap:6px 0;align-items:center;}
+/* the columns split by a thin line, as in a table */
+.rt-g > *{padding:0 12px;align-self:stretch;display:flex;align-items:center;}
+.rt-g > :is(.rt-c-st,.rt-c-loc,.rt-colhead span:nth-child(1),.rt-colhead span:nth-child(4)){padding-left:0;}
+.rt-g > :is(.rt-c-date,.rt-c-co,.rt-c-tel,.rt-c-who,.rt-c-ev){border-left:1px solid var(--border-2);}
+.rt-colhead .rt-g > span:nth-child(2),.rt-colhead .rt-g > span:nth-child(3),.rt-colhead .rt-g > span:nth-child(5),.rt-colhead .rt-g > span:nth-child(6),.rt-colhead .rt-g > span:nth-child(7){border-left:1px solid var(--border-2);}
+.rt-colhead .rt-g > span:nth-child(1),.rt-colhead .rt-g > span:nth-child(4){padding-left:0;}
 .rt-c{min-width:0;font-size:13px;}
 .rt-c-st{grid-area:st;} .rt-c-date{grid-area:date;} .rt-c-co{grid-area:co;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .rt-c-loc{grid-area:loc;} .rt-c-tel{grid-area:tel;} .rt-c-who{grid-area:who;} .rt-c-ev{grid-area:ev;}
 .rt-c-loc,.rt-c-tel,.rt-c-who,.rt-c-ev{color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rt-c-loc .rt-map{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
 .rt-c-ev{display:flex;gap:4px 10px;flex-wrap:wrap;white-space:normal;}
 .rt-c .rt-what{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
 .rt-c-date .rt-date{margin-left:0;font-size:13.5px;}
@@ -1480,7 +1487,9 @@ table.xg textarea.xg-vrep{color:var(--danger) !important;background-color:color-
 .rt-colhead .rt-g > span:nth-child(4){grid-area:loc;} .rt-colhead .rt-g > span:nth-child(5){grid-area:tel;} .rt-colhead .rt-g > span:nth-child(6){grid-area:who;} .rt-colhead .rt-g > span:nth-child(7){grid-area:ev;}
 .rt-colhead .rt-side{width:188px;flex:0 0 auto;}
 @media (max-width:900px){
-  .rt-g{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"st st" "date date" "co co" "loc tel" "who ev";}
+  .rt-g{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"st st" "date date" "co co" "loc tel" "who ev";gap:6px 12px;}
+  .rt-g > *{padding:0;border-left:0 !important;display:block;}
+  .rt-g > .rt-c-co{display:flex;}
   .rt-colhead{display:none;}
   .rt-c-loc::before,.rt-c-tel::before,.rt-c-who::before,.rt-c-ev::before{content:attr(data-l);display:block;font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--text-faint,#888);}
   .rt-c-ev::before{flex:1 1 100%;}
@@ -25223,7 +25232,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v760';
+const APP_VER = 'v761';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -55187,6 +55196,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-12 11:00', v:'v761', k:'fix', t:'Paėmimai: grafos arčiau viena kitos, atskirtos linija', f:'Sąraše nebėra didelio tarpo tarp būsenos ir datos; grafos (ir jų pavadinimai viršuje) atskirtos plona vertikalia linija, kaip lentelėje.' },
   { d:'2026-11-12 10:00', v:'v760', k:'new', t:'Paėmimai: tvarkingas, išlygiuotas sąrašas; „Papildomas paėmimas“', f:'Kiekvienas paėmimas – tomis pačiomis grafomis kaip lentelėje (viršuje – pavadinimai, kaip Renginiuose): BŪSENA | PAĖMIMO DATA (Šiandien / Rytoj / data) | ĮMONĖ, po jais VIETA | NUMERIS | ATSAKINGAS | KUR PRISKIRTA. Telefone – po dvi grafas su pavadinimais. Jei ta pati įmonė pridėta dar kartą, kol ankstesnis jos paėmimas dar nebaigtas (iki grąžinimo dienos ar kol negrąžinta), vėlesnis pažymimas „➕ Papildomas paėmimas · prie 11 d.“.' },
   { d:'2026-11-10 09:30', v:'v759', k:'new', t:'Projektų kūrimas: grafos PNG – A4 lapo dydžiu, su kitomis grafomis', f:'Grafos „PNG“ atidaro langą: su kainomis arba be, kurias dar grafas įdėti (pažymėti, „Visos“ / „Tik ši“), stačias ar gulsčias A4. Išsaugomas A4 dydžio PNG (300 dpi): viršuje – pasiūlymo antraštė (klientas, projektas, lokacija, data), po ja – pasirinktos grafos per visą lapo plotį (saugios paraštės šonuose ir viršuje), tiek, kiek jos užima.' },
   { d:'2026-11-10 03:30', v:'v758', k:'new', t:'Kalendorius: bendri ir privatūs susitikimai su Slack', f:'Kalendoriuje paspaudus datą → „+ Susitikimas“ → tipas. 👥 Bendras – kviečiama visa komanda: laiškas visiems su kvietimu į Google kalendorių, Slack #general – pranešimas su @channel, priminimai: dieną prieš 10:00, tą dieną 1 val., 30, 15 ir 5 min. prieš. 🔒 Privatus – pasirinkti nariai: laiškai, Slack’e sukuriamas uždaras kanalas su jais, ten – pranešimas ir tie patys priminimai. Pakeitus – pranešama iš naujo, atšaukus – pranešama (privatus kanalas archyvuojamas).' },
