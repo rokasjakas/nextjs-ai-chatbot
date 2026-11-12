@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-EZGh3AdQNAPzrurbbPtv3Gaskes2xe2CXy1suvLQFD4=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-xMdAvlrhYVoC2F5qWEN+Ff+EWIsgljFQ4Ko7odMH0E8=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -4142,6 +4142,95 @@ tr.xg-hv td.xg-hv-info{color:var(--text);}
 .pp-hds{display:flex;gap:4px;}
 .pp-hd{width:30px;flex:none;display:flex;flex-direction:column;align-items:center;font-style:normal;font-size:11px;font-weight:700;color:var(--text-dim);line-height:1.05;} .pp-hd small{font-size:9px;font-weight:500;}
 @media(max-width:900px){ .pp-dhead-cap{display:none;} }
+
+/* ---------- Užduotys ---------- */
+.uz-page{max-width:none;}
+.uz-wrap{display:grid;grid-template-columns:minmax(0,1fr) 0;gap:0;align-items:start;}
+.uz-wrap.has-det{grid-template-columns:minmax(0,1fr) minmax(360px,440px);gap:14px;}
+.uz-det{position:sticky;top:10px;max-height:calc(100vh - 90px);overflow:auto;border:1px solid var(--border);border-radius:14px;background:var(--panel);display:none;}
+.uz-wrap.has-det .uz-det{display:block;}
+.uz-det-empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 20px;color:var(--text-dim);text-align:center;font-size:13px;}
+.uz-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.uz-head h2{margin:0;display:inline-flex;align-items:center;gap:8px;font-size:22px;} .uz-head h2 svg{width:26px;height:26px;color:rgb(47,179,107);}
+.uz-quick{flex:1 1 260px;max-width:520px;} .uz-quick input{width:100%;box-sizing:border-box;}
+.uz-new{margin-left:auto;}
+.uz-views{display:flex;align-items:center;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.uz-views > button{border:0;background:none;color:var(--text-dim);font:inherit;font-weight:600;font-size:14px;padding:9px 12px;border-bottom:2px solid transparent;cursor:pointer;margin-bottom:-1px;}
+.uz-views > button.on{color:var(--text);border-bottom-color:rgb(47,179,107);}
+.uz-n{display:inline-block;min-width:18px;padding:0 6px;border-radius:999px;background:var(--panel-3,rgba(127,127,127,.2));font-size:11px;line-height:18px;text-align:center;margin-left:3px;}
+.uz-lay{display:inline-flex;border:1px solid var(--border);border-radius:9px;padding:2px;margin-bottom:4px;} .uz-lay button{border:0;background:none;color:var(--text-dim);font:inherit;font-size:13px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;} .uz-lay button.on{background:var(--panel-3,rgba(127,127,127,.2));color:var(--text);}
+.uz-filt{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;} .uz-filt input{flex:1 1 220px;max-width:340px;} .uz-filt select{width:auto;min-width:130px;}
+.uz-grp{border:1px solid var(--border);border-radius:12px;background:var(--panel);margin-bottom:12px;overflow:hidden;}
+.uz-grp-h{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;color:var(--text);font:inherit;font-size:15px;padding:12px 14px;text-align:left;cursor:default;} .uz-grp-h span{color:var(--text-dim);font-weight:500;} .uz-grp-h svg{width:16px;height:16px;color:rgb(155,95,230);}
+.uz-row{display:grid;grid-template-columns:34px minmax(180px,1fr) 130px 110px 120px 110px;gap:8px;align-items:center;padding:8px 14px;border-top:1px solid var(--border);cursor:pointer;min-height:44px;}
+.uz-row:hover{background:var(--panel-2,rgba(127,127,127,.06));} .uz-row.sel{background:color-mix(in srgb, rgb(47,179,107) 10%, transparent);}
+.uz-row-h{cursor:default;min-height:0;padding:6px 14px;font-size:11.5px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.03em;} .uz-row-h:hover{background:none;}
+.uz-tt{display:flex;align-items:center;gap:6px;min-width:0;} .uz-tt b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.uz-row.done .uz-tt b{text-decoration:line-through;color:var(--text-dim);}
+.uz-kind svg{width:14px;height:14px;color:var(--text-dim);} .uz-pg{font-size:11px;color:var(--text-dim);border:1px solid var(--border);border-radius:6px;padding:0 5px;} .uz-pg.ok{color:rgb(31,157,85);border-color:rgb(31,157,85);}
+.uz-sh{font-size:10.5px;color:var(--text-dim);border:1px dashed var(--border);border-radius:6px;padding:0 5px;}
+.uz-chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--text-dim);background:none;cursor:pointer;padding:0;position:relative;flex:none;}
+.uz-chk.on{background:rgb(31,157,85);border-color:rgb(31,157,85);} .uz-chk.on::after{content:'';position:absolute;left:5px;top:1px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+.uz-chk.big{width:24px;height:24px;} .uz-chk.big.on::after{left:7px;top:2px;width:6px;height:12px;} .uz-chk.sm{width:18px;height:18px;} .uz-chk.sm.on::after{left:4px;top:0;}
+.uz-pill{appearance:none;-webkit-appearance:none;border:0;border-radius:8px;background:var(--pc);color:#fff;font:inherit;font-size:13px;font-weight:700;padding:5px 26px 5px 10px;cursor:pointer;width:auto;min-width:0;background-image:linear-gradient(45deg,transparent 50%,#fff 50%),linear-gradient(135deg,#fff 50%,transparent 50%);background-position:calc(100% - 13px) 55%,calc(100% - 8px) 55%;background-size:5px 5px;background-repeat:no-repeat;}
+span.uz-pill{display:inline-block;padding-right:10px;background-image:none;}
+.uz-pill option{background:var(--panel);color:var(--text);}
+.uz-who{display:flex;align-items:center;} .uz-who .uz-av + .uz-av{margin-left:-6px;} .uz-who small{margin-left:4px;color:var(--text-dim);}
+.uz-av{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--panel-3,#444);color:var(--text);font-style:normal;font-size:10.5px;font-weight:700;border:2px solid var(--panel);flex:none;} .uz-av.big{width:32px;height:32px;font-size:12px;}
+.uz-due{display:inline-flex;align-items:center;gap:5px;font-size:13px;} .uz-due svg{width:15px;height:15px;color:var(--text-dim);} .uz-due.late,.late .uz-due,.uz-m.late{color:rgb(217,58,58);font-weight:600;}
+.uz-pr{display:inline-flex;align-items:center;gap:6px;font-size:13px;} .uz-pr i{width:10px;height:10px;border-radius:2px;background:var(--pc);flex:none;}
+.uz-board{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:12px;overflow-x:auto;padding-bottom:6px;}
+.uz-col{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px;min-height:120px;display:flex;flex-direction:column;gap:8px;} .uz-col.over{outline:2px dashed rgb(47,179,107);}
+.uz-col-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;} .uz-col-h i{width:10px;height:10px;border-radius:50%;background:var(--pc);} .uz-col-h span{color:var(--text-dim);font-weight:500;}
+.uz-col-e{color:var(--text-dim);font-size:12px;text-align:center;padding:10px;}
+.uz-card{border:1px solid var(--border);border-radius:10px;padding:9px 10px;background:var(--panel-2,var(--panel));cursor:pointer;display:flex;flex-direction:column;gap:6px;} .uz-card.sel{border-color:rgb(47,179,107);} .uz-card.drag{opacity:.5;}
+.uz-card b{font-weight:600;font-size:13.5px;} .uz-cev{display:inline-flex;align-items:center;gap:4px;color:var(--text-dim);font-size:11.5px;} .uz-cev svg{width:13px;height:13px;}
+.uz-card-f{display:flex;align-items:center;gap:6px;}
+.uz-rep{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:12px 14px;margin-bottom:12px;}
+.uz-rep-p{display:flex;gap:4px;margin-bottom:10px;} .uz-rep-p button{border:1px solid var(--border);background:none;color:var(--text-dim);font:inherit;font-size:12px;border-radius:7px;padding:3px 9px;cursor:pointer;} .uz-rep-p button.on{color:var(--text);border-color:rgb(47,179,107);}
+.uz-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;} .uz-kpi > div{display:flex;flex-direction:column;} .uz-kpi small{color:var(--text-dim);font-size:11.5px;} .uz-kpi b{font-size:20px;}
+.uz-rep-by{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:13px;} .uz-rep-by span{display:inline-flex;align-items:center;gap:6px;}
+.uz-d{padding:14px;display:flex;flex-direction:column;gap:10px;}
+.uz-d-top{display:flex;align-items:center;gap:6px;} .uz-crumb{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-dim);border:1px solid var(--border);border-radius:8px;padding:3px 8px;max-width:75%;} .uz-crumb svg{width:14px;height:14px;} .uz-crumb button{border:0;background:none;color:inherit;font:inherit;cursor:pointer;padding:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .uz-crumb button:hover{color:var(--text);text-decoration:underline;}
+.uz-d-title{display:flex;align-items:flex-start;gap:10px;} .uz-d-title textarea{flex:1;border:0;background:none;color:var(--text);font:inherit;font-size:20px;font-weight:700;resize:none;padding:0;line-height:1.25;overflow:hidden;min-height:26px;} .uz-d-title textarea:focus{outline:1px dashed var(--border);}
+.uz-d-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.uz-m{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:9px;padding:2px 8px;font-size:13px;min-height:34px;box-sizing:border-box;}
+.uz-d-meta .uz-m input,.uz-d-meta .uz-m select{border:0 !important;background:none !important;box-shadow:none !important;padding:2px 2px !important;height:auto !important;min-height:0 !important;margin:0 !important;font-size:13px !important;}
+.uz-d-meta .uz-m input.tm-in,.uz-d-meta .uz-m input[type=time]{width:62px !important;} .uz-d-meta .uz-m input[type=date]{width:118px !important;} .uz-d-meta .uz-m select{width:auto !important;max-width:170px;} .uz-m svg{width:15px;height:15px;color:var(--text-dim);} .uz-m select,.uz-m input{border:0;background:none;color:var(--text);font:inherit;font-size:13px;padding:2px;width:auto;min-width:0;} .uz-m input[type=time]{width:84px;} .uz-m input[type=date]{width:128px;}
+.uz-prm i{width:10px;height:10px;border-radius:2px;background:var(--pc);}
+.uz-d-ppl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;} .uz-d-ppl > small{color:var(--text-dim);margin-right:2px;}
+.uz-pp{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border);border-radius:999px;padding:1px 8px 1px 1px;} .uz-pp .uz-av{width:22px;height:22px;font-size:9.5px;border:0;} .uz-pp button{border:0;background:none;color:var(--text-dim);cursor:pointer;padding:0 0 0 2px;font-size:11px;}
+.uz-d-ppl select{width:auto;font-size:12.5px;padding:3px 6px;}
+.uz-d-opts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13px;} .uz-d-opts select{width:auto;max-width:220px;font-size:12.5px;padding:3px 6px;}
+.uz-d-tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;} .uz-d-tabs button{border:0;background:none;color:var(--text-dim);font:inherit;font-size:13px;font-weight:600;padding:8px 10px;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;margin-bottom:-1px;} .uz-d-tabs button.on{color:var(--text);border-bottom-color:rgb(47,179,107);} .uz-d-tabs i{font-style:normal;font-size:10.5px;background:var(--panel-3,rgba(127,127,127,.2));border-radius:999px;padding:0 6px;margin-left:3px;}
+.uz-d-body{display:flex;flex-direction:column;gap:12px;}
+.uz-note{width:100%;box-sizing:border-box;resize:vertical;min-height:60px;}
+.uz-box{border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;}
+.uz-box-h{display:flex;align-items:center;gap:6px;font-size:14px;} .uz-box-h span{color:var(--text-dim);font-size:12.5px;}
+.uz-cl{display:flex;align-items:center;gap:9px;font-size:13.5px;min-height:26px;} .uz-cl.on > span,.uz-cl.on > .uz-sublink{color:var(--text-dim);text-decoration:line-through;} .uz-cl small{margin-left:auto;color:var(--text-dim);font-size:11px;} .uz-cl .uz-av{width:22px;height:22px;font-size:9.5px;}
+.uz-x{border:0;background:none;color:var(--text-dim);cursor:pointer;font-size:12px;padding:2px 4px;margin-left:auto;opacity:.6;} .uz-x:hover{opacity:1;color:rgb(217,58,58);} .uz-cl small + .uz-x{margin-left:0;}
+.uz-add{border:1px dashed var(--border);background:none;border-radius:8px;padding:6px 8px;font-size:13px;}
+.uz-sublink{border:0;background:none;color:var(--text);font:inherit;font-size:13.5px;cursor:pointer;padding:0;text-align:left;} .uz-sublink:hover{text-decoration:underline;}
+.uz-coms{display:flex;flex-direction:column;gap:8px;} .uz-more{border:0;background:none;color:var(--accent);font:inherit;font-size:12px;cursor:pointer;}
+#uzLogList{display:flex;flex-direction:column;gap:10px;max-height:46vh;overflow:auto;}
+.uz-com{display:flex;gap:10px;} .uz-com-h{display:flex;align-items:baseline;gap:8px;font-size:13px;} .uz-com-h small{color:var(--text-dim);font-size:11.5px;} .uz-com-h .uz-x{margin-left:auto;} .uz-com-b{font-size:13.5px;white-space:pre-wrap;word-break:break-word;}
+.uz-cin{display:flex;gap:6px;align-items:flex-end;} .uz-cin textarea{flex:1;resize:none;min-height:36px;font:inherit;font-size:13.5px;} .uz-att{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--border);border-radius:9px;cursor:pointer;} .uz-att svg{width:18px;height:18px;} .uz-cin .btn svg{width:16px;height:16px;}
+.uz-files{display:flex;flex-direction:column;gap:6px;} .uz-file{display:flex;align-items:center;gap:8px;font-size:13px;} .uz-file svg{width:16px;height:16px;color:var(--text-dim);} .uz-file small{color:var(--text-dim);font-size:11.5px;}
+.uz-hist{display:flex;flex-direction:column;gap:8px;} .uz-h{display:flex;align-items:flex-start;gap:8px;font-size:13px;} .uz-h .uz-av{width:22px;height:22px;font-size:9.5px;} .uz-h small{margin-left:auto;color:var(--text-dim);white-space:nowrap;font-size:11.5px;}
+.uz-kindsel{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;} .uz-kindsel button{display:flex;align-items:center;gap:10px;border:1px solid var(--border);background:none;color:var(--text);border-radius:10px;padding:10px;cursor:pointer;text-align:left;font:inherit;} .uz-kindsel button span{display:flex;flex-direction:column;} .uz-kindsel small{color:var(--text-dim);font-size:11.5px;} .uz-kindsel svg{width:22px;height:22px;color:rgb(47,179,107);} .uz-kindsel button.on{border-color:rgb(47,179,107);background:color-mix(in srgb, rgb(47,179,107) 12%, transparent);}
+@media(max-width:1100px){
+  .uz-wrap.has-det{grid-template-columns:minmax(0,1fr);}
+  .uz-wrap.has-det .uz-det{position:fixed;inset:0;z-index:900;max-height:none;border-radius:0;border:0;padding-top:env(safe-area-inset-top);}
+}
+@media(max-width:760px){
+  .uz-row{grid-template-columns:30px minmax(0,1fr) auto;grid-template-areas:'c t s' 'c m m';row-gap:4px;}
+  .uz-row > span:nth-child(1){grid-area:c;} .uz-row > span:nth-child(2){grid-area:t;} .uz-row > span:nth-child(3){grid-area:s;}
+  .uz-row > span:nth-child(4),.uz-row > span:nth-child(5),.uz-row > span:nth-child(6){grid-row:2;font-size:12px;} .uz-row > span:nth-child(4){grid-column:2;} .uz-row > span:nth-child(5){grid-column:2;justify-self:center;} .uz-row > span:nth-child(6){grid-column:3;}
+  .uz-row-h{display:none;}
+  .uz-filt select{flex:1 1 40%;min-width:0;} .uz-filt input{max-width:none;}
+  .uz-new{margin-left:0;}
+  .uz-board{grid-template-columns:repeat(4,minmax(240px,82vw));}
+}
 /* booking: strong, solid status colours */
 .pp-st-yes,.pp-dd.pp-st-yes{background:rgb(31,157,85) !important;color:#fff !important;border-color:rgb(23,128,68) !important;}
 .pp-st-no,.pp-dd.pp-st-no{background:rgb(217,58,58) !important;color:#fff !important;border-color:rgb(178,40,40) !important;}
@@ -7693,6 +7782,9 @@ html.es-embed main{padding-bottom:10px !important;}
     <button class="rail-btn" data-mobile="more" data-tab="chat" data-label="Chatas"><span class="rail-tip">Chatas</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/></svg>
     </button>
+    <button class="rail-btn" data-mobile="more" data-tab="tasks" data-label="Užduotys"><span class="rail-tip">Užduotys</span>
+      <svg viewBox="0 0 24 24"></svg>
+    </button>
     <button class="rail-btn" data-mobile="more" data-tab="tracker" data-label="Team Tracker"><span class="rail-tip" data-short="Tracker">Team Tracker</span>
       <svg viewBox="0 0 24 24"></svg>
     </button>
@@ -7933,7 +8025,7 @@ SL.notif = '<path fill="currentColor" stroke="none" transform="matrix(.025 0 0 .
   const RAIL = { home:'house', events:'calendar', events2:'calendar', projects:'folder', load:'cart', rentals:'pickup', handovers:'handover', inventory:'warehouse',
     rules:'package', fleet:'truck', stats:'chart', chat:'chat', members:'users', people:'card', jobs:'tasks', offers:'receipt',
     venues:'building', admin:'shield', system:'hub', tools:'calc', guide:'guide', profile:'user', gear:'alert', newproj:'addbox', sort:'sorting', stocktake:'checklist', stockleft:'inventory2', works:'build', whjobs:'tasks', sharedocs:'folder',
-    games:'games', mail:'mail', labor:'calendar', invoices:'invoice', buy:'shopbag', tracker:'clock', expenses:'wallet', workplans:'checklist', creds:'lock', keys:'key', alarm:'siren' };
+    games:'games', mail:'mail', labor:'calendar', invoices:'invoice', buy:'shopbag', tracker:'clock', tasks:'tasks', expenses:'wallet', workplans:'checklist', creds:'lock', keys:'key', alarm:'siren' };
   document.querySelectorAll('.rail-btn').forEach(b=>{
     const k = b.id==='railMore' ? 'dots' : b.id==='railNotes' ? 'note' : RAIL[b.dataset.tab], s = b.querySelector('svg');
     if(k && s && SL[k]) s.outerHTML = slIcon(k);
@@ -15137,7 +15229,7 @@ function accessLevel(sec){
   const p = (ACCESS.perms[ACCESS.role]||{})[sec];
   return p || 'none';
 }
-const TEAM_TABS = ['members','profile','games','tracker','buy','expenses','workplans'];
+const TEAM_TABS = ['members','profile','games','tracker','buy','expenses','workplans','tasks'];
 // Runner and Freelance: no „Prašymai“ (Mano erdvė), „Pirkiniai“, „Inventorizacija“ (same in SQL: level_limits.sql)
 const lowLevel = ()=>['runner','freelance'].includes(ACCESS.role);
 const LOW_HIDDEN = new Set(['buy','stocktake']);    // everyone approved; chat follows the permission table
@@ -23569,6 +23661,7 @@ const HOME_TILES = [
   {tab:'games', title:'Games', color:'#9775FA', desc:'Retro žaidimai, rekordų lentelė ir žaidimai su kolegomis.'},
   {tab:'members', title:'Nariai', color:'#50AD97', desc:'Komandos nariai, kas prisijungęs, kontaktai.'},
   {tab:'chat', title:'Chatas', color:'#4E9BC9', desc:'Bendras chatas, asmeninės ir grupinės žinutės.'},
+  {tab:'tasks', title:'Užduotys', color:'#2FB36B', desc:'To-Do ir išplėstinės užduotys: mano, man priskirtos, bendras sąrašas, laukiančios, atliktos.'},
   {tab:'tracker', title:'Team Tracker', color:'#50AD97', desc:'Darbo laikas: pradėk, keisk veiklą (sandėlis, vairavimas, montažas…), baik – ir matyk, kiek pradirbta.'},
   {tab:'profile', title:'Mano erdvė', color:'#4E9BC9', desc:'Apie mane, UTA kortelės ir PIN, išvaizda, prašymai, programėlės, pranešimai.'},
   {tab:'expenses', title:'Išlaidos', color:'#2F9E73', desc:'Kuro, maisto ir kitos išlaidos su kvitais; UTA kortelės pylimų priežastys ir sukaupta kompensacija.'},
@@ -24155,6 +24248,7 @@ const HOME_GROUPS = [
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/><path d="M11 13v2h2v-2"/></svg>'},
   {id:'warehouse', title:'Sandėlis', color:'#4E9BC9', tabs:['projects','newproj','sort','load','rentals','handovers','inventory','whjobs','works','stocktake','stockleft','gear','rules','tools'],
    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-5 9 5v12"/><path d="M7 21v-8h10v8"/><path d="M7 17h10"/></svg>'},
+  {id:'tasks', title:'Užduotys', color:'#2FB36B', tabs:['tasks'], icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/></svg>'},
 ];
 const HOME_GROUP_EXTRA = {
   // RFID skeneris (rfid.html): a light page for old Android scanners (Chainway C72) – tags, search, stocktaking
@@ -24817,7 +24911,10 @@ function homeTileList(){
   });
   HOME_TILES.filter(t=>!grouped.has(t.tab) && canView(t.tab)).forEach(t=>out.push(t));
   if(ACCESS.role==='admin' || isSuper()) out.push({tab:'admin', title:'Admin', color:'#E05050', desc:'Vartotojai, prieigos lygiai ir teisės.'});
-  return byOrder(out, prefGet('homeTiles') || uil().home, t=>t.group||t.tab);
+  let ord = prefGet('homeTiles') || uil().home;
+  // Užduotys (new) comes right after the two groups, also in an order saved before it existed
+  if(Array.isArray(ord) && !ord.includes('tasks')){ ord = ord.slice(); const i = ord.indexOf('warehouse'); ord.splice(i>=0 ? i+1 : Math.min(2, ord.length), 0, 'tasks'); }
+  return byOrder(out, ord, t=>t.group||t.tab);
 }
 function homeTileHtml(t){
   if(t.group){
@@ -25236,15 +25333,22 @@ function tkToCal(){
   CAL.todos = TK.list.filter(t=>t.due_at && !tkDone(t)).map(t=>{ const l = tkLocal(t.due_at); return { id:t.id, title:t.title, due_date:l.d, due_time:l.t==='00:00'?null:l.t, description:t.note||'' }; });
 }
 // a channel's tasks are seen by all its members; my lists keep only those I made or that are given to me
-const tkForMe = t=>{ const me = teamMe(); return !t.conversation_id || t.created_by===me || (t.assignees||[]).includes(me) || t.lead===me; };
-function tkApply(rows){ TK.list = (rows||[]).filter(tkForMe); TK.ok = true; tkToCal(); }
-function tkUpsert(r){ const i = TK.list.findIndex(x=>x.id===r.id); if(i>=0) TK.list[i] = r; else TK.list.push(r); tkToCal(); }
+// (a shared task of the Užduotys page that is not mine stays only there – TK.all)
+const tkForMe = t=>{ const me = teamMe(); return (!t.conversation_id && !t.shared) || t.created_by===me || (t.assignees||[]).includes(me) || t.lead===me; };
+function tkApply(rows){ TK.all = (rows||[]).slice(); TK.list = TK.all.filter(tkForMe); TK.ok = true; tkToCal(); }
+function tkUpsert(r){
+  TK.all = TK.all || TK.list.slice();
+  const j = TK.all.findIndex(x=>x.id===r.id); if(j>=0) TK.all[j] = r; else TK.all.push(r);
+  const i = TK.list.findIndex(x=>x.id===r.id);
+  if(tkForMe(r)){ if(i>=0) TK.list[i] = r; else TK.list.push(r); } else if(i>=0) TK.list.splice(i, 1);
+  tkToCal();
+}
 function tkLive(){
   if(TK.ch || !TK.ok || !getSb()) return;
   try{
     TK.ch = getSb().channel('tasks-live').on('postgres_changes', { event:'*', schema:'public', table:'tasks' }, p=>{
       const me = teamMe();
-      if(p.eventType==='DELETE'){ const id = p.old && p.old.id; TK.list = TK.list.filter(x=>x.id!==id); }
+      if(p.eventType==='DELETE'){ const id = p.old && p.old.id; TK.list = TK.list.filter(x=>x.id!==id); if(TK.all) TK.all = TK.all.filter(x=>x.id!==id); }
       else if(p.new && p.new.id){
         const r = p.new, old = TK.list.find(x=>x.id===r.id);
         if(p.eventType==='INSERT' && r.created_by!==me && ((r.assignees||[]).includes(me) || r.lead===me))
@@ -25253,9 +25357,10 @@ function tkLive(){
           const was = old.done||{}, now = r.done||{};
           Object.keys(now).filter(u=>!was[u] && u!==me).forEach(u=>tkToast('✓ '+r.title, tkName(u)+' atliko'+(tkOpen(r).length ? ' · liko '+tkOpen(r).length : ' · visi atliko'), r.id));
         }
-        if(TK.list.some(x=>x.id===r.id) || r.created_by===me || (r.assignees||[]).includes(me) || r.lead===me) tkUpsert(r);
+        if(TK.list.some(x=>x.id===r.id) || (TK.all||[]).some(x=>x.id===r.id) || r.shared || r.created_by===me || (r.assignees||[]).includes(me) || r.lead===me) tkUpsert(r);
       }
       tkToCal(); if(currentTab==='home' || currentTab==='chat'){ calRender(); tkRender(); }
+      if(currentTab==='tasks') uzRenderSoon();
       chatTasksLive(p);
     }).subscribe();
   }catch(e){}
@@ -25264,7 +25369,7 @@ function tkToast(title, sub, id){
   let n = document.getElementById('chatToast');
   if(!n){ n = document.createElement('button'); n.id = 'chatToast'; n.className = 'chat-toast'; document.body.appendChild(n); }
   n.innerHTML = `<b>${esc(title)}</b><span>${esc(sub)}</span>`;
-  n.onclick = ()=>{ n.classList.remove('show'); if(id) tkOpenTask(id); };
+  n.onclick = ()=>{ n.classList.remove('show'); if(id) (canView('tasks') ? uzOpen(id) : tkOpenTask(id)); };
   n.classList.add('show'); clearTimeout(n._t); n._t = setTimeout(()=>n.classList.remove('show'), 9000);
 }
 // reminders while the page is open (the phone gets them from the server as well)
@@ -25294,7 +25399,7 @@ function tkFromUrl(){
   const id = new URLSearchParams(location.search).get('task'); if(!id) return;
   history.replaceState(null, '', location.pathname);
   // the tasks may still be loading: it waits for them (up to ~10 s)
-  const go = n=>{ if(TK.ok) tkOpenTask(id); else if(n < 20) setTimeout(()=>go(n+1), 500); else toast('Užduotys dar neįkeltos – pabandyk dar kartą.'); };
+  const go = n=>{ if(TK.ok) (canView('tasks') && (TK.all||TK.list).some(x=>x.id===id) ? uzOpen(id) : tkOpenTask(id)); else if(n < 20) setTimeout(()=>go(n+1), 500); else toast('Užduotys dar neįkeltos – pabandyk dar kartą.'); };
   go(0);
 }
 function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }); }catch(e){} }
@@ -25305,7 +25410,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v769';
+const APP_VER = 'v770';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -25747,6 +25852,479 @@ function tkForm(t, mode, iso){
   };
 }
 
+
+/* ============================================================
+   TAB: Užduotys – du lygiai vienoje vietoje (sql/tasks_v3.sql)
+   • To-Do (greita): pavadinimas, atlikta, kam, terminas, trumpas komentaras.
+   • Išplėstinė (projekto tipo): atsakingas ir vykdytojai, terminas ir priminimai,
+     prioritetas, būsena (Nauja / Vykdoma / Laukiama / Atlikta), darbų sąrašas,
+     subužduotys, komentarai, failai ir veiksmų istorija (rašo pati duomenų bazė).
+   Rodiniai: Mano užduotys, Man priskirtos, Bendras sąrašas, Laukiančios, Atliktos
+   (su ataskaita: trukmė, laiku ar vėluojant). Sąrašas arba lenta (pagal būseną).
+   Tie patys įrašai (public.tasks) – ir pagrindinio puslapio užduotys, priminimai, pranešimai.
+   ============================================================ */
+const UZ = { view:(()=>{ try{ return localStorage.getItem('uzView')||'mine'; }catch(e){ return 'mine'; } })(), layout:(()=>{ try{ return localStorage.getItem('uzLayout')||'list'; }catch(e){ return 'list'; } })(),
+  q:'', fs:'', fw:'', fp:'', fe:'', open:null, tab:'desc', logs:{}, loaded:false, loading:null, err:'', lch:null, t:0, rep:'30' };
+const UZ_ST = { nauja:{ t:'Nauja', c:'rgb(107,114,128)' }, vykdoma:{ t:'Vykdoma', c:'rgb(31,157,85)' }, laukiama:{ t:'Laukiama', c:'rgb(214,140,20)' }, atlikta:{ t:'Atlikta', c:'rgb(47,111,214)' } };
+const UZ_PR = { urgent:{ t:'Skubus', c:'rgb(217,58,58)' }, high:{ t:'Aukštas', c:'rgb(240,110,40)' }, normal:{ t:'Įprastas', c:'rgb(140,146,158)' }, low:{ t:'Žemas', c:'rgb(110,140,190)' } };
+const UZ_PR_ORD = { urgent:0, high:1, normal:2, low:3 };
+const uzAll = ()=>TK.all || TK.list || [];
+const uzDone = t=>t.status==='atlikta';
+const uzPeople = t=>tkPeople(t);
+const uzMine = t=>{ const me = teamMe(); return t.created_by===me || (t.assignees||[]).includes(me) || t.lead===me; };
+const uzToMe = t=>{ const me = teamMe(); return t.created_by!==me && ((t.assignees||[]).includes(me) || t.lead===me); };
+const uzCanEdit = t=>{ const me = teamMe(); return t.created_by===me || t.lead===me || (t.assignees||[]).includes(me) || (t.shared && tkCanCreate()); };
+const uzCanDel = t=>{ const me = teamMe(); return t.created_by===me || t.lead===me; };
+function uzLead(t){ return t.lead || (t.assignees||[])[0] || t.created_by; }
+function uzAv(id, big){ const p = id===teamMe() ? ACCESS.profile : teamMember(id); return `<i class="uz-av ${big?'big':''}" title="${esc(tkName(id))}">${esc(p ? teamInitials(p) : '?')}</i>`; }
+function uzEvName(id){ const e = (EV.events||[]).find(x=>x.id===id); return e ? ppEvName(e) : 'Renginys'; }
+function uzDueTxt(t){ if(!t.due_at) return ''; const { d } = tkLocal(t.due_at), today = calISO(new Date()), tom = calISO(new Date(Date.now()+864e5)); const tm = tkLocal(t.due_at).t; return (d===today ? 'Šiandien' : d===tom ? 'Rytoj' : (+d.slice(5,7))+'.'+d.slice(8))+(tm && tm!=='00:00' && tm!=='09:00' ? ' '+tm : ''); }
+const uzLate = t=>t.due_at && !uzDone(t) && new Date(t.due_at).getTime() < Date.now();
+
+async function uzLoad(force){
+  if(UZ.loaded && !force) return;
+  if(UZ.loading) return UZ.loading;
+  UZ.loading = (async ()=>{
+    const sb = getSb(); if(!sb){ UZ.err = 'Nėra ryšio.'; return; }
+    if(!(TEAM.members||[]).length) await teamLoadMembers().catch(()=>{});
+    const { data, error } = await sb.from('tasks').select('*').order('created_at');
+    if(error){ UZ.err = /does not exist|schema cache/i.test(error.message) ? 'Užduotys dar neįjungtos – paleisk tasks.sql.' : error.message; return; }
+    UZ.err = (data||[]).length && !('status' in data[0]) ? 'Naujos užduočių galimybės dar neįjungtos – paleisk supabase/sql/tasks_v3.sql.' : '';
+    tkApply(data); UZ.loaded = true; tkLive(); uzLogLive();
+    if(!EV.loaded) evLoad().then(()=>{ if(currentTab==='tasks') uzRender(); }).catch(()=>{});
+  })();
+  try{ await UZ.loading; } finally { UZ.loading = null; }
+}
+function uzLogLive(){
+  if(UZ.lch || !getSb()) return;
+  try{
+    UZ.lch = getSb().channel('task-log-live').on('postgres_changes', { event:'*', schema:'public', table:'task_log' }, p=>{
+      const r = p.new && p.new.id ? p.new : null, o = p.old || {};
+      const tid = (r && r.task_id) || o.task_id; if(!tid || !UZ.logs[tid]) return;
+      if(p.eventType==='DELETE') UZ.logs[tid] = UZ.logs[tid].filter(x=>x.id!==o.id);
+      else if(r && !UZ.logs[tid].some(x=>x.id===r.id)) UZ.logs[tid].push(r);
+      if(currentTab==='tasks' && UZ.open===tid) uzDrawLogs();
+    }).subscribe();
+  }catch(e){}
+}
+async function uzLogsLoad(id){
+  const { data, error } = await getSb().from('task_log').select('*').eq('task_id', id).order('at');
+  UZ.logs[id] = error ? [] : (data||[]);
+  if(currentTab==='tasks' && UZ.open===id) uzDrawLogs();
+}
+
+/* ---------- what is shown ---------- */
+function uzInView(t, v){
+  if(t.parent_id && v!=='done') return false;   // subtasks live inside their task
+  if(v==='mine') return uzMine(t) && !uzDone(t);
+  if(v==='tome') return uzToMe(t) && !uzDone(t);
+  if(v==='all') return !uzDone(t);
+  if(v==='wait') return t.status==='laukiama';
+  if(v==='done') return uzDone(t);
+  return true;
+}
+function uzFiltered(){
+  const q = normalizeText(UZ.q).split(' ').filter(Boolean);
+  return uzAll().filter(t=>uzInView(t, UZ.view)
+    && (!UZ.fs || t.status===UZ.fs) && (!UZ.fp || t.priority===UZ.fp)
+    && (!UZ.fw || uzPeople(t).includes(UZ.fw) || t.lead===UZ.fw)
+    && (!UZ.fe || (UZ.fe==='-' ? !t.event_id : t.event_id===UZ.fe))
+    && (!q.length || q.every(x=>normalizeText(t.title+' '+(t.note||'')+' '+(t.event_id ? uzEvName(t.event_id) : '')).includes(x))));
+}
+function uzSort(list){
+  const done = UZ.view==='done';
+  return list.slice().sort((a, b)=>done ? String(b.done_at||b.updated_at).localeCompare(String(a.done_at||a.updated_at))
+    : (UZ_PR_ORD[a.priority]??2) - (UZ_PR_ORD[b.priority]??2) || (a.due_at||'9999').localeCompare(b.due_at||'9999') || String(a.created_at).localeCompare(String(b.created_at)));
+}
+// the list in groups: the general tasks, then each event's
+function uzGroups(list){
+  const g = [{ k:'-', title:'Bendros užduotys', list:list.filter(t=>!t.event_id) }];
+  const evs = [...new Set(list.filter(t=>t.event_id).map(t=>t.event_id))];
+  evs.sort((a, b)=>{ const x = (EV.events||[]).find(e=>e.id===a), y = (EV.events||[]).find(e=>e.id===b); return String(x && x.date || '9').localeCompare(String(y && y.date || '9')); })
+    .forEach(id=>g.push({ k:id, title:uzEvName(id), ev:true, list:list.filter(t=>t.event_id===id) }));
+  return g.filter(x=>x.list.length);
+}
+function uzSubs(t){ return uzAll().filter(x=>x.parent_id===t.id); }
+function uzProgress(t){
+  const cl = Array.isArray(t.checklist) ? t.checklist : [], subs = uzSubs(t);
+  const n = cl.length + subs.length, ok = cl.filter(x=>x.ok).length + subs.filter(uzDone).length;
+  return n ? { n, ok } : null;
+}
+
+/* ---------- the page ---------- */
+async function renderTasksTab(){
+  const main = document.getElementById('main');
+  if(!UZ.loaded){ main.innerHTML = '<div class="tabpanel"><div class="card empty-state">Kraunama…</div></div>'; await uzLoad(); if(currentTab!=='tasks') return; }
+  main.innerHTML = `<div class="tabpanel uz-page"><div class="uz-wrap"><div class="uz-main" id="uzMain"></div><aside class="uz-det" id="uzDet"></aside></div></div>`;
+  uzRender();
+  const id = new URLSearchParams(location.search).get('uztask'); if(id){ history.replaceState(null, '', location.pathname); uzOpen(id); }
+}
+function uzRenderSoon(){ clearTimeout(UZ.t); UZ.t = setTimeout(()=>{ if(currentTab==='tasks') uzRender(true); }, 200); }
+function uzRender(live){
+  const box = document.getElementById('uzMain'); if(!box) return;
+  const all = uzAll(), can = tkCanCreate();
+  const cnt = v=>all.filter(t=>uzInView(t, v)).length;
+  const views = [['mine','Mano užduotys'],['tome','Man priskirtos'],['all','Bendras sąrašas'],['wait','Laukiančios'],['done','Atliktos']];
+  const list = uzSort(uzFiltered());
+  const members = (TEAM.members||[]).slice().sort((a, b)=>teamName(a).natCmp(teamName(b)));
+  const evIds = [...new Set(all.filter(t=>t.event_id).map(t=>t.event_id))];
+  const qFocus = document.activeElement && document.activeElement.id==='uzQ', qPos = qFocus ? document.activeElement.selectionStart : 0;
+  box.innerHTML = `
+    <div class="uz-head">
+      <h2>${slIcon('tasks')} Užduotys</h2>
+      ${can ? `<div class="uz-quick"><input type="text" id="uzQuick" maxlength="300" placeholder="Greita užduotis sau… (Enter)" autocomplete="off"></div>
+      <div class="uz-new"><button type="button" class="btn primary" id="uzNew">+ Nauja užduotis</button></div>` : ''}
+    </div>
+    ${UZ.err ? `<div class="card" style="color:var(--danger);border-color:var(--danger);font-size:13px;">${esc(UZ.err)}</div>` : ''}
+    <div class="uz-views" role="tablist">${views.map(([k, l])=>`<button type="button" role="tab" class="${UZ.view===k?'on':''}" data-uzv="${k}">${l}${k!=='done' ? ` <span class="uz-n">${cnt(k)}</span>` : ''}</button>`).join('')}
+      <span style="flex:1"></span>
+      <div class="uz-lay"><button type="button" class="${UZ.layout==='list'?'on':''}" data-uzl="list">Sąrašas</button><button type="button" class="${UZ.layout==='board'?'on':''}" data-uzl="board">Lenta</button></div></div>
+    <div class="uz-filt">
+      <input type="search" id="uzQ" placeholder="Ieškoti užduočių…" value="${esc(UZ.q)}" autocomplete="off">
+      <select id="uzFs"><option value="">Statusas</option>${Object.entries(UZ_ST).map(([k, s])=>`<option value="${k}" ${UZ.fs===k?'selected':''}>${s.t}</option>`).join('')}</select>
+      <select id="uzFw"><option value="">Atsakingas</option><option value="${esc(teamMe())}" ${UZ.fw===teamMe()?'selected':''}>Aš</option>${members.filter(m=>m.id!==teamMe()).map(m=>`<option value="${esc(m.id)}" ${UZ.fw===m.id?'selected':''}>${esc(teamName(m))}</option>`).join('')}</select>
+      <select id="uzFp"><option value="">Prioritetas</option>${Object.entries(UZ_PR).map(([k, s])=>`<option value="${k}" ${UZ.fp===k?'selected':''}>${s.t}</option>`).join('')}</select>
+      <select id="uzFe"><option value="">Renginys</option><option value="-" ${UZ.fe==='-'?'selected':''}>Bendros (be renginio)</option>${evIds.map(id=>`<option value="${esc(id)}" ${UZ.fe===id?'selected':''}>${esc(uzEvName(id))}</option>`).join('')}</select>
+      ${UZ.q || UZ.fs || UZ.fw || UZ.fp || UZ.fe ? '<button type="button" class="btn small" id="uzFx">Išvalyti</button>' : ''}
+    </div>
+    ${UZ.view==='done' ? uzReportHtml(list) : ''}
+    ${!list.length ? `<div class="card empty-state">${UZ.view==='mine' ? 'Tavo užduočių nėra. Įrašyk greitą užduotį viršuje arba sukurk naują.' : UZ.view==='tome' ? 'Tau priskirtų užduočių nėra.' : UZ.view==='wait' ? 'Laukiančių užduočių nėra.' : UZ.view==='done' ? 'Atliktų užduočių dar nėra.' : 'Užduočių nėra.'}</div>`
+      : UZ.layout==='board' ? uzBoardHtml(list) : uzGroups(list).map(g=>`<section class="uz-grp"><button type="button" class="uz-grp-h" data-uzg="${esc(g.k)}">${g.ev ? slIcon('calendar') : ''}<b>${esc(g.title)}</b> <span>(${g.list.length})</span></button>
+        <div class="uz-rows">${UZ.view==='done' ? '' : '<div class="uz-row uz-row-h"><span></span><span>Užduotis</span><span>Statusas</span><span>Atsakingas</span><span>Terminas</span><span>Prioritetas</span></div>'}${g.list.map(uzRowHtml).join('')}</div></section>`).join('')}`;
+  uzBind(box);
+  if(qFocus){ const q = document.getElementById('uzQ'); q.focus(); try{ q.setSelectionRange(qPos, qPos); }catch(e){} }
+  const det = document.getElementById('uzDet'), inDet = det && det.contains(document.activeElement) && /INPUT|TEXTAREA/.test(document.activeElement.tagName) && document.activeElement.type!=='checkbox';
+  if(!live || !inDet) uzDrawDet();
+}
+function uzRowHtml(t){
+  const st = UZ_ST[t.status] || UZ_ST.nauja, pr = UZ_PR[t.priority] || UZ_PR.normal, ed = uzCanEdit(t), pg = uzProgress(t);
+  const who = t.lead ? [t.lead] : uzPeople(t);
+  return `<div class="uz-row ${uzDone(t)?'done':''} ${UZ.open===t.id?'sel':''}" data-uzopen="${esc(t.id)}">
+    <span>${ed ? `<button type="button" class="uz-chk ${uzDone(t)?'on':''}" data-uzdone="${esc(t.id)}" title="${uzDone(t)?'Grąžinti į darbus':'Atlikta'}" aria-label="Atlikta"></button>` : ''}</span>
+    <span class="uz-tt"><b>${esc(t.title)}</b>${t.kind==='project' ? '<i class="uz-kind" title="Išplėstinė užduotis">'+slIcon('checklist')+'</i>' : ''}${pg ? `<small class="uz-pg ${pg.ok===pg.n?'ok':''}">${pg.ok}/${pg.n}</small>` : ''}${t.shared ? '<small class="uz-sh" title="Bendrame sąraše">bendra</small>' : ''}</span>
+    <span>${ed ? `<select class="uz-pill" data-uzst="${esc(t.id)}" style="--pc:${st.c}">${Object.entries(UZ_ST).map(([k, s])=>`<option value="${k}" ${t.status===k?'selected':''}>${s.t}</option>`).join('')}</select>` : `<span class="uz-pill" style="--pc:${st.c}">${st.t}</span>`}</span>
+    <span class="uz-who">${who.slice(0, 3).map(u=>uzAv(u)).join('')}${who.length>3 ? `<small>+${who.length-3}</small>` : ''}</span>
+    <span class="uz-due ${uzLate(t)?'late':''}">${t.due_at ? slIcon('calendar')+esc(uzDueTxt(t)) : '<span class="pp-dim">—</span>'}</span>
+    <span class="uz-pr" style="--pc:${pr.c}"><i></i>${pr.t}</span>
+  </div>`;
+}
+function uzBoardHtml(list){
+  return `<div class="uz-board">${Object.entries(UZ_ST).map(([k, s])=>{ const l = list.filter(t=>t.status===k);
+    return `<div class="uz-col" data-uzcol="${k}"><div class="uz-col-h" style="--pc:${s.c}"><i></i>${s.t} <span>${l.length}</span></div>
+      ${l.map(t=>{ const pr = UZ_PR[t.priority] || UZ_PR.normal, pg = uzProgress(t);
+        return `<div class="uz-card ${UZ.open===t.id?'sel':''}" data-uzopen="${esc(t.id)}" draggable="${uzCanEdit(t)}" data-uzdrag="${esc(t.id)}">
+          <b>${esc(t.title)}</b>
+          ${t.event_id ? `<small class="uz-cev">${slIcon('calendar')}${esc(uzEvName(t.event_id))}</small>` : ''}
+          <div class="uz-card-f"><span class="uz-pr" style="--pc:${pr.c}"><i></i>${pr.t}</span>${pg ? `<small class="uz-pg ${pg.ok===pg.n?'ok':''}">${pg.ok}/${pg.n}</small>` : ''}<span style="flex:1"></span>${t.due_at ? `<small class="uz-due ${uzLate(t)?'late':''}">${esc(uzDueTxt(t))}</small>` : ''}${uzAv(uzLead(t))}</div></div>`; }).join('') || '<div class="uz-col-e">—</div>'}</div>`; }).join('')}</div>`;
+}
+// Atliktos: how long it took, on time or late
+function uzReportHtml(list){
+  const days = UZ.rep==='all' ? 0 : +UZ.rep, from = days ? Date.now() - days*864e5 : 0;
+  const l = list.filter(t=>t.done_at && new Date(t.done_at).getTime() >= from);
+  if(!l.length) return `<div class="uz-rep"><div class="uz-rep-p">${uzRepPer()}</div><div class="section-sub">Šiuo laikotarpiu atliktų užduočių nėra.</div></div>`;
+  const dur = l.map(t=>new Date(t.done_at) - new Date(t.created_at)).filter(x=>x>=0).sort((a, b)=>a-b);
+  const withDue = l.filter(t=>t.due_at), onTime = withDue.filter(t=>new Date(t.done_at) <= new Date(t.due_at)), late = withDue.filter(t=>new Date(t.done_at) > new Date(t.due_at));
+  const lateAvg = late.length ? late.reduce((s, t)=>s + (new Date(t.done_at) - new Date(t.due_at)), 0) / late.length : 0;
+  const hm = ms=>{ const h = ms/36e5; return h < 1 ? Math.max(1, Math.round(ms/6e4))+' min.' : h < 48 ? (Math.round(h*10)/10)+' val.' : (Math.round(h/24*10)/10)+' d.'; };
+  const by = {}; l.forEach(t=>{ const u = uzLead(t); by[u] = by[u] || { n:0, on:0, due:0 }; by[u].n++; if(t.due_at){ by[u].due++; if(new Date(t.done_at) <= new Date(t.due_at)) by[u].on++; } });
+  return `<div class="uz-rep"><div class="uz-rep-p">${uzRepPer()}</div>
+    <div class="uz-kpi"><div><small>Atlikta</small><b>${l.length}</b></div><div><small>Vid. trukmė</small><b>${dur.length ? hm(dur.reduce((a, b)=>a+b, 0)/dur.length) : '—'}</b></div><div><small>Mediana</small><b>${dur.length ? hm(dur[Math.floor(dur.length/2)]) : '—'}</b></div>
+      <div><small>Laiku</small><b>${withDue.length ? Math.round(onTime.length/withDue.length*100)+'%' : '—'}</b><small>${onTime.length} iš ${withDue.length} su terminu</small></div><div><small>Vėluota vid.</small><b>${late.length ? hm(lateAvg) : '—'}</b></div></div>
+    <div class="uz-rep-by">${Object.entries(by).sort((a, b)=>b[1].n - a[1].n).map(([u, x])=>`<span>${uzAv(u)}<b>${esc(tkName(u))}</b> ${x.n}${x.due ? ` · laiku ${Math.round(x.on/x.due*100)}%` : ''}</span>`).join('')}</div></div>`;
+}
+function uzRepPer(){ return [['7','7 d.'],['30','30 d.'],['90','90 d.'],['all','Visos']].map(([k, l])=>`<button type="button" class="${UZ.rep===k?'on':''}" data-uzrep="${k}">${l}</button>`).join(''); }
+
+function uzBind(box){
+  box.querySelectorAll('[data-uzv]').forEach(b=>b.onclick = ()=>{ UZ.view = b.dataset.uzv; try{ localStorage.setItem('uzView', UZ.view); }catch(e){} uzRender(); });
+  box.querySelectorAll('[data-uzl]').forEach(b=>b.onclick = ()=>{ UZ.layout = b.dataset.uzl; try{ localStorage.setItem('uzLayout', UZ.layout); }catch(e){} uzRender(); });
+  box.querySelectorAll('[data-uzrep]').forEach(b=>b.onclick = ()=>{ UZ.rep = b.dataset.uzrep; uzRender(); });
+  const q = document.getElementById('uzQ'); q.oninput = ()=>{ UZ.q = q.value; clearTimeout(UZ.qt); UZ.qt = setTimeout(()=>uzRender(), 150); };
+  [['uzFs','fs'],['uzFw','fw'],['uzFp','fp'],['uzFe','fe']].forEach(([id, k])=>{ const s = document.getElementById(id); s.onchange = ()=>{ UZ[k] = s.value; uzRender(); }; });
+  const fx = document.getElementById('uzFx'); if(fx) fx.onclick = ()=>{ UZ.q = UZ.fs = UZ.fw = UZ.fp = UZ.fe = ''; uzRender(); };
+  const qk = document.getElementById('uzQuick');
+  if(qk) qk.onkeydown = async e=>{ if(e.key!=='Enter') return; e.preventDefault(); e.stopPropagation(); const v = qk.value.trim(); if(!v) return; qk.disabled = true;
+    const t = await uzInsert({ title:v, kind:'todo' }); qk.disabled = false; if(t){ qk.value = ''; toast('✓ Pridėta: '+t.title); if(UZ.view!=='mine' && UZ.view!=='all'){ UZ.view = 'mine'; } uzRender(); qk.focus(); } };
+  const nb = document.getElementById('uzNew'); if(nb) nb.onclick = ()=>uzNewModal();
+  box.addEventListener('click', e=>{
+    const d = e.target.closest('[data-uzdone]'); if(d){ e.stopPropagation(); const t = uzAll().find(x=>x.id===d.dataset.uzdone); if(t) uzToggleDone(t); return; }
+    if(e.target.closest('select,button,input,a')) return;
+    const o = e.target.closest('[data-uzopen]'); if(o) uzOpen(o.dataset.uzopen);
+  });
+  box.querySelectorAll('[data-uzst]').forEach(s=>{ s.onclick = e=>e.stopPropagation(); s.onchange = ()=>{ s.style.setProperty('--pc', (UZ_ST[s.value]||UZ_ST.nauja).c); const t = uzAll().find(x=>x.id===s.dataset.uzst); if(t) uzSave(t, { status:s.value }); }; });
+  // the board: a card dragged to another column changes its status
+  box.querySelectorAll('[data-uzdrag]').forEach(c=>c.ondragstart = e=>{ e.dataTransfer.setData('text/plain', c.dataset.uzdrag); e.dataTransfer.effectAllowed = 'move'; c.classList.add('drag'); });
+  box.querySelectorAll('[data-uzcol]').forEach(col=>{
+    col.ondragover = e=>{ e.preventDefault(); col.classList.add('over'); };
+    col.ondragleave = ()=>col.classList.remove('over');
+    col.ondrop = e=>{ e.preventDefault(); col.classList.remove('over'); const t = uzAll().find(x=>x.id===e.dataTransfer.getData('text/plain')); if(t && t.status!==col.dataset.uzcol) uzSave(t, { status:col.dataset.uzcol }); };
+  });
+}
+
+/* ---------- saving ---------- */
+async function uzInsert(row){
+  if(!tkCanCreate()){ toast('Tavo lygiui užduotis gali skirti tik kiti nariai.'); return null; }
+  const base = { note:'', assignees:[], lead:null, remind:{ before:[0], at:[], push:true, email:false, overdue:false }, status:'nauja', priority:'normal', checklist:[] };
+  const { data, error } = await getSb().from('tasks').insert(Object.assign(base, row)).select().single();
+  if(error){ toast('Nepavyko: '+(/column|schema cache/i.test(error.message) ? 'paleisk supabase/sql/tasks_v3.sql' : error.message)); return null; }
+  tkUpsert(data);
+  if((data.assignees||[]).some(u=>u!==teamMe())) tkNotify(data.id, 'new');
+  return data;
+}
+async function uzSave(t, patch){
+  if(!uzCanEdit(t)){ toast('Šios užduoties keisti negali.'); return null; }
+  const old = {}; Object.keys(patch).forEach(k=>{ old[k] = t[k]; });
+  Object.assign(t, patch); uzRenderSoon();
+  const { data, error } = await getSb().from('tasks').update(Object.assign({ updated_at:new Date().toISOString() }, patch)).eq('id', t.id).select().single();
+  if(error){ Object.assign(t, old); uzRenderSoon(); toast('Nepavyko: '+error.message); return null; }
+  const fresh = patch.assignees && patch.assignees.some(u=>u!==teamMe() && !(old.assignees||[]).includes(u));
+  tkUpsert(data); if(fresh) tkNotify(t.id, 'new');
+  if(patch.status==='atlikta' && t.created_by!==teamMe()) tkNotify(t.id, 'done');
+  if(currentTab==='home' || currentTab==='chat'){ calRender(); tkRender(); }
+  uzRenderSoon();
+  return data;
+}
+function uzToggleDone(t){ return uzSave(t, { status:uzDone(t) ? (t.started_at ? 'vykdoma' : 'nauja') : 'atlikta' }); }
+
+/* ---------- a new task ---------- */
+function uzNewModal(pre){
+  if(!tkCanCreate()){ toast('Tavo lygiui užduotis gali skirti tik kiti nariai.'); return; }
+  pre = pre || {};
+  let kind = pre.kind || 'todo';
+  const me = teamMe(), members = (TEAM.members||[]).filter(m=>m.id!==me).sort((a, b)=>teamName(a).natCmp(teamName(b)));
+  const sel = new Set(pre.assignees || []);
+  const evs = evSorted((EV.events||[]).filter(e=>!e.handoverId && !e.deletedAt && e.date && e.date >= lmDay(calISO(new Date()), -14))).slice(0, 150);
+  const draw = ()=>{
+    openModal(`<h3 style="margin:0 0 10px;">Nauja užduotis</h3>
+      <div class="uz-kindsel"><button type="button" class="${kind==='todo'?'on':''}" data-k="todo">${slIcon('check')}<span><b>To-Do</b><small>greita, paprasta</small></span></button><button type="button" class="${kind==='project'?'on':''}" data-k="project">${slIcon('checklist')}<span><b>Išplėstinė</b><small>subužduotys, komentarai, failai</small></span></button></div>
+      <label class="field">Užduotis<input type="text" id="uzT" maxlength="300" value="${esc(pre.title||'')}" placeholder="${kind==='todo' ? 'pvz. Paskambinti tiekėjui' : 'pvz. Gravity DEMO – montažo planas'}"></label>
+      <label class="field">${kind==='todo' ? 'Komentaras' : 'Aprašymas'} <small class="pp-dim">(nebūtina)</small><textarea id="uzN" rows="${kind==='todo'?2:3}">${esc(pre.note||'')}</textarea></label>
+      <div class="grid cols-2" style="gap:10px;">
+        <label class="field">Terminas<input type="date" id="uzD"></label>
+        <label class="field">Laikas<input type="time" id="uzTm"></label>
+      </div>
+      <div class="field">Kam <small class="pp-dim">(nepažymėjus – sau)</small><div class="chipbar uz-mem"><button type="button" class="chip ${sel.has(me)?'active':''}" data-mem="${esc(me)}">Aš</button>${members.map(m=>`<button type="button" class="chip ${sel.has(m.id)?'active':''}" data-mem="${esc(m.id)}">${esc(teamName(m))}</button>`).join('')}</div></div>
+      ${kind==='project' ? `<div class="grid cols-2" style="gap:10px;">
+        <label class="field">Atsakingas<select id="uzL"></select></label>
+        <label class="field">Prioritetas<select id="uzP">${Object.entries(UZ_PR).map(([k, s])=>`<option value="${k}" ${k==='normal'?'selected':''}>${s.t}</option>`).join('')}</select></label>
+        <label class="field">Statusas<select id="uzS">${Object.entries(UZ_ST).filter(([k])=>k!=='atlikta').map(([k, s])=>`<option value="${k}">${s.t}</option>`).join('')}</select></label>
+        <label class="field">Renginys <small class="pp-dim">(nebūtina)</small><select id="uzE"><option value="">— bendra užduotis —</option>${evs.map(e=>`<option value="${esc(e.id)}" ${pre.event_id===e.id?'selected':''}>${esc((e.date||'').slice(5).replace('-','.')+' '+ppEvName(e))}</option>`).join('')}</select></label>
+      </div>` : ''}
+      <label class="pp-chk" style="margin-top:6px;"><input type="checkbox" id="uzSh" ${(pre.shared!=null ? pre.shared : kind==='project') ? 'checked' : ''}> Bendrame sąraše (mato visa komanda)</label>
+      <div class="row" style="gap:8px;margin-top:12px;"><span style="flex:1"></span><button class="btn" id="uzCx">Atšaukti</button><button class="btn primary" id="uzOk">Sukurti</button></div>`);
+    const root = document.getElementById('modalRoot');
+    const lead = ()=>{ const s = document.getElementById('uzL'); if(!s) return; const cur = s.value; const ids = sel.size ? [...sel] : [me]; s.innerHTML = ids.map(u=>`<option value="${esc(u)}" ${cur===u?'selected':''}>${esc(tkName(u))}</option>`).join(''); };
+    lead();
+    root.querySelectorAll('[data-k]').forEach(b=>b.onclick = ()=>{ pre.title = document.getElementById('uzT').value; pre.note = document.getElementById('uzN').value; pre.assignees = [...sel]; kind = b.dataset.k; draw(); });
+    root.querySelectorAll('[data-mem]').forEach(c=>c.onclick = ()=>{ const u = c.dataset.mem; if(sel.has(u)) sel.delete(u); else sel.add(u); c.classList.toggle('active', sel.has(u)); lead(); });
+    document.getElementById('uzCx').onclick = closeModal;
+    if(!EV_TOUCH) document.getElementById('uzT').focus();
+    document.getElementById('uzOk').onclick = async ()=>{
+      const v = id=>{ const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+      const title = v('uzT'); if(!title){ toast('Įrašyk užduotį.'); document.getElementById('uzT').focus(); return; }
+      const date = v('uzD'), time = v('uzTm');
+      const due_at = date ? new Date(date+'T'+(time||'09:00')).toISOString() : null;
+      const ids = [...sel];
+      const row = { title, note:v('uzN'), kind, due_at, assignees:ids.length===1 && ids[0]===me ? [] : ids, shared:document.getElementById('uzSh').checked };
+      if(kind==='project'){ row.lead = ids.length ? (v('uzL') || ids[0]) : null; row.priority = v('uzP') || 'normal'; row.status = v('uzS') || 'nauja'; row.event_id = v('uzE') || null; }
+      if(pre.parent_id) row.parent_id = pre.parent_id;
+      const b = document.getElementById('uzOk'); b.disabled = true;
+      const t = await uzInsert(row); if(!t){ b.disabled = false; return; }
+      closeModal(); toast('✓ Užduotis sukurta'); if(currentTab==='tasks'){ uzRender(); uzOpen(t.id); }
+    };
+  };
+  draw();
+}
+
+/* ---------- the task's panel ---------- */
+function uzOpen(id){
+  const t = uzAll().find(x=>x.id===id); if(!t){ toast('Užduotis nerasta (gal ištrinta ar neturi teisės jos matyti).'); return; }
+  if(currentTab!=='tasks'){ UZ.open = id; setTab('tasks'); return; }
+  if(UZ.open!==id) UZ.tab = 'desc';
+  UZ.open = id;
+  document.querySelectorAll('#uzMain [data-uzopen]').forEach(r=>r.classList.toggle('sel', r.dataset.uzopen===id));
+  uzDrawDet();
+  if(!UZ.logs[id]) uzLogsLoad(id);
+}
+function uzClose(){ UZ.open = null; uzDrawDet(); document.querySelectorAll('#uzMain .sel').forEach(r=>r.classList.remove('sel')); }
+function uzDrawDet(){
+  const box = document.getElementById('uzDet'); if(!box) return;
+  const t = UZ.open && uzAll().find(x=>x.id===UZ.open);
+  document.querySelector('.uz-wrap') && document.querySelector('.uz-wrap').classList.toggle('has-det', !!t);
+  if(!t){ box.innerHTML = `<div class="uz-det-empty">${slIcon('tasks')}<span>Pasirink užduotį – čia matysi jos informaciją, darbų sąrašą, komentarus ir failus.</span></div>`; return; }
+  const ed = uzCanEdit(t), me = teamMe(), proj = t.kind==='project';
+  const st = UZ_ST[t.status] || UZ_ST.nauja, pr = UZ_PR[t.priority] || UZ_PR.normal;
+  const members = (TEAM.members||[]).slice().sort((a, b)=>teamName(a).natCmp(teamName(b)));
+  const l = tkLocal(t.due_at);
+  const par = t.parent_id && uzAll().find(x=>x.id===t.parent_id);
+  const logs = UZ.logs[t.id] || [], nCom = logs.filter(x=>x.kind==='comment').length, nFile = logs.filter(x=>x.kind==='file').length;
+  const evs = evSorted((EV.events||[]).filter(e=>!e.handoverId && !e.deletedAt && e.date && (e.id===t.event_id || e.date >= lmDay(calISO(new Date()), -14)))).slice(0, 150);
+  box.innerHTML = `<div class="uz-d">
+    <div class="uz-d-top"><span class="uz-crumb">${par ? `<button type="button" data-uzgo="${esc(par.id)}">↰ ${esc(par.title)}</button>` : t.event_id ? `${slIcon('calendar')}<button type="button" data-uzev="${esc(t.event_id)}">Renginiai / ${esc(uzEvName(t.event_id))}</button>` : proj ? 'Išplėstinė užduotis' : 'To-Do'}</span>
+      <span style="flex:1"></span>
+      ${uzCanDel(t) ? `<button type="button" class="icon-btn" id="uzDel" title="Ištrinti užduotį">${slIcon('bin')}</button>` : ''}
+      <button type="button" class="icon-btn" id="uzX" title="Uždaryti" aria-label="Uždaryti">${slIcon('close')}</button></div>
+    <div class="uz-d-title">${ed ? `<button type="button" class="uz-chk big ${uzDone(t)?'on':''}" data-uzdone2 title="${uzDone(t)?'Grąžinti į darbus':'Atlikta'}"></button>` : ''}<textarea id="uzDt" rows="1" maxlength="300" ${ed?'':'readonly'}>${esc(t.title)}</textarea></div>
+    <div class="uz-d-meta">
+      ${ed ? `<select class="uz-pill" id="uzDs" style="--pc:${st.c}">${Object.entries(UZ_ST).map(([k, s])=>`<option value="${k}" ${t.status===k?'selected':''}>${s.t}</option>`).join('')}</select>` : `<span class="uz-pill" style="--pc:${st.c}">${st.t}</span>`}
+      <label class="uz-m" title="Atsakingas">${uzAv(uzLead(t))}${ed ? `<select id="uzDl">${[me, ...members.map(m=>m.id).filter(x=>x!==me)].map(u=>`<option value="${esc(u)}" ${uzLead(t)===u?'selected':''}>${esc(tkName(u))}</option>`).join('')}</select>` : `<span>${esc(tkName(uzLead(t)))}</span>`}</label>
+      <label class="uz-m ${uzLate(t)?'late':''}" title="Terminas">${slIcon('calendar')}<input type="date" id="uzDd" value="${esc(l.d)}" ${ed?'':'disabled'}><input type="time" id="uzDtm" value="${esc(l.t && l.t!=='00:00' ? l.t : '')}" ${ed?'':'disabled'}></label>
+      ${proj ? `<label class="uz-m uz-prm" style="--pc:${pr.c}" title="Prioritetas"><i></i>${ed ? `<select id="uzDp">${Object.entries(UZ_PR).map(([k, s])=>`<option value="${k}" ${t.priority===k?'selected':''}>${s.t}</option>`).join('')}</select>` : pr.t}</label>` : ''}
+    </div>
+    ${proj ? `<div class="uz-d-ppl"><small>Vykdytojai</small>${uzPeople(t).map(u=>`<span class="uz-pp">${uzAv(u)}${esc(tkName(u))}${(t.done||{})[u] && !uzDone(t) ? ' ✓' : ''}${ed && (t.assignees||[]).length ? `<button type="button" data-uzrm="${esc(u)}" title="Pašalinti">✕</button>` : ''}</span>`).join('')}
+      ${ed ? `<select id="uzDadd"><option value="">+ Pridėti</option>${members.filter(m=>!uzPeople(t).includes(m.id) || !(t.assignees||[]).length).map(m=>`<option value="${esc(m.id)}">${esc(teamName(m))}</option>`).join('')}</select>` : ''}</div>
+      <div class="uz-d-opts">${ed ? `<label>Renginys <select id="uzDe"><option value="">— bendra —</option>${evs.map(e=>`<option value="${esc(e.id)}" ${t.event_id===e.id?'selected':''}>${esc((e.date||'').slice(5).replace('-','.')+' '+ppEvName(e))}</option>`).join('')}</select></label>` : ''}
+        <label class="pp-chk"><input type="checkbox" id="uzDsh" ${t.shared?'checked':''} ${ed?'':'disabled'}> Bendrame sąraše</label></div>` : `<div class="uz-d-opts">${(t.assignees||[]).length ? `<span class="uz-d-ppl">${uzPeople(t).map(u=>`<span class="uz-pp">${uzAv(u)}${esc(tkName(u))}</span>`).join('')}</span>` : ''}
+        <label class="pp-chk"><input type="checkbox" id="uzDsh" ${t.shared?'checked':''} ${ed?'':'disabled'}> Bendrame sąraše</label>
+        ${ed ? '<button type="button" class="btn small" id="uzToProj" title="Prideda statusą, prioritetą, darbų sąrašą, subužduotis, failus">⇪ Paversti išplėstine</button>' : ''}</div>`}
+    <div class="uz-d-tabs">${[['desc', proj ? 'Aprašymas' : 'Komentaras'], ['com', 'Komentarai'+(nCom ? ' <i>'+nCom+'</i>' : '')], ['files', 'Failai'+(nFile ? ' <i>'+nFile+'</i>' : '')], ['hist', 'Veiklos istorija']].filter(([k])=>proj || k!=='files' || nFile).map(([k, lb])=>`<button type="button" class="${UZ.tab===k?'on':''}" data-uzt="${k}">${lb}</button>`).join('')}</div>
+    <div class="uz-d-body" id="uzDb"></div>
+  </div>`;
+  uzDrawTab(t);
+  uzDetBind(box, t);
+}
+function uzDrawTab(t){
+  const b = document.getElementById('uzDb'); if(!b) return;
+  const ed = uzCanEdit(t), proj = t.kind==='project';
+  if(UZ.tab==='desc'){
+    const cl = Array.isArray(t.checklist) ? t.checklist : [], subs = uzSubs(t);
+    b.innerHTML = `<textarea id="uzDn" class="uz-note" rows="${proj?4:3}" placeholder="${proj ? 'Aprašymas: ką reikia padaryti, kam, iki kada…' : 'Trumpas komentaras…'}" ${ed?'':'readonly'}>${esc(t.note||'')}</textarea>
+      ${proj ? `<div class="uz-box"><div class="uz-box-h"><b>Darbų sąrašas</b> <span>(${cl.filter(x=>x.ok).length}/${cl.length})</span></div>
+        ${cl.map((x, i)=>`<div class="uz-cl ${x.ok?'on':''}"><button type="button" class="uz-chk sm ${x.ok?'on':''}" data-uzcl="${i}" ${ed?'':'disabled'}></button><span>${esc(x.t)}</span>${x.ok && x.by ? `<small>${esc(tkName(x.by))}</small>` : ''}${ed ? `<button type="button" class="uz-x" data-uzclx="${i}" title="Pašalinti">✕</button>` : ''}</div>`).join('')}
+        ${ed ? '<input type="text" class="uz-add" id="uzClAdd" placeholder="+ Pridėti punktą (Enter)" maxlength="200">' : ''}</div>
+      <div class="uz-box"><div class="uz-box-h"><b>Subužduotys</b> <span>(${subs.filter(uzDone).length}/${subs.length})</span></div>
+        ${subs.map(s=>`<div class="uz-cl ${uzDone(s)?'on':''}"><button type="button" class="uz-chk sm ${uzDone(s)?'on':''}" data-uzsub="${esc(s.id)}" ${uzCanEdit(s)?'':'disabled'}></button><button type="button" class="uz-sublink" data-uzgo="${esc(s.id)}">${esc(s.title)}</button>${s.due_at ? `<small class="${uzLate(s)?'late':''}">${esc(uzDueTxt(s))}</small>` : ''}${uzAv(uzLead(s))}</div>`).join('')}
+        ${ed && tkCanCreate() ? '<input type="text" class="uz-add" id="uzSubAdd" placeholder="+ Nauja subužduotis (Enter)" maxlength="300">' : ''}</div>` : ''}
+      ${uzComHtml(t, 3)}`;
+  } else if(UZ.tab==='com') b.innerHTML = uzComHtml(t);
+  else if(UZ.tab==='files') b.innerHTML = uzFilesHtml(t);
+  else b.innerHTML = `<div id="uzLogList">${uzHistHtml(t)}</div>`;
+  uzTabBind(b, t);
+}
+function uzComHtml(t, last){
+  const all = (UZ.logs[t.id] || []).filter(x=>x.kind==='comment'), l = last ? all.slice(-last) : all;
+  return `<div class="uz-coms"><div class="uz-box-h"><b>Komentarai</b>${last && all.length > last ? ` <button type="button" class="uz-more" data-uzt="com">visi (${all.length})</button>` : ''}</div>
+    <div id="uzLogList">${UZ.logs[t.id] ? (l.map(uzComOne).join('') || '<div class="section-sub">Komentarų dar nėra.</div>') : '<div class="section-sub">Kraunama…</div>'}</div>
+    <div class="uz-cin"><label class="uz-att" title="Prisegti failą">${slIcon('attach')}<input type="file" id="uzFileIn" multiple hidden></label><textarea id="uzCom" rows="1" maxlength="4000" placeholder="Rašyti komentarą…"></textarea><button type="button" class="btn primary small" id="uzComGo" title="Siųsti">${slIcon('send')}</button></div></div>`;
+}
+function uzComOne(x){ const mine = x.by===teamMe();
+  return `<div class="uz-com">${uzAv(x.by, true)}<div><div class="uz-com-h"><b>${esc(tkName(x.by))}</b><small>${esc(uzWhen(x.at))}</small>${mine ? `<button type="button" class="uz-x" data-uzcomx="${esc(x.id)}" title="Ištrinti">✕</button>` : ''}</div><div class="uz-com-b">${esc(x.body)}</div></div></div>`; }
+function uzWhen(iso){ const d = new Date(iso), today = calISO(new Date()), y = calISO(new Date(Date.now()-864e5)), k = calISO(d); const hm = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); return (k===today ? 'Šiandien' : k===y ? 'Vakar' : k.slice(5).replace('-','.'))+', '+hm; }
+function uzFilesHtml(t){
+  const f = (UZ.logs[t.id] || []).filter(x=>x.kind==='file');
+  const kb = n=>n > 1048576 ? (Math.round(n/104857.6)/10)+' MB' : Math.max(1, Math.round(n/1024))+' KB';
+  return `<div class="uz-files">${f.map(x=>`<div class="uz-file">${slIcon('attach')}<button type="button" class="uz-sublink" data-uzfile="${esc(x.id)}">${esc((x.data||{}).name||'failas')}</button><small>${esc(kb((x.data||{}).size||0))} · ${esc(tkName(x.by))} · ${esc(uzWhen(x.at))}</small>${x.by===teamMe() ? `<button type="button" class="uz-x" data-uzcomx="${esc(x.id)}" title="Ištrinti">✕</button>` : ''}</div>`).join('') || '<div class="section-sub">Failų dar nėra.</div>'}
+    ${uzCanEdit(t) || uzMine(t) ? '<label class="btn small" style="margin-top:8px;">'+slIcon('attach')+' Prisegti failą<input type="file" id="uzFileIn" multiple hidden></label>' : ''}</div>`;
+}
+function uzHistHtml(t){
+  const l = UZ.logs[t.id]; if(!l) return '<div class="section-sub">Kraunama…</div>';
+  const st = k=>(UZ_ST[k]||{}).t||k, pr = k=>(UZ_PR[k]||{}).t||k;
+  const txt = x=>{ const d = x.data||{};
+    if(x.kind==='create') return 'sukūrė užduotį';
+    if(x.kind==='status') return `pakeitė būseną: <b>${esc(st(d.from))}</b> → <b>${esc(st(d.to))}</b>`;
+    if(x.kind==='assign'){ const a = (d.to||[]).length ? d.to.map(tkName).join(', ') : 'sau'; return `priskyrė: <b>${esc(a)}</b>${d.lead ? ' · atsakingas '+esc(tkName(d.lead)) : ''}`; }
+    if(x.kind==='due') return d.to ? `terminas: <b>${esc(uzWhen(d.to))}</b>` : 'pašalino terminą';
+    if(x.kind==='priority') return `prioritetas: <b>${esc(pr(d.from))}</b> → <b>${esc(pr(d.to))}</b>`;
+    if(x.kind==='title') return `pervadino: <b>${esc(x.body)}</b>`;
+    if(x.kind==='sub') return `pridėjo subužduotį: <b>${esc(x.body)}</b>`;
+    if(x.kind==='file') return `prisegė failą: <b>${esc((d.name)||'')}</b>`;
+    if(x.kind==='comment') return `komentavo: „${esc(x.body.length > 80 ? x.body.slice(0, 80)+'…' : x.body)}“`;
+    return esc(x.kind); };
+  const all = l.slice().reverse();
+  return all.length ? `<div class="uz-hist">${all.map(x=>`<div class="uz-h">${uzAv(x.by)}<span><b>${esc(tkName(x.by))}</b> ${txt(x)}</span><small>${esc(uzWhen(x.at))}</small></div>`).join('')}</div>` : '<div class="section-sub">Istorijos dar nėra.</div>';
+}
+function uzDrawLogs(){
+  const t = UZ.open && uzAll().find(x=>x.id===UZ.open); if(!t) return;
+  const list = document.getElementById('uzLogList'), typing = document.activeElement && document.activeElement.closest && document.activeElement.closest('#uzDb');
+  if(UZ.tab==='hist' && list){ list.innerHTML = uzHistHtml(t); return; }
+  if((UZ.tab==='com' || UZ.tab==='desc') && list){ const all = (UZ.logs[t.id]||[]).filter(x=>x.kind==='comment'), l = UZ.tab==='desc' ? all.slice(-3) : all; list.innerHTML = l.map(uzComOne).join('') || '<div class="section-sub">Komentarų dar nėra.</div>'; list.scrollTop = list.scrollHeight; }
+  else if(!typing) uzDrawTab(t);
+  // the counters on the tabs
+  const det = document.getElementById('uzDet'); if(!det) return;
+  const logs = UZ.logs[t.id]||[], n = { com:logs.filter(x=>x.kind==='comment').length, files:logs.filter(x=>x.kind==='file').length };
+  det.querySelectorAll('[data-uzt]').forEach(b=>{ const k = b.dataset.uzt; if(n[k]!=null){ const base = k==='com' ? 'Komentarai' : 'Failai'; if(b.closest('.uz-d-tabs')) b.innerHTML = base+(n[k] ? ' <i>'+n[k]+'</i>' : ''); } });
+}
+function uzDetBind(box, t){
+  const $ = id=>document.getElementById(id);
+  $('uzX').onclick = uzClose;
+  const del = $('uzDel'); if(del) del.onclick = async ()=>{
+    const subs = uzSubs(t);
+    if(!(await uiConfirm('Ištrinti užduotį „'+t.title+'“'+(subs.length ? ' kartu su '+subs.length+' subužduotimis' : '')+'?'))) return;
+    const { error } = await getSb().from('tasks').delete().eq('id', t.id);
+    if(error){ toast('Nepavyko: '+error.message); return; }
+    TK.all = (TK.all||[]).filter(x=>x.id!==t.id && x.parent_id!==t.id); TK.list = TK.list.filter(x=>x.id!==t.id && x.parent_id!==t.id); tkToCal();
+    UZ.open = null; uzRender(); toast('Užduotis ištrinta.');
+  };
+  box.querySelectorAll('[data-uzgo]').forEach(b=>b.onclick = ()=>uzOpen(b.dataset.uzgo));
+  box.querySelectorAll('[data-uzev]').forEach(b=>b.onclick = ()=>{ const ev = (EV.events||[]).find(x=>x.id===b.dataset.uzev); if(ev) ppEventPop(ev); });
+  const dn = box.querySelector('[data-uzdone2]'); if(dn) dn.onclick = ()=>uzToggleDone(t);
+  const ti = $('uzDt'); const fit = ()=>{ ti.style.height = 'auto'; ti.style.height = ti.scrollHeight+'px'; }; fit(); ti.oninput = fit;
+  ti.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); ti.blur(); } };
+  ti.onchange = ()=>{ const v = ti.value.replace(/\s+/g, ' ').trim(); if(v && v!==t.title) uzSave(t, { title:v }); else ti.value = t.title; };
+  const s = $('uzDs'); if(s) s.onchange = ()=>{ s.style.setProperty('--pc', (UZ_ST[s.value]||UZ_ST.nauja).c); s.blur(); uzSave(t, { status:s.value }); };
+  const p = $('uzDp'); if(p) p.onchange = ()=>uzSave(t, { priority:p.value });
+  const ld = $('uzDl'); if(ld) ld.onchange = ()=>{ const u = ld.value, a = (t.assignees||[]).slice(); if(!a.includes(u) && !(u===t.created_by && !a.length)) a.push(u); uzSave(t, { lead:u===t.created_by && !(t.assignees||[]).length ? null : u, assignees:a }); };
+  const due = ()=>{ const d = $('uzDd').value, tm = $('uzDtm').value; const v = d ? new Date(d+'T'+(tm||'09:00')).toISOString() : null; if(v!==t.due_at) uzSave(t, { due_at:v, sent:{} }); };
+  if($('uzDd')){ $('uzDd').onchange = due; $('uzDtm').onchange = due; }
+  const add = $('uzDadd'); if(add) add.onchange = ()=>{ const u = add.value; if(!u) return; const a = (t.assignees||[]).length ? t.assignees.slice() : [t.created_by]; if(!a.includes(u)) a.push(u); uzSave(t, { assignees:a }); };
+  box.querySelectorAll('[data-uzrm]').forEach(b=>b.onclick = ()=>{ const a = (t.assignees||[]).filter(u=>u!==b.dataset.uzrm); uzSave(t, { assignees:a, lead:t.lead===b.dataset.uzrm ? null : t.lead }); });
+  const e = $('uzDe'); if(e) e.onchange = ()=>uzSave(t, { event_id:e.value || null });
+  const sh = $('uzDsh'); if(sh) sh.onchange = ()=>uzSave(t, { shared:sh.checked });
+  const tp = $('uzToProj'); if(tp) tp.onclick = ()=>{ UZ.tab = 'desc'; uzSave(t, { kind:'project' }); };
+  box.querySelectorAll('.uz-d-tabs [data-uzt]').forEach(b=>b.onclick = ()=>{ UZ.tab = b.dataset.uzt; box.querySelectorAll('.uz-d-tabs [data-uzt]').forEach(x=>x.classList.toggle('on', x===b)); uzDrawTab(t); });
+}
+function uzTabBind(b, t){
+  const $ = id=>document.getElementById(id);
+  const n = $('uzDn'); if(n){ const fit = ()=>{ n.style.height = 'auto'; n.style.height = Math.max(n.scrollHeight, 60)+'px'; }; fit(); n.oninput = fit; n.onchange = ()=>{ if(n.value!==(t.note||'')) uzSave(t, { note:n.value }); }; }
+  b.querySelectorAll('[data-uzt]').forEach(x=>x.onclick = ()=>{ UZ.tab = x.dataset.uzt; uzDrawDet(); });
+  // checklist
+  const cl = ()=>(Array.isArray(t.checklist) ? t.checklist : []).map(x=>Object.assign({}, x));
+  b.querySelectorAll('[data-uzcl]').forEach(x=>x.onclick = ()=>{ const l = cl(), i = +x.dataset.uzcl; if(!l[i]) return; l[i].ok = !l[i].ok; l[i].by = l[i].ok ? teamMe() : null; l[i].at = l[i].ok ? new Date().toISOString() : null; uzSave(t, { checklist:l }).then(()=>uzDrawTab(t)); uzDrawTab(Object.assign({}, t, { checklist:l })); });
+  b.querySelectorAll('[data-uzclx]').forEach(x=>x.onclick = ()=>{ const l = cl(); l.splice(+x.dataset.uzclx, 1); uzSave(t, { checklist:l }).then(()=>uzDrawTab(t)); });
+  const ca = $('uzClAdd'); if(ca) ca.onkeydown = e=>{ if(e.key!=='Enter') return; e.preventDefault(); e.stopPropagation(); const v = ca.value.trim(); if(!v) return; const l = cl(); l.push({ id:uid('c'), t:v, ok:false }); ca.value = ''; uzSave(t, { checklist:l }).then(()=>{ uzDrawTab(t); const c2 = $('uzClAdd'); if(c2) c2.focus(); }); };
+  // subtasks
+  b.querySelectorAll('[data-uzsub]').forEach(x=>x.onclick = ()=>{ const s = uzAll().find(y=>y.id===x.dataset.uzsub); if(s) uzToggleDone(s).then(()=>uzDrawTab(t)); });
+  b.querySelectorAll('[data-uzgo]').forEach(x=>x.onclick = ()=>uzOpen(x.dataset.uzgo));
+  const sa = $('uzSubAdd'); if(sa) sa.onkeydown = async e=>{ if(e.key!=='Enter') return; e.preventDefault(); e.stopPropagation(); const v = sa.value.trim(); if(!v) return; sa.disabled = true;
+    const s = await uzInsert({ title:v, kind:'todo', parent_id:t.id, shared:t.shared, event_id:t.event_id||null, assignees:t.lead && t.lead!==teamMe() ? [t.lead] : [] });
+    sa.disabled = false; if(s){ sa.value = ''; uzDrawTab(t); const s2 = $('uzSubAdd'); if(s2) s2.focus(); uzRenderSoon(); } };
+  // comments
+  const ci = $('uzCom'), cg = $('uzComGo');
+  if(ci){ const fit = ()=>{ ci.style.height = 'auto'; ci.style.height = Math.min(ci.scrollHeight, 160)+'px'; }; ci.oninput = fit;
+    const send = async ()=>{ const v = ci.value.trim(); if(!v) return; cg.disabled = true;
+      const { data, error } = await getSb().from('task_log').insert({ task_id:t.id, kind:'comment', body:v }).select().single();
+      cg.disabled = false; if(error){ toast('Nepavyko: '+(/task_log|schema cache/i.test(error.message) ? 'paleisk supabase/sql/tasks_v3.sql' : error.message)); return; }
+      ci.value = ''; fit(); (UZ.logs[t.id] = UZ.logs[t.id] || []); if(!UZ.logs[t.id].some(x=>x.id===data.id)) UZ.logs[t.id].push(data); uzDrawLogs();
+      uzNotifyOthers(t, 'comment', v); };
+    cg.onclick = send; ci.onkeydown = e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); e.stopPropagation(); send(); } }; }
+  b.querySelectorAll('[data-uzcomx]').forEach(x=>x.onclick = async ()=>{ const it = (UZ.logs[t.id]||[]).find(y=>y.id===x.dataset.uzcomx); if(!it || !(await uiConfirm(it.kind==='file' ? 'Ištrinti failą?' : 'Ištrinti komentarą?'))) return;
+    const { error } = await getSb().from('task_log').delete().eq('id', it.id); if(error){ toast('Nepavyko: '+error.message); return; }
+    if(it.kind==='file' && it.data && it.data.path) getSb().storage.from('task-files').remove([it.data.path]).catch(()=>{});
+    UZ.logs[t.id] = UZ.logs[t.id].filter(y=>y.id!==it.id); uzDrawTab(t); uzDrawLogs(); });
+  // files
+  const fi = $('uzFileIn'); if(fi) fi.onchange = async ()=>{ const fs = [...fi.files]; fi.value = ''; for(const f of fs) await uzUpload(t, f); };
+  b.querySelectorAll('[data-uzfile]').forEach(x=>x.onclick = async ()=>{ const it = (UZ.logs[t.id]||[]).find(y=>y.id===x.dataset.uzfile); if(!it) return;
+    const { data, error } = await getSb().storage.from('task-files').createSignedUrl(it.data.path, 3600, { download:it.data.name });
+    if(error || !data){ toast('Nepavyko atidaryti failo.'); return; } window.open(data.signedUrl, '_blank', 'noopener'); });
+}
+async function uzUpload(t, f){
+  if(f.size > 50*1048576){ toast('Failas per didelis (iki 50 MB): '+f.name); return; }
+  toast('Keliama: '+f.name+'…');
+  const safe = f.name.normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9._-]+/g, '_').slice(-80) || 'failas';
+  const path = `${t.id}/${Date.now().toString(36)}-${safe}`;
+  const up = await getSb().storage.from('task-files').upload(path, f, { contentType:f.type || 'application/octet-stream', upsert:false });
+  if(up.error){ toast('Nepavyko įkelti: '+up.error.message); return; }
+  const { data, error } = await getSb().from('task_log').insert({ task_id:t.id, kind:'file', data:{ path, name:f.name, size:f.size, type:f.type } }).select().single();
+  if(error){ toast('Nepavyko: '+error.message); return; }
+  (UZ.logs[t.id] = UZ.logs[t.id] || []); if(!UZ.logs[t.id].some(x=>x.id===data.id)) UZ.logs[t.id].push(data);
+  if(UZ.open===t.id){ uzDrawTab(t); uzDrawLogs(); }
+  toast('✓ Prisegta: '+f.name);
+}
+// a comment: the others on the task get a notice (the same as a new task's, opens it)
+function uzNotifyOthers(t, kind, text){
+  const me = teamMe(), users = [...new Set([...uzPeople(t), t.lead, t.created_by].filter(u=>u && u!==me))];
+  if(!users.length) return;
+  try{ notifyCall({ kind:'task', task_id:t.id, event:'comment', users, text:String(text||'').slice(0, 200) }); }catch(e){}
+}
 
 /* ---------- Įrangos planavimas ----------
    Each event can reserve items from Sandėlis for its planning period
@@ -47450,6 +48028,13 @@ const GUIDE = [
   rel:['fleet','expenses','invoices'], kw:'ataskaitos suvestine bolt wolt uta freelance valymas subnuoma excel' },
 
 /* ---------- Komanda ---------- */
+{ id:'tasks', tab:'tasks', g:'Komanda', t:'Užduotys', d:'Užduočių valdymas dviem lygiais: greitas To-Do ir išplėstinė (projekto tipo) užduotis.',
+  s:[['To-Do', 'Viršuje „Greita užduotis sau“ + Enter – ir viskas. Pažymi atliktą varnele; gali priskirti kitam, nurodyti terminą, palikti komentarą.'],
+     ['Išplėstinė', '„+ Nauja užduotis“ → Išplėstinė: atsakingas ir vykdytojai, terminas, prioritetas, statusas (Nauja / Vykdoma / Laukiama / Atlikta), renginys. Užduoties lange – aprašymas, darbų sąrašas, subužduotys, komentarai, failai ir veiklos istorija. To-Do galima bet kada paversti išplėstine.'],
+     ['Rodiniai', 'Mano užduotys, Man priskirtos, Bendras sąrašas (visos komandai matomos), Laukiančios, Atliktos (su ataskaita: trukmė, kiek atlikta laiku). Sąrašas grupuojamas: bendros ir pagal renginius; „Lenta“ – stulpeliai pagal statusą, korteles galima tempti.'],
+     ['Kas mato', 'Užduotį mato jos autorius, vykdytojai ir atsakingas; pažymėtą „Bendrame sąraše“ – visa komanda. Keisti gali vykdytojai, atsakingas ir autorius; ištrinti – autorius ir atsakingas.']],
+  rel:['home'], kw:'uzduotys todo to-do clickup subuzduotys darbu sarasas statusas prioritetas komentarai failai' },
+
 { id:'tracker', tab:'tracker', g:'Komanda', t:'Team Tracker', d:'Darbo laiko apskaita: pradėti / baigti darbą, veiklos, pamainų taisymas.',
   s:[['Kaip', '„Pradėti darbą“ – pasirenki veiklą (sandėlis, vairavimas, budėjimas, montažas, demontažas, operatorius, pertrauka), keiti bet kada; „Baigti darbą“. Užfiksuojama vieta. Laiką pataisyti ar pamainą ištrinti galima tik su komentaru (matosi ataskaitoje).'],
      ['Kas mato', 'Tech, Freelance, Runner – savo laiką; Admin, Office, Projektų vadovai – visų, Excel.']],
@@ -55103,6 +55688,7 @@ const TABS = {
   whjobs: renderWhJobsTab,
   labor: renderLaborTab,
   sharedocs: renderShareDocsTab,
+  tasks: renderTasksTab,
   buy: renderBuyTab,
   tracker: renderTrackerTab,
   expenses: renderExpensesTab,
@@ -55638,6 +56224,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-12 23:00', v:'v770', k:'new', t:'Naujas puslapis „Užduotys“: To-Do ir išplėstinės užduotys', f:'Pagrindiniame ekrane šalia Ofiso ir Sandėlio – „Užduotys“. Greita To-Do: įrašai ir Enter, pažymi varnele, gali priskirti, nurodyti terminą, komentuoti. Išplėstinė: atsakingas ir vykdytojai, terminas, prioritetas, statusas (Nauja / Vykdoma / Laukiama / Atlikta), renginys, darbų sąrašas, subužduotys, komentarai, failai ir veiklos istorija. Rodiniai: Mano užduotys, Man priskirtos, Bendras sąrašas, Laukiančios, Atliktos (su ataskaita – vidutinė trukmė, kiek atlikta laiku, kas kiek atliko). Sąrašas (bendros ir pagal renginius) arba Lenta pagal statusą – korteles galima tempti. Tos pačios užduotys kaip pagrindiniame puslapyje: priminimai ir pranešimai veikia kaip anksčiau; pakomentavus – kiti užduoties žmonės gauna pranešimą. Bandomasis laikotarpis – parašyk, ką pakeisti.' },
   { d:'2026-11-12 21:00', v:'v769', k:'new', t:'Bookingas: ryškios būsenų spalvos, greitas laikotarpis, renginiai prie žmonių', f:'Būsenos (Sutiko, Atsisakė / Negali, Kita, Neatsiliepė, Skambinama) – ryškios vientisos spalvos, aiškiai matomos ir datų juostoje. Laikotarpis: Konkreti diena, Ši savaitė, Šis mėnuo (‹ › – ankstesnė / kita) arba Laikotarpis (nuo–iki). Bendras datų slankiklis – didesnis, laikotarpio kortelėje. Jei žmogus jau įrašytas renginio komandoje tomis dienomis – prie vardo violetinė žyma su renginio pavadinimu (užvedus pele – renginiai ir pozicijos), tos dienos datų juostoje pažymėtos; paspaudus – langas su visa renginio informacija (vieta, laikai, užsakovas, transportas, visa komanda).' },
   { d:'2026-11-12 20:00', v:'v768', k:'new', t:'Bookingas: vienas bendras datų slankiklis', f:'Viršuje (kartu su grupėmis, lieka matomas slenkant sąrašą) – bendra datų juosta su mėnesių pavadinimais. Ją paslinkus, kartu slenka visų žmonių datos; paslinkus bet kurio žmogaus datas – slenka visos. Mėnesiai atskirti linija, pavadinimas lieka matomas, kol baigiasi to mėnesio dienos. Tarp datų ir įkainio (stafkės) – tarpas.' },
   { d:'2026-11-12 19:00', v:'v767', k:'fix', t:'Žmonės → Bookingas: daug greičiau', f:'Bookingo sąrašas piešiamas kelis kartus greičiau: skambučiai suskaičiuojami vieną kartą, o ne kiekvienai eilutei atskirai; datų juostos piešiamos tik tiems žmonėms, kurie matomi ekrane. Kolegai pažymėjus skambutį, perpiešiama tik to žmogaus eilutė (sąrašas nešokinėja, slinkimas išlieka). Pakeitus kontaktą nebeperkraunami visi žmonės ir skambučiai – įrašomas tik pakeistas.' },

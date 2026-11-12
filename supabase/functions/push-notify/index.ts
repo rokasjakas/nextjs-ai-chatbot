@@ -1193,16 +1193,26 @@ async function wantIds(ids: string[], kind: "tasks" | "events" | "gear" | "leave
   const ps = await db<Profile[]>(`profiles?select=id,notify_prefs&id=in.${inList(ids)}`);
   return ps.filter((p) => wants(p.notify_prefs, kind, kind)).map((p) => p.id);
 }
-async function onTask(uid: string, taskId: string, ev: string) {
+async function onTask(uid: string, taskId: string, ev: string, text = "") {
   const [t] = await db<Task[]>(`tasks?select=*&id=eq.${encodeURIComponent(taskId)}`);
   if (!t) return { error: "Užduotis nerasta" };
   const involved = t.created_by === uid || (t.assignees ?? []).includes(uid) || t.lead === uid;
-  if (!involved) return { error: "Ši užduotis ne tau" };
+  // a task in the shared list (Užduotys → Bendras sąrašas) – anyone on the team may comment on it
+  if (!involved && !(ev === "comment" && (t as Task & { shared?: boolean }).shared)) return { error: "Ši užduotis ne tau" };
   const users = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
   const me = name(users[0]);
   let ids: string[], title: string, body: string;
+  if (ev === "comment") {
+    ids = [...new Set([t.created_by, ...(t.assignees ?? []), ...(t.lead ? [t.lead] : [])])].filter((u) => u && u !== uid);
+    title = "💬 " + t.title.slice(0, 100);
+    body = `${me}: ${String(text || "").slice(0, 160)}`;
+    ids = await wantIds(ids, "tasks");
+    if (!ids.length) return { sent: 0 };
+    return await sendTo(ids, { title, body, tag: "task-c-" + t.id, url: `./?task=${t.id}`, kind: "task" });
+  }
   if (ev === "new") {
-    if (t.created_by !== uid) return { error: "Tik užduoties autorius" };
+    // the author, or the one responsible for it (adding people on the Užduotys page)
+    if (t.created_by !== uid && t.lead !== uid) return { error: "Tik užduoties autorius ar atsakingas" };
     ids = [...new Set([...(t.assignees ?? []), ...(t.lead ? [t.lead] : [])])].filter((u) => u !== uid);
     title = "📋 Nauja užduotis: " + t.title.slice(0, 100);
     body = `${me} paskyrė${t.due_at ? " · iki " + whenLt(t.due_at) : ""}${t.lead === ids[0] && ids.length === 1 ? " (tu atsakingas)" : ""}`;
@@ -1986,7 +1996,7 @@ Deno.serve(async (req) => {
     if (body.kind === "game") return json(await onGameInvite(uid, Array.isArray(body.to) ? body.to : [], String(body.game ?? "Žaidimas").slice(0, 60), String(body.room ?? "").slice(0, 40)));
     if (body.kind === "mail-test") return json(await onMailTest(uid));
     if (body.kind === "tracker-pin") return json(await onTrackerPin(String(body.member_id ?? "")));
-    if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone"].includes(body.event) ? body.event : "new"));
+    if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone", "comment"].includes(body.event) ? body.event : "new", String(body.text ?? "")));
     if (body.kind === "invoice-check") return json(await onInvoiceCheck(uid, String(body.invoice_id ?? ""), body.event === "checked" ? "checked" : "msg", String(body.text ?? ""), body.ok === true));
     if (body.kind === "invoice") return json(await onInvoice(uid, String(body.invoice_id ?? ""), body.event === "new" ? "new" : body.event === "resend" ? "resend" : "decided"));
     if (body.kind === "expense") return json(await onExpense(uid, String(body.expense_id ?? ""), ["fix", "info", "ok", "rejected", "resubmit", "deduct", "purpose"].includes(body.event) ? body.event : "ok"));
