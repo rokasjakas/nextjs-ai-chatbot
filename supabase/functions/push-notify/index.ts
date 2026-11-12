@@ -1464,13 +1464,6 @@ const FB_STATUS: Record<string, string> = {
   fixed: "✅ Klaida ištaisyta", accepted: "✅ Pasiūlymas priimtas ir pridėtas", rejected: "✖ Pasiūlymas atmestas", progress: "🔧 Jau taisoma",
 };
 // „kviečia pažaisti“: a colleague who is not in the app gets a notification; the invite itself comes when they open it
-async function onGameInvite(uid: string, to: string[], game: string, room: string) {
-  const ids = [...new Set(to.map(String).filter((x) => /^[0-9a-f-]{36}$/i.test(x) && x !== uid))].slice(0, 11);
-  if (!ids.length || !room) return { sent: 0 };
-  const [me] = await db<Profile[]>(`profiles?select=id,email,first_name,last_name,full_name,nickname,role,notify_prefs&id=eq.${uid}`);
-  if (!me || me.role === "pending") return { error: "Tik patvirtinti nariai" };
-  return await sendTo(ids, { title: "🎮 " + name(me) + " kviečia pažaisti", body: game + " – atidaryk programą ir priimk kvietimą", tag: "game-" + room, url: `./?game=${encodeURIComponent(room)}`, kind: "game" }, 600);
-}
 // Sandėlio darbai (sql/wh_jobs.sql): a question to the one who added the job / proposal, and the answer back
 type WhQ = { id: string; t: string; by_id: string; to_id?: string; to_ids?: string[]; a?: string; a_by_id?: string; answers?: { a: string; by_id: string }[] };
 async function onWhJob(uid: string, id: string, ev: string, qid: string) {
@@ -1993,7 +1986,6 @@ Deno.serve(async (req) => {
     }
     const uid = await caller(req);
     if (!uid) return json({ error: "Reikia prisijungti." }, 401);
-    if (body.kind === "game") return json(await onGameInvite(uid, Array.isArray(body.to) ? body.to : [], String(body.game ?? "Žaidimas").slice(0, 60), String(body.room ?? "").slice(0, 40)));
     if (body.kind === "mail-test") return json(await onMailTest(uid));
     if (body.kind === "tracker-pin") return json(await onTrackerPin(String(body.member_id ?? "")));
     if (body.kind === "task") return json(await onTask(uid, String(body.task_id ?? ""), ["new", "done", "undone", "comment"].includes(body.event) ? body.event : "new", String(body.text ?? "")));
