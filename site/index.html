@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-zWmdE3RS7udwbBlR1/5v8o3UkP4wdwa45Rd11W9+oW4=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dU1rlnhnV7o9nN2V+ilVHJcKfCjYxcmQkNv4mKU0vx4=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -15499,6 +15499,23 @@ function navSetFavs(list){
     clearTimeout(navSaveT); navSaveT = setTimeout(()=>{ const sb = getSb(); if(sb && teamMe()) sb.from('profiles').update({ notify_prefs:prefsClean(p) }).eq('id', teamMe()).then(()=>{}); }, 600); }
   navApplyFavs(); navMenuRender();
 }
+/* right mouse button on a page (the Ofisas / Sandėlis… windows, the Pradžia tiles): add it to / take it off the left menu */
+function navCtxMenu(x, y, tab){
+  if(!tab || !TABS[tab] || !canView(tab) || HIDDEN_TABS.has(tab) || tab==='home') return false;
+  const favs = navFavs(), on = favs.includes(tab);
+  const lab = ((document.querySelector('.rail-btn[data-tab="'+tab+'"]')||{}).dataset||{}).label || tab;
+  const at = { getBoundingClientRect:()=>({ left:x, right:x + 240, top:y, bottom:y }) };
+  uzMenu(at, [
+    on ? { html:`${slIcon('close')}<span><b>Pašalinti iš kairiojo meniu</b><small>${esc(lab)}</small></span>`, fn:()=>{ navSetFavs(navFavs().filter(k=>k!==tab)); toast('Pašalinta iš kairiojo meniu: '+lab); } }
+       : { html:`${slIcon('star')}<span><b>Pridėti prie kairiojo meniu</b><small>${esc(lab)}</small></span>`, fn:()=>{ navSetFavs([...navFavs(), tab]); toast('✓ Pridėta prie kairiojo meniu: '+lab); } },
+    { html:`${slIcon('chevr')}<span>Atidaryti</span>`, fn:()=>{ if(document.getElementById('modalRoot') && document.querySelector('.hg-modal')) closeModal(); setTab(tab); } }]);
+  return true;
+}
+document.addEventListener('contextmenu', e=>{
+  if(!(e.target instanceof Element) || document.body.classList.contains('home-edit')) return;
+  const it = e.target.closest('.hg-item[data-go], main .home-tile[data-go]'); if(!it) return;
+  if(navCtxMenu(e.clientX, e.clientY, it.dataset.go)) e.preventDefault();
+});
 // only the chosen apps (in their order) stay on the bar; the phone bar takes the first four
 function navApplyFavs(){
   const favs = navFavs();
@@ -25442,7 +25459,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v776';
+const APP_VER = 'v777';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -54591,6 +54608,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-15 20:00', v:'v777', k:'new', t:'Dešinys pelės klavišas – pridėti puslapį prie kairiojo meniu', f:'Atidarius Ofisas, Sandėlis ar kitą grupę (ir ant Pradžios plytelių) – dešiniu pelės klavišu ant puslapio: „Pridėti prie kairiojo meniu“ (arba „Pašalinti iš kairiojo meniu“, jei jau yra). Pasirinkimas išsaugomas profilyje – toks pat ir telefone.' },
   { d:'2026-11-15 18:00', v:'v776', k:'chg', t:'Pradžia: kalendorius visada dešinėje, plytelės vienodo dydžio', f:'Pagrindiniame lange (kompiuteryje) dešinysis skydelis visada atidarytas – viršuje kalendorius, po juo pranešimai, užduotys ir kt. Visos plytelės (Ofisas, Sandėlis, Užduotys…) – vienodo dydžio, kairėje nuo kalendoriaus. Kituose puslapiuose skydelis veikia kaip anksčiau.' },
   { d:'2026-11-15 15:00', v:'v775', k:'chg', t:'Išdavimai: kaip Paėmimai – peržiūros langas, redagavimas atskirai', f:'Išdavimų sąrašas – tokiomis pačiomis išlygiuotomis grafomis kaip Paėmimai: BŪSENA | IŠDAVIMO DATA | NUOMININKAS, po jais ĮRANGA | NUMERIS | IŠDAVĖ | GRĄŽINTI. Paspaudus išdavimą atsidaro langas su visa informacija, įranga, būsena, nuotraukomis, parašais ir PDF; viską redaguoti – „✎ Redaguoti viską“.' },
   { d:'2026-11-15 12:00', v:'v774', k:'new', t:'Išdavimai: privalomi abiejų pusių parašai išduodant ir grąžinant', f:'Registruojant išdavimą (ir keičiant būseną į „Išduota“) reikia abiejų parašų – išdavusio darbuotojo ir nuomininko; be jų užregistruoti negalima. Paspaudus „Grąžinta“ atsiranda langas „Grąžinimas“ – pasirašo grąžinęs asmuo ir priėmęs darbuotojas (galima komentaras); tik tada pažymima grąžinta. Grąžinimo parašai matomi kortelėje ir įdedami į perdavimo–priėmimo aktą (PDF).' },
