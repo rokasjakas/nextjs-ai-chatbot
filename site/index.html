@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-XxY5AVErai3g7UUTv32TQiiNrK2+GORQWySbl6wRZ5s=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-zWmdE3RS7udwbBlR1/5v8o3UkP4wdwa45Rd11W9+oW4=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -587,6 +587,11 @@ input.fd-auto{outline:2px solid #3fbf8f;outline-offset:1px;}
 @supports (overflow:clip){ .sk-msgs .chat-att,.chat-msgs .chat-att,.sk-msgs .chat-vid video{overflow:clip;} }
 html.chat-fix .sk-msgs *, html.chat-fix .chat-msgs *, html.pop-lock .sk-msgs *, html.pop-lock .chat-msgs *{overscroll-behavior:auto;}
 .gside{--gs-w:370px;--gs-strip:56px;}
+/* Pradžia: the calendar panel stays open on the right; the tiles all the same size */
+body.gside-home .gside-ha{display:none;}
+main .home-tiles{grid-auto-rows:1fr;}
+main .home-tiles > .home-tile{height:100%;box-sizing:border-box;}
+
 /* folded: a glass strip on the right edge (the page keeps clear of it) */
 .gside-tab{position:fixed;right:0;top:var(--gs-top,60px);bottom:0;width:var(--gs-strip,56px);z-index:45;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0 12px;
   border-left:1px solid rgb(var(--hi-rgb, 255 255 255) / .14);background:color-mix(in srgb, var(--gl-base, var(--panel)) var(--gl-a,62%), transparent);
@@ -24661,7 +24666,7 @@ function afApply(){
     if(scope==='events' || scope==='newproj') continue;   // Renginiai, Projektai: each stays as the member left it (unfolded at first)
     for(const tog of root.querySelectorAll(AF_SEL)){
       // .af-keep: a form that keeps its own open / shut state (e.g. the spaces in an Erdvė being edited – a new one opens)
-      if(tog.closest('.ed-ui') || tog.closest('.af-keep') || tog.dataset.edlock || tog.matches('input, select, textarea, [role="combobox"]') || tog.closest('.hs-item.hs-pinned')) continue;
+      if(tog.closest('.ed-ui') || tog.closest('.af-keep') || tog.dataset.edlock || tog.matches('input, select, textarea, [role="combobox"]') || tog.closest('.hs-item.hs-pinned') || (tog.matches('[data-hsfold="cal"]') && typeof currentTab!=='undefined' && currentTab==='home')) continue;   // Pradžia: the calendar stays open
       const k = afKey(tog, scope); if(!k || AF.done.has(k)) continue;
       AF.done.add(k);
       if(tog.matches('summary')){ tog.parentElement.open = false; continue; }
@@ -25437,7 +25442,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v775';
+const APP_VER = 'v776';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -27056,7 +27061,10 @@ function gearPlan(start){
 }
 
 // the right panel's cards (notifications, invoices, calendar, feedback, tasks, AI) – one panel for every page (gSide)
-function hsItemsHtml(){ return byOrder(['ntf'].concat(isPlus() ? ['inv'] : []).concat(['cal','fb','todo','ai']), (o=>Array.isArray(o) && !o.includes('ntf') ? ['ntf'].concat(o) : o)((o=>Array.isArray(o) && isPlus() && !o.includes('inv') ? ['inv'].concat(o) : o)(prefGet('homeSide'))), k=>k).map(k=>`<div class="hs-item${hsFolded(k) ? ' fold' : ''}${hsPinned(k) ? ' hs-pinned' : ''}" data-k="${k}"><span class="hs-grip" title="Tempk, kad sukeistum vietomis"></span><button type="button" class="hs-fold" data-hsfold="${k}" title="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}" aria-label="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}">${slIcon(hsFolded(k) ? 'dropdown' : 'dropup')}</button><button type="button" class="hs-pin" data-hspin="${k}" title="${hsPinned(k) ? 'Prisegta – lieka taip, kaip palikai (spausk, kad atsegtum)' : 'Prisegti: lieka išskleista ar suskleista, kaip palikai'}" aria-label="Prisegti">${slIcon('keep')}</button><div class="card${k==='fb'?' fb-card-wrap':k==='inv'?' inv-card-wrap':''}" id="${({cal:'homeCal',fb:'homeFb',todo:'homeTodo',inv:'homeInv',ai:'homeAi',ntf:'homeNtf'})[k]}"></div></div>`).join(''); }
+function hsItemsHtml(){ const ks = byOrder(['ntf'].concat(isPlus() ? ['inv'] : []).concat(['cal','fb','todo','ai']), (o=>Array.isArray(o) && !o.includes('ntf') ? ['ntf'].concat(o) : o)((o=>Array.isArray(o) && isPlus() && !o.includes('inv') ? ['inv'].concat(o) : o)(prefGet('homeSide'))), k=>k);
+  // Pradžia: the calendar on top, open
+  const home = typeof currentTab!=='undefined' && currentTab==='home' && innerWidth >= 1100;
+  return (home ? ['cal', ...ks.filter(k=>k!=='cal')] : ks).map(k=>`<div class="hs-item${hsFolded(k) && !(home && k==='cal') ? ' fold' : ''}${hsPinned(k) ? ' hs-pinned' : ''}" data-k="${k}"><span class="hs-grip" title="Tempk, kad sukeistum vietomis"></span><button type="button" class="hs-fold" data-hsfold="${k}" title="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}" aria-label="${hsFolded(k) ? 'Išskleisti' : 'Suskleisti'}">${slIcon(hsFolded(k) ? 'dropdown' : 'dropup')}</button><button type="button" class="hs-pin" data-hspin="${k}" title="${hsPinned(k) ? 'Prisegta – lieka taip, kaip palikai (spausk, kad atsegtum)' : 'Prisegti: lieka išskleista ar suskleista, kaip palikai'}" aria-label="Prisegti">${slIcon('keep')}</button><div class="card${k==='fb'?' fb-card-wrap':k==='inv'?' inv-card-wrap':''}" id="${({cal:'homeCal',fb:'homeFb',todo:'homeTodo',inv:'homeInv',ai:'homeAi',ntf:'homeNtf'})[k]}"></div></div>`).join(''); }
 function renderHomeTab(){
   const side = false;   // the cards are in the right panel (gSide), on every page
   // a class, not main:has(…) – :has on <main> together with the other :has rules made every change re-style the whole page
@@ -54152,7 +54160,8 @@ function gsideRender(force){
   const on = typeof calEnabled==='function' && calEnabled() && !!ACCESS.profile && !(document.getElementById('guestView') && !document.getElementById('guestView').classList.contains('hidden'));
   let root = document.getElementById('gSide');
   if(!on){ if(root) root.remove(); document.body.classList.remove('gside-open', 'gside-has', 'gside-peek'); return; }
-  const locked = prefGet('gSideOpen')===true, show = locked || GSD.peek;
+  const home = currentTab==='home' && innerWidth >= 1100;   // Pradžia: the calendar always seen on the right
+  const locked = prefGet('gSideOpen')===true || home, show = locked || GSD.peek;
   if(!root){
     root = document.createElement('div'); root.id = 'gSide'; root.className = 'gside';
     root.innerHTML = `<div class="gside-tab" id="gSideTab"></div>
@@ -54168,6 +54177,7 @@ function gsideRender(force){
   }
   document.body.classList.add('gside-has');
   document.body.classList.toggle('gside-open', locked);
+  document.body.classList.toggle('gside-home', home);
   document.body.classList.toggle('gside-peek', !locked && GSD.peek);
   root.querySelector('#gSideTab').innerHTML = gsideStripHtml();
   const lk = root.querySelector('#gSideLock'); lk.innerHTML = slIcon(locked ? 'keepoff' : 'keep'); lk.title = locked ? 'Atrakinti – skydelis susiskleis' : 'Užrakinti išskleistą (šalia puslapio)'; lk.classList.toggle('on', locked);
@@ -54176,7 +54186,9 @@ function gsideRender(force){
   if(!GSD.loaded){ GSD.loaded = true; try{ calLoad(); }catch(e){} try{ ntfLoad().then(()=>{ ntfCardRender(); gsideCount(); }); }catch(e){} setTimeout(gsideDate, 2500); setInterval(gsideDate, 5*60000); }
   const hb = document.querySelector('header.pageheader'); if(hb) document.documentElement.style.setProperty('--gs-top', Math.max(0, hb.getBoundingClientRect().bottom)+'px');
   const box = document.getElementById('gSideB');
-  if(show && (force || !box.childElementCount)){
+  const order = home ? 'home' : 'all';
+  if(show && (force || !box.childElementCount || box.dataset.o!==order)){
+    box.dataset.o = order;
     box.innerHTML = hsItemsHtml();
     const editing = ()=>document.body.classList.contains('home-edit');
     box.querySelectorAll('[data-hsfold]').forEach(b=>b.onclick = e=>{ e.stopPropagation(); hsFoldToggle(b.dataset.hsfold); });
@@ -54185,6 +54197,8 @@ function gsideRender(force){
     aiCardRender(); ntfCardRender(); ntfLoad().then(ntfCardRender);
     calRender(); todoRender(); calLoad(); fbCardRender(); invCard();
   }
+  // Pradžia: the calendar open (also if it was folded before)
+  if(home){ const it = box.querySelector('.hs-item[data-k="cal"]'); if(it && it.classList.contains('fold')){ it.classList.remove('fold'); const fb = it.querySelector('[data-hsfold]'); if(fb){ fb.title = 'Suskleisti'; fb.setAttribute('aria-label', 'Suskleisti'); } } }
   if(currentTab==='chat' && typeof chatFit==='function') setTimeout(chatFit, 60);
 }
 // the panel over the page (not locked); k – the card to show
@@ -54577,6 +54591,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-15 18:00', v:'v776', k:'chg', t:'Pradžia: kalendorius visada dešinėje, plytelės vienodo dydžio', f:'Pagrindiniame lange (kompiuteryje) dešinysis skydelis visada atidarytas – viršuje kalendorius, po juo pranešimai, užduotys ir kt. Visos plytelės (Ofisas, Sandėlis, Užduotys…) – vienodo dydžio, kairėje nuo kalendoriaus. Kituose puslapiuose skydelis veikia kaip anksčiau.' },
   { d:'2026-11-15 15:00', v:'v775', k:'chg', t:'Išdavimai: kaip Paėmimai – peržiūros langas, redagavimas atskirai', f:'Išdavimų sąrašas – tokiomis pačiomis išlygiuotomis grafomis kaip Paėmimai: BŪSENA | IŠDAVIMO DATA | NUOMININKAS, po jais ĮRANGA | NUMERIS | IŠDAVĖ | GRĄŽINTI. Paspaudus išdavimą atsidaro langas su visa informacija, įranga, būsena, nuotraukomis, parašais ir PDF; viską redaguoti – „✎ Redaguoti viską“.' },
   { d:'2026-11-15 12:00', v:'v774', k:'new', t:'Išdavimai: privalomi abiejų pusių parašai išduodant ir grąžinant', f:'Registruojant išdavimą (ir keičiant būseną į „Išduota“) reikia abiejų parašų – išdavusio darbuotojo ir nuomininko; be jų užregistruoti negalima. Paspaudus „Grąžinta“ atsiranda langas „Grąžinimas“ – pasirašo grąžinęs asmuo ir priėmęs darbuotojas (galima komentaras); tik tada pažymima grąžinta. Grąžinimo parašai matomi kortelėje ir įdedami į perdavimo–priėmimo aktą (PDF).' },
   { d:'2026-11-13 01:30', v:'v773', k:'fix', t:'Bookingas: datų slankiklis viršuje ir prisegtas; be „Užimtumo“; Games pašalinta', f:'Bendras datų slankiklis – laikotarpio kortelės viršuje, šalia laikotarpio mygtukų, tiksliai virš žmonių datų. Nuslinkus sąrašą žemyn, slankiklis lieka prisegtas po paieškos juosta – datas galima slinkti bet kurioje vietoje. Žmonės: skiltis „Užimtumas“ pašalinta. Games skiltis ir viskas, kas su ja susiję (žaidimai, rekordai, kvietimai žaisti), pašalinta.' },
