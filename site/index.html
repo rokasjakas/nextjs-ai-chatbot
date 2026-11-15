@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dU1rlnhnV7o9nN2V+ilVHJcKfCjYxcmQkNv4mKU0vx4=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-t7ttnk8NN0mO71ycQvuUXKnWvoWlD6Yras5u62A7DBE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-KTJsSqpq5Ci9nWEsX7X0Q+Z33Xyd6tweqbQoA4DFIxg=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -25459,7 +25459,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v777';
+const APP_VER = 'v778';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -33052,7 +33052,7 @@ document.addEventListener('change', e=>{
     return;
   }
   if(t.dataset.rik==='name'){ rtRememberItem(t.value); return; }
-  if(t.matches && t.matches('[data-riadd]')){ const f = rtListFind(t); if(!f || !f.it) return; const files = Array.from(t.files||[]); t.value = ''; rtItemUpload(f.r, f.it, files, t.dataset.riadd==='back' ? 'back' : ''); return; }
+  if(t.matches && t.matches('[data-riadd]')){ if(t._uph) return; const f = rtListFind(t); if(!f || !f.it) return; const files = Array.from(t.files||[]); t.value = ''; rtItemUpload(f.r, f.it, files, t.dataset.riadd==='back' ? 'back' : ''); return; }
   // the return: ticked – all the units back (unless written); the units – the missing line shows
   if(t.dataset.rik==='back'){
     const f = rtListFind(t); if(!f || !f.it) return;
@@ -33785,6 +33785,28 @@ async function eqUpload(kind, rec, side, files){
   if(done) toast(ltPlural(done,'nuotrauka įkelta','nuotraukos įkeltos','nuotraukų įkelta')+'.');
   if(!wasReady && eqPhotosReady(rec) && EQ_KINDS[kind].onReady) EQ_KINDS[kind].onReady(rec);
 }
+/* choosing photos takes a while (many from the gallery, the camera app): meanwhile the pop-up may be drawn again
+   (coming back to the app, a colleague's change) and the „+ Pridėti“ field replaced – the chosen files then went
+   to a field no longer on the page and nothing was uploaded. So the field gets its own listener when it is tapped,
+   with what it is for, and uploads even if it was replaced in the meantime. */
+document.addEventListener('click', e=>{
+  const t = e.target; if(!(t instanceof HTMLInputElement) || t.type!=='file' || t._uph!=null) return;
+  if(t.matches('[data-eqadd]')){
+    const box = t.closest('.eq-photos'); if(!box) return;
+    const [kind, id] = box.dataset.eq.split(/:(.*)/s), side = t.dataset.eqadd;
+    t._uph = false;
+    t.addEventListener('change', ()=>{ const K = EQ_KINDS[kind], rec = K && K.find(id); const files = Array.from(t.files||[]); t._uph = true; t.value = '';
+      if(rec && files.length) eqUpload(kind, rec, side, files); });
+    return;
+  }
+  if(t.matches('[data-riadd]')){
+    const box = t.closest('.rt-list[data-rl]'), row = t.closest('[data-ri]'); if(!box || !row) return;
+    const rid = box.dataset.rl, iid = row.dataset.ri, side = t.dataset.riadd==='back' ? 'back' : '';
+    t._uph = false;
+    t.addEventListener('change', ()=>{ const r = EV.rentals.find(x=>x.id===rid) || EQ_PENDING[rid], it = r ? rtListOwn(r).find(x=>x.id===iid) : null; const files = Array.from(t.files||[]); t._uph = true; t.value = '';
+      if(r && it && files.length) rtItemUpload(r, it, files, side); });
+  }
+}, true);
 async function eqRemove(kind, rec, side, i){
   rec = EQ_KINDS[kind].find(rec.id) || rec;
   const p = eqPhotos(rec), x = p[side][i]; if(!x) return;
@@ -33809,7 +33831,7 @@ async function eqView(rec, side, i){
 document.addEventListener('change', e=>{
   const box = e.target.closest && e.target.closest('.eq-photos'); if(!box) return;
   const [kind, id] = box.dataset.eq.split(/:(.*)/s), K = EQ_KINDS[kind], rec = K && K.find(id); if(!rec) return;
-  if(e.target.matches('[data-eqadd]')){ const files = Array.from(e.target.files||[]); e.target.value = ''; eqUpload(kind, rec, e.target.dataset.eqadd, files); }
+  if(e.target.matches('[data-eqadd]')){ if(e.target._uph) return; const files = Array.from(e.target.files||[]); e.target.value = ''; eqUpload(kind, rec, e.target.dataset.eqadd, files); }
   if(e.target.matches('[data-eqno]')){
     const wasReady = eqPhotosReady(rec);
     eqPhotos(rec).noInside = e.target.checked; K.save(rec); eqRerender(kind, rec);
@@ -54608,6 +54630,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-15 21:00', v:'v778', k:'fix', t:'Paėmimai, Išdavimai: pasirinktos nuotraukos visada įsikelia', f:'Pasirinkus daug nuotraukų (ar fotografuojant), kol buvo renkamasi, langas kartais persipiešdavo (grįžus į programą ar kolegai ką nors pakeitus) ir pasirinktos nuotraukos neįsikeldavo – reikėdavo bandyti kelis kartus. Dabar pasirinktos nuotraukos įsikelia visada, ir bendros, ir prie atskirų daiktų.' },
   { d:'2026-11-15 20:00', v:'v777', k:'new', t:'Dešinys pelės klavišas – pridėti puslapį prie kairiojo meniu', f:'Atidarius Ofisas, Sandėlis ar kitą grupę (ir ant Pradžios plytelių) – dešiniu pelės klavišu ant puslapio: „Pridėti prie kairiojo meniu“ (arba „Pašalinti iš kairiojo meniu“, jei jau yra). Pasirinkimas išsaugomas profilyje – toks pat ir telefone.' },
   { d:'2026-11-15 18:00', v:'v776', k:'chg', t:'Pradžia: kalendorius visada dešinėje, plytelės vienodo dydžio', f:'Pagrindiniame lange (kompiuteryje) dešinysis skydelis visada atidarytas – viršuje kalendorius, po juo pranešimai, užduotys ir kt. Visos plytelės (Ofisas, Sandėlis, Užduotys…) – vienodo dydžio, kairėje nuo kalendoriaus. Kituose puslapiuose skydelis veikia kaip anksčiau.' },
   { d:'2026-11-15 15:00', v:'v775', k:'chg', t:'Išdavimai: kaip Paėmimai – peržiūros langas, redagavimas atskirai', f:'Išdavimų sąrašas – tokiomis pačiomis išlygiuotomis grafomis kaip Paėmimai: BŪSENA | IŠDAVIMO DATA | NUOMININKAS, po jais ĮRANGA | NUMERIS | IŠDAVĖ | GRĄŽINTI. Paspaudus išdavimą atsidaro langas su visa informacija, įranga, būsena, nuotraukomis, parašais ir PDF; viską redaguoti – „✎ Redaguoti viską“.' },

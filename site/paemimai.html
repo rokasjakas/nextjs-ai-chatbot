@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-dU1rlnhnV7o9nN2V+ilVHJcKfCjYxcmQkNv4mKU0vx4=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-Y7QK8qbbIIKmmno4JGgiKASBH2CRJWSz0UJduygP21w=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-t7ttnk8NN0mO71ycQvuUXKnWvoWlD6Yras5u62A7DBE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-KTJsSqpq5Ci9nWEsX7X0Q+Z33Xyd6tweqbQoA4DFIxg=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
@@ -314,9 +314,16 @@ document.addEventListener('click', async e=>{
       const d = await call('missing', { rental_id:S.open, item_id:it.dataset.item }); replace(d.rental); render(); toast('📣 Pranešta Slack kanale #dingę-daiktai.'); }
     catch(x){ toast('Nepavyko: '+x.message); render(); } }
 });
+// the field gets its own listener when tapped: the photos upload even if the page was drawn again while choosing them
+document.addEventListener('click', e=>{
+  const t = e.target; if(!(t instanceof HTMLInputElement) || t.type!=='file' || !t.dataset.up || t._uph!=null) return;
+  const it = t.closest('[data-item]'), rid = S.open, side = t.dataset.up, iid = it ? it.dataset.item : '';
+  t._uph = false;
+  t.addEventListener('change', ()=>{ const files = [...t.files]; t._uph = true; t.value = ''; if(files.length) upload(rid, side, iid, files); });
+}, true);
 document.addEventListener('change', async e=>{
   const t = e.target;
-  if(t.dataset.up){ const it = t.closest('[data-item]'); const files = [...t.files]; t.value = ''; if(files.length) upload(S.open, t.dataset.up, it ? it.dataset.item : '', files); return; }
+  if(t.dataset.up){ if(t._uph) return; const it = t.closest('[data-item]'); const files = [...t.files]; t.value = ''; if(files.length) upload(S.open, t.dataset.up, it ? it.dataset.item : '', files); return; }
   if(t.dataset.k==='noInside'){ save(S.open, { t:'noInside', v:t.checked }); return; }
   const it = t.closest('[data-item]'); if(!it || !t.dataset.k) return;
   if(t.dataset.k==='backQty') S.retOpen.add(it.dataset.item);
