@@ -232,8 +232,27 @@ async function syncEvent(ev: Ev, members: Member[], create: "" | "auto" | "force
   // archived or deleted in Slack by someone: not written to any more
   if (r && !r.archived_at) {
     const info = await slack("conversations.info", { channel: r.channel_id });
-    const ch = info.channel as { is_archived?: boolean } | undefined;
+    const ch = info.channel as { is_archived?: boolean; name?: string } | undefined;
     if (!info.ok && /channel_not_found/.test(String(info.error)) || ch?.is_archived) { await patchRow(ev.id, { archived_at: new Date().toISOString() }); r.archived_at = new Date().toISOString(); }
+    // the event's date changed (e.g. made with a wrong date and corrected): the channel the app made follows it –
+    // only while it still has the name the app gave it (renamed by hand in Slack – left alone)
+    else if (ch && ch.name === r.name) {
+      const base = slug(ev);
+      const was = (/^(\d{4}-\d{2}-\d{2})-/.exec(r.name) || [])[1];   // only when the date in its name is no longer the event's date
+      if (base && was && was !== String(ev.date || "").slice(0, 10)) {
+        let ok: SlackRes | null = null, name = base;
+        for (let k = 1; k <= 6; k++) {
+          name = k === 1 ? base : `${base}-${k}`;
+          ok = await slack("conversations.rename", { channel: r.channel_id, name });
+          if (ok.ok || ok.error !== "name_taken") break;
+        }
+        if (ok && ok.ok) {
+          const nm = String((ok.channel as { name?: string } | undefined)?.name || name);
+          await patchRow(ev.id, { name: nm }); r.name = nm;
+          await slack("conversations.setPurpose", { channel: r.channel_id, purpose: `${ev.name || "Renginys"} · ${dm(String(ev.date))}${evEnd(ev) !== ev.date ? "–" + dm(evEnd(ev)) : ""} · iš Event Solutions programos` }).catch(() => null);
+        }
+      }
+    }
   }
   if (r && r.archived_at) {
     if (create !== "force") return { url: r.url, archived: true };
