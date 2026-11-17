@@ -146,6 +146,14 @@ async function loadRental(id: string): Promise<Rental> {
   if (!row?.data) throw new UserError("Paėmimas nerastas.");
   return row.data;
 }
+// the rental's history (Paėmimai → 🕘 Istorija): what was done through the link, and by whom
+const ST_LT: Record<string, string> = { reikia: "Reikia paimti", paimta: "Paimta", paruosta: "Paruošta grąžinimui", grazinta: "Grąžinta" };
+function hist(r: Rental, mark: string, t: string) {
+  const x = r as Rental & { hist?: { at: string; by: string; n: string; t: string }[] };
+  x.hist = Array.isArray(x.hist) ? x.hist : [];
+  x.hist.push({ at: new Date().toISOString(), by: "", n: mark, t: t.slice(0, 300) });
+  if (x.hist.length > 400) x.hist = x.hist.slice(-400);
+}
 async function saveRental(r: Rental, who: string) {
   r.updatedAt = new Date().toISOString();
   r.items = itemsText(r.list || []);
@@ -213,18 +221,25 @@ Deno.serve(async (req) => {
         if (!Array.isArray(r.list)) r.list = parseItems(r.items);
         const it = r.list.find((x) => x.id === op.item_id); if (!it) throw new UserError("Daiktas nerastas – atnaujink puslapį.");
         const s = (op.set || {}) as Record<string, unknown>;
+        const nm = String(it.name || "daiktas"), nv = (v: unknown) => String(v ?? "").replace(".", ","), was = { ok: !!it.ok, back: !!it.back, backQty: String(it.backQty ?? "") };
         if ("ok" in s) { it.ok = !!s.ok; if (it.ok) { it.okByName = mark; it.okAt = now; } else { delete it.okByName; delete it.okAt; } }
-        if ("okNote" in s) it.okNote = txt(s.okNote);
+        if ("okNote" in s) { const v = txt(s.okNote); if (v !== (it.okNote || "")) hist(r, mark, `${nm}: paimant – „${v || "—"}“`); it.okNote = v; }
         if ("backQty" in s) { it.backQty = num(s.backQty); if (it.backQty !== "" && !it.back) { it.back = true; it.backByName = mark; it.backAt = now; } }
         if ("back" in s) { it.back = !!s.back; if (it.back) { if (it.backQty === "" || it.backQty == null) it.backQty = it.qty; it.backByName = mark; it.backAt = now; } else { delete it.backByName; delete it.backAt; } }
-        if ("backNote" in s) it.backNote = txt(s.backNote);
+        if ("backNote" in s) { const v = txt(s.backNote); if (v !== (it.backNote || "")) hist(r, mark, `${nm}: grąžinant – „${v || "—"}“`); it.backNote = v; }
+        if (was.ok !== !!it.ok) hist(r, mark, `${it.ok ? "Pažymėta paimta" : "Atžymėta „paimta“"}: ${nm}`);
+        if (was.back !== !!it.back) hist(r, mark, `${it.back ? "Atidėta grąžinimui" : "Atšauktas atidėjimas grąžinimui"}: ${nm}${it.back && it.backQty !== "" ? ` (${nv(it.backQty)}${it.qty !== "" && it.qty != null ? "/" + nv(it.qty) : ""} vnt.)` : ""}`);
+        else if (it.back && was.backQty !== String(it.backQty ?? "")) hist(r, mark, `${nm}: grąžinama ${nv(it.backQty)}${it.qty !== "" && it.qty != null ? "/" + nv(it.qty) : ""} vnt.`);
       } else if (op.t === "status") {
         const v = String(op.v || "");
-        if (!["reikia", "paimta", "grazinta"].includes(v)) throw new UserError("Neteisinga būsena.");
+        if (!["reikia", "paimta", "paruosta", "grazinta"].includes(v)) throw new UserError("Neteisinga būsena.");
+        const before = (r.status || "reikia") === "paimta" && r.partial ? "Paimta dalinai" : ST_LT[r.status || "reikia"] || r.status;
         if ((r.status || "reikia") === "reikia" && v !== "reikia" && !photosReady(r)) throw new UserError("Pirma įkelk išorės ir vidaus nuotraukas (arba pažymėk, kad vidaus nuotraukų padaryti negalima).");
         r.status = v;
         if (v === "paimta" && op.partial) { r.partial = true; r.missing = txt(op.missing) || r.missing || ""; }
         else if (v !== "grazinta") { delete r.partial; delete r.missing; }
+        const after = v === "paimta" && r.partial ? "Paimta dalinai" : ST_LT[v];
+        if (before !== after) hist(r, mark, `Būsena: ${before} → ${after}`);
       } else if (op.t === "noInside") {
         r.photos = r.photos || {}; r.photos.noInside = !!op.v;
       } else throw new UserError("Nežinomas veiksmas.");
@@ -248,6 +263,7 @@ Deno.serve(async (req) => {
       if (side === "out" || side === "in") { r.photos = r.photos || {}; (r.photos[side] = r.photos[side] || []).push(ph); }
       else if (side === "item") (it!.photos = it!.photos || []).push(ph);
       else (it!.backPhotos = it!.backPhotos || []).push(ph);
+      hist(r, mark, side === "out" ? "Įkelta išorės nuotrauka" : side === "in" ? "Įkelta vidaus nuotrauka" : `${it!.name || "daiktas"}: nuotrauka ${side === "back" ? "grąžinant" : "paimant"}`);
       await saveRental(r, who);
       return json({ ok: true, rental: view(r, await evNamesOf([r])) });
     }
@@ -257,6 +273,8 @@ Deno.serve(async (req) => {
       const d = await res.json().catch(() => ({})) as { error?: string };
       if (!res.ok || d.error) throw new UserError(d.error || "Slack nepasiekiamas.");
       const r = await loadRental(String(b.rental_id || ""));
+      const li = (Array.isArray(r.list) ? r.list : []).find((x) => x.id === b.item_id);
+      hist(r, mark, `📣 Pranešta apie trūkumą: ${li ? li.name || "daiktas" : "daiktas"}`); await saveRental(r, who);
       return json({ ok: true, rental: view(r, await evNamesOf([r])) });
     }
     return json({ error: "Nežinomas veiksmas." }, 400);

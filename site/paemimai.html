@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-G0JvmyX+e7EirLAsKshC5KSqSCSUekVk5qE1LdCrbDY=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-KTJsSqpq5Ci9nWEsX7X0Q+Z33Xyd6tweqbQoA4DFIxg=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-RpuqSx9MkFl38N1sF+ehiZ3LD0Qrqk8hKMw1R0b8mes=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
@@ -36,7 +36,8 @@ input:focus{outline:2px solid var(--accent);outline-offset:0;}
 .chip b{opacity:.75;margin-left:4px;}
 .rc{display:flex;gap:12px;align-items:flex-start;cursor:pointer;border-left:6px solid var(--st);}
 .rc:hover{border-color:var(--accent);border-left-color:var(--st);}
-.st-reikia{--st:var(--bad);} .st-paimta{--st:var(--warn);} .st-grazinta{--st:var(--ret);}
+.st-reikia{--st:var(--bad);} .st-paimta{--st:var(--warn);} .st-paruosta{--st:#4E9BC9;} .st-grazinta{--st:var(--ret);}
+.retbox{border:1px solid color-mix(in srgb, #4E9BC9 45%, var(--line, #444));border-radius:12px;padding:10px;margin-top:8px;} .it.ret .retp{border:0;padding:0;margin:0;background:none;}
 .badge{display:inline-block;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;padding:4px 8px;border-radius:8px;background:var(--st);color:#111;white-space:nowrap;}
 .st-reikia .badge{color:#fff;}
 .rc .main{flex:1;min-width:0;}
@@ -110,7 +111,7 @@ try{ S.name = localStorage.getItem('rgName') || ''; }catch(e){}
 const $ = s=>document.querySelector(s);
 const esc = s=>String(s==null ? '' : s).replace(/[&<>"']/g, c=>({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
 const n = v=>String(v).replace('.', ',');
-const ST = { reikia:['⏳', 'Reikia paimti'], paimta:['📦', 'Paimta'], grazinta:['✅', 'Grąžinta'] };
+const ST = { reikia:['⏳', 'Reikia paimti'], paimta:['📦', 'Paimta'], paruosta:['↩', 'Paruošta grąžinimui'], grazinta:['✅', 'Grąžinta'] };
 const LOST = { found:'🔎 Rasta', notfound:'❌ Nerasta', returned:'✅ Grąžinta' };
 function toast(t){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(()=>d.remove(), 3200); }
 async function call(action, extra){
@@ -166,7 +167,7 @@ function render(){
   rows.sort((a,b)=>dist(a)-dist(b));
   $('#app').innerHTML = header()+`
     <h1>Paėmimai</h1>
-    <div class="chips">${[['aktyvus','Aktyvūs'],['reikia','Reikia paimti'],['paimta','Paimta'],['grazinta','Grąžinta'],['visi','Visi']].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-f="${k}">${l}<b>${cnt(k)}</b></button>`).join('')}</div>
+    <div class="chips">${[['aktyvus','Aktyvūs'],['reikia','Reikia paimti'],['paimta','Paimta'],['paruosta','Paruošta grąžinimui'],['grazinta','Grąžinta'],['visi','Visi']].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-f="${k}">${l}<b>${cnt(k)}</b></button>`).join('')}</div>
     <div class="row" style="margin-bottom:10px;"><input type="search" id="q" placeholder="Ieškoti: tiekėjas, daiktas, renginys…" value="${esc(S.q)}" style="flex:1;"><button class="btn small" data-a="reload">↻</button></div>
     ${rows.map(card).join('') || '<div class="card empty">Nieko nėra.</div>'}`;
   const qi = $('#q'); qi.oninput = ()=>{ S.q = qi.value; const p = qi.selectionStart; render(); const q2 = $('#q'); q2.focus(); try{ q2.setSelectionRange(p, p); }catch(e){} };
@@ -185,7 +186,7 @@ function extraOf(r){
 }
 function card(r){
   const [ic, lb] = ST[r.status] || ST.reikia, done = r.list.filter(i=>i.ok).length, back = r.list.filter(i=>i.back).length;
-  const due = r.status==='reikia' && r.pickupDate && r.pickupDate<=today(), late = r.status==='paimta' && r.returnDate && r.returnDate<today();
+  const due = r.status==='reikia' && r.pickupDate && r.pickupDate<=today(), late = (r.status==='paimta' || r.status==='paruosta') && r.returnDate && r.returnDate<today();
   const short = r.list.filter(i=>missOf(i) && !(i.lost && i.lost.status==='returned')).length;
   return `<div class="card rc st-${esc(r.status)}" data-open="${esc(r.id)}">
     <span class="badge">${ic} ${esc(r.status==='paimta' && r.partial ? 'Paimta dalinai' : lb)}</span>
@@ -203,32 +204,43 @@ function itemRow(r, i){
   const when = t=>t ? new Date(t).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
   const cls = [i.ok ? 'ok' : '', i.back ? 'ret' : '', miss ? 'short' : ''].join(' ');
   const shots = S.photos[r.id] ? S.photos[r.id].filter(p=>p.side==='item' && p.item===i.id) : null;
-  return `<div class="it ${cls}" data-item="${esc(i.id)}" ${i.ok ? 'data-swipe="1"' : ''}>
-    ${i.ok ? '<div class="under">↩ Atidėti grąžinimui</div>' : ''}
+  return `<div class="it ${cls}" data-item="${esc(i.id)}">
     <div class="face">
     <div class="top"><input type="checkbox" class="chk" data-k="ok" ${i.ok ? 'checked' : ''} aria-label="Paimta">
       <span class="nm"><b>${esc(i.name)}</b> ${i.qty!=='' ? `<span class="q">${esc(n(i.qty))} vnt.</span>` : ''} ${ev ? `<span class="ev">🎪 ${esc(ev)}</span>` : ''}${i.note ? `<span class="nt">${esc(i.note)}</span>` : ''}</span>
       ${i.back ? `<span class="rbadge ${miss?'bad':''}" title="Atidėta grąžinimui">✓ atidėta ${esc(n(i.backQty==='' ? i.qty : i.backQty))}${i.qty!=='' ? '/'+esc(n(i.qty)) : ''}</span>` : ''}
-      ${i.ok ? `<button class="btn small rb ${open?'on':''}" data-a="ret" title="Atidėti grąžinimui">${i.back ? '↩' : '↩ Atidėti grąžinimui'}</button>` : ''}</div>
+</div>
     <div class="sub">
       <input type="text" data-k="okNote" value="${esc(i.okNote)}" placeholder="Paimant: komentaras">
       <label class="btn small file">📷 ${i.photos || ''}<input type="file" accept="image/*" capture="environment" multiple data-up="item"></label>
       ${i.ok && i.okByName ? `<span class="who">✓ ${esc(i.okByName)} · ${esc(when(i.okAt))}</span>` : ''}
     </div>
-    ${open ? `<div class="retp ${i.backQty==='' || i.backQty==null ? 'q-empty' : miss ? 'q-short' : 'q-ok'}">
-      <div><b>↩ Atidėti grąžinimui</b> <span class="dim small">${i.photos ? 'paimant nufotografuota – palygink' : 'paimant nuotraukos nėra'}</span></div>
-      ${i.photos ? (shots ? `<div class="phs">${shots.map(p=>`<img src="${esc(p.url)}" data-lb="1" alt="">`).join('')}</div>` : `<button class="btn small" data-a="photos">👁 Rodyti paimant darytas nuotraukas</button>`) : ''}
-      <div class="row"><span>Grąžinama</span><input type="number" min="0" step="any" inputmode="decimal" data-k="backQty" value="${esc(i.backQty)}" placeholder="${esc(i.qty)}" aria-label="Grąžinama vnt." style="width:90px;"><span class="dim small">vnt.</span>
-        ${i.qty!=='' ? `<button class="btn small" data-a="retall">Visi (${esc(n(i.qty))})</button>` : ''}
-        ${i.back ? `<button class="btn small" data-a="retundo">Atšaukti atidėjimą</button>` : `<button class="btn small primary" data-a="retdone">✓ Atidėta grąžinimui</button>`}</div>
-      <div class="row"><input type="text" data-k="backNote" value="${esc(i.backNote)}" placeholder="Grąžinant: komentaras" style="flex:1;">
-        <label class="btn small file">📷 ${i.backPhotos || ''}<input type="file" accept="image/*" capture="environment" multiple data-up="back"></label></div>
-      <div class="short-line" data-shortline ${miss ? '' : 'hidden'}>⚠ Trūksta <span data-misstxt>${esc(n(miss))} vnt.</span>
-        ${i.lost ? `<span class="dim small">📣 Pranešta ${esc(when(i.lost.at))}</span>${i.lost.status ? `<span class="pill">${esc(LOST[i.lost.status]||i.lost.status)}</span>` : ''}` : ''}
-        <button class="btn small ${i.lost?'':'danger'}" data-a="lost">📣 ${i.lost ? 'Pranešti dar kartą' : 'Pranešti apie trūkumą'}</button></div>
-      ${i.back && i.backByName ? `<span class="who">↩ atidėjo ${esc(i.backByName)} · ${esc(when(i.backAt))}</span>` : ''}
-    </div>` : ''}
     </div></div>`;
+}
+// „↩ Ruošti grąžinimui“: one row per item – ticked when put aside, the units (fewer – red, report), a comment, photos
+function retRow(r, i){
+  const miss = missOf(i), when = t=>t ? new Date(t).toLocaleString('lt-LT', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
+  return `<div class="it ret ${i.back ? 'ok' : ''} ${miss ? 'short' : ''}" data-item="${esc(i.id)}"><div class="retp ${i.backQty==='' || i.backQty==null ? 'q-empty' : miss ? 'q-short' : 'q-ok'}">
+    <div class="top"><input type="checkbox" class="chk" data-k="back" ${i.back ? 'checked' : ''} aria-label="Atidėta grąžinimui">
+      <span class="nm"><b>${esc(i.name)}</b> ${i.qty!=='' ? `<span class="q">paimta ${esc(n(i.qty))} vnt.</span>` : ''}</span>
+      <input type="number" min="0" step="any" inputmode="decimal" data-k="backQty" value="${esc(i.backQty)}" placeholder="${esc(i.qty)}" aria-label="Grąžinama vnt." style="width:80px;"><span class="dim small">vnt.</span></div>
+    <div class="row"><input type="text" data-k="backNote" value="${esc(i.backNote)}" placeholder="Grąžinant: komentaras" style="flex:1;">
+      <label class="btn small file">📷 ${i.backPhotos || ''}<input type="file" accept="image/*" capture="environment" multiple data-up="back"></label></div>
+    <div class="short-line" data-shortline ${miss ? '' : 'hidden'}>⚠ Trūksta <span data-misstxt>${esc(n(miss))} vnt.</span>
+      ${i.lost ? `<span class="dim small">📣 Pranešta ${esc(when(i.lost.at))}</span>${i.lost.status ? `<span class="pill">${esc(LOST[i.lost.status]||i.lost.status)}</span>` : ''}` : ''}
+      <button class="btn small ${i.lost?'':'danger'}" data-a="lost">📣 ${i.lost ? 'Pranešti dar kartą' : 'Pranešti apie trūkumą'}</button></div>
+    ${i.back && i.backByName ? `<span class="who">↩ atidėjo ${esc(i.backByName)} · ${esc(when(i.backAt))}</span>` : ''}
+  </div></div>`;
+}
+function retCard(r){
+  if(r.status!=='paimta' && r.status!=='paruosta') return '';
+  const bk = r.list.filter(i=>i.back).length, sh = r.list.filter(i=>missOf(i) > 0).length;
+  if(S.retMode!==r.id) return `<div class="card"><h2>↩ Grąžinimas</h2><p class="dim small" style="margin-top:-4px;">${r.status==='paruosta' ? `Paruošta grąžinimui: ${bk}/${r.list.length}${sh ? ` · ⚠ trūksta: ${sh}` : ''}. Kai parvežta tiekėjui ir pastabų nėra – „Grąžinta tiekėjui“.` : bk ? `Atidėta ${bk}/${r.list.length}.` : 'Kai daiktai grąžinami – pažymėk, kas atidėta parvežimui.'}</p>
+    <button class="btn ${r.status==='paruosta' ? '' : 'primary'}" data-a="retmode">↩ ${r.status==='paruosta' ? 'Grąžinimo sąrašas' : 'Ruošti grąžinimui'}</button></div>`;
+  return `<div class="card retbox"><h2>↩ Ruošti grąžinimui <span class="pill">✓ ${bk}/${r.list.length} atidėta</span>${sh ? ` <span class="pill flag">⚠ trūksta: ${sh}</span>` : ''}</h2>
+    <p class="dim small" style="margin-top:-4px;">Pažymėk, kas atidėta parvežimui. Jei vienetų mažiau nei paimta – įrašyk, kiek, ir pranešk apie trūkumą.</p>
+    ${r.list.map(i=>retRow(r, i)).join('')}
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:10px;"><button class="btn" data-a="retclose">${r.status==='paruosta' ? 'Uždaryti' : 'Užbaigti vėliau'}</button><button class="btn primary" data-a="retfinish">✓ Baigta – paruošta grąžinimui</button></div></div>`;
 }
 function renderOne(r){
   const [ic, lb] = ST[r.status] || ST.reikia, tel = telOf(r), cur = r.status==='paimta' && r.partial ? 'dalinai' : r.status;
@@ -249,8 +261,9 @@ function renderOne(r){
       </div>
     </div>
     <div class="card"><h2>Daiktai <span class="pill">✓ ${r.list.filter(i=>i.ok).length}/${r.list.length} paimta</span>${r.list.some(i=>i.ok) ? ` <span class="pill">↩ ${r.list.filter(i=>i.back).length}/${r.list.length} atidėta grąžinimui</span>` : ''}</h2>
-      <p class="dim small" style="margin-top:-4px;">Paimant – pažymėk ir nufotografuok daiktą.${r.list.some(i=>i.ok) ? ' Grąžinant – prie daikto „↩ Atidėti grąžinimui“' + (matchMedia('(pointer:coarse)').matches ? ' (arba braukite jį į kairę 👈)' : '') + ': palygink su nuotrauka, įrašyk vienetus ir spausk „✓ Atidėta grąžinimui“; jei trūksta – pranešk. Kai fiziškai parvežta tiekėjui – būsena „Grąžinta“.' : ''}</p>
+      <p class="dim small" style="margin-top:-4px;">Paimant – pažymėk ir nufotografuok daiktą.${r.list.some(i=>i.ok) ? ' Grąžinant – „↩ Ruošti grąžinimui“ žemiau.' : ''}</p>
       ${r.list.map(i=>itemRow(r, i)).join('') || '<div class="dim">Daiktų nėra.</div>'}</div>
+    ${retCard(r)}
     <div class="card"><h2>📷 Nuotraukos</h2>
       <div class="row">
         <label class="btn small file">＋ Išorės (${r.photos.out})<input type="file" accept="image/*" multiple data-up="out"></label>
@@ -262,7 +275,7 @@ function renderOne(r){
       ${r.status==='reikia' && !(r.photos.out && (r.photos.in || r.photos.noInside)) ? '<p class="dim small">Prieš pažymint „Paimta“ – įkelk išorės ir vidaus nuotraukas.</p>' : ''}
     </div>
     <div class="card"><h2>Būsena</h2><p class="dim small" style="margin-top:-4px;">„Grąžinta“ – kai daiktai fiziškai parvežti tiekėjui.</p>
-      <div class="seg">${[['reikia','⏳ Reikia paimti','st-reikia'],['paimta','📦 Paimta','st-paimta'],['dalinai','⚠ Paimta dalinai','st-paimta'],['grazinta','✅ Grąžinta tiekėjui','st-grazinta']].map(([k,t,c])=>`<button class="${c} ${cur===k?'on':''}" data-st="${k}">${t}</button>`).join('')}</div>
+      <div class="seg">${[['reikia','⏳ Reikia paimti','st-reikia'],['paimta','📦 Paimta','st-paimta'],['dalinai','⚠ Paimta dalinai','st-paimta'],['paruosta','↩ Paruošta grąžinimui','st-paruosta'],['grazinta','✅ Grąžinta tiekėjui','st-grazinta']].map(([k,t,c])=>`<button class="${c} ${cur===k?'on':''}" data-st="${k}">${t}</button>`).join('')}</div>
     </div>`;
 }
 function replace(r){ const i = S.rentals.findIndex(x=>x.id===r.id); if(i>=0) S.rentals[i] = r; else S.rentals.push(r); }
@@ -294,12 +307,20 @@ document.addEventListener('click', async e=>{
   const lb = t.closest('[data-lb]'); if(lb){ const d = document.createElement('div'); d.className = 'lb'; d.innerHTML = `<img src="${esc(lb.src)}" alt=""><button class="btn x">✕</button>`; d.onclick = ()=>d.remove(); document.body.appendChild(d); return; }
   const st = t.closest('[data-st]');
   if(st && S.open){ let v = st.dataset.st, op = { t:'status', v };
+    if(v==='paruosta'){ S.retMode = S.open; render(); const b = document.querySelector('.retbox'); if(b) b.scrollIntoView({ block:'start', behavior:'smooth' }); return; }   // first the items are put aside
     if(v==='dalinai'){ const r = S.rentals.find(x=>x.id===S.open), def = r.list.filter(i=>!i.ok).map(i=>(i.qty!=='' ? n(i.qty)+' x ' : '')+i.name).join('; ');
       const m = prompt('Kas nepaimta?', r.missing || def); if(m===null) return; if(!m.trim()){ toast('Įrašyk, kas nepaimta.'); return; } op = { t:'status', v:'paimta', partial:true, missing:m.trim() }; }
     if(await save(S.open, op)) toast('Būsena pakeista.'); return; }
   const a = t.closest('[data-a]'); if(!a) return;
   const act = a.dataset.a;
-  if(act==='back'){ S.open = null; S.retOpen.clear(); render(); return; }
+  if(act==='back'){ S.open = null; S.retOpen.clear(); S.retMode = null; render(); return; }
+  if(act==='retmode'){ S.retMode = S.open; render(); const b = document.querySelector('.retbox'); if(b) b.scrollIntoView({ block:'start', behavior:'smooth' }); return; }
+  if(act==='retclose'){ S.retMode = null; render(); return; }
+  if(act==='retfinish'){ const r = S.rentals.find(x=>x.id===S.open); if(!r) return;
+    const left = r.list.filter(i=>!i.back), sh = r.list.filter(i=>missOf(i) > 0 && !i.lost);
+    if(left.length && !confirm(`Dar nepažymėta: ${left.slice(0, 4).map(i=>i.name).join(', ')}${left.length > 4 ? ' ir kt.' : ''}. Vis tiek pažymėti „Paruošta grąžinimui“?`)) return;
+    if(sh.length && !confirm(`Trūksta: ${sh.map(i=>i.name).join(', ')} – apie tai dar nepranešta. Vis tiek tęsti?`)) return;
+    if(await save(S.open, { t:'status', v:'paruosta' }, true)){ S.retMode = null; render(); toast('↩ Paruošta grąžinimui.'); } return; }
   if(act==='ret'){ const id = a.closest('[data-item]').dataset.item; if(S.retOpen.has(id)) S.retOpen.delete(id); else S.retOpen.add(id); render(); return; }
   if(act==='retall' || act==='retdone'){ const it = a.closest('[data-item]'), id = it.dataset.item, r = S.rentals.find(x=>x.id===S.open), i = r.list.find(x=>x.id===id);
     const v = act==='retall' || i.backQty==='' ? i.qty : i.backQty;
