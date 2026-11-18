@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wYWtJzeezx5tcXTcSmbrncpHCRzKSvWWr09M33rgTQo=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Z/3Ls4ZCYg9k3WzyTBFqcyO5MjU8FFXGOjhM+0aokY8=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -4362,15 +4362,16 @@ span.uz-pill{background-image:none !important;}
 .pm-cal-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;}
 .pm-wd{text-align:center;font-size:11px;color:var(--text-dim);padding:2px 0;}
 .pm-cd{position:relative;height:40px;border:1px solid transparent;border-radius:8px;background:var(--panel-2,rgba(127,127,127,.06));color:var(--text);font:inherit;cursor:pointer;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;}
-.pm-cd b{font-size:13px;} .pm-cd.out{opacity:.4;} .pm-cd.past b{color:var(--text-dim);}
+.pm-cd b{font-size:13px;} .pm-cd.out{opacity:.4;} .pm-cd.past{opacity:.45;} .pm-cd.past b{color:var(--text-dim);} .pm-cd.past.on{opacity:.8;}
 .pm-cd.ask{background:color-mix(in srgb, var(--accent) 16%, transparent);}
-.pm-cd.today{box-shadow:inset 0 0 0 1px var(--accent);}
+.pm-cd.today::before{content:'';position:absolute;top:5px;left:5px;width:6px;height:6px;border-radius:50%;background:var(--accent);}
 .pm-cd.on{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 38%, transparent);} .pm-cd.on b{color:var(--text);}
 .pm-cd:hover{border-color:color-mix(in srgb, var(--accent) 60%, transparent);}
 .pm-mk{position:absolute;left:6px;right:6px;bottom:4px;height:5px;border-radius:3px;padding:0;min-width:0;}
 .pm-ev{display:inline-block;position:absolute;top:4px;right:5px;width:6px;height:6px;border-radius:50%;background:rgb(155,95,230);}
+.pm-tdy{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:4px;}
 .pm-cal-k .pm-ev{position:static;margin-right:4px;}
-.pm-nt{position:absolute;top:2px;left:3px;font-size:9px;font-style:normal;}
+.pm-nt{position:absolute;top:2px;right:14px;font-size:9px;font-style:normal;}
 .pm-cal-k{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;font-size:11px;color:var(--text-dim);} .pm-k{display:inline-block;width:12px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle;} .pm-k.ask{background:color-mix(in srgb, var(--accent) 16%, transparent);border:1px solid var(--border);} .pm-k.on{background:color-mix(in srgb, var(--accent) 38%, transparent);border:1px solid var(--accent);}
 .pm-notes{display:flex;flex-direction:column;gap:5px;margin-top:8px;} .pm-note{display:flex;align-items:center;gap:8px;} .pm-nd{min-width:118px;font-size:12.5px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;} .pm-nd .pp-st{font-style:normal;font-size:10.5px;padding:0 5px;} .pm-note input{flex:1;min-width:0;}
 
@@ -4381,6 +4382,16 @@ span.uz-pill{background-image:none !important;}
 .pm-do:not(.on){background:transparent!important;color:var(--text-dim)!important;border:1px solid var(--border)!important;}
 .pm-do:hover{color:var(--text);border-color:var(--text-dim);}
 .pm-do.on{color:#fff;font-weight:700;border-color:transparent;} .pm-do.on.inh{opacity:.7;}
+
+.pm-cal{position:relative;}
+.pm-evn{position:absolute;top:3px;right:4px;min-width:14px;height:14px;padding:0 3px;border-radius:7px;font-size:9.5px;font-style:normal;font-weight:700;line-height:14px;text-align:center;background:rgba(127,127,127,.35);color:var(--text);}
+.pm-evn.mine{background:rgb(155,95,230);color:#fff;}
+.pm-cal-k .pm-evn{position:static;display:inline-block;margin-right:4px;}
+.pm-pop{position:absolute;z-index:5;width:240px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:8px 10px;box-shadow:0 8px 24px rgba(0,0,0,.35);font-size:12.5px;pointer-events:none;}
+.pm-pop-h{margin-bottom:5px;} .pm-pop-h .pp-st{font-size:10.5px;padding:0 6px;}
+.pm-pop-e{border-left:3px solid rgba(127,127,127,.5);padding:2px 0 2px 7px;margin-top:4px;} .pm-pop-e.mine{border-left-color:rgb(155,95,230);}
+.pm-pop-e small{display:block;color:var(--text-dim);} .pm-pop-in{color:rgb(175,130,240);font-size:11px;font-weight:700;}
+.pm-pop-n{margin-top:6px;color:var(--text-dim);}
 .pm-none{margin-top:6px;font-size:12.5px;}
 @media(max-width:520px){ .pm-cd{height:36px;} .pm-note{flex-direction:column;align-items:stretch;gap:2px;} }
 .pp-bst-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
@@ -25518,7 +25529,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v787';
+const APP_VER = 'v788';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -29688,10 +29699,9 @@ function evLogCellHtml(ev){
     </div>`).join('')}
     <div class="xg-adds"><button type="button" data-act="add-log">+ auto</button></div></td>`;
 }
+// the notes column: only the notes (the equipment pickups are not shown here – they are in „Paėmimai“)
 function evNotesCellHtml(ev){
-  const rs = EV.rentals.filter(r=>rtHasEvent(r, ev.id));
-  return `<td class="xg-notes" data-cell="notes" tabindex="-1">${evTa('notes', ev.notes, 'pastabos…')}
-    ${rs.map(r=>{ const st = RENTAL_STATUS.find(s=>s.v===r.status)||RENTAL_STATUS[0]; return `<div class="xg-rt"><span class="pill ${st.cls}">${st.label}</span> ${esc((()=>{ const mine = rtList(r).filter(i=>i.ev===ev.id && String(i.name||'').trim()); return mine.length ? rtItemsText(mine).split('\n').join(', ') : (r.place ? r.place+': ' : '')+((r.items||'').split('\n')[0]||'—'); })())}${(rtEvs(r).find(x=>x.id===ev.id)||{}).note ? ` <i>– ${esc(rtEvs(r).find(x=>x.id===ev.id).note)}</i>` : ''}</div>`; }).join('')}</td>`;
+  return `<td class="xg-notes" data-cell="notes" tabindex="-1">${evTa('notes', ev.notes, 'pastabos…')}</td>`;
 }
 const EV_ST = [['unconf','Nepatvirtintas','#F2C94C'], ['conf','Patvirtintas','#50AD97'], ['cancel','Atšauktas','#E5484D']];
 function evDateCellHtml(ev){
@@ -30911,14 +30921,36 @@ function ppMarkModal(c, preDays, preOut, preNote){
 function ppMarkCalHtml(c, range, sel, cal){
   const [y, mo] = cal.m.split('-').map(Number), first = new Date(Date.UTC(y, mo-1, 1));
   const start = lmDay(first.toISOString().slice(0, 10), -((first.getUTCDay()+6)%7)), today = ppToday();
-  const rs = new Set(range), evs = typeof ppEvsOf==='function' ? ppEvsOf(c) : [];
+  const rs = new Set(range.length===1 && range[0]===today ? [] : range), evs = typeof ppEvsOf==='function' ? ppEvsOf(c) : [];
+  const dayEv = ppMonthEvents(lmDay(start, 0), lmDay(start, 41));
   const cells = Array.from({ length:42 }, (_, i)=>lmDay(start, i)).map(d=>{
-    const n = ppNewest(c, d), oo = n && n.outcome!=='calling' ? PP_OUT[n.outcome] : null, ev = evs.some(e=>e.days.includes(d));
-    return `<button type="button" class="pm-cd ${d.slice(0, 7)!==cal.m ? 'out' : ''} ${rs.has(d) ? 'ask' : ''} ${sel.has(d) ? 'on' : ''} ${d===today ? 'today' : ''} ${d < today ? 'past' : ''}" data-cd="${d}" title="${esc(d)}${oo ? ' · '+esc(oo.label)+(n.note ? ': '+esc(n.note) : '') : ''}${ev ? ' · renginys' : ''}">
-      <b>${+d.slice(8)}</b>${oo ? `<i class="pm-mk ${oo.cls}"></i>` : ''}${ev ? '<i class="pm-ev"></i>' : ''}${n && n.note ? '<i class="pm-nt">💬</i>' : ''}</button>`; }).join('');
+    const n = ppNewest(c, d), oo = n && n.outcome!=='calling' ? PP_OUT[n.outcome] : null, ev = evs.some(e=>e.days.includes(d)), all = dayEv[d] || [];
+    return `<button type="button" class="pm-cd ${d.slice(0, 7)!==cal.m ? 'out' : ''} ${rs.has(d) ? 'ask' : ''} ${sel.has(d) ? 'on' : ''} ${d===today ? 'today' : ''} ${d < today ? 'past' : ''}" data-cd="${d}" title="${esc(d)}${oo ? ' · '+esc(oo.label)+(n.note ? ': '+esc(n.note) : '') : ''}${all.length ? ' · renginių: '+all.length : ''}">
+      <b>${+d.slice(8)}</b>${oo ? `<i class="pm-mk ${oo.cls}"></i>` : ''}${all.length ? `<i class="pm-evn ${ev ? 'mine' : ''}">${all.length}</i>` : ''}${n && n.note ? '<i class="pm-nt">💬</i>' : ''}</button>`; }).join('');
   return `<div class="pm-cal"><div class="pm-cal-h"><button type="button" class="btn small" data-calm="-1" aria-label="Ankstesnis mėnuo">‹</button><b>${PP_MON[mo-1]} ${y}</b><button type="button" class="btn small" data-calm="1" aria-label="Kitas mėnuo">›</button></div>
     <div class="pm-cal-g">${['Pr','An','Tr','Kt','Pn','Št','Sk'].map(w=>`<span class="pm-wd">${w}</span>`).join('')}${cells}</div>
-    <div class="pm-cal-k"><span><i class="pm-k ask"></i>dienos, dėl kurių skambini</span><span><i class="pm-k on"></i>pasirinkta</span><span><i class="pm-ev"></i>renginys</span><span>💬 yra komentaras</span></div></div>`;
+    <div class="pm-cal-k"><span><i class="pm-k ask"></i>dienos, dėl kurių skambini</span><span><i class="pm-k on"></i>pasirinkta</span><span><i class="pm-evn">2</i>renginių tą dieną</span><span><i class="pm-evn mine">1</i>žmogus įrašytas</span><span><i class="pm-tdy"></i>šiandien</span><span>💬 yra komentaras</span></div></div>`;
+}
+// the events of each day between two dates (not deleted, not cancelled, not equipment handovers)
+function ppMonthEvents(from, to){
+  const m = {};
+  (EV.events||[]).forEach(ev=>{ if(!ev || ev.deletedAt || ev.handoverId || ev.status==='cancel' || !ev.date) return;
+    ppSpan(ev.date, ev.dateEnd, 31).forEach(d=>{ if(d>=from && d<=to) (m[d] = m[d] || []).push(ev); }); });
+  return m;
+}
+// quick info next to a date of the mark calendar: the events that day (is the person written in), the mark given
+function ppMarkDayPop(box, c, cell){
+  const host = box.querySelector('.pm-cal'); if(!host) return;
+  let pop = host.querySelector('.pm-pop'); if(!pop){ pop = document.createElement('div'); pop.className = 'pm-pop'; host.appendChild(pop); }
+  const d = cell.dataset.cd, evs = ppMonthEvents(d, d)[d] || [], mine = new Set((ppEvsOf(c)||[]).map(x=>x.ev));
+  const n = ppNewest(c, d), oo = n && n.outcome!=='calling' ? PP_OUT[n.outcome] : null;
+  pop.innerHTML = `<div class="pm-pop-h"><b>${esc(ppDM(d))}</b> ${esc(ppWd(d))}${oo ? ` <span class="pp-st ${oo.cls}">${esc(oo.label)}</span>` : ''}</div>
+    ${evs.length ? evs.map(ev=>{ const ds = ppEvDays(ev); return `<div class="pm-pop-e ${mine.has(ev) ? 'mine' : ''}"><b>${esc(ppEvName(ev))}</b>${mine.has(ev) ? ' <span class="pm-pop-in">✓ įrašytas</span>' : ''}<small>${ds.length>1 ? esc(ppDM(ds[0])+'–'+ppDM(ds[ds.length-1])) : ''}${ev.location || ev.venue ? (ds.length>1 ? ' · ' : '')+esc(ev.location || ev.venue) : ''}</small></div>`; }).join('') : '<div class="pp-dim">Renginių šią dieną nėra</div>'}
+    ${n && n.note ? `<div class="pm-pop-n">💬 ${esc(n.note)}</div>` : ''}`;
+  const hr = host.getBoundingClientRect(), cr = cell.getBoundingClientRect();
+  pop.hidden = false;
+  let left = cr.right - hr.left + 6; if(left + 240 > hr.width) left = cr.left - hr.left - 246; if(left < 0) left = 4;
+  pop.style.left = left+'px'; pop.style.top = (cr.top - hr.top)+'px';
 }
 const PP_DMARKS = ['sutiko','negali','atsisake','gali','neatsiliepe','perskambinti','placiau'];
 function ppMarkNotesHtml(c, sel, dnote, dout, out){
@@ -30932,8 +30964,9 @@ function ppMarkPanel(box, c, o){
   o = o || {};
   const me = teamMe(), admin = ppIsAdmin();
   const range = PP.sub==='booking' ? ppRange() : [ppToday()];
-  // only the days with no mark yet are chosen at first – a new answer does not overwrite the ones given before
-  const sel = new Set(o.days && o.days.length ? o.days : range.filter(d=>{ const n = ppNewest(c, d); return !n || n.outcome==='calling'; }));
+  // nothing is chosen at first (not even today) – only the dates tapped in the calendar get an answer and a comment;
+  // a day tapped in the list's strip comes in chosen
+  const sel = new Set(o.days && o.days.length && !o.call ? o.days : []);
   let days = [...new Set([...range, ...sel])].sort();
   const t0 = ppToday();
   const other = new Set(), otherDays = [];
@@ -30976,7 +31009,9 @@ function ppMarkPanel(box, c, o){
   box.addEventListener('click', e=>{
     const cm = e.target.closest('[data-calm]'); if(cm){ const [y, mo] = cal.m.split('-').map(Number), t = new Date(Date.UTC(y, mo-1 + (+cm.dataset.calm), 1)); cal.m = t.toISOString().slice(0, 7); draw(); return; }
     const cd = e.target.closest('[data-cd]'); if(cd){ const k = cd.dataset.cd; if(sel.has(k)) sel.delete(k); else { sel.add(k); if(!days.includes(k)) days = [...days, k].sort(); const n = ppNewest(c, k); if(n && n.note && dnote[k]==null) dnote[k] = n.note; dprev(k); } draw();
-      if(sel.has(k)) setTimeout(()=>{ const f = box.querySelector(`[data-dn="${k}"]`); if(f) f.focus(); }, 30); return; }
+      { const nc = box.querySelector(`[data-cd="${k}"]`); if(nc) ppMarkDayPop(box, c, nc); }
+      if(sel.has(k)) setTimeout(()=>{ const f = box.querySelector(`[data-dn="${k}"]`); if(f) f.focus({ preventScroll:true }); }, 30);
+      return; }
     const d = e.target.closest('[data-d]'); if(d){ const k = d.dataset.d; if(sel.has(k)) sel.delete(k); else sel.add(k); draw(); return; }
     const od = e.target.closest('[data-od]'); if(od){ const k = od.dataset.od; if(other.has(k)) other.delete(k); else other.add(k); draw(); return; }
     // a day's button: its own answer; pressed again – back to the common one ('-' = none for this day)
@@ -30985,6 +31020,8 @@ function ppMarkPanel(box, c, o){
     if(e.target.closest('[data-p="otherT"]')) $('other').classList.toggle('hidden');
   });
   box.addEventListener('input', e=>{ const f = e.target.closest('[data-dn]'); if(f) dnote[f.dataset.dn] = f.value; });
+  box.addEventListener('mouseover', e=>{ const cd = e.target.closest('[data-cd]'); if(cd) ppMarkDayPop(box, c, cd); });
+  box.addEventListener('mouseout', e=>{ const cd = e.target.closest('[data-cd]'); if(cd && !(e.relatedTarget && cd.contains(e.relatedTarget))){ const p = box.querySelector('.pm-pop'); if(p) p.hidden = true; } });
   box.addEventListener('change', e=>{
     if(e.target.matches('[data-dadd]') && e.target.value){ const k = e.target.value; sel.add(k); if(!days.includes(k)) days = [...days, k].sort(); draw(); }
     if(e.target.matches('[data-odadd]') && e.target.value){ const k = e.target.value; if(days.includes(k)){ toast('Ši diena jau tarp dienų, dėl kurių skambini – pažymėk ją ten.'); return; } other.add(k); if(!otherDays.includes(k)){ otherDays.push(k); otherDays.sort(); } draw(); }
@@ -54990,6 +55027,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-18 19:00', v:'v788', k:'new', t:'Bookingas: kalendorius be išankstinio pasirinkimo, renginiai ant datos; Renginiai be paėmimų', f:'„📞 Skambinti“ lange šiandienos data nebeparinkta automatiškai – šiandiena tik pažymėta taškeliu kampe, praeities dienos pilkos; komentarą ir būseną galima keisti tik paspaustoms datoms. Ant datos – renginių skaičius (violetinis, jei žmogus įrašytas); užvedus pelę ar paspaudus – greita informacija: kokie renginiai tą dieną, kur, ar žmogus įrašytas. Renginiuose pastabų stulpelyje nebe rodomi daiktų paėmimai.' },
   { d:'2026-11-18 18:00', v:'v787', k:'new', t:'Bookingas: būsena kiekvienai dienai atskirai', f:'„📞 Skambinti“ lange prie kiekvienos pasirinktos dienos – savi mygtukai: Sutiko, Negali, Atsisakė, Gali, Neatsiliepė, Perskambinti, Kita. Pvz. 19 d. – Sutiko, 20 d. – Negali, vienu išsaugojimu. „Kuo baigėsi“ apačioje uždeda tą pačią būseną visoms dienoms (tada bet kurią dieną gali pakeisti atskirai).' },
   { d:'2026-11-18 17:30', v:'v786', k:'fix', t:'Bookingas: sutiktos datos rodomos tik prie „Skambinti“', f:'Sutiktos (ir „Gali“) datos nebekartojamos prie vardo – visos rodomos vienoje vietoje, šalia „📞 Skambinti“ (pvz. „Sutiko 11.19, 11.28“).' },
   { d:'2026-11-18 17:00', v:'v785', k:'new', t:'Bookingas: kalendorius žymėjimo lange, komentaras kiekvienai dienai', f:'Paspaudus „📞 Skambinti“ – mėnesio kalendorius (kaip Pradžioje): pažymėtos dienos, dėl kurių skambini, jau esamos žymos jų spalva (Sutiko, Negali…), renginiai, kuriuose žmogus įrašytas, ir dienos su komentarais. Paspaudi datą – ji pasirenkama, o po kalendoriumi atsiranda laukas komentarui būtent tai dienai. Bendra pastaba lieka visoms pažymėtoms dienoms.' },
