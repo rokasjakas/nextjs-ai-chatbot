@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-gznCrHS7YfsJBJUXt5fUZsFeZSBfR3skYhkZMTc4uHE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-oQJrJlBsuqQFTr/O9JKsH+wrTwyHc0LzjogzGccN4xk=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -25531,7 +25531,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v794';
+const APP_VER = 'v795';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -30703,7 +30703,7 @@ const PP_MON = ['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Li
 function ppDdsHtml(days, cell, head){
   const groups = []; days.forEach(d=>{ const m = d.slice(0, 7), g = groups[groups.length-1]; if(g && g.m===m) g.d.push(d); else groups.push({ m, d:[d] }); });
   // the shared header: month names over the same columns (the rows below scroll together with it)
-  if(head) return `<div class="pp-dds pp-dds-h" data-sync>${groups.map(g=>`<div class="pp-dmg pp-hg"><span class="pp-hmon">${esc(PP_MON[+g.m.slice(5)-1])} <small>${esc(g.m.slice(0,4))}</small></span><div class="pp-hds">${g.d.map(d=>`<i class="pp-hd">${+d.slice(8)}<small>${ppWd(d)}</small></i>`).join('')}</div></div>`).join('')}</div>`;
+  if(head) return `<div class="pp-dds pp-dds-h" data-sync>${groups.map(g=>`<div class="pp-dmg pp-hg"><span class="pp-hmon">${esc(PP_MON[+g.m.slice(5)-1])} <small>${esc(g.m.slice(0,4))}</small></span><div class="pp-hds">${g.d.map(d=>`<i class="pp-hd" data-hd="${d}">${+d.slice(8)}<small>${ppWd(d)}</small></i>`).join('')}</div></div>`).join('')}</div>`;
   return `<div class="pp-dds" data-sync>${groups.map(g=>`<div class="pp-dmg">${g.d.map(cell).join('')}</div>`).join('')}</div>`;
 }
 // all the days strips move together: scrolling one (the header or any row) scrolls the others
@@ -30728,6 +30728,7 @@ function ppSyncInit(){
 function ppDHeadAlign(){
   const ref = [...document.querySelectorAll('#ppBody .pp-brow .pp-bdays')].find(x=>x.getBoundingClientRect().width > 0);
   if(!ref) return;
+  ppDStartToday();
   const b = ref.getBoundingClientRect();
   // the card's slider goes up, next to the period buttons, when there is room there (over the rows' days)
   const card = document.querySelector('#ppBody .pp-day .pp-dhead');
@@ -30741,6 +30742,17 @@ function ppDHeadAlign(){
     const hs = h.querySelector('.pp-dds'); if(hs && Math.abs(hs.scrollLeft - (PP.dsl||0)) > .5){ hs._set = PP.dsl||0; hs.scrollLeft = PP.dsl||0; }
   });
   if(!document.querySelector('.pp-dhead-pin.on')) ppPinCheck();
+}
+// a new period: the strips start at today (or the first day still ahead); a period already over starts at its beginning
+function ppDStartToday(){
+  const rg = ppRange(), key = (PP._rg && PP._rg.j) || rg.join(',');
+  if(PP.dslKey===key) return;
+  const strip = [...document.querySelectorAll('#ppBody .pp-day .pp-dhead .pp-dds')].find(x=>x.getBoundingClientRect().width > 0); if(!strip) return;
+  PP.dslKey = key;
+  const t = ppToday(), first = rg.find(d=>d>=t), cell = first ? strip.querySelector(`[data-hd="${first}"]`) : null;
+  const v = cell && first!==rg[0] ? Math.max(0, Math.round(cell.getBoundingClientRect().left - strip.getBoundingClientRect().left + strip.scrollLeft - 4)) : 0;
+  PP.dsl = v;
+  [...document.querySelectorAll('.pp-dhead .pp-dds'), ...(PP.vis||[])].forEach(x=>{ if(x && x.isConnected && Math.abs(x.scrollLeft - v) > .5){ x._set = v; x.scrollLeft = v; } });
 }
 // scrolled below the card: the same slider stays pinned under the search bar (it scrolls all the rows too)
 function ppPinCheck(){
@@ -55050,6 +55062,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-18 22:30', v:'v795', k:'new', t:'Bookingas: datų slankiklis prasideda nuo šiandienos', f:'Pasirinkus laikotarpį (pvz. „Šis mėnuo“), visų žmonių datų juosta automatiškai paslenkama taip, kad pirma matoma diena būtų šiandiena (ar artimiausia būsima laikotarpio diena). Atgal galima paslinkti ranka.' },
   { d:'2026-11-18 22:00', v:'v794', k:'new', t:'Bookingas: istorija „Data – Statusas – Komentaras“; laiške – Google kalendorius; numatytai „Šis mėnuo“', f:'Skambinimų istorijoje kiekviena diena atskira eilute: data, būsena ir komentaras. Laiške apie sutiktas dienas – tik datos (be „nauja“), prie kiekvienos renginys (jei žinomas) ir nuoroda „📅 Pridėti į Google kalendorių“. Atidarius Bookingą numatytai rodomas „Šis mėnuo“. Ištaisyta: iš naujo išsaugojus, „Gali“ dienų komentarai nebeišsitrina.' },
   { d:'2026-11-18 21:30', v:'v793', k:'new', t:'Bookingas: priminimai likus 9, 3 ir 1 dienai; redagavimas', f:'Automatiniai „Sutiko“ priminimai siunčiami likus 9 dienoms, 3 dienoms ir dieną prieš kiekvieną darbo dieną, 10:00 (žmogui ir tam, kas bookino). Jei sutikta vėliau – siunčiami tik dar likę. Bookingą galima redaguoti: BOOK → paspausk datą → pakeisk būseną (pvz. „Negali“) → Išsaugoti; tai dienai priminimai nebesiunčiami.' },
   { d:'2026-11-18 21:00', v:'v792', k:'new', t:'Bookingas: automatiniai laiškai pažymėjus „Sutiko“', f:'Nebereikia nustatinėti priminimų (kas kiek dienų, valanda…). Išsaugojus „Sutiko“ dienas iškart išsiunčiamas laiškas žmogui ir tam, kas jį bookino (kopija) su visomis jo darbo dienomis; vėliau dieną prieš kiekvieną darbo dieną 10:00 – priminimas abiem. Jei diena pakeičiama į „Negali“ ar pan., ji iš priminimų dingsta.' },
