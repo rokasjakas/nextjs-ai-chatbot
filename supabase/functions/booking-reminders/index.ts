@@ -15,12 +15,13 @@
 // POST {"mode":"confirm","id":"<reminder id>","new":["2026-12-10",…]}   Authorization: Bearer <user token>
 //   An automatic reminder (auto = true, made when a day is marked „Sutiko“ in Bookingas):
 //   the confirmation right after saving – to the person and, as a copy, to whoever booked
-//   them (reply_to). Later the hourly run sends it only on the day before each day (10:00).
+//   them (reply_to). Later the hourly run sends it 9 days, 3 days and 1 day before each day (10:00).
 //
 // Secrets: RESEND_API_KEY, CRON_SECRET, REMINDER_FROM (optional sender).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
 
-const VERSION = 2;
+const VERSION = 3;
+const AUTO_BEFORE = [9, 3, 1];   // automatic reminders: days before each booked day
 const DEFAULT_FROM = "Event Solutions <onboarding@resend.dev>";
 const TIME_ZONE = "Europe/Vilnius";
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -92,8 +93,8 @@ export function isDue(r: Reminder, today: string, hour: number): boolean {
   const days = upcoming(r, today);
   if (!days.length) return false;
   if (r.last_sent === today) return false;
-  // automatic ones: only the day before a booked day
-  if (r.auto) return days.includes(addDays(today, 1));
+  // automatic ones: 9 days, 3 days and 1 day before a booked day (a day booked later gets only what is left)
+  if (r.auto) return AUTO_BEFORE.some((n) => days.includes(addDays(today, n)));
   if (r.day_before && days.includes(addDays(today, 1))) return true;
   if (!r.last_sent) return true;
   return daysBetween(r.last_sent, today) >= Math.max(1, r.every_days);
@@ -116,7 +117,7 @@ export function buildEmail(r: Reminder, c: Contact | null, today: string) {
     ? `Priminimas: ${tomorrow ? "rytoj " : ""}dirbate su Event Solutions ${dayLabel(days[0])}`
     : `Priminimas: jūsų darbo dienos su Event Solutions (${days.length})`;
   const list = days.map((d) =>
-    `<li style="margin:3px 0;"><b>${escapeHtml(dayLabel(d))}</b>${d === today ? " — šiandien" : d === addDays(today, 1) ? " — rytoj" : ""}</li>`
+    `<li style="margin:3px 0;"><b>${escapeHtml(dayLabel(d))}</b>${d === today ? " — šiandien" : d === addDays(today, 1) ? " — rytoj" : d === addDays(today, 3) ? " — po 3 dienų" : d === addDays(today, 9) ? " — po 9 dienų" : ""}</li>`
   ).join("");
   const who = r.created_by_name ? escapeHtml(r.created_by_name) : "Event Solutions";
   const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
@@ -168,7 +169,7 @@ export function buildConfirm(r: Reminder, c: Contact | null, today: string, fres
     <p>ačiū, kad sutikote dirbti su Event Solutions. Jūsų darbo dienos:</p>
     <ul style="padding-left:18px;">${list}</ul>
     ${r.message ? `<p style="white-space:pre-wrap;">${escapeHtml(r.message)}</p>` : ""}
-    <p>Dieną prieš kiekvieną darbo dieną 10:00 atsiųsime priminimą.</p>
+    <p>Priminimus atsiųsime likus 9 ir 3 dienoms bei dieną prieš kiekvieną darbo dieną (10:00).</p>
     <p>Jei planai pasikeitė — atsakykite į šį laišką arba susisiekite su ${who}.</p>
     <p style="color:#777;font-size:12px;margin-top:18px;">Event Solutions · automatinis laiškas</p>
   </div>`;
