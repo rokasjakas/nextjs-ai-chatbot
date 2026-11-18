@@ -12,7 +12,7 @@
 // POST {"mode":"send","id":"<reminder id>"}   Authorization: Bearer <user token>
 //   „Siųsti dabar“ from the app. Only users who may edit „Žmonės“.
 //
-// POST {"mode":"confirm","id":"<reminder id>","new":["2026-12-10",…]}   Authorization: Bearer <user token>
+// POST {"mode":"confirm","id":"<reminder id>"}   Authorization: Bearer <user token>
 //   An automatic reminder (auto = true, made when a day is marked „Sutiko“ in Bookingas):
 //   the confirmation right after saving – to the person and, as a copy, to whoever booked
 //   them (reply_to). Later the hourly run sends it 9 days, 3 days and 1 day before each day (10:00).
@@ -20,7 +20,7 @@
 // Secrets: RESEND_API_KEY, CRON_SECRET, REMINDER_FROM (optional sender).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
 
-const VERSION = 3;
+const VERSION = 4;
 const AUTO_BEFORE = [9, 3, 1];   // automatic reminders: days before each booked day
 const DEFAULT_FROM = "Event Solutions <onboarding@resend.dev>";
 const TIME_ZONE = "Europe/Vilnius";
@@ -109,16 +109,38 @@ function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
 
-export function buildEmail(r: Reminder, c: Contact | null, today: string) {
+// what is known about a booked day: the event the person was booked for (name, place)
+export type DayInfo = Record<string, { name?: string; place?: string }>;
+
+// a link that adds the day to the person's Google Calendar (an all-day entry)
+export function gcalLink(d: string, info: { name?: string; place?: string } = {}): string {
+  const ymd = (x: string) => x.replace(/-/g, "");
+  const q = new URLSearchParams({
+    action: "TEMPLATE",
+    text: info.name ? `Event Solutions – ${info.name}` : "Event Solutions – darbo diena",
+    dates: `${ymd(d)}/${ymd(addDays(d, 1))}`,
+    details: "Darbo diena su Event Solutions.",
+    ...(info.place ? { location: info.place } : {}),
+  });
+  return `https://calendar.google.com/calendar/render?${q.toString().replace("%2F", "/")}`;
+}
+
+function dayItem(d: string, today: string, info: DayInfo, when: boolean): string {
+  const i = info[d] ?? {};
+  const extra = [i.name, i.place].filter(Boolean).join(", ");
+  const tag = !when ? "" : d === today ? " — šiandien" : d === addDays(today, 1) ? " — rytoj" : d === addDays(today, 3) ? " — po 3 dienų" : d === addDays(today, 9) ? " — po 9 dienų" : "";
+  return `<li style="margin:6px 0;"><b>${escapeHtml(dayLabel(d))}</b>${tag}${extra ? ` <span style="color:#555;">(${escapeHtml(extra)})</span>` : ""}<br>` +
+    `<a href="${escapeHtml(gcalLink(d, i))}" style="color:#1a73e8;font-size:13px;">📅 Pridėti į Google kalendorių</a></li>`;
+}
+
+export function buildEmail(r: Reminder, c: Contact | null, today: string, info: DayInfo = {}) {
   const days = upcoming(r, today);
   const first = (c?.first ?? "").trim();
   const tomorrow = days.includes(addDays(today, 1));
   const subject = days.length === 1
     ? `Priminimas: ${tomorrow ? "rytoj " : ""}dirbate su Event Solutions ${dayLabel(days[0])}`
     : `Priminimas: jūsų darbo dienos su Event Solutions (${days.length})`;
-  const list = days.map((d) =>
-    `<li style="margin:3px 0;"><b>${escapeHtml(dayLabel(d))}</b>${d === today ? " — šiandien" : d === addDays(today, 1) ? " — rytoj" : d === addDays(today, 3) ? " — po 3 dienų" : d === addDays(today, 9) ? " — po 9 dienų" : ""}</li>`
-  ).join("");
+  const list = days.map((d) => dayItem(d, today, info, true)).join("");
   const who = r.created_by_name ? escapeHtml(r.created_by_name) : "Event Solutions";
   const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
     <p>Sveiki${first ? ", " + escapeHtml(first) : ""},</p>
@@ -146,6 +168,30 @@ async function contactOf(id: string): Promise<Contact | null> {
   return rows[0]?.data ?? null;
 }
 
+// the events the person agreed to work, by day (from their „Sutiko“ marks); nothing found – just the dates
+async function dayInfo(r: Reminder): Promise<DayInfo> {
+  const out: DayInfo = {};
+  try {
+    const marks = (await (await db(
+      `contact_calls?select=for_date,event_id,called_at&contact_id=eq.${encodeURIComponent(r.contact_id)}&outcome=eq.sutiko&order=called_at.desc`,
+    )).json()) as { for_date: string; event_id: string | null }[];
+    const byDay = new Map<string, string>();
+    marks.forEach((m) => { const d = String(m.for_date).slice(0, 10); if (m.event_id && !byDay.has(d)) byDay.set(d, m.event_id); });
+    const ids = [...new Set(byDay.values())];
+    if (!ids.length) return out;
+    const evs = (await (await db(`events?select=id,data&id=in.(${ids.map((x) => `"${x.replace(/"/g, "")}"`).join(",")})`)).json()) as
+      { id: string; data: { name?: string; title?: string; kind?: string; location?: string; venue?: string } }[];
+    const m = new Map(evs.map((e) => [e.id, e.data ?? {}]));
+    byDay.forEach((id, d) => {
+      const e = m.get(id); if (!e) return;
+      out[d] = { name: (e.kind === "work" ? e.title : e.name) || undefined, place: e.location || e.venue || undefined };
+    });
+  } catch (err) {
+    console.error("day info:", err);
+  }
+  return out;
+}
+
 async function patch(id: string, body: Record<string, unknown>) {
   await db(`booking_reminders?id=eq.${encodeURIComponent(id)}`, {
     method: "PATCH",
@@ -154,16 +200,14 @@ async function patch(id: string, body: Record<string, unknown>) {
   });
 }
 
-export function buildConfirm(r: Reminder, c: Contact | null, today: string, fresh: string[]) {
-  const days = upcoming(r, today), isNew = new Set(fresh);
+export function buildConfirm(r: Reminder, c: Contact | null, today: string, info: DayInfo = {}) {
+  const days = upcoming(r, today);
   const first = (c?.first ?? "").trim();
   const who = r.created_by_name ? escapeHtml(r.created_by_name) : "Event Solutions";
   const subject = days.length === 1
     ? `Patvirtinta: dirbate su Event Solutions ${dayLabel(days[0])}`
     : `Patvirtinta: jūsų darbo dienos su Event Solutions (${days.length})`;
-  const list = days.map((d) =>
-    `<li style="margin:3px 0;"><b>${escapeHtml(dayLabel(d))}</b>${isNew.has(d) && days.length > 1 ? " — nauja" : ""}</li>`
-  ).join("");
+  const list = days.map((d) => dayItem(d, today, info, false)).join("");
   const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
     <p>Sveiki${first ? ", " + escapeHtml(first) : ""},</p>
     <p>ačiū, kad sutikote dirbti su Event Solutions. Jūsų darbo dienos:</p>
@@ -199,7 +243,7 @@ async function sendEmail(to: string, subject: string, html: string, replyTo: str
 }
 
 async function deliver(r: Reminder, today: string) {
-  const { subject, html } = buildEmail(r, await contactOf(r.contact_id), today);
+  const { subject, html } = buildEmail(r, await contactOf(r.contact_id), today, r.auto ? await dayInfo(r) : {});
   await sendEmail(r.email, subject, html, r.reply_to, copyTo(r));
   await patch(r.id, { last_sent: today, sent_count: (r.sent_count ?? 0) + 1, last_error: null });
 }
@@ -260,8 +304,7 @@ if (import.meta.main) Deno.serve(async (req) => {
       if (!r) return json({ error: "Priminimas nerastas." }, 404);
       const today = todayInVilnius();
       if (!upcoming(r, today).length) return json({ error: "Visos dienos jau praėjo." }, 400);
-      const fresh = Array.isArray(body.new) ? (body.new as unknown[]).map((d) => String(d).slice(0, 10)) : [];
-      const { subject, html } = buildConfirm(r, await contactOf(r.contact_id), today, fresh);
+      const { subject, html } = buildConfirm(r, await contactOf(r.contact_id), today, await dayInfo(r));
       await sendEmail(r.email, subject, html, r.reply_to, copyTo(r));
       await patch(r.id, { sent_count: (r.sent_count ?? 0) + 1, last_error: null });
       return json({ sent: true, to: r.email, cc: copyTo(r) });
