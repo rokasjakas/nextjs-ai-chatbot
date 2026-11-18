@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-gA4/BXv2G/1KmvzcSbumQfxJsEFqwLLxUc91uj+CKXM=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-sEaG/afF8ImuDVlxdumozDEUQ0D9EAhsrbTngJ2u1aY=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -25529,7 +25529,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v790';
+const APP_VER = 'v791';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -30943,6 +30943,8 @@ function ppMarkDayPop(box, c, cell){
   const host = box.querySelector('.pm-cal'); if(!host) return;
   let pop = host.querySelector('.pm-pop'); if(!pop){ pop = document.createElement('div'); pop.className = 'pm-pop'; host.appendChild(pop); }
   const d = cell.dataset.cd, evs = ppMonthEvents(d, d)[d] || [], mine = new Set((ppEvsOf(c)||[]).map(x=>x.ev));
+  // only a day with events gets the card
+  if(!evs.length){ pop.hidden = true; return; }
   const n = ppNewest(c, d), oo = n && n.outcome!=='calling' ? PP_OUT[n.outcome] : null;
   pop.innerHTML = `<div class="pm-pop-h"><b>${esc(ppDM(d))}</b> ${esc(ppWd(d))}${oo ? ` <span class="pp-st ${oo.cls}">${esc(oo.label)}</span>` : ''}</div>
     ${evs.length ? evs.map(ev=>{ const ds = ppEvDays(ev); return `<div class="pm-pop-e ${mine.has(ev) ? 'mine' : ''}"><b>${esc(ppEvName(ev))}</b>${mine.has(ev) ? ' <span class="pm-pop-in">✓ įrašytas</span>' : ''}<small>${ds.length>1 ? esc(ppDM(ds[0])+'–'+ppDM(ds[ds.length-1])) : ''}${ev.location || ev.venue ? (ds.length>1 ? ' · ' : '')+esc(ev.location || ev.venue) : ''}</small></div>`; }).join('') : '<div class="pp-dim">Renginių šią dieną nėra</div>'}
@@ -55027,6 +55029,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-18 20:15', v:'v791', k:'fix', t:'Bookingas: informacijos kortelė tik dienoms su renginiais', f:'BOOK kalendoriuje užvedus pelę ant datos kortelė rodoma tik tada, kai tą dieną yra renginių.' },
   { d:'2026-11-18 20:00', v:'v790', k:'new', t:'Bookingas: mygtukas „BOOK“', f:'Bookinge mygtukas „📞 Skambinti“ (žymėjimo langas su kalendoriumi) pervadintas į „BOOK“.' },
   { d:'2026-11-18 19:30', v:'v789', k:'fix', t:'Bookingas: be mažos naršyklės lentelės ant datos', f:'„📞 Skambinti“ kalendoriuje užvedus pelę ant datos nebelenda maža lentelė su data ir renginių skaičiumi – lieka tik informacija apie renginius šalia.' },
   { d:'2026-11-18 19:00', v:'v788', k:'new', t:'Bookingas: kalendorius be išankstinio pasirinkimo, renginiai ant datos; Renginiai be paėmimų', f:'„📞 Skambinti“ lange šiandienos data nebeparinkta automatiškai – šiandiena tik pažymėta taškeliu kampe, praeities dienos pilkos; komentarą ir būseną galima keisti tik paspaustoms datoms. Ant datos – renginių skaičius (violetinis, jei žmogus įrašytas); užvedus pelę ar paspaudus – greita informacija: kokie renginiai tą dieną, kur, ar žmogus įrašytas. Renginiuose pastabų stulpelyje nebe rodomi daiktų paėmimai.' },
