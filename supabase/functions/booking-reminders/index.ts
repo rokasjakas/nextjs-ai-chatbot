@@ -12,10 +12,15 @@
 // POST {"mode":"send","id":"<reminder id>"}   Authorization: Bearer <user token>
 //   „Siųsti dabar“ from the app. Only users who may edit „Žmonės“.
 //
+// POST {"mode":"confirm","id":"<reminder id>","new":["2026-12-10",…]}   Authorization: Bearer <user token>
+//   An automatic reminder (auto = true, made when a day is marked „Sutiko“ in Bookingas):
+//   the confirmation right after saving – to the person and, as a copy, to whoever booked
+//   them (reply_to). Later the hourly run sends it only on the day before each day (10:00).
+//
 // Secrets: RESEND_API_KEY, CRON_SECRET, REMINDER_FROM (optional sender).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
 
-const VERSION = 1;
+const VERSION = 2;
 const DEFAULT_FROM = "Event Solutions <onboarding@resend.dev>";
 const TIME_ZONE = "Europe/Vilnius";
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -42,6 +47,7 @@ export type Reminder = {
   sent_count: number;
   reply_to: string | null;
   created_by_name: string | null;
+  auto?: boolean;
 };
 
 type Contact = { first?: string; last?: string };
@@ -86,6 +92,8 @@ export function isDue(r: Reminder, today: string, hour: number): boolean {
   const days = upcoming(r, today);
   if (!days.length) return false;
   if (r.last_sent === today) return false;
+  // automatic ones: only the day before a booked day
+  if (r.auto) return days.includes(addDays(today, 1));
   if (r.day_before && days.includes(addDays(today, 1))) return true;
   if (!r.last_sent) return true;
   return daysBetween(r.last_sent, today) >= Math.max(1, r.every_days);
@@ -145,13 +153,42 @@ async function patch(id: string, body: Record<string, unknown>) {
   });
 }
 
-async function sendEmail(to: string, subject: string, html: string, replyTo: string | null): Promise<void> {
+export function buildConfirm(r: Reminder, c: Contact | null, today: string, fresh: string[]) {
+  const days = upcoming(r, today), isNew = new Set(fresh);
+  const first = (c?.first ?? "").trim();
+  const who = r.created_by_name ? escapeHtml(r.created_by_name) : "Event Solutions";
+  const subject = days.length === 1
+    ? `Patvirtinta: dirbate su Event Solutions ${dayLabel(days[0])}`
+    : `Patvirtinta: jūsų darbo dienos su Event Solutions (${days.length})`;
+  const list = days.map((d) =>
+    `<li style="margin:3px 0;"><b>${escapeHtml(dayLabel(d))}</b>${isNew.has(d) && days.length > 1 ? " — nauja" : ""}</li>`
+  ).join("");
+  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;">
+    <p>Sveiki${first ? ", " + escapeHtml(first) : ""},</p>
+    <p>ačiū, kad sutikote dirbti su Event Solutions. Jūsų darbo dienos:</p>
+    <ul style="padding-left:18px;">${list}</ul>
+    ${r.message ? `<p style="white-space:pre-wrap;">${escapeHtml(r.message)}</p>` : ""}
+    <p>Dieną prieš kiekvieną darbo dieną 10:00 atsiųsime priminimą.</p>
+    <p>Jei planai pasikeitė — atsakykite į šį laišką arba susisiekite su ${who}.</p>
+    <p style="color:#777;font-size:12px;margin-top:18px;">Event Solutions · automatinis laiškas</p>
+  </div>`;
+  return { subject, html };
+}
+
+// the person, and for automatic ones a copy to whoever booked them
+function copyTo(r: Reminder): string[] {
+  const cc = (r.reply_to ?? "").trim().toLowerCase();
+  return r.auto && cc && cc !== r.email.trim().toLowerCase() ? [cc] : [];
+}
+
+async function sendEmail(to: string, subject: string, html: string, replyTo: string | null, cc: string[] = []): Promise<void> {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${env("RESEND_API_KEY")}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from: Deno.env.get("REMINDER_FROM") || DEFAULT_FROM,
       to: [to],
+      ...(cc.length ? { cc } : {}),
       subject,
       html,
       ...(replyTo ? { reply_to: replyTo } : {}),
@@ -162,7 +199,7 @@ async function sendEmail(to: string, subject: string, html: string, replyTo: str
 
 async function deliver(r: Reminder, today: string) {
   const { subject, html } = buildEmail(r, await contactOf(r.contact_id), today);
-  await sendEmail(r.email, subject, html, r.reply_to);
+  await sendEmail(r.email, subject, html, r.reply_to, copyTo(r));
   await patch(r.id, { last_sent: today, sent_count: (r.sent_count ?? 0) + 1, last_error: null });
 }
 
@@ -214,6 +251,20 @@ if (import.meta.main) Deno.serve(async (req) => {
   let body: Record<string, unknown> = {};
   try { body = await req.json(); } catch { /* empty body = scheduled run */ }
   try {
+    if (body?.mode === "confirm") {
+      if (!(await editor(req))) return json({ error: "Neturi teisės redaguoti „Žmonės“ skilties." }, 403);
+      const id = String(body.id ?? "");
+      const rows = (await (await db(`booking_reminders?select=*&id=eq.${encodeURIComponent(id)}`)).json()) as Reminder[];
+      const r = rows[0];
+      if (!r) return json({ error: "Priminimas nerastas." }, 404);
+      const today = todayInVilnius();
+      if (!upcoming(r, today).length) return json({ error: "Visos dienos jau praėjo." }, 400);
+      const fresh = Array.isArray(body.new) ? (body.new as unknown[]).map((d) => String(d).slice(0, 10)) : [];
+      const { subject, html } = buildConfirm(r, await contactOf(r.contact_id), today, fresh);
+      await sendEmail(r.email, subject, html, r.reply_to, copyTo(r));
+      await patch(r.id, { sent_count: (r.sent_count ?? 0) + 1, last_error: null });
+      return json({ sent: true, to: r.email, cc: copyTo(r) });
+    }
     if (body?.mode === "send") {
       if (!(await editor(req))) return json({ error: "Neturi teisės redaguoti „Žmonės“ skilties." }, 403);
       const id = String(body.id ?? "");

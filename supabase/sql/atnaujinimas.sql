@@ -13219,3 +13219,13 @@ drop policy if exists "task files delete" on storage.objects;
 create policy "task files delete" on storage.objects for delete to authenticated using (bucket_id = 'task-files' and public.task_file_access(name));
 
 notify pgrst, 'reload schema';
+
+-- ============================================================
+-- people6.sql — automatiniai Bookingo laiškai
+--  * booking_reminders.auto — priminimas sukurtas automatiškai pažymėjus „Sutiko“:
+--    iškart laiškas žmogui ir tam, kas bookino (reply_to), vėliau – tik dieną prieš
+--    kiekvieną darbo dieną 10:00 (Lietuvos laiku), abiem.
+-- Saugu paleisti pakartotinai.
+-- ============================================================
+alter table public.booking_reminders add column if not exists auto boolean not null default false;
+notify pgrst, 'reload schema';
