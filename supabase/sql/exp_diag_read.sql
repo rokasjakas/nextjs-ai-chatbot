@@ -1,6 +1,6 @@
--- Išlaidos – patikra (tik skaitymas): purpose stulpelis, uta_personal stulpeliai, expense_set_purpose funkcija
-select 'col' as k, column_name, column_default from information_schema.columns where table_schema='public' and table_name='expenses' and column_name='purpose';
-select 'chk' as k, conname from pg_constraint where conrelid='public.expenses'::regclass and conname='expenses_purpose_check';
-select 'up' as k, column_name, data_type from information_schema.columns where table_schema='public' and table_name='uta_personal' order by ordinal_position;
-select 'fn' as k, proname from pg_proc where proname in ('expense_set_purpose','expense_deduct');
-select 'cnt' as k, purpose, count(*) from public.expenses group by purpose;
+-- Pasiūlymo „Pristatymas“ (Kristina) pėdsakai kitose lentelėse – tik skaitymas
+select 'jobs' as t, left(row_to_json(j)::text, 400) from public.jobs j where row_to_json(j)::text ilike '%pristatym%' and row_to_json(j)::text ilike '%kristin%' limit 5;
+select 'jobs_today' as t, left(row_to_json(j)::text, 300) from public.jobs j where row_to_json(j)::text ilike '%2026-11-19%' limit 10;
+select 'mail' as t, left(row_to_json(m)::text, 300) from public.mail_index m where row_to_json(m)::text ilike '%pristatym%' and row_to_json(m)::text ilike '%2026-11-1%' limit 5;
+select 'err' as t, left(row_to_json(e)::text, 300) from public.app_errors e where row_to_json(e)::text ilike '%offer%' and row_to_json(e)::text ilike '%2026-11-19%' limit 5;
+select 'cat' as t, id, updated_by, updated_at, left(data::text, 200) from public.offer_catalog where updated_at > now() - interval '1 day' order by updated_at desc limit 15;
