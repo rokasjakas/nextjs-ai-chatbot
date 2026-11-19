@@ -1,6 +1,7 @@
 # Pasiūlymų atkūrimas iš atsarginių kopijų (GitHub, 7 d.). Paleidžiama, kai pasikeičia supabase/restore-run.txt:
 #   1 eilutė: find    – ieško (tik skaitymas) pagal 2 eilutės žodžius (atskirti |) visose kopijose; parodo id, pavadinimą,
 #                       klientą, kas keitė, versijų kiekį ir ar toks įrašas dar yra programoje
+#   1 eilutė: gone    – visi pasiūlymai, kurie yra kopijose, bet jau ištrinti iš programos
 #   1 eilutė: restore – 2 eilutė: pasiūlymo id, 3 eilutė: kopijos data (YYYY-MM-DD) – grąžina tą įrašą (tik jei jo nėra)
 name: Pasiūlymų atkūrimas
 on:
@@ -47,15 +48,16 @@ jobs:
             echo "$db"
           }
           q(){ docker run --rm --network host -e U="$1" -e S="$2" postgres:17 sh -c 'psql "$U" -X -A -F " | " -c "$S"'; }
-          if [ "$MODE" = "find" ]; then
+          if [ "$MODE" = "find" ] || [ "$MODE" = "gone" ]; then
             W=$(echo "$ARG" | tr '|' '\n' | sed '/^\s*$/d' | sed "s/'//g" | awk '{printf "%s(title ilike '\''%%%s%%'\'' or client ilike '\''%%%s%%'\'' or data->>'\''project'\'' ilike '\''%%%s%%'\'')", (NR>1?" or ":""), $0, $0, $0}')
+            [ "$MODE" = "gone" ] && W="true"
             LIVE=$(q "$SUPABASE_DB_URL" "select string_agg(id::text, ',') from public.offers" | sed -n 2p)
             for i in 0 1 2 3 4 5 6 7; do
               d=$(date -u -d "-$i day" +%Y-%m-%d)
               db=$(load "$d" | tail -1) || continue
               echo "=== kopija $d ==="
               q "${LOCAL%/*}/$db" "select id, title, client, status, updated_by, updated_at, coalesce(jsonb_array_length(data->'versions'),0) as versijos from offers where $W order by updated_at desc" | while IFS= read -r l; do
-                id=${l%% |*}; case ",$LIVE," in *",$id,"*) echo "$l | yra programoje";; *) echo "$l";; esac; done
+                id=${l%% |*}; case ",$LIVE," in *",$id,"*) [ "$MODE" = "gone" ] || echo "$l | yra programoje";; *) echo "$l | IŠTRINTAS";; esac; done
             done
           elif [ "$MODE" = "restore" ]; then
             echo "$ARG" | grep -Eq '^[0-9a-fA-F-]{8,40}$' || { echo "::error::Netinkamas id"; exit 1; }
