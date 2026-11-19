@@ -1,0 +1,72 @@
+# Pasiūlymų atkūrimas iš atsarginių kopijų (GitHub, 7 d.). Paleidžiama, kai pasikeičia supabase/restore-run.txt:
+#   1 eilutė: find    – ieško (tik skaitymas) pagal 2 eilutės žodžius (atskirti |) visose kopijose; parodo id, pavadinimą,
+#                       klientą, kas keitė, versijų kiekį ir ar toks įrašas dar yra programoje
+#   1 eilutė: restore – 2 eilutė: pasiūlymo id, 3 eilutė: kopijos data (YYYY-MM-DD) – grąžina tą įrašą (tik jei jo nėra)
+name: Pasiūlymų atkūrimas
+on:
+  push:
+    paths: ['supabase/restore-run.txt']
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: offer-restore
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      pg:
+        image: postgres:17
+        env: { POSTGRES_PASSWORD: tmp }
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Atkūrimas
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSWORD: ${{ secrets.BACKUP_PASSWORD }}
+        run: |
+          set -euo pipefail
+          MODE=$(sed -n 1p supabase/restore-run.txt | tr -d '[:space:]')
+          ARG=$(sed -n 2p supabase/restore-run.txt | tr -d '\r')
+          DAY=$(sed -n 3p supabase/restore-run.txt | tr -d '[:space:]')
+          LOCAL="postgresql://postgres:tmp@localhost:5432/postgres"
+          load(){   # $1 = kopijos data: tik pasiūlymų lentelė į laikiną bazę „b$1“
+            local d="$1" db="b${1//-/}" run name
+            name="duomenu-baze-db-$d.tgz.enc"
+            run=$(gh run list -R "$GITHUB_REPOSITORY" --workflow backup.yml --limit 20 --json databaseId,createdAt -q ".[] | select(.createdAt|startswith(\"$d\")) | .databaseId" | head -1)
+            [ -n "$run" ] || { echo "Nėra kopijos $d"; return 1; }
+            rm -rf k && mkdir k && gh run download "$run" -R "$GITHUB_REPOSITORY" -n "$name" -D k >/dev/null 2>&1 || { echo "Nepavyko atsisiųsti $name"; return 1; }
+            openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "k/db-$d.tgz.enc" -out k/db.tgz -pass env:BACKUP_PASSWORD
+            tar -C k -xzf k/db.tgz
+            docker run --rm --network host -v "$PWD/k/db:/in:ro" -e L="$LOCAL" -e DB="$db" postgres:17 sh -c '
+              psql "$L" -qc "create database $DB" && pg_restore -d "${L%/*}/$DB" --no-owner --no-privileges -t offers /in/public.dump' >/dev/null 2>&1 || true
+            echo "$db"
+          }
+          q(){ docker run --rm --network host -e U="$1" -e S="$2" postgres:17 sh -c 'psql "$U" -X -A -F " | " -c "$S"'; }
+          if [ "$MODE" = "find" ]; then
+            W=$(echo "$ARG" | tr '|' '\n' | sed '/^\s*$/d' | sed "s/'//g" | awk '{printf "%s(title ilike '\''%%%s%%'\'' or client ilike '\''%%%s%%'\'' or data->>'\''project'\'' ilike '\''%%%s%%'\'')", (NR>1?" or ":""), $0, $0, $0}')
+            LIVE=$(q "$SUPABASE_DB_URL" "select string_agg(id::text, ',') from public.offers" | sed -n 2p)
+            for i in 0 1 2 3 4 5 6 7; do
+              d=$(date -u -d "-$i day" +%Y-%m-%d)
+              db=$(load "$d" | tail -1) || continue
+              echo "=== kopija $d ==="
+              q "${LOCAL%/*}/$db" "select id, title, client, status, updated_by, updated_at, coalesce(jsonb_array_length(data->'versions'),0) as versijos from offers where $W order by updated_at desc" | while IFS= read -r l; do
+                id=${l%% |*}; case ",$LIVE," in *",$id,"*) echo "$l | yra programoje";; *) echo "$l";; esac; done
+            done
+          elif [ "$MODE" = "restore" ]; then
+            echo "$ARG" | grep -Eq '^[0-9a-fA-F-]{8,40}$' || { echo "::error::Netinkamas id"; exit 1; }
+            db=$(load "$DAY" | tail -1)
+            n=$(q "${LOCAL%/*}/$db" "select count(*) from offers where id::text = '$ARG'" | sed -n 2p)
+            [ "$n" = "1" ] || { echo "::error::Kopijoje $DAY nėra $ARG"; exit 1; }
+            # the row as JSON from the copy, put back only if it is not there (on conflict do nothing)
+            docker run --rm --network host -e B="${LOCAL%/*}/$db" -e I="$ARG" postgres:17 sh -c 'psql "$B" -X -A -t -c "select row_to_json(o) from offers o where id::text = '"'"'$I'"'"'"' > row.json
+            [ -s row.json ] || { echo "::error::Nepavyko paruošti įrašo"; exit 1; }
+            printf '%s\n' "\\set j \`cat /w/row.json\`" "insert into public.offers select * from json_populate_record(null::public.offers, :'j') on conflict (id) do nothing;" > put.sql
+            cat put.sql | head -1
+            docker run --rm --network host -v "$PWD:/w:ro" -e U="$SUPABASE_DB_URL" postgres:17 sh -c 'psql "$U" -v ON_ERROR_STOP=1 -X -f /w/put.sql'
+            q "$SUPABASE_DB_URL" "select id, title, client, coalesce(jsonb_array_length(data->'versions'),0) as versijos, updated_at from public.offers where id::text = '$ARG'"
+          else echo "::error::Nežinomas režimas $MODE"; exit 1; fi
