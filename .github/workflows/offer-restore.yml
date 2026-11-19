@@ -43,7 +43,7 @@ jobs:
             openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "k/db-$d.tgz.enc" -out k/db.tgz -pass env:BACKUP_PASSWORD
             tar -C k -xzf k/db.tgz
             docker run --rm --network host -v "$PWD/k/db:/in:ro" -e L="$LOCAL" -e DB="$db" postgres:17 sh -c '
-              psql "$L" -qc "create database $DB" && pg_restore -d "${L%/*}/$DB" --no-owner --no-privileges -t offers /in/public.dump' >/dev/null 2>&1 || true
+              psql "$L" -qc "create database $DB" && psql "${L%/*}/$DB" -qc "create schema auth; create function auth.uid() returns uuid language sql as \$\$ select null::uuid \$\$;" && pg_restore -d "${L%/*}/$DB" --no-owner --no-privileges -t offers /in/public.dump' >/dev/null 2>&1 || true
             echo "$db"
           }
           q(){ docker run --rm --network host -e U="$1" -e S="$2" postgres:17 sh -c 'psql "$U" -X -A -F " | " -c "$S"'; }
