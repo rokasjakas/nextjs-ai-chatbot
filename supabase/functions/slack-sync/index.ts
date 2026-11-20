@@ -464,7 +464,7 @@ async function reportMissing(rentalId: string, itemId: string, by: string): Prom
   return { ...lost, missing: miss, ...(refused.length ? { refused } : {}) };
 }
 // ---- Calendar meetings: common (the whole team – #general) and private (chosen members – a private channel) ----
-// the announcement with @channel; reminders: the day before at 10:00, then 1 h, 30, 15 and 5 min. before (meet_tick, every minute)
+// the announcement with @channel; reminders: 1 h and 30 min. before (meet_tick, every minute)
 type Mt = { id: string; title: string; meet_date: string; start_time: string | null; end_time: string | null; location: string; description: string;
   attendees: string[]; created_by: string; scope?: string; online?: boolean; slack?: { channel?: string; ts?: string; private?: boolean; sent?: string[]; invited?: string[] } | null };
 const TZ = "Europe/Vilnius";
@@ -550,9 +550,7 @@ async function onMeeting(id: string, mode: string): Promise<Record<string, unkno
     `<!channel> ${head} *${md(m.title)}*`,
     `📅 ${md(mtWhen(m))}${m.location ? `  ·  📍 ${md(m.location)}` : ""}${m.online ? "  ·  💻 online" : ""}`,
     m.description ? `📝 ${md(m.description)}` : "",
-    `👤 Organizatorius: ${md(orgName)}${m.scope === "all" ? "  ·  dalyvauja visa komanda" : ""}`,
     `✉ Kvietimai išsiųsti el. paštu (įtraukiami į Google kalendorių) · ${link}`,
-    m.start_time ? "🔔 Priminsiu: dieną prieš 10:00, tą dieną 1 val., 30, 15 ir 5 min. prieš." : "🔔 Priminsiu dieną prieš 10:00.",
   ].filter(Boolean);
   const p = await slack("chat.postMessage", { channel: sl.channel, text: lines.join("\n"), unfurl_links: false });
   if (!p.ok) throw new UserError("Slack žinutės išsiųsti nepavyko: " + p.error);
@@ -577,11 +575,10 @@ async function meetTick(): Promise<number> {
     const start = m.start_time ? vUtc(m.meet_date, hm5(m.start_time)).getTime() : vUtc(m.meet_date, "08:00").getTime();
     if (now > start) continue;
     const t = m.start_time ? hm5(m.start_time) : "";
-    const due: [string, number, string][] = [["d1", vUtc(addDays(m.meet_date, -1), "10:00").getTime(), `🔔 Rytoj${t ? " " + t : ""}: *${md(m.title)}*`]];
-    if (m.start_time) {
-      due.push(["h1", start - 60 * 60e3, `🔔 Po valandos (${t}): *${md(m.title)}*`], ["m30", start - 30 * 60e3, `🔔 Po 30 min. (${t}): *${md(m.title)}*`],
-        ["m15", start - 15 * 60e3, `🔔 Po 15 min. (${t}): *${md(m.title)}*`], ["m5", start - 5 * 60e3, `🔔 Po 5 min. prasideda: *${md(m.title)}*`]);
-    }
+    // reminders: 1 hour and 30 minutes before (a meeting without a time – none)
+    const due: [string, number, string][] = [];
+    if (m.start_time) due.push(["h1", start - 60 * 60e3, `🔔 Po valandos (${t}): *${md(m.title)}*`], ["m30", start - 30 * 60e3, `🔔 Po 30 min. (${t}): *${md(m.title)}*`]);
+    if (!due.length) continue;
     // the ones due now: only the newest is sent (after a pause no pile of reminders); an old one (>10 min.) – none
     const sent = new Set(sl.sent || []), now_due = due.filter(([k, at]) => !sent.has(k) && now >= at);
     if (!now_due.length) continue;
