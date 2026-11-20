@@ -230,6 +230,11 @@ function describe(doc: DocStatus): string {
   return `baigiasi ${doc.until} (po ${doc.days} d.)`;
 }
 
+// Admin → Priminimai (app_config 'reminders' → vehicles): off, the subject („{tekstas}“ – the automatic one), an extra text
+type RemOne = { off?: boolean; title?: string; text?: string };
+let VR: RemOne = {};
+async function remLoad() { try { const r = (await (await db("app_config?select=value&key=eq.reminders")).json()) as { value: Record<string, RemOne> }[]; VR = r[0]?.value?.vehicles ?? {}; } catch { VR = {}; } }
+function remTpl(tpl: string | undefined, orig: string): string { const t = String(tpl ?? "").trim(); if (!t) return orig; return t.includes("{tekstas}") ? t.split("{tekstas}").join(orig) : t; }
 function buildEmail(v: Vehicle, docs: DocStatus[]) {
   const norm = (x: unknown) => String(x || "").toUpperCase().replace(/[^0-9A-Z]/g, "");
   // the plate only once: often it is in the name already ("Iveco Daily MPL 840")
@@ -256,10 +261,11 @@ function buildEmail(v: Vehicle, docs: DocStatus[]) {
   const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;">
     <p>Automobilis <b>${escapeHtml(car)}</b>:</p>
     <table style="border-collapse:collapse;">${rows}</table>
+    ${String(VR.text ?? "").trim() ? `<p style="white-space:pre-wrap;">${escapeHtml(String(VR.text).trim())}</p>` : ""}
     <p style="color:#777;font-size:12px;margin-top:18px;">Priminimas iš EventSolutions App.
     Kai dokumentą atnaujinsi, įrašyk naują datą skiltyje „Automobiliai“ — priminimai sustos.</p>
   </div>`;
-  return { subject, html };
+  return { subject: remTpl(VR.title, subject), html };
 }
 
 async function sendEmail(to: string[], subject: string, html: string): Promise<void> {
@@ -286,6 +292,8 @@ async function sendEmail(to: string[], subject: string, html: string): Promise<v
 async function runScheduled() {
   const today = todayInVilnius();
   const hour = hourInVilnius();
+  await remLoad();
+  if (VR.off) return { off: true };
   const vehicles = await loadVehicles();
   const results: unknown[] = [];
   for (const v of vehicles) {

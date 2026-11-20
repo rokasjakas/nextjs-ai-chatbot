@@ -1025,23 +1025,46 @@ async function mailTo(to: string[], subject: string, html: string, attachments?:
   });
   return res.ok ? "" : `Resend ${res.status}: ${(await res.text()).slice(0, 200)}`;
 }
+// ---------- Admin → Priminimai (app_config 'reminders', sql/reminders_cfg.sql): every kind of reminder can be
+// turned off, given its own hour / frequency, its own text and only some members (read once per cron run)
+type RemOne = { off?: boolean; hour?: number; days?: number[]; every?: number; title?: string; text?: string; only?: string[]; skip?: string[]; copy?: boolean };
+let REMC: Record<string, RemOne> | null = null;
+async function remCfg(): Promise<Record<string, RemOne>> {
+  if (REMC) return REMC;
+  const r = await db<{ value: Record<string, RemOne> }[]>("app_config?select=value&key=eq.reminders").catch(() => []);
+  REMC = (r[0]?.value && typeof r[0].value === "object") ? r[0].value : {};
+  return REMC;
+}
+const remOf = async (k: string): Promise<RemOne> => (await remCfg())[k] ?? {};
+// a text of the reminder: the one written in Admin („{tekstas}“ – the automatic one); nothing written – the automatic one
+export function remTpl(tpl: string | undefined, orig: string): string {
+  const t = String(tpl ?? "").trim(); if (!t) return orig;
+  return t.includes("{tekstas}") ? t.split("{tekstas}").join(orig) : t;
+}
+// only the members chosen (if any), without the ones taken off
+export function remWho(c: RemOne, ids: string[]): string[] {
+  let o = ids;
+  if (c.only?.length) o = o.filter((i) => c.only!.includes(i));
+  if (c.skip?.length) o = o.filter((i) => !c.skip!.includes(i));
+  return o;
+}
 async function taskReminders() {
   const now = Date.now();
   const since = new Date(now - 15 * 86400000).toISOString();
   const tasks = await db<Task[]>(`tasks?select=*&or=(due_at.is.null,due_at.gte.${since})`);
-  const out: unknown[] = [];
+  const out: unknown[] = [], rc = await remOf("tasks");
   for (const t of tasks) {
     const moments = dueMoments(t, now);
     if (!moments.length) continue;
     const open = taskOpen(t);
     const sent = { ...(t.sent ?? {}) };
     for (const m of moments) sent[m.key] = new Date(now).toISOString();
-    if (open.length) {
+    if (open.length && !rc.off) {
       const m = moments[moments.length - 1];                  // one notice even if several came due together
       const who = new Set(open);
       if (t.lead && (m.kind === "overdue" || (m.kind === "before" && m.n === 0))) who.add(t.lead);   // the one responsible hears it too
-      const ids = await wantIds([...who], "tasks");
-      const { title, body } = reminderText(t, m);
+      const ids = remWho(rc, await wantIds([...who], "tasks"));
+      const rt = reminderText(t, m), title = remTpl(rc.title, rt.title), body = remTpl(rc.text, rt.body);
       const r = t.remind ?? {};
       let pushed = 0, mailErr = "";
       if (r.push !== false) pushed = (await sendTo(ids, { title, body, tag: "task-" + t.id, url: `./?task=${t.id}`, kind: "task" }, 3600)).sent;
@@ -1092,6 +1115,7 @@ export function vilniusAt(d: string, hm: string): number {
 async function workPlanReminders() {
   const plans = await db<WPlan[]>("work_plans?select=id,title,freq,weekday,month_day,every_days,start_date,due_time,assignees,active&active=eq.true");
   if (!plans.length) return { sent: 0 };
+  const rc = await remOf("workplans"); if (rc.off) return { off: true };
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date());
   const late: { p: WPlan; period: string; due: number }[] = [];
   for (const p of plans) {
@@ -1107,13 +1131,13 @@ async function workPlanReminders() {
   let sent = 0;
   for (const x of late) {
     for (const u of x.p.assignees) {
-      if (done.has(x.p.id + "|" + u + "|" + x.period) || !users.has(u)) continue;
+      if (done.has(x.p.id + "|" + u + "|" + x.period) || !users.has(u) || !remWho(rc, [u]).length) continue;
       if (!wants(users.get(u)!.notify_prefs, "tasks", "workplans")) continue;
       const tag = `wp-${x.p.id}-${x.period}-${today}`;           // once a day for each late work
       const seen = await db<{ id: string }[]>(`user_notifications?select=id&user_id=eq.${u}&tag=eq.${encodeURIComponent(tag)}&limit=1`).catch(() => []);
       if (seen.length) continue;
       const when = new Intl.DateTimeFormat("lt-LT", { timeZone: TZ, month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(x.due));
-      const r = await sendTo([u], { title: "⚠ Neatlikti darbai: " + x.p.title, body: "Terminas buvo " + when + ". Atidaryk ir užpildyk darbų planą.", tag, url: `./?workplan=${x.p.id}`, kind: "workplan" });
+      const r = await sendTo([u], { title: remTpl(rc.title, "⚠ Neatlikti darbai: " + x.p.title), body: remTpl(rc.text, "Terminas buvo " + when + ". Atidaryk ir užpildyk darbų planą."), tag, url: `./?workplan=${x.p.id}`, kind: "workplan" });
       sent += r.sent;
     }
   }
@@ -1122,14 +1146,16 @@ async function workPlanReminders() {
 async function trackerReminders() {
   const now = Date.now();
   const open = await db<OpenShift[]>(`time_shifts?select=id,member_id,started_by,started_at,reminded_at,tracker_members(name),time_entries(kind,ended_at)&ended_at=is.null`);
-  const out: unknown[] = [];
+  const out: unknown[] = [], rc = await remOf("tracker");
+  if (rc.off) return { off: true };
+  const every = Math.max(15, Number(rc.every) || 60) - 1;
   for (const s of open) {
     const from = Date.parse(s.reminded_at ?? s.started_at);
-    if (!s.started_by || now - from < 59 * 60000) continue;
+    if (!s.started_by || now - from < every * 60000 || !remWho(rc, [s.started_by]).length) continue;
     const mins = Math.floor((now - Date.parse(s.started_at)) / 60000);
     const cur = s.time_entries.find((e) => !e.ended_at);
     const body = `${s.tracker_members?.name ?? ""}: dirbama ${Math.floor(mins / 60)} val. ${mins % 60} min.${cur ? " Dabar – " + (TT_KIND[cur.kind] ?? cur.kind) + "." : ""} Nepamiršk baigti darbo.`;
-    const r = await sendTo([s.started_by], { title: "Team Tracker aktyvus", body, tag: "tracker-" + s.id, url: "./?tracker=1", kind: "tracker" }, 3600);
+    const r = await sendTo([s.started_by], { title: remTpl(rc.title, "Team Tracker aktyvus"), body: remTpl(rc.text, body), tag: "tracker-" + s.id, url: "./?tracker=1", kind: "tracker" }, 3600);
     await db(`time_shifts?id=eq.${s.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ reminded_at: new Date(now).toISOString() }) });
     out.push({ shift: s.id, sent: r.sent });
   }
@@ -1381,9 +1407,10 @@ async function invoiceReminders() {
   const now = new Date().toISOString();
   const due = await db<Invoice[]>(`invoices?select=*&status=eq.later&remind_at=lte.${encodeURIComponent(now)}&reminded_at=is.null`);
   if (!due.length) return { invoices: 0 };
-  const plus = await plusIds();
+  const rc = await remOf("invoices"); if (rc.off) return { off: true };
+  const plus = remWho(rc, await plusIds());
   for (const v of due) {
-    await sendTo(plus, { title: "⏰ Priminimas: sąskaita", body: invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : ""), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
+    await sendTo(plus, { title: remTpl(rc.title, "⏰ Priminimas: sąskaita"), body: remTpl(rc.text, invTitle(v) + (v.decision_note ? " · " + v.decision_note.slice(0, 120) : "")), tag: "inv-" + v.id, url: `./?invoice=${v.id}`, kind: "invoice" });
     await db(`invoices?id=eq.${v.id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ reminded_at: now }) });
   }
   return { invoices: due.length };
@@ -1418,7 +1445,8 @@ async function repUploaded(kind: string, due: string): Promise<boolean> {
 }
 async function reportReminders() {
   const local = new Date().toLocaleString("sv-SE", { timeZone: "Europe/Vilnius" }), today = local.slice(0, 10), hour = +local.slice(11, 13);
-  if (hour < 8) return { wait: true };
+  const rc = await remOf("reports"); if (rc.off) return { off: true };
+  if (hour < (Number.isFinite(rc.hour) ? Number(rc.hour) : 8)) return { wait: true };
   const list = await db<RepRem[]>(`report_reminders?select=*&active=eq.true`);
   const out: unknown[] = [];
   for (const r of list) {
@@ -1442,8 +1470,8 @@ async function reportReminders() {
     const forWhat = r.period === "month" ? ` už ${MONTHS_NOM[prev.getUTCMonth()]} (${prev.getUTCFullYear()})` : r.period === "quarter" ? " už praėjusį ketvirtį" : " už praėjusią savaitę";
     const by = `${MONTHS_LT[d.getUTCMonth()]} ${d.getUTCDate()} d.`;
     const left = Math.round((Date.parse(hit.due) - Date.parse(today)) / 86400000);
-    const title = `⏰ ${what} ataskaita`;
-    const body = `Įkelk ${what} ataskaitą${forWhat} iki ${by}${left === 0 ? " (šiandien)" : left === 1 ? " (rytoj)" : ` (liko ${left} d.)`}.${r.note ? " " + r.note : ""}`;
+    const title = remTpl(rc.title, `⏰ ${what} ataskaita`);
+    const body0 = `Įkelk ${what} ataskaitą${forWhat} iki ${by}${left === 0 ? " (šiandien)" : left === 1 ? " (rytoj)" : ` (liko ${left} d.)`}.${r.note ? " " + r.note : ""}`, body = remTpl(rc.text, body0);
     const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;line-height:1.5;"><p><b>${esc(title.replace("⏰ ", ""))}</b></p><p>${esc(body)}</p>
       <p style="color:#777;font-size:12px;margin-top:18px;">EventSolutions App · ataskaitų priminimas.</p></div>`;
     let pushed = 0, mailErr = "";
@@ -1814,7 +1842,7 @@ async function lbContext(items: LbFull[]) {
 }
 async function laborReminders(force = false) {
   const cfg = await lbCfg();
-  if (!cfg.on) return { off: true };
+  if (!cfg.on || (await remOf("labor")).off) return { off: true };
   const nowV = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Vilnius" }));
   if (!force && !(nowV.getHours() === 9 && nowV.getMinutes() < 5)) return { wait: true };
   const days = Math.max(1, Number(cfg.days) || 14); LB_DAYS = days; const from = /^\d{4}-\d{2}-\d{2}$/.test(String(cfg.from || "")) ? String(cfg.from) : "2000-01-01";
@@ -1899,6 +1927,7 @@ Deno.serve(async (req) => {
     if (body?.mode === "cron") {
       const secret = Deno.env.get("CRON_SECRET");
       if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      REMC = null;   // Admin → Priminimai: read again every run
       const tr = await taskReminders();
       let ir: unknown = null, tt: unknown = null;
       try { ir = await invoiceReminders(); } catch (e) { ir = { error: String(e) }; }   // before invoices.sql the table is missing
@@ -1910,7 +1939,7 @@ Deno.serve(async (req) => {
       try { lr = await laborReminders(); } catch (e) { lr = { error: String(e) }; }   // Darbų apskaita: only when turned on in Admin
       // Bolt / Wolt monthly reports sent by themselves (reports-mail, sql/report_mail.sql)
       let rm: unknown = null;
-      try {
+      if (!(await remOf("report_mail")).off) try {
         const res = await fetch(`${env("SUPABASE_URL")}/functions/v1/reports-mail`, { method: "POST", signal: AbortSignal.timeout(50000),
           headers: { "Content-Type": "application/json", "x-cron-secret": secret, apikey: env("SUPABASE_SERVICE_ROLE_KEY") }, body: JSON.stringify({ mode: "cron" }) });
         rm = await res.json().catch(() => ({ status: res.status }));

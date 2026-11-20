@@ -327,6 +327,7 @@ async function upcoming(): Promise<Ev[]> {
 // Paėmimai: a direct message every day to those chosen under the #dingę-daiktai message, until it is marked
 // Rasta / Nerasta / Grąžinta (or the item is gone)
 async function lostReminders(): Promise<number> {
+  if ((await remOf("lost")).off) return 0;
   const rows = await db<{ id: string; data: { place?: string; list?: { id: string; name?: string; lost?: { qty?: number; url?: string; status?: string; remind?: string[]; remindDay?: string } }[] } }[]>("rentals?select=id,data");
   const day = today(); let sent = 0;
   for (const row of rows) {
@@ -561,8 +562,13 @@ async function onMeeting(id: string, mode: string): Promise<Record<string, unkno
   return { ok: true, channel: sl.channel, ...out };
 }
 // every minute: the reminders that are due (a missed one more than 15 min. ago is not sent late)
+// Admin → Priminimai (app_config 'reminders'): meetings / lost items can be turned off, a text of their own
+type RemOne = { off?: boolean; title?: string; text?: string };
+async function remOf(k: string): Promise<RemOne> { const r = await db<{ value: Record<string, RemOne> }[]>("app_config?select=value&key=eq.reminders").catch(() => []); return r[0]?.value?.[k] ?? {}; }
+function remTpl(tpl: string | undefined, orig: string): string { const t = String(tpl ?? "").trim(); if (!t) return orig; return t.includes("{tekstas}") ? t.split("{tekstas}").join(orig) : t; }
 async function meetTick(): Promise<number> {
   if (!(await slackOn())) return 0;
+  const rc = await remOf("meetings"); if (rc.off) return 0;
   const from = addDays(today(), -1), to = addDays(today(), 2), now = Date.now();
   const rows = await db<Mt[]>(`meetings?select=*&meet_date=gte.${from}&meet_date=lte.${to}&scope=in.(all,private)`).catch(() => [] as Mt[]);
   let n = 0;
@@ -583,7 +589,7 @@ async function meetTick(): Promise<number> {
     const [, at, text] = now_due.sort((a, b) => b[1] - a[1])[0];
     if (now - at <= 10 * 60e3) {
       const where = m.location ? `  ·  📍 ${md(m.location)}` : "";
-      const r = await slack("chat.postMessage", { channel: sl.channel, text: `<!channel> ${text}${where}\n<${APP}/?meeting=${enc(m.id)}|Atidaryti programoje>`, unfurl_links: false });
+      const r = await slack("chat.postMessage", { channel: sl.channel, text: `<!channel> ${remTpl(rc.text, text)}${where}\n<${APP}/?meeting=${enc(m.id)}|Atidaryti programoje>`, unfurl_links: false });
       if (r.ok) n++;
     }
     await meetSave(m, { ...sl, sent: [...sent] });

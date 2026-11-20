@@ -22,6 +22,19 @@
 
 const VERSION = 4;
 const AUTO_BEFORE = [9, 3, 1];   // automatic reminders: days before each booked day
+// Admin → Priminimai (app_config 'reminders' → booking): off, hour, days before, subject / extra text, copy to the booker
+type RemOne = { off?: boolean; hour?: number; days?: number[]; title?: string; text?: string; copy?: boolean };
+let BK: RemOne = {};
+const bkDays = () => (Array.isArray(BK.days) && BK.days.length ? BK.days.map(Number).filter((n) => n >= 0 && n <= 60) : AUTO_BEFORE);
+const bkHour = (r: Reminder) => r.auto && Number.isFinite(BK.hour) ? Number(BK.hour) : r.send_hour;
+export function remTpl(tpl: string | undefined, orig: string): string {
+  const t = String(tpl ?? "").trim(); if (!t) return orig;
+  return t.includes("{tekstas}") ? t.split("{tekstas}").join(orig) : t;
+}
+const bkNote = (r: Reminder) => [r.message, r.auto ? BK.text : ""].map((x) => String(x ?? "").trim()).filter(Boolean).join("\n\n");
+const bkWhen = () => { const d = [...bkDays()].sort((a, b) => b - a), h = String(Number.isFinite(BK.hour) ? BK.hour : 10).padStart(2, "0") + ":00";
+  const w = d.map((n) => n === 1 ? "dieną prieš" : n === 0 ? "tą pačią dieną" : `likus ${n} d.`);
+  return w.length ? `Priminimus atsiųsime ${w.join(", ")} kiekvieną darbo dieną (${h}).` : ""; };
 const DEFAULT_FROM = "Event Solutions <onboarding@resend.dev>";
 const TIME_ZONE = "Europe/Vilnius";
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -89,12 +102,12 @@ export function upcoming(r: Reminder, today: string): string[] {
 
 // Is this reminder to be sent in this hour?
 export function isDue(r: Reminder, today: string, hour: number): boolean {
-  if (!r.active || r.send_hour !== hour) return false;
+  if (!r.active || bkHour(r) !== hour) return false;
   const days = upcoming(r, today);
   if (!days.length) return false;
   if (r.last_sent === today) return false;
   // automatic ones: 9 days, 3 days and 1 day before a booked day (a day booked later gets only what is left)
-  if (r.auto) return AUTO_BEFORE.some((n) => days.includes(addDays(today, n)));
+  if (r.auto) return bkDays().some((n) => days.includes(addDays(today, n)));
   if (r.day_before && days.includes(addDays(today, 1))) return true;
   if (!r.last_sent) return true;
   return daysBetween(r.last_sent, today) >= Math.max(1, r.every_days);
@@ -146,11 +159,11 @@ export function buildEmail(r: Reminder, c: Contact | null, today: string, info: 
     <p>Sveiki${first ? ", " + escapeHtml(first) : ""},</p>
     <p>primename, kad esate užsiregistravę dirbti su Event Solutions šiomis dienomis:</p>
     <ul style="padding-left:18px;">${list}</ul>
-    ${r.message ? `<p style="white-space:pre-wrap;">${escapeHtml(r.message)}</p>` : ""}
+    ${bkNote(r) ? `<p style="white-space:pre-wrap;">${escapeHtml(bkNote(r))}</p>` : ""}
     <p>Jei planai pasikeitė — atsakykite į šį laišką arba susisiekite su ${who}.</p>
     <p style="color:#777;font-size:12px;margin-top:18px;">Event Solutions · automatinis priminimas</p>
   </div>`;
-  return { subject, html };
+  return { subject: r.auto ? remTpl(BK.title, subject) : subject, html };
 }
 
 async function db(path: string, init: RequestInit = {}): Promise<Response> {
@@ -212,18 +225,18 @@ export function buildConfirm(r: Reminder, c: Contact | null, today: string, info
     <p>Sveiki${first ? ", " + escapeHtml(first) : ""},</p>
     <p>ačiū, kad sutikote dirbti su Event Solutions. Jūsų darbo dienos:</p>
     <ul style="padding-left:18px;">${list}</ul>
-    ${r.message ? `<p style="white-space:pre-wrap;">${escapeHtml(r.message)}</p>` : ""}
-    <p>Priminimus atsiųsime likus 9 ir 3 dienoms bei dieną prieš kiekvieną darbo dieną (10:00).</p>
+    ${bkNote(r) ? `<p style="white-space:pre-wrap;">${escapeHtml(bkNote(r))}</p>` : ""}
+    ${bkWhen() ? `<p>${escapeHtml(bkWhen())}</p>` : ""}
     <p>Jei planai pasikeitė — atsakykite į šį laišką arba susisiekite su ${who}.</p>
     <p style="color:#777;font-size:12px;margin-top:18px;">Event Solutions · automatinis laiškas</p>
   </div>`;
-  return { subject, html };
+  return { subject: r.auto ? remTpl(BK.title, subject) : subject, html };
 }
 
 // the person, and for automatic ones a copy to whoever booked them
 function copyTo(r: Reminder): string[] {
   const cc = (r.reply_to ?? "").trim().toLowerCase();
-  return r.auto && cc && cc !== r.email.trim().toLowerCase() ? [cc] : [];
+  return r.auto && BK.copy !== false && cc && cc !== r.email.trim().toLowerCase() ? [cc] : [];
 }
 
 async function sendEmail(to: string, subject: string, html: string, replyTo: string | null, cc: string[] = []): Promise<void> {
@@ -273,6 +286,7 @@ async function runScheduled() {
   const rows = (await (await db("booking_reminders?select=*&active=eq.true")).json()) as Reminder[];
   const sent: unknown[] = [];
   for (const r of rows) {
+    if (BK.off) break;   // Admin → Priminimai: turned off
     if (!upcoming(r, today).length) {
       await patch(r.id, { active: false });
       continue;
@@ -296,6 +310,7 @@ if (import.meta.main) Deno.serve(async (req) => {
   let body: Record<string, unknown> = {};
   try { body = await req.json(); } catch { /* empty body = scheduled run */ }
   try {
+    try { const c = (await (await db("app_config?select=value&key=eq.reminders")).json()) as { value: Record<string, RemOne> }[]; BK = c[0]?.value?.booking ?? {}; } catch { BK = {}; }
     if (body?.mode === "confirm") {
       if (!(await editor(req))) return json({ error: "Neturi teisės redaguoti „Žmonės“ skilties." }, 403);
       const id = String(body.id ?? "");
@@ -304,6 +319,7 @@ if (import.meta.main) Deno.serve(async (req) => {
       if (!r) return json({ error: "Priminimas nerastas." }, 404);
       const today = todayInVilnius();
       if (!upcoming(r, today).length) return json({ error: "Visos dienos jau praėjo." }, 400);
+      if (BK.off) return json({ sent: false, off: true });
       const { subject, html } = buildConfirm(r, await contactOf(r.contact_id), today, await dayInfo(r));
       await sendEmail(r.email, subject, html, r.reply_to, copyTo(r));
       await patch(r.id, { sent_count: (r.sent_count ?? 0) + 1, last_error: null });
