@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-6t0CJNVK2l51OyBeR8JPIBTOuAySjSu+ZcbR8og/ks8=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-bLmKmO+3Vkt8bOdUQpqfnorpnJXzvMI4dbu1KyE/vvc=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -19837,9 +19837,10 @@ async function remListLoad(t){
     }
     else if(t.k==='labor'){ box.innerHTML = ''; }
     else if(t.k==='tracker'){
-      const { data, error } = await sb.from('time_shifts').select('id,started_at,started_by,tracker_members(name)').is('ended_at', null).limit(100); if(error) throw error;
-      const rows = (data||[]).map(x=>`<tr><td><b>${esc((x.tracker_members||{}).name||'—')}</b></td><td>${esc(String(x.started_at).slice(0, 16).replace('T', ' '))}</td><td>${esc(nm(x.started_by))}</td></tr>`);
-      box.innerHTML = card('Dabar atidarytos pamainos ('+rows.length+')', 'Joms siunčiami priminimai, kol pamaina bus uždaryta.', tbl(['Narys','Pradėta','Kam priminimas'], rows));
+      const { data, error } = await sb.rpc('rem_open_shifts'); if(error) throw new Error(/rem_open_shifts|schema cache/i.test(error.message) ? 'Atidarytų pamainų sąrašas dar neįjungtas (reminders_shifts.sql).' : error.message);
+      const when = v=>v ? new Date(v).toLocaleString('lt-LT', { timeZone:'Europe/Vilnius', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
+      const rows = (Array.isArray(data) ? data : []).map(x=>`<tr><td><b>${esc(x.name||'—')}</b></td><td>${esc(when(x.started_at))}</td><td>${esc(nm(x.started_by))}</td><td>${x.reminded_at ? esc(when(x.reminded_at)) : 'dar nepriminta'}</td></tr>`);
+      box.innerHTML = card('Dabar atidarytos pamainos ('+rows.length+')', 'Joms siunčiami priminimai, kol pamaina bus uždaryta.', tbl(['Narys','Pradėta','Kam priminimas','Paskutinis priminimas'], rows));
     }
     else if(t.k==='lost'){
       const { data, error } = await sb.from('rentals').select('id,data').limit(2000); if(error) throw error;
@@ -25820,7 +25821,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v801';
+const APP_VER = 'v802';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -55480,6 +55481,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-20 14:00', v:'v802', k:'fix', t:'Admin → Priminimai → Team Tracker: atidarytos pamainos', f:'Vietoje klaidos „permission denied for table time_shifts“ rodomos dabar atidarytos pamainos: narys, kada pradėta, kam siunčiamas priminimas ir kada paskutinį kartą priminta.' },
   { d:'2026-11-20 13:00', v:'v801', k:'new', t:'Admin: grafos ir priminimų centras', f:'Admin puslapis suskirstytas grafomis kaip „Mano erdvė“: Vartotojai, Teisės, Priminimai, Integracijos, Sutikimai, Sistema. Naujoje „Priminimai“ grafoje – visi programos priminimai, kiekvienas tipas atskiroje grafoje (Freelanceriams, Užduotys, Darbų planai, Ataskaitų įkėlimas, Darbų apskaita, Atidėtos sąskaitos, Team Tracker, Transportas, Susitikimai, Mėnesio ataskaitos, Dingę daiktai): įjungti / išjungti, siuntimo laikas ir dažnis, savas tekstas, kam siųsti (visiems / tik pažymėtiems / visiems išskyrus); žemiau – visi dabar galiojantys to tipo priminimai su jų nustatymais.' },
   { d:'2026-11-19 16:30', v:'v800', k:'new', t:'Pasiūlymai: archyvas, atkūrimas, „Išsaugoti“, atskiras versijos trynimas', f:'Kiekvienas pasiūlymo pakeitimas palieka atsarginę kopiją; ištrinti pasiūlymai ir versijos niekur nedingsta – „🗂 Archyvas“ (Pasiūlymų kūrimas) → „Atkurti“. Atskiri mygtukai: „Ištrinti versiją Vx“ (ir 🗑 versijų sąraše) bei „Ištrinti pasiūlymą“ – abu klausia du kartus ir po to praneša, kad suarchyvuota. Naujas „💾 Išsaugoti“ – išsaugo pakeitimus atidarytoje versijoje (pvz. pridėtą skiltį „Gretutinės paslaugos“); uždarant su neišsaugotais pakeitimais klausia: Išsaugoti / Kaip naują versiją / Neišsaugoti.' },
   { d:'2026-11-19 11:00', v:'v799', k:'new', t:'Visi langai: neišsaugota informacija nebedingsta', f:'Jei pildant iššokantį langą jis netyčia uždaromas (paspaudus šalia, Esc ar ✕), įvesta informacija išlieka: atidarius tą patį langą ji atkuriama, viršuje – „Atkurta anksčiau įvesta, bet neišsaugota informacija · Išvalyti“. Juodraštis dingsta paspaudus išsaugojimo mygtuką arba „Atšaukti“ (laikomas iki 3 dienų, ir perkrovus puslapį).' },
