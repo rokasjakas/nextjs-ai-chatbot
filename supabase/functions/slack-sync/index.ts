@@ -549,7 +549,7 @@ async function onMeeting(id: string, mode: string): Promise<Record<string, unkno
     `<!channel> ${head} *${md(m.title)}*`,
     `📅 ${md(mtWhen(m))}${m.location ? `  ·  📍 ${md(m.location)}` : ""}${m.online ? "  ·  💻 online" : ""}`,
     m.description ? `📝 ${md(m.description)}` : "",
-    "✉ Kvietimai išsiųsti el. paštu (įtraukiami į Google kalendorių)",
+    "✉ Kvietimai išsiųsti el. paštu (su nuoroda „Pridėti į Google kalendorių“)",
   ].filter(Boolean);
   const p = await slack("chat.postMessage", { channel: sl.channel, text: lines.join("\n"), unfurl_links: false });
   if (!p.ok) throw new UserError("Slack žinutės išsiųsti nepavyko: " + p.error);

@@ -641,21 +641,38 @@ export function guestLinksHtml(token: string, online: boolean): string {
 <div style="font-size:13px;color:#ccc;margin-bottom:10px;">Pokalbis su organizatoriais, failų įkėlimas ir vaizdo skambutis – be jokios registracijos.</div>
 ${btn(u(""), "Atidaryti susitikimą", "#E5486C")}</div>` : `<div style="font-size:12px;color:#888;">Arba <a href="${escHtml(u(""))}" style="color:#E5486C;">atidaryk susitikimo puslapį</a>.</div>`);
 }
+// a link that adds the meeting to one's Google Calendar (instead of an attached invitation – Gmail puts those in „Updates“)
+export function meetingGcal(m: Meeting): string {
+  let dates: string;
+  if (m.start_time) {
+    const st = vilniusToUtc(m.meet_date, hm(m.start_time));
+    const en = m.end_time && m.end_time > m.start_time ? vilniusToUtc(m.meet_date, hm(m.end_time)) : new Date(st.getTime() + 3600e3);
+    dates = icsDate(st) + "/" + icsDate(en);
+  } else {
+    const [y, mo, d] = m.meet_date.split("-").map(Number);
+    dates = m.meet_date.replace(/-/g, "") + "/" + new Date(Date.UTC(y, mo - 1, d + 1)).toISOString().slice(0, 10).replace(/-/g, "");
+  }
+  const q = new URLSearchParams({ action: "TEMPLATE", text: m.title, dates, ...(m.location ? { location: m.location } : {}), ...(m.description ? { details: m.description } : {}) });
+  return "https://calendar.google.com/calendar/render?" + q.toString().replace("%2F", "/");
+}
+// the letter looks like one written by a person (Gmail then keeps it in „Primary“): a few plain lines, no banner,
+// no „sent by the app“ line, no attached invitation – a link to add it to the calendar instead
 export function meetingEmailHtml(m: Meeting, organizer: string, people: string[], mode: string, guestToken = ""): string {
-  const head = mode === "cancel" ? "Susitikimas atšauktas" : mode === "update" ? "Susitikimas pakeistas" : "Kvietimas";
-  const row = (k: string, v: string) => v ? `<tr><td style="padding:4px 14px 4px 0;color:#666;vertical-align:top;white-space:nowrap;">${k}</td><td style="padding:4px 0;">${v}</td></tr>` : "";
-  return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;max-width:560px;">
-<div style="font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:${mode === "cancel" ? "#c62828" : "#e04e6c"};font-weight:bold;">${head}</div>
-<h2 style="margin:6px 0 14px;font-size:22px;${mode === "cancel" ? "text-decoration:line-through;" : ""}">${escHtml(m.title)}</h2>
-<table cellpadding="0" cellspacing="0" style="font-size:14px;border-collapse:collapse;">
-${row("Kada", escHtml(meetingWhen(m)))}
-${row("Kur", escHtml(m.location || ""))}
-${row("Organizatorius", escHtml(organizer))}
-${row("Dalyviai", escHtml(people.join(", ")))}
-</table>
-${m.description ? `<div style="margin-top:14px;padding:12px 14px;background:#f5f5f7;border-radius:8px;white-space:pre-wrap;">${escHtml(m.description)}</div>` : ""}
-${mode !== "cancel" && guestToken ? guestLinksHtml(guestToken, !!m.online) : ""}
-<p style="margin-top:18px;font-size:12px;color:#888;">${mode === "cancel" ? "" : "Pridėk į savo kalendorių — atidaryk prisegtą failą „kvietimas.ics“. "}Išsiųsta per EventSolutions App.</p>
+  const intro = mode === "cancel" ? `${escHtml(organizer)} atšaukė susitikimą:` : mode === "update" ? `${escHtml(organizer)} pakeitė susitikimą:` : `${escHtml(organizer)} kviečia į susitikimą:`;
+  const line = (k: string, v: string) => v ? `${k}: ${v}<br>` : "";
+  const guest = mode !== "cancel" && guestToken ? (() => {
+    const u = (q: string) => `${APP()}/?svecias=${encodeURIComponent(guestToken)}${q}`;
+    return `<p>Ar dalyvausi? <a href="${escHtml(u("&ats=taip"))}">Taip</a> · <a href="${escHtml(u("&ats=ne"))}">Ne</a>${m.online ? `<br>Susitikimo puslapis (pokalbis, failai, vaizdo skambutis): <a href="${escHtml(u(""))}">atidaryti</a>` : ""}</p>`;
+  })() : "";
+  return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;line-height:1.5;">
+<p>Sveiki,</p>
+<p>${intro}</p>
+<p><b>${escHtml(m.title)}</b><br>
+${line("Kada", escHtml(meetingWhen(m)))}${line("Kur", escHtml(m.location || ""))}${people.length > 1 ? line("Dalyviai", escHtml(people.join(", "))) : ""}</p>
+${m.description ? `<p style="white-space:pre-wrap;">${escHtml(m.description)}</p>` : ""}
+${guest}
+${mode === "cancel" ? "" : `<p><a href="${escHtml(meetingGcal(m))}">Pridėti į Google kalendorių</a></p>`}
+<p>${escHtml(organizer)}<br>Event Solutions</p>
 </div>`;
 }
 function b64(bytes: Uint8Array): string {
@@ -663,12 +680,15 @@ function b64(bytes: Uint8Array): string {
   for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return btoa(s);
 }
-async function resendMail(to: string, subject: string, html: string, replyTo: string, ics = "") {
+async function resendMail(to: string, subject: string, html: string, replyTo: string, ics = "", fromName = "") {
+  const base = Deno.env.get("REMINDER_FROM") || Deno.env.get("ACCESS_FROM") || "Event Solutions <onboarding@resend.dev>";
+  const addr = (base.match(/<([^>]+)>/) || [])[1] || base.trim();
+  const nm = String(fromName || "").replace(/["<>\r\n]/g, "").trim();
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${env("RESEND_API_KEY")}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: Deno.env.get("REMINDER_FROM") || Deno.env.get("ACCESS_FROM") || "Event Solutions <onboarding@resend.dev>",
+      from: nm ? `${nm} (Event Solutions) <${addr}>` : base,
       to: [to], subject, html, reply_to: replyTo || undefined,
       // a calendar invitation (REQUEST / CANCEL) says so in its type – Gmail then shows it in Google Calendar
       attachments: ics ? [{ filename: "kvietimas.ics", content: b64(new TextEncoder().encode(ics)), content_type: "text/calendar; charset=utf-8" + (/^METHOD:(REQUEST|CANCEL)$/m.test(ics) ? "; method=" + (ics.match(/^METHOD:(\w+)/m) || [])[1] : "") }] : undefined,
@@ -759,12 +779,11 @@ async function onMeeting(uid: string, id: string, mode: string) {
   const tokens = mode === "cancel" ? new Map<string, string>() : await meetingGuests(m).catch((e) => { console.error("guests", (e as Error).message); return new Map<string, string>(); });
   if (m.online && mode !== "cancel") await meetingRoom(m).catch((e) => console.error("meeting room", (e as Error).message));
   if (emails.length) {
-    const ics = meetingIcs(m, { name: organizer, email: me?.email ?? "" }, mode === "cancel", seq);
-    const subject = (mode === "cancel" ? "Atšaukta: " : mode === "update" ? "Pakeista: " : "Kvietimas: ") + m.title + " · " + when;
+    const subject = (mode === "cancel" ? "Atšaukta: " : mode === "update" ? "Pakeista: " : "") + m.title + " – " + when;
     for (const e of emails) {
       try {
         const html = meetingEmailHtml(m, organizer, people, mode, tokens.get(e) || "");
-        await resendMail(e, subject, html, me?.email ?? "", ics);
+        await resendMail(e, subject, html, me?.email ?? "", "", organizer);
         mailed++;
       } catch (err) {
         console.error("invite mail", e, (err as Error).message);
@@ -783,9 +802,8 @@ async function onMeeting(uid: string, id: string, mode: string) {
       const p = byId.get(u)!, to = String(p.google_email || p.email || "").trim().toLowerCase();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) continue;
       try {
-        const ics = meetingIcsFor(m, { name: organizer, email: me?.email ?? "" }, { name: name(p), email: to }, mode === "cancel", seq);
-        const subject = (mode === "cancel" ? "Atšaukta: " : mode === "update" ? "Pakeista: " : "Kvietimas: ") + m.title + " · " + when;
-        await resendMail(to, subject, meetingEmailHtml(m, organizer, peopleT, mode, ""), me?.email ?? "", ics);
+        const subject = (mode === "cancel" ? "Atšaukta: " : mode === "update" ? "Pakeista: " : "") + m.title + " – " + when;
+        await resendMail(to, subject, meetingEmailHtml(m, organizer, peopleT, mode, ""), me?.email ?? "", "", organizer);
         sent.add(u); memberMails++;
       } catch (err) { console.error("member invite mail", to, (err as Error).message); failed.push(to); }
     }
