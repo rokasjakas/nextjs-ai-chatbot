@@ -528,7 +528,6 @@ async function onMeeting(id: string, mode: string): Promise<Record<string, unkno
   const sl = { ...(m.slack || {}) } as NonNullable<Mt["slack"]>;
   const [org] = await db<{ full_name?: string; first_name?: string; last_name?: string; email?: string }[]>(`profiles?select=full_name,first_name,last_name,email&id=eq.${enc(m.created_by)}`);
   const orgName = org ? (org.full_name || [org.first_name, org.last_name].filter(Boolean).join(" ") || org.email || "") : "";
-  const link = `<${APP}/?meeting=${enc(m.id)}|Atidaryti programoje>`;
   if (mode === "cancel") {
     if (sl.channel) {
       await slack("chat.postMessage", { channel: sl.channel, text: `<!channel> ❌ *Atšaukta:* ${md(m.title)} (${md(mtWhen(m))})` });
@@ -550,7 +549,7 @@ async function onMeeting(id: string, mode: string): Promise<Record<string, unkno
     `<!channel> ${head} *${md(m.title)}*`,
     `📅 ${md(mtWhen(m))}${m.location ? `  ·  📍 ${md(m.location)}` : ""}${m.online ? "  ·  💻 online" : ""}`,
     m.description ? `📝 ${md(m.description)}` : "",
-    `✉ Kvietimai išsiųsti el. paštu (įtraukiami į Google kalendorių) · ${link}`,
+    "✉ Kvietimai išsiųsti el. paštu (įtraukiami į Google kalendorių)",
   ].filter(Boolean);
   const p = await slack("chat.postMessage", { channel: sl.channel, text: lines.join("\n"), unfurl_links: false });
   if (!p.ok) throw new UserError("Slack žinutės išsiųsti nepavyko: " + p.error);
@@ -586,7 +585,7 @@ async function meetTick(): Promise<number> {
     const [, at, text] = now_due.sort((a, b) => b[1] - a[1])[0];
     if (now - at <= 10 * 60e3) {
       const where = m.location ? `  ·  📍 ${md(m.location)}` : "";
-      const r = await slack("chat.postMessage", { channel: sl.channel, text: `<!channel> ${remTpl(rc.text, text)}${where}\n<${APP}/?meeting=${enc(m.id)}|Atidaryti programoje>`, unfurl_links: false });
+      const r = await slack("chat.postMessage", { channel: sl.channel, text: `<!channel> ${remTpl(rc.text, text)}${where}`, unfurl_links: false });
       if (r.ok) n++;
     }
     await meetSave(m, { ...sl, sent: [...sent] });
