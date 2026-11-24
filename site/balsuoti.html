@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-PVSZpHEwJFWEzccuvJm24NvFnjhSUwKnV/2H98jcHzI=' 'sha256-DnsH1u7Np5qEcphtmCBlURTXBETw2RpgC7MVCPPx6Kg=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Ei8uLIVixSSUjdGtWm16f046d7GmK1f1DJCKJJXWF8Q=' 'sha256-WvqKAH+X9gyuhqKazXgU5trVBllgfzLXZkoJ/Xz4B3I=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101010">
 <meta name="robots" content="noindex">
@@ -631,9 +631,9 @@ async function wishPhoneLook(pub, P){
   pub.style.setProperty('--pw-fbg', pollHex(P.fieldBg, '#0E0E10')); pub.style.setProperty('--pw-ft', pollHex(P.fieldText, '#FFFFFF')); pub.style.setProperty('--pl-dim', String(+P.dim || 0));
   pub.style.setProperty('--pw-sh', wishShadowCss(P.shadow));
   [['--pw-ts', P.titleSize, 24], ['--pw-ls', P.labelSize, 15], ['--pw-fs', P.fieldSize, 16], ['--pw-bs', P.btnSize, 17]].forEach(([k, v, d])=>pub.style.setProperty(k, (+v || d)+'px'));
-  const [f, bg, logo] = await Promise.all([P.gfont ? pollGFont(P.gfont) : false, P.bgImg ? pollAsset(P.bgImg) : null, P.logo ? pollAsset(P.logo) : null]);
+  const [f, bg, logo] = await Promise.all([pollFont({ font:P.font, gfont:P.gfont }), P.bgImg ? pollAsset(P.bgImg) : null, P.logo ? pollAsset(P.logo) : null]);
   if(pub._lk!==n) return null;
-  if(f) pub.style.setProperty('--pl-font', `"${P.gfont}", Inter, Arial, sans-serif`); else pub.style.removeProperty('--pl-font');
+  if(f) pub.style.setProperty('--pl-font', `"${f}", Inter, Arial, sans-serif`); else pub.style.removeProperty('--pl-font');
   if(bg){ pub.style.removeProperty('background'); pub.style.backgroundColor = pollHex(P.bg, '#111111'); pub.style.setProperty('--pl-bg', `url("${pollCssUrl(bg.url)}")`); pub.classList.add('has-bg'); }
   return logo ? `<div class="poll-wlogo"><img src="${esc(logo.url)}" alt="" style="max-height:${+P.logoH||90}px"></div>` : '';
 }
@@ -733,9 +733,9 @@ async function wishStageLook(st, B, w, h){
   st.style.setProperty('--wsh-s', (+B.size||64)+'px'); st.style.setProperty('--wsh-ns', (+B.nameSize||36)+'px'); st.style.setProperty('--wsh-fade', (B.fade!=null ? +B.fade : 1)+'s');
   st.classList.toggle('left', B.align==='left'); st.style.setProperty('--wsh-sh', wishShadowCss(B.shadow));
   const nm = st.querySelector('.wsh-nm'); if(nm && st.classList.contains('wsh-pv')) nm.style.display = B.showName===false ? 'none' : '';
-  const [f, bg, lg] = await Promise.all([B.gfont ? pollGFont(B.gfont) : false, B.bgImg ? pollAsset(B.bgImg) : null, B.logo ? pollAsset(B.logo) : null]);
+  const [f, bg, lg] = await Promise.all([pollFont({ font:B.font, gfont:B.gfont }), B.bgImg ? pollAsset(B.bgImg) : null, B.logo ? pollAsset(B.logo) : null]);
   if(st._lk!==n) return;   // a newer change is already being shown
-  st.style.fontFamily = (f ? `"${B.gfont}", ` : '')+'Inter, Arial, sans-serif';
+  st.style.fontFamily = (f ? `"${f}", ` : '')+'Inter, Arial, sans-serif';
   st.querySelector('.wsh-bgimg').style.backgroundImage = bg ? `url("${pollCssUrl(bg.url)}")` : '';
   st.querySelector('.wsh-logo').innerHTML = lg ? `<img src="${esc(lg.url)}" alt="" style="height:${+B.logoH||160}px">` : '';
 }

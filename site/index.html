@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-PVSZpHEwJFWEzccuvJm24NvFnjhSUwKnV/2H98jcHzI=' 'sha256-DnsH1u7Np5qEcphtmCBlURTXBETw2RpgC7MVCPPx6Kg=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Ei8uLIVixSSUjdGtWm16f046d7GmK1f1DJCKJJXWF8Q=' 'sha256-WvqKAH+X9gyuhqKazXgU5trVBllgfzLXZkoJ/Xz4B3I=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -21447,6 +21447,8 @@ function wishLookModal(tab){
   const fonts = (id, cur)=>`<div class="wsh-font"><input type="text" id="${id}" value="${esc(cur||'')}" list="wlGfList" autocomplete="off" placeholder="pvz. Montserrat" style="font-family:'${esc(cur||'')}',var(--font-body);"><small class="muted" id="${id}St"></small></div>`;
   // a size: the slider and the number (either can be used)
   const num = (id, label, val, min, max, step, unit)=>`<div class="field">${label}<div class="wsh-rng"><input type="range" data-rfor="${id}" min="${min}" max="${max}" step="${step||1}" value="${esc(String(val))}"><input type="number" id="${id}" min="${min}" step="${step||1}" value="${esc(String(val))}"><span class="muted">${unit||''}</span></div></div>`;
+  // an own font file (.ttf .otf .woff .woff2): used instead of the Google font while it is there
+  const ownFont = (id, o)=>`<div class="row" style="gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px;"><label class="btn small">⬆ Įkelti savo šriftą<input type="file" id="${id}F" accept=".ttf,.otf,.woff,.woff2,font/ttf,font/otf,font/woff,font/woff2" hidden></label>${o.font ? `<span class="muted">✓ ${esc(o.fontName || 'savas šriftas')} <small>(naudojamas vietoj Google)</small></span><button class="btn small danger-ghost" id="${id}X">Pašalinti</button>` : '<small class="muted">.ttf .otf .woff .woff2</small>'}</div>`;
   const fileRow = (id, has)=>`<div class="row" style="gap:6px;align-items:center;"><label class="btn small">Įkelti…<input type="file" id="${id}F" accept="image/*" hidden></label>${has ? `<button class="btn small danger-ghost" id="${id}X">Pašalinti</button><span class="muted">✓ yra</span>` : '<span class="muted">nėra</span>'}</div>`;
   const shadow = (pre, S)=>{ S = Object.assign({}, WSH_SH_DEF, S || {});
     return `<div class="wsh-sh"><label class="checkbox-row"><input type="checkbox" id="${pre}On" ${S.on ? 'checked' : ''}> <b>Šešėlis po tekstu</b></label>
@@ -21469,7 +21471,7 @@ function wishLookModal(tab){
       <div class="field">Fono paveikslėlis${fileRow('wlBg_', !!B.bgImg)}</div>
       <div class="field">Logotipas${fileRow('wlLogo', !!B.logo)}</div>
       ${num('wlLogoH', 'Logotipo aukštis', B.logoH, 20, 1000, 1, 'px')}
-      <div class="field">Šriftas (Google Fonts)${fonts('wlFont', B.gfont)}</div>
+      <div class="field">Šriftas (Google Fonts arba savas)${fonts('wlFont', B.gfont)}${ownFont('wlFn', B)}</div>
       <label class="field">Lygiavimas<select id="wlAlign"><option value="center" ${B.align==='center' ? 'selected' : ''}>Centre</option><option value="left" ${B.align==='left' ? 'selected' : ''}>Kairėje</option></select></label>
       <label class="field">Teksto spalva<input type="color" id="wlColor" value="${esc(pollHex(B.color, '#FFFFFF'))}"></label>
       ${num('wlSizeT', 'Teksto dydis', B.size, 12, 300, 1, 'px')}
@@ -21482,7 +21484,7 @@ function wishLookModal(tab){
       <label class="field">Fono spalva<input type="color" id="wpBg" value="${esc(pollHex(P.bg, '#111111'))}"></label>
       <div class="field">Fono paveikslėlis${fileRow('wpBg_', !!P.bgImg)}</div>
       ${num('wpDim', 'Fono patamsinimas', P.dim, 0, 0.9, 0.05, '')}
-      <div class="field">Šriftas (Google Fonts)${fonts('wpFont', P.gfont)}</div>
+      <div class="field">Šriftas (Google Fonts arba savas)${fonts('wpFont', P.gfont)}${ownFont('wpFn', P)}</div>
       <div class="field">Logotipas${fileRow('wpLogo', !!P.logo)}</div>
       ${num('wpLogoH', 'Logotipo aukštis', P.logoH, 20, 400, 1, 'px')}
       <label class="field">Teksto spalva<input type="color" id="wpColor" value="${esc(pollHex(P.color, '#FFFFFF'))}"></label>
@@ -21546,11 +21548,11 @@ function wishLookModal(tab){
   g('wlX').onclick = closeModal;
   const up = async (inp, obj, key, kind)=>{ const f = inp.files[0]; inp.value = ''; if(!f) return;
     try{ toast('Įkeliama…'); read(); const x = await pollPrepFile(f, kind); const data = await new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = rej; r.readAsDataURL(x.blob); });
-      const { id } = await pollApi('upload', { mime:x.mime, data }); obj[key] = 'asset:'+id; if(await save(false)){ toast('✓ Įkelta'); wishLookModal(tab); } }catch(e){ toast('Neįkelta: '+e.message); } };
-  const files = tab==='screen' ? [['wlBg_', B, 'bgImg', 'bg'], ['wlLogo', B, 'logo', 'logo']] : [['wpBg_', P, 'bgImg', 'bg'], ['wpLogo', P, 'logo', 'logo']];
+      const { id } = await pollApi('upload', { mime:x.mime, data }); obj[key] = 'asset:'+id; if(kind==='font') obj.fontName = f.name; if(await save(false)){ toast('✓ Įkelta'); wishLookModal(tab); } }catch(e){ toast('Neįkelta: '+e.message); } };
+  const files = tab==='screen' ? [['wlBg_', B, 'bgImg', 'bg'], ['wlLogo', B, 'logo', 'logo'], ['wlFn', B, 'font', 'font']] : [['wpBg_', P, 'bgImg', 'bg'], ['wpLogo', P, 'logo', 'logo'], ['wpFn', P, 'font', 'font']];
   files.forEach(([id, obj, key, kind])=>{
     g(id+'F').onchange = e=>up(e.target, obj, key, kind);
-    const x = g(id+'X'); if(x) x.onclick = async ()=>{ read(); delete obj[key]; if(await save(false)) wishLookModal(tab); };
+    const x = g(id+'X'); if(x) x.onclick = async ()=>{ read(); delete obj[key]; if(key==='font') delete obj.fontName; if(await save(false)) wishLookModal(tab); };
   });
   // the live preview: every change is shown at once
   let pvMode = 'form';
@@ -21608,9 +21610,9 @@ async function wishStageLook(st, B, w, h){
   st.style.setProperty('--wsh-s', (+B.size||64)+'px'); st.style.setProperty('--wsh-ns', (+B.nameSize||36)+'px'); st.style.setProperty('--wsh-fade', (B.fade!=null ? +B.fade : 1)+'s');
   st.classList.toggle('left', B.align==='left'); st.style.setProperty('--wsh-sh', wishShadowCss(B.shadow));
   const nm = st.querySelector('.wsh-nm'); if(nm && st.classList.contains('wsh-pv')) nm.style.display = B.showName===false ? 'none' : '';
-  const [f, bg, lg] = await Promise.all([B.gfont ? pollGFont(B.gfont) : false, B.bgImg ? pollAsset(B.bgImg) : null, B.logo ? pollAsset(B.logo) : null]);
+  const [f, bg, lg] = await Promise.all([pollFont({ font:B.font, gfont:B.gfont }), B.bgImg ? pollAsset(B.bgImg) : null, B.logo ? pollAsset(B.logo) : null]);
   if(st._lk!==n) return;   // a newer change is already being shown
-  st.style.fontFamily = (f ? `"${B.gfont}", ` : '')+'Inter, Arial, sans-serif';
+  st.style.fontFamily = (f ? `"${f}", ` : '')+'Inter, Arial, sans-serif';
   st.querySelector('.wsh-bgimg').style.backgroundImage = bg ? `url("${pollCssUrl(bg.url)}")` : '';
   st.querySelector('.wsh-logo').innerHTML = lg ? `<img src="${esc(lg.url)}" alt="" style="height:${+B.logoH||160}px">` : '';
 }
@@ -21693,9 +21695,9 @@ async function wishPhoneLook(pub, P){
   pub.style.setProperty('--pw-fbg', pollHex(P.fieldBg, '#0E0E10')); pub.style.setProperty('--pw-ft', pollHex(P.fieldText, '#FFFFFF')); pub.style.setProperty('--pl-dim', String(+P.dim || 0));
   pub.style.setProperty('--pw-sh', wishShadowCss(P.shadow));
   [['--pw-ts', P.titleSize, 24], ['--pw-ls', P.labelSize, 15], ['--pw-fs', P.fieldSize, 16], ['--pw-bs', P.btnSize, 17]].forEach(([k, v, d])=>pub.style.setProperty(k, (+v || d)+'px'));
-  const [f, bg, logo] = await Promise.all([P.gfont ? pollGFont(P.gfont) : false, P.bgImg ? pollAsset(P.bgImg) : null, P.logo ? pollAsset(P.logo) : null]);
+  const [f, bg, logo] = await Promise.all([pollFont({ font:P.font, gfont:P.gfont }), P.bgImg ? pollAsset(P.bgImg) : null, P.logo ? pollAsset(P.logo) : null]);
   if(pub._lk!==n) return null;
-  if(f) pub.style.setProperty('--pl-font', `"${P.gfont}", Inter, Arial, sans-serif`); else pub.style.removeProperty('--pl-font');
+  if(f) pub.style.setProperty('--pl-font', `"${f}", Inter, Arial, sans-serif`); else pub.style.removeProperty('--pl-font');
   if(bg){ pub.style.removeProperty('background'); pub.style.backgroundColor = pollHex(P.bg, '#111111'); pub.style.setProperty('--pl-bg', `url("${pollCssUrl(bg.url)}")`); pub.classList.add('has-bg'); }
   return logo ? `<div class="poll-wlogo"><img src="${esc(logo.url)}" alt="" style="max-height:${+P.logoH||90}px"></div>` : '';
 }
@@ -26477,7 +26479,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v825';
+const APP_VER = 'v826';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -56264,6 +56266,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-25 04:30', v:'v826', k:'new', t:'Linkėjimai: savo šriftas', f:'Apipavidalinime (Ekranas ir Telefonas) – „⬆ Įkelti savo šriftą“ (.ttf, .otf, .woff, .woff2). Įkeltas šriftas naudojamas vietoj Google šrifto ekrane, telefone ir peržiūroje; „Pašalinti“ – grįžtama prie Google šrifto.' },
   { d:'2026-11-25 04:00', v:'v825', k:'new', t:'Linkėjimai: emoji reakcijos ir atsisiuntimas TXT', f:'Įjungus „Emoji reakcijos“, QR puslapyje atsiranda „💬 Linkėjimai“: ekrane rodomi linkėjimai (naujausi viršuje), kuriems galima paspausti emoji – tik geros emocijos (❤️ 😍 😊 😂 🎉 👏 👍 🥂 🤗 🌟); paspaudus dar kartą – atšaukiama. Valdyme prie linkėjimo matyti, kiek kokių reakcijų jis gavo. „⬇ Atsisiųsti TXT“ – visi linkėjimai (arba tik rodomi ekrane) teksto failu su vardais, laiku ir reakcijomis.' },
   { d:'2026-11-25 03:00', v:'v824', k:'new', t:'Linkėjimai: žodžių filtras, aiškiau matomi gauti linkėjimai', f:'„Žodžių filtras“ (įjungiamas ir išjungiamas valdymo puslapio viršuje) ir „🚫 Draudžiami žodžiai“: keiksmažodžių sąrašas (lietuviški, rusiški, angliški – atpažįstami ir su skaičiais, pasikartojančiomis raidėmis, tarpais) ir savas draudžiamų žodžių sąrašas („žodis“ arba „žodis*“; galima įkelti iš TXT failo ir atsisiųsti). Telefone toks žodis ištrinamas iš karto, išsiųsti neleidžia ir serveris. Gauti linkėjimai – stambesniu šriftu, laukelis išsitempia per visą tekstą, gautų langas platesnis.' },
   { d:'2026-11-25 02:30', v:'v823', k:'new', t:'Linkėjimai: peržiūra redaguojant', f:'Apipavidalinimo lange šalia nustatymų – gyva peržiūra: Ekrano grafoje – ekranas tikru santykiu su pavyzdiniu linkėjimu, Telefono grafoje – telefonas su forma arba padėka. Kiekvienas pakeitimas (spalva, šriftas, dydis, šešėlis, paveikslėlis, tekstai) matomas iš karto.' },
