@@ -778,7 +778,18 @@ async function onMeeting(uid: string, id: string, mode: string) {
   // every invited e-mail gets its own link (answer, meeting page); an online meeting also gets its chat
   const tokens = mode === "cancel" ? new Map<string, string>() : await meetingGuests(m).catch((e) => { console.error("guests", (e as Error).message); return new Map<string, string>(); });
   if (m.online && mode !== "cancel") await meetingRoom(m).catch((e) => console.error("meeting room", (e as Error).message));
-  if (emails.length) {
+  // a real Google Calendar event (the account connected in Admin → Integracijos → Google): Google sends the invitations
+  // and puts it into everyone's calendar – then no letters of our own; not connected – our own letters as before
+  let gcal: { ok?: boolean; code?: string; error?: string; invited?: number } = {};
+  try {
+    const r = await fetch(`${env("SUPABASE_URL")}/functions/v1/meet`, { method: "POST", signal: AbortSignal.timeout(30000),
+      headers: { "Content-Type": "application/json", "x-cron-secret": env("CRON_SECRET"), apikey: env("SUPABASE_SERVICE_ROLE_KEY"), Authorization: `Bearer ${env("SUPABASE_SERVICE_ROLE_KEY")}` },
+      body: JSON.stringify({ action: "gcal", meeting_id: m.id, mode }) });
+    gcal = await r.json().catch(() => ({ ok: false, error: "HTTP " + r.status }));
+  } catch (e) { gcal = { ok: false, error: (e as Error).message }; }
+  const viaGoogle = !!gcal.ok;
+  if (gcal.error) failed.push("Google kalendorius: " + gcal.error);
+  if (emails.length && !viaGoogle) {
     const subject = (mode === "cancel" ? "Atšaukta: " : mode === "update" ? "Pakeista: " : "") + m.title + " – " + when;
     for (const e of emails) {
       try {
@@ -798,7 +809,7 @@ async function onMeeting(uid: string, id: string, mode: string) {
   if (team) {
     const sent = new Set((notified as { memberMails?: string[] }).memberMails ?? []);
     const peopleT = m.scope === "all" ? [organizer, "visa komanda"] : people;
-    for (const u of (m.attendees ?? []).filter((x) => x !== uid && byId.has(x) && (all || !sent.has(x)))) {
+    for (const u of (viaGoogle ? [] : (m.attendees ?? [])).filter((x) => x !== uid && byId.has(x) && (all || !sent.has(x)))) {
       const p = byId.get(u)!, to = String(p.google_email || p.email || "").trim().toLowerCase();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) continue;
       try {
@@ -829,7 +840,7 @@ async function onMeeting(uid: string, id: string, mode: string) {
       } }),
     });
   }
-  return { members: users.length, pushed: push.sent, mailed: mailed + memberMails, failed };
+  return { members: users.length, pushed: push.sent, mailed: mailed + memberMails, failed, google: viaGoogle ? (gcal.invited ?? 0) : null, google_code: gcal.code ?? null };
 }
 
 

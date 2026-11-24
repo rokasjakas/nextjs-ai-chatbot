@@ -465,7 +465,7 @@ async function reportMissing(rentalId: string, itemId: string, by: string): Prom
 }
 // ---- Calendar meetings: common (the whole team – #general) and private (chosen members – a private channel) ----
 // the announcement with @channel; reminders: 1 h and 30 min. before (meet_tick, every minute)
-type Mt = { id: string; title: string; meet_date: string; start_time: string | null; end_time: string | null; location: string; description: string;
+type Mt = { gcal?: { id?: string; meet?: string; cancelled?: boolean } | null; id: string; title: string; meet_date: string; start_time: string | null; end_time: string | null; location: string; description: string;
   attendees: string[]; created_by: string; scope?: string; online?: boolean; slack?: { channel?: string; ts?: string; private?: boolean; sent?: string[]; invited?: string[] } | null };
 const TZ = "Europe/Vilnius";
 const hm5 = (t: string | null) => String(t || "").slice(0, 5);
@@ -549,7 +549,8 @@ async function onMeeting(id: string, mode: string): Promise<Record<string, unkno
     `<!channel> ${head} *${md(m.title)}*`,
     `📅 ${md(mtWhen(m))}${m.location ? `  ·  📍 ${md(m.location)}` : ""}${m.online ? "  ·  💻 online" : ""}`,
     m.description ? `📝 ${md(m.description)}` : "",
-    "✉ Kvietimai išsiųsti el. paštu (su nuoroda „Pridėti į Google kalendorių“)",
+    m.gcal?.id && !m.gcal.cancelled ? "📅 Pakvietimai išsiųsti per Google kalendorių – įsidės į visų kalendorius" : "✉ Kvietimai išsiųsti el. paštu (su nuoroda „Pridėti į Google kalendorių“)",
+    m.gcal?.meet ? `💻 Google Meet: <${m.gcal.meet}>` : "",
   ].filter(Boolean);
   const p = await slack("chat.postMessage", { channel: sl.channel, text: lines.join("\n"), unfurl_links: false });
   if (!p.ok) throw new UserError("Slack žinutės išsiųsti nepavyko: " + p.error);

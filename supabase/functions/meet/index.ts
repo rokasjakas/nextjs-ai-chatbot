@@ -46,7 +46,10 @@ const corsHeaders = {
 };
 const APPROVED = ["admin", "pm", "office", "tech", "freelance", "runner"];
 const MEET_SCOPE = "https://www.googleapis.com/auth/meetings.space.created";
-const SCOPE = MEET_SCOPE + " openid email";
+// calendar.events: calendar meetings (Kalendorius → susitikimas) are made as real Google Calendar events of this account –
+// Google itself sends the invitations, they go into everyone's calendar (sql/meetings_gcal.sql)
+const CAL_SCOPE = "https://www.googleapis.com/auth/calendar.events";
+const SCOPE = MEET_SCOPE + " " + CAL_SCOPE + " openid email";
 export const VERSION = 6;
 const DAILY_HOURS = 4;   // a Daily room lives this long after the call starts
 
@@ -187,6 +190,57 @@ async function accessToken(): Promise<string | null> {
   }));
   cached = { token: String(j.access_token), exp: Date.now() + Number(j.expires_in || 3000) * 1000, key: row.connected_at };
   return cached.token;
+}
+// ---------- Google Calendar: a calendar meeting as an event of the connected account, every invited one an attendee ----------
+type Mtg = { id: string; title: string; meet_date: string; start_time: string | null; end_time: string | null; location: string; description: string;
+  attendees: string[] | null; emails: string[] | null; created_by: string; online: boolean | null; gcal: { id?: string; link?: string; meet?: string } | null };
+type Prof = { id: string; email: string | null; google_email: string | null; first_name: string | null; last_name: string | null; full_name: string | null };
+const hm5 = (t: string) => String(t).slice(0, 5);
+function addDay(d: string, n: number) { const [y, m, dd] = d.split("-").map(Number); return new Date(Date.UTC(y, m - 1, dd + n)).toISOString().slice(0, 10); }
+function addHour(t: string) { const [h, mi] = hm5(t).split(":").map(Number); const x = Math.min(23 * 60 + 59, h * 60 + mi + 60); return `${String(Math.floor(x / 60)).padStart(2, "0")}:${String(x % 60).padStart(2, "0")}`; }
+export function gcalBody(m: Mtg, attendees: string[], organizerName: string): Record<string, unknown> {
+  const TZ = "Europe/Vilnius";
+  const start = m.start_time ? { dateTime: `${m.meet_date}T${hm5(m.start_time)}:00`, timeZone: TZ } : { date: m.meet_date };
+  const end = m.start_time
+    ? { dateTime: `${m.meet_date}T${m.end_time && hm5(m.end_time) > hm5(m.start_time) ? hm5(m.end_time) : addHour(m.start_time)}:00`, timeZone: TZ }
+    : { date: addDay(m.meet_date, 1) };
+  const desc = [String(m.description || "").trim(), organizerName ? `Organizatorius: ${organizerName}` : ""].filter(Boolean).join("\n\n");
+  return { summary: m.title, description: desc, ...(m.location ? { location: m.location } : {}), start, end,
+    attendees: attendees.map((email) => ({ email })), guestsCanSeeOtherGuests: true, guestsCanInviteOthers: false, reminders: { useDefault: true },
+    ...(m.online ? { conferenceData: { createRequest: { requestId: m.id.replace(/-/g, "").slice(0, 20) + Date.now().toString(36), conferenceSolutionKey: { type: "hangoutsMeet" } } } } : {}) };
+}
+async function gcalSync(id: string, mode: string): Promise<Record<string, unknown>> {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return { ok: false, code: "error", error: "Nėra susitikimo." };
+  const [auth] = await db<{ email: string; scope: string | null }[]>("google_meet_auth?select=email,scope&id=eq.1");
+  if (!auth) return { ok: false, code: "not_connected" };
+  if (!String(auth.scope ?? "").split(/\s+/).includes(CAL_SCOPE)) return { ok: false, code: "no_calendar" };
+  const token = await accessToken(); if (!token) return { ok: false, code: "not_connected" };
+  const [m] = await db<Mtg[]>(`meetings?select=id,title,meet_date,start_time,end_time,location,description,attendees,emails,created_by,online,gcal&id=eq.${id}`);
+  if (!m) return { ok: false, code: "error", error: "Susitikimas nerastas." };
+  const H = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, base = "https://www.googleapis.com/calendar/v3/calendars/primary/events";
+  const g = m.gcal ?? {};
+  if (mode === "cancel") {
+    if (g.id) { try { await google(`${base}/${encodeURIComponent(g.id)}?sendUpdates=all`, { method: "DELETE", headers: H }); } catch (e) { if (![404, 410].includes((e as { status?: number }).status ?? 0)) throw e; } }
+    await db(`meetings?id=eq.${id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ gcal: { ...g, cancelled: true } }) });
+    return { ok: true, cancelled: true };
+  }
+  const ids = [...new Set([m.created_by, ...(m.attendees ?? [])].filter(Boolean))];
+  const ps = ids.length ? await db<Prof[]>(`profiles?select=id,email,google_email,first_name,last_name,full_name&id=in.(${ids.join(",")})`) : [];
+  const me = ps.find((p) => p.id === m.created_by);
+  const organizer = me ? ([me.first_name, me.last_name].filter(Boolean).join(" ") || me.full_name || me.email || "") : "";
+  const own = String(auth.email || "").toLowerCase();
+  const emails = [...new Set([...ps.map((p) => String(p.google_email || p.email || "").trim().toLowerCase()), ...(m.emails ?? []).map((e) => String(e).trim().toLowerCase())])]
+    .filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) && e !== own);
+  const body = JSON.stringify(gcalBody(m, emails, organizer));
+  let ev: Record<string, unknown> | null = null;
+  if (g.id && !(g as { cancelled?: boolean }).cancelled) {
+    try { ev = await google(`${base}/${encodeURIComponent(g.id)}?sendUpdates=all&conferenceDataVersion=1`, { method: "PATCH", headers: H, body }); }
+    catch (e) { if (![404, 410].includes((e as { status?: number }).status ?? 0)) throw e; }
+  }
+  if (!ev) ev = await google(`${base}?sendUpdates=all&conferenceDataVersion=1`, { method: "POST", headers: H, body });
+  const out = { id: String(ev.id ?? ""), link: String(ev.htmlLink ?? ""), meet: String(ev.hangoutLink ?? "") };
+  await db(`meetings?id=eq.${id}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ gcal: out }) });
+  return { ok: true, ...out, invited: emails.length, organizer: own };
 }
 export async function createSpace(token: string): Promise<string> {
   const call = (body: unknown) => google("https://meet.googleapis.com/v2/spaces", {
@@ -372,7 +426,7 @@ async function onCallback(url: URL): Promise<Response> {
     const at = new Date().toISOString();
     await db("google_meet_auth?on_conflict=id", {
       method: "POST", headers: { Prefer: "resolution=merge-duplicates" },
-      body: JSON.stringify({ id: 1, refresh_token: await encrypt(String(j.refresh_token)), email, connected_by: st.uid, connected_at: at }),
+      body: JSON.stringify({ id: 1, refresh_token: await encrypt(String(j.refresh_token)), email, connected_by: st.uid, connected_at: at, scope: String(j.scope ?? "") }),
     });
     cached = { token: String(j.access_token), exp: Date.now() + Number(j.expires_in || 3000) * 1000, key: at };
     return back(true, email);
@@ -392,6 +446,15 @@ export async function handle(req: Request): Promise<Response> {
     if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
     const body = await req.json().catch(() => ({}));
     if (body.action === "left") return json(await callLeft(String(body.call_id ?? ""), String(body.session_id ?? "")));
+    // a calendar meeting made / changed / cancelled (push-notify, with the cron secret): its Google Calendar event
+    if (body.action === "gcal") {
+      const secret = Deno.env.get("CRON_SECRET");
+      if (!secret || req.headers.get("x-cron-secret") !== secret) return json({ error: "Unauthorized" }, 401);
+      try { return json(await gcalSync(String(body.meeting_id ?? ""), String(body.mode ?? "new"))); }
+      catch (e) { const err = e as Error & { status?: number; code?: string };
+        if (err.code === "invalid_grant") cached = null;
+        return json({ ok: false, code: err.code === "invalid_grant" ? "not_connected" : "error", error: err.message }); }
+    }
     const who = await caller(req);
     if (!who || !APPROVED.includes(who.role)) return json({ error: "Reikia prisijungti." }, 401);
     const configured = !!(Deno.env.get("GOOGLE_CLIENT_ID") && Deno.env.get("GOOGLE_CLIENT_SECRET"));
@@ -412,8 +475,9 @@ export async function handle(req: Request): Promise<Response> {
     }
     if (body.action === "status") {
       if (!admin) return json({ error: "Tik administratoriui." }, 403);
-      const [row] = await db<{ email: string; connected_at: string }[]>("google_meet_auth?select=email,connected_at&id=eq.1");
-      return json({ version: VERSION, daily: dailyOn(), configured, connected: !!row, email: row?.email ?? "", connected_at: row?.connected_at ?? null, redirect_uri: selfUrl() });
+      const [row] = await db<{ email: string; connected_at: string; scope: string | null }[]>("google_meet_auth?select=email,connected_at,scope&id=eq.1");
+      return json({ version: VERSION, daily: dailyOn(), configured, connected: !!row, email: row?.email ?? "", connected_at: row?.connected_at ?? null, redirect_uri: selfUrl(),
+        calendar: !!row && String(row.scope ?? "").split(/\s+/).includes(CAL_SCOPE) });
     }
     if (body.action === "connect") {
       if (!admin) return json({ error: "Tik administratoriui." }, 403);
