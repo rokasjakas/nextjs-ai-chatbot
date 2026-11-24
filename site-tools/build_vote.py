@@ -40,7 +40,8 @@ NAMES = ['toast', 'esc', 'ltPlural', 'pollClock', 'pollTimeout', 'POLL_FONTS', '
          'pollPage', 'pollStops', 'pollGrad', 'pollCssUrl', 'pollBrandCss', 'POLL_SIZES', 'pollWinXY', 'POLL_ASSETS', 'pollAsset',
          'pollLookFast', 'pollResolve', 'pollNumOpts', 'PN_SRC', 'pollNameNorm', 'pollLev', 'pollWordNear', 'pollNameNear',
          'PV', 'pollVoterId', 'pollVotedKey', 'renderPollVote', 'pollVoteLoad', 'pollVoteLoad0', 'pollVoteMsg', 'pollVoteDraw',
-         'pollWriteDraw', 'pollMultiDraw', 'pollVoteTick', 'pollVoteSend', 'pollThanks', 'pollEnabled', 'pollOffWait', 'pollLoop']
+         'pollWriteDraw', 'pollMultiDraw', 'pollVoteTick', 'pollVoteSend', 'pollThanks', 'pollEnabled', 'pollOffWait', 'pollLoop',
+         'WSP', 'renderWishSubmit']
 code = '\n'.join(grab(n) for n in NAMES)
 sb_url = re.search(r'const SUPABASE_URL = "([^"]+)"', s).group(1)
 sb_key = re.search(r'const SUPABASE_KEY = "([^"]+)"', s).group(1)
@@ -57,9 +58,9 @@ const SBL = {{ rpc(name, args){{
 }} }};
 function getSb(){{ return SBL; }}
 async function pollSbReady(){{ return SBL; }}'''
-start = '''const token = new URLSearchParams(location.search).get('balsuoti');
+start = '''const qs = new URLSearchParams(location.search), token = qs.get('balsuoti'), wish = qs.get('linketi');
 document.getElementById('guestView').classList.remove('hidden');
-if(token) renderPollVote(token); else document.getElementById('guestView').innerHTML = '<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Ši nuoroda nebegalioja.</div></div></div>';'''
+if(wish) renderWishSubmit(wish); else if(token) renderPollVote(token); else document.getElementById('guestView').innerHTML = '<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Ši nuoroda nebegalioja.</div></div></div>';'''
 fonts = re.search(r'<link href="(https://fonts\.googleapis\.com/css2\?[^"]+)"', s).group(1)
 page = f'''<!DOCTYPE html>
 <html lang="lt">

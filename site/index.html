@@ -2,12 +2,12 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-jJGzhDPXS9vv7AZjKLWRAss9pndYd1tNGa3IWs+6bVM=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-WUKl3fv9yS2r4UC9JHl817D1oI0iyemjfsSQHXVtFB8=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-PlgMIGnME28dg+aoJS8toclOHbz1/W+StsxqXCWInHw=' 'sha256-+6JmdHvYmG7sNB7M1CTRax073cLIh4XC1mORHLRMQWU=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
-if(/[?&]balsuoti=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
+if(/[?&](balsuoti|linketi)=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
 if(/[?&]ilangas=1/.test(location.search)) document.documentElement.classList.add('es-embed');   // a quick window (greitasis langas) inside the app: only the page
 if(/[?&]rinkti=1/.test(location.search)) document.documentElement.classList.add('es-pick');      // a new quick window: the left menu stays to pick the page
 </script>
@@ -4421,6 +4421,31 @@ span.uz-pill{background-image:none !important;}
 #reloadHdr.spin svg{animation:rlSpin .8s linear infinite;} @keyframes rlSpin{to{transform:rotate(360deg);}}
 .mt-tpl{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:6px;padding-bottom:10px;border-bottom:1px solid var(--border);}
 .cal-mt-meet{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid #1a73e8;background:color-mix(in srgb, #1a73e8 14%, transparent);} .cal-mt-meet-t{font-weight:700;} .cal-mt-meet-l{color:var(--text-dim);}
+
+.wsh-mode{margin-left:6px;}
+.wsh-links{margin-bottom:12px;} .wsh-lk{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;} .wsh-qr canvas{width:160px;height:160px;border-radius:8px;background:#fff;} .wsh-lk-t{flex:1;min-width:260px;}
+.wsh-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start;} @media(max-width:900px){ .wsh-cols{grid-template-columns:1fr;} }
+.wsh-cols > .wsh-col{margin:0;}
+.wsh-ch{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px;} .wsh-ch h3{margin:0;font-size:16px;display:flex;gap:6px;align-items:center;}
+.wsh-int{display:flex;align-items:center;gap:6px;font-size:13px;} .wsh-int input{width:70px;}
+.wsh-list{display:flex;flex-direction:column;gap:8px;max-height:65vh;overflow:auto;}
+.wsh-w{border:1px solid var(--border);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--panel);} .wsh-show .wsh-w{border-left:4px solid var(--teal);} .wsh-w.in{border-left:4px solid var(--amber);}
+.wsh-w textarea{width:100%;resize:vertical;} .wsh-tx{white-space:pre-wrap;font-size:14px;} .wsh-nm{color:var(--text-dim);font-size:13px;}
+.wsh-act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;} .wsh-ok{background:color-mix(in srgb, var(--teal) 20%, transparent);border-color:var(--teal);font-weight:700;}
+.wsh-stage{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;padding:80px;box-sizing:border-box;text-align:center;}
+.wsh-stage.left{align-items:flex-start;text-align:left;}
+.wsh-bgimg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0;}
+.wsh-logo{position:relative;z-index:1;} .wsh-logo img{display:block;max-width:100%;object-fit:contain;}
+.wsh-card{position:relative;z-index:1;opacity:0;transform:translateY(12px);transition:opacity var(--wsh-fade,1s) ease, transform var(--wsh-fade,1s) ease;max-width:100%;}
+.wsh-card.on{opacity:1;transform:none;}
+.wsh-stage .wsh-tx{color:var(--wsh-c,#fff);font-size:var(--wsh-s,64px);line-height:1.25;font-weight:600;white-space:pre-wrap;}
+.wsh-stage .wsh-nm{color:var(--wsh-nc,#F35E7D);font-size:var(--wsh-ns,36px);margin-top:.6em;font-weight:700;}
+.poll-wlogo{text-align:center;margin-bottom:10px;} .poll-wlogo img{max-height:90px;max-width:80%;object-fit:contain;}
+.poll-wh{text-align:center;margin:0 0 14px;font-size:22px;}
+.poll-wf{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-size:14px;} .poll-wf em{color:var(--text-dim);font-style:normal;font-size:12px;}
+.poll-wf textarea, .poll-wf input{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--input,#0E0E10);color:var(--text);font:inherit;font-size:16px;}
+.poll-wf small{align-self:flex-end;color:var(--text-dim);font-size:12px;}
+.poll-wbtn{width:100%;padding:14px;border-radius:12px;border:0;background:var(--accent,#F35E7D);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer;margin-top:4px;} .poll-wbtn:disabled{opacity:.6;} .poll-wbtn.ghost{background:transparent;border:1px solid var(--border);color:var(--text);margin-top:14px;}
 .pm-none{margin-top:6px;font-size:12.5px;}
 @media(max-width:520px){ .pm-cd{height:36px;} .pm-note{flex-direction:column;align-items:stretch;gap:2px;} }
 .pp-bst-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
@@ -15248,6 +15273,8 @@ function initAuthAndRouting(){
     renderTtPinReset(ttPinTok);
     return;
   }
+  const wishSc = params.get('linkejimai'), wishIn = params.get('linketi');
+  if(wishSc || wishIn){ document.getElementById('guestView').classList.remove('hidden'); if(wishSc) renderWishScreen(wishSc); else renderWishSubmit(wishIn); return; }
   const pollVote = params.get('balsuoti'), pollRes = params.get('rezultatai'), pollEd = params.get('balsavimai');
   if(pollVote || pollRes || pollEd){
     document.getElementById('guestView').classList.remove('hidden');
@@ -21190,6 +21217,261 @@ async function renderPollEditorLink(key){
   pollSetsView(document.getElementById('pollEdRoot'), false);
 }
 
+/* ============================================================
+   Linkėjimai (sql/wishes.sql): people scan the board's QR code (?linketi=<raktas>) and write a wish (a name is optional);
+   on the control page – two windows: what came in (edit, ✓ – to the screen) and what is shown; the screen link
+   (?linkejimai=<raktas>) shows the chosen wishes one after another with a fade, N seconds each, in its own look and size.
+   The same control as the votings: an administrator, or whoever has the editor link (poll_key_ok).
+   ============================================================ */
+const WSH = { boards:[], cur:null, list:[], t:null, root:null, admin:false };
+const WSH_SIZES = [[1920,1080,'Full HD 1920×1080'],[1080,1920,'Vertikalus 1080×1920'],[3840,2160,'4K 3840×2160'],[1280,720,'HD 1280×720'],[3840,1080,'Platus 3840×1080']];
+async function wishApi(action, args){
+  const { data, error } = await getSb().rpc('wish_admin', { p_key:POLL.key || '', p_action:action, p_args:args || {} });
+  if(error){ const m = error.message || ''; throw new Error(/wish_admin|does not exist|schema cache/i.test(m) ? 'Linkėjimai dar neįjungti – Supabase paleisk wishes.sql.' : m); }
+  return data;
+}
+function wishModeHtml(on){
+  return `<div class="viewmode-toggle wsh-mode"><button type="button" data-wmode="vote" class="${on==='vote' ? 'active' : ''}">🗳 Balsavimai</button><button type="button" data-wmode="wish" class="${on==='wish' ? 'active' : ''}">💌 Linkėjimai</button></div>`;
+}
+function wishModeBind(root, admin){
+  root.querySelectorAll('[data-wmode]').forEach(b=>b.onclick = ()=>{ wishStop(); if(b.dataset.wmode==='wish') wishBoardsView(root, admin); else pollSetsView(root, admin); });
+}
+function wishStop(){ if(WSH.t){ clearInterval(WSH.t); WSH.t = null; } }
+async function wishBoardsView(root, admin){
+  WSH.root = root; WSH.admin = admin; wishStop(); if(typeof pollStopTick==='function') pollStopTick();
+  let boards;
+  try{ boards = await wishApi('boards'); }
+  catch(e){ root.innerHTML = `<div class="card"><div class="row" style="gap:8px;align-items:center;"><h2 class="section-title" style="margin:0;">Linkėjimai</h2>${wishModeHtml('wish')}</div><div class="mail-err" style="margin-top:10px;">${esc(e.message)}</div></div>`; wishModeBind(root, admin); return; }
+  WSH.boards = boards || [];
+  root.innerHTML = `<div class="${admin ? 'tabpanel ' : ''}poll-sets">
+    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;">${admin ? '<button class="btn small" id="wshBack">‹ Admin</button>' : ''}<h2 class="section-title" style="margin:0;">Linkėjimai</h2>${wishModeHtml('wish')}<span style="flex:1"></span><button class="btn primary small" id="wshNew">+ Nauji linkėjimai</button></div>
+    <div class="card">${WSH.boards.map(x=>`<button class="poll-li" data-wb="${esc(x.id)}">${+x.new ? `<span class="poll-st st-live">${x.new} nauji</span>` : ''}<b>${esc(x.name)}</b><small>rodoma ekrane: ${+x.shown||0}${x.open ? '' : ' · rinkimas baigtas'}</small></button>`).join('') || '<div class="empty-state">Linkėjimų dar nėra. Spausk „+ Nauji linkėjimai“.</div>'}
+    <p class="section-sub">Žmonės nuskenuoja QR kodą ir parašo linkėjimą (vardas – nebūtinas). Tu peržiūri, pataisai ir ✓ – linkėjimas atsiranda ekrane; ekrane jie rodomi vienas po kito.</p></div></div>`;
+  const back = document.getElementById('wshBack'); if(back) back.onclick = renderAdminTab;
+  wishModeBind(root, admin);
+  document.getElementById('wshNew').onclick = async ()=>{
+    const name = await uiPrompt('Linkėjimų pavadinimas (pvz. renginio)', '', { yes:'Sukurti' }); if(name===null) return;
+    try{ const b = await wishApi('board_create', { name }); wishManager(root, admin, b); }catch(e){ toast(e.message); }
+  };
+  root.querySelectorAll('[data-wb]').forEach(b=>b.onclick = ()=>wishManager(root, admin, WSH.boards.find(x=>x.id===b.dataset.wb)));
+}
+// the control page: the links, and the two windows
+async function wishManager(root, admin, board){
+  WSH.root = root; WSH.admin = admin; WSH.cur = board; wishStop();
+  root.innerHTML = `<div class="${admin ? 'tabpanel ' : ''}wsh-mgr" id="wshMgr">
+    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;"><button class="btn small" id="wshBackL">‹ Visi linkėjimai</button>
+      <input type="text" id="wshName" class="poll-setname" maxlength="200" value="${esc(board.name)}" title="Pavadinimas – rodomas rašymo puslapyje">
+      <span style="flex:1"></span>
+      <label class="checkbox-row" title="Kai išjungta – QR puslapis praneša, kad rinkimas baigtas"><input type="checkbox" id="wshOpen" ${board.open ? 'checked' : ''}> Priimti linkėjimus</label>
+      <button class="btn small" id="wshLook">🎨 Apipavidalinimas ir dydis</button><button class="btn small danger-ghost" id="wshDel" title="Ištrinti šiuos linkėjimus su visais įrašais">${slIcon('bin')}</button></div>
+    <div class="card wsh-links" id="wshLinks"></div>
+    <div class="wsh-cols">
+      <section class="card wsh-col wsh-show"><div class="wsh-ch"><h3>📺 Rodoma ekrane <span class="count-badge" id="wshShowN">0</span></h3>
+        <label class="wsh-int">Rodyti po <input type="number" id="wshInt" min="2" max="600" value="${esc(String(board.interval_sec||10))}"> s</label></div>
+        <div class="wsh-list" id="wshShow"></div>
+        <button class="btn small" id="wshAdd" style="margin-top:8px;">+ Pridėti linkėjimą ranka</button></section>
+      <section class="card wsh-col wsh-in"><div class="wsh-ch"><h3>📥 Gauti linkėjimai <span class="count-badge" id="wshInN">0</span></h3><small class="muted">pataisyk, jei reikia, ir spausk ✓</small></div>
+        <div class="wsh-list" id="wshIn"></div></section>
+    </div></div>`;
+  document.getElementById('wshBackL').onclick = ()=>{ wishStop(); wishBoardsView(root, admin); };
+  document.getElementById('wshName').onchange = async e=>{ const n = e.target.value.trim(); if(!n){ e.target.value = WSH.cur.name; return; } try{ Object.assign(WSH.cur, await wishApi('board_update', { id:WSH.cur.id, name:n })); toast('✓ Išsaugota'); }catch(x){ toast(x.message); } };
+  document.getElementById('wshOpen').onchange = async e=>{ try{ Object.assign(WSH.cur, await wishApi('board_update', { id:WSH.cur.id, open:e.target.checked })); toast(e.target.checked ? '✓ Linkėjimai priimami' : 'Linkėjimų rinkimas baigtas'); }catch(x){ toast(x.message); } };
+  document.getElementById('wshInt').onchange = async e=>{ const v = Math.max(2, Math.min(600, parseInt(e.target.value, 10) || 10)); e.target.value = v; try{ Object.assign(WSH.cur, await wishApi('board_update', { id:WSH.cur.id, interval_sec:v })); toast('✓ Kiekvienas linkėjimas rodomas '+v+' s'); }catch(x){ toast(x.message); } };
+  document.getElementById('wshLook').onclick = ()=>wishLookModal();
+  document.getElementById('wshDel').onclick = async ()=>{ if(!(await uiConfirm('Ištrinti „'+WSH.cur.name+'“ su visais linkėjimais? QR kodas ir ekrano nuoroda nebeveiks.', { yes:'Ištrinti' }))) return;
+    try{ await wishApi('board_delete', { id:WSH.cur.id }); toast('Ištrinta.'); wishBoardsView(root, admin); }catch(x){ toast(x.message); } };
+  document.getElementById('wshAdd').onclick = async ()=>{ const t = await uiAsk('Linkėjimas', { input:true, area:true, yes:'Pridėti į ekraną' }); if(!t || !String(t).trim()) return;
+    const n = await uiPrompt('Vardas (nebūtina)', ''); try{ await wishApi('wish_add', { board:WSH.cur.id, text:String(t).trim(), name:n || '' }); wishLoad(true); }catch(x){ toast(x.message); } };
+  wishLinks();
+  const mgr = document.getElementById('wshMgr');
+  mgr.addEventListener('click', wishClick);
+  mgr.addEventListener('change', wishEdit);
+  await wishLoad(true);
+  WSH.t = setInterval(()=>{ if(!document.getElementById('wshMgr')){ wishStop(); return; } if(document.visibilityState==='visible') wishLoad(false); }, 3000);
+}
+function wishLinks(){
+  const box = document.getElementById('wshLinks'); if(!box) return;
+  const b = WSH.cur, v = pollUrl('linketi', b.submit_token), r = pollUrl('linkejimai', b.screen_token);
+  box.innerHTML = `<div class="wsh-lk"><div class="wsh-qr"><canvas id="wshQr" width="160" height="160"></canvas></div>
+    <div class="wsh-lk-t"><div class="poll-lk-t">QR kodas – rašyti linkėjimą</div><div class="poll-url">${esc(v)}</div>
+      <div class="row" style="gap:6px;flex-wrap:wrap;"><button class="btn primary small" id="wshQrDl">⬇ QR (PNG)</button><button class="btn small" data-wcopy="${esc(v)}">Kopijuoti</button><a class="btn small" href="${esc(v)}" target="_blank" rel="noopener">Atidaryti</a></div>
+      <div class="poll-lk-t" style="margin-top:12px;">Ekrano nuoroda (LED, OBS) · ${b.w}×${b.h}</div><div class="poll-url">${esc(r)}</div>
+      <div class="row" style="gap:6px;flex-wrap:wrap;"><button class="btn primary small" data-wcopy="${esc(r)}">Kopijuoti</button><a class="btn small" href="${esc(r)}" target="_blank" rel="noopener">Atidaryti ekraną</a></div></div></div>`;
+  box.querySelectorAll('[data-wcopy]').forEach(c=>c.onclick = async ()=>{ try{ await navigator.clipboard.writeText(c.dataset.wcopy); toast('Nuoroda nukopijuota.'); }catch(e){ await uiPrompt('Nuoroda:', c.dataset.wcopy); } });
+  const c = document.getElementById('wshQr'); pollQrCanvas(c, v, 160, { color:'#000000', bg:'#ffffff', clear:false }).catch(()=>{});
+  document.getElementById('wshQrDl').onclick = async ()=>{ try{ const k = await pollQrCanvas(document.createElement('canvas'), v, 1200, { color:'#000000', bg:'#ffffff', clear:false });
+    const a = document.createElement('a'); a.href = k.toDataURL('image/png'); a.download = 'linkejimai-QR.png'; document.body.appendChild(a); a.click(); a.remove(); }catch(e){ toast('Nepavyko sukurti QR kodo.'); } };
+}
+// the wishes: redrawn only when something changed (and never while one is being edited)
+async function wishLoad(force){
+  let list; try{ list = await wishApi('list', { board:WSH.cur.id }); }catch(e){ if(force) toast(e.message); return; }
+  list = list || [];
+  const key = JSON.stringify(list.map(w=>[w.id, w.status, w.text, w.name, w.sort]));
+  if(!force && key===WSH.key) return;
+  const ed = document.activeElement && document.activeElement.closest && document.activeElement.closest('#wshIn, #wshShow');
+  if(!force && ed){ WSH.pending = true; return; }
+  WSH.key = key; WSH.list = list; WSH.pending = false;
+  const shown = list.filter(w=>w.status==='approved').sort((a, b)=>(+a.sort||0) - (+b.sort||0)), inc = list.filter(w=>w.status==='new');
+  const item = (w, inbox)=>`<div class="wsh-w ${inbox ? 'in' : ''}" data-w="${esc(w.id)}">
+      ${inbox ? `<textarea data-wf="text" rows="2" maxlength="600">${esc(w.text)}</textarea><input type="text" data-wf="name" maxlength="80" placeholder="Vardas (nebūtina)" value="${esc(w.name||'')}">`
+        : `<div class="wsh-tx">${esc(w.text)}</div>${w.name ? `<div class="wsh-nm">— ${esc(w.name)}</div>` : ''}`}
+      <div class="wsh-act">${inbox ? `<button class="btn small wsh-ok" data-wa="ok" title="Rodyti ekrane">✓ Į ekraną</button><button class="btn small danger-ghost" data-wa="hide" title="Nerodyti (paslėpti)">${slIcon('bin')}</button>`
+        : `<button class="icon-btn" data-wa="up" title="Aukščiau">↑</button><button class="icon-btn" data-wa="down" title="Žemiau">↓</button><button class="icon-btn" data-wa="edit" title="Pataisyti">${slIcon('pencil')}</button><button class="icon-btn" data-wa="back" title="Grąžinti į gautus (nebeberodyti)">↩</button><button class="icon-btn" data-wa="hide" title="Ištrinti">${slIcon('bin')}</button>`}</div>
+      <small class="muted">${esc(new Date(w.created_at).toLocaleTimeString('lt-LT', { hour:'2-digit', minute:'2-digit' }))}${w.edited ? ' · pataisyta' : ''}</small></div>`;
+  document.getElementById('wshShow').innerHTML = shown.map(w=>item(w, false)).join('') || '<div class="empty-state">Spausk ✓ prie gauto linkėjimo – jis atsiras čia ir ekrane.</div>';
+  document.getElementById('wshIn').innerHTML = inc.map(w=>item(w, true)).join('') || '<div class="empty-state">Naujų linkėjimų nėra. Jie atsiras čia patys.</div>';
+  document.getElementById('wshShowN').textContent = shown.length; document.getElementById('wshInN').textContent = inc.length;
+}
+async function wishEdit(e){
+  const f = e.target.closest('[data-wf]'); if(!f) return;
+  const row = f.closest('[data-w]'), id = row.dataset.w;
+  const text = row.querySelector('[data-wf="text"]').value.trim(), name = row.querySelector('[data-wf="name"]').value.trim();
+  if(!text){ toast('Linkėjimas negali būti tuščias.'); return; }
+  try{ await wishApi('wish_update', { id, text, name }); const w = WSH.list.find(x=>x.id===id); if(w){ w.text = text; w.name = name; w.edited = true; } }catch(x){ toast(x.message); }
+  if(WSH.pending) setTimeout(()=>wishLoad(false), 50);
+}
+async function wishClick(e){
+  const b = e.target.closest('[data-wa]'); if(!b) return;
+  const row = b.closest('[data-w]'), id = row.dataset.w, a = b.dataset.wa, w = WSH.list.find(x=>x.id===id); if(!w) return;
+  try{
+    if(a==='ok'){ const text = row.querySelector('[data-wf="text"]').value.trim(), name = row.querySelector('[data-wf="name"]').value.trim();
+      if(!text){ toast('Linkėjimas negali būti tuščias.'); return; }
+      if(text!==w.text || name!==(w.name||'')) await wishApi('wish_update', { id, text, name });
+      await wishApi('wish_status', { id, status:'approved' }); }
+    else if(a==='hide'){ if(!(await uiConfirm('Ištrinti šį linkėjimą?', { yes:'Ištrinti' }))) return; await wishApi('wish_delete', { id }); }
+    else if(a==='back') await wishApi('wish_status', { id, status:'new' });
+    else if(a==='edit'){ const t = await uiAsk('Pataisyti linkėjimą', { input:true, area:true, value:w.text, yes:'Išsaugoti' }); if(t===null || t===false || !String(t).trim()) return;
+      const n = await uiPrompt('Vardas (nebūtina)', w.name || ''); await wishApi('wish_update', { id, text:String(t).trim(), name:n===null ? (w.name||'') : n }); }
+    else if(a==='up' || a==='down'){
+      const shown = WSH.list.filter(x=>x.status==='approved').sort((p, q)=>(+p.sort||0) - (+q.sort||0)), i = shown.findIndex(x=>x.id===id), j = a==='up' ? i-1 : i+1;
+      if(j < 0 || j >= shown.length) return;
+      const o = shown[j], si = +shown[i].sort||i, so = +o.sort||j;
+      await wishApi('wish_sort', { id, sort:so }); await wishApi('wish_sort', { id:o.id, sort:si });
+    }
+    await wishLoad(true);
+  }catch(x){ toast(x.message); }
+}
+// the look of the screen and its size
+function wishLookModal(){
+  const b = WSH.cur, B = Object.assign({ bg:'#101010', color:'#FFFFFF', nameColor:'#F35E7D', size:64, nameSize:36, logoH:160, align:'center', showName:true, gfont:'Montserrat', fade:1 }, b.brand || {});
+  const sizes = WSH_SIZES.map(([w, h, l])=>`<option value="${w}x${h}" ${b.w===w && b.h===h ? 'selected' : ''}>${l}</option>`).join('');
+  openModal(`<h3 style="margin:0 0 10px;">🎨 Ekrano apipavidalinimas ir dydis</h3>
+    <div class="grid cols-2" style="gap:10px;">
+      <label class="field">Dydis<select id="wlSize">${sizes}<option value="" ${WSH_SIZES.some(([w, h])=>b.w===w && b.h===h) ? '' : 'selected'}>Savas dydis</option></select></label>
+      <div class="field">Savas dydis (px)<div class="row" style="gap:6px;"><input type="number" id="wlW" min="100" max="8000" value="${b.w}"><span class="muted">×</span><input type="number" id="wlH" min="100" max="8000" value="${b.h}"></div></div>
+      <label class="field">Fono spalva<input type="color" id="wlBg" value="${esc(pollHex(B.bg, '#101010'))}"></label>
+      <div class="field">Fono paveikslėlis<div class="row" style="gap:6px;align-items:center;"><label class="btn small">Įkelti…<input type="file" id="wlBgF" accept="image/*" hidden></label>${B.bgImg ? '<button class="btn small danger-ghost" id="wlBgX">Pašalinti</button><span class="muted">✓ yra</span>' : '<span class="muted">nėra</span>'}</div></div>
+      <div class="field">Logotipas<div class="row" style="gap:6px;align-items:center;"><label class="btn small">Įkelti…<input type="file" id="wlLogoF" accept="image/*" hidden></label>${B.logo ? '<button class="btn small danger-ghost" id="wlLogoX">Pašalinti</button><span class="muted">✓ yra</span>' : '<span class="muted">nėra</span>'}</div></div>
+      <label class="field">Logotipo aukštis (px)<input type="number" id="wlLogoH" min="20" max="2000" value="${esc(String(B.logoH))}"></label>
+      <label class="field">Šriftas<select id="wlFont">${POLL_GF_TOP.map(f=>`<option ${B.gfont===f ? 'selected' : ''}>${esc(f)}</option>`).join('')}</select></label>
+      <label class="field">Lygiavimas<select id="wlAlign"><option value="center" ${B.align==='center' ? 'selected' : ''}>Centre</option><option value="left" ${B.align==='left' ? 'selected' : ''}>Kairėje</option></select></label>
+      <label class="field">Teksto spalva<input type="color" id="wlColor" value="${esc(pollHex(B.color, '#FFFFFF'))}"></label>
+      <label class="field">Teksto dydis (px)<input type="number" id="wlSizeT" min="12" max="600" value="${esc(String(B.size))}"></label>
+      <label class="field">Vardo spalva<input type="color" id="wlNameC" value="${esc(pollHex(B.nameColor, '#F35E7D'))}"></label>
+      <label class="field">Vardo dydis (px)<input type="number" id="wlNameS" min="10" max="400" value="${esc(String(B.nameSize))}"></label>
+      <label class="field">Perėjimas (s)<input type="number" id="wlFade" min="0" max="5" step="0.1" value="${esc(String(B.fade))}"></label>
+      <label class="checkbox-row" style="align-self:end;"><input type="checkbox" id="wlShowName" ${B.showName ? 'checked' : ''}> Rodyti vardą</label>
+    </div>
+    <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;"><a class="btn small" href="${esc(pollUrl('linkejimai', b.screen_token))}" target="_blank" rel="noopener">Atidaryti ekraną</a><span class="row" style="gap:8px;"><button class="btn" id="wlX">Uždaryti</button><button class="btn primary" id="wlSave">💾 Išsaugoti</button></span></div>`);
+  const g = id=>document.getElementById(id);
+  g('wlSize').onchange = e=>{ const [w, h] = (e.target.value||'').split('x'); if(w){ g('wlW').value = w; g('wlH').value = h; } };
+  g('wlX').onclick = closeModal;
+  const up = async (inp, key)=>{ const f = inp.files[0]; inp.value = ''; if(!f) return;
+    try{ toast('Įkeliama…'); const x = await pollPrepFile(f, key==='logo' ? 'logo' : 'bg'); const data = await new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = rej; r.readAsDataURL(x.blob); });
+      const { id } = await pollApi('upload', { mime:x.mime, data }); B[key] = 'asset:'+id; await save(false); toast('✓ Įkelta'); wishLookModal(); }catch(e){ toast('Neįkelta: '+e.message); } };
+  g('wlBgF').onchange = e=>up(e.target, 'bgImg'); g('wlLogoF').onchange = e=>up(e.target, 'logo');
+  const bx = g('wlBgX'); if(bx) bx.onclick = async ()=>{ delete B.bgImg; await save(false); wishLookModal(); };
+  const lx = g('wlLogoX'); if(lx) lx.onclick = async ()=>{ delete B.logo; await save(false); wishLookModal(); };
+  const save = async close=>{
+    Object.assign(B, { bg:g('wlBg').value, color:g('wlColor').value, nameColor:g('wlNameC').value, size:+g('wlSizeT').value||64, nameSize:+g('wlNameS').value||36,
+      logoH:+g('wlLogoH').value||160, gfont:g('wlFont').value, align:g('wlAlign').value, showName:g('wlShowName').checked, fade:Math.max(0, Math.min(5, +g('wlFade').value||0)) });
+    const w = Math.max(100, Math.min(8000, +g('wlW').value||1920)), h = Math.max(100, Math.min(8000, +g('wlH').value||1080));
+    try{ Object.assign(WSH.cur, await wishApi('board_update', { id:WSH.cur.id, brand:B, w, h })); if(close){ closeModal(); toast('✓ Apipavidalinimas išsaugotas'); } wishLinks(); }catch(x){ toast(x.message); }
+  };
+  g('wlSave').onclick = ()=>save(true);
+}
+// the screen (?linkejimai=<raktas>): the chosen wishes one after another, each N seconds, with a fade
+const WS = { token:'', d:null, i:-1, at:0, key:'' };
+async function renderWishScreen(token){
+  WS.token = token;
+  const el = document.getElementById('guestView'); el.classList.add('poll-resv');
+  el.innerHTML = `<div class="poll-rs-wrap"><div class="poll-rs wsh-stage" id="wshStage"><div class="wsh-bgimg" id="wshBgImg"></div><div class="wsh-logo" id="wshLogo"></div><div class="wsh-card" id="wshCard"></div></div></div>`;
+  document.title = 'Linkėjimai · Event Solutions';
+  window.addEventListener('resize', wishFit);
+  const load = async ()=>{
+    const { data, error } = await getSb().rpc('wish_screen', { p_token:token });
+    if(error || !data){ document.getElementById('wshCard').innerHTML = '<div class="wsh-tx">Nuoroda nebegalioja.</div>'; return; }
+    if(data.off){ document.getElementById('wshCard').innerHTML = ''; return; }
+    const k = JSON.stringify([data.brand, data.w, data.h]);
+    WS.d = data; if(k!==WS.key){ WS.key = k; await wishScreenLook(); }
+  };
+  await load(); setInterval(()=>{ if(document.visibilityState==='visible') load(); }, 4000);
+  setInterval(wishScreenTick, 250); wishScreenTick();
+}
+async function wishScreenLook(){
+  const d = WS.d, B = d.brand || {}, st = document.getElementById('wshStage'); if(!st) return;
+  st.style.width = d.w+'px'; st.style.height = d.h+'px'; st.style.background = pollHex(B.bg, '#101010');
+  st.style.setProperty('--wsh-c', pollHex(B.color, '#FFFFFF')); st.style.setProperty('--wsh-nc', pollHex(B.nameColor, '#F35E7D'));
+  st.style.setProperty('--wsh-s', (+B.size||64)+'px'); st.style.setProperty('--wsh-ns', (+B.nameSize||36)+'px'); st.style.setProperty('--wsh-fade', (B.fade!=null ? +B.fade : 1)+'s');
+  st.classList.toggle('left', B.align==='left');
+  const f = B.gfont && (await pollGFont(B.gfont)) ? `"${B.gfont}", ` : ''; st.style.fontFamily = f+'Inter, Arial, sans-serif';
+  const bg = B.bgImg ? await pollAsset(B.bgImg) : null; document.getElementById('wshBgImg').style.backgroundImage = bg ? `url("${pollCssUrl(bg.url)}")` : '';
+  const lg = B.logo ? await pollAsset(B.logo) : null; document.getElementById('wshLogo').innerHTML = lg ? `<img src="${esc(lg.url)}" alt="" style="height:${+B.logoH||160}px">` : '';
+  wishFit();
+}
+function wishFit(){
+  const st = document.getElementById('wshStage'), d = WS.d; if(!st || !d) return;
+  const s = Math.min(window.innerWidth / d.w, window.innerHeight / d.h);
+  st.style.transform = `scale(${s})`; st.parentNode.style.width = Math.round(d.w*s)+'px'; st.parentNode.style.height = Math.round(d.h*s)+'px';
+}
+function wishScreenTick(){
+  const d = WS.d, card = document.getElementById('wshCard'); if(!d || !card) return;
+  const list = d.wishes || [], B = d.brand || {};
+  if(!list.length){ if(card.dataset.id){ card.classList.remove('on'); card.dataset.id = ''; } return; }
+  const sec = Math.max(2, +d.interval_sec || 10), now = Date.now();
+  // the wish shown stays its time; then the next one (a new one added keeps its place in the order)
+  const cur = list.findIndex(w=>w.id===card.dataset.id);
+  if(cur >= 0 && now - WS.at < sec*1000) return;
+  const next = list[(cur + 1) % list.length];
+  if(cur >= 0 && list.length===1 && card.classList.contains('on')){ WS.at = now; return; }
+  const fade = (B.fade!=null ? +B.fade : 1) * 1000;
+  card.classList.remove('on'); WS.at = now + fade;
+  setTimeout(()=>{ card.dataset.id = next.id;
+    card.innerHTML = `<div class="wsh-tx">${esc(next.text)}</div>${B.showName!==false && next.name ? `<div class="wsh-nm">— ${esc(next.name)}</div>` : ''}`;
+    requestAnimationFrame(()=>card.classList.add('on')); WS.at = Date.now(); }, card.dataset.id ? fade : 0);
+}
+// the phone page (?linketi=<raktas>) – also built into balsuoti.html
+const WSP = { token:'', d:null };
+async function renderWishSubmit(token){
+  WSP.token = token;
+  const el = document.getElementById('guestView'); el.classList.add('poll-pubv');
+  el.innerHTML = `<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Kraunama…</div></div></div>`;
+  document.title = 'Linkėjimai · Event Solutions';
+  const { data, error } = await getSb().rpc('wish_public', { p_token:token });
+  const box = el.querySelector('.poll-pub-in');
+  if(error || !data){ box.innerHTML = '<div class="poll-msg">Ši nuoroda nebegalioja.</div>'; return; }
+  if(data.off){ box.innerHTML = '<div class="poll-msg">Linkėjimai šiuo metu išjungti.</div>'; return; }
+  WSP.d = data; const B = data.brand || {};
+  if(B.logo){ pollAsset(B.logo).then(a=>{ const l = document.getElementById('pwLogo'); if(a && l) l.innerHTML = `<img src="${esc(a.url)}" alt="">`; }); }
+  if(!data.open){ box.innerHTML = `<div id="pwLogo" class="poll-wlogo"></div><div class="poll-msg">„${esc(data.name)}“<small>Linkėjimų rinkimas jau baigtas. Ačiū!</small></div>`; return; }
+  const form = ()=>{ box.innerHTML = `<div id="pwLogo" class="poll-wlogo"></div><h2 class="poll-wh">${esc(data.name)}</h2>
+    <label class="poll-wf"><span>Tavo linkėjimas</span><textarea id="pwText" rows="5" maxlength="400" placeholder="Parašyk linkėjimą…"></textarea><small id="pwLeft">400</small></label>
+    <label class="poll-wf"><span>Vardas, pavardė <em>(nebūtina)</em></span><input type="text" id="pwName" maxlength="80" autocomplete="name" placeholder="pvz. Jonas"></label>
+    <button class="poll-wbtn" id="pwSend">Siųsti linkėjimą</button>`;
+    if(B.logo) pollAsset(B.logo).then(a=>{ const l = document.getElementById('pwLogo'); if(a && l) l.innerHTML = `<img src="${esc(a.url)}" alt="">`; });
+    const t = document.getElementById('pwText'); t.oninput = ()=>{ document.getElementById('pwLeft').textContent = 400 - t.value.length; };
+    document.getElementById('pwSend').onclick = async ()=>{
+      const text = t.value.trim(), name = document.getElementById('pwName').value.trim(); if(!text){ toast('Parašyk linkėjimą.'); t.focus(); return; }
+      const btn = document.getElementById('pwSend'); btn.disabled = true; btn.textContent = 'Siunčiama…';
+      const r = await getSb().rpc('wish_submit', { p_token:WSP.token, p_text:text, p_name:name || null, p_voter:pollVoterId() });
+      if(r.error){ btn.disabled = false; btn.textContent = 'Siųsti linkėjimą'; toast(r.error.message || 'Nepavyko išsiųsti.'); return; }
+      box.innerHTML = `<div id="pwLogo" class="poll-wlogo"></div><div class="poll-msg">💌 Ačiū!<small>Tavo linkėjimas išsiųstas – netrukus jis gali pasirodyti ekrane.</small></div><button class="poll-wbtn ghost" id="pwMore">Parašyti dar vieną</button>`;
+      if(B.logo) pollAsset(B.logo).then(a=>{ const l = document.getElementById('pwLogo'); if(a && l) l.innerHTML = `<img src="${esc(a.url)}" alt="">`; });
+      document.getElementById('pwMore').onclick = form;
+    };
+  };
+  form();
+}
 /* the votings (polls5.sql): each with a name, its own questions, look, QR code and results link */
 const pollNewSet = async ()=>{
   const name = await uiPrompt('Naujo balsavimo pavadinimas', '', { yes:'Sukurti' });
@@ -21202,10 +21484,11 @@ async function pollSetsView(root, admin){
   try{ sets = await pollApi('sets'); }
   catch(e){ root.innerHTML = `<div class="card"><h2 class="section-title">Balsavimai</h2><div class="mail-err">${esc(/Nežinomas veiksmas/.test(e.message) ? 'Supabase paleisk polls5.sql (balsavimai su pavadinimais).' : e.message)}</div>${admin ? '<button class="btn small" id="pollBack" style="margin-top:10px;">‹ Admin</button>' : ''}</div>`; const b = document.getElementById('pollBack'); if(b) b.onclick = renderAdminTab; return; }
   root.innerHTML = `<div class="${admin ? 'tabpanel ' : ''}poll-sets" id="pollSets">
-    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;">${admin ? '<button class="btn small" id="pollBack">‹ Admin</button>' : ''}<h2 class="section-title" style="margin:0;">Balsavimai</h2><span style="flex:1"></span><button class="btn primary small" id="pollSetNew">+ Naujas balsavimas</button></div>
+    <div class="row" style="gap:8px;margin-bottom:10px;align-items:center;">${admin ? '<button class="btn small" id="pollBack">‹ Admin</button>' : ''}<h2 class="section-title" style="margin:0;">Balsavimai</h2>${wishModeHtml('vote')}<span style="flex:1"></span><button class="btn primary small" id="pollSetNew">+ Naujas balsavimas</button></div>
     <div class="card">${sets.map(x=>`<button class="poll-li" data-set="${esc(x.id)}">${x.live ? '<span class="poll-st st-live">Vyksta</span>' : ''}<b>${esc(x.name)}</b><small>${esc(ltPlural(x.questions, 'nominacija', 'nominacijos', 'nominacijų'))} · sukurta ${esc(new Date(x.created_at).toLocaleDateString('lt-LT'))}</small><span>›</span></button>`).join('') || '<div class="section-sub">Balsavimų dar nėra – spausk „+ Naujas balsavimas“.</div>'}</div>
     <p class="section-sub">Kiekvienas balsavimas turi savo nominacijas, apipavidalinimą, nuolatinį QR kodą ir rezultatų nuorodą.</p></div>`;
   const back = document.getElementById('pollBack'); if(back) back.onclick = renderAdminTab;
+  wishModeBind(root, admin);
   document.getElementById('pollSetNew').onclick = async ()=>{ const x = await pollNewSet(); if(x) pollManager(root, admin, x); };
   root.querySelectorAll('[data-set]').forEach(b=>b.onclick = ()=>pollManager(root, admin, sets.find(x=>x.id===b.dataset.set)));
 }
@@ -25896,7 +26179,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v814';
+const APP_VER = 'v815';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -55683,6 +55966,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-24 22:00', v:'v815', k:'new', t:'Linkėjimai – nauja funkcija prie Balsavimų', f:'Balsavimų puslapyje – perjungiklis „Balsavimai | Linkėjimai“. Linkėjimai: žmonės nuskenuoja QR kodą ir parašo linkėjimą (vardas, pavardė – nebūtina). Valdyme du langai: dešinėje – gauti linkėjimai (galima pataisyti tekstą ir vardą, ✓ – į ekraną), kairėje – rodomi ekrane (eilės tvarka, grąžinti, ištrinti, pridėti ranka). Atskira ekrano nuoroda rodo linkėjimus vieną po kito su fade efektu (numatyta 10 s, laiką galima keisti), su savu apipavidalinimu (fonas, logotipas, šriftas, spalvos) ir savu dydžiu.' },
   { d:'2026-11-24 21:00', v:'v814', k:'fix', t:'Admin: atskira grafa „Balsavimai“', f:'Balsavimai (nominacijos, balsavimas per QR, rezultatai) – atskiroje Admin grafoje „Balsavimai“, nebe „Sutikimuose“.' },
   { d:'2026-11-24 20:00', v:'v813', k:'fix', t:'Kuro balansas: įvesta asmeninio pylimo suma – jau be PVM', f:'Asmeninės išlaidos su UTA kortele suma (įvesta ranka) laikoma jau be PVM ir atimama tokia, kokia įvesta (formoje – „Suma be PVM, €“). Įkėlus UTA išrašą tas pylimas atpažįstamas ir pagal sumą be PVM – antrą kartą neatimamas.' },
   { d:'2026-11-24 19:00', v:'v812', k:'fix', t:'Kuro balansas: be PVM, kiekvienas mėnuo atskirai', f:'Asmeniniai UTA pylimai iš mėnesio balanso (pvz. 200 €) atimami be Lietuvos PVM: Lietuvoje – suma be PVM iš UTA išrašo (arba suma ÷ 1,21), užsienyje – visa suma. Kiekvienas mėnuo skaičiuojamas atskirai: nepanaudotas likutis nurašomas (išmokamas kitais būdais), viršijimas padengiamas kitais būdais – į kitą mėnesį nepereina. Išlaida „Asmeniniais tikslais“ su UTA kortele atimama iš karto, nelaukiant UTA išrašo (įkėlus išrašą antrą kartą neatimama).' },
