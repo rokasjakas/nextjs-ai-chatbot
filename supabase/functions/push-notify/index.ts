@@ -777,7 +777,7 @@ async function onMeeting(uid: string, id: string, mode: string) {
   const failed: string[] = [];
   // every invited e-mail gets its own link (answer, meeting page); an online meeting also gets its chat
   const tokens = mode === "cancel" ? new Map<string, string>() : await meetingGuests(m).catch((e) => { console.error("guests", (e as Error).message); return new Map<string, string>(); });
-  if (m.online && mode !== "cancel") await meetingRoom(m).catch((e) => console.error("meeting room", (e as Error).message));
+  // online = a Google Meet link of the Google Calendar event (no chat room of the app any more)
   // a real Google Calendar event (the account connected in Admin → Integracijos → Google): Google sends the invitations
   // and puts it into everyone's calendar – then no letters of our own; not connected – our own letters as before
   let gcal: { ok?: boolean; code?: string; error?: string; invited?: number } = {};
