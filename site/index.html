@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Cucv8kFln2G/ow5Dr14jO3Iw5Xp+ikv6hX2cbWobAbU=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Ta63LSqsi6a8EWn6ZVjdUcE7Rx6p2qBPoCwEMOqGQIE=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -25894,7 +25894,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v811';
+const APP_VER = 'v812';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -50097,7 +50097,7 @@ function expSqlErr(e){ const m = (e && e.message) || String(e||''); return /expe
 // everything about one member in a period: expenses, their UTA card(s) and fills, personal fills, the balance (as at the period's end)
 async function expData(uid, from, to){
   const sb = getSb(); if(!sb) throw new Error('Nėra ryšio su serveriu.');
-  const [ex, cards, comp, pers, cu, alw, oldA, wl] = await Promise.all([
+  const [ex, cards, comp, pers, cu, alw, oldA, wl, pend] = await Promise.all([
     sb.from('expenses').select('*').eq('user_id', uid).gte('spent_on', from).lte('spent_on', to).order('spent_on', { ascending:false }).order('created_at', { ascending:false }),
     sb.from('uta_cards').select('*').eq('assign_kind', 'person').eq('person_id', uid),
     expTry(sel=>sb.from('expenses').select(sel).eq('user_id', uid).eq('status', 'ok').not('comp', 'is', null), 'comp, comp_unit, spent_on', 'comp, spent_on'),
@@ -50106,7 +50106,8 @@ async function expData(uid, from, to){
     sb.from('comp_use').select('id, unit, liters, amount, used_on').eq('user_id', uid),
     expTry(sel=>sb.from('expense_allowance').select(sel).eq('user_id', uid).maybeSingle(), 'user_id, monthly, unit, start_month', 'user_id, monthly, start_month'),
     sb.from('expenses').select('id, amount, spent_on').eq('user_id', uid).eq('from_allow', true).neq('status', 'rejected'),
-    expTry(sel=>sb.from('expenses').select(sel).eq('user_id', uid).not('uta_tx_id', 'is', null).neq('status', 'rejected'), 'uta_tx_id, purpose', 'uta_tx_id')]);
+    expTry(sel=>sb.from('expenses').select(sel).eq('user_id', uid).not('uta_tx_id', 'is', null).neq('status', 'rejected'), 'uta_tx_id, purpose', 'uta_tx_id'),
+    expTry(sel=>sb.from('expenses').select(sel).eq('user_id', uid).eq('kind', 'fuel').eq('paid', 'uta').eq('purpose', 'personal').is('uta_tx_id', null).neq('status', 'rejected'), 'id, spent_on, amount, liters', 'id')]);
   if(ex.error) throw new Error(expSqlErr(ex.error));
   // a fill a work expense explains is not a personal one (it is not taken from the balance)
   const workTx = new Set((wl && !wl.error ? wl.data||[] : []).filter(x=>x.purpose!=='personal').map(x=>x.uta_tx_id));
@@ -50124,6 +50125,7 @@ async function expData(uid, from, to){
     compRows:comp.data||[], persRows, useRows:cu.error ? [] : (cu.data||[]), useOk:!cu.error, oldAllowRows:oldA.error ? [] : (oldA.data||[]),
     unitsOk:!comp.old && !pers.old, persRec:!pers.old,
     allow:alw.error || !alw.data ? null : { monthly:+alw.data.monthly||0, unit:'eur', start:alw.data.start_month },   // the balance is only in euros
+    pendRows:expPend(pend && !pend.error ? pend.data||[] : [], persRows),
     cardsErr:cards.error ? cards.error.message : '' };
   d.now = expLedger(d, to); d.prev = expLedger(d, expDayBefore(from));
   return d;
@@ -50140,6 +50142,11 @@ const expMonthsBetween = (start, asOf)=>{ const [y, m] = String(start||'').slice
 // a personal fill is taken from the balance WITHOUT the Lithuanian VAT: a fill in Lithuania – its net sum from the UTA
 // statement (or the sum ÷ 1,21); abroad there is no Lithuanian VAT – the whole sum
 const EXP_LT_VAT = 1.21;
+// personal UTA-card expenses whose fill is not in a statement yet (no fill linked, none of the marked personal fills
+// that day has that sum) – taken from the balance at once, not again once the statement is in
+function expPend(rows, persRows){
+  return (rows||[]).filter(e=>e.spent_on && +e.amount > 0 && !(persRows||[]).some(p=>{ const t = p.uta_tx || {}; return t.tx_date===e.spent_on && Math.abs((+t.amount_gross||0) - (+e.amount||0)) < 0.06; }));
+}
 function expLtFill(t){ const c = String((t && t.country) || '').trim().toUpperCase(); return !c || /^(LT|LTU|LIETUVA|LITHUANIA)$/.test(c); }
 function expPersAmt(t){
   t = t || {}; const g = +t.amount_gross || 0, n = t.amount_net!=null ? +t.amount_net : null;
@@ -50150,18 +50157,21 @@ function expPersAmt(t){
    (expense_allowance) + compensations − personal UTA fills (without VAT) − fuel taken from the balance; at a month's
    end what is NOT used is written off (paid out in other ways – „off“), an overspent sum is taken from the next month */
 function expLedger(d, asOf){
-  const z = ()=>({ allow:0, comp:0, pers:0, use:0, old:0, off:0, bal:0 }), L = { eur:z(), l:z() };
+  const z = ()=>({ allow:0, comp:0, pers:0, use:0, old:0, off:0, cover:0, bal:0 }), L = { eur:z(), l:z() };
   const A = d.allow, ev = [];
   if(A && A.monthly > 0) for(let k = 0, n = expMonthsBetween(A.start, asOf); k < n; k++) ev.push({ d:expMonthShift(String(A.start).slice(0,7), k)+'-01', k:'allow', u:A.unit||'eur', v:A.monthly });
   d.compRows.forEach(x=>ev.push({ d:x.spent_on || '0000-00-00', k:'comp', u:x.comp_unit==='l' ? 'l' : 'eur', v:+x.comp||0 }));
   d.persRows.forEach(p=>{ const t = p.uta_tx || {}; ev.push({ d:t.tx_date || '0000-00-00', k:'pers', u:'eur', v:expPersAmt(t) }); });
+  (d.pendRows||[]).forEach(e=>ev.push({ d:e.spent_on || '0000-00-00', k:'pers', u:'eur', v:expPersAmt({ amount_gross:+e.amount||0, country:'LT' }) }));
   d.useRows.forEach(x=>{ const u = x.unit==='l' ? 'l' : 'eur'; ev.push({ d:x.used_on || '0000-00-00', k:'use', u, v:u==='l' ? +x.liters||0 : +x.amount||0 }); });
   if(!A || A.unit==='eur') d.oldAllowRows.forEach(x=>ev.push({ d:x.spent_on || '0000-00-00', k:'old', u:'eur', v:+x.amount||0 }));
   const writeOff = !!(A && A.monthly > 0), sign = { allow:1, comp:1, pers:-1, use:-1, old:-1 };
   ['eur','l'].forEach(u=>{
     const x = L[u], list = ev.filter(e=>e.u===u && e.d <= asOf).sort((a, b)=>a.d.localeCompare(b.d));
     let mon = '';
-    const close = m=>{ if(writeOff && u==='eur' && mon && m > mon && x.bal > 0.004){ x.off += x.bal; x.bal = 0; } };
+    // a month is closed on its own: what is left is written off, an overspent sum is covered in other ways – the next
+    // month starts from its own balance
+    const close = m=>{ if(writeOff && u==='eur' && mon && m > mon){ if(x.bal > 0.004) x.off += x.bal; else if(x.bal < -0.004) x.cover -= x.bal; x.bal = 0; } };
     list.forEach(e=>{ const m = e.d.slice(0, 7); close(m); mon = m > mon ? m : mon; x[e.k] += e.v; x.bal += sign[e.k] * e.v; });
     close(String(asOf).slice(0, 7));
   });
@@ -50178,20 +50188,21 @@ const expTripHtml = x=>x.n ? `<b>${expLit(x.l)}</b><small>${expMoney(x.e)}</smal
 // every member's balance at the end of day `to` (one load for the managers' tables)
 async function expBalAll(to){
   const sb = getSb();
-  const [cAll, pAll, cuAll, aAll, oAll, wAll] = await Promise.all([
+  const [cAll, pAll, cuAll, aAll, oAll, wAll, peAll] = await Promise.all([
     expTry(sel=>sb.from('expenses').select(sel).eq('status', 'ok').not('comp', 'is', null).lte('spent_on', to), 'user_id, comp, comp_unit, spent_on', 'user_id, comp, spent_on'),
     expTry(sel=>sb.from('uta_personal').select(sel), 'tx_id, user_id, unit, uta_tx(amount_gross, amount_net, country, quantity, tx_date)', 'tx_id, user_id, uta_tx(amount_gross, quantity, tx_date)'),
     sb.from('comp_use').select('user_id, unit, liters, amount, used_on'),
     expTry(sel=>sb.from('expense_allowance').select(sel), 'user_id, monthly, unit, start_month', 'user_id, monthly, start_month'),
     sb.from('expenses').select('user_id, amount, spent_on').eq('from_allow', true).neq('status', 'rejected'),
-    expTry(sel=>sb.from('expenses').select(sel).not('uta_tx_id', 'is', null).neq('status', 'rejected'), 'uta_tx_id, purpose', 'uta_tx_id')]);
+    expTry(sel=>sb.from('expenses').select(sel).not('uta_tx_id', 'is', null).neq('status', 'rejected'), 'uta_tx_id, purpose', 'uta_tx_id'),
+    expTry(sel=>sb.from('expenses').select(sel).eq('kind', 'fuel').eq('paid', 'uta').eq('purpose', 'personal').is('uta_tx_id', null).neq('status', 'rejected'), 'id, user_id, spent_on, amount, liters', 'id, user_id')]);
   const workTx = new Set((wAll && !wAll.error ? wAll.data||[] : []).filter(x=>x.purpose!=='personal').map(x=>x.uta_tx_id));
   if(pAll && !pAll.error) pAll.data = (pAll.data||[]).filter(p=>!workTx.has(p.tx_id));
   const by = (r, uid)=>(r && !r.error ? r.data||[] : []).filter(x=>x.user_id===uid);
-  const ids = new Set([...(aAll.data||[]), ...(cAll.data||[]), ...(pAll.data||[])].map(x=>x.user_id));
+  const ids = new Set([...(aAll.data||[]), ...(cAll.data||[]), ...(pAll.data||[]), ...(peAll && !peAll.error ? peAll.data||[] : [])].map(x=>x.user_id));
   const out = new Map();
   ids.forEach(uid=>{ const a = by(aAll, uid)[0];
-    const d = { allow:a ? { monthly:+a.monthly||0, unit:'eur', start:a.start_month } : null, compRows:by(cAll, uid), persRows:by(pAll, uid), useRows:by(cuAll, uid), oldAllowRows:by(oAll, uid) };
+    const d = { allow:a ? { monthly:+a.monthly||0, unit:'eur', start:a.start_month } : null, compRows:by(cAll, uid), persRows:by(pAll, uid), pendRows:expPend(by(peAll, uid), by(pAll, uid)), useRows:by(cuAll, uid), oldAllowRows:by(oAll, uid) };
     d.now = expLedger(d, to); out.set(uid, d); });
   return out;
 }
@@ -50323,21 +50334,24 @@ function expBalHtml(d, match){
     const line = (t, v, cls, title)=>`<div class="exp-bl ${cls||''}" ${title ? `title="${esc(title)}"` : ''}><span>${t}</span><b>${v > 0.004 ? '+' : v < -0.004 ? '−' : ''}${fmtU(u, Math.abs(v))}</b></div>`;
     const rows = [];
     if(al) rows.push(line(one ? 'Šį mėnesį priskirta' : 'Per laikotarpį priskirta', N.allow - P.allow, 'in'));
-    if(P.bal > 0.004) rows.push(line(d.allow ? 'Praėjusio mėnesio nepanaudotas likutis' : 'Nepanaudotas likutis iš praėjusių mėnesių', P.bal, 'in', 'Ankstesniais mėnesiais asmeniniams išnaudota mažiau nei priskirta'));
-    else if(P.bal < -0.004) rows.push(line('Viršytas balansas praėjusiais mėnesiais', P.bal, 'out', 'Ankstesniais mėnesiais asmeniniams išnaudota daugiau – nuskaičiuojama iš šio balanso'));
-    else if(al) rows.push(line('Likutis iš praėjusių mėnesių', 0));
+    if(!al){
+      if(P.bal > 0.004) rows.push(line('Nepanaudotas likutis iš praėjusių mėnesių', P.bal, 'in', 'Ankstesniais mėnesiais asmeniniams išnaudota mažiau nei priskirta'));
+      else if(P.bal < -0.004) rows.push(line('Viršytas balansas praėjusiais mėnesiais', P.bal, 'out'));
+    }
     if(N.comp - P.comp > 0.004) rows.push(line('Kompensacijos už išlaidas', N.comp - P.comp, 'in'));
     if(N.pers - P.pers > 0.004) rows.push(line('Asmeniniai UTA pylimai (be PVM)', -(N.pers - P.pers), 'out', 'Lietuvoje užpilta – suma be PVM; užsienyje – visa suma'));
     if(N.use - P.use > 0.004) rows.push(line('Pasipildyta iš likučio', -(N.use - P.use), 'out'));
     if(N.old - P.old > 0.004) rows.push(line('Išlaidos, apmokėtos iš seno € limito', -(N.old - P.old), 'out', 'Anksčiau išlaidos buvo žymimos „apmokėti iš sukaupto likučio“'));
-    if(N.off - P.off > 0.004) rows.push(line('Nepanaudotas likutis nurašytas', -(N.off - P.off), 'out', 'Mėnesio pabaigoje nepanaudotas balansas nurašomas – išmokamas kitais būdais'));
+    if(al && !one){ const offD = N.off - P.off - (P.bal > 0 ? P.bal : 0), covD = N.cover - P.cover - (P.bal < 0 ? -P.bal : 0);
+      if(offD > 0.004) rows.push(line('Nepanaudoti likučiai nurašyti', -offD, 'out', 'Mėnesio pabaigoje nepanaudotas balansas nurašomas – išmokamas kitais būdais'));
+      if(covD > 0.004) rows.push(line('Viršijimai padengti kitais būdais', covD, 'in', 'Mėnesio viršijimas į kitą mėnesį nepereina')); }
     return `<div class="exp-bal-u"><small>${u==='l' ? 'Litrais' : 'Eurais'}${al ? ' · priskirtas balansas' : ''}</small><div class="exp-bal-n ${N.bal < -0.004 ? 'neg' : ''}">${fmtU(u, N.bal)}</div>
       <div class="exp-bls">${rows.join('')}<div class="exp-bl tot"><span>Viso likutis</span><b class="${N.bal < -0.004 ? 'neg' : ''}">${fmtU(u, N.bal)}</b></div></div></div>`;
   };
   const persNoBal = !hasBal ? ['l','eur'].map(u=>({ u, v:d.now[u].pers - d.prev[u].pers + d.now[u].use - d.prev[u].use })).filter(x=>x.v > 0.004) : [];
   return `<div class="exp-bal-h">Balansas asmeniniams pylimams · ${esc(monL)}</div>
     ${hasBal ? `<div class="exp-bal-two2">${(units.length ? units : ['eur']).map(unitBox).join('')}</div>
-      ${d.allow ? `<small class="muted">Kas mėnesį pridedama ${fmtU(d.allow.unit, d.allow.monthly)} (nuo ${esc(String(d.allow.start).slice(0,7))}) asmeninėms reikmėms UTA kortele. Asmeniniai pylimai atimami be PVM (Lietuvoje). Nepanaudotas mėnesio likutis nurašomas (išmokamas kitais būdais), viršijus – trūkstama suma atimama iš kito mėnesio.</small>` : ''}
+      ${d.allow ? `<small class="muted">Kas mėnesį pridedama ${fmtU(d.allow.unit, d.allow.monthly)} (nuo ${esc(String(d.allow.start).slice(0,7))}) asmeninėms reikmėms UTA kortele. Asmeniniai pylimai atimami be PVM (Lietuvoje). Kiekvienas mėnuo skaičiuojamas atskirai: nepanaudotas likutis nurašomas, viršijimas padengiamas kitais būdais – į kitą mėnesį nepereina.</small>` : ''}
       ${d.allow && d.persRows.some(p=>p.uta_tx && p.uta_tx.tx_date && p.uta_tx.tx_date < String(d.allow.start).slice(0,10)) ? `<div class="exp-dl late">Yra asmeninių pylimų anksčiau nei balansas galioja (nuo ${esc(String(d.allow.start).slice(0,7))}) – jei balansas turi galioti ir tada, Admin+ „Keisti balansą“ pakeičia pradžios mėnesį.</div>` : ''}`
       : `<div class="exp-nobal">${persNoBal.length ? `Balanso asmeniniams pylimams nėra – <b>asmeniniams tikslams išnaudota ${persNoBal.map(x=>fmtU(x.u, x.v)).join(' · ')}</b>` : 'Balanso asmeniniams pylimams nėra.'}</div>`}
     <div class="exp-bal-btns">${d.useOk && hasBal && mineB ? `<button type="button" class="btn small primary" data-cuse>${slIcon('fuel')} Pasipildžiau iš likučio</button>` : ''}${canSee ? `<button type="button" class="btn small" data-cbrk>Iš ko susideda likutis</button>` : ''}${expApprover() && !mineB ? `<button type="button" class="btn small" data-allow>${d.allow ? 'Keisti balansą' : 'Priskirti balansą'}</button>` : ''}</div>
@@ -50770,11 +50784,15 @@ async function expBreakdown(uid, name){
   rows.push({ d:t.tx_date || String(p.created_at||'').slice(0,10), t:'Asmeninis UTA pylimas', w:([t.station, t.product].filter(Boolean).join(' · ') || 'UTA kortelė')+(expLtFill(t) ? ' · be PVM (su PVM '+expMoney(+t.amount_gross||0)+')' : ' · užsienyje'), u:l ? 'l' : 'eur', v:-(l ? +t.quantity||0 : expPersAmt(t)) }); });
   if(!cu.error) (cu.data||[]).forEach(x=>rows.push({ d:x.used_on, t:'Pasipildyta iš likučio', w:[x.unit==='l' && x.amount ? expMoney(x.amount) : '', x.unit!=='l' && x.liters ? expLit(x.liters) : '', x.note].filter(Boolean).join(' · ') || '—', u:x.unit==='l' ? 'l' : 'eur', v:-(x.unit==='l' ? +x.liters||0 : +x.amount||0), cu:x.id }));
   if(!A || A.unit==='eur') (au && !au.error ? au.data||[] : []).forEach(e=>rows.push({ d:e.spent_on, t:'Išlaida, apmokėta iš seno € limito', w:expWhat(e), u:'eur', v:-(+e.amount||0) }));
-  // the monthly balance: what is not used by a month's end is written off (paid out in other ways)
+  { const pd = await expTry(sel=>sb.from('expenses').select(sel).eq('user_id', uid).eq('kind', 'fuel').eq('paid', 'uta').eq('purpose', 'personal').is('uta_tx_id', null).neq('status', 'rejected'), 'id, spent_on, amount, reason', 'id');
+    expPend(pd && !pd.error ? pd.data||[] : [], pe && !pe.error ? pe.data||[] : []).forEach(e=>rows.push({ d:e.spent_on, t:'Asmeninė UTA išlaida (laukia UTA išrašo)', w:(e.reason||'')+' · be PVM (su PVM '+expMoney(+e.amount||0)+')', u:'eur', v:-expPersAmt({ amount_gross:+e.amount||0, country:'LT' }) })); }
+  // the monthly balance: each month on its own – what is not used is written off, an overspent sum is covered in other ways
   if(A && A.monthly > 0){
     const eur = rows.filter(r=>r.u==='eur').slice().sort((a, b)=>String(a.d).localeCompare(String(b.d))), now = calISO(new Date()).slice(0, 7);
     let bal = 0, mon = '';
-    const close = m=>{ if(mon && m > mon && bal > 0.004){ const [y, mm] = mon.split('-').map(Number); rows.push({ d:calISO(new Date(y, mm, 0)), t:'Nepanaudotas likutis nurašytas', w:utaMonthName(mon)+' – išmokama kitais būdais', u:'eur', v:-bal }); bal = 0; } };
+    const close = m=>{ if(mon && m > mon && Math.abs(bal) > 0.004){ const [y, mm] = mon.split('-').map(Number);
+      rows.push(bal > 0 ? { d:calISO(new Date(y, mm, 0)), t:'Nepanaudotas likutis nurašytas', w:utaMonthName(mon)+' – išmokama kitais būdais', u:'eur', v:-bal }
+        : { d:calISO(new Date(y, mm, 0)), t:'Viršijimas padengtas kitais būdais', w:utaMonthName(mon)+' – į kitą mėnesį nepereina', u:'eur', v:-bal }); bal = 0; } };
     eur.forEach(r=>{ const m = String(r.d).slice(0, 7); close(m); if(m > mon) mon = m; bal += r.v; });
     close(now);
   }
@@ -55662,7 +55680,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
-  { d:'2026-11-24 19:00', v:'v811', k:'fix', t:'Kuro balansas: be PVM, nepanaudotas likutis nurašomas', f:'Asmeniniai UTA pylimai iš mėnesio balanso (pvz. 200 €) atimami be Lietuvos PVM: Lietuvoje – suma be PVM iš UTA išrašo (arba suma ÷ 1,21), užsienyje – visa suma. Mėnesio pabaigoje nepanaudotas likutis nebeperkeliamas – nurašomas (išmokamas kitais būdais); viršijus balansą trūkstama suma kaip ir anksčiau atimama iš kito mėnesio. Balanso kortelėje ir „Iš ko susideda likutis“ – eilutės „Asmeniniai UTA pylimai (be PVM)“ ir „Nepanaudotas likutis nurašytas“.' },
+  { d:'2026-11-24 19:00', v:'v812', k:'fix', t:'Kuro balansas: be PVM, kiekvienas mėnuo atskirai', f:'Asmeniniai UTA pylimai iš mėnesio balanso (pvz. 200 €) atimami be Lietuvos PVM: Lietuvoje – suma be PVM iš UTA išrašo (arba suma ÷ 1,21), užsienyje – visa suma. Kiekvienas mėnuo skaičiuojamas atskirai: nepanaudotas likutis nurašomas (išmokamas kitais būdais), viršijimas padengiamas kitais būdais – į kitą mėnesį nepereina. Išlaida „Asmeniniais tikslais“ su UTA kortele atimama iš karto, nelaukiant UTA išrašo (įkėlus išrašą antrą kartą neatimama).' },
   { d:'2026-11-24 18:00', v:'v810', k:'chg', t:'Susitikimai: Online – Google Meet', f:'„Bendram“ susitikimui Online pasirinkimo nebėra. „Įprastam“ ir „Privačiam“ – „💻 Online (Google Meet)“: sukuriama Google Meet nuoroda, ji kartu su laiku paryškinama pakvietime, Google kalendoriuje ir programos kalendoriuje (mygtukas „Prisijungti“). Atskiras pokalbis programoje online susitikimui nebekuriamas.' },
   { d:'2026-11-24 17:00', v:'v809', k:'new', t:'Susitikimai: kam siųsti ir šablonai', f:'Kuriant susitikimą (Įprastas, Bendras, Privatus) visada galima pasirinkti, kam siųsti: „Bendras“ pažymi visus narius – nuimk, kam nereikia; „Pažymėti visus / Nuimti visus“, paieška, kiek pažymėta. Naujas laukas „Šablonas“: „💾 Išsaugoti kaip šabloną“ išsaugo tipą, temą, laiką, vietą, aprašymą, narius, el. paštus ir online; išsaugotą šabloną pasirenki iš sąrašo – laukai užpildomi. Šablonus mato visi, ištrinti gali sukūręs ar Admin.' },
   { d:'2026-11-24 15:00', v:'v808', k:'new', t:'Susitikimai – tikri Google Calendar įvykiai', f:'Kai Admin → Integracijos prijungta Google paskyra su kalendoriaus leidimu, kalendoriaus susitikimas kuriamas kaip tikras Google Calendar įvykis tos paskyros vardu: visi pakviesti nariai (ir svečiai) gauna Google pakvietimą (Taip / Ne / Galbūt), susitikimas pats įsideda į jų Google kalendorius; online susitikimui – Google Meet nuoroda. Pakeitus ar atšaukus – atnaujinama visiems. Admin’e galima prijungti kitą (bendrą) Google paskyrą. Kol paskyra neprijungta – siunčiami įprasti laiškai.' },
