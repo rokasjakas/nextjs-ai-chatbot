@@ -1,11 +1,6 @@
--- Linkėjimų patikra (tik skaitymas, tik kiekiai – be tekstų ir vardų)
-select 'boards' as k, b.id, b.created_at, b.open, b.filter, b.swear, b.reactions, (select count(*) from public.wishes w where w.board_id = b.id) as total,
-  (select count(*) from public.wishes w where w.board_id = b.id and w.status = 'new') as new_,
-  (select count(*) from public.wishes w where w.board_id = b.id and w.status = 'approved') as approved,
-  (select count(*) from public.wishes w where w.board_id = b.id and w.status = 'hidden') as hidden,
-  (select max(created_at) from public.wishes w where w.board_id = b.id) as last_wish
-from public.wish_boards b order by b.created_at;
-select 'all' as k, count(*) from public.wishes;
-select 'list_query' as k, b.id, jsonb_array_length(coalesce((select jsonb_agg((to_jsonb(w) - 'voter') || jsonb_build_object('counts', public.wish_rcounts(w.id)))
-  from public.wishes w where w.board_id = b.id and w.status <> 'hidden'), '[]'::jsonb)) as n from public.wish_boards b;
-select 'screen' as k, b.id, jsonb_array_length(public.wish_screen(b.screen_token)->'wishes') from public.wish_boards b;
+-- Linkėjimų patikra (tik skaitymas, tik skaičiai): kiek eilučių įrašyta / pakeista / ištrinta nuo statistikos pradžios
+select 'stat' as k, relname, n_tup_ins, n_tup_upd, n_tup_del, n_live_tup, n_dead_tup, last_autovacuum, last_autoanalyze
+from pg_stat_user_tables where schemaname = 'public' and relname in ('wishes', 'wish_boards', 'wish_reactions', 'poll_assets') order by relname;
+select 'reset' as k, stats_reset from pg_stat_database where datname = current_database();
+select 'triggers' as k, event_object_table, trigger_name from information_schema.triggers where event_object_table in ('wishes', 'wish_boards');
+select 'cron' as k, jobname, schedule, left(command, 160) from cron.job order by jobid;
