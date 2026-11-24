@@ -2,12 +2,12 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-WUKl3fv9yS2r4UC9JHl817D1oI0iyemjfsSQHXVtFB8=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-PlgMIGnME28dg+aoJS8toclOHbz1/W+StsxqXCWInHw=' 'sha256-+6JmdHvYmG7sNB7M1CTRax073cLIh4XC1mORHLRMQWU=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-T0Jq+xrRsWiIMTgK2WC/+7neLMuWLQKvHNMnXRNod6c=' 'sha256-jBa+Wie7SNDuR1tjYNEAlaxU3KrQNKdtc/x4ZVWRDNI=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
 // a voter's QR link (?balsuoti=…) opens the small voting page at once – the app itself is not needed for it
-if(/[?&](balsuoti|linketi)=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
+if(/[?&](balsuoti|linketi|linkejimai)=/.test(location.search)) location.replace((location.protocol==='https:' ? 'balsuoti' : 'balsuoti.html')+location.search+location.hash);
 if(/[?&]ilangas=1/.test(location.search)) document.documentElement.classList.add('es-embed');   // a quick window (greitasis langas) inside the app: only the page
 if(/[?&]rinkti=1/.test(location.search)) document.documentElement.classList.add('es-pick');      // a new quick window: the left menu stays to pick the page
 </script>
@@ -21225,6 +21225,9 @@ async function renderPollEditorLink(key){
    ============================================================ */
 const WSH = { boards:[], cur:null, list:[], t:null, root:null, admin:false };
 const WSH_SIZES = [[1920,1080,'Full HD 1920×1080'],[1080,1920,'Vertikalus 1080×1920'],[3840,2160,'4K 3840×2160'],[1280,720,'HD 1280×720'],[3840,1080,'Platus 3840×1080']];
+// the wish links open the small page /balsuoti (always from the network) – never the app's saved copy, which on a
+// device with an older version of the app opened the app itself instead of the form / the screen
+const wishUrl = (k, t)=>location.origin+(location.protocol==='https:' ? '/balsuoti' : location.pathname.replace(/[^/]*$/, '')+'balsuoti.html')+'?'+k+'='+t;
 async function wishApi(action, args){
   const { data, error } = await getSb().rpc('wish_admin', { p_key:POLL.key || '', p_action:action, p_args:args || {} });
   if(error){ const m = error.message || ''; throw new Error(/wish_admin|does not exist|schema cache/i.test(m) ? 'Linkėjimai dar neįjungti – Supabase paleisk wishes.sql.' : m); }
@@ -21291,7 +21294,7 @@ async function wishManager(root, admin, board){
 }
 function wishLinks(){
   const box = document.getElementById('wshLinks'); if(!box) return;
-  const b = WSH.cur, v = pollUrl('linketi', b.submit_token), r = pollUrl('linkejimai', b.screen_token);
+  const b = WSH.cur, v = wishUrl('linketi', b.submit_token), r = wishUrl('linkejimai', b.screen_token);
   box.innerHTML = `<div class="wsh-lk"><div class="wsh-qr"><canvas id="wshQr" width="160" height="160"></canvas></div>
     <div class="wsh-lk-t"><div class="poll-lk-t">QR kodas – rašyti linkėjimą</div><div class="poll-url">${esc(v)}</div>
       <div class="row" style="gap:6px;flex-wrap:wrap;"><button class="btn primary small" id="wshQrDl">⬇ QR (PNG)</button><button class="btn small" data-wcopy="${esc(v)}">Kopijuoti</button><a class="btn small" href="${esc(v)}" target="_blank" rel="noopener">Atidaryti</a></div>
@@ -21372,7 +21375,7 @@ function wishLookModal(){
       <label class="field">Perėjimas (s)<input type="number" id="wlFade" min="0" max="5" step="0.1" value="${esc(String(B.fade))}"></label>
       <label class="checkbox-row" style="align-self:end;"><input type="checkbox" id="wlShowName" ${B.showName ? 'checked' : ''}> Rodyti vardą</label>
     </div>
-    <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;"><a class="btn small" href="${esc(pollUrl('linkejimai', b.screen_token))}" target="_blank" rel="noopener">Atidaryti ekraną</a><span class="row" style="gap:8px;"><button class="btn" id="wlX">Uždaryti</button><button class="btn primary" id="wlSave">💾 Išsaugoti</button></span></div>`);
+    <div class="row" style="justify-content:space-between;gap:8px;margin-top:12px;"><a class="btn small" href="${esc(wishUrl('linkejimai', b.screen_token))}" target="_blank" rel="noopener">Atidaryti ekraną</a><span class="row" style="gap:8px;"><button class="btn" id="wlX">Uždaryti</button><button class="btn primary" id="wlSave">💾 Išsaugoti</button></span></div>`);
   const g = id=>document.getElementById(id);
   g('wlSize').onchange = e=>{ const [w, h] = (e.target.value||'').split('x'); if(w){ g('wlW').value = w; g('wlH').value = h; } };
   g('wlX').onclick = closeModal;
@@ -26179,7 +26182,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v815';
+const APP_VER = 'v816';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -55966,6 +55969,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-24 23:00', v:'v816', k:'fix', t:'Linkėjimai: QR kodas ir ekrano nuoroda atidarydavo programą', f:'Linkėjimų QR kodas ir ekrano nuoroda dabar veda į atskirą lengvą puslapį (/balsuoti), kuris visada kraunamas iš serverio – nebe į programos kopiją, kurią telefone ar kompiuteryje išsaugojusi senesnė versija atidarydavo vietoj linkėjimo formos ar ekrano. Svečių nuorodos (balsavimai, linkėjimai, bendrinami puslapiai) visada atidaro naujausią puslapį.' },
   { d:'2026-11-24 22:00', v:'v815', k:'new', t:'Linkėjimai – nauja funkcija prie Balsavimų', f:'Balsavimų puslapyje – perjungiklis „Balsavimai | Linkėjimai“. Linkėjimai: žmonės nuskenuoja QR kodą ir parašo linkėjimą (vardas, pavardė – nebūtina). Valdyme du langai: dešinėje – gauti linkėjimai (galima pataisyti tekstą ir vardą, ✓ – į ekraną), kairėje – rodomi ekrane (eilės tvarka, grąžinti, ištrinti, pridėti ranka). Atskira ekrano nuoroda rodo linkėjimus vieną po kito su fade efektu (numatyta 10 s, laiką galima keisti), su savu apipavidalinimu (fonas, logotipas, šriftas, spalvos) ir savu dydžiu.' },
   { d:'2026-11-24 21:00', v:'v814', k:'fix', t:'Admin: atskira grafa „Balsavimai“', f:'Balsavimai (nominacijos, balsavimas per QR, rezultatai) – atskiroje Admin grafoje „Balsavimai“, nebe „Sutikimuose“.' },
   { d:'2026-11-24 20:00', v:'v813', k:'fix', t:'Kuro balansas: įvesta asmeninio pylimo suma – jau be PVM', f:'Asmeninės išlaidos su UTA kortele suma (įvesta ranka) laikoma jau be PVM ir atimama tokia, kokia įvesta (formoje – „Suma be PVM, €“). Įkėlus UTA išrašą tas pylimas atpažįstamas ir pagal sumą be PVM – antrą kartą neatimamas.' },

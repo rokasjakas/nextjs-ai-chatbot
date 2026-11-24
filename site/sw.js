@@ -5,7 +5,7 @@
 // Libraries from the CDN are left to the browser's own cache (going through this
 // worker they failed to load on some phones: the vote page stayed on „Kraunama…“).
 // Data (Supabase) is never cached here.
-const CACHE = 'es-app-v815';
+const CACHE = 'es-app-v816';
 const SHELL = ['./vendor/supabase-2.117.2.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/badge-96.png', './fonts/Barlow-Regular.woff2', './fonts/Barlow-Medium.woff2'];
 
 // Cloudflare Pages redirects /index.html to /: a redirected response can't answer a page load (the browser shows
@@ -83,6 +83,12 @@ self.addEventListener('fetch', e=>{
   const root = new URL('./', self.registration.scope).pathname;
   if(req.mode==='navigate' && url.pathname!==root && url.pathname!==root+'index.html'){
     e.respondWith(fetch(req).then(res=>{ if(res.ok && !res.redirected){ const copy = res.clone(); caches.open(CACHE).then(c=>c.put(url.pathname, copy)); } return res; }).catch(()=>caches.match(url.pathname).then(plain)));
+    return;
+  }
+  // a link for guests (a wish, a vote, the screen, a shared page): always the newest page from the network – the saved
+  // copy may be an older version that does not know the link yet (it opened the app instead); offline – the saved copy
+  if(req.mode==='navigate' && /[?&](linketi|linkejimai|balsuoti|rezultatai|balsavimai|share|svecias|invresp|ttpin)=/.test(url.search)){
+    e.respondWith(fetch(req).catch(()=>caches.match('./index.html').then(plain)));
     return;
   }
   // the app itself: the saved copy opens at once (no waiting for the network, no 1 MB download each start).

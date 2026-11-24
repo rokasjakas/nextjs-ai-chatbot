@@ -19,7 +19,7 @@ for pat in base_names:
     m = re.search(r'\n(' + pat + r'.*?\})\s*\n', css_all, re.S)
     assert m, 'style not found: ' + pat
     base.append(m.group(1))
-poll_css = [l for l in css_all.split('\n') if re.search(r'poll-|pl-txt|pollPulse|pollReveal', l)]
+poll_css = [l for l in css_all.split('\n') if re.search(r'poll-|pl-txt|pollPulse|pollReveal|wsh-', l)]
 for l in poll_css:
     assert not l.startswith((' ', '\t')) and l.count('{') == l.count('}'), 'voting style inside a block: ' + l[:80]
 css = root + '\n' + '\n'.join(base) + '\n' + '\n'.join(poll_css)
@@ -41,7 +41,7 @@ NAMES = ['toast', 'esc', 'ltPlural', 'pollClock', 'pollTimeout', 'POLL_FONTS', '
          'pollLookFast', 'pollResolve', 'pollNumOpts', 'PN_SRC', 'pollNameNorm', 'pollLev', 'pollWordNear', 'pollNameNear',
          'PV', 'pollVoterId', 'pollVotedKey', 'renderPollVote', 'pollVoteLoad', 'pollVoteLoad0', 'pollVoteMsg', 'pollVoteDraw',
          'pollWriteDraw', 'pollMultiDraw', 'pollVoteTick', 'pollVoteSend', 'pollThanks', 'pollEnabled', 'pollOffWait', 'pollLoop',
-         'WSP', 'renderWishSubmit']
+         'WSP', 'renderWishSubmit', 'pollHex', 'WS', 'renderWishScreen', 'wishScreenLook', 'wishFit', 'wishScreenTick']
 code = '\n'.join(grab(n) for n in NAMES)
 sb_url = re.search(r'const SUPABASE_URL = "([^"]+)"', s).group(1)
 sb_key = re.search(r'const SUPABASE_KEY = "([^"]+)"', s).group(1)
@@ -58,9 +58,9 @@ const SBL = {{ rpc(name, args){{
 }} }};
 function getSb(){{ return SBL; }}
 async function pollSbReady(){{ return SBL; }}'''
-start = '''const qs = new URLSearchParams(location.search), token = qs.get('balsuoti'), wish = qs.get('linketi');
+start = '''const qs = new URLSearchParams(location.search), token = qs.get('balsuoti'), wish = qs.get('linketi'), screen = qs.get('linkejimai');
 document.getElementById('guestView').classList.remove('hidden');
-if(wish) renderWishSubmit(wish); else if(token) renderPollVote(token); else document.getElementById('guestView').innerHTML = '<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Ši nuoroda nebegalioja.</div></div></div>';'''
+if(screen) renderWishScreen(screen); else if(wish) renderWishSubmit(wish); else if(token) renderPollVote(token); else document.getElementById('guestView').innerHTML = '<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Ši nuoroda nebegalioja.</div></div></div>';'''
 fonts = re.search(r'<link href="(https://fonts\.googleapis\.com/css2\?[^"]+)"', s).group(1)
 page = f'''<!DOCTYPE html>
 <html lang="lt">
