@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-7XmFr7g7Cn0bJvaucYQlBNSleXc2HbljSjaISE+lC98=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BzkEN0F/SPBa/kXuqyvGSbxJ+eArH9Gd/RFnzhsOgpc=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-lHKp965rdDbLCMfiGXb6nM1JidKJs4t5yLAYCB/sO1A=' 'sha256-3dLuq8RB3XikVGNHWBN3+tdbPFnG/FsuIu3IQKkbmEw=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -4419,6 +4419,7 @@ span.uz-pill{background-image:none !important;}
 .rem-t input[type=text]{min-width:160px;width:100%;} .rem-t input[type=number]{width:64px;} .rem-acts{white-space:nowrap;text-align:right;} .rem-acts .btn + .btn{margin-left:6px;}
 .rem-t .pp-chk{display:flex;gap:4px;align-items:center;white-space:nowrap;} .rem-late{color:var(--danger);}
 #reloadHdr.spin svg{animation:rlSpin .8s linear infinite;} @keyframes rlSpin{to{transform:rotate(360deg);}}
+.mt-tpl{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:6px;padding-bottom:10px;border-bottom:1px solid var(--border);}
 .pm-none{margin-top:6px;font-size:12.5px;}
 @media(max-width:520px){ .pm-cd{height:36px;} .pm-note{flex-direction:column;align-items:stretch;gap:2px;} }
 .pp-bst-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
@@ -25564,8 +25565,11 @@ function calMeetingForm(m, iso){
   let scope = m.scope || '';
   const members = TEAM.members.filter(x=>x.id!==me).sort((a,b)=>teamName(a).natCmp(teamName(b)));
   openModal(`<h3 style="margin:0 0 10px;">${editing ? '✎ Redaguoti įvykį' : '📅 Naujas susitikimas / įvykis'}</h3>
+    <div class="mt-tpl"><label class="field" style="flex:1;min-width:200px;">Šablonas<select id="mtTpl"><option value="">— be šablono —</option></select></label>
+      <button type="button" class="btn small" id="mtTplSave" title="Išsaugoti dabartinius laukus (tipą, temą, laiką, vietą, aprašymą, narius, el. paštus) kaip šabloną">💾 Išsaugoti kaip šabloną</button>
+      <button type="button" class="btn small danger-ghost hidden" id="mtTplDel" title="Ištrinti pasirinktą šabloną">${slIcon('bin')}</button></div>
     <div class="field"><span>Kokio tipo</span>
-      <div class="mt-scope" role="radiogroup">${[['', '📅 Įprastas', 'Tik pasirinkti nariai ir el. paštai, be Slack'], ['all', '👥 Bendras', 'Visa komanda: laiškas visiems (į Google kalendorių), Slack #general pranešimas su @channel ir priminimai'], ['private', '🔒 Privatus', 'Pasirinkti nariai: laiškai, uždaras Slack kanalas su jais ir priminimai ten']]
+      <div class="mt-scope" role="radiogroup">${[['', '📅 Įprastas', 'Tik pasirinkti nariai ir el. paštai, be Slack'], ['all', '👥 Bendras', 'Komanda (pažymėti visi – gali nuimti): pakvietimai, Slack #general pranešimas su @channel ir priminimai'], ['private', '🔒 Privatus', 'Pasirinkti nariai: laiškai, uždaras Slack kanalas su jais ir priminimai ten']]
         .map(([k, t, h])=>`<button type="button" class="mt-sc ${scope===k?'on':''}" data-sc="${k}" ${editing && (m.scope||'')!==k && (m.scope||'') ? 'disabled' : ''} title="${esc(h)}"><b>${t}</b><small>${esc(h)}</small></button>`).join('')}</div>
       <small class="section-sub mt-sc-note" id="mtScNote"></small></div>
     <label class="field">Tema<input type="text" id="mtTitle" value="${esc(m.title)}" placeholder="pvz. Susitikimas su klientu" maxlength="200"></label>
@@ -25576,12 +25580,13 @@ function calMeetingForm(m, iso){
     </div>
     <label class="field">Vieta (nebūtina)<input type="text" id="mtLoc" value="${esc(m.location||'')}" placeholder="pvz. Terminalo g. 8 arba Teams"></label>
     <label class="field">Trumpas aprašymas<textarea id="mtDesc" rows="3" placeholder="Ką aptarsime, ką atsinešti…">${esc(m.description||'')}</textarea></label>
-    <div class="field" id="mtMembersBox"><span>Nariai <small class="section-sub" style="margin:0;">— gaus pranešimą programėlėje ir matys kalendoriuje</small></span>
-      <input type="search" id="mtQ" placeholder="Ieškoti nario…" style="margin:4px 0 6px;">
+    <div class="field" id="mtMembersBox"><span>Kam siųsti <small class="section-sub" style="margin:0;">— pažymėti nariai gaus pakvietimą ir pranešimą programėlėje</small></span>
+      <div class="row" style="gap:6px;align-items:center;margin:4px 0 6px;"><input type="search" id="mtQ" placeholder="Ieškoti nario…" style="flex:1;min-width:0;">
+        <button type="button" class="btn small" id="mtAllOn">Pažymėti visus</button><button type="button" class="btn small" id="mtAllOff">Nuimti visus</button><span class="section-sub" id="mtCnt" style="margin:0;white-space:nowrap;"></span></div>
       <div class="mt-members">${members.map(x=>`<label class="chat-pick" data-s="${esc(normalizeText(teamName(x)+' '+(x.nickname||'')))}"><input type="checkbox" value="${esc(x.id)}" ${(m.attendees||[]).includes(x.id)?'checked':''}>${teamAvatar(x, 28, true)}<span><b>${esc(teamName(x))}</b>${x.job_title?` <small>${esc(x.job_title)}</small>`:''}</span></label>`).join('') || '<div class="section-sub">Kitų narių nėra.</div>'}</div>
     </div>
     <label class="field">El. paštai (ne nariams) <input type="text" id="mtEmails" value="${esc((m.emails||[]).join(', '))}" placeholder="vardas@imone.lt, kitas@imone.lt" autocomplete="off"></label>
-    <div class="section-sub" style="margin:-4px 0 8px;">Kiekvienas gaus laišką su informacija, mygtukais „Dalyvausiu / Nedalyvausiu“ ir kalendoriaus failu (.ics); matysi, kas ką atsakė.</div>
+    <div class="section-sub" style="margin:-4px 0 8px;">Kiekvienas gaus pakvietimą (Google kalendoriaus, jei prijungta Google paskyra) ir galės atsakyti „Taip / Ne“.</div>
     <label class="checkbox-row mt-online"><input type="checkbox" id="mtOnline" ${m.online ? 'checked' : ''}><span><b>💻 Online susitikimas</b><small>Pokalbis su dalyviais: žinutės, failai, bendri užrašai ir vaizdo skambutis. Svečiai jungiasi per asmeninę nuorodą laiške, be registracijos. Visiems išėjus iš skambučio, dalyviams išsiunčiama santrauka.</small></span></label>
     ${editing ? '<label class="checkbox-row"><input type="checkbox" id="mtNotifyAll"> Pranešti visiems dalyviams apie pakeitimus</label>' : ''}
     <div class="row" style="justify-content:flex-end;gap:8px;margin-top:10px;"><button class="btn" id="mtX">Atšaukti</button><button class="btn primary" id="mtSave">${editing ? '💾 Išsaugoti' : '📨 Išsaugoti ir siųsti pakvietimus'}</button></div>`);
@@ -25589,14 +25594,56 @@ function calMeetingForm(m, iso){
   teamFillImages(document.getElementById('modalRoot'));
   document.getElementById('mtX').onclick = closeModal;
   // the kind: common – everyone (no picking), private – chosen members (a private Slack channel)
+  const boxes = ()=>[...document.querySelectorAll('.mt-members input[type=checkbox]')];
+  const cnt = ()=>{ const n = boxes().filter(b=>b.checked).length, el = document.getElementById('mtCnt'); if(el) el.textContent = n+' iš '+members.length; };
   const scDraw = ()=>{
     document.querySelectorAll('.mt-sc').forEach(b=>b.classList.toggle('on', b.dataset.sc===scope));
-    document.getElementById('mtMembersBox').classList.toggle('hidden', scope==='all');
-    document.getElementById('mtScNote').innerHTML = scope==='all' ? `Kviečiami visi programos nariai (${members.length + 1}). Laiškas su nuoroda pridėti į Google kalendorių, Slack #general – pranešimas visiems ir priminimai: prieš 1 val. ir prieš 30 min.`
+    document.getElementById('mtScNote').innerHTML = scope==='all' ? `Pažymėti visi nariai – nuimk tuos, kam nesiųsti. Slack #general – pranešimas ir priminimai: prieš 1 val. ir prieš 30 min.`
       : scope==='private' ? 'Pažymėk narius žemiau. Jiems – laiškas su kvietimu į kalendorių; Slack’e sukuriamas uždaras kanalas su jais, ten – pranešimas ir tie patys priminimai.' : '';
   };
-  document.querySelectorAll('.mt-sc').forEach(b=>b.onclick = ()=>{ if(b.disabled) return; scope = b.dataset.sc; scDraw(); });
-  scDraw();
+  document.querySelectorAll('.mt-sc').forEach(b=>b.onclick = ()=>{ if(b.disabled) return; const was = scope; scope = b.dataset.sc;
+    if(scope==='all' && was!=='all') boxes().forEach(x=>x.checked = true);
+    scDraw(); cnt(); });
+  // a new common meeting: everyone ticked at first; an old one made before picking (no list) – everyone too
+  if(scope==='all' && (!editing || !(m.attendees||[]).length)) boxes().forEach(x=>x.checked = true);
+  scDraw(); cnt();
+  document.querySelector('.mt-members').addEventListener('change', cnt);
+  document.getElementById('mtAllOn').onclick = ()=>{ boxes().forEach(x=>{ if(!x.closest('label').classList.contains('hidden')) x.checked = true; }); cnt(); };
+  document.getElementById('mtAllOff').onclick = ()=>{ boxes().forEach(x=>{ if(!x.closest('label').classList.contains('hidden')) x.checked = false; }); cnt(); };
+  // templates: pick one – the fields are filled from it; save the current fields as one
+  const tplFill = t=>{ const d = t.data || {}, set = (id, v)=>{ const el = document.getElementById(id); if(el && v!=null) el.value = v; };
+    if(!editing && d.scope!=null){ scope = d.scope || ''; }
+    set('mtTitle', d.title); set('mtFrom', d.from); set('mtTo', d.to); set('mtLoc', d.location); set('mtDesc', d.description); set('mtEmails', (d.emails||[]).join(', '));
+    if(Array.isArray(d.attendees)){ const want = new Set(d.attendees); boxes().forEach(x=>x.checked = scope==='all' && d.allMembers ? true : want.has(x.value)); }
+    const on = document.getElementById('mtOnline'); if(on && d.online!=null) on.checked = !!d.online;
+    scDraw(); cnt(); };
+  let TPL = [];
+  const tplLoad = async (sel)=>{ const { data, error } = await getSb().from('meeting_templates').select('*').order('name'); if(error) return;
+    TPL = data || []; const s = document.getElementById('mtTpl'); if(!s) return;
+    s.innerHTML = '<option value="">— be šablono —</option>' + TPL.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}${t.data && t.data.scope ? (t.data.scope==='all' ? ' · 👥' : ' · 🔒') : ''}</option>`).join('');
+    if(sel) s.value = sel; tplDel(); };
+  const tplDel = ()=>{ const s = document.getElementById('mtTpl'), t = TPL.find(x=>x.id===s.value), b = document.getElementById('mtTplDel');
+    b.classList.toggle('hidden', !(t && (t.created_by===me || ACCESS.role==='admin'))); };
+  document.getElementById('mtTpl').onchange = e=>{ const t = TPL.find(x=>x.id===e.target.value); tplDel(); if(t) tplFill(t); };
+  document.getElementById('mtTplDel').onclick = async ()=>{ const s = document.getElementById('mtTpl'), t = TPL.find(x=>x.id===s.value); if(!t) return;
+    if(!(await uiConfirm('Ištrinti šabloną „'+t.name+'“?'))) return;
+    const { error } = await getSb().from('meeting_templates').delete().eq('id', t.id); if(error){ toast('Nepavyko: '+error.message); return; }
+    toast('Šablonas ištrintas.'); tplLoad(''); };
+  document.getElementById('mtTplSave').onclick = async ()=>{
+    const v = id=>document.getElementById(id).value.trim();
+    const cur = TPL.find(x=>x.id===document.getElementById('mtTpl').value);
+    const name = await uiPrompt('Šablono pavadinimas:', cur ? cur.name : (v('mtTitle') || '')); if(name==null) return;
+    const nm = String(name).trim().slice(0, 80); if(!nm){ toast('Įrašyk pavadinimą.'); return; }
+    const att = boxes().filter(x=>x.checked).map(x=>x.value);
+    const data = { scope, title:v('mtTitle'), from:v('mtFrom'), to:v('mtTo'), location:v('mtLoc'), description:v('mtDesc'),
+      emails:v('mtEmails').split(/[\s,;]+/).map(x=>x.trim().toLowerCase()).filter(Boolean), attendees:att, allMembers:scope==='all' && att.length===members.length, online:document.getElementById('mtOnline').checked };
+    const same = TPL.find(x=>x.name.toLowerCase()===nm.toLowerCase() && (x.created_by===me || ACCESS.role==='admin'));
+    if(same && !(await uiConfirm('Šablonas „'+same.name+'“ jau yra – perrašyti?', { yes:'Perrašyti' }))) return;
+    const res = same ? await getSb().from('meeting_templates').update({ name:nm, data, updated_at:new Date().toISOString() }).eq('id', same.id).select().single()
+      : await getSb().from('meeting_templates').insert({ name:nm, data, created_name:teamName(ACCESS.profile) }).select().single();
+    if(res.error){ toast(/meeting_templates|schema cache/i.test(res.error.message) ? 'Šablonai dar neįjungti (meeting_templates.sql).' : 'Nepavyko: '+res.error.message); return; }
+    toast('💾 Šablonas „'+nm+'“ išsaugotas.'); tplLoad(res.data.id); };
+  tplLoad('');
   document.getElementById('mtQ').addEventListener('input', e=>{ const q = normalizeText(e.target.value); document.querySelectorAll('.mt-members [data-s]').forEach(l=>l.classList.toggle('hidden', !!q && !l.dataset.s.includes(q))); srchSortDom(document.querySelectorAll('.mt-members [data-s]'), q, l=>l.dataset.s); });
   if(!EV_TOUCH) document.getElementById('mtTitle').focus();
   const was = editing ? { d:m.meet_date, f:calHM(m.start_time), t:calHM(m.end_time), l:m.location||'' } : null;
@@ -25615,8 +25662,8 @@ function calMeetingForm(m, iso){
     const emails = [...new Set(v('mtEmails').split(/[\s,;]+/).map(x=>x.trim().toLowerCase()).filter(Boolean))];
     const bad = emails.find(e=>!CAL_EMAIL_RE.test(e)); if(bad){ toast('Netinkamas el. paštas: '+bad); return; }
     const row = { title, meet_date:date, start_time:from||null, end_time:to||null, location:v('mtLoc'), description:v('mtDesc'),
-      attendees:scope==='all' ? members.map(x=>x.id) : Array.from(document.querySelectorAll('.mt-members input:checked')).map(i=>i.value), emails, updated_at:new Date().toISOString() };
-    if(scope==='private' && !row.attendees.length){ toast('Privačiam susitikimui pažymėk bent vieną narį.'); return; }
+      attendees:Array.from(document.querySelectorAll('.mt-members input:checked')).map(i=>i.value), emails, updated_at:new Date().toISOString() };
+    if(scope && !row.attendees.length){ toast('Pažymėk bent vieną narį, kam siųsti.'); return; }
     if(scope || m.scope) row.scope = scope;
     const online = document.getElementById('mtOnline').checked;
     if(online || m.online) row.online = online;
@@ -25845,7 +25892,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v808';
+const APP_VER = 'v809';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -55586,6 +55633,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-24 17:00', v:'v809', k:'new', t:'Susitikimai: kam siųsti ir šablonai', f:'Kuriant susitikimą (Įprastas, Bendras, Privatus) visada galima pasirinkti, kam siųsti: „Bendras“ pažymi visus narius – nuimk, kam nereikia; „Pažymėti visus / Nuimti visus“, paieška, kiek pažymėta. Naujas laukas „Šablonas“: „💾 Išsaugoti kaip šabloną“ išsaugo tipą, temą, laiką, vietą, aprašymą, narius, el. paštus ir online; išsaugotą šabloną pasirenki iš sąrašo – laukai užpildomi. Šablonus mato visi, ištrinti gali sukūręs ar Admin.' },
   { d:'2026-11-24 15:00', v:'v808', k:'new', t:'Susitikimai – tikri Google Calendar įvykiai', f:'Kai Admin → Integracijos prijungta Google paskyra su kalendoriaus leidimu, kalendoriaus susitikimas kuriamas kaip tikras Google Calendar įvykis tos paskyros vardu: visi pakviesti nariai (ir svečiai) gauna Google pakvietimą (Taip / Ne / Galbūt), susitikimas pats įsideda į jų Google kalendorius; online susitikimui – Google Meet nuoroda. Pakeitus ar atšaukus – atnaujinama visiems. Admin’e galima prijungti kitą (bendrą) Google paskyrą. Kol paskyra neprijungta – siunčiami įprasti laiškai.' },
   { d:'2026-11-24 12:00', v:'v807', k:'new', t:'Perkrovimo mygtukas ir UTA išrašai Ataskaitose', f:'Viršutiniame meniu – ⟳ „Perkrauti programą“: išsaugo tai, kas dar neišsaugota, atsisiunčia naujausią versiją ir atidaro tą patį puslapį. Ataskaitos → UTA: „Įkelti UTA išrašą“ (PDF, Excel, CSV) – pylimai susirikiuoja pagal korteles kaip Transporte; matosi paskutiniai įkelti išrašai (kas, kada) ir 🔔 Priminimai.' },
   { d:'2026-11-24 10:00', v:'v806', k:'fix', t:'Bolt: kelionių tikslai iš PDF ir „Total cost“ stulpelio', f:'Bolt PDF dokumentas skaitomas pagal antraštės stulpelius – „Total cost“ ir „Trip reason“ nebesusilieja, todėl kelionės tikslas (Trip reason) nebepasimeta ir kelionė nebėra laikoma asmenine; ilgas tikslas per kelias eilutes sujungiamas į vieną. Atpažįstamas ir trumpesnis stulpelio pavadinimas „Total cost“. Jau įkeltiems dokumentams – mygtukas „↻ Nuskaityti iš naujo“: kelionės gauna tikslus, darbo / asmeninė perskaičiuojama (kur nepakeista ranka).' },
