@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-St2Q/htZ2GMlUalI1lkaqFdlWdv/SJWeBpEAW3awZzY=' 'sha256-QOkyTE/2en5Kse0NJ2VEujghmtjm3Bx3g7hdO+EBJqU=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-wAydEg4hXx9v1/9pPwMorasoruf3HvsgVnJVbR+HifA=' 'sha256-yoDJ4mtKw0ZRuP7U3fzPHgXoC9fTGxdoH0a2KnMci1A=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -21480,7 +21480,7 @@ function wishLookModal(tab){
   g('wlSave').onclick = ()=>save(true);
 }
 // the screen (?linkejimai=<raktas>): the chosen wishes one after another, each N seconds, with a fade
-const WS = { token:'', d:null, i:-1, at:0, key:'' };
+const WS = { token:'', d:null, i:-1, at:0, key:'', seen:null, queue:[] };
 async function renderWishScreen(token){
   WS.token = token;
   const el = document.getElementById('guestView'); el.classList.add('poll-resv');
@@ -21492,6 +21492,10 @@ async function renderWishScreen(token){
     if(error || !data){ document.getElementById('wshCard').innerHTML = '<div class="wsh-tx">Nuoroda nebegalioja.</div>'; return; }
     if(data.off){ document.getElementById('wshCard').innerHTML = ''; return; }
     const k = JSON.stringify([data.brand, data.w, data.h]);
+    // a wish put on the screen while it is open goes next (after the one shown has had its time), then the order goes on from it
+    const ids = (data.wishes || []).map(w=>w.id);
+    if(!WS.seen) WS.seen = new Set(ids);
+    else ids.forEach(id=>{ if(!WS.seen.has(id)){ WS.seen.add(id); WS.queue.push(id); } });
     WS.d = data; if(k!==WS.key){ WS.key = k; await wishScreenLook(); }
   };
   await load(); setInterval(()=>{ if(document.visibilityState==='visible') load(); }, 4000);
@@ -21521,7 +21525,10 @@ function wishScreenTick(){
   // the wish shown stays its time; then the next one (a new one added keeps its place in the order)
   const cur = list.findIndex(w=>w.id===card.dataset.id);
   if(cur >= 0 && now - WS.at < sec*1000) return;
-  const next = list[(cur + 1) % list.length];
+  WS.queue = WS.queue.filter(id=>list.some(w=>w.id===id) && id!==card.dataset.id);
+  const qi = WS.queue.length ? list.find(w=>w.id===WS.queue[0]) : null;
+  if(qi) WS.queue.shift();
+  const next = qi || list[(cur + 1) % list.length];
   if(cur >= 0 && list.length===1 && card.classList.contains('on')){ WS.at = now; return; }
   const fade = (B.fade!=null ? +B.fade : 1) * 1000;
   card.classList.remove('on'); WS.at = now + fade;
@@ -26276,7 +26283,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v821';
+const APP_VER = 'v822';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -56063,6 +56070,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-25 02:00', v:'v822', k:'fix', t:'Linkėjimų ekranas: naujas linkėjimas rodomas kitas', f:'Kai į ekraną įkeliamas naujas linkėjimas, rodomas linkėjimas išbūna savo laiką (pvz. 10 s), tada parodomas naujasis ir toliau tęsiama nuo jo. Keli nauji – iš eilės, ta tvarka, kuria buvo patvirtinti.' },
   { d:'2026-11-25 01:30', v:'v821', k:'new', t:'Linkėjimai: šešėlis po tekstu', f:'Apipavidalinime – ir Ekrane, ir Telefone – galima įjungti šešėlį po tekstu ir jį redaguoti: spalva, ryškumas, išsiliejimas, poslinkis horizontaliai ir vertikaliai (slankikliu arba skaičiumi), su peržiūra.' },
   { d:'2026-11-25 01:00', v:'v820', k:'fix', t:'Linkėjimai: bet kuris Google šriftas, dydžiai slankikliu', f:'Apipavidalinime (Ekranas ir Telefonas) šriftą galima pasirinkti iš sąrašo arba įrašyti bet kurį Google Fonts pavadinimą – iškart parodoma, ar toks šriftas yra. Visi dydžiai (ekrano plotis ir aukštis, teksto, vardo, logotipo, perėjimo, patamsinimo) keičiami slankikliu arba įrašant skaičių; telefono puslapyje – nauji antraštės, užrašų, laukelių ir mygtuko teksto dydžiai.' },
   { d:'2026-11-25 00:30', v:'v819', k:'new', t:'Linkėjimai: atskiras ekrano ir telefono dizainas', f:'„Apipavidalinimas“ – dvi grafos: 📺 Ekranas (dydis, fonas, logotipas, šriftas, spalvos) ir 📱 Telefonas – puslapis, kurį atidaro QR kodas: savas fonas ar paveikslėlis su patamsinimu, logotipas, šriftas, teksto, mygtuko ir laukelių spalvos, antraštė, užrašai, mygtuko ir padėkos tekstai.' },
