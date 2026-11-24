@@ -2,7 +2,7 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-Zx3cnUjstMwmyFBLIMWpkJbabJoxhwVqW73YbSnnHVQ=' 'sha256-pgR5H+M4w9wE7/9hwFvj9LZi7+nWreF89kz+CtEMdzs=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-mAFD3QXfa3BVFujY77/LljPAW7wQDxQVJpRYkz0v6hU=' 'sha256-pgR5H+M4w9wE7/9hwFvj9LZi7+nWreF89kz+CtEMdzs=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>
 // saskaitos.eventsolutions.lt: the freelancers' invoice page (no app account)
 if(/^saskaitos\./.test(location.hostname)) location.replace((location.protocol==='https:' ? '/saskaitos' : '/saskaitos.html')+location.search);
@@ -21666,10 +21666,13 @@ function wishLookModal(tab){
     } else {
       const pub = g('wlPv'), inn = g('wlPvIn'); if(!pub) return;
       const logo = await wishPhoneLook(pub, P); if(logo===null) return;
-      inn.innerHTML = pvMode==='form'
-        ? `${logo}<div class="poll-wpanel">${P.title ? `<h2 class="poll-wh">${esc(P.title)}</h2>` : ''}<label class="poll-wf"><span>${esc(P.label || 'Tavo linkėjimas')}</span><textarea rows="5" readonly>Linkiu daug laimės ir meilės!</textarea><small>371</small></label>
+      // the same layout as on the phone: the logo (and the tabs, with emoji reactions on) fixed at the top, the form below
+      pub.classList.add('wfix'); inn.classList.add('poll-wfix');
+      const head = `<div class="poll-whead">${logo}${WSH.cur.reactions ? '<div class="poll-wtabs"><button type="button" class="on">Rašyti</button><button type="button">Linkėjimai</button></div>' : ''}</div>`;
+      inn.innerHTML = head + '<div class="poll-wbody center">' + (pvMode==='form'
+        ? `<div class="poll-wpanel">${P.title ? `<h2 class="poll-wh">${esc(P.title)}</h2>` : ''}<label class="poll-wf"><span>${esc(P.label || 'Tavo linkėjimas')}</span><textarea rows="5" readonly>Linkiu daug laimės ir meilės!</textarea><small>371</small></label>
           <label class="poll-wf"><span>${esc(P.nameLabel || 'Vardas, pavardė')} <em>(nebūtina)</em></span><input type="text" value="Jonas" readonly></label><button class="poll-wbtn" type="button">${esc(P.btn || 'Siųsti linkėjimą')}</button></div>`
-        : `${logo}<div class="poll-wpanel"><div class="poll-msg">${esc(P.thanks || 'Ačiū!')}${P.thanksSub ? `<small>${esc(P.thanksSub)}</small>` : ''}</div><button class="poll-wbtn ghost" type="button">Parašyti dar vieną</button></div>`;
+        : `<div class="poll-wpanel"><div class="poll-msg">${esc(P.thanks || 'Ačiū!')}${P.thanksSub ? `<small>${esc(P.thanksSub)}</small>` : ''}</div><button class="poll-wbtn ghost" type="button">Parašyti dar vieną</button></div>`) + '</div>';
     }
   };
   const later = ()=>{ clearTimeout(WSH.pvT); WSH.pvT = setTimeout(preview, 60); };
@@ -26601,7 +26604,7 @@ function tkNotify(id, event){ try{ notifyCall({ kind:'task', task_id:id, event }
    only admins see them and answer: fixed / accepted / rejected. The author
    gets a notification and a note in the app when it is answered.
    ============================================================ */
-const APP_VER = 'v832';
+const APP_VER = 'v833';
 const FB = { ok:null, list:[], ch:null, errs:[], filter:'new', kind:'', open:null };
 const FB_ST = {
   new:{ t:'Naujas', c:'var(--warn)' }, progress:{ t:'Taisoma', c:'#4E9BC9' },
@@ -56388,6 +56391,7 @@ const BTN_ICONS = {"↓": "<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><pat
 })();
 /* ---------- Atnaujinimai: kas pakeista ir pridėta (nuo 2026-09-22), naujausi viršuje ---------- */
 const CHANGELOG = [
+  { d:'2026-11-25 08:00', v:'v833', k:'fix', t:'Linkėjimai: telefono peržiūra – kaip tikrame telefone', f:'Apipavidalinimo telefono peržiūra rodo tą patį išdėstymą kaip telefonas: logotipas (ir grafos „Rašyti / Linkėjimai“, kai įjungtos reakcijos) viršuje, forma po jais – tai, kas matosi peržiūroje, matosi ir telefone.' },
   { d:'2026-11-25 07:30', v:'v832', k:'fix', t:'Linkėjimai: telefone logotipas nebenukerpamas viršuje', f:'Telefono puslapyje logotipas niekada neišlenda virš ekrano krašto (iPhone iškarpos, būsenos juostos): „Logotipas aukščiau ↑ ↓ žemiau“ jį perkelia puslapio tvarka – žemyn nuleidus, grafos ir forma pasislenka kartu, aukščiausiai – tik iki viršutinio krašto.' },
   { d:'2026-11-25 07:00', v:'v831', k:'fix', t:'Linkėjimai: „Netinka“, slenkamas gautų sąrašas, švelnesnė riba', f:'Gauti linkėjimai – atskirame slenkamame lange (su slinkties juosta), atnaujinant vieta neprarandama. Prie gauto linkėjimo – „✗ Netinka“: jis perkeliamas į grafą „🚫 Netinkami“, kur galima peržiūrėti, grąžinti į gautus arba iš karto rodyti ekrane. Vienas telefonas gali išsiųsti iki 30 linkėjimų per 5 minutes (buvo 6 per 10 min). Telefone logotipas ir grafos „Rašyti / Linkėjimai“ pritvirtinti viršuje (žemiau iPhone iškarpos) – slenka tik linkėjimai, kurie po grafomis švelniai išnyksta.' },
   { d:'2026-11-25 06:30', v:'v830', k:'new', t:'Linkėjimai: „📌 Rodyti“ konkretų linkėjimą', f:'Prie kiekvieno ekrane rodomo linkėjimo – „📌 Rodyti“: ekranas sklandžiai pereina prie jo ir rodo tik jį, kol mygtukas įjungtas. Atspaudus – linkėjimas gražiai nusifeidina į kitą ir ekranas sukasi toliau.' },
