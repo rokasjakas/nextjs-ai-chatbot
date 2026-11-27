@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-I8QKTXObcBIaskpIf8zmEe/4kzZOKjPyYbtmYSGj0vE=' 'sha256-vv9m+oyPRW68qVUXAMe4y4YDQXQGRw/ssbxG9+ztxp8=' 'sha256-ft7aXfKw9X/cLsrIhdjLexQS+QM8CUd5ST6H4f9qxPU=' 'sha256-146IJ2YFnli0sfqTrrVnh7sGvzREEd2xVPK0YmqhWJo=' 'sha256-EXWfBoTUsRSR4SVoYsW41o/L8GRefsf+sA6ZDxv2lBw=' 'sha256-c0KuyNJ0EZdSXoGPCSICg4ja2A3toDWSQLC0ZQXjldc=' 'sha256-rxFEfFc0A9FWAjsf153/OPwo6XvMlWmnItM1i6NQF5E=' 'sha256-rqMa/sFFVPw79YAOHVFqDwz9jyH9uEkjTfwb71tE8y4=' 'sha256-uhreRvNYTAIbjBaKW8VCwnIdhF2RzdJpjJZSDWh4TSM=' 'sha256-gJgdMdFll5uejkG81JqlQfggHNvSi/OEkX2ehPgXt6A=' 'sha256-fxFYfxPTIVp2xsE7rqj7CNBcj9enSGaipx4YzXXT4y0=' https://cdn.jsdelivr.net https://c.dailywebrtc.net; worker-src 'self' blob: https://cdn.jsdelivr.net https://c.dailywebrtc.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://yakmikxkcudwloxruhvx.supabase.co; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss://yakmikxkcudwloxruhvx.supabase.co wss://*.daily.co wss://*.dailywebrtc.net wss://*.dailywebrtc.com; frame-src 'self' blob: data: https:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101010">
+<meta name="robots" content="noindex">
+<title>Balsavimas · Event Solutions</title>
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://yakmikxkcudwloxruhvx.supabase.co">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Teko:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&family=Roboto:wght@500;700&display=swap" rel="stylesheet" media="print" id="appFonts">
+<style>
+
+:root{--nav-pb:max(4px, calc(env(safe-area-inset-bottom,0px) - 22px));}
+:root{
+  color-scheme:dark;
+  /* eventsolutions.lt: near-black, flat dark blocks, square corners,
+     pink / teal / blue brand stripes */
+  --bg:#101010; --bg-deep:#0B0B0B; --panel:#1A1A1A; --panel-2:#222222; --border:#2C2C2C;
+  --rail-bg:#151515;
+  --text:#F5F5F5; --text-dim:#A3A3A3; --text-faint:#666666;
+  --accent:#F35E7D; --accent-ink:#FFFFFF;
+  --pink:#F35E7D; --teal:#50AD97; --blue:#4E9BC9; --amber:#F2A93B; --violet:#8062D4;
+  --slate:#7C8592; --red:#C9484B; --grey:#55606B;
+  --ok:#50AD97; --warn:#F2A93B; --danger:#F0506E;
+  --panel-3:#2A2A2A; --border-2:#3A3A3A; --input:#0E0E10;
+  --fill-hover:#EDEDED; --hi-rgb:255 255 255;
+  --radius:3px;
+  --font-head:'Barlow','Source Sans 3','Roboto',system-ui,sans-serif;
+  --font-body:'Barlow','Source Sans 3','Source Sans Pro','Roboto',system-ui,sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:var(--font-body);
+  font-size:14.5px; line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--panel);border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:9px;
+  font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:200;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.hidden{display:none !important;}
+#authGate, #guestView{min-height:var(--vh100,100vh);display:flex;align-items:center;justify-content:center;padding:20px;}
+.poll-mgr-cols{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;align-items:start;} .poll-side{position:sticky;top:calc(var(--sticky-top, 0px) + 10px);max-height:calc(var(--vh100,100vh) - 40px);overflow:auto;}
+@media (max-width: 1100px){ .poll-mgr-cols{grid-template-columns:1fr;} .poll-side{position:static;max-height:none;} }
+.poll-si{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);background:var(--panel-2);margin-bottom:6px;cursor:pointer;} .poll-si:hover{border-color:color-mix(in srgb, var(--accent) 50%, var(--border));} .poll-si.on{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 10%, var(--panel-2));}
+.poll-si-n{width:22px;height:22px;display:grid;place-items:center;background:var(--panel-3);font-weight:800;font-size:11.5px;flex:none;} .poll-si-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;} .poll-si-t b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .poll-si-t small{font-size:11.5px;color:var(--text-dim);display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-variant-numeric:tabular-nums;}
+.poll-si .btn{padding:4px 10px;flex:none;}
+.poll-si-look{width:100%;text-align:left;font:inherit;color:var(--text);} .poll-si-look .poll-si-n{background:none;font-size:16px;} .poll-si-look small{white-space:normal;}
+.poll-look{max-width:760px;}
+.poll-setname{font-family:var(--font-head);font-size:26px;text-transform:uppercase;font-weight:500;background:transparent;border:1px solid transparent;padding:2px 6px;min-width:200px;flex:1;max-width:520px;color:var(--text);} .poll-setname:hover,.poll-setname:focus{border-color:var(--border);background:var(--panel-2);}
+.poll-hint{font-size:15px;letter-spacing:1px;text-transform:uppercase;margin-bottom:-8px;} .poll-opts.multi .poll-rad{border-radius:4px;} .poll-opts.multi .poll-ob.picked .poll-rad::after{border-radius:2px;}
+.poll-rs-win{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:calc(var(--u)*1*var(--k));min-height:0;}
+.poll-rs-wl{font-size:calc(var(--u)*2.4*var(--k));letter-spacing:.25em;text-transform:uppercase;} .poll-rs-wt{font-size:calc(var(--u)*8*var(--k));line-height:1;text-transform:uppercase;overflow-wrap:anywhere;} .poll-rs-wp{font-size:calc(var(--u)*2.6*var(--k));font-variant-numeric:tabular-nums;margin-bottom:calc(var(--u)*1.2*var(--k));}
+.poll-pub .poll-topic{font-size:calc(clamp(32px,8.5vw,54px)*var(--sz-topic,1));line-height:1;letter-spacing:.04em;margin-bottom:-6px;} .poll-pub .poll-q{font-size:calc(clamp(20px,5.2vw,30px)*var(--sz-question,1));}
+.poll-pub .poll-timer b{font-size:calc(64px*var(--sz-time,1));} .poll-pub .poll-timer small{font-size:calc(14px*var(--sz-time,1));}
+.poll-wr{display:flex;flex-direction:column;gap:10px;width:100%;} .poll-wr input{width:100%;box-sizing:border-box;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(22px*var(--sz-result,1));padding:14px 16px;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 55%, transparent);background:rgba(0,0,0,.35);color:var(--pl-col,#fff);border-radius:0;} .poll-wr input:focus{outline:none;border-color:var(--pl-acc);}
+.poll-wr-row{display:flex;gap:8px;align-items:stretch;} .poll-wr-row input{flex:1;min-width:0;} .poll-wr-x{flex:none;width:52px;font:inherit;font-size:22px;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 35%, transparent);background:rgba(0,0,0,.35);color:var(--pl-col,#fff);cursor:pointer;}
+.poll-more{width:100%;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(20px*var(--sz-result,1));padding:13px 16px;border:2px dashed color-mix(in srgb, var(--pl-col,#fff) 60%, transparent);background:transparent;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;}
+.poll-more:active{background:rgba(255,255,255,.08);} .poll-more small{font-size:.7em;opacity:.75;margin-left:6px;}
+.poll-wr input.dup{border-color:#ff5a5a;} .poll-wr-dup{font-size:calc(14px*var(--sz-result,1));color:#ff8a8a;margin:-4px 0 2px;text-align:left;}
+.poll-mt{display:flex;flex-direction:column;gap:10px;width:100%;} .poll-mt-row{display:flex;flex-direction:column;gap:6px;}
+.poll-mt-t{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(22px*var(--sz-result,1));line-height:1.1;padding:13px 14px;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 55%, transparent);background:rgba(0,0,0,.35);cursor:pointer;text-transform:uppercase;letter-spacing:.3px;}
+.poll-mt-n{flex:none;width:30px;height:30px;display:grid;place-items:center;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 45%, transparent);font-size:.7em;} .poll-mt-ok{margin-left:auto;flex:none;font-style:normal;color:var(--pl-acc);font-size:1.1em;opacity:0;}
+.poll-mt-row.done .poll-mt-ok{opacity:1;} .poll-mt-row.done .poll-mt-t, .poll-mt-row.open .poll-mt-t{border-color:var(--pl-acc);}
+.poll-mt-row input{width:100%;box-sizing:border-box;font:inherit;font-family:var(--pl-font,var(--font-head));font-size:calc(22px*var(--sz-result,1));padding:13px 16px;border:2px solid var(--pl-acc);background:rgba(0,0,0,.45);color:var(--pl-col,#fff);border-radius:0;} .poll-mt-row input:focus{outline:none;}
+.poll-rs-mtw{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*2.2*var(--k)*var(--sz-result,1));width:100%;} .poll-rs-mtw-row{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.4*var(--k));}
+.poll-rs .poll-rs-mtw-t{font-size:calc(var(--u)*2.6*var(--k)*var(--sz-result,1));letter-spacing:.2em;text-transform:uppercase;} .poll-rs .poll-rs-mtw-n{font-size:calc(var(--u)*5.5*var(--k)*var(--sz-result,1));line-height:1.05;text-transform:uppercase;}
+.poll-rs-mtw.one .poll-rs-mtw-t{font-size:calc(var(--u)*3.4*var(--k)*var(--sz-result,1));} .poll-rs-mtw.one .poll-rs-mtw-n{font-size:calc(var(--u)*8*var(--k)*var(--sz-result,1));}
+.poll-warn{font-size:calc(15px*var(--sz-result,1));line-height:1.35;text-align:center;letter-spacing:.3px;}
+.poll-pub .poll-ob{font-size:calc(24px*var(--sz-result,1));} .poll-pub .poll-go{font-size:calc(28px*var(--sz-result,1));} .poll-pub .poll-hint{font-size:calc(15px*var(--sz-result,1));}
+.poll-rs .poll-rs-topic{font-size:calc(var(--u)*6*var(--k)*var(--sz-topic,1));line-height:1;letter-spacing:.04em;margin-bottom:0;text-align:center;} .poll-rs .poll-rs-q{font-size:calc(var(--u)*3.4*var(--k)*var(--sz-question,1));text-align:center;}
+.poll-rs .poll-rs-top{font-size:calc(var(--u)*1.9*var(--k)*var(--sz-time,1));}
+.poll-rs .poll-rs-h{font-size:calc(var(--u)*3*var(--k)*var(--sz-result,1));} .poll-rs .poll-rs-bar{height:calc(var(--u)*2.2*var(--k)*var(--sz-result,1));}
+.poll-rs .poll-rs-wl{font-size:calc(var(--u)*2.4*var(--k)*var(--sz-result,1));} .poll-rs .poll-rs-wt{font-size:calc(var(--u)*8*var(--k)*var(--sz-result,1));} .poll-rs .poll-rs-wp{font-size:calc(var(--u)*2.6*var(--k)*var(--sz-result,1));}
+.poll-rs .poll-rs-win{position:relative;display:block;}
+.poll-rs .poll-rs-wbox{position:absolute;left:var(--win-x,50%);top:var(--win-y,50%);transform:translate(calc(var(--win-x,50%)*-1),calc(var(--win-y,50%)*-1));display:flex;flex-direction:column;align-items:var(--win-ai,center);text-align:var(--win-ta,center);gap:calc(var(--u)*1*var(--k));width:max-content;max-width:100%;}
+.poll-rs .poll-rs-wbox .poll-rs-wt{overflow-wrap:normal;word-break:normal;}
+.poll-rs-sptopic{position:absolute;left:var(--tp-x,50%);top:var(--tp-y,50%);transform:translate(calc(var(--tp-x,50%)*-1),calc(var(--tp-y,50%)*-1));font-size:calc(var(--u)*7*var(--sz-topic,1));line-height:1.05;letter-spacing:.03em;text-align:center;white-space:pre-line;width:max-content;max-width:94%;overflow-wrap:anywhere;}
+.poll-sp-prev{position:relative;width:100%;overflow:hidden;background:#111;} .poll-sp-prev .poll-rs{pointer-events:none;}
+.poll-si.k-pre{border-left:5px solid #F2C12E;} .poll-si.k-pre .poll-si-n{background:#F2C12E;color:#1a1400;}
+.poll-si.k-vote{border-left:5px solid #E5484D;} .poll-si.k-vote .poll-si-n{background:#E5484D;color:#fff;}
+.poll-si.k-write{border-left:5px solid #3E8EDE;} .poll-si.k-write .poll-si-n{background:#3E8EDE;color:#fff;}
+.poll-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--text-dim);margin:0 0 8px;} .poll-legend i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px;}
+.poll-si.splash .poll-si-n{background:var(--accent);color:var(--accent-ink,#fff);} .poll-si.splash b{font-weight:600;}
+.poll-rs .poll-rs-nom{font-size:calc(var(--u)*4.6*var(--k)*var(--sz-result,1));line-height:1.1;text-transform:uppercase;} .poll-rs-wbox.noms{gap:calc(var(--u)*1.6*var(--k)*var(--sz-result,1));}
+.poll-rs-wbox.reveal.noms > *{animation-delay:0s;} .poll-rs-wbox.noms > *{animation:pollReveal 1.2s cubic-bezier(.2,.9,.25,1) both;}
+.poll-sizes{display:flex;flex-direction:column;gap:6px;margin-top:14px;} .poll-sz{display:grid;grid-template-columns:minmax(120px,210px) 1fr 52px;align-items:center;gap:10px;font-size:13px;} .poll-sz b{text-align:right;font-variant-numeric:tabular-nums;font-size:12.5px;}
+.poll-winpos{display:flex;flex-direction:column;gap:6px;margin-top:14px;} .poll-pos{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,30px);gap:4px;padding:6px;background:#111;border:1px solid var(--border);width:max-content;}
+.poll-pos button{border:1px solid var(--border);background:var(--panel-2);cursor:pointer;display:grid;place-items:center;padding:0;} .poll-pos button i{width:14px;height:6px;background:var(--text-dim);opacity:.4;} .poll-pos button.on{border-color:var(--accent);} .poll-pos button.on i{background:var(--accent);opacity:1;}
+.poll-rs-in{transition:opacity 1.1s ease;} .poll-rs-in.pl-fade{opacity:0;}
+.poll-rs-waitbox{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u)*1.4*var(--k));text-align:center;min-height:0;}
+.poll-rs-cd{font-size:calc(var(--u)*9*var(--k)*var(--sz-time,1));line-height:1;font-variant-numeric:tabular-nums;} .poll-rs-hint{font-size:calc(var(--u)*1.8*var(--k)*var(--sz-time,1));letter-spacing:.2em;text-transform:uppercase;opacity:.85;}
+.poll-rs-qr canvas{display:block;width:calc(var(--u)*16*var(--k));height:calc(var(--u)*16*var(--k));image-rendering:pixelated;} .poll-rs-qr.big canvas{width:calc(var(--u)*24*var(--k));height:calc(var(--u)*24*var(--k));}
+.poll-rs-liverow{display:flex;align-items:center;gap:calc(var(--u)*3*var(--k));} .poll-rs-livet{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.6*var(--k));}
+.poll-rs .poll-rs-big{font-size:calc(var(--u)*11*var(--k)*var(--sz-clock,1));font-variant-numeric:tabular-nums;text-align:center;}
+.poll-rs .poll-rs-liverow{gap:calc(var(--u)*3*var(--k)*var(--sz-clock,1));} .poll-rs .poll-rs-livet .poll-rs-wl{font-size:calc(var(--u)*2.4*var(--k)*var(--sz-clock,1));}
+.poll-rs .poll-rs-liverow .poll-rs-qr canvas{width:calc(var(--u)*16*var(--k)*var(--sz-clock,1));height:calc(var(--u)*16*var(--k)*var(--sz-clock,1));}
+.poll-rs .poll-rs-qr.big canvas{width:calc(var(--u)*24*var(--k)*var(--sz-clock,1));height:calc(var(--u)*24*var(--k)*var(--sz-clock,1));} .poll-rs .poll-rs-cd{font-size:calc(var(--u)*9*var(--k)*var(--sz-clock,1));text-align:center;}
+.poll-rs-idlelogo{position:absolute;left:var(--il-x,50%);top:var(--il-y,8%);transform:translate(calc(var(--il-x,50%)*-1),calc(var(--il-y,8%)*-1));width:auto;height:calc(var(--u)*12*var(--sz-idlelogo,1));max-width:90%;object-fit:contain;}
+.poll-rs-idleqr{position:absolute;left:var(--iq-x,50%);top:var(--iq-y,85%);transform:translate(calc(var(--iq-x,50%)*-1),calc(var(--iq-y,85%)*-1));}
+.poll-rs-idleqr canvas{display:block;width:calc(var(--u)*18*var(--sz-idleqr,1));height:calc(var(--u)*18*var(--sz-idleqr,1));}
+.poll-rs-wbox.reveal > *{animation:pollReveal 1.6s cubic-bezier(.2,.9,.25,1) both;} .poll-rs-wbox.reveal > *:nth-child(2){animation-delay:.25s;} .poll-rs-wbox.reveal > *:nth-child(3){animation-delay:.5s;}
+.poll-rs-wbox.reveal .poll-rs-wt{filter:drop-shadow(0 0 calc(var(--u)*1.5) rgba(255,210,90,.55));}
+@keyframes pollReveal{0%{opacity:0;transform:scale(.55);filter:blur(12px);} 60%{opacity:1;transform:scale(1.06);filter:blur(0);} 100%{opacity:1;transform:scale(1);}}
+.poll-fw{position:absolute;inset:0;pointer-events:none;z-index:0;transition:opacity .8s;} .poll-rs > .poll-rs-in{z-index:1;}
+.poll-si-top{font-style:normal;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;font-weight:800;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.poll-topic{font-size:16px;letter-spacing:3px;text-transform:uppercase;margin-bottom:-8px;font-family:var(--pl-font,var(--font-head));} .poll-rs-topic{font-size:calc(var(--u)*2.2*var(--k));letter-spacing:.2em;text-transform:uppercase;margin-bottom:calc(var(--u)*-1.2*var(--k));}
+.poll-perm .poll-qr canvas{width:170px;height:170px;background:transparent;} .poll-perm .poll-qr.clear canvas{background:repeating-conic-gradient(#8884 0% 25%, transparent 0% 50%) 50%/16px 16px;}
+.poll-qro{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--text-dim);} .poll-qro label{display:inline-flex;align-items:center;gap:6px;} .poll-qro input[type=color]{width:34px;height:26px;padding:1px;border:1px solid var(--border);background:var(--panel-2);} .poll-qro .off{opacity:.45;} .poll-logo.idle{max-height:40vh;max-width:80%;margin:auto;} .poll-rs-logo.idle{margin:auto;max-height:45%;max-width:60%;} .poll-look .card{margin-bottom:14px;}
+#guestView.poll-edv{display:block;padding:16px;align-items:stretch;} .poll-edpage{max-width:1500px;margin:0 auto;} .poll-edtop{display:flex;align-items:center;gap:10px;margin:0 0 14px;} .poll-edtop .brand-cube{width:28px;height:28px;} .poll-edtop b{font-family:var(--font-head);font-weight:500;font-size:22px;letter-spacing:.6px;} .poll-edtop span{margin-left:auto;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);font-weight:700;}
+.poll-edlink{border-top:1px solid var(--border);padding-top:10px;}
+.poll-gf{display:flex;flex-direction:column;gap:8px;margin-top:12px;} .poll-gf-top .chip{font-size:14px;}
+.poll-sample{font-family:var(--pl-font,var(--font-head)) !important;}
+.poll-li{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);cursor:pointer;margin-bottom:6px;font:inherit;}
+.poll-li:hover{border-color:var(--accent);} .poll-li b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .poll-li small{color:var(--text-dim);font-size:12px;white-space:nowrap;}
+.poll-st{font-size:10.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:2px 7px;border:1px solid currentColor;white-space:nowrap;color:var(--text-dim);}
+.poll-st.st-live{color:#2E8C77;} .poll-st.st-waiting{color:var(--amber);} .poll-st.st-ended{color:var(--danger);}
+.poll-cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start;} .poll-cols .card{margin-bottom:14px;}
+@media (max-width: 900px){ .poll-cols{grid-template-columns:1fr;} }
+.poll-opt{display:flex;align-items:center;gap:8px;margin-bottom:6px;} .poll-win-ck{display:flex;align-items:center;gap:3px;font-size:12px;white-space:nowrap;cursor:pointer;opacity:.55;} .poll-win-ck.on{opacity:1;color:var(--accent);font-weight:700;} .poll-win-ck input{margin:0;}
+.poll-showbtns{display:grid;gap:8px;margin-top:10px;}
+.poll-sbtn{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;border:2px solid var(--border-2);background:var(--panel-2);color:var(--text);cursor:pointer;font:inherit;}
+.poll-sbtn > i{font-style:normal;font-size:28px;line-height:1;flex:none;width:34px;text-align:center;}
+.poll-sbtn b{display:block;font-family:var(--font-head);font-size:24px;font-weight:500;text-transform:uppercase;letter-spacing:.3px;line-height:1.05;}
+.poll-sbtn small{display:block;color:var(--text-dim);font-size:12.5px;margin-top:3px;line-height:1.3;}
+.poll-sbtn:hover:not(:disabled){border-color:var(--accent);}
+.poll-sbtn.on{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 16%, var(--panel-2));}
+.poll-sbtn.on::after{content:'RODOMA';margin-left:auto;flex:none;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--accent-ink,#fff);background:var(--accent);padding:4px 9px;}
+.poll-sbtn:disabled{opacity:.45;cursor:not-allowed;}
+.poll-rs .poll-rs-wbox.noms > .poll-rs-nom:only-child{font-size:calc(var(--u)*8*var(--k)*var(--sz-result,1));line-height:1.05;}
+.poll-tshow{border:1px solid var(--border-2);padding:10px;background:var(--panel);} .poll-tshow-t{font-family:var(--font-head);font-size:20px;text-transform:uppercase;letter-spacing:.3px;margin:0 0 8px;}
+.poll-tshow-b{display:grid;grid-template-columns:1fr 1fr;gap:8px;} .poll-tshow-b .poll-sbtn{padding:10px 12px;gap:10px;} .poll-tshow-b .poll-sbtn b{font-size:18px;} .poll-tshow-b .poll-sbtn > i{font-size:22px;width:26px;}
+.poll-tshow-b .poll-sbtn.on::after{content:'';display:none;} .poll-tshow-b .poll-sbtn.on b::after{content:' · RODOMA';color:var(--accent);font-size:12px;letter-spacing:1px;}
+.poll-sbtn.hide{justify-content:center;border-style:dashed;padding:11px 16px;} .poll-sbtn.hide b{font-size:20px;}
+.poll-rs-nomq{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u)*2*var(--k));text-align:center;min-height:0;}
+.poll-rs-nomhead{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*1.2*var(--k));text-align:center;}
+.poll-rs .poll-rs-nomhead .poll-rs-topic{font-size:calc(var(--u)*9*var(--k)*var(--sz-topic,1));} .poll-rs .poll-rs-nomhead .poll-rs-q{font-size:calc(var(--u)*5.5*var(--k)*var(--sz-question,1));}
+.poll-rs-nomqr{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u)*1.4*var(--k));}
+.poll-show-now{padding:8px 10px;background:var(--panel-3);margin:8px 0;font-size:13px;} .poll-si-show{font-style:normal;font-size:11px;color:var(--accent);margin-left:4px;} .poll-opt input{flex:1;min-width:0;} .poll-opt-n{width:24px;height:24px;display:grid;place-items:center;background:var(--panel-3);font-weight:800;font-size:12px;flex:none;}
+.poll-num{display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);font-size:13px;} .poll-num input{width:84px;}
+.poll-brand{display:grid;grid-template-columns:1fr 1fr;gap:12px;} @media (max-width: 560px){ .poll-brand{grid-template-columns:1fr;} }
+.poll-up{display:flex;flex-direction:column;gap:6px;} .poll-up > span,.poll-col{font-size:12px;font-weight:700;color:var(--text-dim);} .poll-up .btn{align-self:flex-start;}
+.poll-up-prev{height:84px;border:1px solid var(--border);background:#111 center/cover;display:grid;place-items:center;color:var(--text-dim);font-size:12.5px;padding:6px;text-align:center;overflow:hidden;}
+.poll-col{display:flex;flex-direction:column;gap:6px;} .poll-col input[type=color]{width:100%;height:38px;padding:2px;background:var(--panel-2);border:1px solid var(--border);}
+.poll-big{display:flex;flex-direction:column;gap:2px;margin:14px 0;} .poll-big small{color:var(--text-dim);} .poll-big b{font-family:var(--font-head);font-size:56px;line-height:1;font-weight:500;}
+.poll-big.live b{color:#2E8C77;} .poll-ctl .btn{width:100%;justify-content:center;}
+.poll-delay{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;font-size:12.5px;color:var(--text-dim);} .poll-delay .chipbar{align-items:center;}
+.poll-links{display:flex;gap:14px;flex-wrap:wrap;} .poll-qr canvas{width:180px;height:180px;display:block;background:#fff;image-rendering:pixelated;} .poll-lk{flex:1;min-width:220px;}
+.poll-lk-t{font-size:11px;letter-spacing:.8px;text-transform:uppercase;font-weight:800;color:var(--text-dim);margin-bottom:4px;}
+.poll-url{font-size:12px;word-break:break-all;background:var(--panel-2);border:1px solid var(--border);padding:6px 8px;margin-bottom:6px;user-select:all;}
+.poll-rrow{margin-bottom:10px;} .poll-rrow-h{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;margin-bottom:4px;} .poll-rrow-h span{color:var(--text-dim);white-space:nowrap;}
+.poll-bar{height:10px;background:var(--panel-3);} .poll-bar i{display:block;height:100%;background:var(--accent);transition:width .5s;} .poll-rrow.top .poll-bar i{background:#2E8C77;}
+#guestView.poll-pubv,#guestView.poll-resv{padding:0;display:block;min-height:0;}
+.poll-pub{position:fixed;inset:0;overflow:auto;color:var(--pl-col,#fff);font-family:var(--pl-font,var(--font-head));background:#111;display:flex;}
+.poll-pub.has-bg{background:linear-gradient(rgba(0,0,0,var(--pl-dim)),rgba(0,0,0,var(--pl-dim))),var(--pl-bg) center/cover no-repeat;}
+.poll-pub-in{margin:auto;width:100%;max-width:640px;padding:28px 20px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:18px;text-align:center;}
+.poll-timer{display:flex;flex-direction:column;align-items:center;} .poll-timer small{font-size:14px;letter-spacing:2px;text-transform:uppercase;opacity:.8;} .poll-timer b{font-size:64px;line-height:1;font-weight:500;color:var(--pl-acc,#E5486C);font-variant-numeric:tabular-nums;}
+.poll-q{font-size:clamp(28px,7vw,46px);line-height:1.05;margin:0;font-weight:500;text-transform:uppercase;overflow-wrap:anywhere;}
+.poll-opts{display:flex;flex-direction:column;gap:10px;}
+.poll-ob{font:inherit;font-size:24px;line-height:1.1;padding:16px 16px;border:2px solid color-mix(in srgb, var(--pl-col,#fff) 55%, transparent);background:rgba(0,0,0,.35);cursor:pointer;text-transform:uppercase;letter-spacing:.3px;transition:transform .1s, background .15s, border-color .15s;display:flex;align-items:center;gap:14px;text-align:left;}
+.poll-ob:active{transform:scale(.98);} .poll-ob.picked{border-color:var(--pl-acc,#E5486C);background:color-mix(in srgb, var(--pl-acc,#E5486C) 22%, rgba(0,0,0,.45));} .poll-ob:disabled:not(.picked){opacity:.45;}
+.poll-rad{width:22px;height:22px;border-radius:50%;border:2px solid var(--pl-col,#fff);flex:none;display:grid;place-items:center;} .poll-ob.picked .poll-rad{border-color:var(--pl-acc,#E5486C);} .poll-ob.picked .poll-rad::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--pl-acc,#E5486C);}
+.poll-go{font:inherit;font-size:28px;letter-spacing:1px;text-transform:uppercase;padding:16px;border:2px solid var(--pl-acc,#E5486C);background:color-mix(in srgb, var(--pl-acc,#E5486C) 30%, rgba(0,0,0,.5));cursor:pointer;margin-top:4px;transition:opacity .15s, transform .1s;}
+.poll-go:disabled{opacity:.4;cursor:default;} .poll-go:not(:disabled):active{transform:scale(.98);} .poll-go.sending{opacity:.7;}
+.poll-pub h1,.poll-pub button,.poll-pub small,.poll-pub b,.poll-rs h1,.poll-rs span,.poll-rs b{font-family:var(--pl-font,var(--font-head));}
+.poll-rs.acc-grad .poll-rs-bar i,.poll-pub.acc-grad .poll-ob.picked .poll-rad::after,.poll-pub.acc-grad .poll-ok{background:var(--pl-grad);} .poll-pub.acc-grad .poll-ok{color:#111;-webkit-text-fill-color:#111;}
+.pl-txt{background:var(--pl-grad,linear-gradient(#fff,#fff));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;}
+.poll-logo{display:block;max-width:min(70%,320px);max-height:120px;margin:0 auto;object-fit:contain;}
+.poll-rs-logo{display:block;max-height:calc(var(--u)*9*var(--k)*var(--sz-logo,1));max-width:min(96%, calc(40% * var(--sz-logo,1)));object-fit:contain;align-self:center;position:relative;top:var(--lg-y,0%);flex:none;}
+.poll-txt{display:flex;flex-direction:column;gap:8px;margin-top:12px;} .poll-sep{width:1px;align-self:stretch;background:var(--border);margin:0 4px;}
+.poll-stops{display:flex;align-items:center;gap:8px;flex-wrap:wrap;} .poll-stop{display:inline-flex;align-items:center;gap:2px;} .poll-stop input{width:46px;height:34px;padding:2px;background:var(--panel-2);border:1px solid var(--border);}
+.poll-sample{background:#111;padding:14px;font-family:var(--font-head);font-size:34px;text-transform:uppercase;line-height:1;}
+.poll-up-prev.logo img{max-width:100%;max-height:70px;object-fit:contain;}
+.poll-msg{font-size:34px;line-height:1.1;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px;} .poll-msg small{font-size:18px;text-transform:none;opacity:.8;} .poll-msg.sm{font-size:18px;text-transform:none;opacity:.8;}
+.poll-ok{width:84px;height:84px;border-radius:50%;background:var(--pl-acc,#E5486C);display:grid;place-items:center;font-size:46px;color:#fff;-webkit-text-fill-color:#fff;}
+.poll-rs-wrap{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);overflow:hidden;background:#000;}
+.poll-rs{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;color:var(--pl-col,#fff);font-family:var(--pl-font,var(--font-head));background:#111;}
+.poll-rs.has-bg{background:linear-gradient(rgba(0,0,0,var(--pl-dim)),rgba(0,0,0,var(--pl-dim))),var(--pl-bg) center/cover no-repeat;}
+.poll-rs-in{--k:1;position:absolute;inset:0;padding:calc(var(--u)*4*var(--k)) calc(var(--u)*5*var(--k));display:flex;flex-direction:column;gap:calc(var(--u)*2.2*var(--k));overflow:hidden;}
+.poll-rs-top{display:flex;justify-content:space-between;align-items:center;font-size:calc(var(--u)*1.9*var(--k));letter-spacing:.15em;text-transform:uppercase;opacity:.9;gap:20px;}
+.poll-rs-live{display:inline-flex;align-items:center;gap:.5em;font-variant-numeric:tabular-nums;} .poll-rs-live i{width:.6em;height:.6em;border-radius:50%;background:var(--pl-acc,#E5486C);animation:pollPulse 1.2s infinite;}
+@keyframes pollPulse{50%{opacity:.25;}}
+.poll-rs-q{font-size:calc(var(--u)*5.2*var(--k));line-height:1;margin:0;font-weight:500;text-transform:uppercase;overflow-wrap:anywhere;}
+.poll-rs-list{flex:1;display:flex;flex-direction:column;justify-content:center;gap:calc(var(--u)*1.8*var(--k));min-height:0;}
+.poll-rs-h{display:flex;justify-content:space-between;align-items:baseline;gap:1em;font-size:calc(var(--u)*3*var(--k));line-height:1.05;text-transform:uppercase;margin-bottom:calc(var(--u)*.6*var(--k));}
+.poll-rs-h span{overflow-wrap:anywhere;} .poll-rs-h b{font-weight:500;font-variant-numeric:tabular-nums;}
+.poll-rs-bar{height:calc(var(--u)*2.2*var(--k));background:rgba(255,255,255,.14);} .poll-rs-bar i{display:block;height:100%;background:var(--pl-acc,#E5486C);transition:width .8s cubic-bezier(.2,.8,.2,1);}
+.poll-rs-row.win .poll-rs-h{color:var(--pl-acc,#E5486C);}
+.poll-rs-in > .poll-msg{margin:auto;font-size:calc(var(--u)*4);}
+.wsh-mode{margin-left:6px;} .wsh-pin.on{background:var(--teal);border-color:var(--teal);color:#06231f;font-weight:700;} .wsh-show .wsh-w.pinned{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal);}
+.wsh-sec{border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:color-mix(in srgb, var(--panel) 70%, transparent);} .wsh-sec > summary{cursor:pointer;padding:11px 14px;font-weight:700;font-size:14px;list-style:none;display:flex;align-items:center;gap:8px;user-select:none;} .wsh-sec > summary::-webkit-details-marker{display:none;} .wsh-sec > summary::after{content:'▸';margin-left:auto;opacity:.6;transition:transform .15s;} .wsh-sec[open] > summary::after{transform:rotate(90deg);} .wsh-sec > summary:hover{background:color-mix(in srgb, var(--teal) 10%, transparent);border-radius:10px;}
+.wsh-sec-b{padding:4px 14px 14px;} .wsh-sec .wsh-sh{margin:0;padding:0;border:0;} .wsh-cnt{font-size:13px;color:var(--text);}
+.modal.wsh-lookm{max-width:min(1240px, 96vw);}
+.wsh-look{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,480px);gap:18px;align-items:start;} @media(max-width:900px){ .wsh-look{grid-template-columns:1fr;} }
+.wsh-look-pv{position:sticky;top:0;display:flex;flex-direction:column;gap:8px;} .wsh-pv-h{font-weight:700;font-size:13px;}
+.wsh-pv-scr{position:relative;overflow:hidden;border-radius:8px;border:1px solid var(--border);background:repeating-conic-gradient(#2a2a30 0 25%, #222228 0 50%) 0 0/16px 16px;}
+.wsh-pv-scr .wsh-stage{position:absolute;top:0;left:0;transform-origin:0 0;}
+.wsh-pv-ph{width:280px;height:560px;margin:0 auto;border-radius:30px;border:8px solid #2b2b30;overflow:hidden;position:relative;background:#000;}
+.wsh-pv-phin{position:absolute;top:0;left:0;width:390px;height:804px;transform:scale(0.6769);transform-origin:0 0;}
+.wsh-pv-phin .poll-pub{position:absolute;inset:0;padding-top:0;}
+.wsh-pv-mode{align-self:center;}
+.wsh-sh{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px;} .wsh-sh-prev{padding:10px 14px;border-radius:8px;background:#5a5a66;color:#fff;font-size:22px;font-weight:700;text-align:center;}
+.wsh-rng{display:flex;align-items:center;gap:8px;} .wsh-rng input[type=range]{flex:1;min-width:0;} .wsh-rng input[type=number]{width:80px;}
+.wsh-font{display:flex;flex-direction:column;gap:3px;} .wsh-font input{font-size:16px;}
+.wsh-fl{max-height:230px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;background:var(--bg);margin-top:4px;}
+.wsh-fl button{display:flex;align-items:baseline;justify-content:space-between;gap:10px;text-align:left;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--text);padding:8px 10px;font-size:19px;cursor:pointer;} .wsh-fl button small{font-size:13px;opacity:.6;font-family:inherit;} .wsh-fl button:hover{background:color-mix(in srgb, var(--teal) 14%, transparent);} .wsh-fl button.on{background:color-mix(in srgb, var(--teal) 26%, transparent);font-weight:700;} .wsh-fl button.nf{opacity:.45;}
+.wsh-links{margin-bottom:12px;} .wsh-lk{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;} .wsh-qr canvas{width:160px;height:160px;border-radius:8px;background:#fff;} .wsh-lk-t{flex:1;min-width:260px;}
+.wsh-cols{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px;align-items:start;} @media(max-width:900px){ .wsh-cols{grid-template-columns:1fr;} }
+.wsh-cols > .wsh-col{margin:0;}
+.wsh-ch{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px;} .wsh-ch h3{margin:0;font-size:16px;display:flex;gap:6px;align-items:center;}
+.wsh-int{display:flex;align-items:center;gap:6px;font-size:13px;} .wsh-int input{width:70px;}
+.wsh-list{display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - 230px);min-height:200px;overflow-y:auto;padding-right:6px;scrollbar-width:auto;scrollbar-color:var(--teal) color-mix(in srgb, var(--border) 60%, transparent);} .wsh-list::-webkit-scrollbar{width:12px;} .wsh-list::-webkit-scrollbar-thumb{background:var(--teal);border-radius:6px;} .wsh-list::-webkit-scrollbar-track{background:color-mix(in srgb, var(--border) 60%, transparent);border-radius:6px;}
+.wsh-no{border-color:var(--red,#e5484d);color:var(--red,#e5484d);} .wsh-w.rej{border-left:4px solid var(--red,#e5484d);opacity:.9;} .wsh-intabs button{display:inline-flex;align-items:center;gap:6px;}
+.wsh-w{border:1px solid var(--border);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--panel);} .wsh-show .wsh-w{border-left:4px solid var(--teal);} .wsh-w.in{border-left:4px solid var(--amber);}
+.wsh-w textarea{width:100%;resize:vertical;font-size:18px;line-height:1.45;padding:10px 12px;min-height:84px;overflow:hidden;box-sizing:border-box;} .wsh-w.in input{font-size:15px;} .wsh-tx{white-space:pre-wrap;font-size:16px;line-height:1.4;} .wsh-nm{color:var(--text-dim);font-size:13px;}
+.wsh-act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;} .wsh-ok{background:color-mix(in srgb, var(--teal) 20%, transparent);border-color:var(--teal);font-weight:700;}
+.wsh-stage{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;padding:80px;box-sizing:border-box;text-align:center;}
+.wsh-stage.left{align-items:flex-start;text-align:left;}
+.wsh-bgimg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0;}
+.wsh-logo{position:relative;z-index:1;} .wsh-logo img{display:block;max-width:100%;object-fit:contain;}
+.wsh-card{position:relative;z-index:1;opacity:0;transform:translateY(12px);transition:opacity var(--wsh-fade,1s) ease, transform var(--wsh-fade,1s) ease;max-width:100%;}
+.wsh-card.on{opacity:1;transform:none;}
+.wsh-stage .wsh-tx{text-shadow:var(--wsh-sh,none);color:var(--wsh-c,#fff);font-size:var(--wsh-s,64px);line-height:1.25;font-weight:600;white-space:pre-wrap;}
+.wsh-stage .wsh-nm{text-shadow:var(--wsh-sh,none);color:var(--wsh-nc,#F35E7D);font-size:var(--wsh-ns,36px);margin-top:.6em;font-weight:700;}
+.poll-wtabs{display:flex;gap:6px;background:rgba(255,255,255,.08);border-radius:12px;padding:4px;} .poll-wtabs button{flex:1;border:0;border-radius:9px;padding:10px;background:transparent;color:var(--pl-col,#fff);font:inherit;font-weight:700;font-size:15px;cursor:pointer;} .poll-wtabs button.on{background:var(--pw-acc,#F35E7D);color:var(--pw-btc,#fff);}
+.poll-wbody{display:flex;flex-direction:column;gap:12px;}
+.poll-pub, .poll-pub *{-webkit-tap-highlight-color:transparent;} .poll-pub button:focus, .poll-pub button:focus-visible{outline:none;box-shadow:none;} .poll-wtabs button, .poll-wre button, .poll-wbtn{transition:transform .12s ease, background-color .2s ease;} .poll-wtabs button:active, .poll-wre button:active, .poll-wbtn:active{transform:scale(.96);}
+.poll-pub.wfix{overflow:hidden;}
+.poll-pub.wfix .poll-pub-in.poll-wfix{margin:0 auto;height:100%;box-sizing:border-box;padding:18px 20px 0;display:flex;flex-direction:column;gap:12px;}
+.poll-wfix .poll-whead{flex:none;display:flex;flex-direction:column;gap:12px;position:relative;z-index:2;}
+.poll-wfix .poll-wbody{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:16px 4px calc(env(safe-area-inset-bottom,0px) + 28px);}
+.poll-wfix .poll-wbody.center > :first-child{margin-top:auto;} .poll-wfix .poll-wbody.center > :last-child{margin-bottom:auto;} .poll-wpanel{display:flex;flex-direction:column;gap:12px;}
+.poll-pub.glass .poll-wpanel, .poll-pub.glass .poll-wcard, .poll-pub.glass .poll-wtabs{background:var(--pw-gbg);-webkit-backdrop-filter:blur(var(--pw-gblur));backdrop-filter:blur(var(--pw-gblur));box-shadow:var(--pw-gsh);border:1px solid rgba(255,255,255,.18);border-radius:var(--pw-rad);}
+.poll-pub.glass .poll-wpanel{padding:20px 18px;}
+.poll-pub.fglass .poll-wf textarea, .poll-pub.fglass .poll-wf input{background:var(--pw-fgbg) !important;-webkit-backdrop-filter:blur(var(--pw-fgblur));backdrop-filter:blur(var(--pw-fgblur));border-radius:var(--pw-frad) !important;border-color:rgba(255,255,255,.28);} .poll-pub.glass .poll-wtabs button{border-radius:calc(var(--pw-rad) * .7);} .poll-pub.glass .poll-wf textarea, .poll-pub.glass .poll-wf input, .poll-pub.glass .poll-wbtn{border-radius:calc(var(--pw-rad) * .6);}
+.poll-wcard{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:8px;}
+.poll-wct{font-size:17px;line-height:1.4;white-space:pre-wrap;text-shadow:var(--pw-sh,none);} .poll-wcn{font-size:14px;opacity:.8;}
+.poll-wre{display:flex;flex-wrap:wrap;gap:6px;} .poll-wre button{border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.2);border-radius:999px;padding:5px 9px;font-size:18px;line-height:1;cursor:pointer;color:var(--pl-col,#fff);display:inline-flex;align-items:center;gap:4px;} .poll-wre button b{font-size:13px;font-family:Inter,Arial,sans-serif;} .poll-wre button.on{background:var(--pw-acc,#F35E7D);border-color:var(--pw-acc,#F35E7D);color:var(--pw-btc,#fff);} .poll-wre button.pop{animation:pollPulseWPop .35s ease;}
+@keyframes pollPulseWPop{0%{transform:scale(1);}50%{transform:scale(1.35);}100%{transform:scale(1);}}
+.poll-wlogo{text-align:center;margin-bottom:10px;} .poll-wlogo img{max-height:90px;max-width:80%;object-fit:contain;}
+.poll-wh{text-shadow:var(--pw-sh,none);text-align:center;margin:0 0 14px;font-size:var(--pw-ts,24px);}
+.poll-wf > span, .poll-wf small, .poll-pubv .poll-msg, .poll-wlogo img{text-shadow:var(--pw-sh,none);}
+.poll-wf{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-size:var(--pw-ls,15px);} .poll-wf em{color:var(--text-dim);font-style:normal;font-size:12px;}
+.poll-wf textarea, .poll-wf input{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:var(--pw-fbg,#0E0E10);color:var(--pw-ft,#fff);font:inherit;font-size:var(--pw-fs,16px);}
+.poll-wf small{align-self:flex-end;color:var(--text-dim);font-size:12px;}
+.poll-wbtn{width:100%;padding:14px;border-radius:12px;border:0;background:var(--pw-acc,#F35E7D);color:var(--pw-btc,#fff);font-family:var(--pl-font,inherit);font-weight:700;font-size:var(--pw-bs,17px);cursor:pointer;margin-top:4px;} .poll-wbtn:disabled{opacity:.6;} .poll-wbtn.ghost{background:transparent;border:1px solid currentColor;color:var(--pl-col,#fff);margin-top:14px;}
+.poll-pub{padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;}
+</style>
+</head>
+<body>
+<div id="guestView" class="hidden"></div>
+<div id="toast"></div>
+<script>
+// built from index.html by site-tools/build_vote.py – edit the voting code there, not here
+(()=>{ const l = document.getElementById('appFonts'); if(!l) return; const on = ()=>{ l.media = 'all'; }; if(l.sheet) on(); else { l.addEventListener('load', on); l.addEventListener('error', on); } })();
+const SUPABASE_URL = "https://yakmikxkcudwloxruhvx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OYVSooEWr-aPd__NPM8G3g_MQrSAXbI";
+// the database functions over plain fetch (the same headers supabase-js sends); a request is cut after 10 s
+const SBL = { rpc(name, args){
+  const c = new AbortController(), t = setTimeout(()=>c.abort(), 10000);
+  return fetch(SUPABASE_URL+'/rest/v1/rpc/'+name, { method:'POST', signal:c.signal, headers:{ apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json' }, body:JSON.stringify(args || {}) })
+    .then(async r=>{ const txt = await r.text(); let d = null; try{ d = txt ? JSON.parse(txt) : null; }catch(e){}
+      return r.ok ? { data:d, error:null } : { data:null, error:{ message:(d && d.message) || ('HTTP '+r.status) } }; })
+    .catch(e=>({ data:null, error:{ message:String(e && e.message || e) } }))
+    .finally(()=>clearTimeout(t));
+} };
+function getSb(){ return SBL; }
+async function pollSbReady(){ return SBL; }
+function toast(msg, ms){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.remove('act');
+  t.classList.add('show');
+  clearTimeout(toast._h);
+  toast._h = setTimeout(()=>t.classList.remove('show'), ms || 2400);
+}
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function ltPlural(n, one, few, many){
+  const m10 = n%10, m100 = n%100;
+  const w = (m10===1 && m100!==11) ? one : (m10>=2 && m10<=9 && !(m100>=12 && m100<=19)) ? few : many;
+  return n+' '+w;
+}
+function pollClock(ms){ ms = Math.max(0, ms); const s = Math.ceil(ms/1000), h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return (h ? h+':'+String(m).padStart(2,'0') : m)+':'+String(x).padStart(2,'0'); }
+const pollTimeout = (p, ms, fb)=>Promise.race([Promise.resolve(p).catch(()=>fb), new Promise(r=>setTimeout(()=>r(fb), ms))]);
+const POLL_FONTS = {};
+const POLL_GF = {};
+const pollGfOk = n=>/^[A-Za-z0-9][A-Za-z0-9 ]{1,59}$/.test(String(n||''));
+function pollGFont(name){
+  if(!pollGfOk(name)) return Promise.resolve(false);
+  if(!POLL_GF[name]) POLL_GF[name] = new Promise(res=>{
+    const add = (q, fallback)=>{
+      const l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family='+name.trim().replace(/ +/g, '+')+q+'&display=swap';
+      l.onload = async ()=>{ try{ await pollTimeout(Promise.all([document.fonts.load(`400 1em "${name}"`), document.fonts.load(`700 1em "${name}"`)]), 6000); }catch(e){}
+        res([...document.fonts].some(f=>f.family.replace(/["']/g, '')===name && f.status==='loaded')); };
+      // not every font has bold: ask again for the regular one only
+      l.onerror = ()=>{ l.remove(); if(fallback) fallback(); else res(false); };
+      document.head.appendChild(l);
+    };
+    add(':wght@400;700', ()=>add('', null));
+  });
+  return POLL_GF[name];
+}
+async function pollFont(b){
+  if(b && !b.font && b.gfont) return (await pollGFont(b.gfont)) ? b.gfont : '';
+  if(!b || !b.font) return '';
+  let h = 0; for(const ch of String(b.font)) h = (h*31 + ch.charCodeAt(0)) >>> 0;
+  const fam = 'PollBrand_'+h.toString(36);
+  if(!POLL_FONTS[fam]){ POLL_FONTS[fam] = (async()=>{ try{ const a = await pollAsset(b.font); if(!a) return false; const f = new FontFace(fam, a.buf || `url("${pollCssUrl(a.url)}")`); await pollTimeout(f.load(), 8000); if(f.status!=='loaded') return false; document.fonts.add(f); return true; }catch(e){ return false; } })(); }
+  return (await POLL_FONTS[fam]) ? fam : '';
+}
+function pollPage(b, kind){ b = b || {}; return (b[kind] && typeof b[kind]==='object') ? b[kind] : {}; }
+function pollStops(t){ t = t || {}; const st = (Array.isArray(t.stops) ? t.stops : []).filter(c=>/^#[0-9a-f]{3,8}$/i.test(c)); return st.length ? st : ['#FFFFFF']; }
+function pollGrad(t){ const st = pollStops(t); return t && t.mode==='gradient' && st.length > 1 ? `linear-gradient(${+t.angle||100}deg,${st.join(',')})` : `linear-gradient(${st[0]},${st[0]})`; }
+const pollCssUrl = u=>String(u||'').replace(/["\\\n]/g, '');
+function pollBrandCss(b, fam){
+  b = b || {};
+  const acc = /^#[0-9a-f]{3,8}$/i.test(b.accent||'') ? b.accent : '#E5486C', dim = b.bg ? (b.dim!=null ? +b.dim : 0.35) : 0;
+  // text sizes (%, 100 = as designed) and where the winner stands on the results screen
+  const z = b.sizes || {}, sz = POLL_SIZES.map(k=>`--sz-${k}:${Math.max(30, Math.min(400, +z[k] || 100))/100};`).join('');
+  const [wx, wy] = pollWinXY(b);
+  const win = `--win-x:${wx}%;--win-y:${wy}%;--win-ai:${wx < 34 ? 'flex-start' : wx > 66 ? 'flex-end' : 'center'};--win-ta:${wx < 34 ? 'left' : wx > 66 ? 'right' : 'center'};`;
+  const iqx = b.idleX!=null ? Math.max(0, Math.min(100, +b.idleX)) : 50, iqy = b.idleY!=null ? Math.max(0, Math.min(100, +b.idleY)) : 85;
+  const tpx = b.topicX!=null ? Math.max(0, Math.min(100, +b.topicX)) : 50, tpy = b.topicY!=null ? Math.max(0, Math.min(100, +b.topicY)) : 50;
+  const lgy = b.logoTY!=null ? Math.max(-10, Math.min(90, +b.logoTY)) : 0;
+  const ilx = b.logoX!=null ? Math.max(0, Math.min(100, +b.logoX)) : 50, ily = b.logoY!=null ? Math.max(0, Math.min(100, +b.logoY)) : 8;
+  return `--pl-grad:${pollGrad(b.text)};--pl-col:${pollStops(b.text)[0]};--pl-acc:${acc};--pl-font:${fam ? `'${fam}',` : ''}var(--font-head);${b.bg ? `--pl-bg:url("${pollCssUrl(b.bg)}");` : ''}--pl-dim:${dim};${sz}${win}--iq-x:${iqx}%;--iq-y:${iqy}%;--il-x:${ilx}%;--il-y:${ily}%;--lg-y:${lgy}%;--tp-x:${tpx}%;--tp-y:${tpy}%;`;
+}
+const POLL_SIZES = ['topic','question','time','result','clock','idleqr','idlelogo','logo'];
+function pollWinXY(b){
+  b = b || {};
+  const old = /^[tmb][lcr]$/.test(b.winPos||'') ? b.winPos : 'mc';
+  const x = b.winX!=null ? +b.winX : { l:0, c:50, r:100 }[old[1]], y = b.winY!=null ? +b.winY : { t:0, m:50, b:100 }[old[0]];
+  return [Math.max(0, Math.min(100, x)), Math.max(0, Math.min(100, y))];
+}
+const POLL_ASSETS = {};
+function pollAsset(ref){
+  ref = String(ref||''); if(!ref) return Promise.resolve(null);
+  if(!ref.startsWith('asset:')) return Promise.resolve({ url:ref });
+  const id = ref.slice(6);
+  if(!POLL_ASSETS[id]) POLL_ASSETS[id] = (async()=>{
+    const { data, error } = await getSb().rpc('poll_asset', { p_id:id });
+    if(error || !data) return null;
+    const bin = Uint8Array.from(atob(data.data), c=>c.charCodeAt(0));
+    return { url:URL.createObjectURL(new Blob([bin], { type:data.mime })), buf:bin.buffer };
+  })().catch(()=>null);
+  return POLL_ASSETS[id];
+}
+async function pollLookFast(B0, onLate){
+  const full = Promise.all([pollResolve(B0), pollFont(B0)]);
+  const r = await pollTimeout(full, 1500, null);
+  if(r) return r;
+  full.then(()=>{ try{ onLate(); }catch(e){} }).catch(()=>{});
+  return [Object.assign({}, B0, { bg:'', logo:'' }), ''];
+}
+async function pollResolve(b){
+  b = Object.assign({}, b || {});
+  const [bg, logo] = await Promise.all([pollAsset(b.bg), pollAsset(b.logo)]);
+  b.bg = bg ? bg.url : ''; b.logo = logo ? logo.url : '';
+  return b;
+}
+function pollNumOpts(d){ if(d && Array.isArray(d.options)) d.options = d.options.map((o, i)=>Object.assign({}, o, { text:String(o.text||'').trim() || String(i+1) })); if(d && typeof d.question==='string') d.question = d.question.trim(); return d; }
+const PN_SRC = 'ąčęėįšųūžáàäâãåçéèêëíìîïñóòöôõúùûüýÿłńśźż', PN_DST = 'aceeisuuzaaaaaaceeeeiiiinooooouuuuyylnszz';
+function pollNameNorm(t){ let o = ''; for(const ch of String(t||'').toLowerCase()){ const k = PN_SRC.indexOf(ch); o += k >= 0 ? PN_DST[k] : ch; } return o.replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function pollLev(a, b){
+  if(a===b) return 0; if(!a.length) return b.length; if(!b.length) return a.length;
+  let pp = null, prev = Array.from({ length:b.length + 1 }, (_, j)=>j);
+  for(let i = 1; i <= a.length; i++){
+    const cur = [i];
+    for(let j = 1; j <= b.length; j++){
+      let v = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1]===b[j-1] ? 0 : 1));
+      if(i > 1 && j > 1 && a[i-1]===b[j-2] && a[i-2]===b[j-1]) v = Math.min(v, pp[j-2] + 1);
+      cur.push(v);
+    }
+    pp = prev; prev = cur;
+  }
+  return prev[b.length];
+}
+function pollWordNear(x, y){ const L = Math.max(x.length, y.length); return x===y || (x[0]===y[0] && L > 4 && pollLev(x, y) <= (L <= 8 ? 1 : 2)); }
+function pollNameNear(a, b){
+  if(a===b) return true;
+  const wa = a.split(' '), wb = b.split(' ');
+  if(!a || wa.length!==wb.length) return false;
+  if(wa.every((w, k)=>pollWordNear(w, wb[k]))) return true;
+  const sa = wa.slice().sort(), sb = wb.slice().sort();
+  return sa.every((w, k)=>pollWordNear(w, sb[k]));
+}
+const PV = { token:'', d:null, off:0, t:null, poll:null, voted:false };
+function pollVoterId(){
+  let v = ''; try{ v = localStorage.getItem('es_poll_voter') || ''; }catch(e){}
+  if(!/^[a-z0-9]{16,}$/.test(v)){ v = Array.from(crypto.getRandomValues(new Uint8Array(12)), b=>b.toString(36).padStart(2,'0')).join('').slice(0, 20); try{ localStorage.setItem('es_poll_voter', v); }catch(e){} }
+  return v;
+}
+function pollVotedKey(){ return 'es_poll_voted_'+(PV.d && PV.d.poll ? PV.d.poll : PV.token.slice(0, 16))+'_'+(PV.d ? PV.d.round : 0); }
+async function renderPollVote(token){
+  PV.token = token; PV.preview = new URLSearchParams(location.search).get('perziura')==='1';
+  const el = document.getElementById('guestView'); el.classList.add('poll-pubv');
+  el.innerHTML = `<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Kraunama…</div></div></div>`;
+  document.title = 'Balsavimas · Event Solutions';
+  // the permanent QR: keeps asking which question runs now (the next one appears by itself);
+  // started first, so a slow first answer never leaves the page waiting
+  pollLoop(()=>document.visibilityState==='visible' ? pollVoteLoad() : null, ()=>PV.d, ()=>PV.d ? JSON.stringify([PV.d.state, PV.d.poll, PV.d.round, PV.d.question]) : '', 3000, ()=>pollVoteMsg('Balsavimas šiuo metu išjungtas.'));
+  PV.t = setInterval(pollVoteTick, 250);
+}
+async function pollVoteLoad(){
+  if(PV.busy && Date.now() - PV.busy < 8000) return;
+  PV.busy = Date.now();
+  try{ await pollVoteLoad0(); }
+  catch(e){ if(!PV.d) pollVoteMsg('Nepavyko prisijungti.<small>Bandoma iš naujo…</small>'); }
+  finally{ PV.busy = 0; }
+}
+async function pollVoteLoad0(){
+  const sb = await pollSbReady(); if(!sb){ if(!PV.d) pollVoteMsg('Nepavyko prisijungti.<small>Patikrinkite internetą – bandoma iš naujo…</small>'); return; }
+  let { data, error } = await pollTimeout(sb.rpc('poll_public', { p_token:PV.token }), 10000, { data:null, error:{ message:'timeout' } });
+  if(error || !data){ if(!PV.d) pollVoteMsg('Nepavyko prisijungti.<small>Patikrinkite internetą – bandoma iš naujo…</small>'); return; }
+  PV.off = Date.parse(data.now) - Date.now();
+  pollNumOpts(data);
+  // preview (from the editor): a sample question when nothing runs
+  if(PV.preview && !['live','waiting'].includes(data.state)){
+    PV.demoEnd = PV.demoEnd || new Date(Date.now()+5*60000).toISOString();
+    data = Object.assign({}, data, { state:'live', poll:'demo', round:1, multi:false, topic:'Tema', question:'Pavyzdinė nominacija – kaip atrodo?', starts_at:new Date(Date.now()-1000).toISOString(), ends_at:PV.demoEnd,
+      options:[{ id:'a', text:'Pirmas nominantas' },{ id:'b', text:'Antras nominantas' },{ id:'c', text:'Trečias nominantas' }] });
+  }
+  const was = PV.d; PV.d = data;
+  if(!was || was.state!==data.state || was.round!==data.round || was.poll!==data.poll || was.topic!==data.topic || was.question!==data.question || was.multi!==data.multi || JSON.stringify(was.brand)!==JSON.stringify(data.brand)){ PV.voted = false; pollVoteDraw(); }
+}
+function pollVoteMsg(html){ const i = document.querySelector('.poll-pub-in'); if(i) i.innerHTML = (PV.logo||'')+`<div class="poll-msg pl-txt">${html}</div>`; }
+async function pollVoteDraw(){
+  const d = PV.d, pub = document.querySelector('.poll-pub'); if(!pub || !d) return;
+  const B0 = pollPage(d.brand, 'vote'), [B, fam] = await pollLookFast(B0, ()=>{ if(PV.d===d && !(PV.picks && PV.picks.size)){ pollVoteDraw(); } });
+  pub.style.cssText = pollBrandCss(B, fam);
+  pub.classList.toggle('has-bg', !!B.bg); pub.classList.toggle('acc-grad', !!B.accGrad);
+  PV.logo = B.logo ? `<img class="poll-logo" src="${esc(B.logo)}" alt="">` : '';
+  let voted = false; try{ voted = !!localStorage.getItem(pollVotedKey()); }catch(e){}
+  if(d.state==='idle'){ const i = document.querySelector('.poll-pub-in'); if(i) i.innerHTML = PV.logo ? PV.logo.replace('class="poll-logo"', 'class="poll-logo idle"') : ''; return; }
+  if(d.state==='invalid') return pollVoteMsg('Ši nuoroda nebegalioja.');
+  if(d.state==='ended') return pollVoteMsg('Balsavimas baigtas.<small>Ačiū, kad dalyvavote!</small>');
+  if(d.state==='draft') return pollVoteMsg('Balsavimas dar neprasidėjo.<small>Palaukite – puslapis atsinaujins pats.</small>');
+  if(voted && d.state==='live' && !PV.preview) return pollThanks(false);
+  const i = document.querySelector('.poll-pub-in');
+  PV.pick = null;
+  i.innerHTML = `${PV.logo||''}${d.topic ? `<div class="poll-topic pl-txt">${esc(d.topic)}</div>` : ''}${d.question ? `<h1 class="poll-q pl-txt">${esc(d.question)}</h1>` : ''}
+    <div class="poll-timer"><small class="pl-txt">${d.state==='waiting' ? 'Prasidės po' : 'Liko laiko'}</small><b class="pl-txt" id="pvClock"></b></div>
+    ${d.state==='live' ? `${d.multi ? '<div class="poll-hint pl-txt">Galite pasirinkti kelis nominantus</div>' : ''}<div class="poll-opts ${d.multi ? 'multi' : ''}" role="${d.multi ? 'group' : 'radiogroup'}">${(d.options||[]).map(o=>`<button class="poll-ob" role="${d.multi ? 'checkbox' : 'radio'}" aria-checked="false" data-ov="${esc(o.id)}"><i class="poll-rad"></i><span class="pl-txt">${esc(o.text)}</span></button>`).join('')}</div>
+      <button class="poll-go" id="pvGo" disabled><span class="pl-txt">Balsuoti</span></button>` : `<div class="poll-msg sm pl-txt">${d.write ? 'Vardą ir pavardę įrašyti galėsite, kai prasidės balsavimas.' : 'Nominantai atsiras, kai prasidės balsavimas.'}</div>`}`;
+  PV.picks = new Set();
+  if(d.mw && d.state==='live') return pollMultiDraw(i, d);
+  if(d.write && d.state==='live') return pollWriteDraw(i, d);
+  i.querySelectorAll('[data-ov]').forEach(b=>b.onclick = ()=>{ if(PV.sending) return;
+    if(d.multi){ if(PV.picks.has(b.dataset.ov)) PV.picks.delete(b.dataset.ov); else PV.picks.add(b.dataset.ov); }
+    else PV.picks = new Set([b.dataset.ov]);
+    i.querySelectorAll('[data-ov]').forEach(x=>{ const on = PV.picks.has(x.dataset.ov); x.classList.toggle('picked', on); x.setAttribute('aria-checked', on ? 'true' : 'false'); });
+    document.getElementById('pvGo').disabled = !PV.picks.size; });
+  const go = document.getElementById('pvGo'); if(go) go.onclick = ()=>{ if(PV.picks.size) pollVoteSend([...PV.picks], go); };
+  pollVoteTick();
+}
+function pollWriteDraw(i, d){
+  const n = Math.max(1, Math.min(50, +d.write_max || 1));
+  i.querySelectorAll('.poll-opts, .poll-hint').forEach(x=>x.remove());
+  const go = document.getElementById('pvGo');
+  go.insertAdjacentHTML('beforebegin', `<div class="poll-warn pl-txt">Įrašykite <b>tikslų vardą ir pavardę</b>, kitaip balsas neužsiskaitys.${n > 1 ? `<br>Galite įrašyti iki ${n} skirtingų – spauskite „Įrašyti kitą“, o baigę – „Balsuoti“.` : ''}</div>
+    <div class="poll-wr"></div>
+    ${n > 1 ? '<button class="poll-more" id="pvMore" type="button"><span class="pl-txt">+ Įrašyti kitą</span><small class="pl-txt" id="pvMoreN"></small></button>' : ''}`);
+  const box = i.querySelector('.poll-wr'), more = document.getElementById('pvMore');
+  const field = first=>`<div class="poll-wr-row"><input type="text" maxlength="80" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Vardas Pavardė">${first ? '' : '<button type="button" class="poll-wr-x" title="Pašalinti" aria-label="Pašalinti">✕</button>'}</div>`;
+  const upd = ()=>{
+    const ins = [...box.querySelectorAll('input')], v = ins.map(x=>x.value.trim().replace(/\s+/g, ' ')).filter(Boolean);
+    // the same (or nearly the same) name twice: marked, and not sent
+    const seen = []; let dups = 0;
+    ins.forEach(x=>{ const n = pollNameNorm(x.value), row = x.closest('.poll-wr-row'), dup = !!n && seen.some(m=>pollNameNear(n, m));
+      x.classList.toggle('dup', dup); if(n && !dup) seen.push(n); if(dup) dups++;
+      let msg = row.nextElementSibling && row.nextElementSibling.classList.contains('poll-wr-dup') ? row.nextElementSibling : null;
+      if(dup && !msg){ row.insertAdjacentHTML('afterend', '<div class="poll-wr-dup">Šis vardas jau įrašytas – įrašykite kitą arba pašalinkite.</div>'); }
+      if(!dup && msg) msg.remove(); });
+    PV.picks = new Set(ins.filter(x=>!x.classList.contains('dup')).map(x=>x.value.trim().replace(/\s+/g, ' ')).filter(Boolean)); go.disabled = !PV.picks.size || dups > 0;
+    go.querySelector('span').textContent = PV.picks.size > 1 ? `Balsuoti (${PV.picks.size})` : 'Balsuoti';
+    if(more){ more.hidden = ins.length >= n; const c = document.getElementById('pvMoreN'); if(c) c.textContent = `(${ins.length} iš ${n})`; }
+  };
+  const add = (first, focus)=>{
+    box.insertAdjacentHTML('beforeend', field(first));
+    const row = box.lastElementChild, inp = row.querySelector('input'), x = row.querySelector('.poll-wr-x');
+    inp.oninput = upd;
+    inp.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); if(!go.disabled) go.click(); } };
+    if(x) x.onclick = ()=>{ const m = row.nextElementSibling; if(m && m.classList.contains('poll-wr-dup')) m.remove(); row.remove(); upd(); };
+    if(focus) inp.focus();
+    upd();
+  };
+  add(true, false);
+  if(more) more.onclick = ()=>{ if(box.querySelectorAll('input').length >= n) return; add(false, true); };
+  go.onclick = ()=>{ if(PV.picks.size) pollVoteSend([...PV.picks], go, true); };
+  pollVoteTick();
+}
+function pollMultiDraw(i, d){
+  i.querySelectorAll('.poll-opts, .poll-hint').forEach(x=>x.remove());
+  const go = document.getElementById('pvGo'), topics = d.options || [];
+  go.insertAdjacentHTML('beforebegin', `<div class="poll-warn pl-txt">Paspauskite temą ir įrašykite <b>tikslų nominanto vardą ir pavardę</b>, kitaip balsas neužsiskaitys. Balsuoti galėsite užpildę visas temas.</div>
+    <div class="poll-mt">${topics.map((o, k)=>`<div class="poll-mt-row" data-mt="${esc(o.id)}"><button type="button" class="poll-mt-t"><span class="poll-mt-n pl-txt">${k+1}</span><span class="pl-txt">${esc(o.text)}</span><i class="poll-mt-ok">✓</i></button><input type="text" maxlength="80" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Vardas Pavardė" hidden></div>`).join('')}</div>`);
+  const rows = [...i.querySelectorAll('.poll-mt-row')];
+  const upd = ()=>{
+    let filled = 0;
+    rows.forEach(r=>{ const v = r.querySelector('input').value.trim(); r.classList.toggle('done', !!v); if(v) filled++; });
+    go.disabled = !rows.length || filled < rows.length;
+    go.querySelector('span').textContent = filled < rows.length ? `Balsuoti (${filled} iš ${rows.length})` : 'Balsuoti';
+    PV.picks = new Set(filled ? ['typed'] : []);   // something typed: the page is not redrawn under the voter
+  };
+  rows.forEach((r, k)=>{
+    const inp = r.querySelector('input');
+    r.querySelector('.poll-mt-t').onclick = ()=>{ inp.hidden = false; r.classList.add('open'); inp.focus(); };
+    inp.oninput = upd;
+    inp.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); const nx = rows.slice(k+1).concat(rows.slice(0, k)).find(x=>!x.querySelector('input').value.trim()); if(nx) nx.querySelector('.poll-mt-t').click(); else if(!go.disabled) go.click(); } };
+    inp.onblur = ()=>{ if(!inp.value.trim()){ inp.hidden = true; r.classList.remove('open'); } };
+  });
+  go.onclick = ()=>{ if(go.disabled) return; pollVoteSend(rows.map(r=>r.querySelector('input').value.trim().replace(/\s+/g, ' ')), go, 'multi', rows.map(r=>r.dataset.mt)); };
+  upd(); pollVoteTick();
+}
+function pollVoteTick(){
+  const d = PV.d; if(!d || PV.voted) return;
+  const now = Date.now()+PV.off;
+  if(d.state==='waiting' && now >= Date.parse(d.starts_at)){ pollVoteLoad(); return; }
+  if(d.state==='live' && now >= Date.parse(d.ends_at)){ d.state = 'ended'; pollVoteDraw(); return; }
+  const c = document.getElementById('pvClock'); if(c) c.textContent = pollClock((d.state==='waiting' ? Date.parse(d.starts_at) : Date.parse(d.ends_at)) - now);
+}
+async function pollVoteSend(opt, btn, write, topics){
+  if(PV.preview){ toast('Peržiūra – balsas nesiunčiamas.'); return; }
+  if(PV.sending) return; PV.sending = true;
+  document.querySelectorAll('.poll-ob, .poll-go, .poll-wr input, .poll-mt input, .poll-mt-t').forEach(b=>{ b.disabled = true; }); btn.classList.add('sending');
+  const opts = Array.isArray(opt) ? opt : [opt];
+  if(write==='multi'){
+    const { data, error } = await getSb().rpc('poll_mwrite', { p_token:PV.token, p_topics:topics, p_names:opts, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
+    PV.sending = false;
+    if(error || data==='bad'){ document.querySelectorAll('.poll-go, .poll-mt input, .poll-mt-t').forEach(b=>{ b.disabled = false; }); btn.classList.remove('sending'); toast(error ? 'Nepavyko išsiųsti – bandykite dar kartą.'+(error.message ? ' ('+String(error.message).slice(0, 140)+')' : '') : 'Įrašykite vardą ir pavardę kiekvienoje temoje.', 6000); return; }
+    if(data==='ended'){ PV.d.state = 'ended'; pollVoteDraw(); return; }
+    try{ localStorage.setItem(pollVotedKey(), '1'); }catch(e){}
+    return pollThanks(true);
+  }
+  if(write){
+    const { data, error } = await getSb().rpc('poll_write', { p_token:PV.token, p_names:opts, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
+    PV.sending = false;
+    if(error || data==='bad' || data==='limit' || data==='dup'){ document.querySelectorAll('.poll-go, .poll-wr input').forEach(b=>{ b.disabled = false; }); btn.classList.remove('sending'); toast(error ? 'Nepavyko išsiųsti – bandykite dar kartą.'+(error.message ? ' ('+String(error.message).slice(0, 140)+')' : '') : data==='limit' ? 'Per daug vardų.' : data==='dup' ? 'Tas pats vardas įrašytas kelis kartus – palikite vieną.' : 'Įrašykite vardą ir pavardę.'); return; }
+    if(data==='ended'){ PV.d.state = 'ended'; pollVoteDraw(); return; }
+    try{ localStorage.setItem(pollVotedKey(), '1'); }catch(e){}
+    return pollThanks(true);
+  }
+  let { data, error } = await getSb().rpc('poll_vote_many', { p_token:PV.token, p_options:opts, p_voter:pollVoterId(), p_poll:PV.d.poll || null });
+  if(error && /poll_vote_many|function/i.test(error.message||'') && opts.length===1) ({ data, error } = await getSb().rpc('poll_vote', { p_token:PV.token, p_option:opts[0], p_voter:pollVoterId(), p_poll:PV.d.poll || null }));
+  PV.sending = false;
+  if(error){ document.querySelectorAll('.poll-ob, .poll-go').forEach(b=>{ b.disabled = false; }); btn.classList.remove('sending'); toast('Nepavyko išsiųsti – bandykite dar kartą.'); return; }
+  if(data==='ended'){ PV.d.state = 'ended'; pollVoteDraw(); return; }
+  if(data==='bad'){ toast('Nepavyko – atnaujinkite puslapį.'); return; }
+  try{ localStorage.setItem(pollVotedKey(), '1'); }catch(e){}
+  pollThanks(true);
+}
+function pollThanks(fresh){
+  PV.voted = true;
+  // the page stays open: the next nomination appears here by itself
+  pollVoteMsg(`<span class="poll-ok">✓</span>Ačiū už jūsų balsą!<small>${fresh ? '' : 'Jūs jau balsavote. '}Kita nominacija atsiras čia pati – puslapio neuždarykite.</small>`);
+}
+async function pollEnabled(){
+  const sb = await pollSbReady(); if(!sb) return true;
+  const r = await pollTimeout(sb.rpc('poll_enabled', {}), 8000, { data:null, error:{ message:'timeout' } });
+  return r.error || r.data==null ? true : !!r.data;
+}
+function pollOffWait(show){
+  show();
+  const back = async ()=>{ if(document.visibilityState!=='visible') return; if(await pollEnabled()){ document.removeEventListener('visibilitychange', back); location.reload(); } };
+  document.addEventListener('visibilitychange', back);
+}
+async function pollLoop(load, data, key, fast, offMsg){
+  if(offMsg && !(await pollEnabled())){ pollOffWait(offMsg); return; }
+  let last = null, changed = Date.now(), checked = Date.now(), stop = false;
+  const next = ()=>{
+    const d = data() || {}, k = key(); if(k!==last){ last = k; changed = Date.now(); }
+    if(document.visibilityState!=='visible') return 30000;
+    if(d.state==='live' || d.state==='waiting') return fast;
+    const quiet = Date.now() - changed;
+    return quiet < 20*60000 ? Math.max(fast, 2000) : quiet < 2*3600000 ? 8000 : 20000;
+  };
+  // the next ask does not wait for the drawing; the busy flag of load() keeps two from running at once
+  const tick = async ()=>{
+    if(stop) return;
+    // while on: every 5 minutes, is it still on?
+    if(offMsg && Date.now() - checked > 5*60000){ checked = Date.now(); if(!(await pollEnabled())){ stop = true; pollOffWait(offMsg); return; } }
+    Promise.resolve(load()).catch(()=>{}); setTimeout(tick, next());
+  };
+  document.addEventListener('visibilitychange', ()=>{ if(!stop && document.visibilityState==='visible'){ changed = Date.now(); load(); } });
+  tick();
+}
+const WSH_NM = { 'ą':'a','č':'c','ę':'e','ė':'e','į':'i','š':'s','ų':'u','ū':'u','ž':'z','y':'i','0':'o','1':'i','3':'e','4':'a','5':'s','7':'t','@':'a','$':'s','8':'b' };
+function wishNorm(t){ return String(t || '').toLowerCase().replace(/[ąčęėįšųūžy013457@$8]/g, c=>WSH_NM[c]).replace(/[^a-z]+/g, ' ').replace(/([a-z])\1+/g, '$1').trim(); }
+function wishBadList(list){ return (list || []).map(e=>({ pre:/\*\s*$/.test(e), b:wishNorm(String(e).replace(/\*+\s*$/, '')) })).filter(x=>x.b && !/ /.test(x.b)); }
+function wishBadNorm(w, bad, fin){ return !!w && bad.some(x=>x.pre ? w.startsWith(x.b) : (fin && w===x.b)); }
+function wishClean(text, bad, final){
+  if(!bad || !bad.length) return null;
+  const parts = String(text).split(/(\s+)/), idx = [];
+  for(let i = 0; i < parts.length; i += 2) if(parts[i]) idx.push(i);
+  const gone = new Set(), fin = k=>k < idx.length - 1 || final || /\s$/.test(text);
+  idx.forEach((pi, k)=>{
+    const n = wishNorm(parts[pi]), ps = n.split(' ').filter(Boolean);
+    const hit = ps.some((w, j)=>wishBadNorm(w, bad, j < ps.length - 1 || fin(k))) || (ps.length > 1 && ps.every(w=>w.length===1) && wishBadNorm(ps.join(''), bad, fin(k)));
+    if(hit) gone.add(pi);
+  });
+  // letters written apart: f u c k
+  let run = [];
+  const flush = f=>{ if(run.length > 1 && wishBadNorm(run.map(pi=>wishNorm(parts[pi])).join(''), bad, f)) run.forEach(pi=>gone.add(pi)); run = []; };
+  idx.forEach((pi, k)=>{ const n = wishNorm(parts[pi]); if(n.length===1) run.push(pi); else flush(true); });
+  flush(final || /\s$/.test(text));
+  if(!gone.size) return null;
+  gone.forEach(pi=>{ parts[pi] = ''; });
+  return parts.join('').replace(/[ \t]{2,}/g, ' ').replace(/^[ \t]+/, '');
+}
+function wishGuard(el, bad){
+  const run = final=>{ const v = el.value, c = wishClean(v, bad, final); if(c===null) return false;
+    const pos = Math.max(0, c.length - (v.length - (el.selectionStart==null ? v.length : el.selectionStart)));
+    // a word taken out while still being typed: the rest of it is not let in either (until a space)
+    el._eat = !final && !/\s$/.test(v.slice(0, el.selectionStart==null ? v.length : el.selectionStart));
+    el.value = c; try{ el.setSelectionRange(pos, pos); }catch(e){} el._cut = Date.now(); el.dispatchEvent(new Event('input')); toast('Neleistinas žodis pašalintas.'); return true; };
+  el.addEventListener('beforeinput', e=>{
+    if(!el._eat) return;
+    if(e.inputType!=='insertText' || !e.data || /\s/.test(e.data)){ el._eat = false; return; }
+    e.preventDefault();
+  });
+  el.addEventListener('input', e=>{ if(e.isTrusted) run(false); });
+  el.addEventListener('blur', ()=>run(true));
+  return run;
+}
+const WSH_SH_DEF = { on:false, color:'#000000', alpha:0.6, blur:8, x:0, y:3 };
+function wishShadowCss(S){
+  S = Object.assign({}, WSH_SH_DEF, S || {}); if(!S.on) return 'none';
+  const h = pollHex(S.color, '#000000'), a = Math.max(0, Math.min(1, +S.alpha));
+  return `${+S.x||0}px ${+S.y||0}px ${Math.max(0, +S.blur||0)}px rgba(${parseInt(h.slice(1, 3), 16)},${parseInt(h.slice(3, 5), 16)},${parseInt(h.slice(5, 7), 16)},${isNaN(a) ? 0.6 : a})`;
+}
+const WSH_GL_DEF = { on:false, tint:-30, blur:14, radius:18, sh:{ on:true, color:'#000000', alpha:0.35, blur:30, x:0, y:10 } };
+const WSH_FG_DEF = { on:false, tint:15, blur:10, radius:12 };
+const WSH_PH_DEF = { titleSize:24, labelSize:15, fieldSize:16, btnSize:17, bg:'#111111', color:'#FFFFFF', accent:'#F35E7D', btnText:'#FFFFFF', fieldBg:'#0E0E10', fieldText:'#FFFFFF', logoH:90, gfont:'Inter', dim:0.35,
+  title:'', label:'Tavo linkėjimas', nameLabel:'Vardas, pavardė', btn:'Siųsti linkėjimą', thanks:'Ačiū!', thanksSub:'Tavo linkėjimas išsiųstas – netrukus jis gali pasirodyti ekrane.' };
+const WSP = { token:'', d:null };
+async function wishPhoneLook(pub, P){
+  const n = pub._lk = (pub._lk || 0) + 1;
+  pub.classList.remove('has-bg'); pub.style.removeProperty('--pl-bg'); pub.style.background = pollHex(P.bg, '#111111');
+  pub.style.setProperty('--pl-col', pollHex(P.color, '#FFFFFF')); pub.style.setProperty('--pw-acc', pollHex(P.accent, '#F35E7D')); pub.style.setProperty('--pw-btc', pollHex(P.btnText, '#FFFFFF'));
+  pub.style.setProperty('--pw-fbg', pollHex(P.fieldBg, '#0E0E10')); pub.style.setProperty('--pw-ft', pollHex(P.fieldText, '#FFFFFF')); pub.style.setProperty('--pl-dim', String(+P.dim || 0));
+  pub.style.setProperty('--pw-sh', wishShadowCss(P.shadow));
+  const G = Object.assign({}, WSH_GL_DEF, P.glass || {}), gt = Math.max(-100, Math.min(100, +G.tint || 0)) / 100;
+  pub.classList.toggle('glass', !!G.on);
+  pub.style.setProperty('--pw-gbg', gt < 0 ? `rgba(0,0,0,${(0.08 + -gt*0.62).toFixed(3)})` : `rgba(255,255,255,${(0.06 + gt*0.5).toFixed(3)})`);
+  pub.style.setProperty('--pw-gblur', Math.max(0, +G.blur || 0)+'px'); pub.style.setProperty('--pw-rad', Math.max(0, +G.radius || 0)+'px');
+  pub.style.setProperty('--pw-gsh', G.sh && G.sh.on ? wishShadowCss(G.sh) : 'none');
+  const F = Object.assign({}, WSH_FG_DEF, P.fglass || {}), ft = Math.max(-100, Math.min(100, +F.tint || 0)) / 100;
+  pub.classList.toggle('fglass', !!F.on);
+  pub.style.setProperty('--pw-fgbg', ft < 0 ? `rgba(0,0,0,${(0.08 + -ft*0.62).toFixed(3)})` : `rgba(255,255,255,${(0.06 + ft*0.5).toFixed(3)})`);
+  pub.style.setProperty('--pw-fgblur', Math.max(0, +F.blur || 0)+'px'); pub.style.setProperty('--pw-frad', Math.max(0, +F.radius || 0)+'px');
+  [['--pw-ts', P.titleSize, 24], ['--pw-ls', P.labelSize, 15], ['--pw-fs', P.fieldSize, 16], ['--pw-bs', P.btnSize, 17]].forEach(([k, v, d])=>pub.style.setProperty(k, (+v || d)+'px'));
+  const [f, bg, logo] = await Promise.all([pollFont({ font:P.font, gfont:P.gfont }), P.bgImg ? pollAsset(P.bgImg) : null, P.logo ? pollAsset(P.logo) : null]);
+  if(pub._lk!==n) return null;
+  if(f) pub.style.setProperty('--pl-font', `"${f}", Inter, Arial, sans-serif`); else pub.style.removeProperty('--pl-font');
+  if(bg){ pub.style.removeProperty('background'); pub.style.backgroundColor = pollHex(P.bg, '#111111'); pub.style.setProperty('--pl-bg', `url("${pollCssUrl(bg.url)}")`); pub.classList.add('has-bg'); }
+  // up / down moves the logo in the page's flow (it pushes the rest down) and never above the top edge (an iPhone's notch,
+  // the status bar): at most 14 px higher than its own place; left / right only shifts it
+  const ly = Math.max(-14, +P.logoY || 0), lx = +P.logoX || 0;
+  return logo ? `<div class="poll-wlogo" style="margin-top:${ly}px;${lx ? `transform:translateX(${lx}px);` : ''}"><img src="${esc(logo.url)}" alt="" style="max-height:${+P.logoH||90}px"></div>` : '';
+}
+async function renderWishSubmit(token){
+  WSP.token = token;
+  const el = document.getElementById('guestView'); el.classList.add('poll-pubv');
+  el.innerHTML = `<div class="poll-pub" id="pwPub"><div class="poll-pub-in"><div class="poll-msg sm">Kraunama…</div></div></div>`;
+  document.title = 'Linkėjimai · Event Solutions';
+  const { data, error } = await getSb().rpc('wish_public', { p_token:token });
+  const box = el.querySelector('.poll-pub-in');
+  if(error || !data){ box.innerHTML = '<div class="poll-msg">Ši nuoroda nebegalioja.</div>'; return; }
+  if(data.off){ box.innerHTML = '<div class="poll-msg">Linkėjimai šiuo metu išjungti.</div>'; return; }
+  WSP.d = data;
+  const P = Object.assign({}, WSH_PH_DEF, (data.brand || {}).phone || {}), pub = document.getElementById('pwPub');
+  const logoHtml = await wishPhoneLook(pub, P);
+  // with emoji reactions on: two tabs – write a wish, and the wishes on the screen with their emoji
+  const tabs = !!data.reactions;
+  // the logo and the tabs stay fixed at the top (below an iPhone's notch); only the wishes scroll, fading out under the tabs
+  pub.classList.add('wfix'); box.classList.add('poll-wfix');
+  box.innerHTML = `<div class="poll-whead">${logoHtml}${tabs ? `<div class="poll-wtabs"><button type="button" data-pwt="write" class="on">Rašyti</button><button type="button" data-pwt="feed">Linkėjimai</button></div>` : ''}</div><div id="pwBody" class="poll-wbody center"></div>`;
+  const body = document.getElementById('pwBody');
+  body.addEventListener('scroll', ()=>wishFadeTop(body), { passive:true });
+  const closed = ()=>{ body.innerHTML = `<div class="poll-wpanel"><div class="poll-msg">Linkėjimų rinkimas jau baigtas.<small>Ačiū!</small></div></div>`; };
+  const form = ()=>{ if(!data.open){ closed(); return; }
+    body.innerHTML = `<div class="poll-wpanel">${P.title ? `<h2 class="poll-wh">${esc(P.title)}</h2>` : ''}
+    <label class="poll-wf"><span>${esc(P.label || 'Tavo linkėjimas')}</span><textarea id="pwText" rows="5" maxlength="400" placeholder="Parašyk linkėjimą…"></textarea><small id="pwLeft">400</small></label>
+    <label class="poll-wf"><span>${esc(P.nameLabel || 'Vardas, pavardė')} <em>(nebūtina)</em></span><input type="text" id="pwName" maxlength="80" autocomplete="name"></label>
+    <button class="poll-wbtn" id="pwSend">${esc(P.btn || 'Siųsti linkėjimą')}</button></div>`;
+    const t = document.getElementById('pwText'); t.oninput = ()=>{ document.getElementById('pwLeft').textContent = 400 - t.value.length; };
+    const bad = wishBadList(data.banned), gT = wishGuard(t, bad), gN = wishGuard(document.getElementById('pwName'), bad);
+    document.getElementById('pwSend').onclick = async ()=>{
+      if(gT(true) | gN(true)) return;   // a word was taken out: let them see the text before it goes
+      if([t, document.getElementById('pwName')].some(x=>Date.now() - (x._cut || 0) < 600)) return;   // … also when it went on leaving the field
+      const text = t.value.trim(), name = document.getElementById('pwName').value.trim(); if(!text){ toast('Parašyk linkėjimą.'); t.focus(); return; }
+      const btn = document.getElementById('pwSend'); btn.disabled = true; btn.textContent = 'Siunčiama…';
+      const r = await getSb().rpc('wish_submit', { p_token:WSP.token, p_text:text, p_name:name || null, p_voter:pollVoterId() });
+      if(r.error){ btn.disabled = false; btn.textContent = P.btn || 'Siųsti linkėjimą'; toast(r.error.message || 'Nepavyko išsiųsti.'); return; }
+      body.innerHTML = `<div class="poll-wpanel"><div class="poll-msg">${esc(P.thanks || 'Ačiū!')}${P.thanksSub ? `<small>${esc(P.thanksSub)}</small>` : ''}</div><button class="poll-wbtn ghost" id="pwMore">Parašyti dar vieną</button>${tabs ? '<button class="poll-wbtn ghost" id="pwSee">Žiūrėti linkėjimus</button>' : ''}</div>`;
+      document.getElementById('pwMore').onclick = form;
+      const see = document.getElementById('pwSee'); if(see) see.onclick = ()=>tab('feed');
+    };
+  };
+  const tab = k=>{ WSP.tab = k; body.classList.toggle('center', k!=='feed'); body.scrollTop = 0; box.querySelectorAll('[data-pwt]').forEach(x=>x.classList.toggle('on', x.dataset.pwt===k)); if(k==='feed') wishFeed(body, true); else form(); };
+  box.querySelectorAll('[data-pwt]').forEach(x=>x.onclick = ()=>tab(x.dataset.pwt));
+  WSP.tab = 'write'; form();
+  if(tabs && !WSP.t) WSP.t = setInterval(()=>{ if(WSP.tab==='feed' && document.visibilityState==='visible') wishFeed(body, false); }, 6000);
+}
+const WSH_EMO = [['heart','❤️'],['love','😍'],['smile','😊'],['laugh','😂'],['party','🎉'],['clap','👏'],['like','👍'],['cheers','🥂'],['hug','🤗'],['star','🌟']];
+function wishFadeTop(body){
+  if(body._fq) return; body._fq = requestAnimationFrame(()=>{ body._fq = 0;
+    const top = body.getBoundingClientRect().top + 8;
+    [...body.children].forEach(c=>{ const r = c.getBoundingClientRect(), d = r.top - top;
+      c.style.opacity = d >= 0 ? '' : String(Math.max(0, 1 + d / Math.max(60, Math.min(r.height, 160)))); });
+  });
+}
+async function wishFeed(body, first){
+  // the wishes seen before show at once (no „Kraunama…“ blink on every switch); fresh ones replace them when they come
+  if(first && WSP.fhtml){ body.innerHTML = WSP.fhtml; wishFeedBind(body); first = false; WSP.fkey = ''; }
+  else if(first) body.innerHTML = '<div class="poll-msg sm">Kraunama…</div>';
+  const { data, error } = await getSb().rpc('wish_feed', { p_token:WSP.token, p_voter:pollVoterId() });
+  if(WSP.tab!=='feed') return;
+  if(error || !data){ if(first) body.innerHTML = '<div class="poll-msg sm">Nepavyko įkelti linkėjimų.</div>'; return; }
+  if(!data.reactions){ body.innerHTML = '<div class="poll-msg sm">Reakcijos šiuo metu išjungtos.</div>'; return; }
+  const list = data.wishes || [], key = JSON.stringify(list);
+  if(!first && key===WSP.fkey) return; WSP.fkey = key;
+  const y = body.scrollTop;
+  body.innerHTML = list.length ? list.map(w=>`<div class="poll-wcard" data-fw="${esc(w.id)}"><div class="poll-wct">${esc(w.text)}</div>${w.name ? `<div class="poll-wcn">— ${esc(w.name)}</div>` : ''}<div class="poll-wre">${wishEmoRow(w)}</div></div>`).join('')
+    : '<div class="poll-msg sm">Linkėjimų ekrane dar nėra.<small>Kai jie atsiras – galėsi juos pamatyti ir paspausti emoji.</small></div>';
+  if(!first) body.scrollTop = y;
+  WSP.fhtml = list.length ? body.innerHTML : '';
+  wishFadeTop(body); wishFeedBind(body);
+}
+function wishFeedBind(body){
+  body.querySelectorAll('[data-fw]').forEach(card=>card.addEventListener('click', async e=>{
+    const b = e.target.closest('[data-emo]'); if(!b) return;
+    b.disabled = true;
+    const r = await getSb().rpc('wish_react', { p_token:WSP.token, p_wish:card.dataset.fw, p_emoji:b.dataset.emo, p_voter:pollVoterId() });
+    if(r.error){ b.disabled = false; toast(r.error.message || 'Nepavyko.'); return; }
+    card.querySelector('.poll-wre').innerHTML = wishEmoRow({ counts:r.data.counts, mine:r.data.mine });
+    if(b.dataset.emo && (r.data.mine || []).includes(b.dataset.emo)){ const n = card.querySelector(`[data-emo="${b.dataset.emo}"]`); if(n){ n.classList.add('pop'); } }
+    WSP.fhtml = body.innerHTML;
+  }));
+}
+function wishEmoRow(w){
+  const c = w.counts || {}, mine = w.mine || [];
+  return WSH_EMO.map(([k, e])=>`<button type="button" data-emo="${k}" class="${mine.includes(k) ? 'on' : ''}">${e}${+c[k] ? `<b>${+c[k]}</b>` : ''}</button>`).join('');
+}
+const pollHex = (c, d)=>/^#[0-9a-f]{6}$/i.test(c||'') ? c : d;
+const WS = { token:'', d:null, i:-1, at:0, key:'', seen:null, queue:[] };
+async function renderWishScreen(token){
+  WS.token = token;
+  const el = document.getElementById('guestView'); el.classList.add('poll-resv');
+  el.innerHTML = `<div class="poll-rs-wrap"><div class="poll-rs wsh-stage" id="wshStage"><div class="wsh-bgimg" id="wshBgImg"></div><div class="wsh-logo" id="wshLogo"></div><div class="wsh-card" id="wshCard"></div></div></div>`;
+  document.title = 'Linkėjimai · Event Solutions';
+  window.addEventListener('resize', wishFit);
+  const load = async ()=>{
+    const { data, error } = await getSb().rpc('wish_screen', { p_token:token });
+    if(error || !data){ document.getElementById('wshCard').innerHTML = '<div class="wsh-tx">Nuoroda nebegalioja.</div>'; return; }
+    if(data.off){ document.getElementById('wshCard').innerHTML = ''; return; }
+    const k = JSON.stringify([data.brand, data.w, data.h]);
+    // a wish put on the screen while it is open goes next (after the one shown has had its time), then the order goes on from it
+    const ids = (data.wishes || []).map(w=>w.id);
+    if(!WS.seen) WS.seen = new Set(ids);
+    else ids.forEach(id=>{ if(!WS.seen.has(id)){ WS.seen.add(id); WS.queue.push(id); } });
+    WS.d = data; if(k!==WS.key){ WS.key = k; await wishScreenLook(); }
+  };
+  await load(); setInterval(()=>{ if(document.visibilityState==='visible') load(); }, 2500);
+  setInterval(wishScreenTick, 250); wishScreenTick();
+}
+async function wishStageLook(st, B, w, h){
+  B = B || {}; const n = st._lk = (st._lk || 0) + 1;
+  st.style.width = w+'px'; st.style.height = h+'px'; st.style.background = pollHex(B.bg, '#101010');
+  st.style.setProperty('--wsh-c', pollHex(B.color, '#FFFFFF')); st.style.setProperty('--wsh-nc', pollHex(B.nameColor, '#F35E7D'));
+  st.style.setProperty('--wsh-s', (+B.size||64)+'px'); st.style.setProperty('--wsh-ns', (+B.nameSize||36)+'px'); st.style.setProperty('--wsh-fade', (B.fade!=null ? +B.fade : 1)+'s');
+  st.classList.toggle('left', B.align==='left'); st.style.setProperty('--wsh-sh', wishShadowCss(B.shadow));
+  const nm = st.querySelector('.wsh-nm'); if(nm && st.classList.contains('wsh-pv')) nm.style.display = B.showName===false ? 'none' : '';
+  const [f, bg, lg] = await Promise.all([pollFont({ font:B.font, gfont:B.gfont }), B.bgImg ? pollAsset(B.bgImg) : null, B.logo ? pollAsset(B.logo) : null]);
+  if(st._lk!==n) return;   // a newer change is already being shown
+  st.style.fontFamily = (f ? `"${f}", ` : '')+'Inter, Arial, sans-serif';
+  st.querySelector('.wsh-bgimg').style.backgroundImage = bg ? `url("${pollCssUrl(bg.url)}")` : '';
+  st.querySelector('.wsh-logo').innerHTML = lg ? `<img src="${esc(lg.url)}" alt="" style="height:${+B.logoH||160}px">` : '';
+  st.querySelector('.wsh-logo').style.transform = (+B.logoX || +B.logoY) ? `translate(${+B.logoX||0}px, ${+B.logoY||0}px)` : '';
+}
+async function wishScreenLook(){
+  const d = WS.d, st = document.getElementById('wshStage'); if(!st) return;
+  await wishStageLook(st, d.brand || {}, d.w, d.h);
+  wishFit();
+}
+function wishFit(){
+  const st = document.getElementById('wshStage'), d = WS.d; if(!st || !d) return;
+  const s = Math.min(window.innerWidth / d.w, window.innerHeight / d.h);
+  st.style.transform = `scale(${s})`; st.parentNode.style.width = Math.round(d.w*s)+'px'; st.parentNode.style.height = Math.round(d.h*s)+'px';
+}
+function wishScreenTick(){
+  const d = WS.d, card = document.getElementById('wshCard'); if(!d || !card) return;
+  const list = d.wishes || [], B = d.brand || {};
+  if(!list.length){ if(card.dataset.id){ card.classList.remove('on'); card.dataset.id = ''; } return; }
+  if(WS.swapping) return;   // a fade is under way
+  const sec = Math.max(2, +d.interval_sec || 10), now = Date.now(), fade = (B.fade!=null ? +B.fade : 1) * 1000;
+  const cur = list.findIndex(w=>w.id===card.dataset.id);
+  const show = next=>{
+    if(card.dataset.id===next.id && card.classList.contains('on')){ WS.at = now; return; }
+    WS.swapping = true; card.classList.remove('on');
+    setTimeout(()=>{ card.dataset.id = next.id;
+      card.innerHTML = `<div class="wsh-tx">${esc(next.text)}</div>${B.showName!==false && next.name ? `<div class="wsh-nm">— ${esc(next.name)}</div>` : ''}`;
+      requestAnimationFrame(()=>card.classList.add('on')); WS.at = Date.now(); WS.swapping = false; }, card.dataset.id ? fade : 0);
+  };
+  // a wish held on the screen from the control page: shown (faded in) and kept until let go
+  const pin = d.pinned ? list.find(w=>w.id===d.pinned) : null;
+  if(pin){ WS.pinned = pin.id; show(pin); return; }
+  // let go: at once, smoothly on to the next one, and the round goes on from there
+  if(WS.pinned){ WS.pinned = null; show(list[(cur + 1) % list.length]); return; }
+  // the wish shown stays its time; then the next one (a new one added goes next)
+  if(cur >= 0 && now - WS.at < sec*1000) return;
+  WS.queue = WS.queue.filter(id=>list.some(w=>w.id===id) && id!==card.dataset.id);
+  const qi = WS.queue.length ? list.find(w=>w.id===WS.queue[0]) : null;
+  if(qi) WS.queue.shift();
+  if(cur >= 0 && list.length===1 && card.classList.contains('on')){ WS.at = now; return; }
+  show(qi || list[(cur + 1) % list.length]);
+}
+const qs = new URLSearchParams(location.search), token = qs.get('balsuoti'), wish = qs.get('linketi'), screen = qs.get('linkejimai');
+document.getElementById('guestView').classList.remove('hidden');
+if(screen) renderWishScreen(screen); else if(wish) renderWishSubmit(wish); else if(token) renderPollVote(token); else document.getElementById('guestView').innerHTML = '<div class="poll-pub"><div class="poll-pub-in"><div class="poll-msg">Ši nuoroda nebegalioja.</div></div></div>';
+</script>
+</body>
+</html>

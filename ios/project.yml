@@ -1,0 +1,51 @@
+# Event Solutions for iPhone / iPad. The Xcode project is generated from this
+# file by XcodeGen (brew install xcodegen; xcodegen) – in GitHub: .github/workflows/ios.yml
+name: EventSolutions
+options:
+  bundleIdPrefix: lt.eventsolutions
+  deploymentTarget:
+    iOS: "15.0"
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ${APPLE_TEAM_ID}
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.0"
+targets:
+  EventSolutions:
+    type: application
+    platform: iOS
+    scheme: {}
+    sources:
+      - Sources
+      - Resources/Assets.xcassets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: lt.eventsolutions.app
+        PRODUCT_NAME: EventSolutions
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_ENTITLEMENTS: Resources/EventSolutions.entitlements
+        INFOPLIST_FILE: Resources/Info.plist
+    info:
+      path: Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Event Solutions
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSRequiresIPhoneOS: true
+        ITSAppUsesNonExemptEncryption: false
+        UIViewControllerBasedStatusBarAppearance: true
+        UIStatusBarStyle: UIStatusBarStyleLightContent
+        UILaunchScreen:
+          UIColorName: LaunchBG
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        NSCameraUsageDescription: Kamera reikalinga vaizdo skambučiams ir nuotraukoms įkelti.
+        NSMicrophoneUsageDescription: Mikrofonas reikalingas skambučiams chate.
+        NSPhotoLibraryAddUsageDescription: Kad galėtum išsaugoti nuotraukas iš programos.
+    entitlements:
+      path: Resources/EventSolutions.entitlements
+      properties:
+        aps-environment: development
